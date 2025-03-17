@@ -1,0 +1,9 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  :global(.mantine-List-itemWrapper) {
+    margin-right: 22px;
+  }
+}

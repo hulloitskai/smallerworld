@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    // == Paths
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["app/*"]
+    },
+
+    // == Language
+    "module": "ES2022",
+    "target": "ES2022",
+    "types": ["node", "vite/client", "unplugin-icons/types/react"],
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true /* Skip type checking .d.ts files that are included with TypeScript. */,
+    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+
+    // == Mode
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "noEmit": true,
+
+    // == Linting
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // == Plugins
+    "plugins": [
+      { "name": "typescript-plugin-css-modules" },
+      { "name": "vite-plugin-iso-import" }
+    ]
+  },
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "app/**/*.module.css",
+    "typings/**/*.d.ts"
+  ],
+  "exclude": ["app/workers/**/*.ts", "typings/service-worker.d.ts"],
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.service-worker.json" }
+  ]
+}

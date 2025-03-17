@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Operate from root directory
+cd "${BASH_SOURCE%/*}/.."
+
+# Boot Docker
+if [ -z "$CI" ]; then
+  ./bin/boot_docker
+fi
+
+# Configure Overmind and Rails test command
+export OVERMIND_ENV=test RAILS_ENV=test NODE_ENV=production INERTIA_PORT=13715
+if [ -z "$@" ]; then
+  export RAILS_TEST_CMD=test:all
+else
+  export RAILS_TEST_CMD="test $@"
+fi
+
+# Select Procfile
+PROCFILE=./Procfile.test
+if [ -n "$CI" ]; then
+  PROCFILE=./Procfile.ci-test
+fi
+
+set +e
+
+trap "exit 0" INT
+EXIT_CODE=0
+./bin/overmind start -f "$PROCFILE" || EXIT_CODE=$?
+if [ "$EXIT_CODE" -eq 0 ]; then
+  echo "Tests passed" >&2
+else
+  echo "One or more tests failed" >&2
+  exit $EXIT_CODE
+fi

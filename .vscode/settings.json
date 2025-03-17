@@ -1,0 +1,57 @@
+{
+  // == Associations
+  "files.associations": {
+    "Procfile.dev": "procfile",
+    "Procfile.test": "procfile",
+    "Procfile.ci-test": "procfile",
+    "Gemfile.lock": "plaintext",
+    ".inputrc": "plaintext"
+  },
+
+  // == ESLint
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "markdown"
+  ],
+
+  // == YAML
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "${workspaceFolder}/.github/workflows/deploy.yml"
+  },
+
+  // == Formatting
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "rubocop.vscode-rubocop"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  },
+  "[dotenv]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[ignore]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

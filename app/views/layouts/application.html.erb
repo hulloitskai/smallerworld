@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="smaller" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <%# == Viewport %>
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+    <%# == Content Security Policy %>
+    <%= csp_meta_tag %>
+
+    <%# == CSRF %>
+    <meta name="csrf-param" content="<%= request_forgery_protection_token %>" inertia>
+    <meta name="csrf-token" content="<%= form_authenticity_token %>" inertia>
+
+    <%# == Environment %>
+    <meta name="env" content="<%= Rails.env %>">
+
+    <%# == Action Cable %>
+    <%= action_cable_meta_tag %>
+
+    <%# == Active Storage %>
+    <meta name="active-storage-direct-uploads-url" content="<%= rails_direct_uploads_path %>">
+    <% if (direct_uploads_size_limit = Rails.configuration.active_storage.direct_uploads_size_limit) %>
+      <meta name="active-storage-direct-uploads-size-limit" content="<%= direct_uploads_size_limit %>">
+    <% end %>
+
+    <%# == Supabase %>
+    <% scoped do %>
+      <% settings = Supabase.settings %>
+      <meta name="supabase-project-id" content="<%= settings.project_id %>">
+      <meta name="supabase-public-key" content="<%= settings.public_key %>">
+    <% end %>
+
+    <%# == Sentry %>
+    <% if Sentry.initialized? %>
+      <% config = Sentry.configuration %>
+      <meta name="sentry-dsn" content="<%= config.dsn %>">
+      <meta name="sentry-traces-sample-rate" content="<%= config.traces_sample_rate %>">
+      <meta name="sentry-profiles-sample-rate" content="<%= config.profiles_sample_rate %>">
+    <% end %>
+
+    <%# == Fullstory %>
+    <% if (settings = Fullstory.settings) %>
+      <meta name="fullstory-org-id" content="<%= settings.org_id %>">
+    <% end %>
+
+    <%# == Clarity %>
+    <% if (settings = Clarity.settings) %>
+      <meta name="clarity-project-id" content="<%= settings.project_id %>">
+    <% end %>
+
+    <%# == Vite %>
+    <%= vite_client_tag %>
+    <% if local_assigns.include?(:page) %>
+      <%= vite_react_refresh_tag %>
+      <%= vite_javascript_tag "application.tsx", media: nil %>
+    <% end %>
+
+    <%# == Inertia %>
+    <%== inertia_ssr_head %>
+    <%== inertia_assets local_assigns.fetch(:page), type: :page, media: nil %>
+  </head>
+
+  <body>
+    <%= yield %>
+
+    <%# == PWA %>
+    <script>
+      window.addEventListener("beforeinstallprompt", event => {
+        console.info("Captured beforeinstallprompt event", event);
+        event.preventDefault();
+        window.installPromptEvent = event;
+      });
+    </script>
+
+  </body>
+</html>

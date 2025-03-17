@@ -1,0 +1,8 @@
+.dropdown {
+  padding: 0;
+}
+
+body .picker {
+  border: none;
+  border-radius: var(--popover-radius, var(--mantine-radius-default));
+}

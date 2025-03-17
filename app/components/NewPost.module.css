@@ -1,0 +1,17 @@
+.menuItemSection {
+  color: var(--mantine-color-primary-outline);
+}
+
+.menuItemLabel {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 500;
+}
+
+.button {
+  pointer-events: auto;
+  box-shadow: var(--mantine-shadow-lg);
+
+  &[data-expanded] {
+    background-color: var(--mantine-color-primary-filled-hover);
+  }
+}

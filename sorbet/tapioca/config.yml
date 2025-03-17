@@ -1,0 +1,22 @@
+# See https://github.com/Shopify/tapioca
+
+gem:
+  doc: true
+  typed_overrides:
+    activesupport: "true"
+  exclude:
+    - pry-doc
+    - pry-rails
+    - pry-rescue
+    - pry-stack_explorer
+    - rails-pg-extras
+    - rubocop-rails
+    - rubocop-shopify
+    - rubocop-sorbet
+    - web-console
+    - yard
+    - yard-sorbet
+
+dsl:
+  skip_constant:
+    - InertiaRails::Mailer

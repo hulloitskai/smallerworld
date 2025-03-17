@@ -1,0 +1,12 @@
+.addButton {
+  :global(.mantine-Button-section) {
+    &[data-position="left"] {
+      margin-right: 6px;
+    }
+  }
+}
+
+.qrCode {
+  margin-inline: auto;
+  border: 5px solid var(--mantine-color-white);
+}

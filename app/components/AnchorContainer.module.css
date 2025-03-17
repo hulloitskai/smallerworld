@@ -1,0 +1,16 @@
+.container {
+  border-radius: var(--mantine-radius-default);
+  text-decoration: none;
+
+  > * {
+    border: rem(1px) solid
+      light-dark(
+        var(--ac-inactive-border-color-light),
+        var(--ac-inactive-border-color-dark)
+      );
+
+    @mixin hover {
+      border-color: var(--ac-active-border-color);
+    }
+  }
+}

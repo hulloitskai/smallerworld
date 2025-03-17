@@ -1,0 +1,18 @@
+.divider {
+  color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3));
+}
+
+.footerSection {
+  :global(.mantine-Button-section) {
+    &[data-position="left"] {
+      margin-right: 4px;
+    }
+  }
+}
+
+.timestamp {
+  color: var(--mantine-color-dimmed);
+  text-transform: lowercase;
+  font-weight: 500;
+  font-family: var(--mantine-font-family-headings);
+}

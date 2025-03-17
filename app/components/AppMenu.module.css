@@ -1,0 +1,56 @@
+.target {
+  font-weight: 600;
+  cursor: pointer;
+  padding-left: 8px;
+  text-transform: none;
+
+  &[data-expanded] {
+    border-color: var(--mantine-color-primary-filled);
+  }
+}
+
+.icon {
+  --icon-color: var(--badge-color, var(--mantine-color-white));
+
+  height: 20px;
+  width: 20px;
+  svg {
+    path,
+    g {
+      fill: var(--icon-color) !important;
+      stroke: var(--icon-color) !important;
+    }
+  }
+}
+
+.item {
+  &:not([data-disabled]) {
+    @mixin hover {
+      background-color: var(--mantine-primary-color-light);
+    }
+  }
+
+  &[data-info] {
+    cursor: default;
+  }
+}
+
+.itemSection {
+  color: var(--mantine-color-primary-text);
+  width: 16px;
+  height: 16px;
+}
+
+.itemLabel {
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+  font-weight: 500;
+  font-family: var(--mantine-font-family-headings);
+}
+
+.dropdown {
+  pointer-events: auto;
+
+  .target:not([data-expanded]) + & {
+    pointer-events: none;
+  }
+}

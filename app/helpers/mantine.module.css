@@ -1,0 +1,117 @@
+@layer mantine {
+  body {
+    .button {
+      [data-mantine-color-scheme="dark"]
+        .card
+        &:where(
+          :disabled:not([data-loading]),
+          [data-disabled]:not([data-loading])
+        ) {
+        background-color: var(--mantine-color-dark-7);
+      }
+    }
+
+    .buttonLabel {
+      font-family: var(--mantine-font-family-headings);
+      font-weight: var(--button-fw);
+    }
+
+    .focus {
+      outline-width: 1px;
+    }
+
+    .input {
+      font-size: var(--mantine-font-size-md);
+      @mixin dark {
+        --input-bg: transparent;
+      }
+    }
+
+    .modalHeader {
+      align-items: start;
+      padding-bottom: 6px;
+    }
+
+    .modalInner {
+      padding-top: calc(
+        var(--modal-inner-y-offset, var(--modal-y-offset)) +
+          env(safe-area-inset-top, 0px)
+      );
+    }
+
+    .badgeLabel {
+      font-family: var(--mantine-font-family-headings);
+    }
+
+    .card {
+      @mixin dark {
+        background-color: var(--mantine-color-dark-8);
+        border-color: var(--mantine-color-dark-6);
+      }
+    }
+
+    .dropdown {
+      @mixin dark {
+        background-color: var(--mantine-color-dark-8);
+      }
+    }
+
+    .navLink {
+      font-family: var(--mantine-font-family-headings);
+      font-weight: 500;
+      background-color: transparent;
+
+      @mixin hover {
+        background-color: transparent;
+      }
+    }
+
+    .alertBody {
+      row-gap: 0px;
+    }
+
+    .alertTitle {
+      font-family: var(--mantine-font-family-headings);
+    }
+
+    .text {
+      &:not([data-inherit]):not([data-inline]) {
+        line-height: var(--mantine-line-height);
+      }
+    }
+
+    .title {
+      line-height: var(--mantine-line-height);
+    }
+
+    .drawerHeader {
+      padding-bottom: 6px;
+    }
+
+    .typographyStylesProvider {
+      word-break: break-word;
+      line-height: var(--mantine-line-height-xs);
+
+      :where(p) {
+        &:not(:last-child) {
+          margin-bottom: var(--mantine-spacing-xs);
+        }
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      :where(ul, ol):not([data-type="taskList"]) {
+        margin-block: var(--mantine-spacing-xs);
+        :where(li) {
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+
+  .dividerLabel {
+    font-family: var(--mantine-font-family-headings);
+    font-weight: 500;
+  }
+}

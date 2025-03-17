@@ -1,0 +1,64 @@
+name: check
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: supabase/postgres:15.6.1.139
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Install Overmind
+        env:
+          OVERMIND_VERSION: "2.5.1"
+        run: |
+          sudo apt-get install tmux
+          sudo curl -Lo /usr/bin/overmind.gz https://github.com/DarthSim/overmind/releases/download/v${{ env.OVERMIND_VERSION }}/overmind-v${{ env.OVERMIND_VERSION }}-linux-amd64.gz
+          sudo gzip -d /usr/bin/overmind.gz
+          sudo chmod u+x /usr/bin/overmind
+          sudo chown $(whoami) /usr/bin/overmind
+      - name: Set up environment
+        run: bin/setup --skip-server
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      - name: Scan for common Rails security vulnerabilities using static analysis
+        run: bundle exec brakeman --no-pager
+      - name: Check lints and formatting
+        run: bin/check --all-files
+      - name: Run tests
+        run: bin/test
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore

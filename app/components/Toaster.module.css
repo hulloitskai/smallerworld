@@ -1,0 +1,34 @@
+.toast {
+  pointer-events: auto;
+  align-items: start;
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-default);
+
+  [data-icon] {
+    margin-top: 3px;
+  }
+
+  [data-title],
+  [data-description] {
+    font-family: var(--mantine-font-family);
+    line-height: var(--mantine-line-height-xs);
+  }
+
+  [data-title] {
+    color: var(--mantine-color-black);
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  [data-description] {
+    color: alpha(var(--mantine-color-black), 0.75);
+    font-size: var(--mantine-font-size-sm);
+  }
+
+  &[data-y-position="bottom"] {
+    bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  &[data-y-position="top"] {
+    top: env(safe-area-inset-top, 0px);
+  }
+}

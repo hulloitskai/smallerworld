@@ -1,0 +1,28 @@
+.editor {
+  border-radius: var(--editor-radius, var(--mantine-radius-default));
+}
+
+.content {
+  border-radius: var(--editor-radius, var(--mantine-radius-default));
+  overflow: hidden;
+
+  > [contenteditable="true"] {
+    min-height: var(--editor-content-editable-min-height, 144px);
+    padding-inline: var(--mantine-spacing-sm);
+    padding-block: var(--mantine-spacing-xs);
+  }
+}
+
+/* .toolbar {
+  border: none;
+  background-color: unset;
+  border-bottom-left-radius: var(
+    --editor-radius,
+    var(--mantine-radius-default)
+  );
+  border-bottom-right-radius: var(
+    --editor-radius,
+    var(--mantine-radius-default)
+  );
+  padding-top: 0;
+} */

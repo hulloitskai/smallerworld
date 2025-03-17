@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    // == Language
+    "module": "ES2022",
+    "allowSyntheticDefaultImports": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+
+    // == Mode
+    "moduleResolution": "Bundler",
+    "incremental": true,
+    "composite": true,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
+
+    // == Linting
+    "strict": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["vite.config.ts", "config/**/*.ts"]
+}

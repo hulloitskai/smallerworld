@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+require "pg"
+
+attempts = 0
+max_attempts = 50
+delay = 0.5
+
+puts "Checking Postgres connection..."
+
+loop do
+  attempts += 1
+  begin
+    PG.connect(
+      host: "localhost",
+      port: 5432,
+      dbname: "postgres",
+      user: "postgres",
+      password: "postgres",
+    )
+    puts "Postgres is ready!"
+    break
+  rescue PG::ConnectionBad
+    if attempts >= max_attempts
+      puts "Failed to connect to Postgres after #{max_attempts} attempts; exiting."
+      exit 1
+    else
+      puts "... (check #{attempts})"
+      sleep delay
+    end
+  end
+end

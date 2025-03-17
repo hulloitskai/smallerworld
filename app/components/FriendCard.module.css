@@ -1,0 +1,7 @@
+.group {
+  :global(.mantine-Button-section) {
+    &[data-position="left"] {
+      margin-right: 6px;
+    }
+  }
+}

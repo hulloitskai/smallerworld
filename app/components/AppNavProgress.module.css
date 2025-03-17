@@ -1,0 +1,10 @@
+.root {
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+
+  [role="progressbar"] {
+    box-shadow:
+      0 0 10px var(--progress-section-color),
+      0 0 5px var(--progress-section-color);
+  }
+}

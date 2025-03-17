@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Operate from root directory
+cd "${BASH_SOURCE%/*}/.."
+
+ATTACH_TARGET="${1:-rails}"
+./bin/overmind connect "$ATTACH_TARGET"

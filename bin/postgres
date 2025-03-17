@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Operate from root directory
+cd "${BASH_SOURCE%/*}/.."
+
+# Boot Docker
+./bin/boot_docker
+
+# Tail logs if Postgres already running; else run Postgres
+if [ -f ./tmp/pids/postgres.cid ]; then
+  echo "Postgres is already running; tailing logs..." >&2
+  trap "exit 0" INT
+  docker logs -f $(cat ./tmp/pids/postgres.cid)
+else
+  trap "rm ./tmp/pids/postgres.cid" EXIT
+  docker run --rm --cidfile ./tmp/pids/postgres.cid \
+    -p 5432:5432 \
+    -v ./tmp/postgres:/var/lib/postgresql/data \
+    -e POSTGRES_USER=supabase_admin \
+    -e POSTGRES_PASSWORD=postgres \
+    supabase/postgres:15.6.1.139
+fi

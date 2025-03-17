@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Run migrations
+bundle exec rails db:migrate
+
+# Run deploy tasks
+bundle exec rails after_party:run

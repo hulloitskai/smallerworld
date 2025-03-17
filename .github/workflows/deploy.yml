@@ -1,0 +1,33 @@
+name: deploy
+run-name: "Deploy from ${{ github.event.workflow_run.head_branch }} (${{ github.event.workflow_run.head_commit.message }})"
+
+on:
+  workflow_run:
+    workflows: [check]
+    branches: [main]
+    types: [completed]
+
+concurrency:
+  group: "${{ github.event.workflow_run.head_branch }}-${{ github.event.workflow_run.conclusion }}"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+      - name: Set up Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy
+        run: flyctl deploy --remote-only --ha=false --memory=768
+      - name: Revert deployment on failure
+        if: failure() || cancelled()
+        run: flyctl scale count 1 --yes

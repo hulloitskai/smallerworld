@@ -1,0 +1,9 @@
+.deleteButton {
+  @mixin dark {
+    color: var(--mantine-color-dark-2);
+
+    @mixin hover {
+      background-color: var(--mantine-color-dark-6);
+    }
+  }
+}

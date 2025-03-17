@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "shopify.ruby-lsp",
+    "formulahendry.auto-close-tag",
+    "sorbet.sorbet-vscode-extension",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "editorconfig.editorconfig",
+    "benspaulding.procfile",
+    "itarato.byesig",
+    "github.vscode-github-actions",
+    "clinyong.vscode-css-modules",
+    "rubocop.vscode-rubocop",
+    "csstools.postcss",
+    "redhat.vscode-yaml"
+  ]
+}

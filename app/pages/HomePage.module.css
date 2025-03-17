@@ -1,0 +1,5 @@
+.avatarGroup {
+  :global(.mantine-Avatar-placeholder) {
+    background: transparent;
+  }
+}

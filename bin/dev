@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Operate from root directory
+cd "${BASH_SOURCE%/*}/.."
+
+# Boot Docker
+./bin/boot_docker
+
+# Configure Overmind
+OVERMIND_SOCKET="tmp/sockets/overmind.${RAILS_ENV:-development}.sock"
+if [ -e "$OVERMIND_SOCKET" ]; then
+  if ./bin/overmind status > /dev/null; then
+    ./bin/overmind echo
+    exit 0
+  fi
+  rm "$OVERMIND_SOCKET"
+fi
+
+./bin/overmind start -f ./Procfile.dev --no-port "$@"
