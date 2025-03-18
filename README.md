@@ -1,4 +1,4 @@
-# smaller world
+# smallerworld
 
 _a smaller world for you and your friends._
 

@@ -94,6 +94,11 @@ class Post < ApplicationRecord
     end
   end
 
+  sig { returns(Friend::PrivateRelation) }
+  def friends_reached
+    Friend.where(id: notifications.to_friends.delivered.select(:recipient_id))
+  end
+
   private
 
   # == Helpers

@@ -37,9 +37,9 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files on Cloudflare R2
+  # Store uploaded files on Tigris
   if Rails.application.credentials_available?
-    config.active_storage.service = :cloudflare
+    config.active_storage.service = :tigris
   end
 
   # Send mail using Mailjet

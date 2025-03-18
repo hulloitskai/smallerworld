@@ -64,6 +64,11 @@ class Notification < ApplicationRecord
   # == Callbacks
   after_create_commit :push_later, unless: :pushed?
 
+  # == Scopes
+  scope :to_friends, -> { where(recipient_type: "Friend") }
+  scope :to_users, -> { where(recipient_type: "User") }
+  scope :delivered, -> { where.not(delivered_at: nil) }
+
   # == Methods
   sig { returns(T::Hash[String, T.untyped]) }
   def payload
