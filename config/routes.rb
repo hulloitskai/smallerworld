@@ -75,7 +75,7 @@ Rails.application.routes.draw do
   end
 
   # == Posts
-  resources :posts, only: %i[index create destroy], export: true do
+  resources :posts, only: %i[index create update destroy], export: true do
     member do
       get :stats
     end

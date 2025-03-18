@@ -1,0 +1,10 @@
+.emojiButton {
+  border-color: light-dark(
+    var(--mantine-color-gray-4),
+    var(--mantine-color-dark-4)
+  );
+
+  @mixin dark {
+    background-color: transparent;
+  }
+}

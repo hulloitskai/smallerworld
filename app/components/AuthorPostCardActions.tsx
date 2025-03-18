@@ -1,10 +1,11 @@
 // import { ActionIcon } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 
-import { mutatePosts } from "~/helpers/posts";
+import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type Post } from "~/types";
 
 import DeleteButton from "./DeleteButton";
+import PostForm from "./PostForm";
 
 import classes from "./AuthorPostCardActions.module.css";
 
@@ -36,7 +37,10 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
           {notifiedFriends} notified
         </Badge>
       )}
-      <DeletePostButton postId={post.id} />
+      <Group gap={2}>
+        <EditPostButton {...{ post }} />
+        <DeletePostButton postId={post.id} />
+      </Group>
     </Group>
   );
 };
@@ -67,5 +71,35 @@ const DeletePostButton: FC<DeletePostButtonProps> = ({ postId }) => {
         void trigger();
       }}
     />
+  );
+};
+
+interface EditPostButtonProps {
+  post: Post;
+}
+
+const EditPostButton: FC<EditPostButtonProps> = ({ post }) => {
+  return (
+    <Button
+      variant="subtle"
+      color="gray"
+      size="compact-xs"
+      leftSection={<EditIcon />}
+      onClick={() => {
+        openModal({
+          title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
+          children: (
+            <PostForm
+              {...{ post }}
+              onPostUpdated={() => {
+                closeAllModals();
+              }}
+            />
+          ),
+        });
+      }}
+    >
+      edit
+    </Button>
   );
 };

@@ -20,7 +20,7 @@ class PostsController < ApplicationController
     })
   end
 
-  # GET /posts/1/stats
+  # GET /posts/:id/stats
   def stats
     post_id = T.let(params.fetch(:id), String)
     post = Post.find(post_id)
@@ -39,12 +39,25 @@ class PostsController < ApplicationController
     )
     post = current_user.posts.build(post_params)
     if post.save
+      render(json: { post: PostSerializer.one(post) }, status: :created)
+    else
+      render(json: { errors: post.form_errors }, status: :unprocessable_entity)
+    end
+  end
+
+  # PUT /posts/:id
+  def update
+    post_id = params.fetch(:id)
+    post = Post.find(post_id)
+    authorize!(post)
+    post_params = T.let(
+      params.expect(post: %i[title body_html emoji]),
+      ActionController::Parameters,
+    )
+    if post.update(post_params)
       render(json: { post: PostSerializer.one(post) })
     else
-      render(
-        json: { errors: post.errors.full_messages },
-        status: :unprocessable_entity,
-      )
+      render(json: { errors: post.form_errors }, status: :unprocessable_entity)
     end
   end
 

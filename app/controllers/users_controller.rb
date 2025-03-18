@@ -34,7 +34,7 @@ class UsersController < ApplicationController
     })
   end
 
-  # GET /users/1/posts?friend_token=...
+  # GET /users/:id/posts?friend_token=...
   def posts
     user_id = T.let(params.fetch(:id), String)
     user = User.find(user_id)
@@ -50,14 +50,14 @@ class UsersController < ApplicationController
     })
   end
 
-  # GET /users/1/manifest.webmanifest?friend_token=...
+  # GET /users/:id/manifest.webmanifest?friend_token=...
   def manifest
     user_id = T.let(params.fetch(:id), String)
     user = User.find(user_id)
     current_friend = authenticate_friend!
     render(
       json: {
-        name: "#{user.name}'s smaller world",
+        name: "#{user.name}'s world",
         short_name: user.name,
         description: "life updates, personal invitations, poems, and more!",
         icons: manifest_icons(user),
