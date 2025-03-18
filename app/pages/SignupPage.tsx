@@ -147,7 +147,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
 };
 
 SignupPage.layout = page => (
-  <AppLayout title="Sign up">
+  <AppLayout title="sign up">
     <Center style={{ flexGrow: 1 }}>{page}</Center>
   </AppLayout>
 );

@@ -158,7 +158,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
 };
 
 LoginPage.layout = page => (
-  <AppLayout title="Sign in">
+  <AppLayout title="sign in">
     <Center style={{ flexGrow: 1 }}>{page}</Center>
   </AppLayout>
 );
