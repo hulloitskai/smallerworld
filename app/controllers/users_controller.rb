@@ -75,7 +75,7 @@ class UsersController < ApplicationController
           src: rails_representation_path(icon_variant),
           sizes: "#{size}x#{size}",
           type: type.to_s,
-          purpose: "any maskable",
+          purpose: "any",
         }
       end
     else
@@ -89,7 +89,7 @@ class UsersController < ApplicationController
           src: rails_representation_path(icon_variant),
           sizes: "192x192",
           type: type.to_s,
-          purpose: "any maskable",
+          purpose: "any",
         },
       ]
     end
