@@ -17,7 +17,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
 }) => {
   const replyUri = useMemo(() => {
     const encodedBody = encodeURIComponent(post.reply_snippet);
-    return `sms:${replyPhoneNumber}&body=${encodedBody}`;
+    return `sms:${replyPhoneNumber}?body=${encodedBody}`;
   }, [replyPhoneNumber, post.reply_snippet]);
   return (
     <Group gap={2}>
