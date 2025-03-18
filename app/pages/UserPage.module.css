@@ -16,6 +16,13 @@
   }
 }
 
+.installModal {
+  :global(.mantine-Modal-header) {
+    min-height: rem(40);
+    line-height: var(--mantine-line-height-xs);
+  }
+}
+
 .installInstructionsList {
   font-weight: 500;
   display: flex;

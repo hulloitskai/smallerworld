@@ -5,10 +5,10 @@ import {
   type BoxProps,
   Image,
   Modal,
+  type ModalProps,
   Overlay,
   Text,
 } from "@mantine/core";
-import { useIsFirstRender } from "@mantine/hooks";
 import { type PropsWithChildren } from "react";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
@@ -49,7 +49,6 @@ const UserPage: PageComponent<UserPageProps> = ({
     initialShowInstructions,
   );
   const isStandalone = useIsStandalone();
-  const isFirstRender = useIsFirstRender();
   useDidUpdate(() => {
     if (typeof isStandalone === "boolean") {
       setInstallModalOpened(!isStandalone);
@@ -107,64 +106,49 @@ const UserPage: PageComponent<UserPageProps> = ({
           </Alert>
         )}
       </Stack>
-      <Modal
-        title="join my smaller world :)"
-        opened={installModalOpened}
-        onClose={() => {
-          setInstallModalOpened(false);
-        }}
-        transitionProps={{
-          ...(isFirstRender && { enterDelay: 2000 }),
-        }}
-        styles={{
-          header: {
-            minHeight: rem(40),
-            lineHeight: "var(--mantine-line-height-xs)",
-          },
-        }}
-      >
-        <InstallModalBody {...{ user, showInstructions }} />
-      </Modal>
-      <Affix
-        position={{
-          bottom: `calc(${INSTALL_ALERT_INSET} + env(safe-area-inset-bottom, 0px))`,
-          left: INSTALL_ALERT_INSET,
-          right: INSTALL_ALERT_INSET,
-        }}
-      >
-        <Transition
-          transition="pop"
-          mounted={isStandalone === false && !installModalOpened}
-        >
-          {style => (
-            <Alert
-              variant="filled"
-              icon={<NotificationIcon />}
-              title="join my smaller world :)"
-              className={classes.installAlert}
-              {...{ style }}
+      {currentFriend && (
+        <>
+          <InstallModal
+            opened={installModalOpened}
+            onClose={() => {
+              setInstallModalOpened(false);
+            }}
+            onShowInstructionsChange={showInstructions => {
+              setShowInstructions(showInstructions);
+            }}
+            {...{ user, currentFriend, showInstructions }}
+          />
+          <Affix
+            position={{
+              bottom: `calc(${INSTALL_ALERT_INSET} + env(safe-area-inset-bottom, 0px))`,
+              left: INSTALL_ALERT_INSET,
+              right: INSTALL_ALERT_INSET,
+            }}
+          >
+            <Transition
+              transition="pop"
+              mounted={isStandalone === false && !installModalOpened}
             >
-              <Stack gap={8} align="start">
-                <Text inherit>
-                  life updates, personal invitations, poems, and more!
-                </Text>
-                <Button
-                  variant="white"
-                  size="compact-sm"
-                  leftSection={<InstallIcon />}
-                  className={classes.installAlertButton}
-                  onClick={() => {
-                    setShowInstructions(true);
-                    setInstallModalOpened(true);
-                  }}
+              {style => (
+                <Alert
+                  variant="filled"
+                  icon={<NotificationIcon />}
+                  title="join my smaller world :)"
+                  className={classes.installAlert}
+                  {...{ style }}
                 >
-                  pin this page
-                </Button>
-              </Stack>
-            </Alert>
-          )}
-        </Transition>
-      </Affix>
+                  <InstallAlertBody
+                    onShowInstructions={() => {
+                      setShowInstructions(true);
+                      setInstallModalOpened(true);
+                    }}
+                  />
+                </Alert>
+              )}
+            </Transition>
+          </Affix>
+        </>
+      )}
     </>
   );
 };
@@ -192,36 +176,58 @@ UserPage.layout = page => (
 
 export default UserPage;
 
-interface InstallModalBodyProps {
+interface InstallModalProps extends Omit<ModalProps, "title" | "children"> {
   user: User;
+  currentFriend: Friend;
   showInstructions: boolean;
+  onShowInstructionsChange: (showInstructions: boolean) => void;
 }
 
-const InstallModalBody: FC<InstallModalBodyProps> = ({
+const InstallModal: FC<InstallModalProps> = ({
   user,
+  currentFriend,
   showInstructions,
+  onShowInstructionsChange,
+  ...modalProps
 }) => {
-  const [iosSafariInstructionsDisplayed, setIosInstructionsDisplayed] =
-    useState(showInstructions);
   const installPromptEvent = useInstallPromptEvent();
   const isInstallable = useIsInstallable(installPromptEvent);
   const directLinkToInstallInstructions =
     useDirectLinkToInstallInstructions(user);
+  const friendNameWithEmoji = useMemo(
+    () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
+    [currentFriend],
+  );
   return (
-    <>
-      <Transition transition="pop" mounted={!iosSafariInstructionsDisplayed}>
+    <Modal
+      className={classes.installModal}
+      {...(showInstructions && {
+        title: "join my smaller world :)",
+      })}
+      {...modalProps}
+    >
+      <Transition transition="pop" mounted={!showInstructions}>
         {style => (
-          <Stack gap="xs" align="center" {...{ style }}>
+          <Stack gap="lg" align="center" pb="xs" {...{ style }}>
+            <Stack gap={4}>
+              <Title order={3} ta="center" maw={300}>
+                hi, {friendNameWithEmoji}!
+              </Title>
+              <Text ta="center" maw={300}>
+                i made this page to make it easy for you to get involved in my
+                life adventures :)
+              </Text>
+            </Stack>
             <HomeScreenPreview
               pageName={user.name}
               pageIcon={user.page_icon}
-              arrowLabel="this page!"
+              arrowLabel="it's me!"
             />
-            <Text size="sm" ta="center">
+            <Text ta="center" maw={300}>
               pin this page to your home screen so you can{" "}
               <span style={{ fontWeight: 600 }}>
                 get notified about life updates, personal invitations, poems,
-                and more :)
+                and more!
               </span>
             </Text>
             <Stack gap={4}>
@@ -240,12 +246,12 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({
                         if (installPromptEvent) {
                           void installPromptEvent.prompt();
                         } else if (isIosSafari()) {
-                          setIosInstructionsDisplayed(true);
+                          onShowInstructionsChange(true);
                         }
                       },
                     })}
               >
-                pin to home screen!
+                pin to home screen
               </Button>
               {isInstallable === false && (
                 <Text size="xs" c="dimmed">
@@ -258,7 +264,7 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({
       </Transition>
       <Transition
         transition="fade-up"
-        mounted={iosSafariInstructionsDisplayed}
+        mounted={showInstructions}
         {...(!showInstructions && {
           enterDelay: 200,
         })}
@@ -298,7 +304,7 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({
           </List>
         )}
       </Transition>
-    </>
+    </Modal>
   );
 };
 
@@ -357,4 +363,43 @@ const useIsInstallable = (
     }
   }, [installEvent]);
   return isInstallable;
+};
+
+interface InstallAlertBodyProps {
+  onShowInstructions: () => void;
+}
+
+const InstallAlertBody: FC<InstallAlertBodyProps> = ({
+  onShowInstructions,
+}) => {
+  const installPromptEvent = useInstallPromptEvent();
+  const isInstallable = useIsInstallable(installPromptEvent);
+  return (
+    <Stack gap={8} align="start">
+      <Text inherit>life updates, personal invitations, poems, and more!</Text>
+      <Group gap="xs">
+        <Button
+          variant="white"
+          size="compact-sm"
+          leftSection={<InstallIcon />}
+          className={classes.installAlertButton}
+          disabled={isInstallable === false}
+          onClick={() => {
+            if (installPromptEvent) {
+              void installPromptEvent.prompt();
+            } else {
+              onShowInstructions();
+            }
+          }}
+        >
+          pin this page
+        </Button>
+        {isInstallable === false && (
+          <Text size="xs" opacity={0.6}>
+            sorry, your browser isn&apos;t supported :(
+          </Text>
+        )}
+      </Group>
+    </Stack>
+  );
 };

@@ -187,6 +187,9 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({ onInstalled }) => {
       <Transition transition="pop" mounted={!iosSafariInstructionsDisplayed}>
         {style => (
           <Stack gap="xs" align="center" {...{ style }}>
+            <Text size="sm" ta="center">
+              hi {}
+            </Text>
             <HomeScreenPreview
               pageName="smaller world"
               pageIcon={{ src: "/logo.png" }}

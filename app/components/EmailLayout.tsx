@@ -56,9 +56,9 @@ const EmailLayout = <EmailProps extends SharedPageProps>({
                     target="_blank"
                     style={{ fontWeight: 600 }}
                   >
-                    Smaller World
+                    smaller world
                   </Link>
-                  . This email loves you.
+                  . this email loves you.
                 </Text>
               </Column>
             </Row>
