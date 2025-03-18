@@ -101,7 +101,10 @@ const UserPage: PageComponent<UserPageProps> = ({
             <Feed {...{ user, replyPhoneNumber }} />
             {registration === null && (
               <Overlay backgroundOpacity={0} blur={3}>
-                <Image src={swirlyUpArrowSrc} w={160} mx="auto" />
+                <Image
+                  src={swirlyUpArrowSrc}
+                  className={classes.notificationsRequiredIndicatorArrow}
+                />
               </Overlay>
             )}
           </Box>

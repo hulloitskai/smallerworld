@@ -18,9 +18,11 @@ import PostForm from "./PostForm";
 
 import classes from "./NewPost.module.css";
 
-export interface NewPostProps {}
+export interface NewPostProps {
+  disabled?: boolean;
+}
 
-const NewPost: FC<NewPostProps> = () => {
+const NewPost: FC<NewPostProps> = ({ disabled }) => {
   const [postType, setPostType] = useState<PostType | null>(null);
   const previousPostType = usePrevious(postType);
 
@@ -53,7 +55,7 @@ const NewPost: FC<NewPostProps> = () => {
         }}
       >
         <Center style={{ pointerEvents: "none" }}>
-          <Transition transition="pop" mounted={!postType}>
+          <Transition transition="pop" mounted={!disabled && !postType}>
             {style => (
               <Menu
                 width={220}

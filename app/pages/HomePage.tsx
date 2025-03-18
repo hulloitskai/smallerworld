@@ -22,7 +22,6 @@ import HomeScreenPreview from "~/components/HomeScreenPreview";
 import NewPost from "~/components/NewPost";
 import PostCard from "~/components/PostCard";
 import UserNotificationsButton from "~/components/UserNotificationsButton";
-import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
@@ -141,12 +140,15 @@ const HomePage: PageComponent<HomePageProps> = () => {
           <Feed />
           {registration === null && (
             <Overlay backgroundOpacity={0} blur={3}>
-              <Image src={swirlyUpArrowSrc} w={160} mx="auto" />
+              <Image
+                src={swirlyUpArrowSrc}
+                className={classes.notificationsRequiredIndicatorArrow}
+              />
             </Overlay>
           )}
         </Box>
       </Stack>
-      <NewPost />
+      <NewPost disabled={registration === null} />
     </>
   );
 };
