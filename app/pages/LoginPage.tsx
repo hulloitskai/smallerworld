@@ -11,14 +11,20 @@ export interface LoginPageProps extends SharedPageProps {}
 const LoginPage: PageComponent<LoginPageProps> = () => {
   // == Form
   const [showCodeInput, setShowCodeInput] = useState(false);
-  const { values, getInputProps, onSubmit, submitting, setSubmitting } =
-    useForm({
-      initialValues: {
-        countryCode: "+1",
-        phoneWithoutCountryCode: "",
-        code: "",
-      },
-    });
+  const {
+    values,
+    getInputProps,
+    onSubmit,
+    submitting,
+    setSubmitting,
+    setFieldValue,
+  } = useForm({
+    initialValues: {
+      countryCode: "+1",
+      phoneWithoutCountryCode: "",
+      code: "",
+    },
+  });
   const stepComplete = useMemo(() => {
     const { phoneWithoutCountryCode, countryCode, code } = values;
     if (showCodeInput) {
@@ -103,6 +109,9 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               label="your phone #"
               placeholder="(___) ___ ____"
               autoComplete="mobile tel-national"
+              onAccept={value => {
+                setFieldValue("phoneWithoutCountryCode", value);
+              }}
               required
               withAsterisk={false}
               styles={{
@@ -135,6 +144,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                 >
                   <PinInput
                     {...getInputProps("code")}
+                    type="number"
                     length={6}
                     autoFocus
                     hiddenInputProps={{ autoComplete: "one-time-code" }}
