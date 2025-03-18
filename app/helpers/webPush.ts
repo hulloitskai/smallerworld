@@ -10,12 +10,16 @@ const getPushManager = (): Promise<PushManager> =>
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
   getPushManager().then(pushManager => pushManager.getSubscription());
 
+export interface SubscribeOptions {
+  friendAccessToken?: string;
+}
+
 export interface UseWebPushResult {
   supported: boolean | undefined;
   subscription: PushSubscription | undefined | null;
   registration: PushRegistration | undefined | null;
   subscribed: boolean;
-  subscribe: (friendAccessToken?: string) => Promise<void>;
+  subscribe: (options?: SubscribeOptions) => Promise<void>;
   subscribing: boolean;
   subscribeError: Error | null;
   unsubscribe: () => Promise<void>;
@@ -82,11 +86,11 @@ export const useWebPushSubscribe = ({
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
   const subscribe = useCallback(
-    (friendToken?: string): Promise<void> => {
+    (options?: SubscribeOptions): Promise<void> => {
       const subscribeAndRegister = (): Promise<void> =>
         Promise.all<[Promise<PushManager>, Promise<string>]>([
           getPushManager(),
-          fetchPublicKey(friendToken),
+          fetchPublicKey(options?.friendAccessToken),
         ])
           .then(
             ([pushManager, publicKey]) =>
@@ -101,7 +105,7 @@ export const useWebPushSubscribe = ({
           )
           .then(
             subscription =>
-              registerSubscription(subscription, friendToken).then(
+              registerSubscription(subscription, options).then(
                 () => {
                   onSubscribed(subscription);
                 },
@@ -140,7 +144,7 @@ export const useWebPushSubscribe = ({
 
 const registerSubscription = (
   subscription: PushSubscription,
-  friendAccessToken?: string,
+  options?: SubscribeOptions,
 ): Promise<void> => {
   const { endpoint, keys } = pick(
     subscription.toJSON(),
@@ -154,7 +158,9 @@ const registerSubscription = (
   if (!keys?.p256dh) {
     throw new Error("Missing p256dh key");
   }
-  const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
+  const query = options?.friendAccessToken
+    ? { friend_token: options.friendAccessToken }
+    : {};
   return fetchRoute<void>(routes.pushSubscriptions.create, {
     descriptor: "subscribe to push notifications",
     params: { query },
@@ -228,8 +234,8 @@ const createApplicationServerKey = (publicKey: string): Uint8Array =>
     return value;
   });
 
-const fetchPublicKey = (friendToken?: string): Promise<string> => {
-  const query = friendToken ? { friend_token: friendToken } : {};
+const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
+  const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
   return fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
     descriptor: "load web push public key",
     params: { query },
