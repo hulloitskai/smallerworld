@@ -9,10 +9,16 @@ export interface FeedProps {
   user: User;
   emptyCard: ReactNode;
   renderControls: (post: Post) => ReactNode;
+  friendAccessToken?: string;
 }
 
-const Feed: FC<FeedProps> = ({ user, emptyCard, renderControls }) => {
-  const { posts } = usePosts(user.id);
+const Feed: FC<FeedProps> = ({
+  user,
+  emptyCard,
+  renderControls,
+  friendAccessToken,
+}) => {
+  const { posts } = usePosts(user.id, { friendAccessToken });
   return (
     <Stack>
       {posts

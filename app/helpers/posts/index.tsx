@@ -48,12 +48,16 @@ export const postsGetKey = (
     }
     return routes.posts.index.path({
       user_id: userId,
-      query: pick(options, "limit"),
+      query: {
+        limit: options?.limit,
+        friend_token: options?.friendAccessToken,
+      },
     });
   };
 };
 
 export interface PostsOptions {
+  friendAccessToken?: string;
   limit?: number;
 }
 

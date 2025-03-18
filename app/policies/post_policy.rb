@@ -21,10 +21,10 @@ class PostPolicy < ApplicationPolicy
 
   # == Scopes
   relation_scope do |relation|
-    if (user = self.user)
-      relation.where(author: user)
-    elsif (friend = self.friend)
+    if (friend = self.friend)
       relation.where(author: friend.user!)
+    elsif (user = self.user)
+      relation.where(author: user)
     else
       relation.none
     end

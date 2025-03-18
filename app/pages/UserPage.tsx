@@ -84,6 +84,7 @@ const UserPage: PageComponent<UserPageProps> = ({
           <Box pos="relative">
             <Feed
               {...{ user }}
+              friendAccessToken={currentFriend.access_token}
               renderControls={post => (
                 <FriendPostCardActions {...{ post, replyPhoneNumber }} />
               )}
