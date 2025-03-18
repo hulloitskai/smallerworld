@@ -52,7 +52,7 @@ class Post < ApplicationRecord
 
   sig { returns(String) }
   def reply_snippet
-    "> " + body_text.truncate(80).split("\n").join("\n >") + "\n\n"
+    "> " + body_text.truncate(80).split("\n").join("\n> ") + "\n\n"
   end
 
   # == Associations
@@ -106,7 +106,7 @@ class Post < ApplicationRecord
   def reshape_content_for_text_rendering(content)
     content.css("li").each do |li|
       child = li.first_element_child
-      child.replace("span") if child.name == "p"
+      child.replace(child.children) if child.name == "p"
     end
   end
 end
