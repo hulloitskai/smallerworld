@@ -41,6 +41,7 @@ const FriendPushNotificationsButton: FC<FriendPushNotificationsButtonProps> = ({
 
   return (
     <Button
+      variant={registration ? "light" : "filled"}
       loading={loading || subscribing || mutating}
       disabled={!supported}
       leftSection={<NotificationIcon />}

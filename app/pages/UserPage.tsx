@@ -63,41 +63,38 @@ const UserPage: PageComponent<UserPageProps> = ({
   return (
     <>
       <Stack>
-        <Box pos="relative">
-          <Stack align="center" gap="sm">
-            <Image
-              src={user.page_icon.src}
-              srcSet={user.page_icon.src_set}
-              w={ICON_SIZE}
-              h={ICON_SIZE}
-              fit="cover"
-              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-              style={{
-                flex: "unset",
-                boxShadow: "var(--mantine-shadow-lg)",
-              }}
-            />
-            <Stack gap={4} align="center">
-              <Title size="h2" lh="xs" ta="center">
-                {user.name}&apos;s world
-              </Title>
-              {currentFriend && (
+        <Stack align="center" gap="sm">
+          <Image
+            src={user.page_icon.src}
+            srcSet={user.page_icon.src_set}
+            w={ICON_SIZE}
+            h={ICON_SIZE}
+            fit="cover"
+            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+            style={{
+              flex: "unset",
+              boxShadow: "var(--mantine-shadow-lg)",
+            }}
+          />
+          <Stack gap={4} align="center">
+            <Title size="h2" lh="xs" ta="center">
+              {user.name}&apos;s world
+            </Title>
+            {currentFriend && (
+              <Group gap="xs">
                 <FriendPushNotificationsButton
                   friendAccessToken={currentFriend.access_token}
                 />
-              )}
-            </Stack>
+                {isStandalone && registration && (
+                  <RefreshPostsButton
+                    userId={user.id}
+                    friendAccessToken={currentFriend.access_token}
+                  />
+                )}
+              </Group>
+            )}
           </Stack>
-          {isStandalone && currentFriend && (
-            <RefreshPostsButton
-              userId={user.id}
-              friendAccessToken={currentFriend.access_token}
-              pos="absolute"
-              top={0}
-              right={0}
-            />
-          )}
-        </Box>
+        </Stack>
         {currentFriend && !!replyPhoneNumber ? (
           <Box pos="relative">
             <Feed
@@ -252,7 +249,7 @@ const InstallModal: FC<InstallModalProps> = ({
               </Title>
               <Text ta="center" maw={300}>
                 i made this page to make it easy for you to get involved in my
-                life adventures :)
+                life&apos;s adventures :)
               </Text>
             </Stack>
             <HomeScreenPreview
@@ -458,12 +455,20 @@ const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
 
   return (
     <ActionIcon
+      variant="light"
+      color="gray"
       size="lg"
       loading={isValidating}
       onClick={() => {
+        const firstPost = first(posts);
         void mutate().then(pages => {
-          const newPosts = pages?.flatMap(page => page.posts);
-          if (posts && newPosts && newPosts.length === posts.length) {
+          const latestFirstPage = first(pages);
+          const latestFirstPost = first(latestFirstPage?.posts);
+          if (
+            firstPost &&
+            latestFirstPost &&
+            firstPost.id === latestFirstPost.id
+          ) {
             toast.success("no new posts", {
               description: "you're all caught up :)",
             });

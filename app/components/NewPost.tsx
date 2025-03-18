@@ -40,7 +40,7 @@ const NewPost: FC<NewPostProps> = () => {
     : "var(--mantine-spacing-xl)";
   return (
     <>
-      <Space h={44} />
+      <Space h={36} />
       <InPortal node={portalNode}>
         <NewPostForm
           postType={postType ?? previousPostType ?? null}
@@ -64,15 +64,15 @@ const NewPost: FC<NewPostProps> = () => {
                 }}
               >
                 <Menu.Target>
-                  <ActionIcon
+                  <Button
                     variant="filled"
                     radius="xl"
-                    size="xl"
                     className={classes.button}
+                    leftSection={<Box component={NewIcon} fz="lg" />}
                     {...{ style }}
                   >
-                    <Box component={NewIcon} fz="xl" />
-                  </ActionIcon>
+                    share to your friends
+                  </Button>
                 </Menu.Target>
                 <Menu.Dropdown style={{ pointerEvents: "auto" }}>
                   {POST_TYPES.map(type => (

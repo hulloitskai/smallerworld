@@ -154,7 +154,6 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
               <CopyButton value={friendAccessUrl}>
                 {({ copy, copied }) => (
                   <Button
-                    justify="space-between"
                     leftSection={
                       copied ? (
                         <Box component={CopiedIcon} />
