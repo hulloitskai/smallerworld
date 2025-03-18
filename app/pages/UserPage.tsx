@@ -16,6 +16,7 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
 import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
+import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
 import Feed from "~/components/Feed";
@@ -113,7 +114,11 @@ const UserPage: PageComponent<UserPageProps> = ({
                 </Card>
               }
             />
-            {!registration && <Overlay backgroundOpacity={0} blur={3} />}
+            {!registration && (
+              <Overlay backgroundOpacity={0} blur={3}>
+                <Image src={swirlyUpArrowSrc} w={160} mx="auto" />
+              </Overlay>
+            )}
           </Box>
         ) : (
           <Alert title="this page is private" icon={<LockIcon />}>
