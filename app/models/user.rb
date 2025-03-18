@@ -52,7 +52,7 @@ class User < ApplicationRecord
   # == Validations
   validates :name, :handle, :phone_number, :page_icon, presence: true
   validates :name, length: { maximum: 30 }
-  validates :handle, length: { minimum: 5 }
+  validates :handle, length: { minimum: 4 }
 
   # == Callbacks
   after_create :create_welcome_post!
