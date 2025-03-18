@@ -3,16 +3,14 @@
 
 class PostsController < ApplicationController
   # == Filters
-  before_action :authenticate_user!, only: %i[stats create destroy]
+  before_action :authenticate_user!
 
   # == Actions
-  # GET /users/1/posts
+  # GET /posts
   def index
-    user_id = T.let(params.fetch(:user_id), String)
-    user = User.find(user_id)
-    posts = authorized_scope(user.posts)
+    user = authenticate_user!
     pagy, paginated_posts = pagy_keyset(
-      posts.order(created_at: :desc, id: :asc),
+      user.posts.order(created_at: :desc, id: :asc),
     )
     render(json: {
       posts: PostSerializer.many(paginated_posts),

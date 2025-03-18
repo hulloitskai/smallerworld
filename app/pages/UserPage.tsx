@@ -19,14 +19,14 @@ import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import Feed from "~/components/Feed";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
 import FriendPushNotificationsButton from "~/components/FriendPushNotificationsButton";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
+import PostCard from "~/components/PostCard";
 import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { usePosts } from "~/helpers/posts";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
+import { useUserPagePosts } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
 import { type Friend, type User } from "~/types";
 
@@ -99,22 +99,10 @@ const UserPage: PageComponent<UserPageProps> = ({
         {currentFriend && !!replyPhoneNumber ? (
           <Box pos="relative">
             <Feed
-              {...{ user }}
+              {...{ user, replyPhoneNumber }}
               friendAccessToken={currentFriend.access_token}
-              renderControls={post => (
-                <FriendPostCardActions {...{ post, replyPhoneNumber }} />
-              )}
-              emptyCard={
-                <Card withBorder>
-                  <Stack justify="center" gap={2} ta="center" mih={60}>
-                    <Title order={4} lh="xs">
-                      no posts yet!
-                    </Title>
-                  </Stack>
-                </Card>
-              }
             />
-            {!registration && (
+            {registration === null && (
               <Overlay backgroundOpacity={0} blur={3}>
                 <Image src={swirlyUpArrowSrc} w={160} mx="auto" />
               </Overlay>
@@ -176,8 +164,8 @@ const UserPage: PageComponent<UserPageProps> = ({
 
 UserPage.layout = page => (
   <AppLayout<UserPageProps>
-    title={({ user, currentFriend }) =>
-      currentFriend
+    title={({ user, currentFriend }, isStandalone) =>
+      currentFriend && !isStandalone
         ? `you're invited to ${user.name}'s world`
         : `${user.name}'s world`
     }
@@ -200,18 +188,56 @@ UserPage.layout = page => (
     containerSize="xs"
     withGutter
   >
-    <UserPageWebPushProvider>{page}</UserPageWebPushProvider>
+    <PushProvider>{page}</PushProvider>
   </AppLayout>
 );
 
 export default UserPage;
 
-const UserPageWebPushProvider: FC<PropsWithChildren> = ({ children }) => {
+const PushProvider: FC<PropsWithChildren> = ({ children }) => {
   const { currentFriend } = usePageProps<UserPageProps>();
   return (
     <WebPushProvider friendAccessToken={currentFriend?.access_token}>
       {children}
     </WebPushProvider>
+  );
+};
+
+interface FeedProps {
+  user: User;
+  replyPhoneNumber: string;
+  friendAccessToken: string;
+}
+
+const Feed: FC<FeedProps> = ({ user, replyPhoneNumber, friendAccessToken }) => {
+  const { posts } = useUserPagePosts(user.id, friendAccessToken);
+  return (
+    <Stack>
+      {posts ? (
+        isEmpty(posts) ? (
+          <Card withBorder>
+            <Stack justify="center" gap={2} ta="center" mih={60}>
+              <Title order={4} lh="xs">
+                no posts yet!
+              </Title>
+            </Stack>
+          </Card>
+        ) : (
+          posts.map(post => (
+            <PostCard
+              key={post.id}
+              {...{ post }}
+              actions={
+                <FriendPostCardActions {...{ post, replyPhoneNumber }} />
+              }
+            />
+          ))
+        )
+      ) : (
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        [...new Array(3)].map((_, i) => <Skeleton key={i} h={120} />)
+      )}
+    </Stack>
   );
 };
 
@@ -453,10 +479,13 @@ const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
   friendAccessToken,
   ...otherProps
 }) => {
-  const { mutate, isValidating, posts } = usePosts(userId, {
-    revalidateOnMount: false,
+  const { mutate, isValidating, posts } = useUserPagePosts(
+    userId,
     friendAccessToken,
-  });
+    {
+      revalidateOnMount: false,
+    },
+  );
 
   return (
     <ActionIcon

@@ -8,10 +8,10 @@ import classes from "./PostCard.module.css";
 
 export interface PostCardProps extends BoxProps {
   post: Post;
-  controls: ReactNode;
+  actions: ReactNode;
 }
 
-const PostCard: FC<PostCardProps> = ({ post, controls, ...otherProps }) => {
+const PostCard: FC<PostCardProps> = ({ post, actions, ...otherProps }) => {
   return (
     <Card withBorder shadow="sm" {...otherProps}>
       <Card.Section inheritPadding pt="xs" pb={10}>
@@ -63,7 +63,7 @@ const PostCard: FC<PostCardProps> = ({ post, controls, ...otherProps }) => {
         py="sm"
         className={classes.footerSection}
       >
-        {controls}
+        {actions}
       </Card.Section>
     </Card>
   );

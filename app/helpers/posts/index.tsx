@@ -38,11 +38,7 @@ export interface PostsData {
   pagination: { next: string | null };
 }
 
-const postsGetKey = (
-  userId: string,
-  friendAccessToken?: string,
-  limit?: number,
-): SWRInfiniteKeyLoader<PostsData> => {
+const postsGetKey = (limit?: number): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = { limit: limit ?? 5 };
     if (previousPageData) {
@@ -53,29 +49,23 @@ const postsGetKey = (
       query.page = next;
     }
     return routes.posts.index.path({
-      user_id: userId,
       query: {
         limit,
-        friend_token: friendAccessToken,
       },
     });
   };
 };
 
 export interface PostsOptions extends SWRInfiniteConfiguration<PostsData> {
-  friendAccessToken?: string;
   limit?: number;
 }
 
-export const usePosts = (userId: string, options?: PostsOptions) => {
+export const usePosts = (options?: PostsOptions) => {
   const { online } = useNetwork();
-  const { friendAccessToken, limit, ...swrConfiguration } = options ?? {};
+  const { limit, ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    postsGetKey(userId, friendAccessToken, limit),
-    (path: string) =>
-      fetchRoute(path, {
-        descriptor: "load posts",
-      }),
+    postsGetKey(limit),
+    (path: string) => fetchRoute(path, { descriptor: "load posts" }),
     {
       keepPreviousData: true,
       isOnline: () => online,
@@ -92,12 +82,6 @@ export const usePosts = (userId: string, options?: PostsOptions) => {
   return { posts, hasMorePosts, ...swrResponse };
 };
 
-export const mutatePosts = (
-  userId: string,
-  friendAccessToken?: string,
-  limit?: number,
-) => {
-  void mutate(
-    unstable_serialize(postsGetKey(userId, friendAccessToken, limit)),
-  );
+export const mutatePosts = (limit?: number) => {
+  void mutate(unstable_serialize(postsGetKey(limit)));
 };

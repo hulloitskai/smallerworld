@@ -10,12 +10,13 @@ import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import AuthorPostCardControls from "~/components/AuthorPostCardActions";
-import Feed from "~/components/Feed";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import NewPost from "~/components/NewPost";
+import PostCard from "~/components/PostCard";
 import UserPushNotificationsButton from "~/components/UserPushNotificationsButton";
 import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { usePosts } from "~/helpers/posts";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
 import { type Friend } from "~/types";
 
@@ -124,36 +125,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
             </Group>
           </Alert>
         )}
-        <Feed
-          {...{ user }}
-          renderControls={post => <AuthorPostCardControls {...{ post }} />}
-          emptyCard={
-            <Card withBorder>
-              <Stack justify="center" gap={2} ta="center" mih={60}>
-                <Title order={4} lh="xs">
-                  no posts yet!
-                </Title>
-                <Text size="sm">
-                  create a new post with the{" "}
-                  <Badge
-                    variant="filled"
-                    mx={4}
-                    px={4}
-                    styles={{
-                      root: {
-                        verticalAlign: "middle",
-                      },
-                      label: { display: "flex", alignItems: "center" },
-                    }}
-                  >
-                    <NewIcon />
-                  </Badge>{" "}
-                  button :)
-                </Text>
-              </Stack>
-            </Card>
-          }
-        />
+        <Feed />
       </Stack>
       <NewPost />
     </>
@@ -306,4 +278,51 @@ const useIsInstallable = (
     }
   }, [installEvent]);
   return isInstallable;
+};
+
+const Feed: FC = () => {
+  const { posts } = usePosts();
+  return (
+    <Stack>
+      {posts ? (
+        isEmpty(posts) ? (
+          <Card withBorder>
+            <Stack justify="center" gap={2} ta="center" mih={60}>
+              <Title order={4} lh="xs">
+                no posts yet!
+              </Title>
+              <Text size="sm">
+                create a new post with the{" "}
+                <Badge
+                  variant="filled"
+                  mx={4}
+                  px={4}
+                  styles={{
+                    root: {
+                      verticalAlign: "middle",
+                    },
+                    label: { display: "flex", alignItems: "center" },
+                  }}
+                >
+                  <NewIcon />
+                </Badge>{" "}
+                button :)
+              </Text>
+            </Stack>
+          </Card>
+        ) : (
+          posts.map(post => (
+            <PostCard
+              key={post.id}
+              {...{ post }}
+              actions={<AuthorPostCardControls {...{ post }} />}
+            />
+          ))
+        )
+      ) : (
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        [...new Array(3)].map((_, i) => <Skeleton key={i} h={120} />)
+      )}
+    </Stack>
+  );
 };

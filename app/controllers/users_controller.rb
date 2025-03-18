@@ -3,11 +3,10 @@
 
 class UsersController < ApplicationController
   # == Filters
-  before_action :authenticate_user!, only: :update
-  before_action :authenticate_friend!, only: :manifest
+  before_action :authenticate_friend!, only: %i[posts manifest]
 
   # == Actions
-  # GET /@:handle
+  # GET /@:handle?friend_token=...
   def show
     handle = T.let(params.fetch(:handle), String)
     user = User.friendly.find(handle)
@@ -38,6 +37,22 @@ class UsersController < ApplicationController
     })
   end
 
+  # GET /users/1/posts?friend_token=...
+  def posts
+    user_id = T.let(params.fetch(:id), String)
+    user = User.find(user_id)
+    posts = authorized_scope(user.posts)
+    pagy, paginated_posts = pagy_keyset(
+      posts.order(created_at: :desc, id: :asc),
+    )
+    render(json: {
+      posts: PostSerializer.many(paginated_posts),
+      pagination: {
+        next: pagy.next,
+      },
+    })
+  end
+
   # GET /users/1/manifest.webmanifest?friend_token=...
   def manifest
     user_id = T.let(params.fetch(:id), String)
@@ -58,11 +73,6 @@ class UsersController < ApplicationController
       },
       content_type: "application/manifest+json",
     )
-  end
-
-  # PUT /user
-  def update
-    raise NotImplementedError, "Not implemented"
   end
 
   private

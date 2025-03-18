@@ -80,7 +80,14 @@ class Post < ApplicationRecord
       .returns(T::Hash[String, T.untyped])
   end
   def notification_payload(recipient)
-    payload = PostNotificationPayload.new(post: self)
+    unless recipient.is_a?(Friend)
+      raise ArgumentError, "Post notification should be received by a Friend"
+    end
+
+    payload = PostNotificationPayload.new(
+      post: self,
+      friend_access_token: recipient.access_token,
+    )
     PostNotificationPayloadSerializer.one(payload)
   end
 

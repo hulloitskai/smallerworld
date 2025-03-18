@@ -69,18 +69,16 @@ Rails.application.routes.draw do
   resource :user, only: :update, export: true
   resources :users, only: [], export: true do
     member do
+      get :posts
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end
 
   # == Posts
-  resources :posts, only: %i[create destroy], export: true do
+  resources :posts, only: %i[index create destroy], export: true do
     member do
       get :stats
     end
-  end
-  resources :users, only: [] do
-    resources :posts, only: :index, export: true
   end
 
   # == Pages

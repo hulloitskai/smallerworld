@@ -48,12 +48,11 @@ interface DeletePostButtonProps {
 }
 
 const DeletePostButton: FC<DeletePostButtonProps> = ({ postId }) => {
-  const currentUser = useAuthenticatedUser();
   const { trigger, mutating } = useRouteMutation(routes.posts.destroy, {
     params: { id: postId },
     descriptor: "delete post",
     onSuccess: () => {
-      void mutatePosts(currentUser.id);
+      void mutatePosts();
     },
   });
 

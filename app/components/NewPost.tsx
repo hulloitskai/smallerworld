@@ -132,7 +132,6 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
 };
 
 const NewPostForm: FC<NewPostFormProps> = ({ postType, onPostCreated }) => {
-  const currentUser = useAuthenticatedUser();
   const titlePlaceholder = postType
     ? POST_TITLE_PLACEHOLDERS[postType]
     : undefined;
@@ -163,7 +162,7 @@ const NewPostForm: FC<NewPostFormProps> = ({ postType, onPostCreated }) => {
     onSuccess: (data, { reset }) => {
       reset();
       editorRef.current?.commands.clearContent();
-      void mutatePosts(currentUser.id);
+      void mutatePosts();
       onPostCreated();
     },
   });

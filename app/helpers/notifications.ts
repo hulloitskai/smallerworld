@@ -36,10 +36,12 @@ export const renderNotification = (
 export const notificationActionUrl = (notification: Notification): string => {
   switch (notification.type) {
     case "Post": {
-      const { post, author } = notification.payload as PostNotificationPayload;
+      const { post, user_handle, friend_access_token } =
+        notification.payload as PostNotificationPayload;
       return routes.users.show.path({
-        handle: author.handle,
+        handle: user_handle,
         query: {
+          friend_token: friend_access_token,
           post_id: post.id,
         },
       });
