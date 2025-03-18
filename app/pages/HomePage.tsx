@@ -138,7 +138,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
         )}
         <Box pos="relative">
           <Feed />
-          {registration === null && (
+          {isStandalone && registration === null && (
             <Overlay backgroundOpacity={0} blur={3}>
               <Image
                 src={swirlyUpArrowSrc}
@@ -148,7 +148,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
           )}
         </Box>
       </Stack>
-      <NewPost disabled={registration === null} />
+      <NewPost disabled={isStandalone && registration === null} />
     </>
   );
 };
