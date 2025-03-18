@@ -38,6 +38,22 @@ class FriendsController < ApplicationController
     end
   end
 
+  # PUT /friends/:id
+  def update
+    friend_id = T.let(params.fetch(:id), String)
+    friend = Friend.find(friend_id)
+    authorize!(friend)
+    friend_params = params.expect(friend: %i[emoji name])
+    if friend.update(friend_params)
+      render(json: { friend: FriendSerializer.one(friend) })
+    else
+      render(
+        json: { errors: friend.form_errors },
+        status: :unprocessable_entity,
+      )
+    end
+  end
+
   # POST /friends/:id/pause
   def pause
     current_user = authenticate_user!

@@ -50,10 +50,7 @@ class PostsController < ApplicationController
     post_id = params.fetch(:id)
     post = Post.find(post_id)
     authorize!(post)
-    post_params = T.let(
-      params.expect(post: %i[title body_html emoji]),
-      ActionController::Parameters,
-    )
+    post_params = params.expect(post: %i[title body_html emoji])
     if post.update(post_params)
       render(json: { post: PostSerializer.one(post) })
     else

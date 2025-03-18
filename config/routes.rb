@@ -58,7 +58,7 @@ Rails.application.routes.draw do
   post :edit, to: "signups#update", export: true
 
   # == Friends
-  resources :friends, only: %i[index create], export: true do
+  resources :friends, only: %i[index create update], export: true do
     member do
       post :pause
     end
