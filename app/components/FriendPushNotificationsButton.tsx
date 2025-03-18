@@ -18,13 +18,13 @@ const FriendPushNotificationsButton: FC<FriendPushNotificationsButtonProps> = ({
     supported,
     loading,
   } = useWebPush();
-  useEffect(
+  useDidUpdate(
     () => {
-      if (supported) {
+      if (supported && registration === null) {
         void subscribe();
       }
     },
-    [supported], // eslint-disable-line react-hooks/exhaustive-deps
+    [supported, registration], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const { trigger, mutating } = useRouteMutation(

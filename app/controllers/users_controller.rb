@@ -21,10 +21,7 @@ class UsersController < ApplicationController
     current_friend = if (access_token = params[:friend_token])
       user.friends.find_by(access_token:)
     end
-    skip_welcome = T.let(
-      params[:skip_welcome].truthy?,
-      T::Boolean,
-    )
+    intent = T.let(params[:intent], T.nilable(String))
     render(inertia: "UserPage", props: {
       user: UserSerializer.one(user),
       "currentFriend" => FriendSerializer.one_if(current_friend),
@@ -33,7 +30,7 @@ class UsersController < ApplicationController
       "faviconImageSrc" => rails_representation_path(favicon_image_variant),
       "appleTouchIconSrc" =>
         rails_representation_path(apple_touch_icon_variant),
-      "skipWelcome" => skip_welcome,
+      intent:,
     })
   end
 

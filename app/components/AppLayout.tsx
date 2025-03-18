@@ -79,11 +79,9 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   // == Breadcrumbs
   const breadcrumbs = useMemo<AppBreadcrumb[]>(() => {
     return breadcrumbsProp
-      ? resolveDynamicProp(breadcrumbsProp, pageProps, isStandalone).filter(
-          x => !!x,
-        )
+      ? resolveDynamicProp(breadcrumbsProp, pageProps).filter(x => !!x)
       : [];
-  }, [breadcrumbsProp, pageProps, isStandalone]);
+  }, [breadcrumbsProp, pageProps]);
 
   // == Header
   const logoHref = useResolveDynamicProp(logoHrefProp, pageProps);

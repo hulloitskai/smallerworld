@@ -121,7 +121,7 @@ export const useWebPushSubscribe = ({
               ),
           (error: Error) => {
             setSubscribeError(error);
-            toast.error("Couldn't subscribe to push notifications", {
+            toast.error("couldn't subscribe to push notifications", {
               description: error.message,
             });
             throw error;
@@ -177,7 +177,7 @@ const registerSubscription = (
 };
 
 const reportProblem = (message: string): never => {
-  toast.error("Something went wrong", {
+  toast.error("something went wrong", {
     description: message,
   });
   console.error(message);

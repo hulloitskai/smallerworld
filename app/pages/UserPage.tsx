@@ -39,7 +39,7 @@ export interface UserPageProps extends SharedPageProps {
   faviconSrc: string;
   faviconImageSrc: string;
   appleTouchIconSrc: string;
-  skipWelcome: boolean;
+  intent: "join" | "installation_instructions" | null;
 }
 
 const ICON_SIZE = 96;
@@ -49,16 +49,18 @@ const UserPage: PageComponent<UserPageProps> = ({
   user,
   currentFriend,
   replyPhoneNumber,
-  skipWelcome,
+  intent,
 }) => {
-  const [installModalOpened, setInstallModalOpened] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(skipWelcome);
   const isStandalone = useIsStandalone();
+  const [installModalOpened, setInstallModalOpened] = useState(false);
   useDidUpdate(() => {
     if (typeof isStandalone === "boolean") {
       setInstallModalOpened(!isStandalone);
     }
   }, [isStandalone]);
+  const [skipWelcome, setSkipWelcome] = useState(
+    () => intent === "installation_instructions",
+  );
   const { registration } = useWebPush();
 
   return (
@@ -122,10 +124,7 @@ const UserPage: PageComponent<UserPageProps> = ({
             onClose={() => {
               setInstallModalOpened(false);
             }}
-            onShowInstructionsChange={showInstructions => {
-              setShowInstructions(showInstructions);
-            }}
-            {...{ user, currentFriend, showInstructions }}
+            {...{ user, currentFriend, skipWelcome }}
           />
           <Affix
             position={{
@@ -148,7 +147,7 @@ const UserPage: PageComponent<UserPageProps> = ({
                 >
                   <InstallAlertBody
                     onShowInstructions={() => {
-                      setShowInstructions(true);
+                      setSkipWelcome(true);
                       setInstallModalOpened(true);
                     }}
                   />
@@ -164,8 +163,8 @@ const UserPage: PageComponent<UserPageProps> = ({
 
 UserPage.layout = page => (
   <AppLayout<UserPageProps>
-    title={({ user, currentFriend }, isStandalone) =>
-      currentFriend && !isStandalone
+    title={({ user, currentFriend, intent }) =>
+      currentFriend && intent === "join"
         ? `you're invited to ${user.name}'s world`
         : `${user.name}'s world`
     }
@@ -244,21 +243,29 @@ const Feed: FC<FeedProps> = ({ user, replyPhoneNumber, friendAccessToken }) => {
 interface InstallModalProps extends Omit<ModalProps, "title" | "children"> {
   user: User;
   currentFriend: Friend;
-  showInstructions: boolean;
-  onShowInstructionsChange: (showInstructions: boolean) => void;
+  skipWelcome: boolean;
 }
 
 const InstallModal: FC<InstallModalProps> = ({
   user,
   currentFriend,
-  showInstructions,
-  onShowInstructionsChange,
+  skipWelcome,
   ...modalProps
 }) => {
+  const [step, setStep] = useState<"welcome" | "installation_instructions">(
+    () => (skipWelcome ? "installation_instructions" : "welcome"),
+  );
+  useDidUpdate(() => {
+    if (skipWelcome) {
+      setStep("installation_instructions");
+    }
+  }, [skipWelcome]);
   const installPromptEvent = useInstallPromptEvent();
   const isInstallable = useIsInstallable(installPromptEvent);
-  const directLinkToInstallInstructions =
-    useDirectLinkToInstallInstructions(user);
+  const directLinkToInstallInstructions = useDirectLinkToInstallInstructions(
+    user,
+    currentFriend,
+  );
   const friendNameWithEmoji = useMemo(
     () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
     [currentFriend],
@@ -266,12 +273,12 @@ const InstallModal: FC<InstallModalProps> = ({
   return (
     <Modal
       className={classes.installModal}
-      {...(showInstructions && {
+      {...(step === "installation_instructions" && {
         title: "join my smaller world :)",
       })}
       {...modalProps}
     >
-      <Transition transition="pop" mounted={!showInstructions}>
+      <Transition transition="pop" mounted={step === "welcome"}>
         {style => (
           <Stack gap="lg" align="center" pb="xs" {...{ style }}>
             <Stack gap={4}>
@@ -311,7 +318,7 @@ const InstallModal: FC<InstallModalProps> = ({
                         if (installPromptEvent) {
                           void installPromptEvent.prompt();
                         } else if (isIosSafari()) {
-                          onShowInstructionsChange(true);
+                          setStep("installation_instructions");
                         }
                       },
                     })}
@@ -329,10 +336,8 @@ const InstallModal: FC<InstallModalProps> = ({
       </Transition>
       <Transition
         transition="fade-up"
-        mounted={showInstructions}
-        {...(!showInstructions && {
-          enterDelay: 200,
-        })}
+        mounted={step === "installation_instructions"}
+        {...(!skipWelcome && { enterDelay: 200 })}
       >
         {style => (
           <List
@@ -373,7 +378,10 @@ const InstallModal: FC<InstallModalProps> = ({
   );
 };
 
-const useDirectLinkToInstallInstructions = (user: User) => {
+const useDirectLinkToInstallInstructions = (
+  user: User,
+  currentFriend: Friend,
+) => {
   const [instructionsDirectLink, setInstructionsDirectLink] = useState<
     string | null
   >(null);
@@ -382,14 +390,15 @@ const useDirectLinkToInstallInstructions = (user: User) => {
       const instructionsPath = routes.users.show.path({
         handle: user.handle,
         query: {
-          skip_welcome: true,
+          friend_token: currentFriend.access_token,
+          intent: "installation_instructions",
         },
       });
       const instructionsUrl = new URL(instructionsPath, location.origin);
       instructionsUrl.protocol = "x-safari-https:";
       setInstructionsDirectLink(instructionsUrl.toString());
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user.handle, currentFriend.access_token]);
   return instructionsDirectLink;
 };
 

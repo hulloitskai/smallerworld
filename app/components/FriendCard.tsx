@@ -14,14 +14,17 @@ export interface FriendCardProps {
 
 const FriendCard: FC<FriendCardProps> = ({ friend }) => {
   const currentUser = useAuthenticatedUser();
-  const [accessUrl, setAccessUrl] = useState<string>("");
+  const [joinUrl, setJoinUrl] = useState<string>("");
   useEffect(() => {
-    const accessPath = routes.users.show.path({
+    const joinPath = routes.users.show.path({
       handle: currentUser.handle,
-      query: { friend_token: friend.access_token },
+      query: {
+        friend_token: friend.access_token,
+        intent: "join",
+      },
     });
-    const accessUrl = new URL(accessPath, location.origin);
-    setAccessUrl(accessUrl.toString());
+    const joinUrl = new URL(joinPath, location.origin);
+    setJoinUrl(joinUrl.toString());
   }, [currentUser.handle, friend.access_token]);
 
   return (
@@ -34,13 +37,13 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
           </Text>
         </Box>
         <Stack align="end" gap={2}>
-          <CopyButton value={accessUrl}>
+          <CopyButton value={joinUrl}>
             {({ copied, copy }) => (
               <Button
                 variant="subtle"
                 size="compact-sm"
                 leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                disabled={!accessUrl}
+                disabled={!joinUrl}
                 onClick={copy}
               >
                 {copied ? "link copied!" : "copy invite link"}
