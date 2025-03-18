@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import { type PushRegistration } from "~/types";
+import { type Friend, type PushRegistration } from "~/types";
 
 import { getOrRegisterServiceWorker } from "./serviceWorker";
 
@@ -10,16 +10,12 @@ const getPushManager = (): Promise<PushManager> =>
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
   getPushManager().then(pushManager => pushManager.getSubscription());
 
-export interface SubscribeOptions {
-  friendAccessToken?: string;
-}
-
 export interface UseWebPushResult {
   supported: boolean | undefined;
   subscription: PushSubscription | undefined | null;
   registration: PushRegistration | undefined | null;
   subscribed: boolean;
-  subscribe: (options?: SubscribeOptions) => Promise<void>;
+  subscribe: () => Promise<void>;
   subscribing: boolean;
   subscribeError: Error | null;
   unsubscribe: () => Promise<void>;
@@ -52,12 +48,14 @@ export const webPushSupported = (): boolean =>
 export const useLookupPushRegistration = (
   subscription: PushSubscription | undefined | null,
 ): PushRegistration | undefined | null => {
+  const currentFriend = useCurrentFriend();
   const { data } = useRouteSWR<{
     registration: PushRegistration | null;
   }>(routes.pushSubscriptions.lookup, {
-    descriptor: "lookup push subscription registration",
+    descriptor: "lookup push registration",
     ...(subscription
       ? {
+          params: { query: { friend_token: currentFriend?.access_token } },
           data: {
             push_subscription: {
               endpoint: subscription.endpoint,
@@ -83,68 +81,69 @@ export const useWebPushSubscribe = ({
   () => Promise<void>,
   { subscribing: boolean; subscribeError: Error | null },
 ] => {
+  const currentFriend = useCurrentFriend();
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
-  const subscribe = useCallback(
-    (options?: SubscribeOptions): Promise<void> => {
-      const subscribeAndRegister = (): Promise<void> =>
-        Promise.all<[Promise<PushManager>, Promise<string>]>([
-          getPushManager(),
-          fetchPublicKey(options?.friendAccessToken),
-        ])
-          .then(
-            ([pushManager, publicKey]) =>
-              pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: createApplicationServerKey(publicKey),
-              }),
-            (error: Error): never => {
-              setSubscribeError(error);
-              return reportProblem(error.message);
-            },
-          )
-          .then(
-            subscription =>
-              registerSubscription(subscription, options).then(
-                () => {
-                  onSubscribed(subscription);
-                },
-                (error: Error) => {
-                  reportProblem(error.message);
-                },
-              ),
-            (error: Error) => {
-              setSubscribeError(error);
-              toast.error("Couldn't subscribe to push notifications", {
-                description: error.message,
-              });
-              throw error;
-            },
-          )
-          .finally(() => {
-            setSubscribing(false);
-          });
-      setSubscribing(true);
-      if (Notification.permission === "granted") {
-        return subscribeAndRegister();
-      } else {
-        return Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            return subscribeAndRegister();
-          } else {
-            setSubscribing(false);
-          }
+  const subscribe = useCallback((): Promise<void> => {
+    const subscribeAndRegister = (): Promise<void> =>
+      Promise.all<[Promise<PushManager>, Promise<string>]>([
+        getPushManager(),
+        fetchPublicKey(),
+      ])
+        .then(
+          ([pushManager, publicKey]) =>
+            pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: createApplicationServerKey(publicKey),
+            }),
+          (error: Error): never => {
+            setSubscribeError(error);
+            return reportProblem(error.message);
+          },
+        )
+        .then(
+          subscription =>
+            registerSubscription(
+              subscription,
+              currentFriend?.access_token,
+            ).then(
+              () => {
+                onSubscribed(subscription);
+              },
+              (error: Error) => {
+                reportProblem(error.message);
+              },
+            ),
+          (error: Error) => {
+            setSubscribeError(error);
+            toast.error("Couldn't subscribe to push notifications", {
+              description: error.message,
+            });
+            throw error;
+          },
+        )
+        .finally(() => {
+          setSubscribing(false);
         });
-      }
-    },
-    [onSubscribed],
-  );
+    setSubscribing(true);
+    if (Notification.permission === "granted") {
+      return subscribeAndRegister();
+    } else {
+      return Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          return subscribeAndRegister();
+        } else {
+          setSubscribing(false);
+        }
+      });
+    }
+  }, [onSubscribed, currentFriend?.access_token]);
   return [subscribe, { subscribing, subscribeError }];
 };
 
 const registerSubscription = (
   subscription: PushSubscription,
-  options?: SubscribeOptions,
+  friendAccessToken?: string,
 ): Promise<void> => {
   const { endpoint, keys } = pick(
     subscription.toJSON(),
@@ -158,9 +157,7 @@ const registerSubscription = (
   if (!keys?.p256dh) {
     throw new Error("Missing p256dh key");
   }
-  const query = options?.friendAccessToken
-    ? { friend_token: options.friendAccessToken }
-    : {};
+  const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
   return fetchRoute<void>(routes.pushSubscriptions.create, {
     descriptor: "subscribe to push notifications",
     params: { query },
@@ -240,4 +237,11 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
     descriptor: "load web push public key",
     params: { query },
   }).then(({ publicKey }) => publicKey);
+};
+
+const useCurrentFriend = (): Friend | undefined => {
+  const pageProps = usePageProps();
+  if (pageProps.currentFriend) {
+    return pageProps.currentFriend as Friend;
+  }
 };

@@ -21,7 +21,7 @@ const FriendPushNotificationsButton: FC<FriendPushNotificationsButtonProps> = ({
   useEffect(
     () => {
       if (supported) {
-        void subscribe({ friendAccessToken });
+        void subscribe();
       }
     },
     [supported], // eslint-disable-line react-hooks/exhaustive-deps
@@ -52,7 +52,7 @@ const FriendPushNotificationsButton: FC<FriendPushNotificationsButtonProps> = ({
             },
           });
         } else {
-          void subscribe({ friendAccessToken });
+          void subscribe();
         }
       }}
       {...otherProps}
