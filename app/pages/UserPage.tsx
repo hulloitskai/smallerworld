@@ -174,7 +174,11 @@ const UserPage: PageComponent<UserPageProps> = ({
 
 UserPage.layout = page => (
   <AppLayout<UserPageProps>
-    title={({ user }) => `${user.name}'s world`}
+    title={({ user, currentFriend }) =>
+      currentFriend
+        ? `you're invited to ${user.name}'s world`
+        : `${user.name}'s world`
+    }
     icons={({ faviconSrc, faviconImageSrc, appleTouchIconSrc }) => ({
       faviconSrc,
       faviconImageSrc,
