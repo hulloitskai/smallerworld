@@ -7,19 +7,14 @@ import {
   WebPushContext,
 } from "~/helpers/webPush";
 
-export interface WebPushProviderProps extends PropsWithChildren {
-  friendAccessToken?: string;
-}
+export interface WebPushProviderProps extends PropsWithChildren {}
 
-const WebPushProvider: FC<WebPushProviderProps> = ({
-  children,
-  friendAccessToken,
-}) => {
+const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
   const supported = useWebPushSupported();
   const [subscription, setSubscription] = useState<
     PushSubscription | undefined | null
   >();
-  useEffect(() => {
+  useDidUpdate(() => {
     if (supported) {
       void getPushSubscription().then(setSubscription, (error: Error) => {
         setSubscription(null);
@@ -28,16 +23,14 @@ const WebPushProvider: FC<WebPushProviderProps> = ({
           description: error.message,
         });
       });
-    } else {
+    } else if (supported === false) {
       setSubscription(null);
     }
   }, [supported]);
   const registration = useLookupPushRegistration({
     subscription,
-    friendAccessToken,
   });
   const [subscribe, { subscribing, subscribeError }] = useWebPushSubscribe({
-    friendAccessToken,
     onSubscribed: setSubscription,
   });
   const [unsubscribe, { unsubscribing, unsubscribeError }] =

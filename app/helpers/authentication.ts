@@ -1,4 +1,4 @@
-import { type User } from "~/types";
+import { type Friend, type User } from "~/types";
 
 export const useCurrentUser = (): User | null => {
   const { currentUser } = usePageProps();
@@ -8,7 +8,20 @@ export const useCurrentUser = (): User | null => {
 export const useAuthenticatedUser = (): User => {
   const currentUser = useCurrentUser();
   if (!currentUser) {
-    throw new Error("Missing current user");
+    throw new Error("no currently authenticated user");
   }
   return currentUser;
+};
+
+export const useCurrentFriend = (): Friend | null => {
+  const { currentFriend } = usePageProps();
+  return currentFriend;
+};
+
+export const useAuthenticatedFriend = (): Friend => {
+  const currentFriend = useCurrentFriend();
+  if (!currentFriend) {
+    throw new Error("no currently authenticated friend");
+  }
+  return currentFriend;
 };

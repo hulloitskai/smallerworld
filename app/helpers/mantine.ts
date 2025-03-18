@@ -184,6 +184,9 @@ const createTheme = (
         },
         classNames: {
           dropdown: classes.dropdown,
+          item: classes.menuItem,
+          itemSection: classes.menuItemSection,
+          itemLabel: classes.menuItemLabel,
         },
       }),
       NavLink: NavLink.extend({

@@ -22,27 +22,3 @@
     text-transform: none;
   }
 }
-
-.menuItem {
-  &:not([data-disabled]) {
-    @mixin hover {
-      background-color: var(--mantine-primary-color-light);
-    }
-  }
-
-  &[data-info] {
-    cursor: default;
-  }
-}
-
-.menuItemSection {
-  color: var(--mantine-color-primary-text);
-  width: 16px;
-  height: 16px;
-}
-
-.menuItemLabel {
-  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
-  font-weight: 500;
-  font-family: var(--mantine-font-family-headings);
-}

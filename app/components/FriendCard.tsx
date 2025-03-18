@@ -50,14 +50,7 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
               notifiable
             </Badge>
           )}
-          <Menu
-            width={170}
-            classNames={{
-              item: classes.menuItem,
-              itemSection: classes.menuItemSection,
-              itemLabel: classes.menuItemLabel,
-            }}
-          >
+          <Menu width={170}>
             <Menu.Target>
               <ActionIcon variant="subtle" size="compact-xs">
                 <MenuIcon />

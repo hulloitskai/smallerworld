@@ -166,12 +166,12 @@ const PostForm: FC<PostFormProps> = props => {
             />
             <Button
               type="submit"
-              leftSection={<SendIcon />}
+              leftSection={post ? <SaveIcon /> : <SendIcon />}
               style={{ alignSelf: "end" }}
               disabled={bodyTextEmpty}
               loading={submitting}
             >
-              post
+              save
             </Button>
           </Stack>
         </Group>

@@ -17,7 +17,6 @@ const DeleteButton: FC<DeleteButtonProps> = ({
     classNames={{
       dropdown: classes.menuDropdown,
       arrow: classes.menuArrow,
-      itemLabel: classes.menuItemLabel,
     }}
   >
     <Menu.Target>

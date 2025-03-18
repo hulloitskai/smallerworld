@@ -22,7 +22,16 @@ module GeneratedPathHelpersModule
   def delivered_notification_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def file_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def friend_notification_settings_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def friends_path(*args); end
@@ -62,6 +71,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def posts_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_path(*args); end
@@ -160,6 +172,9 @@ module GeneratedPathHelpersModule
   def start_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def stats_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def submit_test_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -182,7 +197,4 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def user_posts_path(*args); end
 end

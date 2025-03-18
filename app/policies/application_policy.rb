@@ -55,4 +55,9 @@ class ApplicationPolicy < ActionPolicy::Base
   def user!
     user or deny!
   end
+
+  sig { returns(Friend) }
+  def friend!
+    friend or deny!
+  end
 end

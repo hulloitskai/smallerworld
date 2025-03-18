@@ -18,13 +18,9 @@ class UsersController < ApplicationController
       page_icon_blob.variant(resize_to_fill: [96, 96], format: "png")
     apple_touch_icon_variant =
       page_icon_blob.variant(resize_to_fill: [180, 180], format: "png")
-    current_friend = if (access_token = params[:friend_token])
-      user.friends.find_by(access_token:)
-    end
     intent = T.let(params[:intent], T.nilable(String))
     render(inertia: "UserPage", props: {
       user: UserSerializer.one(user),
-      "currentFriend" => FriendSerializer.one_if(current_friend),
       "replyPhoneNumber" => reply_phone_number,
       "faviconSrc" => rails_representation_path(favicon_variant),
       "faviconImageSrc" => rails_representation_path(favicon_image_variant),

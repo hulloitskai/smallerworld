@@ -1,4 +1,5 @@
 import { Text } from "@mantine/core";
+import { partition } from "lodash-es";
 
 import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
 import FriendsIcon from "~icons/heroicons/users-20-solid";
@@ -15,6 +16,10 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
     descriptor: "load friends",
   });
   const { friends } = data ?? {};
+  const [notifiableFriends, unnotifiableFriends] = useMemo(
+    () => partition(friends, friend => friend.notifiable),
+    [friends],
+  );
 
   return (
     <Stack>
@@ -45,7 +50,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
               </Stack>
             </Card>
           ) : (
-            friends.map(friend => (
+            [...notifiableFriends, ...unnotifiableFriends].map(friend => (
               <FriendCard key={friend.id} {...{ friend }} />
             ))
           )

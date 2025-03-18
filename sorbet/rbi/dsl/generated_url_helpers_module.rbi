@@ -22,7 +22,16 @@ module GeneratedUrlHelpersModule
   def delivered_notification_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def file_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def friend_notification_settings_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def friends_url(*args); end
@@ -62,6 +71,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def posts_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_url(*args); end
@@ -160,6 +172,9 @@ module GeneratedUrlHelpersModule
   def start_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def stats_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def submit_test_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -179,9 +194,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_page_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def user_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def user_url(*args); end

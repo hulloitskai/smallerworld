@@ -95,7 +95,8 @@ class Post < ApplicationRecord
   sig { void }
   def notify_friends!
     transaction do
-      Friend.where(user_id: author_id).select(:id).find_each do |friend|
+      friends_to_notify = Friend.where(user_id: author_id).subscribed_to(type)
+      friends_to_notify.select(:id).find_each do |friend|
         notifications.create!(recipient: friend)
       end
     end

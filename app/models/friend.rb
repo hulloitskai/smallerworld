@@ -6,15 +6,16 @@
 #
 # Table name: friends
 #
-#  id           :uuid             not null, primary key
-#  access_token :string           not null
-#  emoji        :string
-#  name         :string           not null
-#  paused_since :datetime
-#  phone_number :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  user_id      :uuid             not null
+#  id                    :uuid             not null, primary key
+#  access_token          :string           not null
+#  emoji                 :string
+#  name                  :string           not null
+#  paused_since          :datetime
+#  phone_number          :string
+#  subscribed_post_types :string           not null, is an Array
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  user_id               :uuid             not null
 #
 # Indexes
 #
@@ -32,6 +33,10 @@ class Friend < ApplicationRecord
   include Notifiable
 
   # == Attributes
+  enumerize :subscribed_post_types,
+            in: Post.type.values,
+            multiple: true,
+            default: Post.type.values
   has_secure_token :access_token
 
   sig { returns(T::Boolean) }
@@ -57,4 +62,7 @@ class Friend < ApplicationRecord
   # == Scopes
   scope :active, -> { where(paused_since: nil) }
   scope :paused, -> { where.not(paused_since: nil) }
+  scope :subscribed_to, ->(post_type) {
+    where("? = ANY (subscribed_post_types)", post_type)
+  }
 end

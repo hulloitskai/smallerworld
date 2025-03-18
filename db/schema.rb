@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_18_012538) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_18_152247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -51,6 +51,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_012538) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "paused_since", precision: nil
+    t.string "subscribed_post_types", null: false, array: true
     t.index ["access_token"], name: "index_friends_on_access_token", unique: true
     t.index ["name", "user_id"], name: "index_friends_uniqueness", unique: true
     t.index ["phone_number"], name: "index_friends_on_phone_number"

@@ -47,20 +47,19 @@ export const webPushSupported = (): boolean =>
 
 export interface LookupPushRegistrationOptions {
   subscription: PushSubscription | undefined | null;
-  friendAccessToken?: string;
 }
 
 export const useLookupPushRegistration = ({
   subscription,
-  friendAccessToken,
 }: LookupPushRegistrationOptions): PushRegistration | undefined | null => {
+  const currentFriend = useCurrentFriend();
   const { data } = useRouteSWR<{
     registration: PushRegistration | null;
   }>(routes.pushSubscriptions.lookup, {
     descriptor: "lookup push registration",
     ...(subscription
       ? {
-          params: { query: { friend_token: friendAccessToken } },
+          params: { query: { friend_token: currentFriend?.access_token } },
           data: {
             push_subscription: {
               endpoint: subscription.endpoint,
@@ -77,17 +76,16 @@ export const useLookupPushRegistration = ({
 };
 
 export interface WebPushSubscribeOptions {
-  friendAccessToken?: string;
   onSubscribed: (subscription: PushSubscription) => void;
 }
 
 export const useWebPushSubscribe = ({
-  friendAccessToken,
   onSubscribed,
 }: WebPushSubscribeOptions): [
   () => Promise<void>,
   { subscribing: boolean; subscribeError: Error | null },
 ] => {
+  const currentFriend = useCurrentFriend();
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
   const subscribe = useCallback((): Promise<void> => {
@@ -109,7 +107,7 @@ export const useWebPushSubscribe = ({
         )
         .then(
           subscription =>
-            registerSubscription(subscription, friendAccessToken)
+            registerSubscription(subscription, currentFriend?.access_token)
               .then()
               .then(
                 () => {
@@ -142,7 +140,7 @@ export const useWebPushSubscribe = ({
         }
       });
     }
-  }, [onSubscribed, friendAccessToken]);
+  }, [onSubscribed, currentFriend?.access_token]);
   return [subscribe, { subscribing, subscribeError }];
 };
 

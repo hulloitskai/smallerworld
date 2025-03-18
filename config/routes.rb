@@ -64,6 +64,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # == Friend notification settings
+  resource :friend_notification_settings, only: %i[show update], export: true
+
   # == Users
   get "/@:handle", to: "users#show", as: :user_page, export: true
   resource :user, only: :update, export: true

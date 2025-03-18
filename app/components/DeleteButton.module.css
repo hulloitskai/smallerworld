@@ -5,8 +5,3 @@
 .menuArrow {
   border-color: var(--mantine-color-red-outline);
 }
-
-.menuItemLabel {
-  font-family: var(--mantine-font-family-headings);
-  font-weight: 700;
-}

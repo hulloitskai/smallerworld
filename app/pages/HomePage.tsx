@@ -1,11 +1,19 @@
 import { isIosSafari } from "@braintree/browser-detection";
-import { ActionIcon, AspectRatio, Avatar, Image, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  AspectRatio,
+  Avatar,
+  Image,
+  Overlay,
+  Text,
+} from "@mantine/core";
 import { takeRight } from "lodash-es";
 
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
 import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
+import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
@@ -13,11 +21,12 @@ import AuthorPostCardControls from "~/components/AuthorPostCardActions";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import NewPost from "~/components/NewPost";
 import PostCard from "~/components/PostCard";
-import UserPushNotificationsButton from "~/components/UserPushNotificationsButton";
+import UserNotificationsButton from "~/components/UserNotificationsButton";
 import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
+import { useWebPush } from "~/helpers/webPush";
 import { type Friend } from "~/types";
 
 import classes from "./HomePage.module.css";
@@ -29,6 +38,7 @@ const ICON_SIZE = 96;
 const HomePage: PageComponent<HomePageProps> = () => {
   const isStandalone = useIsStandalone();
   const user = useAuthenticatedUser();
+  const { registration } = useWebPush();
 
   // == Friends
   const { data } = useRouteSWR<{ friends: Friend[] }>(routes.friends.index, {
@@ -58,31 +68,33 @@ const HomePage: PageComponent<HomePageProps> = () => {
                 {user.name}&apos;s world
               </Title>
               <Group gap={8}>
-                <Button
-                  component={Link}
-                  href={routes.friends.index.path()}
-                  radius="xl"
-                  display="block"
-                  leftSection={
-                    friends && !isEmpty(friends) ? (
-                      <Avatar.Group className={classes.avatarGroup}>
-                        {takeRight(friends, 3).map(({ id, emoji }) => (
-                          <Avatar key={id} size="sm">
-                            {emoji ? (
-                              <Text fz="md">{emoji}</Text>
-                            ) : (
-                              <Box component={UserIcon} fz="sm" c="primary" />
-                            )}
-                          </Avatar>
-                        ))}
-                      </Avatar.Group>
-                    ) : (
-                      <Box component={FriendsIcon} />
-                    )
-                  }
-                >
-                  your friends
-                </Button>
+                {(!isStandalone || !!registration) && (
+                  <Button
+                    component={Link}
+                    href={routes.friends.index.path()}
+                    radius="xl"
+                    display="block"
+                    leftSection={
+                      friends && !isEmpty(friends) ? (
+                        <Avatar.Group className={classes.avatarGroup}>
+                          {takeRight(friends, 3).map(({ id, emoji }) => (
+                            <Avatar key={id} size="sm">
+                              {emoji ? (
+                                <Text fz="md">{emoji}</Text>
+                              ) : (
+                                <Box component={UserIcon} fz="sm" c="primary" />
+                              )}
+                            </Avatar>
+                          ))}
+                        </Avatar.Group>
+                      ) : (
+                        <Box component={FriendsIcon} />
+                      )
+                    }
+                  >
+                    your friends
+                  </Button>
+                )}
                 {isStandalone === false && (
                   <ActionIcon
                     variant="light"
@@ -99,7 +111,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
                     <NotificationIcon />
                   </ActionIcon>
                 )}
-                {isStandalone === true && <UserPushNotificationsButton />}
+                {isStandalone === true && <UserNotificationsButton />}
               </Group>
             </Stack>
           </Stack>
@@ -125,7 +137,14 @@ const HomePage: PageComponent<HomePageProps> = () => {
             </Group>
           </Alert>
         )}
-        <Feed />
+        <Box pos="relative">
+          <Feed />
+          {registration === null && (
+            <Overlay backgroundOpacity={0} blur={3}>
+              <Image src={swirlyUpArrowSrc} w={160} mx="auto" />
+            </Overlay>
+          )}
+        </Box>
       </Stack>
       <NewPost />
     </>
@@ -140,7 +159,7 @@ HomePage.layout = page => (
     containerSize="xs"
     withGutter
   >
-    <WebPushProvider>{page}</WebPushProvider>
+    {page}
   </AppLayout>
 );
 

@@ -36,7 +36,12 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "RefreshIcon",
     ],
     "~/helpers/actioncable/subscription": ["useSubscription"],
-    "~/helpers/authentication": ["useCurrentUser", "useAuthenticatedUser"],
+    "~/helpers/authentication": [
+      "useCurrentUser",
+      "useAuthenticatedUser",
+      "useCurrentFriend",
+      "useAuthenticatedFriend",
+    ],
     "~/helpers/inertia/page": ["usePage", "usePageProps"],
     "~/helpers/json": ["formatJSON"],
     "~/helpers/meta": ["env", "getMeta", "requireMeta", "useEnv"],

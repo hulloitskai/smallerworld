@@ -39,13 +39,13 @@ export interface UserPagePostsOptions
 
 export const useUserPagePosts = (
   userId: string,
-  friendAccessToken: string,
   options?: UserPagePostsOptions,
 ) => {
+  const currentFriend = useAuthenticatedFriend();
   const { online } = useNetwork();
   const { limit, ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    userPagePostsGetKey(userId, friendAccessToken, limit),
+    userPagePostsGetKey(userId, currentFriend.access_token, limit),
     (path: string) =>
       fetchRoute(path, {
         descriptor: "load posts",

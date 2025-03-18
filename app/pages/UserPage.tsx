@@ -19,22 +19,25 @@ import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
+import FriendNotificationsButton from "~/components/FriendNotificationsButton";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
-import FriendPushNotificationsButton from "~/components/FriendPushNotificationsButton";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import PostCard from "~/components/PostCard";
-import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
 import { useUserPagePosts } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type Friend, type User } from "~/types";
+import {
+  type Friend,
+  type FriendNotificationSettings,
+  type User,
+} from "~/types";
 
 import classes from "./UserPage.module.css";
 
 export interface UserPageProps extends SharedPageProps {
   user: User;
-  currentFriend: Friend | null;
+  friendNotificationSettings: FriendNotificationSettings | null;
   replyPhoneNumber: string | null;
   faviconSrc: string;
   faviconImageSrc: string;
@@ -47,11 +50,11 @@ const INSTALL_ALERT_INSET = "var(--mantine-spacing-md)";
 
 const UserPage: PageComponent<UserPageProps> = ({
   user,
-  currentFriend,
   replyPhoneNumber,
   intent,
 }) => {
   const isStandalone = useIsStandalone();
+  const currentFriend = useCurrentFriend();
   const [installModalOpened, setInstallModalOpened] = useState(false);
   useDidUpdate(() => {
     if (typeof isStandalone === "boolean") {
@@ -85,14 +88,9 @@ const UserPage: PageComponent<UserPageProps> = ({
             </Title>
             {currentFriend && (
               <Group gap="xs">
-                <FriendPushNotificationsButton
-                  friendAccessToken={currentFriend.access_token}
-                />
+                <FriendNotificationsButton />
                 {isStandalone && registration && (
-                  <RefreshPostsButton
-                    userId={user.id}
-                    friendAccessToken={currentFriend.access_token}
-                  />
+                  <RefreshPostsButton userId={user.id} />
                 )}
               </Group>
             )}
@@ -100,10 +98,7 @@ const UserPage: PageComponent<UserPageProps> = ({
         </Stack>
         {currentFriend && !!replyPhoneNumber ? (
           <Box pos="relative">
-            <Feed
-              {...{ user, replyPhoneNumber }}
-              friendAccessToken={currentFriend.access_token}
-            />
+            <Feed {...{ user, replyPhoneNumber }} />
             {registration === null && (
               <Overlay backgroundOpacity={0} blur={3}>
                 <Image src={swirlyUpArrowSrc} w={160} mx="auto" />
@@ -187,29 +182,19 @@ UserPage.layout = page => (
     containerSize="xs"
     withGutter
   >
-    <PushProvider>{page}</PushProvider>
+    {page}
   </AppLayout>
 );
 
 export default UserPage;
 
-const PushProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { currentFriend } = usePageProps<UserPageProps>();
-  return (
-    <WebPushProvider friendAccessToken={currentFriend?.access_token}>
-      {children}
-    </WebPushProvider>
-  );
-};
-
 interface FeedProps {
   user: User;
   replyPhoneNumber: string;
-  friendAccessToken: string;
 }
 
-const Feed: FC<FeedProps> = ({ user, replyPhoneNumber, friendAccessToken }) => {
-  const { posts } = useUserPagePosts(user.id, friendAccessToken);
+const Feed: FC<FeedProps> = ({ user, replyPhoneNumber }) => {
+  const { posts } = useUserPagePosts(user.id);
   return (
     <Stack>
       {posts ? (
@@ -488,21 +473,15 @@ const InstallAlertBody: FC<InstallAlertBodyProps> = ({
 
 interface RefreshPostsButtonProps extends BoxProps {
   userId: string;
-  friendAccessToken: string;
 }
 
 const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
   userId,
-  friendAccessToken,
   ...otherProps
 }) => {
-  const { mutate, isValidating, posts } = useUserPagePosts(
-    userId,
-    friendAccessToken,
-    {
-      revalidateOnMount: false,
-    },
-  );
+  const { mutate, isValidating, posts } = useUserPagePosts(userId, {
+    revalidateOnMount: false,
+  });
 
   return (
     <ActionIcon

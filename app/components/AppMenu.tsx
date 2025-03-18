@@ -37,10 +37,8 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
       arrowPosition="center"
       withinPortal={false}
       classNames={{
-        item: classes.item,
-        itemSection: classes.itemSection,
-        itemLabel: classes.itemLabel,
         dropdown: classes.dropdown,
+        item: classes.item,
       }}
       {...otherProps}
     >

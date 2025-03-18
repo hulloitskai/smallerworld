@@ -1,6 +1,6 @@
 import { type PageProps } from "@inertiajs/core";
 
-import { type User } from ".";
+import { type Friend, type User } from ".";
 
 export default interface SharedPageProps extends PageProps {
   csrf: {
@@ -12,4 +12,5 @@ export default interface SharedPageProps extends PageProps {
     alert?: string;
   };
   currentUser: User | null;
+  currentFriend: Friend | null;
 }
