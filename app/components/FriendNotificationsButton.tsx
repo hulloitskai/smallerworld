@@ -48,7 +48,7 @@ const FriendNotificationsButton: FC<FriendNotificationsButtonProps> = () => {
               notification settings
             </Button>
           </Popover.Target>
-          <Popover.Dropdown>
+          <Popover.Dropdown pb={0}>
             <NotificationPopoverBody {...{ subscription }} />
           </Popover.Dropdown>
         </Popover>
@@ -82,14 +82,16 @@ const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
   const { notificationSettings } = data ?? {};
 
   return (
-    <Stack gap="xs">
+    <Stack gap={0}>
       {notificationSettings ? (
         <NotificationSettingsForm {...{ notificationSettings }} />
       ) : (
         <Skeleton h={100} />
       )}
-      <Divider mx="calc(-1 * var(--mantine-spacing-md))" />
-      <SendTestNotificationButton {...{ subscription }} />
+      <Divider mt="md" mx="calc(-1 * var(--mantine-spacing-md))" />
+      <Center py={8}>
+        <SendTestNotificationButton {...{ subscription }} />
+      </Center>
     </Stack>
   );
 };
@@ -212,7 +214,6 @@ const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
       variant="subtle"
       size="compact-sm"
       leftSection={<NotificationIcon />}
-      style={{ alignSelf: "center" }}
       onClick={() => {
         void trigger({
           push_subscription: {

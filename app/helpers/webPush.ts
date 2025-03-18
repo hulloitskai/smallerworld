@@ -59,7 +59,11 @@ export const useLookupPushRegistration = ({
     descriptor: "lookup push registration",
     ...(subscription
       ? {
-          params: { query: { friend_token: currentFriend?.access_token } },
+          params: {
+            query: currentFriend
+              ? { friend_token: currentFriend.access_token }
+              : undefined,
+          },
           data: {
             push_subscription: {
               endpoint: subscription.endpoint,
@@ -171,6 +175,8 @@ const registerSubscription = (
         p256dh_key: keys.p256dh,
       },
     },
+  }).then(() => {
+    mutateRoute(routes.pushSubscriptions.lookup, { query });
   });
 };
 
@@ -192,6 +198,7 @@ export const useWebPushUnsubscribe = ({
   () => Promise<void>,
   { unsubscribing: boolean; unsubscribeError: Error | null },
 ] => {
+  const currentFriend = useCurrentFriend();
   const [unsubscribing, setUnsubscribing] = useState(false);
   const [unsubscribeError, setUnsubscribeError] = useState<Error | null>(null);
   const unsubscribe = useCallback((): Promise<void> => {
@@ -212,6 +219,11 @@ export const useWebPushUnsubscribe = ({
           })
             .then(() => subscription.unsubscribe())
             .then(() => {
+              mutateRoute(routes.pushSubscriptions.lookup, {
+                query: currentFriend
+                  ? { friend_token: currentFriend.access_token }
+                  : undefined,
+              });
               onUnsubscribed();
             });
         },
@@ -223,7 +235,7 @@ export const useWebPushUnsubscribe = ({
       .finally(() => {
         setUnsubscribing(false);
       });
-  }, [onUnsubscribed]);
+  }, [onUnsubscribed, currentFriend?.access_token]); // eslint-disable-line react-hooks/exhaustive-deps
   return [unsubscribe, { unsubscribing, unsubscribeError }];
 };
 
@@ -235,7 +247,9 @@ const createApplicationServerKey = (publicKey: string): Uint8Array =>
   });
 
 const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
-  const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
+  const query = friendAccessToken
+    ? { friend_token: friendAccessToken }
+    : undefined;
   return fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
     descriptor: "load web push public key",
     params: { query },
