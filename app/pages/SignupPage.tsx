@@ -21,13 +21,13 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
     initialValues: {
       name: "",
       prefixed_handle: "",
-      page_icon_image: null as Upload | null,
+      page_icon_upload: null as Upload | null,
     },
-    transformValues: ({ prefixed_handle, page_icon_image, ...values }) => ({
+    transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => ({
       user: {
         ...values,
         handle: prefixed_handle.replace(/^@/, ""),
-        page_icon: page_icon_image?.signedId ?? "",
+        page_icon: page_icon_upload?.signedId ?? "",
       },
     }),
     validate: {
@@ -113,7 +113,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
                 withAsterisk={false}
               />
               <ImageInput
-                {...getInputProps("page_icon_image")}
+                {...getInputProps("page_icon_upload")}
                 label="your page icon"
                 center
                 h={ICON_IMAGE_INPUT_SIZE}
@@ -131,7 +131,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
               disabled={
                 !values.name ||
                 values.prefixed_handle.length <= 1 ||
-                !values.page_icon_image
+                !values.page_icon_upload
               }
             >
               complete signup

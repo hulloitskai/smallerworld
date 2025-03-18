@@ -12,6 +12,12 @@ class ImageSerializer < FileSerializer
   attribute :src, type: :string do
     rails_representation_path(blob)
   end
+  attribute :dimensions, type: "Dimensions", nullable: true do
+    width, height = blob.metadata.values_at("width", "height")
+    if width.present? && height.present?
+      { width:, height: }
+    end
+  end
 
   attribute :src_set, type: :string do
     sources = SIZES.map do |size|

@@ -1,10 +1,18 @@
-import { Text, TypographyStylesProvider } from "@mantine/core";
+import {
+  AspectRatio,
+  type BoxProps,
+  Image,
+  Text,
+  TypographyStylesProvider,
+} from "@mantine/core";
 import { type ReactNode } from "react";
+import Lightbox from "yet-another-react-lightbox";
 
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Post } from "~/types";
+import { type Image as ImageModel, type Post } from "~/types";
 
 import classes from "./PostCard.module.css";
+import "yet-another-react-lightbox/styles.css";
 
 export interface PostCardProps extends BoxProps {
   post: Post;
@@ -55,6 +63,7 @@ const PostCard: FC<PostCardProps> = ({ post, actions, ...otherProps }) => {
           <TypographyStylesProvider>
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
           </TypographyStylesProvider>
+          {post.image && <PostImage image={post.image} />}
         </Stack>
       </Card.Section>
       <Card.Section
@@ -70,3 +79,52 @@ const PostCard: FC<PostCardProps> = ({ post, actions, ...otherProps }) => {
 };
 
 export default PostCard;
+
+interface PostImageProps {
+  image: ImageModel;
+}
+
+const PostImage: FC<PostImageProps> = ({ image }) => {
+  const [lightboxOpened, setLightboxOpened] = useState(false);
+  const children = (
+    <Image
+      src={image.src}
+      srcSet={image.src_set}
+      fit="contain"
+      maw={240}
+      mah={440}
+      radius="md"
+      style={{ cursor: "pointer" }}
+      onClick={() => {
+        setLightboxOpened(true);
+      }}
+    />
+  );
+  return (
+    <Box
+      my={8}
+      style={{ alignSelf: "center" }}
+      {...(image.dimensions && {
+        component: AspectRatio,
+        ratio: image.dimensions.width / image.dimensions.height,
+      })}
+    >
+      {children}
+      <Lightbox
+        open={lightboxOpened}
+        close={() => {
+          setLightboxOpened(false);
+        }}
+        slides={[
+          {
+            src: image.src,
+            ...(image.dimensions && {
+              width: image.dimensions.width,
+              height: image.dimensions.height,
+            }),
+          },
+        ]}
+      />
+    </Box>
+  );
+};

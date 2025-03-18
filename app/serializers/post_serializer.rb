@@ -10,4 +10,7 @@ class PostSerializer < ApplicationSerializer
              :emoji,
              type: { type: "PostType" },
              reply_snippet: { type: :string }
+
+  # == Associations
+  has_one :image_blob, as: :image, serializer: ImageSerializer, nullable: true
 end

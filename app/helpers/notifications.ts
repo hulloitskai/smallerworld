@@ -8,6 +8,7 @@ export const DEFAULT_NOTIFICATION_ICON_URL = "/logo.png";
 export interface RenderedNotification
   extends Pick<NotificationOptions, "body" | "icon"> {
   title: string;
+  image?: string;
 }
 
 export const renderNotification = (
@@ -26,6 +27,7 @@ export const renderNotification = (
       return {
         title: `new ${POST_TYPE_TO_LABEL[post.type]}`,
         body,
+        image: post.image_src ?? undefined,
       };
     }
     default:

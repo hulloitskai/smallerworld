@@ -3,7 +3,7 @@ import { Image, Input, rgba, Text } from "@mantine/core";
 import { type DropzoneProps } from "@mantine/dropzone";
 import { Dropzone } from "@mantine/dropzone";
 import { useUncontrolled } from "@mantine/hooks";
-import { useId } from "react";
+import { type CSSProperties, useId } from "react";
 
 import PhotoIcon from "~icons/heroicons/photo-20-solid";
 
@@ -26,6 +26,7 @@ export interface ImageInputProps
     Pick<DropzoneProps, "disabled"> {
   value?: Upload | null;
   defaultValue?: Upload | null;
+  previewFit?: CSSProperties["objectFit"];
   onChange?: (value: Upload | null) => void;
   onPreviewChange?: (image: ImageModel | null) => void;
   radius?: ImageProps["radius"];
@@ -35,8 +36,10 @@ export interface ImageInputProps
 const ImageInput: FC<ImageInputProps> = ({
   center,
   defaultValue,
+  previewFit,
   disabled,
   h = 140,
+  label,
   labelProps,
   onChange,
   onPreviewChange,
@@ -46,7 +49,7 @@ const ImageInput: FC<ImageInputProps> = ({
   pr,
   pt,
   px,
-  py = 6,
+  py = label ? 6 : undefined,
   radius = "md",
   style,
   value,
@@ -96,6 +99,7 @@ const ImageInput: FC<ImageInputProps> = ({
           <Image
             w="100%"
             h="100%"
+            fit={previewFit}
             {...{ radius }}
             src={image?.src}
             srcSet={image?.src_set}

@@ -11,6 +11,12 @@ class Post
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  sig { returns(ActiveStorage::Attached::One) }
+  def image; end
+
+  sig { params(attachable: T.untyped).returns(T.untyped) }
+  def image=(attachable); end
+
   sig { returns(Enumerize::Value) }
   def type; end
 
@@ -350,11 +356,41 @@ class Post
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_author(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def build_image_attachment(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def build_image_blob(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_author(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_author!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def create_image_attachment(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
+    def create_image_attachment!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def create_image_blob(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
+    def create_image_blob!(*args, &blk); end
+
+    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
+    def image_attachment; end
+
+    sig { params(value: T.nilable(::ActiveStorage::Attachment)).void }
+    def image_attachment=(value); end
+
+    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    def image_blob; end
+
+    sig { params(value: T.nilable(::ActiveStorage::Blob)).void }
+    def image_blob=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def notification_ids; end
@@ -373,8 +409,20 @@ class Post
     sig { returns(T.nilable(::User)) }
     def reload_author; end
 
+    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
+    def reload_image_attachment; end
+
+    sig { returns(T.nilable(::ActiveStorage::Blob)) }
+    def reload_image_blob; end
+
     sig { void }
     def reset_author; end
+
+    sig { void }
+    def reset_image_attachment; end
+
+    sig { void }
+    def reset_image_blob; end
   end
 
   module GeneratedAssociationRelationMethods
@@ -520,6 +568,9 @@ class Post
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def with_attached_image(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_recursive(*args, &blk); end
@@ -1186,6 +1237,9 @@ class Post
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def with_attached_image(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_recursive(*args, &blk); end

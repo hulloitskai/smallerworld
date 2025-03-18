@@ -63,6 +63,9 @@ class Post < ApplicationRecord
     author or raise ActiveRecord::RecordNotFound, "Missing author"
   end
 
+  # == Attachments
+  has_one_attached :image
+
   # == Normalizations
   normalizes :title, with: ->(title) { title&.strip }
 

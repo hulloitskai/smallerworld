@@ -1,10 +1,13 @@
 import { ActionIcon, Text } from "@mantine/core";
 import { type Editor } from "@tiptap/react";
 
+import ImageIcon from "~icons/heroicons/photo-20-solid";
+
 import { mutatePosts } from "~/helpers/posts";
 import { type Post, type PostType } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
+import ImageInput from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
 
 import classes from "./PostForm.module.css";
@@ -54,6 +57,7 @@ const PostForm: FC<PostFormProps> = props => {
       title: post?.title ?? "",
       body_html: post?.body_html ?? "",
       emoji: post?.emoji ?? "",
+      image_upload: post?.image ? { signedId: post.image.signed_id } : null,
     }),
     [post],
   );
@@ -66,6 +70,7 @@ const PostForm: FC<PostFormProps> = props => {
     submitting,
     reset,
     setInitialValues,
+    isDirty,
   } = useForm<
     { post: Post },
     FormValues,
@@ -76,23 +81,25 @@ const PostForm: FC<PostFormProps> = props => {
           action: routes.posts.update,
           params: { id: post.id },
           descriptor: "update post",
-          transformValues: ({ title, body_html, emoji }) => ({
+          transformValues: ({ title, body_html, emoji, image_upload }) => ({
             post: {
               title: title || null,
               body_html,
               emoji,
+              image: image_upload?.signedId ?? null,
             },
           }),
         }
       : {
           action: routes.posts.create,
           descriptor: "create post",
-          transformValues: ({ title, body_html, emoji }) => ({
+          transformValues: ({ title, body_html, emoji, image_upload }) => ({
             post: {
               type: postType,
               title: title || null,
               body_html,
               emoji,
+              image: image_upload?.signedId ?? null,
             },
           }),
         }),
@@ -112,6 +119,7 @@ const PostForm: FC<PostFormProps> = props => {
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const [showImageInput, setShowImageInput] = useState(false);
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
   return (
     <form onSubmit={submit}>
@@ -159,16 +167,36 @@ const PostForm: FC<PostFormProps> = props => {
               placeholder={bodyPlaceholder}
               onEditorCreated={editor => {
                 editorRef.current = editor;
+                setBodyTextEmpty(editor.getText().trim() === "");
               }}
               onUpdate={({ editor }) => {
                 setBodyTextEmpty(editor.getText().trim() === "");
               }}
             />
+            {showImageInput || values.image_upload ? (
+              <ImageInput
+                {...getInputProps("image_upload")}
+                previewFit="contain"
+                h={140}
+              />
+            ) : (
+              <Button
+                color="gray"
+                size="compact-sm"
+                style={{ alignSelf: "center" }}
+                leftSection={<ImageIcon />}
+                onClick={() => {
+                  setShowImageInput(true);
+                }}
+              >
+                attach an image
+              </Button>
+            )}
             <Button
               type="submit"
               leftSection={post ? <SaveIcon /> : <SendIcon />}
               style={{ alignSelf: "end" }}
-              disabled={bodyTextEmpty}
+              disabled={bodyTextEmpty || !isDirty()}
               loading={submitting}
             >
               save

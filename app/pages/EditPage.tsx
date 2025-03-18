@@ -18,7 +18,7 @@ const EditPage: PageComponent<EditPageProps> = () => {
   const initialValues = useMemo(
     () => ({
       name: currentUser.name,
-      page_icon_image: { signedId: currentUser.page_icon.signed_id },
+      page_icon_upload: { signedId: currentUser.page_icon.signed_id },
     }),
     [currentUser],
   );
@@ -26,10 +26,10 @@ const EditPage: PageComponent<EditPageProps> = () => {
     action: routes.signups.update,
     descriptor: "update page",
     initialValues,
-    transformValues: ({ page_icon_image, ...values }) => ({
+    transformValues: ({ page_icon_upload, ...values }) => ({
       user: {
         ...values,
-        page_icon: page_icon_image?.signedId ?? "",
+        page_icon: page_icon_upload?.signedId ?? "",
       },
     }),
     validate: {
@@ -98,7 +98,9 @@ const EditPage: PageComponent<EditPageProps> = () => {
                 type="submit"
                 leftSection={<ProfileIcon />}
                 loading={submitting}
-                disabled={!isDirty() || !values.name || !values.page_icon_image}
+                disabled={
+                  !isDirty() || !values.name || !values.page_icon_upload
+                }
               >
                 save changes
               </Button>
