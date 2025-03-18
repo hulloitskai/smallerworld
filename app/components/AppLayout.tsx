@@ -12,7 +12,7 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/layout";
-import { useClearAppBadge } from "~/helpers/pwa";
+import { useClearAppBadge, useIsStandalone } from "~/helpers/pwa";
 import { type SidebarControls } from "~/helpers/sidebar";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
@@ -68,6 +68,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 }: AppLayoutProps<PageProps>) => {
   useClearAppBadge();
   const pageProps = usePageProps<PageProps>();
+  const isStandalone = useIsStandalone();
 
   // == Meta
   const title = useResolveDynamicProp(titleProp, pageProps);
@@ -129,7 +130,9 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
       <SidebarControlsProvider controls={sidebarControls}>
         <AppShell
           withBorder={LAYOUT_WITH_BORDER}
-          header={{ height: 46 }}
+          {...(isStandalone === false && {
+            header: { height: 46 },
+          })}
           {...(sidebar && {
             navbar: {
               width: 240,
@@ -145,7 +148,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
           }}
           {...otherProps}
         >
-          <AppHeader {...{ logoHref }} />
+          {isStandalone === false && <AppHeader {...{ logoHref }} />}
           {sidebar}
           <AppShell.Main className={classes.main}>
             {!isEmpty(breadcrumbs) && (
