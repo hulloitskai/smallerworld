@@ -37,6 +37,11 @@ class Friend < ApplicationRecord
   sig { returns(T::Boolean) }
   def paused? = paused_since?
 
+  sig { returns(T::Boolean) }
+  def notifiable?
+    push_registrations.any?
+  end
+
   # == Associations
   belongs_to :user
 

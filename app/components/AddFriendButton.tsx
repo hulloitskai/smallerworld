@@ -46,7 +46,7 @@ interface AddFriendModalBodyProps {}
 const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
   const currentUser = useAuthenticatedUser();
   const [createdFriend, setCreatedFriend] = useState<Friend | undefined>();
-  const [friendJoinUrl, setFriendJoinUrl] = useState<string>("");
+  const [createdFriendJoinUrl, setCreatedFriendJoinUrl] = useState<string>("");
   useEffect(() => {
     if (createdFriend?.access_token) {
       const joinPath = routes.users.show.path({
@@ -57,7 +57,7 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
         },
       });
       const joinUrl = new URL(joinPath, location.href);
-      setFriendJoinUrl(joinUrl.toString());
+      setCreatedFriendJoinUrl(joinUrl.toString());
     }
   }, [createdFriend?.access_token, currentUser.handle]);
 
@@ -132,7 +132,7 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
           </Group>
         </Stack>
       </form>
-      {createdFriend && !!friendJoinUrl && (
+      {createdFriend && !!createdFriendJoinUrl && (
         <>
           <Divider />
           <Stack gap="lg" align="center">
@@ -147,12 +147,12 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
             </Box>
             <Stack gap="xs" align="stretch">
               <QRCode
-                value={friendJoinUrl}
+                value={createdFriendJoinUrl}
                 size={160}
                 className={classes.qrCode}
               />
               <Divider label="or" w="100%" maw={160} mx="auto" />
-              <CopyButton value={friendJoinUrl}>
+              <CopyButton value={createdFriendJoinUrl}>
                 {({ copy, copied }) => (
                   <Button
                     leftSection={

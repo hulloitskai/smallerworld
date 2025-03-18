@@ -2,6 +2,7 @@ import { ActionIcon, CopyButton, Text } from "@mantine/core";
 
 import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
 import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
+import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
 // import PauseIcon from "~icons/heroicons/pause-20-solid";
 import { type Friend } from "~/types";
@@ -31,49 +32,72 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
 
   return (
     <Card withBorder>
-      <Group gap={6} className={classes.group}>
-        <Box fz="xl">{friend.emoji}</Box>
-        <Box style={{ flexGrow: 1 }}>
+      <Group gap={6} justify="space-between" className={classes.group}>
+        <Group gap={6}>
+          <Box fz="xl">{friend.emoji}</Box>
           <Text ff="heading" fw={600}>
             {friend.name}
           </Text>
-        </Box>
-        <Stack align="end" gap={2}>
-          <CopyButton value={joinUrl}>
-            {({ copied, copy }) => (
-              <Button
-                variant="subtle"
-                size="compact-xs"
-                leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                disabled={!joinUrl}
-                onClick={copy}
-              >
-                {copied ? "link copied!" : "copy invite link"}
-              </Button>
-            )}
-          </CopyButton>
-          <Button
-            variant="subtle"
-            color="gray"
-            size="compact-xs"
-            leftSection={<EditIcon />}
-            onClick={() => {
-              openModal({
-                title: "edit friend name",
-                children: (
-                  <EditFriendModalBody
-                    {...{ friend }}
-                    onFriendUpdated={() => {
-                      closeAllModals();
-                    }}
-                  />
-                ),
-              });
+        </Group>
+        <Group gap={2}>
+          {friend.notifiable && (
+            <Badge
+              variant="subtle"
+              color="gray"
+              leftSection={<NotificationIcon />}
+              className={classes.notifiableBadge}
+            >
+              notifiable
+            </Badge>
+          )}
+          <Menu
+            width={170}
+            classNames={{
+              item: classes.menuItem,
+              itemSection: classes.menuItemSection,
+              itemLabel: classes.menuItemLabel,
             }}
           >
-            edit name
-          </Button>
-          {/* <Popover width={320}>
+            <Menu.Target>
+              <ActionIcon variant="subtle" size="compact-xs">
+                <MenuIcon />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <CopyButton value={joinUrl}>
+                {({ copied, copy }) => (
+                  <Menu.Item
+                    closeMenuOnClick={false}
+                    leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
+                    disabled={!joinUrl}
+                    onClick={copy}
+                  >
+                    {copied ? "link copied!" : "copy invite link"}
+                  </Menu.Item>
+                )}
+              </CopyButton>
+              <Menu.Item
+                leftSection={<EditIcon />}
+                onClick={() => {
+                  openModal({
+                    title: "edit friend name",
+                    children: (
+                      <EditFriendModalBody
+                        {...{ friend }}
+                        onFriendUpdated={() => {
+                          closeAllModals();
+                        }}
+                      />
+                    ),
+                  });
+                }}
+              >
+                edit name
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
+        {/* <Popover width={320}>
             <Popover.Target>
               <Button
                 variant="subtle"
@@ -89,7 +113,6 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
               is coming soon!
             </Popover.Dropdown>
           </Popover> */}
-        </Stack>
       </Group>
     </Card>
   );
