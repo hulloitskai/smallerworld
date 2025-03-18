@@ -68,7 +68,10 @@ const UserPage: PageComponent<UserPageProps> = ({
             h={ICON_SIZE}
             fit="cover"
             radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-            style={{ boxShadow: "var(--mantine-shadow-lg)" }}
+            style={{
+              flex: "unset",
+              boxShadow: "var(--mantine-shadow-lg)",
+            }}
           />
           <Stack gap={4} align="center">
             <Title size="h2" lh="xs" ta="center">
