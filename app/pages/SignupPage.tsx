@@ -31,7 +31,16 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
       },
     }),
     validate: {
-      name: hasLength({ min: 1, max: 30 }),
+      name: hasLength(
+        { min: 1, max: 30 },
+        "Must be between 1 and 30 characters",
+      ),
+      prefixed_handle: (value: string) => {
+        const handle = value.substring(1);
+        if (handle.length < 5) {
+          return "Must be at least 5 characters";
+        }
+      },
     },
     onSuccess: () => {
       router.visit(routes.home.show.path());

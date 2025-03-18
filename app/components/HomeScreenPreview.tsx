@@ -22,31 +22,40 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
   radius,
   ...otherProps
 }) => {
-  useEffect(() => {
-    // @ts-expect-error Fontsource is not typed
-    void import("@fontsource/single-day");
-  }, []);
-
   return (
-    <Box
-      className={cn("HomescreenPreview", classes.container)}
-      pos="relative"
-      w={300}
-      style={{
-        "--hp-radius": getRadius(radius),
-        "--hp-icon-radius-ratio": APPLE_ICON_RADIUS_RATIO,
-      }}
-      {...otherProps}
-    >
-      <Image src={homeScreenSrc} />
-      <Image
-        src={pageIcon?.src ?? logoPlaceholderSrc}
-        srcSet={pageIcon?.src_set}
-        className={classes.appIcon}
-      />
-      <Text className={classes.appLabel}>{pageName || "(your name)"}</Text>
-      <Text className={classes.yourPageLabel}>{arrowLabel}</Text>
-    </Box>
+    <>
+      <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <Box
+        className={cn("HomescreenPreview", classes.container)}
+        pos="relative"
+        w={300}
+        style={{
+          "--hp-radius": getRadius(radius),
+          "--hp-icon-radius-ratio": APPLE_ICON_RADIUS_RATIO,
+        }}
+        {...otherProps}
+      >
+        <Image src={homeScreenSrc} />
+        <Image
+          src={pageIcon?.src ?? logoPlaceholderSrc}
+          srcSet={pageIcon?.src_set}
+          className={classes.appIcon}
+        />
+        <Text className={classes.appLabel}>{pageName || "(your name)"}</Text>
+        <Text className={classes.yourPageLabel}>{arrowLabel}</Text>
+      </Box>
+    </>
   );
 };
 

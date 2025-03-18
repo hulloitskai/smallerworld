@@ -72,7 +72,6 @@ export default defineConfig(() => {
     },
     build: {
       rollupOptions: {
-        external: ["@fontsource/single-day"],
         onwarn(warning, warn) {
           // Suppress "Module level directives cause errors when bundled"
           // warnings.

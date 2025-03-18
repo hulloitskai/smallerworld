@@ -13,7 +13,6 @@
     "@braintree/browser-detection": "^2.0.2",
     "@fontsource-variable/bricolage-grotesque": "^5.2.5",
     "@fontsource-variable/manrope": "^5.0.20",
-    "@fontsource/single-day": "^5.2.5",
     "@fullstory/browser": "^2.0.5",
     "@inertiajs/core": "^2.0.5",
     "@inertiajs/react": "^2.0.5",
