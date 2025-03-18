@@ -84,6 +84,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # == Post reactions
+  resources :post_reactions,
+            path: "/posts/:post_id/reactions",
+            only: %i[index create],
+            export: true
+  resources :post_reactions, only: :destroy, export: true
+
   # == Pages
   defaults export: true do
     root "landing#show"

@@ -1,0 +1,13 @@
+.newReactionButton {
+  &[data-opened] {
+    background-color: var(--mantine-color-primary-light-hover);
+  }
+}
+
+.reactionButton {
+  padding-inline: 4px;
+
+  :global(.mantine-Button-section) {
+    font-size: var(--mantine-font-size-md);
+  }
+}

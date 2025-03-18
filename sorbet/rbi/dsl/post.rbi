@@ -406,6 +406,20 @@ class Post
     sig { params(value: T::Enumerable[::Notification]).void }
     def notifications=(value); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def reaction_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def reaction_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :reactions`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostReaction::PrivateCollectionProxy) }
+    def reactions; end
+
+    sig { params(value: T::Enumerable[::PostReaction]).void }
+    def reactions=(value); end
+
     sig { returns(T.nilable(::User)) }
     def reload_author; end
 

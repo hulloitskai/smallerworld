@@ -91,7 +91,7 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
                 setFieldValue("emoji", emoji);
               }}
             >
-              {({ open }) => (
+              {({ open, opened }) => (
                 <ActionIcon
                   className={classes.emojiButton}
                   variant="default"
@@ -104,6 +104,7 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
                       open();
                     }
                   }}
+                  mod={{ opened }}
                 >
                   {values.emoji ? (
                     <Text size="xl">{values.emoji}</Text>

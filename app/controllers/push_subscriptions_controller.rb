@@ -3,7 +3,7 @@
 
 class PushSubscriptionsController < ApplicationController
   # == Filters
-  before_action :authenticate_owner!, only: :create
+  before_action :authentication_required!, only: :create
 
   # == Actions
   # POST /push_subscriptions/lookup
@@ -76,12 +76,6 @@ class PushSubscriptionsController < ApplicationController
   end
 
   private
-
-  # == Filter callbacks
-  sig { void }
-  def authenticate_owner!
-    current_friend || current_user or raise "Not authenticated"
-  end
 
   # == Helpers
   # See: https://fly.io/ruby-dispatch/push-to-subscribe/#user-interface

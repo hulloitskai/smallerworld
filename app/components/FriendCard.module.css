@@ -15,6 +15,10 @@
   @mixin dark {
     background-color: transparent;
   }
+
+  &[data-opened] {
+    background-color: var(--mantine-color-default-hover);
+  }
 }
 
 .notifiableBadge {

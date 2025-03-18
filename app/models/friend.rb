@@ -49,6 +49,7 @@ class Friend < ApplicationRecord
 
   # == Associations
   belongs_to :user
+  has_many :post_reactions, dependent: :destroy
 
   sig { returns(User) }
   def user!

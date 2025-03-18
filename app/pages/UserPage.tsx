@@ -11,6 +11,7 @@ import {
   Text,
 } from "@mantine/core";
 import { type PropsWithChildren } from "react";
+import { mutate } from "swr";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
@@ -482,7 +483,11 @@ const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
   userId,
   ...otherProps
 }) => {
-  const { mutate, isValidating, posts } = useUserPagePosts(userId, {
+  const {
+    mutate: mutatePosts,
+    isValidating,
+    posts,
+  } = useUserPagePosts(userId, {
     revalidateOnMount: false,
   });
 
@@ -494,7 +499,12 @@ const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
       loading={isValidating}
       onClick={() => {
         const firstPost = first(posts);
-        void mutate().then(pages => {
+        void mutate((key: string) => {
+          if (typeof key === "string") {
+            return key.startsWith("/posts");
+          }
+        });
+        void mutatePosts().then(pages => {
           const latestFirstPage = first(pages);
           const latestFirstPost = first(latestFirstPage?.posts);
           if (

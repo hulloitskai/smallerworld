@@ -1,8 +1,10 @@
 // import { ActionIcon } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
+import { groupBy } from "lodash-es";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Post } from "~/types";
+import { type Post, type PostReaction } from "~/types";
 
 import DeleteButton from "./DeleteButton";
 import PostForm from "./PostForm";
@@ -15,7 +17,9 @@ export interface AuthorPostCardActionsProps {
 
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
   const { ref, inViewport } = useInViewport();
-  const { data } = useRouteSWR<{ notifiedFriends: number }>(
+
+  // == Load post stats
+  const { data: statsData } = useRouteSWR<{ notifiedFriends: number }>(
     routes.posts.stats,
     {
       descriptor: "load post stats",
@@ -24,7 +28,24 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
       isVisible: () => inViewport,
     },
   );
-  const { notifiedFriends } = data ?? {};
+  const { notifiedFriends } = statsData ?? {};
+
+  // == Load reactions
+  const { data: reactionsData } = useRouteSWR<{ reactions: PostReaction[] }>(
+    routes.postReactions.index,
+    {
+      params: {
+        post_id: post.id,
+      },
+      descriptor: "load reactions",
+      isVisible: () => inViewport,
+    },
+  );
+  const { reactions } = reactionsData ?? {};
+  const reactionsByEmoji = useMemo(
+    () => groupBy(reactions, "emoji"),
+    [reactions],
+  );
 
   return (
     <Group {...{ ref }} justify="space-between" gap={2}>
@@ -37,6 +58,19 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
           {notifiedFriends} notified
         </Badge>
       )}
+      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
+        {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
+          <Badge
+            key={emoji}
+            variant="transparent"
+            color="gray"
+            leftSection={emoji}
+            className={classes.reactionBadge}
+          >
+            {reactions.length}
+          </Badge>
+        ))}
+      </Group>
       <Group gap={2}>
         <EditPostButton {...{ post }} />
         <DeletePostButton postId={post.id} />

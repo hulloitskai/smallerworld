@@ -1,9 +1,14 @@
-import { Popover, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
+import { useInViewport } from "@mantine/hooks";
+import { groupBy } from "lodash-es";
 
 import ReplyIcon from "~icons/heroicons/chat-bubble-oval-left-20-solid";
 
-import { type Post } from "~/types";
+import { type Post, type PostReaction } from "~/types";
 
+import EmojiPopover from "./EmojiPopover";
+
+import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
 interface FriendPostCardActionsProps {
@@ -15,28 +20,49 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   post,
   replyPhoneNumber,
 }) => {
+  const { ref, inViewport } = useInViewport();
+  const currentFriend = useAuthenticatedFriend();
+
+  // == Load reactions
+  const { data } = useRouteSWR<{ reactions: PostReaction[] }>(
+    routes.postReactions.index,
+    {
+      params: inViewport
+        ? {
+            post_id: post.id,
+            query: {
+              friend_token: currentFriend.access_token,
+            },
+          }
+        : null,
+      descriptor: "load reactions",
+      isVisible: () => inViewport,
+    },
+  );
+  const { reactions } = data ?? {};
+  const reactionsByEmoji = useMemo(
+    () => groupBy(reactions, "emoji"),
+    [reactions],
+  );
+
+  // == Reply via sms
   const replyUri = useMemo(() => {
     const encodedBody = encodeURIComponent(post.reply_snippet);
     return `sms:${replyPhoneNumber}?body=${encodedBody}`;
   }, [replyPhoneNumber, post.reply_snippet]);
+
   return (
-    <Group gap={2}>
-      <Popover position="bottom-start" arrowOffset={16}>
-        <Popover.Target>
-          <Button
-            variant="subtle"
-            size="compact-xs"
-            leftSection={<EmojiIcon />}
-          >
-            react
-          </Button>
-        </Popover.Target>
-        <Popover.Dropdown>
-          <Text size="sm" c="dimmed">
-            emoji reactions will one day live here :)
-          </Text>
-        </Popover.Dropdown>
-      </Popover>
+    <Group {...{ ref }} gap={2}>
+      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
+        {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
+          <ReactionButton
+            key={emoji}
+            postId={post.id}
+            {...{ emoji, reactions }}
+          />
+        ))}
+        <NewReactionButton postId={post.id} />
+      </Group>
       <Text inline fz="lg" className={postCardClasses.divider}>
         /
       </Text>
@@ -54,3 +80,123 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
 };
 
 export default FriendPostCardActions;
+
+interface NewReactionButtonProps {
+  postId: string;
+}
+
+const NewReactionButton: FC<NewReactionButtonProps> = ({ postId }) => {
+  const currentFriend = useAuthenticatedFriend();
+  const { trigger: addReaction } = useRouteMutation<{ reaction: PostReaction }>(
+    routes.postReactions.create,
+    {
+      descriptor: "react to post",
+      params: {
+        post_id: postId,
+        query: {
+          friend_token: currentFriend.access_token,
+        },
+      },
+      onSuccess: () => {
+        mutateRoute(routes.postReactions.index, {
+          post_id: postId,
+          query: {
+            friend_token: currentFriend.access_token,
+          },
+        });
+      },
+    },
+  );
+
+  return (
+    <EmojiPopover
+      pickerProps={{ reactionsDefaultOpen: true }}
+      onEmojiClick={({ emoji }) => {
+        void addReaction({ reaction: { emoji } });
+      }}
+    >
+      {({ open, opened }) => (
+        <Button
+          className={classes.newReactionButton}
+          variant="subtle"
+          size="compact-xs"
+          leftSection={<EmojiIcon />}
+          onClick={open}
+          mod={{ opened }}
+        >
+          react
+        </Button>
+      )}
+    </EmojiPopover>
+  );
+};
+
+interface ReactionButtonProps {
+  postId: string;
+  emoji: string;
+  reactions: PostReaction[];
+}
+
+const ReactionButton: FC<ReactionButtonProps> = ({
+  postId,
+  emoji,
+  reactions,
+}) => {
+  const currentFriend = useAuthenticatedFriend();
+  const currentReaction = useMemo(
+    () => reactions.find(reaction => reaction.friend_id === currentFriend.id),
+    [reactions, currentFriend.id],
+  );
+  const [mutating, setMutating] = useState(false);
+
+  return (
+    <Button
+      variant={currentReaction ? "light" : "subtle"}
+      leftSection={emoji}
+      size="compact-xs"
+      loading={mutating}
+      className={classes.reactionButton}
+      onClick={() => {
+        setMutating(true);
+        const action = currentReaction
+          ? fetchRoute(routes.postReactions.destroy, {
+              params: {
+                id: currentReaction.id,
+                query: {
+                  friend_token: currentFriend.access_token,
+                },
+              },
+              descriptor: "remove reaction",
+            })
+          : fetchRoute(routes.postReactions.create, {
+              params: {
+                post_id: postId,
+                query: {
+                  friend_token: currentFriend.access_token,
+                },
+              },
+              descriptor: "react to post",
+              data: {
+                reaction: {
+                  emoji,
+                },
+              },
+            });
+        void action
+          .then(() => {
+            mutateRoute(routes.postReactions.index, {
+              post_id: postId,
+              query: {
+                friend_token: currentFriend.access_token,
+              },
+            });
+          })
+          .finally(() => {
+            setMutating(false);
+          });
+      }}
+    >
+      {reactions.length}
+    </Button>
+  );
+};

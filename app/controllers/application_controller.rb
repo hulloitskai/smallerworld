@@ -69,6 +69,11 @@ class ApplicationController < ActionController::Base
   end
 
   # == Filter handlers
+  sig { void }
+  def require_authentication!
+    current_friend || current_user or raise "Authentication required"
+  end
+
   # sig { void }
   # def debug_action
   #   targets = params[:debug]

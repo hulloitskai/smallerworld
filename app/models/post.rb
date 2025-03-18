@@ -57,6 +57,7 @@ class Post < ApplicationRecord
 
   # == Associations
   belongs_to :author, class_name: "User"
+  has_many :reactions, class_name: "PostReaction", dependent: :destroy
 
   sig { returns(User) }
   def author!

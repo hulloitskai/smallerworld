@@ -26,8 +26,13 @@
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PostReaction < ApplicationRecord
   # == Associations
-  belongs_to :post
+  belongs_to :post, inverse_of: :reactions
   belongs_to :friend
+
+  sig { returns(Friend) }
+  def friend!
+    friend or raise ActiveRecord::RecordNotFound, "Missing friend"
+  end
 
   # == Validations
   validates :emoji, presence: true, uniqueness: { scope: %i[post friend] }

@@ -130,11 +130,12 @@ const PostForm: FC<PostFormProps> = props => {
               setFieldValue("emoji", emoji);
             }}
           >
-            {({ open }) => (
+            {({ open, opened }) => (
               <ActionIcon
                 className={classes.emojiButton}
                 variant="default"
                 size={36}
+                mod={{ opened }}
                 onClick={() => {
                   if (values.emoji) {
                     setFieldValue("emoji", "");
