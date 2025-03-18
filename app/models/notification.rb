@@ -77,8 +77,8 @@ class Notification < ApplicationRecord
 
   sig { void }
   def push
-    PushSubscription.where(owner: recipient).find_each do |subscription|
-      subscription.push(self)
+    PushRegistration.where(owner: recipient).find_each do |registration|
+      registration.push(self)
     end
     mark_as_pushed!
   end
@@ -90,7 +90,7 @@ class Notification < ApplicationRecord
 
   sig { void }
   def mark_as_pushed!
-    update!(pushed_at: Time.current) unless pushed?
+    update!(pushed_at: Time.current)
   end
 
   sig { void }

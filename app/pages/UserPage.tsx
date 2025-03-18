@@ -213,13 +213,13 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({
         {style => (
           <Stack gap="xs" align="center" {...{ style }}>
             <HomeScreenPreview
-              userName={user.name}
+              pageName={user.name}
               pageIcon={user.page_icon}
               arrowLabel="this page!"
             />
             <Text size="sm" ta="center">
               pin this page to your home screen so you can{" "}
-              <span style={{ fontWeight: 500 }}>
+              <span style={{ fontWeight: 600 }}>
                 get notified about life updates, personal invitations, poems,
                 and more :)
               </span>
@@ -289,7 +289,7 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({
               <Stack gap={2}>
                 <Box>find the icon on your home screen and open it!</Box>
                 <HomeScreenPreview
-                  userName={user.name}
+                  pageName={user.name}
                   pageIcon={user.page_icon}
                   arrowLabel="this one!"
                 />

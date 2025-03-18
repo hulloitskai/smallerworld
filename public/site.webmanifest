@@ -1,21 +1,24 @@
 {
   "name": "smaller world",
-  "short_name": "smaller",
+  "short_name": "smaller world",
   "description": "a smaller world for you and your friends :)",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
   "theme_color": "#ffffff",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "start_url": "/home",
+  "scope": "/",
+  "display": "standalone"
 }

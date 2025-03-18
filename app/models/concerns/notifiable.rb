@@ -12,7 +12,9 @@ module Notifiable
   included do
     T.bind(self, T.class_of(ActiveRecord::Base))
 
-    has_many :push_subscriptions, as: :owner, dependent: :destroy
+    has_many :push_registrations,
+             as: :owner,
+             dependent: :destroy
     has_many :notifications, as: :recipient, dependent: :destroy
   end
 end

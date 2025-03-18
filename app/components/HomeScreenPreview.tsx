@@ -5,19 +5,18 @@ import homeScreenSrc from "~/assets/images/home-screen.png";
 import logoPlaceholderSrc from "~/assets/images/logo-placeholder.jpg";
 
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { type Image as ImageModel } from "~/types";
 
 import classes from "./HomeScreenPreview.module.css";
 
 export interface HomeScreenPreviewProps extends BoxProps {
-  userName: string;
-  pageIcon: ImageModel | null;
+  pageName: string;
+  pageIcon: { src: string; src_set?: string } | null;
   arrowLabel: ReactNode;
   radius?: MantineRadius;
 }
 
 const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
-  userName,
+  pageName,
   pageIcon,
   arrowLabel,
   radius,
@@ -45,7 +44,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
         srcSet={pageIcon?.src_set}
         className={classes.appIcon}
       />
-      <Text className={classes.appLabel}>{userName || "(your name)"}</Text>
+      <Text className={classes.appLabel}>{pageName || "(your name)"}</Text>
       <Text className={classes.yourPageLabel}>{arrowLabel}</Text>
     </Box>
   );

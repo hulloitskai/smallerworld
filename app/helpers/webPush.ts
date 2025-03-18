@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import { type PushSubscriptionRegistration } from "~/types";
+import { type PushRegistration } from "~/types";
 
 import { getOrRegisterServiceWorker } from "./serviceWorker";
 
@@ -13,7 +13,7 @@ export const getPushSubscription = (): Promise<PushSubscription | null> =>
 export interface UseWebPushResult {
   supported: boolean | undefined;
   subscription: PushSubscription | undefined | null;
-  registration: PushSubscriptionRegistration | undefined | null;
+  registration: PushRegistration | undefined | null;
   subscribed: boolean;
   subscribe: (friendAccessToken?: string) => Promise<void>;
   subscribing: boolean;
@@ -45,11 +45,11 @@ export const useWebPushSupported = (): boolean | undefined => {
 export const webPushSupported = (): boolean =>
   typeof window !== "undefined" && "Notification" in window;
 
-export const useLookupPushSubscriptionRegistration = (
+export const useLookupPushRegistration = (
   subscription: PushSubscription | undefined | null,
-): PushSubscriptionRegistration | undefined | null => {
+): PushRegistration | undefined | null => {
   const { data } = useRouteSWR<{
-    registration: PushSubscriptionRegistration | null;
+    registration: PushRegistration | null;
   }>(routes.pushSubscriptions.lookup, {
     descriptor: "lookup push subscription registration",
     ...(subscription

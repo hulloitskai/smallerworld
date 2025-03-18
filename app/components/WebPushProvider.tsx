@@ -1,6 +1,6 @@
 import {
   getPushSubscription,
-  useLookupPushSubscriptionRegistration,
+  useLookupPushRegistration,
   useWebPushSubscribe,
   useWebPushSupported,
   useWebPushUnsubscribe,
@@ -25,7 +25,7 @@ const WebPushProvider: FC<PropsWithChildren> = ({ children }) => {
       setSubscription(null);
     }
   }, [supported]);
-  const registration = useLookupPushSubscriptionRegistration(subscription);
+  const registration = useLookupPushRegistration(subscription);
   const [subscribe, { subscribing, subscribeError }] = useWebPushSubscribe({
     onSubscribed: setSubscription,
   });

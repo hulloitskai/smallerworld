@@ -384,23 +384,19 @@ class PushSubscription
   end
 
   module GeneratedAssociationMethods
-    sig { returns(T.untyped) }
-    def owner; end
+    sig { returns(T::Array[T.untyped]) }
+    def registration_ids; end
 
-    sig { params(value: T.untyped).void }
-    def owner=(value); end
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def registration_ids=(ids); end
 
-    sig { returns(T::Boolean) }
-    def owner_changed?; end
+    # This method is created by ActiveRecord on the `PushSubscription` class because it declared `has_many :registrations`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PushRegistration::PrivateCollectionProxy) }
+    def registrations; end
 
-    sig { returns(T::Boolean) }
-    def owner_previously_changed?; end
-
-    sig { returns(T.untyped) }
-    def reload_owner; end
-
-    sig { void }
-    def reset_owner; end
+    sig { params(value: T::Enumerable[::PushRegistration]).void }
+    def registrations=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -785,96 +781,6 @@ class PushSubscription
     def id_will_change!; end
 
     sig { returns(::String) }
-    def owner_id; end
-
-    sig { params(value: ::String).returns(::String) }
-    def owner_id=(value); end
-
-    sig { returns(T::Boolean) }
-    def owner_id?; end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_id_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def owner_id_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def owner_id_came_from_user?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def owner_id_change; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def owner_id_change_to_be_saved; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def owner_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_id_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def owner_id_previous_change; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def owner_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_id_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_id_was; end
-
-    sig { void }
-    def owner_id_will_change!; end
-
-    sig { returns(::String) }
-    def owner_type; end
-
-    sig { params(value: ::String).returns(::String) }
-    def owner_type=(value); end
-
-    sig { returns(T::Boolean) }
-    def owner_type?; end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_type_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def owner_type_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def owner_type_came_from_user?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def owner_type_change; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def owner_type_change_to_be_saved; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def owner_type_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_type_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def owner_type_previous_change; end
-
-    sig { params(from: ::String, to: ::String).returns(T::Boolean) }
-    def owner_type_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_type_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def owner_type_was; end
-
-    sig { void }
-    def owner_type_will_change!; end
-
-    sig { returns(::String) }
     def p256dh_key; end
 
     sig { params(value: ::String).returns(::String) }
@@ -935,12 +841,6 @@ class PushSubscription
     def restore_id_value!; end
 
     sig { void }
-    def restore_owner_id!; end
-
-    sig { void }
-    def restore_owner_type!; end
-
-    sig { void }
     def restore_p256dh_key!; end
 
     sig { void }
@@ -975,18 +875,6 @@ class PushSubscription
 
     sig { returns(T::Boolean) }
     def saved_change_to_id_value?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_owner_id; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_owner_id?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_owner_type; end
-
-    sig { returns(T::Boolean) }
-    def saved_change_to_owner_type?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_p256dh_key; end
@@ -1059,12 +947,6 @@ class PushSubscription
 
     sig { returns(T::Boolean) }
     def will_save_change_to_id_value?; end
-
-    sig { returns(T::Boolean) }
-    def will_save_change_to_owner_id?; end
-
-    sig { returns(T::Boolean) }
-    def will_save_change_to_owner_type?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_p256dh_key?; end

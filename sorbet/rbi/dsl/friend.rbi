@@ -354,18 +354,18 @@ class Friend
     def notifications=(value); end
 
     sig { returns(T::Array[T.untyped]) }
-    def push_subscription_ids; end
+    def push_registration_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def push_subscription_ids=(ids); end
+    def push_registration_ids=(ids); end
 
-    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :push_subscriptions`.
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :push_registrations`.
     # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::PushSubscription::PrivateCollectionProxy) }
-    def push_subscriptions; end
+    sig { returns(::PushRegistration::PrivateCollectionProxy) }
+    def push_registrations; end
 
-    sig { params(value: T::Enumerable[::PushSubscription]).void }
-    def push_subscriptions=(value); end
+    sig { params(value: T::Enumerable[::PushRegistration]).void }
+    def push_registrations=(value); end
 
     sig { returns(T.nilable(::User)) }
     def reload_user; end

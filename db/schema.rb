@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_17_220634) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_18_012538) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -183,16 +183,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_17_220634) do
     t.index ["type"], name: "index_posts_on_type"
   end
 
+  create_table "push_registrations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "owner_type", null: false
+    t.uuid "owner_id", null: false
+    t.uuid "push_subscription_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.index ["owner_type", "owner_id", "push_subscription_id"], name: "index_push_registrations_uniqueness", unique: true
+    t.index ["owner_type", "owner_id"], name: "index_push_registrations_on_owner"
+    t.index ["push_subscription_id"], name: "index_push_registrations_on_push_subscription_id"
+  end
+
   create_table "push_subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "auth_key", null: false
     t.string "endpoint", null: false
     t.string "p256dh_key", null: false
-    t.string "owner_type", null: false
-    t.uuid "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["endpoint"], name: "index_push_subscriptions_on_endpoint", unique: true
-    t.index ["owner_type", "owner_id"], name: "index_push_subscriptions_on_owner"
   end
 
   create_table "task_records", id: false, force: :cascade do |t|
@@ -215,4 +222,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_17_220634) do
   add_foreign_key "post_reactions", "friends"
   add_foreign_key "post_reactions", "posts"
   add_foreign_key "posts", "users", column: "author_id"
+  add_foreign_key "push_registrations", "push_subscriptions"
 end

@@ -4,11 +4,6 @@
 class PushSubscriptionPolicy < ApplicationPolicy
   # == Rules
   def create?
-    (user || friend).present?
-  end
-
-  def test?
-    subscription = T.cast(record, PushSubscription)
-    subscription.owner == (user || friend)
+    (friend || user).present?
   end
 end

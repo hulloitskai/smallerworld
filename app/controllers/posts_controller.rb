@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 class PostsController < ApplicationController
+  # == Filters
   before_action :authenticate_user!, only: %i[create destroy]
 
   # == Actions

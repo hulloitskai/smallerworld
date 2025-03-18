@@ -56,7 +56,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
           </Title>
           <Stack gap={4} align="center">
             <HomeScreenPreview
-              userName={values.name}
+              pageName={values.name}
               pageIcon={pageIcon}
               arrowLabel="your page!"
             />

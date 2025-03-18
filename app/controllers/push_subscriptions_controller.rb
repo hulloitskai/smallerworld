@@ -3,15 +3,18 @@
 
 class PushSubscriptionsController < ApplicationController
   # == Filters
-  before_action :authenticate_owner!, except: :lookup
+  before_action :authenticate_owner!, only: :create
 
   # == Actions
   # POST /push_subscriptions/lookup
   def lookup
     endpoint = T.let(params.dig(:push_subscription, :endpoint), String)
-    registration = PushSubscription.find_by(endpoint:)
+    owner = current_friend || current_user
+    registration = PushRegistration.joins(:push_subscription)
+      .where(push_subscriptions: { endpoint: })
+      .find_by(owner:)
     render(json: {
-      registration: PushSubscriptionRegistrationSerializer.one_if(registration),
+      registration: PushRegistrationSerializer.one_if(registration),
     })
   end
 
@@ -26,8 +29,12 @@ class PushSubscriptionsController < ApplicationController
     ])
     endpoint = T.let(subscription_params.delete(:endpoint), String)
     subscription = PushSubscription.find_or_initialize_by(endpoint:)
-    subscription.update!(owner:, **subscription_params)
-    render(json: {})
+    subscription.attributes = subscription_params
+    registration = subscription.registrations.find_or_initialize_by(owner:)
+    subscription.save!
+    render(json: {
+      registration: PushRegistrationSerializer.one(registration),
+    })
   end
 
   # PUT /push_subscriptions/unsubscribe
@@ -54,8 +61,9 @@ class PushSubscriptionsController < ApplicationController
   def test
     endpoint = T.let(params.dig(:push_subscription, :endpoint), String)
     subscription = PushSubscription.find_by!(endpoint:)
-    authorize!(subscription)
-    subscription.send_test_notification
+    owner = current_friend || current_user
+    registration = subscription.registrations.find_by!(owner:)
+    registration.push_test_notification
     render(json: {})
   end
 
