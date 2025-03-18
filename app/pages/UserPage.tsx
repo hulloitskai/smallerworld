@@ -302,7 +302,7 @@ const InstallModal: FC<InstallModalProps> = ({
                 and more!
               </span>
             </Text>
-            <Stack gap={4}>
+            <Stack gap={4} align="center">
               <Button<"button" | "a">
                 leftSection={<InstallIcon />}
                 loading={isInstallable === undefined}
@@ -327,7 +327,10 @@ const InstallModal: FC<InstallModalProps> = ({
               </Button>
               {isInstallable === false && (
                 <Text size="xs" c="dimmed">
-                  sorry, your browser isn&apos;t supported :(
+                  sorry, your browser isn&apos;t supported
+                  <Text span inherit visibleFrom="xs">
+                    —pls open on your phone!
+                  </Text>
                 </Text>
               )}
             </Stack>
@@ -426,15 +429,11 @@ const StepWithImage: FC<StepWithImageProps> = ({
 const useIsInstallable = (
   installEvent: Event | null | undefined,
 ): boolean | undefined => {
-  const [isInstallable, setIsInstallable] = useState<boolean | undefined>(
-    undefined,
+  const [isInstallable, setIsInstallable] = useState<boolean | undefined>(() =>
+    installEvent ? true : undefined,
   );
   useEffect(() => {
-    if (installEvent || isIosSafari()) {
-      setIsInstallable(true);
-    } else {
-      setIsInstallable(false);
-    }
+    setIsInstallable(!!installEvent || isIosSafari());
   }, [installEvent]);
   return isInstallable;
 };
@@ -469,8 +468,17 @@ const InstallAlertBody: FC<InstallAlertBodyProps> = ({
           pin this page
         </Button>
         {isInstallable === false && (
-          <Text size="xs" opacity={0.6}>
-            sorry, your browser isn&apos;t supported :(
+          <Text
+            size="xs"
+            opacity={0.6}
+            lh={1.2}
+            miw={0}
+            style={{ flexGrow: 1 }}
+          >
+            sorry, your browser isn&apos;t supported
+            <Text span inherit visibleFrom="xs">
+              —pls open on your phone!
+            </Text>
           </Text>
         )}
       </Group>

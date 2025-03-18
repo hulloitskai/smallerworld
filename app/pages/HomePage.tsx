@@ -160,9 +160,6 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({ onInstalled }) => {
       <Transition transition="pop" mounted={!iosSafariInstructionsDisplayed}>
         {style => (
           <Stack gap="xs" align="center" {...{ style }}>
-            <Text size="sm" ta="center">
-              hi {}
-            </Text>
             <HomeScreenPreview
               pageName="smaller world"
               pageIcon={{ src: "/logo.png" }}
@@ -175,7 +172,7 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({ onInstalled }) => {
               </span>
               !
             </Text>
-            <Stack gap={4}>
+            <Stack gap={4} align="center">
               <Button
                 leftSection={<InstallIcon />}
                 loading={isInstallable === undefined}
@@ -192,7 +189,10 @@ const InstallModalBody: FC<InstallModalBodyProps> = ({ onInstalled }) => {
               </Button>
               {isInstallable === false && (
                 <Text size="xs" c="dimmed">
-                  sorry, your browser isn&apos;t supported :(
+                  sorry, your browser isn&apos;t supported
+                  <Text span inherit visibleFrom="xs">
+                    —pls open on your phone!
+                  </Text>
                 </Text>
               )}
             </Stack>

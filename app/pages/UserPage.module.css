@@ -9,6 +9,8 @@
 }
 
 .installAlertButton {
+  flex-shrink: 0;
+
   :global(.mantine-Button-section) {
     &[data-position="left"] {
       margin-right: rem(6);
