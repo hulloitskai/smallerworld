@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import { type Friend, type PushRegistration } from "~/types";
+import { type PushRegistration } from "~/types";
 
 import { getOrRegisterServiceWorker } from "./serviceWorker";
 
@@ -45,17 +45,22 @@ export const useWebPushSupported = (): boolean | undefined => {
 export const webPushSupported = (): boolean =>
   typeof window !== "undefined" && "Notification" in window;
 
-export const useLookupPushRegistration = (
-  subscription: PushSubscription | undefined | null,
-): PushRegistration | undefined | null => {
-  const currentFriend = useCurrentFriend();
+export interface LookupPushRegistrationOptions {
+  subscription: PushSubscription | undefined | null;
+  friendAccessToken?: string;
+}
+
+export const useLookupPushRegistration = ({
+  subscription,
+  friendAccessToken,
+}: LookupPushRegistrationOptions): PushRegistration | undefined | null => {
   const { data } = useRouteSWR<{
     registration: PushRegistration | null;
   }>(routes.pushSubscriptions.lookup, {
     descriptor: "lookup push registration",
     ...(subscription
       ? {
-          params: { query: { friend_token: currentFriend?.access_token } },
+          params: { query: { friend_token: friendAccessToken } },
           data: {
             push_subscription: {
               endpoint: subscription.endpoint,
@@ -71,17 +76,18 @@ export const useLookupPushRegistration = (
   return subscription === null ? null : registration;
 };
 
-export interface UseWebPushSubscribeOptions {
+export interface WebPushSubscribeOptions {
+  friendAccessToken?: string;
   onSubscribed: (subscription: PushSubscription) => void;
 }
 
 export const useWebPushSubscribe = ({
+  friendAccessToken,
   onSubscribed,
-}: UseWebPushSubscribeOptions): [
+}: WebPushSubscribeOptions): [
   () => Promise<void>,
   { subscribing: boolean; subscribeError: Error | null },
 ] => {
-  const currentFriend = useCurrentFriend();
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
   const subscribe = useCallback((): Promise<void> => {
@@ -103,17 +109,16 @@ export const useWebPushSubscribe = ({
         )
         .then(
           subscription =>
-            registerSubscription(
-              subscription,
-              currentFriend?.access_token,
-            ).then(
-              () => {
-                onSubscribed(subscription);
-              },
-              (error: Error) => {
-                reportProblem(error.message);
-              },
-            ),
+            registerSubscription(subscription, friendAccessToken)
+              .then()
+              .then(
+                () => {
+                  onSubscribed(subscription);
+                },
+                (error: Error) => {
+                  reportProblem(error.message);
+                },
+              ),
           (error: Error) => {
             setSubscribeError(error);
             toast.error("Couldn't subscribe to push notifications", {
@@ -137,7 +142,7 @@ export const useWebPushSubscribe = ({
         }
       });
     }
-  }, [onSubscribed, currentFriend?.access_token]);
+  }, [onSubscribed, friendAccessToken]);
   return [subscribe, { subscribing, subscribeError }];
 };
 
@@ -237,11 +242,4 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
     descriptor: "load web push public key",
     params: { query },
   }).then(({ publicKey }) => publicKey);
-};
-
-const useCurrentFriend = (): Friend | undefined => {
-  const pageProps = usePageProps();
-  if (pageProps.currentFriend) {
-    return pageProps.currentFriend as Friend;
-  }
 };

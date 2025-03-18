@@ -21,6 +21,7 @@ import Feed from "~/components/Feed";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
 import FriendPushNotificationsButton from "~/components/FriendPushNotificationsButton";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
+import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
@@ -171,11 +172,20 @@ UserPage.layout = page => (
     containerSize="xs"
     withGutter
   >
-    {page}
+    <UserPageWebPushProvider>{page}</UserPageWebPushProvider>
   </AppLayout>
 );
 
 export default UserPage;
+
+const UserPageWebPushProvider: FC<PropsWithChildren> = ({ children }) => {
+  const { currentFriend } = usePageProps<UserPageProps>();
+  return (
+    <WebPushProvider friendAccessToken={currentFriend?.access_token}>
+      {children}
+    </WebPushProvider>
+  );
+};
 
 interface InstallModalProps extends Omit<ModalProps, "title" | "children"> {
   user: User;

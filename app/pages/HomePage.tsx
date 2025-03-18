@@ -14,6 +14,7 @@ import Feed from "~/components/Feed";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import NewPost from "~/components/NewPost";
 import UserPushNotificationsButton from "~/components/UserPushNotificationsButton";
+import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
 import { type Friend } from "~/types";
@@ -167,7 +168,7 @@ HomePage.layout = page => (
     containerSize="xs"
     withGutter
   >
-    {page}
+    <WebPushProvider>{page}</WebPushProvider>
   </AppLayout>
 );
 
