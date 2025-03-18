@@ -1,5 +1,6 @@
 import { isIosSafari, isIosWebview } from "@braintree/browser-detection";
 import {
+  ActionIcon,
   Affix,
   AspectRatio,
   type BoxProps,
@@ -11,6 +12,7 @@ import {
 } from "@mantine/core";
 import { type PropsWithChildren } from "react";
 
+import RefreshIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
@@ -23,6 +25,7 @@ import FriendPushNotificationsButton from "~/components/FriendPushNotificationsB
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import WebPushProvider from "~/components/WebPushProvider";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { usePosts } from "~/helpers/posts";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
 import { type Friend, type User } from "~/types";
@@ -33,10 +36,10 @@ export interface UserPageProps extends SharedPageProps {
   user: User;
   currentFriend: Friend | null;
   replyPhoneNumber: string | null;
-  showInstructions: boolean;
   faviconSrc: string;
   faviconImageSrc: string;
   appleTouchIconSrc: string;
+  skipWelcome: boolean;
 }
 
 const ICON_SIZE = 96;
@@ -46,12 +49,10 @@ const UserPage: PageComponent<UserPageProps> = ({
   user,
   currentFriend,
   replyPhoneNumber,
-  showInstructions: initialShowInstructions,
+  skipWelcome,
 }) => {
   const [installModalOpened, setInstallModalOpened] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(
-    initialShowInstructions,
-  );
+  const [showInstructions, setShowInstructions] = useState(skipWelcome);
   const isStandalone = useIsStandalone();
   useDidUpdate(() => {
     if (typeof isStandalone === "boolean") {
@@ -63,30 +64,41 @@ const UserPage: PageComponent<UserPageProps> = ({
   return (
     <>
       <Stack>
-        <Stack align="center" gap="sm">
-          <Image
-            src={user.page_icon.src}
-            srcSet={user.page_icon.src_set}
-            w={ICON_SIZE}
-            h={ICON_SIZE}
-            fit="cover"
-            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-            style={{
-              flex: "unset",
-              boxShadow: "var(--mantine-shadow-lg)",
-            }}
-          />
-          <Stack gap={4} align="center">
-            <Title size="h2" lh="xs" ta="center">
-              {user.name}&apos;s world
-            </Title>
-            {currentFriend && (
-              <FriendPushNotificationsButton
-                friendAccessToken={currentFriend.access_token}
-              />
-            )}
+        <Box pos="relative">
+          <Stack align="center" gap="sm">
+            <Image
+              src={user.page_icon.src}
+              srcSet={user.page_icon.src_set}
+              w={ICON_SIZE}
+              h={ICON_SIZE}
+              fit="cover"
+              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+              style={{
+                flex: "unset",
+                boxShadow: "var(--mantine-shadow-lg)",
+              }}
+            />
+            <Stack gap={4} align="center">
+              <Title size="h2" lh="xs" ta="center">
+                {user.name}&apos;s world
+              </Title>
+              {currentFriend && (
+                <FriendPushNotificationsButton
+                  friendAccessToken={currentFriend.access_token}
+                />
+              )}
+            </Stack>
           </Stack>
-        </Stack>
+          {isStandalone && currentFriend && (
+            <RefreshPostsButton
+              userId={user.id}
+              friendAccessToken={currentFriend.access_token}
+              pos="absolute"
+              top={0}
+              right={0}
+            />
+          )}
+        </Box>
         {currentFriend && !!replyPhoneNumber ? (
           <Box pos="relative">
             <Feed
@@ -339,7 +351,7 @@ const useDirectLinkToInstallInstructions = (user: User) => {
       const instructionsPath = routes.users.show.path({
         handle: user.handle,
         query: {
-          show_instructions: true,
+          skip_welcome: true,
         },
       });
       const instructionsUrl = new URL(instructionsPath, location.origin);
@@ -423,5 +435,33 @@ const InstallAlertBody: FC<InstallAlertBodyProps> = ({
         )}
       </Group>
     </Stack>
+  );
+};
+
+interface RefreshPostsButtonProps extends BoxProps {
+  userId: string;
+  friendAccessToken: string;
+}
+
+const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
+  userId,
+  friendAccessToken,
+  ...otherProps
+}) => {
+  const { mutate, isValidating } = usePosts(userId, {
+    revalidateOnMount: false,
+    friendAccessToken,
+  });
+  return (
+    <ActionIcon
+      size="lg"
+      loading={isValidating}
+      onClick={() => {
+        void mutate();
+      }}
+      {...otherProps}
+    >
+      <RefreshIcon />
+    </ActionIcon>
   );
 };

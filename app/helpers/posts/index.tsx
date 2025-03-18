@@ -1,6 +1,11 @@
 import { useNetwork } from "@mantine/hooks";
 import { type SVGProps } from "react";
-import useSWRInfinite, { type SWRInfiniteKeyLoader } from "swr/infinite";
+import { mutate } from "swr";
+import useSWRInfinite, {
+  type SWRInfiniteConfiguration,
+  type SWRInfiniteKeyLoader,
+  unstable_serialize,
+} from "swr/infinite";
 
 import JournalEntryIcon from "~icons/basil/book-solid";
 import InvitationIcon from "~icons/heroicons/envelope-open-20-solid";
@@ -33,12 +38,13 @@ export interface PostsData {
   pagination: { next: string | null };
 }
 
-export const postsGetKey = (
+const postsGetKey = (
   userId: string,
-  options?: PostsOptions,
+  friendAccessToken?: string,
+  limit?: number,
 ): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
-    const query: Record<string, any> = { limit: options?.limit ?? 5 };
+    const query: Record<string, any> = { limit: limit ?? 5 };
     if (previousPageData) {
       const { next } = previousPageData.pagination;
       if (!next) {
@@ -49,22 +55,23 @@ export const postsGetKey = (
     return routes.posts.index.path({
       user_id: userId,
       query: {
-        limit: options?.limit,
-        friend_token: options?.friendAccessToken,
+        limit,
+        friend_token: friendAccessToken,
       },
     });
   };
 };
 
-export interface PostsOptions {
+export interface PostsOptions extends SWRInfiniteConfiguration<PostsData> {
   friendAccessToken?: string;
   limit?: number;
 }
 
 export const usePosts = (userId: string, options?: PostsOptions) => {
   const { online } = useNetwork();
+  const { friendAccessToken, limit, ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    postsGetKey(userId, options),
+    postsGetKey(userId, friendAccessToken, limit),
     (path: string) =>
       fetchRoute(path, {
         descriptor: "load posts",
@@ -72,6 +79,7 @@ export const usePosts = (userId: string, options?: PostsOptions) => {
     {
       keepPreviousData: true,
       isOnline: () => online,
+      ...swrConfiguration,
     },
   );
   const posts = useMemo(() => data?.flatMap(({ posts }) => posts), [data]);
@@ -82,4 +90,14 @@ export const usePosts = (userId: string, options?: PostsOptions) => {
     }
   }, [data]);
   return { posts, hasMorePosts, ...swrResponse };
+};
+
+export const mutatePosts = (
+  userId: string,
+  friendAccessToken?: string,
+  limit?: number,
+) => {
+  void mutate(
+    unstable_serialize(postsGetKey(userId, friendAccessToken, limit)),
+  );
 };

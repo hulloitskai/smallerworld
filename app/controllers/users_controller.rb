@@ -9,9 +9,9 @@ class UsersController < ApplicationController
   # == Actions
   # GET /@:handle
   def show
-    show_instructions = T.let(params[:show_instructions].truthy?, T::Boolean)
     handle = T.let(params.fetch(:handle), String)
     user = User.friendly.find(handle)
+    reply_phone_number = user.phone_number if current_friend
     page_icon_blob = user.page_icon_blob!
     favicon_variant =
       page_icon_blob.variant(resize_to_fill: [48, 48], format: "png")
@@ -22,18 +22,19 @@ class UsersController < ApplicationController
     current_friend = if (access_token = params[:friend_token])
       user.friends.find_by(access_token:)
     end
-    reply_phone_number = if current_friend
-      user.phone_number
-    end
+    skip_welcome = T.let(
+      params[:skip_welcome].truthy?,
+      T::Boolean,
+    )
     render(inertia: "UserPage", props: {
       user: UserSerializer.one(user),
       "currentFriend" => FriendSerializer.one_if(current_friend),
       "replyPhoneNumber" => reply_phone_number,
-      "showInstructions" => show_instructions,
       "faviconSrc" => rails_representation_path(favicon_variant),
       "faviconImageSrc" => rails_representation_path(favicon_image_variant),
       "appleTouchIconSrc" =>
         rails_representation_path(apple_touch_icon_variant),
+      "skipWelcome" => skip_welcome,
     })
   end
 

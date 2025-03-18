@@ -1,7 +1,4 @@
-import { mutate } from "swr";
-import { unstable_serialize } from "swr/infinite";
-
-import { postsGetKey } from "~/helpers/posts";
+import { mutatePosts } from "~/helpers/posts";
 import { type Post } from "~/types";
 
 import DeleteButton from "./DeleteButton";
@@ -32,7 +29,7 @@ const DeletePostButton: FC<DeletePostButtonProps> = ({ postId }) => {
     params: { id: postId },
     descriptor: "delete post",
     onSuccess: () => {
-      void mutate(unstable_serialize(postsGetKey(currentUser.id)));
+      void mutatePosts(currentUser.id);
     },
   });
 

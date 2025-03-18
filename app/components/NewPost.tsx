@@ -5,17 +5,15 @@ import {
   InPortal,
   OutPortal,
 } from "react-reverse-portal";
-import { mutate } from "swr";
-import { unstable_serialize } from "swr/infinite";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import {
+  mutatePosts,
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
   POST_TYPES,
-  postsGetKey,
 } from "~/helpers/posts";
 import { type PostType } from "~/types";
 
@@ -164,7 +162,7 @@ const NewPostForm: FC<NewPostFormProps> = ({ postType, onPostCreated }) => {
     onSuccess: (data, { reset }) => {
       reset();
       editorRef.current?.commands.clearContent();
-      void mutate(unstable_serialize(postsGetKey(currentUser.id)));
+      void mutatePosts(currentUser.id);
       onPostCreated();
     },
   });
