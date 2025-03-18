@@ -130,9 +130,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
       <SidebarControlsProvider controls={sidebarControls}>
         <AppShell
           withBorder={LAYOUT_WITH_BORDER}
-          {...(isStandalone === false && {
-            header: { height: 46 },
-          })}
+          header={{ height: 46 }}
           {...(sidebar && {
             navbar: {
               width: 240,

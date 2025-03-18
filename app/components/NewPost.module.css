@@ -15,3 +15,9 @@
     background-color: var(--mantine-color-primary-filled-hover);
   }
 }
+
+.emojiButton {
+  @mixin dark {
+    background-color: transparent;
+  }
+}

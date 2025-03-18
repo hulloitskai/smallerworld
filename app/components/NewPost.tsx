@@ -179,6 +179,7 @@ const NewPostForm: FC<NewPostFormProps> = ({ postType, onPostCreated }) => {
           >
             {({ open }) => (
               <ActionIcon
+                className={classes.emojiButton}
                 variant="default"
                 size={36}
                 onClick={() => {
@@ -192,7 +193,10 @@ const NewPostForm: FC<NewPostFormProps> = ({ postType, onPostCreated }) => {
                 {values.emoji ? (
                   <Text size="xl">{values.emoji}</Text>
                 ) : (
-                  <Box component={EmojiIcon} c="dimmed" />
+                  <Box
+                    component={EmojiIcon}
+                    c="var(--mantine-color-placeholder)"
+                  />
                 )}
               </ActionIcon>
             )}

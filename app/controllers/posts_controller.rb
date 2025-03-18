@@ -3,7 +3,7 @@
 
 class PostsController < ApplicationController
   # == Filters
-  before_action :authenticate_user!, only: %i[create destroy]
+  before_action :authenticate_user!, only: %i[stats create destroy]
 
   # == Actions
   # GET /users/1/posts
@@ -19,6 +19,16 @@ class PostsController < ApplicationController
       pagination: {
         next: pagy.next,
       },
+    })
+  end
+
+  # GET /posts/1/stats
+  def stats
+    post_id = T.let(params.fetch(:id), String)
+    post = Post.find(post_id)
+    authorize!(post, to: :manage?)
+    render(json: {
+      "notifiedFriends" => post.notified_friends.count,
     })
   end
 

@@ -50,6 +50,7 @@ declare global {
   const NotificationIcon: typeof import('~/components/icons')['NotificationIcon']
   const OpenExternalIcon: typeof import('~/components/icons')['OpenExternalIcon']
   const PhoneIcon: typeof import('~/components/icons')['PhoneIcon']
+  const RefreshIcon: typeof import('~/components/icons')['RefreshIcon']
   const RemoveIcon: typeof import('~/components/icons')['RemoveIcon']
   const SaveIcon: typeof import('~/components/icons')['SaveIcon']
   const SearchIcon: typeof import('~/components/icons')['SearchIcon']

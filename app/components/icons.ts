@@ -1,6 +1,7 @@
 export { default as SaveIcon } from "~icons/basil/save-solid";
 export { default as InstallIcon } from "~icons/heroicons/arrow-down-on-square-20-solid";
 export { default as SignOutIcon } from "~icons/heroicons/arrow-left-on-rectangle-20-solid";
+export { default as RefreshIcon } from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 export { default as ContinueIcon } from "~icons/heroicons/arrow-right-circle-20-solid";
 export { default as SignInIcon } from "~icons/heroicons/arrow-right-on-rectangle-20-solid";
 export { default as OpenExternalIcon } from "~icons/heroicons/arrow-top-right-on-square-20-solid";

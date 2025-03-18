@@ -33,7 +33,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
         </Popover.Target>
         <Popover.Dropdown>
           <Text size="sm" c="dimmed">
-            When emoji reactions will one day live here :)
+            emoji reactions will one day live here :)
           </Text>
         </Popover.Dropdown>
       </Popover>

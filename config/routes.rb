@@ -74,7 +74,11 @@ Rails.application.routes.draw do
   end
 
   # == Posts
-  resources :posts, only: %i[create destroy], export: true
+  resources :posts, only: %i[create destroy], export: true do
+    member do
+      get :stats
+    end
+  end
   resources :users, only: [] do
     resources :posts, only: :index, export: true
   end

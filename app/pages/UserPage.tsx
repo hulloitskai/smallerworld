@@ -12,7 +12,6 @@ import {
 } from "@mantine/core";
 import { type PropsWithChildren } from "react";
 
-import RefreshIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
@@ -331,7 +330,7 @@ const InstallModal: FC<InstallModalProps> = ({
                 <HomeScreenPreview
                   pageName={user.name}
                   pageIcon={user.page_icon}
-                  arrowLabel="this one!"
+                  arrowLabel="open me!"
                 />
               </Stack>
             </List.Item>
@@ -448,16 +447,24 @@ const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
   friendAccessToken,
   ...otherProps
 }) => {
-  const { mutate, isValidating } = usePosts(userId, {
+  const { mutate, isValidating, posts } = usePosts(userId, {
     revalidateOnMount: false,
     friendAccessToken,
   });
+
   return (
     <ActionIcon
       size="lg"
       loading={isValidating}
       onClick={() => {
-        void mutate();
+        void mutate().then(pages => {
+          const newPosts = pages?.flatMap(page => page.posts);
+          if (posts && newPosts && newPosts.length === posts.length) {
+            toast.success("no new posts", {
+              description: "you're all caught up :)",
+            });
+          }
+        });
       }}
       {...otherProps}
     >

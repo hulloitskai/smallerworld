@@ -1,3 +1,6 @@
+// import { ActionIcon } from "@mantine/core";
+import { useInViewport } from "@mantine/hooks";
+
 import { mutatePosts } from "~/helpers/posts";
 import { type Post } from "~/types";
 
@@ -10,8 +13,29 @@ export interface AuthorPostCardActionsProps {
 }
 
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
+  const { ref, inViewport } = useInViewport();
+  const { data } = useRouteSWR<{ notifiedFriends: number }>(
+    routes.posts.stats,
+    {
+      descriptor: "load post stats",
+      params: inViewport ? { id: post.id } : null,
+      refreshInterval: 5000,
+      isVisible: () => inViewport,
+    },
+  );
+  const { notifiedFriends } = data ?? {};
+
   return (
-    <Group justify="end" gap={2}>
+    <Group {...{ ref }} justify="space-between" gap={2}>
+      {!!notifiedFriends && (
+        <Badge
+          variant="transparent"
+          leftSection={<NotificationIcon />}
+          className={classes.notifiedBadge}
+        >
+          {notifiedFriends} notified
+        </Badge>
+      )}
       <DeletePostButton postId={post.id} />
     </Group>
   );

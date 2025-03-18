@@ -10,3 +10,9 @@
   margin-inline: auto;
   border: 5px solid var(--mantine-color-white);
 }
+
+.emojiButton {
+  @mixin dark {
+    background-color: transparent;
+  }
+}

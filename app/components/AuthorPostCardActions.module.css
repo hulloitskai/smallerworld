@@ -7,3 +7,18 @@
     }
   }
 }
+
+.notifiedBadge {
+  color: var(--mantine-color-dimmed);
+
+  :global(.mantine-Badge-section) {
+    &[data-position="left"] {
+      font-size: 10px;
+    }
+  }
+
+  :global(.mantine-Badge-label) {
+    text-transform: none;
+    font-weight: 500;
+  }
+}

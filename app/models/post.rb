@@ -95,8 +95,9 @@ class Post < ApplicationRecord
   end
 
   sig { returns(Friend::PrivateRelation) }
-  def friends_reached
-    Friend.where(id: notifications.to_friends.delivered.select(:recipient_id))
+  def notified_friends
+    delivered_notifications = notifications.delivered.to_friends
+    Friend.where(id: delivered_notifications.select(:recipient_id)).distinct
   end
 
   private

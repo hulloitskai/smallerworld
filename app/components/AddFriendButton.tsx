@@ -92,6 +92,7 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
             >
               {({ open }) => (
                 <ActionIcon
+                  className={classes.emojiButton}
                   variant="default"
                   size={36}
                   disabled={!!createdFriend}
