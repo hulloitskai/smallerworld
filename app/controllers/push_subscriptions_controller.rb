@@ -3,7 +3,7 @@
 
 class PushSubscriptionsController < ApplicationController
   # == Filters
-  before_action :authentication_required!, only: :create
+  before_action :require_authentication!, only: :create
 
   # == Actions
   # POST /push_subscriptions/lookup
