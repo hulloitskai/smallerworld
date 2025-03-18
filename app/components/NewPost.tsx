@@ -52,11 +52,7 @@ const NewPost: FC<NewPostProps> = () => {
         />
       </InPortal>
       <Affix
-        position={{
-          bottom: `calc(${affixInset} + env(safe-area-inset-bottom, 0px))`,
-          left: affixInset,
-          right: affixInset,
-        }}
+        position={{ bottom: affixInset, left: affixInset, right: affixInset }}
       >
         <Center style={{ pointerEvents: "none" }}>
           <Transition transition="pop" mounted={!postType}>
