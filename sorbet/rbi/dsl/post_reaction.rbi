@@ -390,6 +390,9 @@ class PostReaction
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def build_post(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
+    def build_post_author(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend(*args, &blk); end
 
@@ -401,6 +404,12 @@ class PostReaction
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_post!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
+    def create_post_author(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
+    def create_post_author!(*args, &blk); end
 
     sig { returns(T.nilable(::Friend)) }
     def friend; end
@@ -414,11 +423,31 @@ class PostReaction
     sig { returns(T::Boolean) }
     def friend_previously_changed?; end
 
+    sig { returns(T::Array[T.untyped]) }
+    def notification_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def notification_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `PostReaction` class because it declared `has_many :notifications`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Notification::PrivateCollectionProxy) }
+    def notifications; end
+
+    sig { params(value: T::Enumerable[::Notification]).void }
+    def notifications=(value); end
+
     sig { returns(T.nilable(::Post)) }
     def post; end
 
     sig { params(value: T.nilable(::Post)).void }
     def post=(value); end
+
+    sig { returns(T.nilable(::User)) }
+    def post_author; end
+
+    sig { params(value: T.nilable(::User)).void }
+    def post_author=(value); end
 
     sig { returns(T::Boolean) }
     def post_changed?; end
@@ -432,11 +461,17 @@ class PostReaction
     sig { returns(T.nilable(::Post)) }
     def reload_post; end
 
+    sig { returns(T.nilable(::User)) }
+    def reload_post_author; end
+
     sig { void }
     def reset_friend; end
 
     sig { void }
     def reset_post; end
+
+    sig { void }
+    def reset_post_author; end
   end
 
   module GeneratedAssociationRelationMethods

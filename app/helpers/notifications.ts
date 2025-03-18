@@ -1,4 +1,8 @@
-import { type Notification, type PostNotificationPayload } from "~/types";
+import {
+  type Notification,
+  type PostNotificationPayload,
+  type PostReactionNotificationPayload,
+} from "~/types";
 
 import { POST_TYPE_TO_LABEL } from "./posts/labels";
 import routes from "./routes";
@@ -30,6 +34,22 @@ export const renderNotification = (
         image: post.image_src ?? undefined,
       };
     }
+    case "PostReaction": {
+      const { reaction } =
+        notification.payload as PostReactionNotificationPayload;
+      const { friend, post, emoji } = reaction;
+      let body = post.body_snippet;
+      if (post.title_snippet) {
+        body = `${post.title_snippet}: ${body}`;
+      }
+      if (post.emoji) {
+        body = `${post.emoji} ${body}`;
+      }
+      return {
+        title: `${friend.name} reacted ${emoji} to your ${POST_TYPE_TO_LABEL[post.type]}`,
+        body,
+      };
+    }
     default:
       throw new Error(`Unknown notification type: ${notification.type}`);
   }
@@ -45,6 +65,15 @@ export const notificationActionUrl = (notification: Notification): string => {
         query: {
           friend_token: friend_access_token,
           post_id: post.id,
+        },
+      });
+    }
+    case "PostReaction": {
+      const { reaction } =
+        notification.payload as PostReactionNotificationPayload;
+      return routes.home.show.path({
+        query: {
+          post_id: reaction.post.id,
         },
       });
     }

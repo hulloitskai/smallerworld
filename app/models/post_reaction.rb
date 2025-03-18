@@ -25,8 +25,11 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PostReaction < ApplicationRecord
+  include Noticeable
+
   # == Associations
   belongs_to :post, inverse_of: :reactions
+  has_one :post_author, through: :post, source: :author
   belongs_to :friend
 
   sig { returns(Friend) }
@@ -34,6 +37,33 @@ class PostReaction < ApplicationRecord
     friend or raise ActiveRecord::RecordNotFound, "Missing friend"
   end
 
+  sig { returns(User) }
+  def post_author!
+    post_author or raise ActiveRecord::RecordNotFound, "Missing post author"
+  end
+
   # == Validations
   validates :emoji, presence: true, uniqueness: { scope: %i[post friend] }
+
+  # == Callbacks
+  after_create :create_notifications!
+
+  # == Noticeable
+  sig do
+    override
+      .params(recipient: T.all(ActiveRecord::Base, Notifiable))
+      .returns(T::Hash[String, T.untyped])
+  end
+  def notification_payload(recipient)
+    payload = PostReactionNotificationPayload.new(
+      reaction: self,
+    )
+    PostReactionNotificationPayloadSerializer.one(payload)
+  end
+
+  # == Methods
+  sig { void }
+  def create_notifications!
+    notifications.create!(recipient: friend!)
+  end
 end

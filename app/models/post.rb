@@ -75,7 +75,7 @@ class Post < ApplicationRecord
   validates :title, presence: true, allow_nil: true
 
   # == Callbacks
-  after_create :notify_friends!
+  after_create :create_notifications!
 
   # == Noticeable
   sig do
@@ -97,7 +97,7 @@ class Post < ApplicationRecord
 
   # == Methods
   sig { void }
-  def notify_friends!
+  def create_notifications!
     transaction do
       friends_to_notify = Friend.where(user_id: author_id).subscribed_to(type)
       friends_to_notify.select(:id).find_each do |friend|

@@ -70,6 +70,12 @@ module GeneratedPathHelpersModule
   def post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def post_reaction_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def post_reactions_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

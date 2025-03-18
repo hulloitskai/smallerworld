@@ -67,6 +67,12 @@ module GeneratedUrlHelpersModule
   def pause_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def post_reaction_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def post_reactions_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
