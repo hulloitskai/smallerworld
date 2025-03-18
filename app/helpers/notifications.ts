@@ -15,7 +15,7 @@ export const renderNotification = (
 ): RenderedNotification => {
   switch (notification.type) {
     case "Post": {
-      const { post, author } = notification.payload as PostNotificationPayload;
+      const { post } = notification.payload as PostNotificationPayload;
       let body = post.body_snippet;
       if (post.title_snippet) {
         body = `${post.title_snippet}: ${body}`;
@@ -24,7 +24,7 @@ export const renderNotification = (
         body = `${post.emoji} ${body}`;
       }
       return {
-        title: `new ${POST_TYPE_TO_LABEL[post.type]} from ${author.name}`,
+        title: `new ${POST_TYPE_TO_LABEL[post.type]}`,
         body,
       };
     }
