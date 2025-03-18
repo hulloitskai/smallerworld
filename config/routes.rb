@@ -54,6 +54,8 @@ Rails.application.routes.draw do
 
   # == Signups
   resource :signup, only: %i[new create], path_names: { new: "" }, export: true
+  get :edit, to: "signups#edit", export: true
+  post :edit, to: "signups#update", export: true
 
   # == Friends
   resources :friends, only: %i[index create], export: true do

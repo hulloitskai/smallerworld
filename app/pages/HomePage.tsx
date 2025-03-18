@@ -37,66 +37,82 @@ const HomePage: PageComponent<HomePageProps> = () => {
   return (
     <>
       <Stack gap="lg" pb="xl">
-        <Stack align="center" gap="sm">
-          <Image
-            src={user.page_icon.src}
-            srcSet={user.page_icon.src_set}
-            w={ICON_SIZE}
-            h={ICON_SIZE}
-            fit="cover"
-            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-            style={{ boxShadow: "var(--mantine-shadow-lg)" }}
-          />
-          <Stack gap={4} align="center">
-            <Title size="h2" lh="xs" ta="center">
-              {user.name}&apos;s world
-            </Title>
-            <Group gap={8}>
-              <Button
-                component={Link}
-                href={routes.friends.index.path()}
-                radius="xl"
-                display="block"
-                leftSection={
-                  friends && !isEmpty(friends) ? (
-                    <Avatar.Group className={classes.avatarGroup}>
-                      {takeRight(friends, 3).map(({ id, emoji }) => (
-                        <Avatar key={id} size="sm">
-                          {emoji ? (
-                            <Text fz="md">{emoji}</Text>
-                          ) : (
-                            <Box component={UserIcon} fz="sm" c="primary" />
-                          )}
-                        </Avatar>
-                      ))}
-                    </Avatar.Group>
-                  ) : (
-                    <Box component={FriendsIcon} />
-                  )
-                }
-              >
-                your friends
-              </Button>
-              {isStandalone === false && (
-                <ActionIcon
-                  variant="light"
-                  size="lg"
-                  onClick={() => {
-                    openModal({
-                      title: "enable notifications",
-                      children: (
-                        <InstallModalBody onInstalled={closeAllModals} />
-                      ),
-                    });
-                  }}
+        <Box pos="relative">
+          <Stack align="center" gap="sm">
+            <Image
+              src={user.page_icon.src}
+              srcSet={user.page_icon.src_set}
+              w={ICON_SIZE}
+              h={ICON_SIZE}
+              fit="cover"
+              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+              style={{
+                flex: "unset",
+                boxShadow: "var(--mantine-shadow-lg)",
+              }}
+            />
+            <Stack gap={4} align="center">
+              <Title size="h2" lh="xs" ta="center">
+                {user.name}&apos;s world
+              </Title>
+              <Group gap={8}>
+                <Button
+                  component={Link}
+                  href={routes.friends.index.path()}
+                  radius="xl"
+                  display="block"
+                  leftSection={
+                    friends && !isEmpty(friends) ? (
+                      <Avatar.Group className={classes.avatarGroup}>
+                        {takeRight(friends, 3).map(({ id, emoji }) => (
+                          <Avatar key={id} size="sm">
+                            {emoji ? (
+                              <Text fz="md">{emoji}</Text>
+                            ) : (
+                              <Box component={UserIcon} fz="sm" c="primary" />
+                            )}
+                          </Avatar>
+                        ))}
+                      </Avatar.Group>
+                    ) : (
+                      <Box component={FriendsIcon} />
+                    )
+                  }
                 >
-                  <NotificationIcon />
-                </ActionIcon>
-              )}
-              {isStandalone === true && <UserPushNotificationsButton />}
-            </Group>
+                  your friends
+                </Button>
+                {isStandalone === false && (
+                  <ActionIcon
+                    variant="light"
+                    size="lg"
+                    onClick={() => {
+                      openModal({
+                        title: "enable notifications",
+                        children: (
+                          <InstallModalBody onInstalled={closeAllModals} />
+                        ),
+                      });
+                    }}
+                  >
+                    <NotificationIcon />
+                  </ActionIcon>
+                )}
+                {isStandalone === true && <UserPushNotificationsButton />}
+              </Group>
+            </Stack>
           </Stack>
-        </Stack>
+          <Button
+            pos="absolute"
+            top={0}
+            right={0}
+            component={Link}
+            variant="subtle"
+            href={routes.signups.edit.path()}
+            size="compact-sm"
+          >
+            edit
+          </Button>
+        </Box>
         {!!friends && isEmpty(friends) && (
           <Alert>
             <Group justify="space-between">

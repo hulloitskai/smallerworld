@@ -31,10 +31,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
       },
     }),
     validate: {
-      name: hasLength(
-        { min: 1, max: 30 },
-        "Must be between 1 and 30 characters",
-      ),
+      name: hasLength({ max: 30 }, "Must be less than 30 characters"),
       prefixed_handle: (value: string) => {
         const handle = value.substring(1);
         if (handle.length < 5) {
