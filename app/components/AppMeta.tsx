@@ -9,6 +9,11 @@ const APP_META_SITE_NAME = "smaller world";
 const APP_META_SITE_DESCRIPTION = "a smaller world for you and your friends :)";
 const APP_META_SITE_IMAGE = "/banner.png";
 const APP_META_TITLE_SEPARATOR = "|";
+const APP_ICONS: AppIcons = {
+  faviconSrc: "/favicon.ico",
+  faviconImageSrc: "/favicon-96x96.png",
+  appleTouchIconSrc: "/apple-touch-icon.png",
+};
 
 export interface AppMetaProps {
   siteName?: string;
@@ -17,6 +22,13 @@ export interface AppMetaProps {
   imageUrl?: string | null;
   manifestUrl?: string | null;
   noIndex?: boolean;
+  icons?: AppIcons;
+}
+
+export interface AppIcons {
+  faviconSrc: string;
+  faviconImageSrc: string;
+  appleTouchIconSrc: string;
 }
 
 const AppMeta: FC<AppMetaProps> = ({
@@ -26,6 +38,7 @@ const AppMeta: FC<AppMetaProps> = ({
   noIndex,
   siteName = APP_META_SITE_NAME,
   title: titleProp,
+  icons = APP_ICONS,
 }) => {
   const isStandalone = useIsStandalone();
   const pageVisibility = useDocumentVisibility();
@@ -79,6 +92,18 @@ const AppMeta: FC<AppMetaProps> = ({
       )}
       {!!imageUrl && <meta name="twitter:image" content={imageUrl} />}
       {noIndex && <meta name="robots" content="noindex" />}
+      <link rel="shortcut icon" href={icons.faviconSrc} />
+      <link
+        rel="icon"
+        type="image/png"
+        href={icons.faviconImageSrc}
+        sizes="96x96"
+      />
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href={icons.appleTouchIconSrc}
+      />
       <link
         rel="preload"
         as="font"

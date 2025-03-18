@@ -24,10 +24,11 @@ import { SidebarControlsProvider } from "./SidebarControlsProvider";
 import classes from "./AppLayout.module.css";
 
 export interface AppLayoutProps<PageProps extends SharedPageProps>
-  extends Omit<AppMetaProps, "title" | "description" | "manifestUrl">,
+  extends Omit<AppMetaProps, "title" | "description" | "manifestUrl" | "icons">,
     Omit<AppShellProps, "title"> {
   title?: DynamicProp<PageProps, AppMetaProps["title"]>;
   description?: DynamicProp<PageProps, AppMetaProps["description"]>;
+  icons?: DynamicProp<PageProps, AppMetaProps["icons"]>;
   manifestUrl?: DynamicProp<PageProps, AppMetaProps["manifestUrl"]>;
   breadcrumbs?: DynamicProp<PageProps, (AppBreadcrumb | null | false)[]>;
   withContainer?: boolean;
@@ -49,6 +50,7 @@ const LAYOUT_WITH_BORDER = false;
 const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   title: titleProp,
   description: descriptionProp,
+  icons: iconsProp,
   manifestUrl: manifestUrlProp,
   imageUrl,
   noIndex,
@@ -71,6 +73,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   const title = useResolveDynamicProp(titleProp, pageProps);
   const description = useResolveDynamicProp(descriptionProp, pageProps);
   const manifestUrl = useResolveDynamicProp(manifestUrlProp, pageProps);
+  const icons = useResolveDynamicProp(iconsProp, pageProps);
 
   // == Breadcrumbs
   const breadcrumbs = useMemo<AppBreadcrumb[]>(() => {
@@ -79,9 +82,11 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
       : [];
   }, [breadcrumbsProp, pageProps]);
 
+  // == Header
+  const logoHref = useResolveDynamicProp(logoHrefProp, pageProps);
+
   // == Sidebar
   const sidebar = useResolveDynamicProp(sidebarProp, pageProps);
-  const logoHref = useResolveDynamicProp(logoHrefProp, pageProps);
   const [
     sidebarOpened,
     { toggle: toggleSidebar, close: closeSidebar, open: openSidebar },
@@ -118,7 +123,9 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 
   return (
     <PageLayout>
-      <AppMeta {...{ title, description, manifestUrl, imageUrl, noIndex }} />
+      <AppMeta
+        {...{ title, description, manifestUrl, imageUrl, noIndex, icons }}
+      />
       <SidebarControlsProvider controls={sidebarControls}>
         <AppShell
           withBorder={LAYOUT_WITH_BORDER}

@@ -34,6 +34,9 @@ export interface UserPageProps extends SharedPageProps {
   currentFriend: Friend | null;
   replyPhoneNumber: string | null;
   showInstructions: boolean;
+  faviconSrc: string;
+  faviconImageSrc: string;
+  appleTouchIconSrc: string;
 }
 
 const ICON_SIZE = 96;
@@ -161,6 +164,11 @@ const UserPage: PageComponent<UserPageProps> = ({
 UserPage.layout = page => (
   <AppLayout<UserPageProps>
     title={({ user }) => `${user.name}'s world`}
+    icons={({ faviconSrc, faviconImageSrc, appleTouchIconSrc }) => ({
+      faviconSrc,
+      faviconImageSrc,
+      appleTouchIconSrc,
+    })}
     manifestUrl={({ user, currentFriend }) =>
       currentFriend
         ? routes.users.manifest.path({

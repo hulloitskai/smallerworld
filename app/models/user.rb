@@ -37,6 +37,12 @@ class User < ApplicationRecord
   # == Attachments
   has_one_attached :page_icon
 
+  sig { returns(ActiveStorage::Blob) }
+  def page_icon_blob!
+    page_icon_blob or
+      raise ActiveRecord::RecordNotFound, "Missing page icon blob"
+  end
+
   # == Normalizations
   normalizes :phone_number, with: ->(number) {
     phone = Phonelib.parse(number)
