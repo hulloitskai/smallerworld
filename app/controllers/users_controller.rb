@@ -87,6 +87,11 @@ class UsersController < ApplicationController
     join_request_params = params.expect(join_request: %i[name phone_number])
     phone_number = join_request_params.delete(:phone_number)
     join_request = user.join_requests.find_or_initialize_by(phone_number:)
+    if join_request.persisted? &&
+        user.friends.exists?(join_request_id: join_request.id)
+      raise "You have already been invited."
+    end
+
     if join_request.update(join_request_params)
       render(json: {
         "joinRequest" => JoinRequestSerializer.one(join_request),

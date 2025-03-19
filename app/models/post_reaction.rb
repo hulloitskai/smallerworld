@@ -64,6 +64,6 @@ class PostReaction < ApplicationRecord
   # == Methods
   sig { void }
   def create_notifications!
-    notifications.create!(recipient: friend!)
+    notifications.create!(recipient: post_author!)
   end
 end

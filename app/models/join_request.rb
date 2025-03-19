@@ -24,9 +24,16 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class JoinRequest < ApplicationRecord
+  include Noticeable
+
   # == Associations
   belongs_to :user
   has_one :friend, dependent: :nullify
+
+  sig { returns(User) }
+  def user!
+    user or raise ActiveRecord::RecordNotFound, "Missing user"
+  end
 
   # == Validations
   validates :name, :phone_number, presence: true
@@ -35,4 +42,26 @@ class JoinRequest < ApplicationRecord
   # == Scopes
   scope :pending, -> { where.missing(:friend) }
   scope :accepted, -> { where.associated(:friend) }
+
+  # == Callbacks
+  after_create :create_notifications!
+
+  # == Noticeable
+  sig do
+    override
+      .params(recipient: T.all(ActiveRecord::Base, Notifiable))
+      .returns(T::Hash[String, T.untyped])
+  end
+  def notification_payload(recipient)
+    payload = JoinRequestNotificationPayload.new(
+      join_request: self,
+    )
+    JoinRequestNotificationPayloadSerializer.one(payload)
+  end
+
+  # == Methods
+  sig { void }
+  def create_notifications!
+    notifications.create!(recipient: user!)
+  end
 end

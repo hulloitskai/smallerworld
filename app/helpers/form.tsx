@@ -213,9 +213,9 @@ export const useForm = <
                 });
                 console.error(`Failed to ${descriptor}`, error);
                 if (!failSilently) {
-                  toast.error(`Failed to ${descriptor}`, {
+                  toast.error(`failed to ${descriptor}`, {
                     description: sentencify(
-                      error.message || "An unknown error occurred",
+                      error.message || "an unknown error occurred",
                     ),
                   });
                 }
@@ -226,16 +226,16 @@ export const useForm = <
                 console.warn(`Couldn't ${descriptor}`, errors);
                 const formWithErrors = { ...form, errors };
                 if (!failSilently) {
-                  showFormErrorsAlert(formWithErrors, `Couldn't ${descriptor}`);
+                  showFormErrorsAlert(formWithErrors, `couldn't ${descriptor}`);
                 }
                 onError?.(formWithErrors);
               }
             } else {
               console.error("Unknown error response", responseError);
               if (!failSilently) {
-                toast.error(`Failed to ${descriptor}`, {
+                toast.error(`failed to ${descriptor}`, {
                   description: sentencify(
-                    responseError.message || "An unknown error occurred",
+                    responseError.message || "an unknown error occurred",
                   ),
                 });
               }
@@ -251,7 +251,7 @@ export const useForm = <
     errors => {
       const formWithErrors = { ...form, errors };
       onError?.(formWithErrors);
-      showFormErrorsAlert(formWithErrors, `Couldn't ${descriptor}`);
+      showFormErrorsAlert(formWithErrors, `couldn't ${descriptor}`);
     },
   );
   return {

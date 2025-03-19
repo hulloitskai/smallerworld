@@ -1,4 +1,5 @@
 import {
+  type JoinRequestNotificationPayload,
   type Notification,
   type PostNotificationPayload,
   type PostReactionNotificationPayload,
@@ -50,6 +51,14 @@ export const renderNotification = (
         body,
       };
     }
+    case "JoinRequest": {
+      const { join_request } =
+        notification.payload as JoinRequestNotificationPayload;
+      return {
+        title: `${join_request.name} wants to join your world`,
+        body: `request from ${join_request.name} (${join_request.phone_number})`,
+      };
+    }
     default:
       throw new Error(`Unknown notification type: ${notification.type}`);
   }
@@ -74,6 +83,15 @@ export const notificationActionUrl = (notification: Notification): string => {
       return routes.home.show.path({
         query: {
           post_id: reaction.post.id,
+        },
+      });
+    }
+    case "JoinRequest": {
+      const { join_request } =
+        notification.payload as JoinRequestNotificationPayload;
+      return routes.joinRequests.index.path({
+        query: {
+          join_request_id: join_request.id,
         },
       });
     }
