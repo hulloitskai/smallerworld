@@ -36,8 +36,15 @@ export const useInstallPromptEvent = ():
 export const useClearAppBadge = () => {
   const isStandalone = useIsStandalone();
   const visibility = useDocumentVisibility();
+  const currentUser = useCurrentUser();
+  const currentFriend = useCurrentFriend();
   const { trigger } = useRouteMutation(routes.notifications.cleared, {
     descriptor: "mark notifications as cleared",
+    params: currentFriend
+      ? { query: { friend_token: currentFriend.access_token } }
+      : currentUser
+        ? {}
+        : null,
     onSuccess: () => {
       console.info("Notifications cleared");
     },
