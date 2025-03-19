@@ -70,6 +70,7 @@ class User < ApplicationRecord
   def create_welcome_post!
     posts.create!(
       type: "journal_entry",
+      visibility: :public,
       emoji: "🌎",
       title: "welcome to my smaller world!",
       body_html: "<p>this is a space where i'll:</p><ul><li><p>keep you updated about what's actually going on in my life</p></li><li><p>post asks for help when i need it</p></li><li><p>let you know about events and adventures that you can join me on</p></li></ul>", # rubocop:disable Layout/LineLength
