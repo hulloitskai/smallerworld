@@ -96,6 +96,12 @@
         font-weight: 500;
       }
 
+      p {
+        &:empty {
+          height: 8px;
+        }
+      }
+
       :where(p) {
         &:not(:last-child) {
           margin-bottom: var(--mantine-spacing-xs);
