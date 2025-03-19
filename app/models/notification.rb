@@ -38,7 +38,7 @@ class Notification < ApplicationRecord
   belongs_to :noticeable, polymorphic: true
   belongs_to :recipient, polymorphic: true
 
-  sig { returns(T.all(ActiveRecord::Base, Notifiable)) }
+  sig { returns(T.any(Friend, User)) }
   def recipient
     super
   end

@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
   end
 
   # == Filter handlers
-  sig { void }
+  sig { returns(T.any(Friend, User)) }
   def require_authentication!
     current_friend || current_user or raise "Authentication required"
   end

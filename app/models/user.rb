@@ -6,17 +6,19 @@
 #
 # Table name: users
 #
-#  id           :uuid             not null, primary key
-#  handle       :string           not null
-#  name         :string           not null
-#  phone_number :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id                            :uuid             not null, primary key
+#  handle                        :string           not null
+#  name                          :string           not null
+#  notifications_last_cleared_at :datetime
+#  phone_number                  :string           not null
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
 #
 # Indexes
 #
-#  index_users_on_handle        (handle) UNIQUE
-#  index_users_on_phone_number  (phone_number) UNIQUE
+#  index_users_on_handle                         (handle) UNIQUE
+#  index_users_on_notifications_last_cleared_at  (notifications_last_cleared_at)
+#  index_users_on_phone_number                   (phone_number) UNIQUE
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class User < ApplicationRecord

@@ -66,12 +66,14 @@ const PostCard: FC<PostCardProps> = ({
               position="top-end"
               arrowOffset={16}
             >
-              <Box
-                component={PublicIcon}
-                fz={10.5}
-                c="primary"
-                display="block"
-              />
+              <Box>
+                <Box
+                  component={PublicIcon}
+                  fz={10.5}
+                  c="primary"
+                  display="block"
+                />
+              </Box>
             </Tooltip>
           )}
         </Group>

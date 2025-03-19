@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_18_222105) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_19_065023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,10 +54,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_222105) do
     t.string "subscribed_post_types", null: false, array: true
     t.boolean "chosen_family", null: false
     t.uuid "join_request_id"
+    t.datetime "notifications_last_cleared_at", precision: nil
     t.index ["access_token"], name: "index_friends_on_access_token", unique: true
     t.index ["chosen_family"], name: "index_friends_on_chosen_family"
     t.index ["join_request_id"], name: "index_friends_on_join_request_id"
     t.index ["name", "user_id"], name: "index_friends_uniqueness", unique: true
+    t.index ["notifications_last_cleared_at"], name: "index_friends_on_notifications_last_cleared_at"
     t.index ["phone_number"], name: "index_friends_on_phone_number"
     t.index ["user_id"], name: "index_friends_on_user_id"
   end
@@ -229,7 +231,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_222105) do
     t.string "phone_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "notifications_last_cleared_at", precision: nil
     t.index ["handle"], name: "index_users_on_handle", unique: true
+    t.index ["notifications_last_cleared_at"], name: "index_users_on_notifications_last_cleared_at"
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
   end
 

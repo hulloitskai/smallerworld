@@ -7,6 +7,7 @@ class NotificationsController < ApplicationController
 
   # == Filters
   before_action :authenticate_user!, except: :delivered
+  before_action :require_authentication!, only: :cleared
 
   # == Actions
   # POST /notifications/:id/delivered
@@ -19,6 +20,13 @@ class NotificationsController < ApplicationController
       authorize!(notification, to: :manage?)
     end
     notification.mark_as_delivered!
+    render(json: {})
+  end
+
+  # POST /notifications/cleared
+  def cleared
+    subject = require_authentication!
+    subject.update!(notifications_last_cleared_at: Time.current)
     render(json: {})
   end
 

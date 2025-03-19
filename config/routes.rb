@@ -44,6 +44,9 @@ Rails.application.routes.draw do
 
   # == Notifications
   resources :notifications, only: [], export: true do
+    collection do
+      post :cleared
+    end
     member do
       post :delivered
     end

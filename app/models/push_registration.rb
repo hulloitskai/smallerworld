@@ -61,6 +61,8 @@ class PushRegistration < ApplicationRecord
     payload = {
       notification: PushNotificationSerializer.one(notification),
       page_icon_url:,
+      badge_count:
+        notification.recipient.notifications_since_last_cleared.count,
     }
     push_subscription!.push_payload(payload.compact)
   end

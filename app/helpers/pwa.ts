@@ -36,6 +36,12 @@ export const useInstallPromptEvent = ():
 export const useClearAppBadge = () => {
   const isStandalone = useIsStandalone();
   const visibility = useDocumentVisibility();
+  const { trigger } = useRouteMutation(routes.notifications.cleared, {
+    descriptor: "mark notifications as cleared",
+    onSuccess: () => {
+      console.info("Notifications cleared");
+    },
+  });
   useEffect(() => {
     if (
       isStandalone &&
@@ -43,8 +49,9 @@ export const useClearAppBadge = () => {
       "clearAppBadge" in navigator
     ) {
       void navigator.clearAppBadge();
+      void trigger();
     }
-  }, [isStandalone, visibility]);
+  }, [isStandalone, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 export const useIsInstallable = (

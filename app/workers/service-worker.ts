@@ -13,8 +13,9 @@ declare const self: ServiceWorkerGlobalScope;
 
 interface NotificationData {
   notification?: PushNotification;
-  test?: true;
   page_icon_url?: string;
+  test?: true;
+  badge_count?: number;
 }
 
 // == Setup
@@ -49,19 +50,20 @@ self.addEventListener("push", event => {
   if (import.meta.env.RAILS_ENV === "development") {
     console.debug("Push event", data);
   }
-  const { notification, test, page_icon_url } = data;
+  const { notification, test, page_icon_url, badge_count } = data;
   const actions: Promise<void>[] = [];
-  // // Set app badge if no window is currently visible.
-  // if (badge && navigator.setAppBadge) {
-  //   actions.push(
-  //     self.clients.matchAll({ type: "window" }).then(clients => {
-  //       if (!clients.some(client => client.visibilityState === "visible")) {
-  //         return navigator.setAppBadge(badge.count);
-  //       }
-  //       return Promise.resolve();
-  //     }),
-  //   );
-  // }
+  // Set app badge if no window is currently visible.
+  if (badge_count && navigator.setAppBadge) {
+    console.debug("Setting app badge", badge_count);
+    actions.push(
+      self.clients.matchAll({ type: "window" }).then(clients => {
+        if (!clients.some(client => client.visibilityState === "visible")) {
+          return navigator.setAppBadge(badge_count);
+        }
+        return Promise.resolve();
+      }),
+    );
+  }
   if (notification) {
     const { title, icon, ...options } = renderNotification(notification);
     actions.push(

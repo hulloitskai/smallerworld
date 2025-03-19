@@ -6,27 +6,29 @@
 #
 # Table name: friends
 #
-#  id                    :uuid             not null, primary key
-#  access_token          :string           not null
-#  chosen_family         :boolean          not null
-#  emoji                 :string
-#  name                  :string           not null
-#  paused_since          :datetime
-#  phone_number          :string
-#  subscribed_post_types :string           not null, is an Array
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  join_request_id       :uuid
-#  user_id               :uuid             not null
+#  id                            :uuid             not null, primary key
+#  access_token                  :string           not null
+#  chosen_family                 :boolean          not null
+#  emoji                         :string
+#  name                          :string           not null
+#  notifications_last_cleared_at :datetime
+#  paused_since                  :datetime
+#  phone_number                  :string
+#  subscribed_post_types         :string           not null, is an Array
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  join_request_id               :uuid
+#  user_id                       :uuid             not null
 #
 # Indexes
 #
-#  index_friends_on_access_token     (access_token) UNIQUE
-#  index_friends_on_chosen_family    (chosen_family)
-#  index_friends_on_join_request_id  (join_request_id)
-#  index_friends_on_phone_number     (phone_number)
-#  index_friends_on_user_id          (user_id)
-#  index_friends_uniqueness          (name,user_id) UNIQUE
+#  index_friends_on_access_token                   (access_token) UNIQUE
+#  index_friends_on_chosen_family                  (chosen_family)
+#  index_friends_on_join_request_id                (join_request_id)
+#  index_friends_on_notifications_last_cleared_at  (notifications_last_cleared_at)
+#  index_friends_on_phone_number                   (phone_number)
+#  index_friends_on_user_id                        (user_id)
+#  index_friends_uniqueness                        (name,user_id) UNIQUE
 #
 # Foreign Keys
 #
