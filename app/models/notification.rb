@@ -26,10 +26,13 @@
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Notification < ApplicationRecord
   # == Attributes
+  attribute :push_delay, :integer
   has_secure_token :delivery_token
 
   sig { returns(T::Boolean) }
-  def pushed? = pushed_at?
+  def pushed?
+    pushed_at?
+  end
 
   sig { returns(T::Boolean) }
   def delivered? = delivered_at?
@@ -85,7 +88,11 @@ class Notification < ApplicationRecord
 
   sig { void }
   def push_later
-    PushNotificationJob.perform_later(self)
+    job = PushNotificationJob
+    if (wait = push_delay)
+      job = job.set(wait:)
+    end
+    job.perform_later(self)
   end
 
   sig { void }

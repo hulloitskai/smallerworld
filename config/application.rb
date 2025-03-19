@@ -90,7 +90,7 @@ module SmallerWorld
     # == Active Storage
     config.active_storage.variant_processor = :vips
     config.active_storage.routes_prefix = "/storage"
-    config.active_storage.direct_uploads_size_limit = 25.megabytes
+    config.active_storage.direct_uploads_size_limit = 32.megabytes
 
     # == Credentials
     sig { returns(T::Boolean) }

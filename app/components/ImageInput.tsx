@@ -106,7 +106,7 @@ const ImageInput: FC<ImageInputProps> = ({
           />
           <Dropzone
             className={classes.dropzone}
-            accept={["image/png", "image/jpeg"]}
+            accept={["image/png", "image/jpeg", "image/webp", "image/gif"]}
             multiple={false}
             onDrop={files => {
               const file = first(files);

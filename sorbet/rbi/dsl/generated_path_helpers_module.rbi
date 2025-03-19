@@ -16,6 +16,9 @@ module GeneratedPathHelpersModule
   def change_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def cleared_notifications_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def contact_url_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

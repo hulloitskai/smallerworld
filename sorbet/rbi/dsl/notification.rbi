@@ -908,6 +908,51 @@ class Notification
     sig { void }
     def noticeable_type_will_change!; end
 
+    sig { returns(::Integer) }
+    def push_delay; end
+
+    sig { params(value: ::Integer).returns(::Integer) }
+    def push_delay=(value); end
+
+    sig { returns(T::Boolean) }
+    def push_delay?; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def push_delay_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def push_delay_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def push_delay_came_from_user?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def push_delay_change; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def push_delay_change_to_be_saved; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def push_delay_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def push_delay_in_database; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def push_delay_previous_change; end
+
+    sig { params(from: ::Integer, to: ::Integer).returns(T::Boolean) }
+    def push_delay_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::Integer)) }
+    def push_delay_previously_was; end
+
+    sig { returns(T.nilable(::Integer)) }
+    def push_delay_was; end
+
+    sig { void }
+    def push_delay_will_change!; end
+
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
     def pushed_at; end
 
@@ -1075,6 +1120,9 @@ class Notification
     def restore_noticeable_type!; end
 
     sig { void }
+    def restore_push_delay!; end
+
+    sig { void }
     def restore_pushed_at!; end
 
     sig { void }
@@ -1127,6 +1175,12 @@ class Notification
 
     sig { returns(T::Boolean) }
     def saved_change_to_noticeable_type?; end
+
+    sig { returns(T.nilable([::Integer, ::Integer])) }
+    def saved_change_to_push_delay; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_push_delay?; end
 
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
     def saved_change_to_pushed_at; end
@@ -1217,6 +1271,9 @@ class Notification
 
     sig { returns(T::Boolean) }
     def will_save_change_to_noticeable_type?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_push_delay?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_pushed_at?; end

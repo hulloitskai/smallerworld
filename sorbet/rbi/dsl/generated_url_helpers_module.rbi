@@ -16,6 +16,9 @@ module GeneratedUrlHelpersModule
   def change_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def cleared_notifications_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def contact_url_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

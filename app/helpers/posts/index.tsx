@@ -24,8 +24,8 @@ export const POST_TYPES: PostType[] = [
 ];
 
 export const POST_VISIBILITIES: PostVisibility[] = [
-  "public",
   "friends",
+  "public",
   // "chosen_family",
 ];
 

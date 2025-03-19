@@ -136,6 +136,13 @@ const HomePage: PageComponent<HomePageProps> = () => {
               >
                 view public profile
               </Menu.Item>
+              <Menu.Item
+                component={Link}
+                leftSection={<JoinRequestsIcon />}
+                href={routes.joinRequests.index.path()}
+              >
+                view join requests
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Box>
