@@ -56,6 +56,7 @@ const PostCard: FC<PostCardProps> = ({
             size="xs"
             inline
             className={classes.timestamp}
+            display="block"
           >
             {post.created_at}
           </Time>
@@ -65,14 +66,12 @@ const PostCard: FC<PostCardProps> = ({
               position="top-end"
               arrowOffset={16}
             >
-              <Box>
-                <Box
-                  component={PublicIcon}
-                  fz={10.5}
-                  c="primary"
-                  display="block"
-                />
-              </Box>
+              <Box
+                component={PublicIcon}
+                fz={10.5}
+                c="primary"
+                display="block"
+              />
             </Tooltip>
           )}
         </Group>

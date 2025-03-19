@@ -111,7 +111,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
                     <NotificationIcon />
                   </ActionIcon>
                 )}
-                {isStandalone === true && <UserNotificationsButton />}
+                {isStandalone && <UserNotificationsButton />}
               </Group>
             </Stack>
           </Stack>

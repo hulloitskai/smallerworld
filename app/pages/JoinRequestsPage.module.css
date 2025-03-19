@@ -3,7 +3,6 @@
   text-transform: lowercase;
   font-weight: 500;
   font-family: var(--mantine-font-family-headings);
-  display: block;
 }
 
 .cardList {

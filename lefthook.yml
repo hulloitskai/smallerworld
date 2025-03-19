@@ -39,7 +39,7 @@ fix:
       tags: js
     fix-rubocop:
       files: *modified-files
-      run: bin/rubocop --force-exclusion --safe-auto-correct {files}
+      run: bin/rubocop --force-exclusion --autocorrect {files}
       glob: "*.{rb,rbi}"
       tags: rb
 

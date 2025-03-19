@@ -55,7 +55,10 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             {...{ emoji, reactions }}
           />
         ))}
-        <NewReactionButton postId={post.id} />
+        <NewReactionButton
+          postId={post.id}
+          hasExistingReactions={!isEmpty(reactions)}
+        />
       </Group>
       <Text inline fz="lg" className={postCardClasses.divider}>
         /
@@ -82,9 +85,13 @@ export default FriendPostCardActions;
 
 interface NewReactionButtonProps {
   postId: string;
+  hasExistingReactions: boolean;
 }
 
-const NewReactionButton: FC<NewReactionButtonProps> = ({ postId }) => {
+const NewReactionButton: FC<NewReactionButtonProps> = ({
+  postId,
+  hasExistingReactions,
+}) => {
   const currentFriend = useCurrentFriend();
   const { trigger: addReaction } = useRouteMutation<{ reaction: PostReaction }>(
     routes.postReactions.create,
@@ -106,7 +113,17 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({ postId }) => {
 
   return (
     <EmojiPopover
-      pickerProps={{ reactionsDefaultOpen: true }}
+      pickerProps={{
+        reactionsDefaultOpen: !hasExistingReactions,
+        reactions: [
+          "2764-fe0f",
+          "1f97a",
+          "1f60d",
+          "1f62d",
+          "1f604",
+          "203c-fe0f",
+        ],
+      }}
       onEmojiClick={({ emoji }) => {
         if (!currentFriend) {
           toast.warning(

@@ -1,6 +1,4 @@
-import { CopyButton, Text } from "@mantine/core";
-
-import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
+import { CopyButton } from "@mantine/core";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
@@ -73,6 +71,7 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({ joinRequest }) => {
             size="xs"
             inline
             className={classes.timestamp}
+            display="block"
           >
             {joinRequest.created_at}
           </Time>

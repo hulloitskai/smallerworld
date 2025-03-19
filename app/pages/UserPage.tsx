@@ -72,12 +72,10 @@ const UserPage: PageComponent<UserPageProps> = ({
             <Title size="h2" lh="xs" ta="center">
               {user.name}&apos;s world
             </Title>
-            {currentFriend && (
+            {currentFriend && isStandalone && (
               <Group gap="xs">
                 <FriendNotificationsButton />
-                {isStandalone && registration && (
-                  <RefreshPostsButton userId={user.id} />
-                )}
+                {registration && <RefreshPostsButton userId={user.id} />}
               </Group>
             )}
           </Stack>
