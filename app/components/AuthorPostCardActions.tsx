@@ -1,5 +1,3 @@
-// import { ActionIcon } from "@mantine/core";
-import { Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 

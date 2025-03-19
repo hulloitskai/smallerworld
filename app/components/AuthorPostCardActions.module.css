@@ -27,6 +27,6 @@
   padding-inline: 3px;
 
   :global(.mantine-Badge-section) {
-    font-size: var(--mantine-font-size-md);
+    font-size: var(--mantine-font-size-sm);
   }
 }
