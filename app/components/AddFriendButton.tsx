@@ -102,6 +102,13 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const shareJoinUrlViaSmsUri = useMemo(() => {
+    if (!fromJoinRequest || !createdFriendJoinUrl) {
+      return;
+    }
+    const message = `here's my smaller world invite link for you: ${createdFriendJoinUrl}`;
+    return `sms:${fromJoinRequest.phone_number}?body=${encodeURIComponent(message)}`;
+  }, [fromJoinRequest, createdFriendJoinUrl]);
   return (
     <Stack gap="lg">
       <form onSubmit={submit}>
@@ -163,17 +170,38 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
                 {createdFriend.name}&apos;s invite link
               </Title>
               <Text size="sm" c="dimmed" display="block">
-                get your friend to scan this QR code, or send them the link
-                below, so they can add your page to their home screen :)
+                {fromJoinRequest ? (
+                  <>
+                    send your friend the link below, so they can add your page
+                    to their home screen :)
+                  </>
+                ) : (
+                  <>
+                    get your friend to scan this QR code, or send them the link
+                    below, so they can add your page to their home screen :)
+                  </>
+                )}
               </Text>
             </Box>
-            <Stack gap="xs" align="stretch">
-              <QRCode
-                value={createdFriendJoinUrl}
-                size={160}
-                className={classes.qrCode}
-              />
-              <Divider label="or" w="100%" maw={160} mx="auto" />
+            <Stack gap="xs" align="center">
+              {!fromJoinRequest && (
+                <QRCode
+                  value={createdFriendJoinUrl}
+                  size={160}
+                  className={classes.qrCode}
+                />
+              )}
+              {!!shareJoinUrlViaSmsUri && (
+                <Button
+                  component="a"
+                  href={shareJoinUrlViaSmsUri}
+                  leftSection={<PhoneIcon />}
+                  mx="xs"
+                >
+                  send via sms
+                </Button>
+              )}
+              <Divider label="or" w="100%" maw={120} mx="auto" />
               <CopyButton value={createdFriendJoinUrl}>
                 {({ copy, copied }) => (
                   <Button
@@ -185,7 +213,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
                       )
                     }
                     onClick={copy}
-                    miw={180}
+                    mx="xs"
                   >
                     {copied ? "copied!" : "copy invite link"}
                   </Button>
