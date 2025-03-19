@@ -4,7 +4,12 @@
   --container-size-md: 960px;
   --container-size-lg: 1140px;
   --container-size-xl: 1320px;
-  --container-size: var(--container-size-md);
+
+  --modal-size-xs: 320px;
+  --modal-size-sm: 380px;
+  --modal-size-md: 440px;
+  --modal-size-lg: 620px;
+  --modal-size-xl: 780px;
 }
 
 body {

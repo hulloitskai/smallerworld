@@ -20,17 +20,17 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
     setFieldValue,
   } = useForm({
     initialValues: {
-      countryCode: "+1",
-      phoneWithoutCountryCode: "",
+      country_code: "+1",
+      phone_without_country_code: "",
       code: "",
     },
   });
   const stepComplete = useMemo(() => {
-    const { phoneWithoutCountryCode, countryCode, code } = values;
+    const { phone_without_country_code, country_code, code } = values;
     if (showCodeInput) {
-      return !!code && !!phoneWithoutCountryCode && !!countryCode;
+      return !!code && !!phone_without_country_code && !!country_code;
     }
-    return !!phoneWithoutCountryCode && !!countryCode;
+    return !!phone_without_country_code && !!country_code;
   }, [showCodeInput, values]);
 
   return (
@@ -43,10 +43,10 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
       <Card.Section inheritPadding py="md">
         <form
           onSubmit={onSubmit(
-            ({ phoneWithoutCountryCode, countryCode, code }) => {
+            ({ phone_without_country_code, country_code, code }) => {
               const supabase = createSupabaseClient();
               const { phoneNumber } = parsePhone(
-                [countryCode, phoneWithoutCountryCode].join(" "),
+                [country_code, phone_without_country_code].join(" "),
               );
               invariant(phoneNumber, "Invalid phone number");
               setSubmitting(true);
@@ -102,7 +102,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
         >
           <Stack gap="sm">
             <InputBase
-              {...getInputProps("phoneWithoutCountryCode")}
+              {...getInputProps("phone_without_country_code")}
               component={IMaskInput}
               mask="(000) 000-0000"
               type="tel"
@@ -110,7 +110,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               placeholder="(___) ___ ____"
               autoComplete="mobile tel-national"
               onAccept={value => {
-                setFieldValue("phoneWithoutCountryCode", value);
+                setFieldValue("phone_without_country_code", value);
               }}
               required
               withAsterisk={false}
@@ -121,7 +121,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               inputContainer={children => (
                 <Group gap={8} align="start">
                   <InputBase
-                    {...getInputProps("countryCode")}
+                    {...getInputProps("country_code")}
                     component={IMaskInput}
                     mask="+0[00]"
                     placeholder="+1"

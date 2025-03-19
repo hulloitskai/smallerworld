@@ -46,6 +46,9 @@ module GeneratedUrlHelpersModule
   def image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def join_requests_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -164,6 +167,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def rails_storage_redirect_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def request_invitation_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def root_url(*args); end

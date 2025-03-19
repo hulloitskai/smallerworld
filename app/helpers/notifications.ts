@@ -4,7 +4,7 @@ import {
   type PostReactionNotificationPayload,
 } from "~/types";
 
-import { POST_TYPE_TO_LABEL } from "./posts/labels";
+import { POST_TYPE_TO_LABEL } from "./posts/formatting";
 import routes from "./routes";
 
 export const DEFAULT_NOTIFICATION_ICON_URL = "/logo.png";

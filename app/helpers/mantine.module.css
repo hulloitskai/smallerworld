@@ -92,6 +92,10 @@
       word-break: break-word;
       line-height: var(--mantine-line-height-xs);
 
+      a {
+        font-weight: 500;
+      }
+
       :where(p) {
         &:not(:last-child) {
           margin-bottom: var(--mantine-spacing-xs);

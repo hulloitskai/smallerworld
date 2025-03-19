@@ -1,6 +1,10 @@
 .avatarGroup {
+  :global(.mantine-Avatar-root) {
+    box-shadow: var(--mantine-shadow-xs);
+  }
+
   :global(.mantine-Avatar-placeholder) {
-    background: transparent;
+    background-color: transparent;
   }
 }
 

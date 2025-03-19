@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_18_152247) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_18_222105) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,7 +52,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_152247) do
     t.datetime "updated_at", null: false
     t.datetime "paused_since", precision: nil
     t.string "subscribed_post_types", null: false, array: true
+    t.boolean "chosen_family", null: false
+    t.uuid "join_request_id"
     t.index ["access_token"], name: "index_friends_on_access_token", unique: true
+    t.index ["chosen_family"], name: "index_friends_on_chosen_family"
+    t.index ["join_request_id"], name: "index_friends_on_join_request_id"
     t.index ["name", "user_id"], name: "index_friends_uniqueness", unique: true
     t.index ["phone_number"], name: "index_friends_on_phone_number"
     t.index ["user_id"], name: "index_friends_on_user_id"
@@ -147,6 +151,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_152247) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
+  create_table "join_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "name", null: false
+    t.string "phone_number", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "phone_number"], name: "index_join_requests_uniqueness", unique: true
+    t.index ["user_id"], name: "index_join_requests_on_user_id"
+  end
+
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "delivered_at", precision: nil
     t.string "delivery_token", null: false
@@ -180,8 +194,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_152247) do
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "visibility", null: false
     t.index ["author_id"], name: "index_posts_on_author_id"
     t.index ["type"], name: "index_posts_on_type"
+    t.index ["visibility"], name: "index_posts_on_visibility"
   end
 
   create_table "push_registrations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -219,7 +235,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_152247) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "friends", "join_requests"
   add_foreign_key "friends", "users"
+  add_foreign_key "join_requests", "users"
   add_foreign_key "post_reactions", "friends"
   add_foreign_key "post_reactions", "posts"
   add_foreign_key "posts", "users", column: "author_id"

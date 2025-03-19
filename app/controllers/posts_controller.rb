@@ -34,7 +34,7 @@ class PostsController < ApplicationController
   def create
     current_user = authenticate_user!
     post_params = T.let(
-      params.expect(post: %i[type title body_html emoji image]),
+      params.expect(post: %i[type title body_html emoji image visibility]),
       ActionController::Parameters,
     )
     post = current_user.posts.build(post_params)
@@ -50,7 +50,13 @@ class PostsController < ApplicationController
     post_id = params.fetch(:id)
     post = Post.find(post_id)
     authorize!(post)
-    post_params = params.expect(post: %i[title body_html emoji image])
+    post_params = params.expect(post: %i[
+      title
+      body_html
+      emoji
+      image
+      visibility
+    ])
     if post.update(post_params)
       render(json: { post: PostSerializer.one(post) })
     else

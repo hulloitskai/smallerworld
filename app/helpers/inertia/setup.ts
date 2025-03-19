@@ -17,7 +17,7 @@ export const setupInertia = (): void => {
       event.detail.exception,
     );
   });
-  router.on("navigate", () => {
+  router.on("before", () => {
     closeAllModals();
   });
 };

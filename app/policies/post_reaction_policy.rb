@@ -15,7 +15,7 @@ class PostReactionPolicy < ApplicationPolicy
     elsif (user = self.user)
       relation.joins(:post).where(posts: { author: user })
     else
-      relation.none
+      relation.joins(:post).where(posts: { visibility: "public" })
     end
   end
 end

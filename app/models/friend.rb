@@ -8,6 +8,7 @@
 #
 #  id                    :uuid             not null, primary key
 #  access_token          :string           not null
+#  chosen_family         :boolean          not null
 #  emoji                 :string
 #  name                  :string           not null
 #  paused_since          :datetime
@@ -15,17 +16,21 @@
 #  subscribed_post_types :string           not null, is an Array
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  join_request_id       :uuid
 #  user_id               :uuid             not null
 #
 # Indexes
 #
-#  index_friends_on_access_token  (access_token) UNIQUE
-#  index_friends_on_phone_number  (phone_number)
-#  index_friends_on_user_id       (user_id)
-#  index_friends_uniqueness       (name,user_id) UNIQUE
+#  index_friends_on_access_token     (access_token) UNIQUE
+#  index_friends_on_chosen_family    (chosen_family)
+#  index_friends_on_join_request_id  (join_request_id)
+#  index_friends_on_phone_number     (phone_number)
+#  index_friends_on_user_id          (user_id)
+#  index_friends_uniqueness          (name,user_id) UNIQUE
 #
 # Foreign Keys
 #
+#  fk_rails_...  (join_request_id => join_requests.id)
 #  fk_rails_...  (user_id => users.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
@@ -37,6 +42,7 @@ class Friend < ApplicationRecord
             in: Post.type.values,
             multiple: true,
             default: Post.type.values
+  attribute :chosen_family, default: false
   has_secure_token :access_token
 
   sig { returns(T::Boolean) }
@@ -49,6 +55,7 @@ class Friend < ApplicationRecord
 
   # == Associations
   belongs_to :user
+  belongs_to :join_request, optional: true
   has_many :post_reactions, dependent: :destroy
 
   sig { returns(User) }

@@ -33,6 +33,7 @@ class User < ApplicationRecord
            dependent: :destroy,
            inverse_of: :author,
            foreign_key: :author_id
+  has_many :join_requests, dependent: :destroy
 
   # == Attachments
   has_one_attached :page_icon

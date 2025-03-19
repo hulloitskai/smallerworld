@@ -1,38 +1,7 @@
-.installAlert {
-  box-shadow: var(--mantine-shadow-md);
-  max-width: var(--container-size-xs);
-  margin-inline: auto;
-
-  :global(.mantine-Alert-icon) {
-    margin-right: 8px;
-  }
-}
-
-.installAlertButton {
-  flex-shrink: 0;
-
-  :global(.mantine-Button-section) {
-    &[data-position="left"] {
-      margin-right: rem(6);
-    }
-  }
-}
-
 .installModal {
   :global(.mantine-Modal-header) {
     min-height: rem(40);
     line-height: var(--mantine-line-height-xs);
-  }
-}
-
-.installInstructionsList {
-  font-weight: 500;
-  display: flex;
-  flex-direction: column;
-  gap: var(--mantine-spacing-md);
-
-  :global(.mantine-List-itemWrapper) {
-    margin-right: 22px;
   }
 }
 

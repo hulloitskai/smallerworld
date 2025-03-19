@@ -166,6 +166,12 @@ gem "nokogiri", "~> 1.15"
 # Convert HTML to plain text
 gem "html2text", "~> 0.4.0"
 
+# Generate fake data
+gem "faker", "~> 3.5"
+
+# Count words
+gem "words_counted", "~> 1.0"
+
 group :development, :test do
   # Debug code with debug
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

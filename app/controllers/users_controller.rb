@@ -3,7 +3,7 @@
 
 class UsersController < ApplicationController
   # == Filters
-  before_action :authenticate_friend!, only: %i[posts manifest]
+  before_action :authenticate_friend!, only: :manifest
 
   # == Actions
   # GET /@:handle?friend_token=...
@@ -30,22 +30,6 @@ class UsersController < ApplicationController
     })
   end
 
-  # GET /users/:id/posts?friend_token=...
-  def posts
-    user_id = T.let(params.fetch(:id), String)
-    user = User.find(user_id)
-    posts = authorized_scope(user.posts)
-    pagy, paginated_posts = pagy_keyset(
-      posts.order(created_at: :desc, id: :asc),
-    )
-    render(json: {
-      posts: PostSerializer.many(paginated_posts),
-      pagination: {
-        next: pagy.next,
-      },
-    })
-  end
-
   # GET /users/:id/manifest.webmanifest?friend_token=...
   def manifest
     user_id = T.let(params.fetch(:id), String)
@@ -66,6 +50,53 @@ class UsersController < ApplicationController
       },
       content_type: "application/manifest+json",
     )
+  end
+
+  # GET /users/:id/posts
+  def posts
+    user_id = T.let(params.fetch(:id), String)
+    user = User.find(user_id)
+    posts = user.posts
+    unless (friend = current_friend) && friend.chosen_family?
+      posts = posts.visible_to_friends
+    end
+    pagy, paginated_posts = pagy_keyset(
+      posts.order(created_at: :desc, id: :asc),
+    )
+    unless current_friend
+      paginated_posts.map! do |post|
+        if post.visibility.public?
+          post
+        else
+          MaskedPost.new(post:)
+        end
+      end
+    end
+    render(json: {
+      posts: PostSerializer.many(paginated_posts),
+      pagination: {
+        next: pagy.next,
+      },
+    })
+  end
+
+  # POST /users/:id/request_invitation
+  def request_invitation
+    user_id = T.let(params.fetch(:id), String)
+    user = User.find(user_id)
+    join_request_params = params.expect(join_request: %i[name phone_number])
+    phone_number = join_request_params.delete(:phone_number)
+    join_request = user.join_requests.find_or_initialize_by(phone_number:)
+    if join_request.update(join_request_params)
+      render(json: {
+        "joinRequest" => JoinRequestSerializer.one(join_request),
+      })
+    else
+      render(
+        json: { errors: join_request.form_errors },
+        status: :unprocessable_entity,
+      )
+    end
   end
 
   private

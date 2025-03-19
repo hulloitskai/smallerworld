@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { takeRight } from "lodash-es";
 
+import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
@@ -114,17 +115,29 @@ const HomePage: PageComponent<HomePageProps> = () => {
               </Group>
             </Stack>
           </Stack>
-          <Button
-            pos="absolute"
-            top={0}
-            right={0}
-            component={Link}
-            variant="subtle"
-            href={routes.signups.edit.path()}
-            size="compact-sm"
-          >
-            edit
-          </Button>
+          <Menu width={210} position="bottom-end" arrowOffset={16}>
+            <Menu.Target>
+              <ActionIcon pos="absolute" top={-6} right={0}>
+                <MenuIcon />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                component={Link}
+                leftSection={<EditIcon />}
+                href={routes.signups.edit.path()}
+              >
+                customize your page
+              </Menu.Item>
+              <Menu.Item
+                component={Link}
+                leftSection={<UserIcon />}
+                href={routes.users.show.path({ handle: user.handle })}
+              >
+                view public profile
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Box>
         {!!friends && isEmpty(friends) && (
           <Alert>

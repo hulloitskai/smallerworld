@@ -39,14 +39,13 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
       <Box
         className={cn("HomescreenPreview", classes.container)}
         pos="relative"
-        w={300}
         style={{
           "--hp-radius": getRadius(radius),
           "--hp-icon-radius-ratio": APPLE_ICON_RADIUS_RATIO,
         }}
         {...otherProps}
       >
-        <Image src={homeScreenSrc} />
+        <Image src={homeScreenSrc} className={classes.homeScreen} />
         <Image
           src={pageIcon?.src ?? logoPlaceholderSrc}
           srcSet={pageIcon?.src_set}

@@ -10,7 +10,7 @@ import { type PostsData } from "./posts";
 
 const userPagePostsGetKey = (
   userId: string,
-  friendAccessToken: string,
+  friendAccessToken?: string,
   limit?: number,
 ): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
@@ -41,11 +41,11 @@ export const useUserPagePosts = (
   userId: string,
   options?: UserPagePostsOptions,
 ) => {
-  const currentFriend = useAuthenticatedFriend();
+  const currentFriend = useCurrentFriend();
   const { online } = useNetwork();
   const { limit, ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    userPagePostsGetKey(userId, currentFriend.access_token, limit),
+    userPagePostsGetKey(userId, currentFriend?.access_token, limit),
     (path: string) =>
       fetchRoute(path, {
         descriptor: "load posts",

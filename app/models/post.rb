@@ -11,14 +11,16 @@
 #  emoji      :string           not null
 #  title      :string
 #  type       :string           not null
+#  visibility :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  author_id  :uuid             not null
 #
 # Indexes
 #
-#  index_posts_on_author_id  (author_id)
-#  index_posts_on_type       (type)
+#  index_posts_on_author_id   (author_id)
+#  index_posts_on_type        (type)
+#  index_posts_on_visibility  (visibility)
 #
 # Foreign Keys
 #
@@ -32,6 +34,7 @@ class Post < ApplicationRecord
 
   # == Attributes
   enumerize :type, in: %i[journal_entry poem invitation question]
+  enumerize :visibility, in: %i[public friends chosen_family]
 
   sig { returns(String) }
   def body_text
@@ -76,6 +79,13 @@ class Post < ApplicationRecord
 
   # == Callbacks
   after_create :create_notifications!
+
+  # == Scopes
+  scope :visible_to_public, -> { where(visibility: :public) }
+  scope :visible_to_friends, -> { where(visibility: %i[public friends]) }
+  scope :visible_to_chosen_family, -> {
+    where(visibility: %i[public friends chosen_family])
+  }
 
   # == Noticeable
   sig do

@@ -46,6 +46,9 @@ module GeneratedPathHelpersModule
   def image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def join_requests_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -164,6 +167,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def rails_storage_redirect_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def request_invitation_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def root_path(*args); end

@@ -21,12 +21,18 @@ class PostPolicy < ApplicationPolicy
 
   # == Scopes
   relation_scope do |relation|
+    relation = T.cast(relation, Post::PrivateRelation)
     if (friend = self.friend)
-      relation.where(author: friend.user!)
+      posts = relation.where(author: friend.user!)
+      if friend.chosen_family?
+        posts.visible_to_chosen_family
+      else
+        posts.visible_to_friends
+      end
     elsif (user = self.user)
       relation.where(author: user)
     else
-      relation.none
+      relation.visible_to_public
     end
   end
 end

@@ -1,6 +1,8 @@
 import { useDocumentVisibility, useMediaQuery } from "@mantine/hooks";
 import { useMounted } from "@mantine/hooks";
 
+import { isIosSafari } from "./browserDetection";
+
 export const useIsStandalone = (): boolean | undefined => {
   const mounted = useMounted();
   const isStandalone = useMediaQuery("(display-mode: standalone)");
@@ -43,4 +45,16 @@ export const useClearAppBadge = () => {
       void navigator.clearAppBadge();
     }
   }, [isStandalone, visibility]);
+};
+
+export const useIsInstallable = (
+  installEvent: Event | null | undefined,
+): boolean | undefined => {
+  const [isInstallable, setIsInstallable] = useState<boolean | undefined>(() =>
+    installEvent ? true : undefined,
+  );
+  useEffect(() => {
+    setIsInstallable(!!installEvent || isIosSafari());
+  }, [installEvent]);
+  return isInstallable;
 };

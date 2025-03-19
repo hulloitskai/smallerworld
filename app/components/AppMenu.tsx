@@ -58,6 +58,18 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
             <MenuLink href={routes.home.show.path()} leftSection={<HomeIcon />}>
               home
             </MenuLink>
+            <MenuLink
+              href={routes.friends.index.path()}
+              leftSection={<FriendsIcon />}
+            >
+              your friends
+            </MenuLink>
+            <MenuLink
+              href={routes.joinRequests.index.path()}
+              leftSection={<JoinRequestsIcon />}
+            >
+              your join requests
+            </MenuLink>
             <LogoutItem
               onClose={() => {
                 setOpened(false);

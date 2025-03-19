@@ -12,9 +12,22 @@ import InvitationIcon from "~icons/heroicons/envelope-open-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
 import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
-import { type Post, type PostType } from "~/types";
+import { type Post, type PostType, type PostVisibility } from "~/types";
 
-export { POST_TYPE_TO_LABEL } from "./labels";
+export { POST_TYPE_TO_LABEL, POST_VISIBILITY_TO_LABEL } from "./formatting";
+
+export const POST_TYPES: PostType[] = [
+  "journal_entry",
+  "poem",
+  "invitation",
+  "question",
+];
+
+export const POST_VISIBILITIES: PostVisibility[] = [
+  "public",
+  "friends",
+  // "chosen_family",
+];
 
 export const POST_TYPE_TO_ICON: Record<
   PostType,
@@ -26,12 +39,14 @@ export const POST_TYPE_TO_ICON: Record<
   question: QuestionIcon,
 };
 
-export const POST_TYPES: PostType[] = [
-  "journal_entry",
-  "poem",
-  "invitation",
-  "question",
-];
+export const POST_VISIBILITY_TO_ICON: Record<
+  PostVisibility,
+  FC<SVGProps<SVGSVGElement>>
+> = {
+  public: PublicIcon,
+  friends: FriendsIcon,
+  chosen_family: ChosenFamilyIcon,
+};
 
 export interface PostsData {
   posts: Post[];

@@ -24,10 +24,13 @@ class FriendsController < ApplicationController
   def create
     current_user = authenticate_user!
     friend_params = T.let(
-      params.expect(friend: %i[emoji name]),
+      params.expect(friend: %i[emoji name phone_number]),
       ActionController::Parameters,
     )
     friend = current_user.friends.build(friend_params)
+    friend.join_request = current_user
+      .join_requests
+      .find_by({ phone_number: friend.phone_number })
     if friend.save
       render(json: { friend: FriendSerializer.one(friend) })
     else

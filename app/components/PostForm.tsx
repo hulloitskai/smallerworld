@@ -1,9 +1,14 @@
-import { ActionIcon, Text } from "@mantine/core";
+import { ActionIcon, SegmentedControl, Text } from "@mantine/core";
 import { type Editor } from "@tiptap/react";
 
 import ImageIcon from "~icons/heroicons/photo-20-solid";
 
-import { mutatePosts } from "~/helpers/posts";
+import {
+  mutatePosts,
+  POST_VISIBILITIES,
+  POST_VISIBILITY_TO_ICON,
+  POST_VISIBILITY_TO_LABEL,
+} from "~/helpers/posts";
 import { type Post, type PostType } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
@@ -58,6 +63,7 @@ const PostForm: FC<PostFormProps> = props => {
       body_html: post?.body_html ?? "",
       emoji: post?.emoji ?? "",
       image_upload: post?.image ? { signedId: post.image.signed_id } : null,
+      visibility: post?.visibility ?? "friends",
     }),
     [post],
   );
@@ -81,11 +87,10 @@ const PostForm: FC<PostFormProps> = props => {
           action: routes.posts.update,
           params: { id: post.id },
           descriptor: "update post",
-          transformValues: ({ title, body_html, emoji, image_upload }) => ({
+          transformValues: ({ title, image_upload, ...values }) => ({
             post: {
+              ...values,
               title: title || null,
-              body_html,
-              emoji,
               image: image_upload?.signedId ?? null,
             },
           }),
@@ -93,12 +98,11 @@ const PostForm: FC<PostFormProps> = props => {
       : {
           action: routes.posts.create,
           descriptor: "create post",
-          transformValues: ({ title, body_html, emoji, image_upload }) => ({
+          transformValues: ({ title, image_upload, ...values }) => ({
             post: {
+              ...values,
               type: postType,
               title: title || null,
-              body_html,
-              emoji,
               image: image_upload?.signedId ?? null,
             },
           }),
@@ -123,8 +127,8 @@ const PostForm: FC<PostFormProps> = props => {
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
   return (
     <form onSubmit={submit}>
-      <Stack gap="xs">
-        <Group gap="xs" align="start">
+      <Group gap="xs" align="start" justify="center">
+        <Stack gap="xs">
           <EmojiPopover
             onEmojiClick={({ emoji }) => {
               setFieldValue("emoji", emoji);
@@ -155,56 +159,76 @@ const PostForm: FC<PostFormProps> = props => {
               </ActionIcon>
             )}
           </EmojiPopover>
-          <Stack gap="xs" style={{ flexGrow: 1 }}>
-            {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
-              <TextInput
-                {...getInputProps("title")}
-                placeholder={titlePlaceholder}
-              />
-            )}
-            <LazyPostEditor
-              {...getInputProps("body_html")}
-              initialValue={initialValues?.body_html}
-              placeholder={bodyPlaceholder}
-              onEditorCreated={editor => {
-                editorRef.current = editor;
-                setBodyTextEmpty(editor.getText().trim() === "");
-              }}
-              onUpdate={({ editor }) => {
-                setBodyTextEmpty(editor.getText().trim() === "");
-              }}
+          <SegmentedControl
+            {...getInputProps("visibility")}
+            orientation="vertical"
+            size="xs"
+            data={POST_VISIBILITIES.map(visibility => ({
+              label: (
+                <Tooltip
+                  label={<>visible to {POST_VISIBILITY_TO_LABEL[visibility]}</>}
+                  position="right"
+                  withArrow
+                >
+                  <Center h={20}>
+                    <Box component={POST_VISIBILITY_TO_ICON[visibility]} />
+                  </Center>
+                </Tooltip>
+              ),
+              value: visibility,
+            }))}
+          />
+        </Stack>
+        <Stack gap="xs" style={{ flexGrow: 1 }}>
+          {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
+            <TextInput
+              {...getInputProps("title")}
+              placeholder={titlePlaceholder}
             />
-            {showImageInput || values.image_upload ? (
-              <ImageInput
-                {...getInputProps("image_upload")}
-                previewFit="contain"
-                h={140}
-              />
-            ) : (
-              <Button
-                color="gray"
-                size="compact-sm"
-                style={{ alignSelf: "center" }}
-                leftSection={<ImageIcon />}
-                onClick={() => {
-                  setShowImageInput(true);
-                }}
-              >
-                attach an image
-              </Button>
-            )}
+          )}
+          <LazyPostEditor
+            {...getInputProps("body_html")}
+            initialValue={initialValues?.body_html}
+            placeholder={bodyPlaceholder}
+            onEditorCreated={editor => {
+              editorRef.current = editor;
+              setBodyTextEmpty(editor.getText().trim() === "");
+            }}
+            onUpdate={({ editor }) => {
+              setBodyTextEmpty(editor.getText().trim() === "");
+            }}
+          />
+          {showImageInput || values.image_upload ? (
+            <ImageInput
+              {...getInputProps("image_upload")}
+              previewFit="contain"
+              h={140}
+            />
+          ) : (
+            <Button
+              color="gray"
+              size="compact-sm"
+              style={{ alignSelf: "center" }}
+              leftSection={<ImageIcon />}
+              onClick={() => {
+                setShowImageInput(true);
+              }}
+            >
+              attach an image
+            </Button>
+          )}
+          <Group justify="end">
             <Button
               type="submit"
               leftSection={post ? <SaveIcon /> : <SendIcon />}
-              style={{ alignSelf: "end" }}
               disabled={bodyTextEmpty || !isDirty()}
               loading={submitting}
             >
-              save
+              {post ? "save" : "post"}
             </Button>
-          </Stack>
-        </Group>
-      </Stack>
+          </Group>
+        </Stack>
+      </Group>
     </form>
   );
 };

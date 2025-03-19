@@ -1,0 +1,25 @@
+.alert {
+  box-shadow: var(--mantine-shadow-md);
+  max-width: var(--modal-size-md);
+  margin-inline: auto;
+
+  :global(.mantine-Alert-icon) {
+    margin-right: 8px;
+  }
+}
+
+.button {
+  flex-shrink: 0;
+
+  :global(.mantine-Button-section) {
+    &[data-position="left"] {
+      margin-right: rem(6);
+    }
+  }
+}
+
+.modal {
+  :global(.mantine-Modal-header) {
+    min-height: 0px;
+  }
+}

@@ -72,8 +72,9 @@ Rails.application.routes.draw do
   resource :user, only: :update, export: true
   resources :users, only: [], export: true do
     member do
-      get :posts
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
+      get :posts
+      post :request_invitation
     end
   end
 
@@ -90,6 +91,9 @@ Rails.application.routes.draw do
             only: %i[index create],
             export: true
   resources :post_reactions, only: :destroy, export: true
+
+  # == Join requests
+  resources :join_requests, only: :index, export: true
 
   # == Pages
   defaults export: true do

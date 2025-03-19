@@ -1,15 +1,21 @@
 .container {
-  --hp-icon-size: 47px;
+  --hp-icon-size: 48px;
   --hp-x-offset: 64px;
 
   border-radius: var(--hp-radius, var(--mantine-radius-default));
   overflow: hidden;
 }
 
+.homeScreen {
+  height: 90px;
+  object-fit: cover;
+  object-position: left center;
+}
+
 .appIcon {
   background-color: var(--mantine-color-white);
   position: absolute;
-  top: 15px;
+  top: 16px;
   left: calc(23px + var(--hp-x-offset));
   width: var(--hp-icon-size);
   height: var(--hp-icon-size);
@@ -21,7 +27,7 @@
   --label-margin: 4px;
 
   position: absolute;
-  top: 65px;
+  top: 67px;
   left: calc(23px + var(--hp-x-offset));
   text-align: center;
   font-size: 8.5px;
@@ -35,8 +41,8 @@
 
 .yourPageLabel {
   position: absolute;
-  top: 26px;
-  left: 191px;
+  top: 28px;
+  left: 196px;
   font-size: 20px;
   font-weight: 900;
   color: var(--mantine-color-white);

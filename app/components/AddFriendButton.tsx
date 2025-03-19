@@ -12,38 +12,41 @@ import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import EmojiIcon from "~icons/heroicons/face-smile";
 import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
 
-import { type Friend } from "~/types";
+import { type Friend, type JoinRequest } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
 import classes from "./AddFriendButton.module.css";
 
-export interface AddFriendButtonProps extends ButtonProps {}
+export interface AddFriendButtonProps extends ModalBodyProps, ButtonProps {}
 
-const AddFriendButton: FC<AddFriendButtonProps> = ({ ...otherProps }) => {
+const AddFriendButton: FC<AddFriendButtonProps> = ({
+  fromJoinRequest,
+  ...otherProps
+}) => {
   return (
-    <>
-      <Button
-        leftSection={<AddFriendIcon />}
-        onClick={() => {
-          openModal({
-            title: "add friend",
-            children: <AddFriendModalBody />,
-          });
-        }}
-        {...otherProps}
-      >
-        add friend
-      </Button>
-    </>
+    <Button
+      leftSection={<AddFriendIcon />}
+      onClick={() => {
+        openModal({
+          title: "add friend",
+          children: <ModalBody {...{ fromJoinRequest }} />,
+        });
+      }}
+      {...otherProps}
+    >
+      add friend
+    </Button>
   );
 };
 
 export default AddFriendButton;
 
-interface AddFriendModalBodyProps {}
+interface ModalBodyProps {
+  fromJoinRequest?: JoinRequest;
+}
 
-const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
+const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
   const currentUser = useAuthenticatedUser();
   const [createdFriend, setCreatedFriend] = useState<Friend | undefined>();
   const [createdFriendJoinUrl, setCreatedFriendJoinUrl] = useState<string>("");
@@ -62,24 +65,42 @@ const AddFriendModalBody: FC<AddFriendModalBodyProps> = () => {
   }, [createdFriend?.access_token, currentUser.handle]);
 
   // == Form
-  const { getInputProps, submit, values, submitting, setFieldValue } = useForm({
+  const initialValues = useMemo(
+    () => ({
+      emoji: "",
+      name: fromJoinRequest?.name ?? "",
+    }),
+    [fromJoinRequest],
+  );
+  const {
+    getInputProps,
+    submit,
+    values,
+    submitting,
+    setFieldValue,
+    setInitialValues,
+    reset,
+  } = useForm({
     action: routes.friends.create,
     descriptor: "invite friend",
-    initialValues: {
-      emoji: "",
-      name: "",
-    },
+    initialValues,
     transformValues: ({ emoji, name }) => ({
       friend: {
         emoji: emoji || null,
         name: name.trim(),
+        phone_number: fromJoinRequest?.phone_number ?? null,
       },
     }),
     onSuccess: ({ friend }: { friend: Friend }) => {
       setCreatedFriend(friend);
       void mutateRoute(routes.friends.index);
+      void mutateRoute(routes.joinRequests.index);
     },
   });
+  useDidUpdate(() => {
+    setInitialValues(initialValues);
+    reset();
+  }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Stack gap="lg">

@@ -4,7 +4,6 @@
 class PostReactionsController < ApplicationController
   # == Filters
   before_action :authenticate_friend!, only: :create
-  before_action :require_authentication!, only: :index
 
   # == Actions
   # GET /posts/:post_id/reactions
@@ -45,13 +44,5 @@ class PostReactionsController < ApplicationController
     authorize!(reaction)
     reaction.destroy!
     render(json: { "postId": reaction.post_id })
-  end
-
-  private
-
-  # == Filter handlers
-  sig { void }
-  def authenticate_friend_or_user!
-    current_friend || current_user or raise "Not authenticated"
   end
 end

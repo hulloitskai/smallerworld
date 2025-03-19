@@ -336,14 +336,35 @@ class Friend
   end
 
   module GeneratedAssociationMethods
+    sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
+    def build_join_request(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
+    def create_join_request(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
+    def create_join_request!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
+
+    sig { returns(T.nilable(::JoinRequest)) }
+    def join_request; end
+
+    sig { params(value: T.nilable(::JoinRequest)).void }
+    def join_request=(value); end
+
+    sig { returns(T::Boolean) }
+    def join_request_changed?; end
+
+    sig { returns(T::Boolean) }
+    def join_request_previously_changed?; end
 
     sig { returns(T::Array[T.untyped]) }
     def notification_ids; end
@@ -387,8 +408,14 @@ class Friend
     sig { params(value: T::Enumerable[::PushRegistration]).void }
     def push_registrations=(value); end
 
+    sig { returns(T.nilable(::JoinRequest)) }
+    def reload_join_request; end
+
     sig { returns(T.nilable(::User)) }
     def reload_user; end
+
+    sig { void }
+    def reset_join_request; end
 
     sig { void }
     def reset_user; end
@@ -612,6 +639,51 @@ class Friend
     sig { void }
     def access_token_will_change!; end
 
+    sig { returns(T::Boolean) }
+    def chosen_family; end
+
+    sig { params(value: T::Boolean).returns(T::Boolean) }
+    def chosen_family=(value); end
+
+    sig { returns(T::Boolean) }
+    def chosen_family?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def chosen_family_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def chosen_family_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def chosen_family_came_from_user?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def chosen_family_change; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def chosen_family_change_to_be_saved; end
+
+    sig { params(from: T::Boolean, to: T::Boolean).returns(T::Boolean) }
+    def chosen_family_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def chosen_family_in_database; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def chosen_family_previous_change; end
+
+    sig { params(from: T::Boolean, to: T::Boolean).returns(T::Boolean) }
+    def chosen_family_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def chosen_family_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def chosen_family_was; end
+
+    sig { void }
+    def chosen_family_will_change!; end
+
     sig { returns(::ActiveSupport::TimeWithZone) }
     def created_at; end
 
@@ -792,6 +864,51 @@ class Friend
     sig { void }
     def id_will_change!; end
 
+    sig { returns(T.nilable(::String)) }
+    def join_request_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def join_request_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def join_request_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def join_request_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def join_request_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def join_request_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def join_request_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def join_request_id_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def join_request_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def join_request_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def join_request_id_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def join_request_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def join_request_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def join_request_id_was; end
+
+    sig { void }
+    def join_request_id_will_change!; end
+
     sig { returns(::String) }
     def name; end
 
@@ -941,6 +1058,9 @@ class Friend
     def restore_access_token!; end
 
     sig { void }
+    def restore_chosen_family!; end
+
+    sig { void }
     def restore_created_at!; end
 
     sig { void }
@@ -951,6 +1071,9 @@ class Friend
 
     sig { void }
     def restore_id_value!; end
+
+    sig { void }
+    def restore_join_request_id!; end
 
     sig { void }
     def restore_name!; end
@@ -976,6 +1099,12 @@ class Friend
     sig { returns(T::Boolean) }
     def saved_change_to_access_token?; end
 
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def saved_change_to_chosen_family; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_chosen_family?; end
+
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
@@ -999,6 +1128,12 @@ class Friend
 
     sig { returns(T::Boolean) }
     def saved_change_to_id_value?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_join_request_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_join_request_id?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_name; end
@@ -1175,6 +1310,9 @@ class Friend
     def will_save_change_to_access_token?; end
 
     sig { returns(T::Boolean) }
+    def will_save_change_to_chosen_family?; end
+
+    sig { returns(T::Boolean) }
     def will_save_change_to_created_at?; end
 
     sig { returns(T::Boolean) }
@@ -1185,6 +1323,9 @@ class Friend
 
     sig { returns(T::Boolean) }
     def will_save_change_to_id_value?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_join_request_id?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_name?; end

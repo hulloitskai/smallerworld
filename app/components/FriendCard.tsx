@@ -33,7 +33,7 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
   return (
     <Card withBorder>
       <Group gap={6} justify="space-between" className={classes.group}>
-        <Group gap={6}>
+        <Group gap={8}>
           <Box fz="xl">{friend.emoji}</Box>
           <Text ff="heading" fw={600}>
             {friend.name}
@@ -90,22 +90,6 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
             </Menu.Dropdown>
           </Menu>
         </Group>
-        {/* <Popover width={320}>
-            <Popover.Target>
-              <Button
-                variant="subtle"
-                size="compact-sm"
-                leftSection={<PauseIcon />}
-                color="gray"
-              >
-                pause
-              </Button>
-            </Popover.Target>
-            <Popover.Dropdown>
-              pausing a friend stops them from seeing your posts. this feature
-              is coming soon!
-            </Popover.Dropdown>
-          </Popover> */}
       </Group>
     </Card>
   );

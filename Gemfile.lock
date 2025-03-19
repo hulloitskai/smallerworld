@@ -193,6 +193,8 @@ GEM
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    faker (3.5.1)
+      i18n (>= 1.8.11, < 2)
     faraday (2.12.0)
       faraday-net_http (>= 2.0, < 3.4)
       json
@@ -531,6 +533,7 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    words_counted (1.0.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yajl-ruby (1.4.3)
@@ -574,6 +577,7 @@ DEPENDENCIES
   dotenv (~> 2.7)
   email_validator (~> 2.2)
   enumerize (~> 2.6)
+  faker (~> 3.5)
   faraday (~> 2.10)
   friendly_id (~> 5.5)
   frozen_record (~> 0.27.1)
@@ -638,6 +642,7 @@ DEPENDENCIES
   vite_rails (~> 3.0)
   web-console
   web-push (~> 3.0)
+  words_counted (~> 1.0)
 
 RUBY VERSION
    ruby 3.4.1p0

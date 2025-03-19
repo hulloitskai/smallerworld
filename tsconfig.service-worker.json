@@ -32,7 +32,7 @@
     "app/helpers/routes/**/*.ts",
     "app/helpers/fetch/setup.ts",
     "app/helpers/notifications.ts",
-    "app/helpers/posts/labels.ts",
+    "app/helpers/posts/formatting.ts",
     "app/workers/service-worker.ts",
     "typings/env.d.ts",
     "typings/service-worker.d.ts"

@@ -20,6 +20,9 @@ class Post
   sig { returns(Enumerize::Value) }
   def type; end
 
+  sig { returns(Enumerize::Value) }
+  def visibility; end
+
   private
 
   sig { returns(NilClass) }
@@ -31,6 +34,9 @@ class Post
 
     sig { returns(Enumerize::Attribute) }
     def type; end
+
+    sig { returns(Enumerize::Attribute) }
+    def visibility; end
   end
 
   module CommonRelationMethods
@@ -576,6 +582,15 @@ class Post
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def unscope(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def visible_to_chosen_family(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def visible_to_friends(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def visible_to_public(*args, &blk); end
+
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     def where(*args); end
@@ -891,6 +906,9 @@ class Post
     sig { void }
     def restore_updated_at!; end
 
+    sig { void }
+    def restore_visibility!; end
+
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_author_id; end
 
@@ -944,6 +962,12 @@ class Post
 
     sig { returns(T::Boolean) }
     def saved_change_to_updated_at?; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def saved_change_to_visibility; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_visibility?; end
 
     sig { returns(T.nilable(::String)) }
     def title; end
@@ -1080,6 +1104,51 @@ class Post
     sig { void }
     def updated_at_will_change!; end
 
+    sig { returns(T.untyped) }
+    def visibility; end
+
+    sig { params(value: T.untyped).returns(T.untyped) }
+    def visibility=(value); end
+
+    sig { returns(T::Boolean) }
+    def visibility?; end
+
+    sig { returns(T.untyped) }
+    def visibility_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def visibility_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def visibility_came_from_user?; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def visibility_change; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def visibility_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def visibility_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.untyped) }
+    def visibility_in_database; end
+
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
+    def visibility_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def visibility_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.untyped) }
+    def visibility_previously_was; end
+
+    sig { returns(T.untyped) }
+    def visibility_was; end
+
+    sig { void }
+    def visibility_will_change!; end
+
     sig { returns(T::Boolean) }
     def will_save_change_to_author_id?; end
 
@@ -1106,6 +1175,9 @@ class Post
 
     sig { returns(T::Boolean) }
     def will_save_change_to_updated_at?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_visibility?; end
   end
 
   module GeneratedRelationMethods
@@ -1244,6 +1316,15 @@ class Post
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def unscope(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def visible_to_chosen_family(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def visible_to_friends(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def visible_to_public(*args, &blk); end
 
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }

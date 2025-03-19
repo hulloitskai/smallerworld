@@ -15,4 +15,31 @@
   text-transform: lowercase;
   font-weight: 500;
   font-family: var(--mantine-font-family-headings);
+  display: block;
+}
+
+.contentSection {
+  position: relative;
+
+  &[data-blur-content] {
+    min-height: 72px;
+  }
+}
+
+.restrictedAlert {
+  padding: 8px 12px;
+  border-radius: var(--mantine-radius-xl);
+
+  @mixin dark {
+    --alert-color: var(--mantine-color-dark-1) !important;
+    --alert-bd: 1px solid var(--mantine-color-dark-2) !important;
+  }
+
+  :global(.mantine-Alert-body) {
+    justify-content: center;
+  }
+
+  :global(.mantine-Alert-label) {
+    font-weight: 600;
+  }
 }

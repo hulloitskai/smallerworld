@@ -9,6 +9,7 @@ class PostSerializer < ApplicationSerializer
              :body_html,
              :emoji,
              type: { type: "PostType" },
+             visibility: { type: "PostVisibility" },
              reply_snippet: { type: :string }
 
   # == Associations

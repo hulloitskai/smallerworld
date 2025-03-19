@@ -1,0 +1,5 @@
+.modal {
+  :global(.mantine-Modal-header) {
+    min-height: 0px;
+  }
+}

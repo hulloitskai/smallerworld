@@ -122,6 +122,7 @@ const EditPostButton: FC<EditPostButtonProps> = ({ post }) => {
       onClick={() => {
         openModal({
           title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
+          size: "var(--container-size-xs)",
           children: (
             <PostForm
               {...{ post }}

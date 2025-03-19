@@ -13,7 +13,7 @@ import postCardClasses from "./PostCard.module.css";
 
 interface FriendPostCardActionsProps {
   post: Post;
-  replyPhoneNumber: string;
+  replyPhoneNumber: string | null;
 }
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
@@ -21,20 +21,12 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   replyPhoneNumber,
 }) => {
   const { ref, inViewport } = useInViewport();
-  const currentFriend = useAuthenticatedFriend();
 
   // == Load reactions
   const { data } = useRouteSWR<{ reactions: PostReaction[] }>(
     routes.postReactions.index,
     {
-      params: inViewport
-        ? {
-            post_id: post.id,
-            query: {
-              friend_token: currentFriend.access_token,
-            },
-          }
-        : null,
+      params: inViewport ? { post_id: post.id } : null,
       descriptor: "load reactions",
       isVisible: () => inViewport,
     },
@@ -47,13 +39,15 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
 
   // == Reply via sms
   const replyUri = useMemo(() => {
-    const encodedBody = encodeURIComponent(post.reply_snippet);
-    return `sms:${replyPhoneNumber}?body=${encodedBody}`;
+    if (replyPhoneNumber) {
+      const encodedBody = encodeURIComponent(post.reply_snippet);
+      return `sms:${replyPhoneNumber}?body=${encodedBody}`;
+    }
   }, [replyPhoneNumber, post.reply_snippet]);
 
   return (
     <Group {...{ ref }} gap={2}>
-      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
+      <Group gap={2} wrap="wrap">
         {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
           <ReactionButton
             key={emoji}
@@ -72,6 +66,11 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
         variant="subtle"
         size="compact-xs"
         leftSection={<ReplyIcon />}
+        onClick={() => {
+          if (!replyPhoneNumber) {
+            toast.warning("you must be invited to this page to reply via sms");
+          }
+        }}
       >
         reply via sms
       </Button>
@@ -86,24 +85,21 @@ interface NewReactionButtonProps {
 }
 
 const NewReactionButton: FC<NewReactionButtonProps> = ({ postId }) => {
-  const currentFriend = useAuthenticatedFriend();
+  const currentFriend = useCurrentFriend();
   const { trigger: addReaction } = useRouteMutation<{ reaction: PostReaction }>(
     routes.postReactions.create,
     {
       descriptor: "react to post",
-      params: {
-        post_id: postId,
-        query: {
-          friend_token: currentFriend.access_token,
-        },
-      },
+      params: currentFriend
+        ? {
+            post_id: postId,
+            query: {
+              friend_token: currentFriend.access_token,
+            },
+          }
+        : null,
       onSuccess: () => {
-        mutateRoute(routes.postReactions.index, {
-          post_id: postId,
-          query: {
-            friend_token: currentFriend.access_token,
-          },
-        });
+        mutateRoute(routes.postReactions.index, { post_id: postId });
       },
     },
   );
@@ -112,6 +108,12 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({ postId }) => {
     <EmojiPopover
       pickerProps={{ reactionsDefaultOpen: true }}
       onEmojiClick={({ emoji }) => {
+        if (!currentFriend) {
+          toast.warning(
+            "you must be invited to this page to react to this post",
+          );
+          return;
+        }
         void addReaction({ reaction: { emoji } });
       }}
     >
@@ -142,10 +144,13 @@ const ReactionButton: FC<ReactionButtonProps> = ({
   emoji,
   reactions,
 }) => {
-  const currentFriend = useAuthenticatedFriend();
+  const currentFriend = useCurrentFriend();
   const currentReaction = useMemo(
-    () => reactions.find(reaction => reaction.friend_id === currentFriend.id),
-    [reactions, currentFriend.id],
+    () =>
+      currentFriend?.id
+        ? reactions.find(reaction => reaction.friend_id === currentFriend.id)
+        : null,
+    [reactions, currentFriend?.id],
   );
   const [mutating, setMutating] = useState(false);
 
@@ -157,6 +162,12 @@ const ReactionButton: FC<ReactionButtonProps> = ({
       loading={mutating}
       className={classes.reactionButton}
       onClick={() => {
+        if (!currentFriend) {
+          toast.warning(
+            "you must be invited to this page to react to this post",
+          );
+          return;
+        }
         setMutating(true);
         const action = currentReaction
           ? fetchRoute(routes.postReactions.destroy, {
@@ -184,12 +195,7 @@ const ReactionButton: FC<ReactionButtonProps> = ({
             });
         void action
           .then(() => {
-            mutateRoute(routes.postReactions.index, {
-              post_id: postId,
-              query: {
-                friend_token: currentFriend.access_token,
-              },
-            });
+            mutateRoute(routes.postReactions.index, { post_id: postId });
           })
           .finally(() => {
             setMutating(false);

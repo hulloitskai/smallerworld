@@ -1,0 +1,98 @@
+import { CopyButton, Text } from "@mantine/core";
+
+import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
+
+import AddFriendButton from "~/components/AddFriendButton";
+import AppLayout from "~/components/AppLayout";
+import { type JoinRequest } from "~/types";
+
+import classes from "./JoinRequestsPage.module.css";
+
+export interface JoinRequestsPageProps extends SharedPageProps {}
+
+const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
+  const { data } = useRouteSWR<{ joinRequests: JoinRequest[] }>(
+    routes.joinRequests.index,
+    {
+      descriptor: "load join requests",
+    },
+  );
+  const { joinRequests } = data ?? {};
+
+  return (
+    <Stack>
+      <Stack gap={4} align="center" ta="center">
+        <Box component={JoinRequestsIcon} fz="xl" />
+        <Title size="h2">your join requests</Title>
+        <Button
+          component={Link}
+          leftSection={<BackIcon />}
+          radius="xl"
+          href={routes.home.show.path()}
+        >
+          back to home
+        </Button>
+      </Stack>
+      <Stack gap="xs">
+        {joinRequests ? (
+          isEmpty(joinRequests) ? (
+            <EmptyCard itemLabel="join requests" />
+          ) : (
+            joinRequests.map(joinRequest => (
+              <JoinRequestCard key={joinRequest.id} {...{ joinRequest }} />
+            ))
+          )
+        ) : (
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          [...new Array(3)].map((_, i) => <Skeleton key={i} h={96} />)
+        )}
+      </Stack>
+    </Stack>
+  );
+};
+
+JoinRequestsPage.layout = page => (
+  <AppLayout<JoinRequestsPageProps> withContainer containerSize="xs" withGutter>
+    {page}
+  </AppLayout>
+);
+
+export default JoinRequestsPage;
+
+interface JoinRequestCardProps {
+  joinRequest: JoinRequest;
+}
+
+const JoinRequestCard: FC<JoinRequestCardProps> = ({ joinRequest }) => {
+  return (
+    <Card withBorder>
+      <Card.Section inheritPadding py={8}>
+        <Group justify="center">
+          <Time
+            format={DateTime.DATETIME_MED}
+            size="xs"
+            inline
+            className={classes.timestamp}
+          >
+            {joinRequest.created_at}
+          </Time>
+        </Group>
+      </Card.Section>
+      <Group align="center" gap="xs" justify="space-between">
+        <List className={classes.cardList}>
+          <List.Item icon={<UserIcon />}>{joinRequest.name}</List.Item>
+          <List.Item icon={<PhoneIcon />}>
+            <CopyButton value={joinRequest.phone_number}>
+              {({ copied, copy }) => (
+                <Tooltip label={copied ? "copied" : "copy"}>
+                  <Anchor onClick={copy}>{joinRequest.phone_number}</Anchor>
+                </Tooltip>
+              )}
+            </CopyButton>
+          </List.Item>
+        </List>
+        <AddFriendButton fromJoinRequest={joinRequest} />
+      </Group>
+    </Card>
+  );
+};
