@@ -32,9 +32,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
   const { data: reactionsData } = useRouteSWR<{ reactions: PostReaction[] }>(
     routes.postReactions.index,
     {
-      params: {
-        post_id: post.id,
-      },
+      params: inViewport ? { post_id: post.id } : null,
       descriptor: "load reactions",
       isVisible: () => inViewport,
     },
