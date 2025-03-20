@@ -8,6 +8,7 @@
 
 .homeScreen {
   height: 90px;
+  width: unset;
   object-fit: cover;
   object-position: left center;
 }
