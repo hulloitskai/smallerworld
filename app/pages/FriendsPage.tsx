@@ -36,6 +36,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
         </Button>
       </Stack>
       <Stack gap="xs">
+        <AddFriendButton />
         {friends ? (
           isEmpty(friends) ? (
             <Card
@@ -58,7 +59,6 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           [...new Array(3)].map((_, i) => <Skeleton key={i} h={96} />)
         )}
-        <AddFriendButton />
       </Stack>
     </Stack>
   );

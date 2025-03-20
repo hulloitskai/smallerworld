@@ -12,7 +12,7 @@ class FriendsController < ApplicationController
       format.html { render(inertia: "FriendsPage") }
       format.json do
         current_user = authenticate_user!
-        friends = current_user.friends.chronological
+        friends = current_user.friends.reverse_chronological
         render(json: {
           friends: FriendSerializer.many(friends),
         })
