@@ -28,6 +28,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
     {
       params: inViewport ? { post_id: post.id } : null,
       descriptor: "load reactions",
+      refreshInterval: 5000,
       isVisible: () => inViewport,
     },
   );
