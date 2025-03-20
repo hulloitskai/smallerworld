@@ -6,7 +6,6 @@ class NotificationsController < ApplicationController
   protect_from_forgery with: :null_session, only: :delivered
 
   # == Filters
-  before_action :authenticate_user!, except: :delivered
   before_action :require_authentication!, only: :cleared
 
   # == Actions
