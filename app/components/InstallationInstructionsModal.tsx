@@ -31,7 +31,9 @@ export const openInstallationInstructionsModal = ({
           tap 'Add to Home Screen'
         </StepWithImage>
         <Stack gap={8} align="center">
-          <Badge leftSection={<>3.</>}>open from home screen</Badge>
+          <Badge className={classes.stepBadge} size="lg" leftSection={<>3.</>}>
+            open from home screen
+          </Badge>
           <HomeScreenPreview
             {...{ pageName, pageIcon }}
             arrowLabel="open me!"
@@ -56,7 +58,7 @@ const StepWithImage: FC<StepWithImageProps> = ({
 }) => {
   return (
     <Stack align="center" gap={8} {...otherProps}>
-      <Badge className={classes.stepBadge} leftSection={<>{step}.</>}>
+      <Badge className={classes.stepBadge} size="lg" leftSection={<>{step}.</>}>
         {children}
       </Badge>
       <Image className={classes.stepImage} src={imageSrc} />

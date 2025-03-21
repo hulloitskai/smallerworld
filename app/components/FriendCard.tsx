@@ -42,7 +42,6 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
         <Group gap={2}>
           {friend.notifiable && (
             <Badge
-              variant="subtle"
               color="gray"
               leftSection={<NotificationIcon />}
               className={classes.notifiableBadge}

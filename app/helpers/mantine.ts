@@ -105,6 +105,9 @@ const createTheme = (
         },
       }),
       Badge: Badge.extend({
+        defaultProps: {
+          variant: "light",
+        },
         classNames: {
           label: classes.badgeLabel,
         },
