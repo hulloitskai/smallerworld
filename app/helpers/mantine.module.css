@@ -33,18 +33,15 @@
     }
 
     .modalInner {
-      padding-top: calc(
-        var(--modal-inner-y-offset, var(--modal-y-offset)) +
-          env(safe-area-inset-top, 0px)
-      );
-
       @mixin smaller-than $mantine-breakpoint-xs {
-        --modal-inner-y-offset: 0;
-        --modal-inner-x-offset: 0;
+        --modal-inner-y-offset: 0px;
+        --modal-inner-x-offset: 0px;
       }
     }
 
     .modalContent {
+      padding-top: var(--safe-area-inset-top, 0px);
+
       @mixin smaller-than $mantine-breakpoint-xs {
         --modal-content-flex: 0 0 100%;
         --modal-content-max-height: auto;

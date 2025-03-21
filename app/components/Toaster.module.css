@@ -25,10 +25,10 @@
   }
 
   &[data-y-position="bottom"] {
-    bottom: env(safe-area-inset-bottom, 0px);
+    bottom: var(--safe-area-inset-bottom, 0px);
   }
 
   &[data-y-position="top"] {
-    top: env(safe-area-inset-top, 0px);
+    top: var(--safe-area-inset-top, 0px);
   }
 }

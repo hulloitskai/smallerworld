@@ -25,7 +25,7 @@ export const UserPageRequestInvitationAlert: FC<
       position={{
         left: ALERT_INSET,
         right: ALERT_INSET,
-        bottom: `calc(${ALERT_INSET} + env(safe-area-inset-bottom, 0px))`,
+        bottom: `calc(${ALERT_INSET} + var(--safe-area-inset-bottom, 0px))`,
       }}
     >
       <Transition transition="pop" mounted={isEmpty(modals) && opened}>

@@ -44,7 +44,7 @@ const NewPost: FC<NewPostProps> = ({ disabled }) => {
       </InPortal>
       <Affix
         position={{
-          bottom: `max(${affixInset}, env(safe-area-inset-bottom, 0px))`,
+          bottom: `max(${affixInset}, var(--safe-area-inset-bottom, 0px))`,
           left: affixInset,
           right: affixInset,
         }}

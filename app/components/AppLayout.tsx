@@ -176,7 +176,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
             )}
             {content}
           </AppShell.Main>
-          <footer style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
+          <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
           {/* <Center
             component="footer"
             className={classes.footer}

@@ -7,8 +7,10 @@
 }
 
 .header {
-  height: calc(var(--app-shell-header-height) + env(safe-area-inset-top, 0px));
-  padding-top: env(safe-area-inset-top, 0px);
+  height: calc(
+    var(--app-shell-header-height) + var(--safe-area-inset-top, 0px)
+  );
+  padding-top: var(--safe-area-inset-top, 0px);
   background-color: transparent;
 
   &::before {
@@ -31,10 +33,10 @@
 
 .footer {
   height: calc(
-    var(--app-shell-footer-height) + env(safe-area-inset-bottom, 0px)
+    var(--app-shell-footer-height) + var(--safe-area-inset-bottom, 0px)
   );
   padding-inline: 8px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: var(--safe-area-inset-bottom, 0px);
   margin-left: var(--app-shell-navbar-offset, 0px);
   overflow: hidden;
 
@@ -49,10 +51,10 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin-top: env(safe-area-inset-top, 0px);
+  margin-top: var(--safe-area-inset-top, 0px);
   min-height: calc(
-    100vh - env(safe-area-inset-top, 0px) -
-      (var(--app-shell-footer-height, 0px) + env(safe-area-inset-bottom, 0px))
+    100vh - var(--safe-area-inset-top, 0px) -
+      (var(--app-shell-footer-height, 0px) + var(--safe-area-inset-bottom, 0px))
   );
   padding-bottom: 0px;
 
@@ -61,12 +63,13 @@
 
 .navbar {
   top: calc(
-    var(--app-shell-header-offset, 0rem) + env(safe-area-inset-top, 0px)
+    var(--app-shell-header-offset, 0rem) + var(--safe-area-inset-top, 0px)
   );
   height: calc(
-    100vh - env(safe-area-inset-top, 0px) - var(--app-shell-header-offset, 0px)
+    100vh - var(--safe-area-inset-top, 0px) -
+      var(--app-shell-header-offset, 0px)
   );
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: var(--safe-area-inset-bottom, 0px);
 }
 
 .breadcrumbSeparator {

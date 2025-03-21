@@ -26,7 +26,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
   return (
     <Affix
       position={{
-        bottom: `calc(${ALERT_INSET} + env(safe-area-inset-bottom, 0px))`,
+        bottom: `calc(${ALERT_INSET} + var(--safe-area-inset-bottom, 0px))`,
         left: ALERT_INSET,
         right: ALERT_INSET,
       }}

@@ -51,7 +51,7 @@
 
 .lightbox {
   :global(.yarl__toolbar) {
-    top: env(safe-area-inset-top, 0px);
+    top: var(--safe-area-inset-top, 0px);
   }
 
   :global(.yarl__navigation_next),

@@ -1,6 +1,6 @@
 .root {
   position: fixed;
-  top: env(safe-area-inset-top, 0px);
+  top: var(--safe-area-inset-top, 0px);
 
   [role="progressbar"] {
     box-shadow:
