@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "pry-doc"
 require "pry-sorbet"
 require "pry-stack_explorer"
 require "break"

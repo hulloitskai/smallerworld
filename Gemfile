@@ -88,7 +88,6 @@ gem "active_storage_validations", "~> 0.9.6"
 gem "pry"
 gem "pry-rails"
 gem "pry-rescue"
-gem "pry-doc", require: false
 gem "pry-sorbet", require: false
 gem "pry-stack_explorer", require: false
 gem "break", require: false
