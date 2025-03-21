@@ -1,4 +1,4 @@
-import { Text } from "@mantine/core";
+import demoVideoSrc from "~/assets/videos/demo.mp4";
 
 import AppLayout from "~/components/AppLayout";
 import { useContact } from "~/helpers/contact";
@@ -9,14 +9,20 @@ export interface LandingPageProps extends SharedPageProps {}
 
 const LandingPage: PageComponent<LandingPageProps> = () => {
   return (
-    <Stack align="center" gap="lg">
-      <Box ta="center">
-        <Title fw={900}>live in a smaller world</Title>
-        <Text display="block" maw={280} mx="auto" opacity={0.7}>
-          have the social life of a small village, even when you live in a big
-          city.
-        </Text>
-      </Box>
+    <Stack align="center" gap="xl">
+      <Title className={classes.opener} ta="center">
+        a <Emph>life log</Emph> that your friends can{" "}
+        <Emph>pin to their home screen</Emph>
+      </Title>
+      <Box
+        component="video"
+        src={demoVideoSrc}
+        autoPlay
+        muted
+        loop
+        maw={275}
+        style={{ borderRadius: "var(--mantine-radius-default)" }}
+      />
       <Card withBorder>
         <Stack gap={6}>
           <Stack align="center" gap={4}>
@@ -32,8 +38,8 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
               to pin your page to their home screen
             </List.Item>
             <List.Item>
-              share poems, invitations to events you&apos;re going to, journal
-              entries, etc.
+              share poems, journal entries, invitations to events you&apos;re
+              going to, etc.
             </List.Item>
             <List.Item>
               your friends get notifications sent right to their lock screen.
@@ -74,3 +80,7 @@ const IWantThisButton: FC = () => {
     </Button>
   );
 };
+
+const Emph: FC<PropsWithChildren> = ({ children }) => (
+  <span className={classes.emphasis}>{children}</span>
+);

@@ -7,3 +7,16 @@
     margin-right: 22px;
   }
 }
+
+.opener {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.emphasis {
+  color: light-dark(
+    var(--mantine-color-primary-7),
+    var(--mantine-color-primary-4)
+  );
+}
