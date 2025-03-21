@@ -52,7 +52,7 @@ const EmailLayout = <EmailProps extends SharedPageProps>({
                 <Text style={{ color: "var(--mantine-color-dimmed)" }}>
                   Sent by{" "}
                   <Link
-                    href={routes.home.show.path()}
+                    href={routes.landing.show.path()}
                     target="_blank"
                     style={{ fontWeight: 600 }}
                   >

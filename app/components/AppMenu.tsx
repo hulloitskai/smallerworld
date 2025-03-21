@@ -55,8 +55,11 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
       <Menu.Dropdown>
         {currentUser ? (
           <>
-            <MenuLink href={routes.home.show.path()} leftSection={<HomeIcon />}>
-              home
+            <MenuLink
+              href={routes.world.show.path()}
+              leftSection={<SmallerWorldIcon />}
+            >
+              your world
             </MenuLink>
             <MenuLink
               href={routes.friends.index.path()}
@@ -80,7 +83,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
           <Menu.Item
             leftSection={<SignInIcon />}
             component={Link}
-            href={routes.logins.new.path()}
+            href={routes.login.new.path()}
           >
             sign in
           </Menu.Item>

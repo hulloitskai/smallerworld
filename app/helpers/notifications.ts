@@ -80,7 +80,7 @@ export const notificationActionUrl = (notification: Notification): string => {
     case "PostReaction": {
       const { reaction } =
         notification.payload as PostReactionNotificationPayload;
-      return routes.home.show.path({
+      return routes.world.show.path({
         query: {
           post_id: reaction.post.id,
         },

@@ -24,7 +24,6 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "AdminIcon",
       "SignInIcon",
       "SignOutIcon",
-      "HomeIcon",
       "NotificationIcon",
       "EmojiIcon",
       "FriendsIcon",

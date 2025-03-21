@@ -64,7 +64,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                         description: error.message,
                       });
                     } else {
-                      router.visit(routes.home.show.path());
+                      router.visit(routes.world.show.path());
                     }
                   })
                   .catch((error: Error) => {

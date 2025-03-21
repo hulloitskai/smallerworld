@@ -16,7 +16,7 @@ const ICON_IMAGE_INPUT_SIZE = 110;
 
 const SignupPage: PageComponent<SignupPageProps> = () => {
   const { values, getInputProps, submitting, submit, setFieldValue } = useForm({
-    action: routes.signups.create,
+    action: routes.signup.create,
     descriptor: "complete signup",
     initialValues: {
       name: "",
@@ -40,7 +40,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
       },
     },
     onSuccess: () => {
-      router.visit(routes.home.show.path());
+      router.visit(routes.world.show.path());
     },
   });
   const [pageIcon, setPageIcon] = useState<Image | null>(null);

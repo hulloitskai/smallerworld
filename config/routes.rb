@@ -29,7 +29,7 @@ Rails.application.routes.draw do
   resources :images, only: :show, param: :signed_id, export: true
 
   # == Contact
-  resource :contact_url, only: :show, export: true
+  resource :contact_url, only: :show, export: { namespace: "contact_url" }
 
   # == Push subscriptions
   resources :push_subscriptions, only: :create, export: true do
@@ -53,15 +53,30 @@ Rails.application.routes.draw do
   end
 
   # == Logins
-  resource :login, only: :new, path_names: { new: "" }, export: true
+  resource :login,
+           only: :new,
+           path_names: { new: "" },
+           export: { namespace: "login" }
 
   # == Signups
-  resource :signup, only: %i[new create], path_names: { new: "" }, export: true
-  get :edit, to: "signups#edit", export: true
-  post :edit, to: "signups#update", export: true
+  defaults export: { namespace: "signup" } do
+    resource :signup,
+             only: %i[new create],
+             path_names: { new: "" }
+    get :edit, to: "signups#edit"
+    post :edit, to: "signups#update"
+  end
+
+  # == World
+  resource :world, only: :show, export: { namespace: "world" }
 
   # == Friends
-  resources :friends, only: %i[index create update], export: true do
+  resources(
+    :friends,
+    path: "/world/friends",
+    only: %i[index create update],
+    export: true,
+  ) do
     member do
       post :pause
     end
@@ -95,12 +110,15 @@ Rails.application.routes.draw do
   resources :post_reactions, only: :destroy, export: true
 
   # == Join requests
-  resources :join_requests, only: :index, export: true
+  resources :join_requests,
+            path: "/world/join_requests",
+            only: :index,
+            export: true
 
   # == Pages
   defaults export: true do
     root "landing#show"
-    get :home, to: "home#show"
+    get :home, to: redirect("/world")
     get :start, to: "start#show"
   end
   get "/src" => redirect(
@@ -110,7 +128,12 @@ Rails.application.routes.draw do
 
   # == Devtools
   if Rails.env.development?
-    resource :test, controller: "test", only: :show, export: true do
+    resource(
+      :test,
+      controller: "test",
+      only: :show,
+      export: { namespace: "test" },
+    ) do
       post :submit
     end
     get "/mailcatcher" => redirect("//localhost:1080", status: 302)

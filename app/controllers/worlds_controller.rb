@@ -1,13 +1,13 @@
 # typed: true
 # frozen_string_literal: true
 
-class HomeController < ApplicationController
+class WorldsController < ApplicationController
   # == Filters
   before_action :authenticate_user!
 
   # == Actions
-  # GET /home
+  # GET /world
   def show
-    render(inertia: "HomePage")
+    render(inertia: "WorldPage")
   end
 end

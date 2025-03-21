@@ -211,5 +211,5 @@ module GeneratedUrlHelpersModule
   def user_page_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def user_url(*args); end
+  def world_url(*args); end
 end

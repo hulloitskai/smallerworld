@@ -211,5 +211,5 @@ module GeneratedPathHelpersModule
   def user_page_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def user_path(*args); end
+  def world_path(*args); end
 end

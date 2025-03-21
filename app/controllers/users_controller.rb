@@ -42,9 +42,9 @@ class UsersController < ApplicationController
     start_url = if current_friend
       user_page_path(user, friend_token: current_friend.access_token)
     else
-      home_path
+      world_path
     end
-    scope = current_friend ? user_page_path(user) : root_path
+    scope = current_friend ? user_page_path(user) : world_path
     render(
       json: {
         name:,

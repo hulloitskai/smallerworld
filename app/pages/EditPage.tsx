@@ -23,7 +23,7 @@ const EditPage: PageComponent<EditPageProps> = () => {
     [currentUser],
   );
   const { values, getInputProps, submitting, submit, isDirty } = useForm({
-    action: routes.signups.update,
+    action: routes.signup.update,
     descriptor: "update page",
     initialValues,
     transformValues: ({ page_icon_upload, ...values }) => ({
@@ -36,7 +36,7 @@ const EditPage: PageComponent<EditPageProps> = () => {
       name: hasLength({ max: 30 }, "Must be less than 30 characters"),
     },
     onSuccess: () => {
-      router.visit(routes.home.show.path());
+      router.visit(routes.world.show.path());
     },
   });
   const [pageIcon, setPageIcon] = useState<Image | null>(
@@ -47,11 +47,11 @@ const EditPage: PageComponent<EditPageProps> = () => {
     <Stack w="100%" maw={380}>
       <Button
         component={Link}
-        href={routes.home.show.path()}
+        href={routes.world.show.path()}
         leftSection={<BackIcon />}
         style={{ alignSelf: "center" }}
       >
-        back to home
+        back to your world
       </Button>
       <Card withBorder>
         <Card.Section inheritPadding withBorder py="md">

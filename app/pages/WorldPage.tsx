@@ -29,15 +29,15 @@ import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
 import { type Friend, type User } from "~/types";
 
-import classes from "./HomePage.module.css";
+import classes from "./WorldPage.module.css";
 
-export interface HomePageProps extends SharedPageProps {
+export interface WorldPageProps extends SharedPageProps {
   currentUser: User;
 }
 
 const ICON_SIZE = 96;
 
-const HomePage: PageComponent<HomePageProps> = () => {
+const WorldPage: PageComponent<WorldPageProps> = () => {
   const isStandalone = useIsStandalone();
   const user = useAuthenticatedUser();
   const { registration } = useWebPush();
@@ -127,7 +127,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
               <Menu.Item
                 component={Link}
                 leftSection={<EditIcon />}
-                href={routes.signups.edit.path()}
+                href={routes.signup.edit.path()}
               >
                 customize your page
               </Menu.Item>
@@ -176,9 +176,9 @@ const HomePage: PageComponent<HomePageProps> = () => {
   );
 };
 
-HomePage.layout = page => (
-  <AppLayout<HomePageProps>
-    title="home"
+WorldPage.layout = page => (
+  <AppLayout<WorldPageProps>
+    title="your world"
     manifestUrl={({ currentUser }) =>
       routes.users.manifest.path({ id: currentUser.id })
     }
@@ -190,7 +190,7 @@ HomePage.layout = page => (
   </AppLayout>
 );
 
-export default HomePage;
+export default WorldPage;
 
 interface InstallModalBodyProps {
   onInstalled: () => void;

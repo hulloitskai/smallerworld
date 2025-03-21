@@ -16,7 +16,6 @@ export { default as AlertIcon } from "~icons/heroicons/exclamation-triangle-20-s
 export { default as EmojiIcon } from "~icons/heroicons/face-smile-20-solid";
 export { default as PublicIcon } from "~icons/heroicons/globe-alt-20-solid";
 export { default as SmallerWorldIcon } from "~icons/heroicons/globe-americas-20-solid";
-export { default as HomeIcon } from "~icons/heroicons/home-20-solid";
 export { default as JoinRequestsIcon } from "~icons/heroicons/inbox-arrow-down-20-solid";
 export { default as AdminIcon } from "~icons/heroicons/key-20-solid";
 export { default as SearchIcon } from "~icons/heroicons/magnifying-glass-20-solid";

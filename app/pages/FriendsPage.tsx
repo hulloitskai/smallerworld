@@ -7,9 +7,11 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import FriendCard from "~/components/FriendCard";
-import { type Friend } from "~/types";
+import { type Friend, type User } from "~/types";
 
-export interface FriendsPageProps extends SharedPageProps {}
+export interface FriendsPageProps extends SharedPageProps {
+  currentUser: User;
+}
 
 const FriendsPage: PageComponent<FriendsPageProps> = () => {
   const { data } = useRouteSWR<{ friends: Friend[] }>(routes.friends.index, {
@@ -32,10 +34,10 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
           component={Link}
           leftSection={<BackIcon />}
           radius="xl"
-          href={routes.home.show.path()}
+          href={routes.world.show.path()}
           mt={2}
         >
-          back to home
+          back to your world
         </Button>
       </Stack>
       <Stack gap="xs">
@@ -68,7 +70,15 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
 };
 
 FriendsPage.layout = page => (
-  <AppLayout<FriendsPageProps> withContainer containerSize="xs" withGutter>
+  <AppLayout<FriendsPageProps>
+    title="your friends"
+    manifestUrl={({ currentUser }) =>
+      routes.users.manifest.path({ id: currentUser.id })
+    }
+    withContainer
+    containerSize="xs"
+    withGutter
+  >
     {page}
   </AppLayout>
 );

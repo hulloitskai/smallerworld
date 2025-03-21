@@ -2,11 +2,13 @@ import { CopyButton } from "@mantine/core";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
-import { type JoinRequest } from "~/types";
+import { type JoinRequest, type User } from "~/types";
 
 import classes from "./JoinRequestsPage.module.css";
 
-export interface JoinRequestsPageProps extends SharedPageProps {}
+export interface JoinRequestsPageProps extends SharedPageProps {
+  currentUser: User;
+}
 
 const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
   const { data } = useRouteSWR<{ joinRequests: JoinRequest[] }>(
@@ -26,10 +28,10 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
           component={Link}
           leftSection={<BackIcon />}
           radius="xl"
-          href={routes.home.show.path()}
+          href={routes.world.show.path()}
           mt={2}
         >
-          back to home
+          back to your world
         </Button>
       </Stack>
       <Stack gap="xs">
@@ -51,7 +53,15 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
 };
 
 JoinRequestsPage.layout = page => (
-  <AppLayout<JoinRequestsPageProps> withContainer containerSize="xs" withGutter>
+  <AppLayout<JoinRequestsPageProps>
+    title="your join requests"
+    manifestUrl={({ currentUser }) =>
+      routes.users.manifest.path({ id: currentUser.id })
+    }
+    withContainer
+    containerSize="xs"
+    withGutter
+  >
     {page}
   </AppLayout>
 );

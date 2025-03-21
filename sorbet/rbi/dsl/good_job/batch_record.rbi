@@ -1840,7 +1840,7 @@ class GoodJob::BatchRecord
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig { returns(Integer) }
+    sig { returns(T::Hash[T.untyped, Integer]) }
     def size; end
 
     sig do
@@ -1971,7 +1971,7 @@ class GoodJob::BatchRecord
     sig { params(column_name: T.any(String, Symbol)).returns(T::Hash[T.untyped, T.untyped]) }
     def minimum(column_name); end
 
-    sig { returns(Integer) }
+    sig { returns(T::Hash[T.untyped, Integer]) }
     def size; end
 
     sig do
