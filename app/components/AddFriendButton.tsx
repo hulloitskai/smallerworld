@@ -29,7 +29,7 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
       leftSection={<AddFriendIcon />}
       onClick={() => {
         openModal({
-          title: "add friend",
+          title: "invite friend",
           children: <ModalBody {...{ fromJoinRequest }} />,
         });
       }}
@@ -156,7 +156,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
               loading={submitting}
               className={classes.addButton}
             >
-              add
+              create invite
             </Button>
           </Group>
         </Stack>
