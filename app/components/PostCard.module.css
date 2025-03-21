@@ -50,12 +50,12 @@
 }
 
 .lightbox {
-  :global(.yarl__toolbar) {
-    top: var(--safe-area-inset-top, 0px);
+  :global(.yarl__container) {
+    padding-top: var(--safe-area-inset-top, 0px);
+    padding-bottom: var(--safe-area-inset-bottom, 0px);
   }
 
-  :global(.yarl__navigation_next),
-  :global(.yarl__navigation_prev) {
-    display: none;
+  :global(.yarl__toolbar) {
+    top: var(--safe-area-inset-top, 0px);
   }
 }

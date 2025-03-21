@@ -167,6 +167,11 @@ const PostImage: FC<PostImageProps> = ({ image }) => {
             }),
           },
         ]}
+        carousel={{ finite: true }}
+        render={{
+          buttonPrev: () => null,
+          buttonNext: () => null,
+        }}
       />
     </Box>
   );
