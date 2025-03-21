@@ -13,6 +13,7 @@ import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
+import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
@@ -41,6 +42,8 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
   const isStandalone = useIsStandalone();
   const user = useAuthenticatedUser();
   const { registration } = useWebPush();
+  const installPromptEvent = useInstallPromptEvent();
+  const isInstallable = useIsInstallable(installPromptEvent);
 
   // == Friends
   const { data } = useRouteSWR<{ friends: Friend[] }>(routes.friends.index, {
@@ -97,21 +100,45 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
                     your friends
                   </Button>
                 )}
-                {isStandalone === false && (
-                  <ActionIcon
-                    variant="light"
-                    size="lg"
-                    onClick={() => {
-                      openModal({
-                        title: "enable notifications",
-                        children: (
-                          <InstallModalBody onInstalled={closeAllModals} />
-                        ),
-                      });
-                    }}
-                  >
-                    <NotificationIcon />
-                  </ActionIcon>
+                {isInstallable && isStandalone === false && (
+                  <Box pos="relative">
+                    <Head>
+                      <link
+                        rel="preconnect"
+                        href="https://fonts.googleapis.com"
+                      />
+                      <link
+                        rel="preconnect"
+                        href="https://fonts.gstatic.com"
+                        crossOrigin="anonymous"
+                      />
+                      <link
+                        href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap"
+                        rel="stylesheet"
+                      />
+                    </Head>
+                    <ActionIcon
+                      variant="light"
+                      size="lg"
+                      onClick={() => {
+                        openModal({
+                          title: "enable notifications",
+                          children: (
+                            <InstallModalBody onInstalled={closeAllModals} />
+                          ),
+                        });
+                      }}
+                    >
+                      <NotificationIcon />
+                    </ActionIcon>
+                    <Image
+                      src={bottomLeftArrowSrc}
+                      className={classes.enableNotificationsArrow}
+                    />
+                    <Text className={classes.enableNotificationsText}>
+                      enable notifs :)
+                    </Text>
+                  </Box>
                 )}
                 {isStandalone && <UserNotificationsButton />}
               </Group>
