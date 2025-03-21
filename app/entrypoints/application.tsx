@@ -24,6 +24,8 @@ import {
 } from "~/helpers/serviceWorker";
 import { setupSupabase } from "~/helpers/supabase";
 
+import "./application.css";
+
 // == Setup
 setupInertia();
 setupRoutes();

@@ -1,7 +1,5 @@
 import { useViewportSize } from "@mantine/hooks";
 
-import "./safeArea.css";
-
 export interface Rect {
   x: number;
   y: number;
