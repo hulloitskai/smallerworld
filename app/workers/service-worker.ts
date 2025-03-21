@@ -155,5 +155,3 @@ const pathname = (url: string): string => {
 };
 
 console.info("Service worker installed");
-
-export {};
