@@ -27,43 +27,36 @@ class UsersController < ApplicationController
     })
   end
 
-  # GET /user/manifest.webmanifest
   # GET /users/:id/manifest.webmanifest?friend_token=...
   def manifest
-    if (user_id = params[:id])
-      user = User.find(user_id)
-      current_friend = authenticate_friend!
-      render(
-        json: {
-          name: "#{user.name}'s world",
-          short_name: user.name,
-          description: "life updates, personal invitations, poems, and more!",
-          icons: manifest_icons(user),
-          display: "standalone",
-          start_url: user_page_path(
-            user,
-            friend_token: current_friend.access_token,
-          ),
-          scope: user_page_path(user),
-        },
-        content_type: "application/manifest+json",
-      )
+    current_friend = self.current_friend
+    user_id = T.let(params.fetch(:id), String)
+    user = User.find(user_id)
+    name = current_friend ? "#{user.name}'s world" : "smaller world"
+    short_name = current_friend ? user.name : "smaller world"
+    description = if current_friend
+      "life updates, personal invitations, poems, and more!"
     else
-      user = authenticate_user!
-      name = "smaller world"
-      render(
-        json: {
-          name:,
-          short_name: name,
-          description: "a smaller world for you and your friends :)",
-          icons: manifest_icons(user),
-          display: "standalone",
-          start_url: home_path,
-          scope: root_path,
-        },
-        content_type: "application/manifest+json",
-      )
+      "a smaller world for you and your friends :)"
     end
+    start_url = if current_friend
+      user_page_path(user, friend_token: current_friend.access_token)
+    else
+      home_path
+    end
+    scope = current_friend ? user_page_path(user) : root_path
+    render(
+      json: {
+        name:,
+        short_name:,
+        description:,
+        icons: manifest_icons(user),
+        display: "standalone",
+        start_url:,
+        scope:,
+      },
+      content_type: "application/manifest+json",
+    )
   end
 
   # GET /users/:id/posts

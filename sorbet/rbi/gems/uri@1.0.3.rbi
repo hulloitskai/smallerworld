@@ -2338,7 +2338,7 @@ URI::Schemes::LDAPS = URI::LDAPS
 URI::Schemes::MAILTO = URI::MailTo
 
 # source://uri//lib/uri/common.rb#107
-URI::Schemes::SOURCE = URI::Source
+# URI::Schemes::SOURCE = URI::Source
 
 # source://uri//lib/uri/common.rb#107
 URI::Schemes::WS = URI::WS

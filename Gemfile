@@ -187,7 +187,7 @@ group :development, :test do
   gem "js_from_routes", "~> 4.0"
 
   # Use Rubocop to lint code
-  gem "rubocop", "~> 1.62", require: false
+  gem "rubocop", "~> 1.74", require: false
   gem "rexml", ">= 3.3.6", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
@@ -196,7 +196,6 @@ group :development, :test do
   gem "rubocop-capybara", require: false
   gem "ruby-lsp", require: false
   gem "rbs", "~> 3.5.3", require: false
-  gem "parser", "~> 3.3.0.5", require: false
 end
 
 group :development do
@@ -218,7 +217,7 @@ group :development do
   # Typecheck code
   gem "sorbet", require: false
   gem "spoom", require: false
-  gem "tapioca", "~> 0.16.8", require: false
+  gem "tapioca", "~> 0.16.11", require: false
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"

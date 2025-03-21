@@ -27,11 +27,13 @@ import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
-import { type Friend } from "~/types";
+import { type Friend, type User } from "~/types";
 
 import classes from "./HomePage.module.css";
 
-export interface HomePageProps extends SharedPageProps {}
+export interface HomePageProps extends SharedPageProps {
+  currentUser: User;
+}
 
 const ICON_SIZE = 96;
 
@@ -176,7 +178,9 @@ const HomePage: PageComponent<HomePageProps> = () => {
 HomePage.layout = page => (
   <AppLayout<HomePageProps>
     title="home"
-    manifestUrl={routes.user.manifest.path()}
+    manifestUrl={({ currentUser }) =>
+      routes.users.manifest.path({ id: currentUser.id })
+    }
     withContainer
     containerSize="xs"
     withGutter
