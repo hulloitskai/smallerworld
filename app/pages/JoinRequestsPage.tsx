@@ -18,7 +18,7 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
   const { joinRequests } = data ?? {};
 
   return (
-    <Stack>
+    <Stack gap="lg">
       <Stack gap={4} align="center" ta="center">
         <Box component={JoinRequestsIcon} fz="xl" />
         <Title size="h2">your join requests</Title>
@@ -27,6 +27,7 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
           leftSection={<BackIcon />}
           radius="xl"
           href={routes.home.show.path()}
+          mt={2}
         >
           back to home
         </Button>

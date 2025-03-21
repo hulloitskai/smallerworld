@@ -22,21 +22,24 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
   );
 
   return (
-    <Stack>
-      <Stack gap={4} align="center" ta="center">
+    <Stack gap="lg">
+      <Stack gap={4} align="center">
         <Box component={FriendsIcon} fz="xl" />
-        <Title size="h2">your friends</Title>
+        <Title size="h2" ta="center">
+          your friends
+        </Title>
         <Button
           component={Link}
           leftSection={<BackIcon />}
           radius="xl"
           href={routes.home.show.path()}
+          mt={2}
         >
           back to home
         </Button>
       </Stack>
       <Stack gap="xs">
-        <AddFriendButton />
+        <AddFriendButton mih={60} size="md" />
         {friends ? (
           isEmpty(friends) ? (
             <Card
