@@ -115,7 +115,7 @@ UserPage.layout = page => (
     })}
     manifestUrl={({ user, currentFriend }) =>
       currentFriend
-        ? routes.users.manifestGet.path({
+        ? routes.users.manifest.path({
             id: user.id,
             query: {
               friend_token: currentFriend.access_token,
