@@ -92,6 +92,7 @@ const NewPost: FC<NewPostProps> = ({ disabled }) => {
           </Transition>
           <Modal
             title={<>new {postType ? POST_TYPE_TO_LABEL[postType] : "post"}</>}
+            size="var(--container-size-xs)"
             opened={!!postType}
             onClose={() => {
               setPostType(null);

@@ -146,9 +146,10 @@ const ImageInput: FC<ImageInputProps> = ({
                 size="xs"
                 c="dark.1"
                 lh={1.3}
+                fw={500}
                 style={{ textAlign: "center" }}
               >
-                Drag an image or click to upload
+                drag an image or click to upload
               </Text>
             </Stack>
           </Dropzone>
