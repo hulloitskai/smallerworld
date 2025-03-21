@@ -132,9 +132,10 @@ const HomePage: PageComponent<HomePageProps> = () => {
                 customize your page
               </Menu.Item>
               <Menu.Item
-                component={Link}
-                leftSection={<UserIcon />}
+                component="a"
+                leftSection={<OpenExternalIcon />}
                 href={routes.users.show.path({ handle: user.handle })}
+                target="_blank"
               >
                 view public profile
               </Menu.Item>
