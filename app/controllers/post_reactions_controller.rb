@@ -14,7 +14,7 @@ class PostReactionsController < ApplicationController
     render(json: { reactions: PostReactionSerializer.many(reactions) })
   end
 
-  # POST /posts/:post_id/reactions
+  # POST /posts/:post_id/reactions?friend_token=...
   def create
     current_friend = authenticate_friend!
     post_id = T.let(params.fetch(:post_id), String)

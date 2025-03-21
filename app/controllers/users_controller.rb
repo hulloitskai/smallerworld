@@ -2,11 +2,8 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  # == Filters
-  before_action :authenticate_friend!, only: :manifest
-
   # == Actions
-  # GET /@:handle?friend_token=...
+  # GET /@:handle
   def show
     handle = T.let(params.fetch(:handle), String)
     user = User.friendly.find(handle)
