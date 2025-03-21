@@ -72,7 +72,9 @@ Rails.application.routes.draw do
 
   # == Users
   get "/@:handle", to: "users#show", as: :user_page, export: true
-  resource :user, only: :update, export: true
+  resource :user, only: :update, export: true do
+    get "manifest.webmanifest" => :manifest, constraints: { format: "" }
+  end
   resources :users, only: [], export: true do
     member do
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }

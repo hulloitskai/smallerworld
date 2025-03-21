@@ -176,7 +176,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
 HomePage.layout = page => (
   <AppLayout<HomePageProps>
     title="home"
-    manifestUrl="/site.webmanifest"
+    manifestUrl={routes.users.manifest.path()}
     withContainer
     containerSize="xs"
     withGutter
