@@ -1,5 +1,4 @@
 import { Image, type ModalProps } from "@mantine/core";
-import { type FC } from "react";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
 import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
@@ -12,18 +11,21 @@ import classes from "./InstallationInstructionsModal.module.css";
 
 export interface InstallationInstructionsModalProps
   extends Pick<ModalProps, "title">,
-    Pick<HomeScreenPreviewProps, "pageName" | "pageIcon"> {}
+    Pick<HomeScreenPreviewProps, "pageName" | "pageIcon">,
+    PropsWithChildren {}
 
 export const openInstallationInstructionsModal = ({
   title,
   pageName,
   pageIcon,
+  children,
 }: InstallationInstructionsModalProps): void => {
   openModal({
     title,
     className: classes.modal,
     children: (
       <Stack py="xs">
+        {children}
         <StepWithImage step={1} imageSrc={openShareMenuStepSrc}>
           open the share menu
         </StepWithImage>

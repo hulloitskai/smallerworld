@@ -1,32 +1,26 @@
-import { isIosSafari } from "@braintree/browser-detection";
-import {
-  ActionIcon,
-  AspectRatio,
-  Avatar,
-  Image,
-  Overlay,
-  Text,
-} from "@mantine/core";
+import { ActionIcon, Avatar, Image, Overlay, Text } from "@mantine/core";
 import { takeRight } from "lodash-es";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
-import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
-import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
-import AuthorPostCardControls from "~/components/AuthorPostCardActions";
-import HomeScreenPreview from "~/components/HomeScreenPreview";
+import AuthorPostCardActions from "~/components/AuthorPostCardActions";
+import { openInstallationInstructionsModal } from "~/components/InstallationInstructionsModal";
 import NewPost from "~/components/NewPost";
 import PostCard from "~/components/PostCard";
 import UserNotificationsButton from "~/components/UserNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { usePosts } from "~/helpers/posts";
-import { useInstallPromptEvent, useIsStandalone } from "~/helpers/pwa";
+import {
+  useInstallPromptEvent,
+  useIsInstallable,
+  useIsStandalone,
+} from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
 import { type Friend, type User } from "~/types";
 
@@ -121,10 +115,18 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
                       variant="light"
                       size="lg"
                       onClick={() => {
-                        openModal({
+                        openInstallationInstructionsModal({
                           title: "enable notifications",
+                          pageName: "smaller world",
+                          pageIcon: user.page_icon,
                           children: (
-                            <InstallModalBody onInstalled={closeAllModals} />
+                            <Text size="sm" ta="center" maw={300} mx="auto">
+                              pin this page to your home screen so you can{" "}
+                              <span style={{ fontWeight: 600 }}>
+                                get notified when friends react to your posts
+                              </span>
+                              !
+                            </Text>
                           ),
                         });
                       }}
@@ -219,140 +221,6 @@ WorldPage.layout = page => (
 
 export default WorldPage;
 
-interface InstallModalBodyProps {
-  onInstalled: () => void;
-}
-
-const InstallModalBody: FC<InstallModalBodyProps> = ({ onInstalled }) => {
-  const [iosSafariInstructionsDisplayed, setIosInstructionsDisplayed] =
-    useState(false);
-  const installPromptEvent = useInstallPromptEvent();
-  const isInstallable = useIsInstallable(installPromptEvent);
-  return (
-    <>
-      <Transition transition="pop" mounted={!iosSafariInstructionsDisplayed}>
-        {style => (
-          <Stack gap="xs" align="center" {...{ style }}>
-            <HomeScreenPreview
-              pageName="smaller world"
-              pageIcon={{ src: "/logo.png" }}
-              arrowLabel="this page!"
-            />
-            <Text size="sm" ta="center">
-              pin this page to your home screen so you can{" "}
-              <span style={{ fontWeight: 600 }}>
-                get notified when friends react to your posts
-              </span>
-              !
-            </Text>
-            <Stack gap={4} align="center">
-              <Button
-                leftSection={<InstallIcon />}
-                loading={isInstallable === undefined}
-                disabled={isInstallable === false}
-                onClick={() => {
-                  if (installPromptEvent) {
-                    void installPromptEvent.prompt().then(onInstalled);
-                  } else if (isIosSafari()) {
-                    setIosInstructionsDisplayed(true);
-                  }
-                }}
-              >
-                pin to home screen!
-              </Button>
-              {isInstallable === false && (
-                <Text size="xs" c="dimmed">
-                  sorry, your browser isn&apos;t supported
-                  <Text span inherit visibleFrom="xs">
-                    —pls open on your phone!
-                  </Text>
-                </Text>
-              )}
-            </Stack>
-          </Stack>
-        )}
-      </Transition>
-      <Transition
-        transition="fade-up"
-        mounted={iosSafariInstructionsDisplayed}
-        enterDelay={200}
-      >
-        {style => (
-          <List
-            type="ordered"
-            className={classes.installInstructionsList}
-            {...{ style }}
-          >
-            <List.Item>
-              <StepWithImage
-                imageSrc={openShareMenuStepSrc}
-                aspectRatio={3.066654640570037}
-              >
-                open the share menu
-              </StepWithImage>
-            </List.Item>
-            <List.Item>
-              <StepWithImage
-                imageSrc={addToHomeScreenStepSrc}
-                aspectRatio={0.804664723}
-              >
-                tap 'Add to Home Screen'
-              </StepWithImage>
-            </List.Item>
-            <List.Item>
-              <Stack gap={2}>
-                <Box>find the icon on your home screen and open it!</Box>
-                <HomeScreenPreview
-                  pageName="smaller world"
-                  pageIcon={{ src: "/logo.png" }}
-                  arrowLabel="this one!"
-                />
-              </Stack>
-            </List.Item>
-          </List>
-        )}
-      </Transition>
-    </>
-  );
-};
-
-interface StepWithImageProps extends PropsWithChildren<BoxProps> {
-  imageSrc: string;
-  aspectRatio: number;
-}
-
-const StepWithImage: FC<StepWithImageProps> = ({
-  imageSrc,
-  aspectRatio,
-  children,
-  ...otherProps
-}) => {
-  return (
-    <Stack align="stretch" gap={2} {...otherProps}>
-      <Box>{children}</Box>
-      <AspectRatio ratio={aspectRatio} maw={300}>
-        <Image src={imageSrc} radius="md" />
-      </AspectRatio>
-    </Stack>
-  );
-};
-
-const useIsInstallable = (
-  installEvent: Event | null | undefined,
-): boolean | undefined => {
-  const [isInstallable, setIsInstallable] = useState<boolean | undefined>(
-    undefined,
-  );
-  useEffect(() => {
-    if (installEvent || isIosSafari()) {
-      setIsInstallable(true);
-    } else {
-      setIsInstallable(false);
-    }
-  }, [installEvent]);
-  return isInstallable;
-};
-
 const Feed: FC = () => {
   const { posts } = usePosts();
   return (
@@ -388,7 +256,7 @@ const Feed: FC = () => {
             <PostCard
               key={post.id}
               {...{ post }}
-              actions={<AuthorPostCardControls {...{ post }} />}
+              actions={<AuthorPostCardActions {...{ post }} />}
             />
           ))
         )
