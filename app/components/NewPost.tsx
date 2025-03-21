@@ -1,4 +1,4 @@
-import { Affix, Drawer, Modal } from "@mantine/core";
+import { Affix, Modal } from "@mantine/core";
 import {
   createHtmlPortalNode,
   InPortal,
@@ -28,14 +28,9 @@ const NewPost: FC<NewPostProps> = ({ disabled }) => {
 
   // == Drawer / Modal
   const portalNode = useMemo(() => createHtmlPortalNode(), []);
-  const { breakpoints } = useMantineTheme();
-  const showDrawer = useMediaQuery(`(max-width: ${breakpoints.xs})`);
-  const DrawerOrModal = showDrawer ? Drawer : Modal;
 
   // == Affix
-  const affixInset = showDrawer
-    ? "var(--mantine-spacing-md)"
-    : "var(--mantine-spacing-xl)";
+  const affixInset = "var(--mantine-spacing-xl)";
   return (
     <>
       <Space h={50} />
@@ -95,16 +90,15 @@ const NewPost: FC<NewPostProps> = ({ disabled }) => {
               </Menu>
             )}
           </Transition>
-          <DrawerOrModal
+          <Modal
             title={<>new {postType ? POST_TYPE_TO_LABEL[postType] : "post"}</>}
             opened={!!postType}
             onClose={() => {
               setPostType(null);
             }}
-            {...(!showDrawer && { size: "var(--container-size-xs)" })}
           >
             <OutPortal node={portalNode} />
-          </DrawerOrModal>
+          </Modal>
         </Center>
       </Affix>
     </>
