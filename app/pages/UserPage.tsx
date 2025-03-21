@@ -95,7 +95,7 @@ const UserPage: PageComponent<UserPageProps> = ({
       {currentFriend ? (
         <UserPageInstallAlert {...{ user }} />
       ) : (
-        <UserPageRequestInvitationAlert userId={user.id} />
+        <UserPageRequestInvitationAlert {...{ user }} />
       )}
     </>
   );

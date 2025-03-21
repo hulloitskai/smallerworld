@@ -48,21 +48,6 @@ interface ModalBodyProps {
 
 const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
   const currentUser = useAuthenticatedUser();
-  const [createdFriend, setCreatedFriend] = useState<Friend | undefined>();
-  const [createdFriendJoinUrl, setCreatedFriendJoinUrl] = useState<string>("");
-  useEffect(() => {
-    if (createdFriend?.access_token) {
-      const joinPath = routes.users.show.path({
-        handle: currentUser.handle,
-        query: {
-          friend_token: createdFriend.access_token,
-          intent: "join",
-        },
-      });
-      const joinUrl = new URL(joinPath, location.href);
-      setCreatedFriendJoinUrl(joinUrl.toString());
-    }
-  }, [createdFriend?.access_token, currentUser.handle]);
 
   // == Form
   const initialValues = useMemo(
@@ -80,6 +65,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
     setFieldValue,
     setInitialValues,
     reset,
+    data,
   } = useForm({
     action: routes.friends.create,
     descriptor: "invite friend",
@@ -91,8 +77,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
         phone_number: fromJoinRequest?.phone_number ?? null,
       },
     }),
-    onSuccess: ({ friend }: { friend: Friend }) => {
-      setCreatedFriend(friend);
+    onSuccess: (_data: { friend: Friend }) => {
       void mutateRoute(routes.friends.index);
       void mutateRoute(routes.joinRequests.index);
     },
@@ -101,14 +86,31 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
     setInitialValues(initialValues);
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
+  const { friend } = data ?? {};
+
+  // == Join url
+  const [friendJoinUrl, setFriendJoinUrl] = useState<string>("");
+  useEffect(() => {
+    if (friend?.access_token) {
+      const joinPath = routes.users.show.path({
+        handle: currentUser.handle,
+        query: {
+          friend_token: friend.access_token,
+          intent: "join",
+        },
+      });
+      const joinUrl = new URL(joinPath, location.href);
+      setFriendJoinUrl(joinUrl.toString());
+    }
+  }, [friend?.access_token, currentUser.handle]);
 
   const shareJoinUrlViaSmsUri = useMemo(() => {
-    if (!fromJoinRequest || !createdFriendJoinUrl) {
+    if (!fromJoinRequest || !friendJoinUrl) {
       return;
     }
-    const message = `here's my smaller world invite link for you: ${createdFriendJoinUrl}`;
+    const message = `here's my smaller world invite link for you: ${friendJoinUrl}`;
     return `sms:${fromJoinRequest.phone_number}?body=${encodeURIComponent(message)}`;
-  }, [fromJoinRequest, createdFriendJoinUrl]);
+  }, [fromJoinRequest, friendJoinUrl]);
   return (
     <Stack gap="lg">
       <form onSubmit={submit}>
@@ -124,7 +126,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
                   className={classes.emojiButton}
                   variant="default"
                   size={36}
-                  disabled={!!createdFriend}
+                  disabled={!!friend}
                   onClick={() => {
                     if (values.emoji) {
                       setFieldValue("emoji", "");
@@ -145,14 +147,14 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
             <TextInput
               {...getInputProps("name")}
               placeholder="friend's name"
-              disabled={!!createdFriend}
+              disabled={!!friend}
               style={{ flexGrow: 1 }}
             />
             <Button
               type="submit"
               leftSection={<AddIcon />}
               style={{ alignSelf: "end" }}
-              disabled={!values.name.trim() || !!createdFriend}
+              disabled={!values.name.trim() || !!friend}
               loading={submitting}
               className={classes.addButton}
             >
@@ -161,13 +163,13 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
           </Group>
         </Stack>
       </form>
-      {createdFriend && !!createdFriendJoinUrl && (
+      {friend && !!friendJoinUrl && (
         <>
           <Divider />
           <Stack gap="lg" align="center">
             <Box ta="center">
               <Title order={3} lh="xs">
-                {createdFriend.name}&apos;s invite link
+                {friend.name}&apos;s invite link
               </Title>
               <Text size="sm" c="dimmed" display="block">
                 {fromJoinRequest ? (
@@ -186,7 +188,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
             <Stack gap="xs" align="center">
               {!fromJoinRequest && (
                 <QRCode
-                  value={createdFriendJoinUrl}
+                  value={friendJoinUrl}
                   size={160}
                   className={classes.qrCode}
                 />
@@ -202,7 +204,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
                 </Button>
               )}
               <Divider label="or" w="100%" maw={120} mx="auto" />
-              <CopyButton value={createdFriendJoinUrl}>
+              <CopyButton value={friendJoinUrl}>
                 {({ copy, copied }) => (
                   <Button
                     leftSection={
