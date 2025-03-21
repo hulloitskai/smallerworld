@@ -20,6 +20,10 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         autoPlay
         muted
         loop
+        playsInline
+        controls={false}
+        disablePictureInPicture
+        disableRemotePlayback
         maw={275}
         style={{ borderRadius: "var(--mantine-radius-default)" }}
       />

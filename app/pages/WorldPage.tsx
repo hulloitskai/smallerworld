@@ -28,6 +28,9 @@ import classes from "./WorldPage.module.css";
 
 export interface WorldPageProps extends SharedPageProps {
   currentUser: User;
+  faviconSrc: string;
+  faviconImageSrc: string;
+  appleTouchIconSrc: string;
 }
 
 const ICON_SIZE = 96;
@@ -208,6 +211,11 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
 WorldPage.layout = page => (
   <AppLayout<WorldPageProps>
     title="your world"
+    icons={({ faviconSrc, faviconImageSrc, appleTouchIconSrc }) => ({
+      faviconSrc,
+      faviconImageSrc,
+      appleTouchIconSrc,
+    })}
     manifestUrl={({ currentUser }) =>
       routes.users.manifest.path({ id: currentUser.id })
     }
