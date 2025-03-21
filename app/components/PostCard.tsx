@@ -153,6 +153,7 @@ const PostImage: FC<PostImageProps> = ({ image }) => {
     >
       {children}
       <Lightbox
+        className={classes.lightbox}
         open={lightboxOpened}
         close={() => {
           setLightboxOpened(false);

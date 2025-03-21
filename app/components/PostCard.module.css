@@ -42,3 +42,14 @@
     font-weight: 600;
   }
 }
+
+.lightbox {
+  :global(.yarl__toolbar) {
+    top: env(safe-area-inset-top, 0px);
+  }
+
+  :global(.yarl__navigation_next),
+  :global(.yarl__navigation_prev) {
+    display: none;
+  }
+}
