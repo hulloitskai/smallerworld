@@ -1,3 +1,9 @@
+.card {
+  &[data-focus] {
+    border-color: var(--mantine-color-primary-outline);
+  }
+}
+
 .divider {
   color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3));
 }

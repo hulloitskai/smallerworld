@@ -21,16 +21,32 @@ export interface PostCardProps extends BoxProps {
   post: Post;
   actions: ReactNode;
   blurContent?: boolean;
+  focus?: boolean;
 }
 
 const PostCard: FC<PostCardProps> = ({
   post,
   actions,
   blurContent,
+  focus,
   ...otherProps
 }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (focus && cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [focus]);
+
   return (
-    <Card withBorder shadow="sm" {...otherProps}>
+    <Card
+      ref={cardRef}
+      className={cn("PostCard", classes.card)}
+      withBorder
+      shadow="sm"
+      mod={{ focus }}
+      {...otherProps}
+    >
       <Card.Section inheritPadding pt="xs" pb={10}>
         <Group gap={8} align="start">
           {!!post.emoji && (

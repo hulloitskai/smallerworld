@@ -27,22 +27,19 @@ export interface UserPageProps extends SharedPageProps {
   faviconSrc: string;
   faviconImageSrc: string;
   appleTouchIconSrc: string;
-  intent: "join" | "installation_instructions" | null;
 }
 
 const ICON_SIZE = 96;
 
-const UserPage: PageComponent<UserPageProps> = ({
-  user,
-  replyPhoneNumber,
-  intent,
-}) => {
+const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   const isStandalone = useIsStandalone();
   const currentFriend = useCurrentFriend();
   const { registration } = useWebPush();
   const { modals } = useModals();
+  const { intent } = useQueryParams();
+
   useEffect(() => {
-    if (!isEmpty(modals)) {
+    if (!isEmpty(modals) || !currentFriend) {
       return;
     }
     if (intent === "join") {
@@ -141,6 +138,7 @@ interface FeedProps {
 const Feed: FC<FeedProps> = ({ user, replyPhoneNumber }) => {
   const currentFriend = useCurrentFriend();
   const { posts } = useUserPagePosts(user.id);
+  const { post_id } = useQueryParams();
   return (
     <Stack>
       {posts ? (
@@ -158,6 +156,7 @@ const Feed: FC<FeedProps> = ({ user, replyPhoneNumber }) => {
               key={post.id}
               {...{ post }}
               blurContent={!currentFriend && post.visibility !== "public"}
+              focus={post_id === post.id}
               actions={
                 <FriendPostCardActions {...{ post, replyPhoneNumber }} />
               }

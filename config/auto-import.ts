@@ -45,6 +45,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "useAuthenticatedFriend",
     ],
     "~/helpers/inertia/page": ["usePage", "usePageProps"],
+    "~/helpers/inertia/routing": ["useQueryParams"],
     "~/helpers/json": ["formatJSON"],
     "~/helpers/meta": ["env", "getMeta", "requireMeta", "useEnv"],
     "~/helpers/alerts": ["toastChangesSaved"],

@@ -15,7 +15,6 @@ class UsersController < ApplicationController
       page_icon_blob.variant(resize_to_fill: [96, 96], format: "png")
     apple_touch_icon_variant =
       page_icon_blob.variant(resize_to_fill: [180, 180], format: "png")
-    intent = T.let(params[:intent], T.nilable(String))
     render(inertia: "UserPage", props: {
       user: UserSerializer.one(user),
       "replyPhoneNumber" => reply_phone_number,
@@ -23,7 +22,6 @@ class UsersController < ApplicationController
       "faviconImageSrc" => rails_representation_path(favicon_image_variant),
       "appleTouchIconSrc" =>
         rails_representation_path(apple_touch_icon_variant),
-      intent:,
     })
   end
 

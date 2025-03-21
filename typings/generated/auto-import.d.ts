@@ -137,6 +137,7 @@ declare global {
   const usePage: typeof import('~/helpers/inertia/page')['usePage']
   const usePageProps: typeof import('~/helpers/inertia/page')['usePageProps']
   const usePrevious: typeof import('@mantine/hooks')['usePrevious']
+  const useQueryParams: typeof import('~/helpers/inertia/routing')['useQueryParams']
   const useRef: typeof import('react')['useRef']
   const useRouteMutation: typeof import('~/helpers/routes/swr')['useRouteMutation']
   const useRouteSWR: typeof import('~/helpers/routes/swr')['useRouteSWR']
