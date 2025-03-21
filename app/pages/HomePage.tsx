@@ -146,7 +146,7 @@ const HomePage: PageComponent<HomePageProps> = () => {
             </Menu.Dropdown>
           </Menu>
         </Box>
-        {!!friends && isEmpty(friends) && (
+        {(!isStandalone || !!registration) && !!friends && isEmpty(friends) && (
           <Alert>
             <Group justify="space-between">
               <Text inherit ff="heading" fw={600} c="primary" ml={6}>
