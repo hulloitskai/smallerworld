@@ -49,7 +49,18 @@
   }
 }
 
-.lightbox {
+.imageContainer {
+  margin-block: 8px;
+  align-self: center;
+}
+
+.image {
+  max-width: 240px;
+  max-height: 440px;
+  cursor: pointer;
+}
+
+.imageLightbox {
   :global(.yarl__container) {
     padding-top: var(--safe-area-inset-top, 0px);
     padding-bottom: var(--safe-area-inset-bottom, 0px);

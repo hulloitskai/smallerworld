@@ -122,21 +122,19 @@ const PostCard: FC<PostCardProps> = ({
 
 export default PostCard;
 
-interface PostImageProps {
+interface PostImageProps extends BoxProps {
   image: ImageModel;
 }
 
-const PostImage: FC<PostImageProps> = ({ image }) => {
+const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
   const [lightboxOpened, setLightboxOpened] = useState(false);
   const children = (
     <Image
+      className={classes.image}
       src={image.src}
       srcSet={image.src_set}
       fit="contain"
-      maw={240}
-      mah={440}
       radius="md"
-      style={{ cursor: "pointer" }}
       onClick={() => {
         setLightboxOpened(true);
       }}
@@ -144,16 +142,16 @@ const PostImage: FC<PostImageProps> = ({ image }) => {
   );
   return (
     <Box
-      my={8}
-      style={{ alignSelf: "center" }}
+      className={classes.imageContainer}
       {...(image.dimensions && {
         component: AspectRatio,
         ratio: image.dimensions.width / image.dimensions.height,
       })}
+      {...otherProps}
     >
       {children}
       <Lightbox
-        className={classes.lightbox}
+        className={classes.imageLightbox}
         open={lightboxOpened}
         close={() => {
           setLightboxOpened(false);
