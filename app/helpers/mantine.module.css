@@ -46,6 +46,8 @@
         --modal-content-flex: 0 0 100%;
         --modal-content-max-height: auto;
         --modal-content-height: 100dvh;
+
+        border-radius: 0px;
       }
     }
 
