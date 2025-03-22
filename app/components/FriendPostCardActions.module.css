@@ -13,6 +13,8 @@
 }
 
 .replyButton {
+  -webkit-touch-callout: none;
+
   &[data-replied] {
     color: var(--mantine-color-dimmed);
   }
