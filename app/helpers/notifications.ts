@@ -22,15 +22,16 @@ export const renderNotification = (
   switch (notification.type) {
     case "Post": {
       const { post } = notification.payload as PostNotificationPayload;
+      let title = `new ${POST_TYPE_TO_LABEL[post.type]}`;
+      if (post.emoji) {
+        title = `${post.emoji} ${title}`;
+      }
       let body = post.body_snippet;
       if (post.title_snippet) {
         body = `${post.title_snippet}: ${body}`;
       }
-      if (post.emoji) {
-        body = `${post.emoji} ${body}`;
-      }
       return {
-        title: `new ${POST_TYPE_TO_LABEL[post.type]}`,
+        title,
         body,
         image: post.image_src ?? undefined,
       };
@@ -43,12 +44,9 @@ export const renderNotification = (
       if (post.title_snippet) {
         body = `${post.title_snippet}: ${body}`;
       }
-      if (post.emoji) {
-        body = `${post.emoji} ${body}`;
-      }
       return {
-        title: `${friend.name} reacted ${emoji} to your ${POST_TYPE_TO_LABEL[post.type]}`,
-        body,
+        title: `${emoji} ${friend.name} reacted to your ${POST_TYPE_TO_LABEL[post.type]}`,
+        body: `> ${body}`,
       };
     }
     case "JoinRequest": {
