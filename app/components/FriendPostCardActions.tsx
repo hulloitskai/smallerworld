@@ -1,11 +1,18 @@
-import { Text } from "@mantine/core";
+import { ActionIcon, Popover, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
+import { useLongPress } from "use-long-press";
 
 import ReplyIcon from "~icons/heroicons/chat-bubble-oval-left-20-solid";
 
+import {
+  MESSAGING_PLATFORM_TO_ICON,
+  MESSAGING_PLATFORM_TO_LABEL,
+  MESSAGING_PLATFORMS,
+  usePreferredMessagingPlatform,
+} from "~/helpers/messaging";
 import { mutateUserPagePosts } from "~/helpers/userPages";
-import { type PostReaction, type PostView } from "~/types";
+import { type PostReaction, type PostView, type User } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
@@ -13,13 +20,13 @@ import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
 interface FriendPostCardActionsProps {
-  userId: string;
+  user: User;
   post: PostView;
   replyPhoneNumber: string | null;
 }
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
-  userId,
+  user,
   post,
   replyPhoneNumber,
 }) => {
@@ -42,13 +49,23 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
     [reactions],
   );
 
-  // == Reply via sms
+  // == Reply via msg
+  const [messagingPlatformSelectorOpened, setMessagingPlatformSelectorOpened] =
+    useState(false);
+  const bindMessagingPlatformSelectorButtonLongPress = useLongPress(() =>
+    setMessagingPlatformSelectorOpened(true),
+  );
+  const [preferredMessagingPlatform, setPreferredMessagingPlatform] =
+    usePreferredMessagingPlatform(user.id);
   const replyUri = useMemo(() => {
-    if (replyPhoneNumber) {
-      const encodedBody = encodeURIComponent(post.reply_snippet);
-      return `sms:${replyPhoneNumber}?body=${encodedBody}`;
+    if (replyPhoneNumber && preferredMessagingPlatform) {
+      return createReplyUri(
+        replyPhoneNumber,
+        post.reply_snippet,
+        preferredMessagingPlatform,
+      );
     }
-  }, [replyPhoneNumber, post.reply_snippet]);
+  }, [replyPhoneNumber, post.reply_snippet, preferredMessagingPlatform]);
 
   return (
     <Group {...{ ref }} gap={2}>
@@ -68,51 +85,96 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
       <Text inline fz="lg" className={postCardClasses.divider}>
         /
       </Text>
-      <Button
-        component="a"
-        href={replyUri}
-        variant="subtle"
-        size="compact-xs"
-        leftSection={
-          <Box pos="relative">
-            <ReplyIcon />
-            {post.repliers > 0 && post.repliers < 40 && (
-              <Center
-                pos="absolute"
-                inset={0}
-                c="white"
-                fz={post.repliers > 20 ? 7 : post.repliers > 10 ? 8 : 9}
-                ff="heading"
-                pb={1}
-              >
-                {post.repliers}
-              </Center>
-            )}
-          </Box>
-        }
-        className={classes.replyButton}
-        mod={{ replied: post.replied }}
-        onClick={() => {
-          if (!currentFriend) {
-            toast.warning("you must be invited to this page to reply via sms");
-          } else {
-            void fetchRoute(routes.posts.markAsReplied, {
-              params: {
-                id: post.id,
-                query: {
-                  friend_token: currentFriend.access_token,
-                },
-              },
-              descriptor: "mark post as replied",
-              failSilently: true,
-            }).then(() =>
-              mutateUserPagePosts(userId, currentFriend.access_token),
-            );
-          }
-        }}
+      <Popover
+        shadow="md"
+        opened={messagingPlatformSelectorOpened}
+        onChange={setMessagingPlatformSelectorOpened}
       >
-        reply via sms
-      </Button>
+        <Popover.Target>
+          <Button
+            component="a"
+            {...(!messagingPlatformSelectorOpened && { href: replyUri })}
+            rel="noopener noreferrer nofollow"
+            target="_blank"
+            variant="subtle"
+            size="compact-xs"
+            leftSection={
+              <Box pos="relative">
+                <ReplyIcon />
+                {post.repliers > 0 && post.repliers < 40 && (
+                  <Center
+                    pos="absolute"
+                    inset={0}
+                    c="white"
+                    fz={post.repliers > 20 ? 7 : post.repliers > 10 ? 8 : 9}
+                    ff="heading"
+                    pb={1}
+                  >
+                    {post.repliers}
+                  </Center>
+                )}
+              </Box>
+            }
+            className={classes.replyButton}
+            mod={{ replied: post.replied }}
+            onClick={() => {
+              if (!currentFriend) {
+                toast.warning(
+                  "you must be invited to this page to reply via sms",
+                );
+              } else if (replyUri) {
+                markAsReplied(post.id, currentFriend.access_token);
+              } else {
+                setMessagingPlatformSelectorOpened(true);
+              }
+            }}
+            {...bindMessagingPlatformSelectorButtonLongPress()}
+          >
+            reply via {preferredMessagingPlatform ?? "sms"}
+          </Button>
+        </Popover.Target>
+        <Popover.Dropdown>
+          <Stack gap="xs">
+            <Text ta="center" ff="heading" fw={500}>
+              reply using:
+            </Text>
+            <Group justify="center" gap="sm">
+              {MESSAGING_PLATFORMS.map(platform => (
+                <Stack gap={2} align="center" miw={60}>
+                  <ActionIcon
+                    key={platform}
+                    component="a"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    variant="light"
+                    size="lg"
+                    {...(currentFriend &&
+                      !!replyPhoneNumber && {
+                        href: createReplyUri(
+                          replyPhoneNumber,
+                          post.reply_snippet,
+                          platform,
+                        ),
+                        onClick: () => {
+                          setPreferredMessagingPlatform(platform);
+                          markAsReplied(post.id, currentFriend.access_token);
+                        },
+                      })}
+                  >
+                    <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
+                  </ActionIcon>
+                  <Text size="xs" fw={500} ff="heading" c="dimmed">
+                    {MESSAGING_PLATFORM_TO_LABEL[platform]}
+                  </Text>
+                </Stack>
+              ))}
+            </Group>
+            <Text size="xs" ta="center" c="dimmed">
+              smaller world will remember your choice
+            </Text>
+          </Stack>
+        </Popover.Dropdown>
+      </Popover>
     </Group>
   );
 };
@@ -258,4 +320,33 @@ const ReactionButton: FC<ReactionButtonProps> = ({
       {reactions.length}
     </Button>
   );
+};
+
+const createReplyUri = (
+  phoneNumber: string,
+  replySnippet: string,
+  platform: "sms" | "telegram" | "whatsapp",
+) => {
+  const encodedBody = encodeURIComponent(replySnippet);
+  switch (platform) {
+    case "sms":
+      return `sms:${phoneNumber}?body=${encodedBody}`;
+    case "telegram":
+      return `https://t.me/${phoneNumber}?text=${encodedBody}`;
+    case "whatsapp":
+      return `https://wa.me/${phoneNumber}?text=${encodedBody}`;
+  }
+};
+
+const markAsReplied = (postId: string, friendAccessToken: string) => {
+  void fetchRoute<{ authorId: string }>(routes.posts.markAsReplied, {
+    params: {
+      id: postId,
+      query: {
+        friend_token: friendAccessToken,
+      },
+    },
+    descriptor: "mark post as replied",
+    failSilently: true,
+  }).then(({ authorId }) => mutateUserPagePosts(authorId, friendAccessToken));
 };

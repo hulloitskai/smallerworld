@@ -72,7 +72,7 @@ class PostsController < ApplicationController
     authorize!(post)
     friend = authenticate_friend!
     post.reply_receipts.create!(friend:)
-    render(json: {})
+    render(json: { "authorId" => post.author_id })
   end
 
   # DELETE /posts/:id
