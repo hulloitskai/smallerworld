@@ -73,7 +73,23 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
         href={replyUri}
         variant="subtle"
         size="compact-xs"
-        leftSection={<ReplyIcon />}
+        leftSection={
+          <Box pos="relative">
+            <ReplyIcon />
+            {post.repliers > 0 && post.repliers < 40 && (
+              <Center
+                pos="absolute"
+                inset={0}
+                c="white"
+                fz={post.repliers > 20 ? 7 : post.repliers > 10 ? 8 : 9}
+                ff="heading"
+                pb={1}
+              >
+                {post.repliers}
+              </Center>
+            )}
+          </Box>
+        }
         className={classes.replyButton}
         mod={{ replied: post.replied }}
         onClick={() => {

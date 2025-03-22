@@ -7,4 +7,7 @@ class PostViewSerializer < PostSerializer
 
   # == Attributes
   attributes replied: { type: :boolean, nullable: true }
+  attribute :repliers, type: :number do
+    post.repliers.count
+  end
 end

@@ -123,6 +123,11 @@ class Post < ApplicationRecord
     Friend.where(id: delivered_notifications.select(:recipient_id)).distinct
   end
 
+  sig { returns(PostReplyReceipt::PrivateAssociationRelation) }
+  def repliers
+    reply_receipts.select(:friend_id).distinct
+  end
+
   private
 
   # == Helpers
