@@ -70,15 +70,21 @@ class UsersController < ApplicationController
     )
     unless current_friend
       paginated_posts.map! do |post|
-        if post.visibility.public?
-          post
-        else
-          MaskedPost.new(post:)
-        end
+        post.visibility == :public ? post : MaskedPost.new(post:)
       end
     end
+    replied_post_ids = if (friend = current_friend)
+      PostReplyReceipt
+        .where(post: paginated_posts, friend:)
+        .pluck(:post_id)
+        .to_set
+    end
+    post_views = paginated_posts.map do |post|
+      replied = replied_post_ids&.include?(post.id)
+      PostView.new(post:, replied:)
+    end
     render(json: {
-      posts: PostSerializer.many(paginated_posts),
+      posts: PostViewSerializer.many(post_views),
       pagination: {
         next: pagy.next,
       },

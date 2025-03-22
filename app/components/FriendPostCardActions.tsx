@@ -4,7 +4,8 @@ import { groupBy } from "lodash-es";
 
 import ReplyIcon from "~icons/heroicons/chat-bubble-oval-left-20-solid";
 
-import { type Post, type PostReaction } from "~/types";
+import { mutateUserPagePosts } from "~/helpers/userPages";
+import { type PostReaction, type PostView } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
@@ -12,14 +13,17 @@ import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
 interface FriendPostCardActionsProps {
-  post: Post;
+  userId: string;
+  post: PostView;
   replyPhoneNumber: string | null;
 }
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
+  userId,
   post,
   replyPhoneNumber,
 }) => {
+  const currentFriend = useCurrentFriend();
   const { ref, inViewport } = useInViewport();
 
   // == Load reactions
@@ -70,9 +74,24 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
         variant="subtle"
         size="compact-xs"
         leftSection={<ReplyIcon />}
+        className={classes.replyButton}
+        mod={{ replied: post.replied }}
         onClick={() => {
-          if (!replyPhoneNumber) {
+          if (!currentFriend) {
             toast.warning("you must be invited to this page to reply via sms");
+          } else {
+            void fetchRoute(routes.posts.markAsReplied, {
+              params: {
+                id: post.id,
+                query: {
+                  friend_token: currentFriend.access_token,
+                },
+              },
+              descriptor: "mark post as replied",
+              failSilently: true,
+            }).then(() =>
+              mutateUserPagePosts(userId, currentFriend.access_token),
+            );
           }
         }}
       >

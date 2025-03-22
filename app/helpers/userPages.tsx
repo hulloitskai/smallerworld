@@ -68,7 +68,7 @@ export const useUserPagePosts = (
 
 export const mutateUserPagePosts = (
   userId: string,
-  friendAccessToken: string,
+  friendAccessToken?: string,
   limit?: number,
 ) => {
   void mutate(

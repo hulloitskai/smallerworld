@@ -99,6 +99,7 @@ Rails.application.routes.draw do
   resources :posts, only: %i[index create update destroy], export: true do
     member do
       get :stats
+      post :mark_as_replied
     end
   end
 

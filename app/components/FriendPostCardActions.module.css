@@ -11,3 +11,9 @@
     font-size: var(--mantine-font-size-md);
   }
 }
+
+.replyButton {
+  &[data-replied] {
+    color: var(--mantine-color-dimmed);
+  }
+}

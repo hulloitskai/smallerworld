@@ -19,6 +19,11 @@ class PostPolicy < ApplicationPolicy
     post.author! == user!
   end
 
+  def mark_as_replied?
+    post = T.cast(record, Post)
+    post.author! == friend!.user!
+  end
+
   # == Scopes
   relation_scope do |relation|
     relation = T.cast(relation, Post::PrivateRelation)

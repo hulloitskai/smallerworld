@@ -435,6 +435,20 @@ class Post
     sig { returns(T.nilable(::ActiveStorage::Blob)) }
     def reload_image_blob; end
 
+    sig { returns(T::Array[T.untyped]) }
+    def reply_receipt_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def reply_receipt_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :reply_receipts`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostReplyReceipt::PrivateCollectionProxy) }
+    def reply_receipts; end
+
+    sig { params(value: T::Enumerable[::PostReplyReceipt]).void }
+    def reply_receipts=(value); end
+
     sig { void }
     def reset_author; end
 

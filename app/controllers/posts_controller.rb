@@ -3,7 +3,8 @@
 
 class PostsController < ApplicationController
   # == Filters
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: :mark_as_replied
+  before_action :authenticate_friend!, only: :mark_as_replied
 
   # == Actions
   # GET /posts
@@ -62,6 +63,16 @@ class PostsController < ApplicationController
     else
       render(json: { errors: post.form_errors }, status: :unprocessable_entity)
     end
+  end
+
+  # POST /posts/:id/mark_as_replied
+  def mark_as_replied
+    post_id = T.let(params.fetch(:id), String)
+    post = Post.find(post_id)
+    authorize!(post)
+    friend = authenticate_friend!
+    post.reply_receipts.create!(friend:)
+    render(json: {})
   end
 
   # DELETE /posts/:id

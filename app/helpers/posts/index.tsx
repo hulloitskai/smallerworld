@@ -12,7 +12,12 @@ import InvitationIcon from "~icons/heroicons/envelope-open-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
 import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
-import { type Post, type PostType, type PostVisibility } from "~/types";
+import {
+  type Post,
+  type PostType,
+  type PostView,
+  type PostVisibility,
+} from "~/types";
 
 export { POST_TYPE_TO_LABEL, POST_VISIBILITY_TO_LABEL } from "./formatting";
 
@@ -49,7 +54,7 @@ export const POST_VISIBILITY_TO_ICON: Record<
 };
 
 export interface PostsData {
-  posts: Post[];
+  posts: PostView[];
   pagination: { next: string | null };
 }
 

@@ -158,7 +158,10 @@ const Feed: FC<FeedProps> = ({ user, replyPhoneNumber }) => {
               blurContent={!currentFriend && post.visibility !== "public"}
               focus={post_id === post.id}
               actions={
-                <FriendPostCardActions {...{ post, replyPhoneNumber }} />
+                <FriendPostCardActions
+                  userId={user.id}
+                  {...{ post, replyPhoneNumber }}
+                />
               }
             />
           ))

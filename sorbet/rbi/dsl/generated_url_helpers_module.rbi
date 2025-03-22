@@ -58,6 +58,9 @@ module GeneratedUrlHelpersModule
   def mailcatcher_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def mark_as_replied_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_login_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

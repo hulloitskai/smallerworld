@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_19_065023) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_22_073922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -188,6 +188,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_065023) do
     t.index ["post_id"], name: "index_post_reactions_on_post_id"
   end
 
+  create_table "post_reply_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "post_id", null: false
+    t.uuid "friend_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.index ["friend_id"], name: "index_post_reply_receipts_on_friend_id"
+    t.index ["post_id"], name: "index_post_reply_receipts_on_post_id"
+  end
+
   create_table "posts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "body_html", null: false
     t.uuid "author_id", null: false
@@ -244,6 +252,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_065023) do
   add_foreign_key "join_requests", "users"
   add_foreign_key "post_reactions", "friends"
   add_foreign_key "post_reactions", "posts"
+  add_foreign_key "post_reply_receipts", "friends"
+  add_foreign_key "post_reply_receipts", "posts"
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "push_registrations", "push_subscriptions"
 end
