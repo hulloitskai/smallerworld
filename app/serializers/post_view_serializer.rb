@@ -6,8 +6,6 @@ class PostViewSerializer < PostSerializer
   object_as :post
 
   # == Attributes
-  attributes replied: { type: :boolean, nullable: true }
-  attribute :repliers, type: :number do
-    post.repliers.count
-  end
+  attributes replied: { type: :boolean, nullable: true },
+             repliers: { type: :number }
 end

@@ -73,15 +73,26 @@ class UsersController < ApplicationController
         post.visibility == :public ? post : MaskedPost.new(post:)
       end
     end
+    post_ids = paginated_posts.map(&:id)
     replied_post_ids = if (friend = current_friend)
       PostReplyReceipt
-        .where(post: paginated_posts, friend:)
+        .where(post_id: post_ids, friend:)
         .pluck(:post_id)
         .to_set
     end
+    repliers_by_post_id = PostReplyReceipt
+      .where(post_id: post_ids)
+      .group(:post_id)
+      .select(:post_id, "COUNT(DISTINCT friend_id) AS repliers")
+      .map do |reply_receipt|
+        repliers = T.let(reply_receipt[:repliers], Integer)
+        [reply_receipt.post_id, repliers]
+      end
+      .to_h
     post_views = paginated_posts.map do |post|
       replied = replied_post_ids&.include?(post.id)
-      PostView.new(post:, replied:)
+      repliers = repliers_by_post_id.fetch(post.id, 0)
+      PostView.new(post:, replied:, repliers:)
     end
     render(json: {
       posts: PostViewSerializer.many(post_views),
