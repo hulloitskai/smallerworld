@@ -45,6 +45,7 @@ export const useClearAppBadge = () => {
       : currentUser
         ? {}
         : null,
+    failSilently: true,
     onSuccess: () => {
       console.info("Notifications cleared");
     },
@@ -58,7 +59,7 @@ export const useClearAppBadge = () => {
       void navigator.clearAppBadge();
       void trigger();
     }
-  }, [isStandalone, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isStandalone, trigger, visibility]);
 };
 
 export const useIsInstallable = (

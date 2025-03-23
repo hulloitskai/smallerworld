@@ -1,4 +1,5 @@
 import { ActionIcon, CopyButton, Text } from "@mantine/core";
+import { openConfirmModal } from "@mantine/modals";
 
 import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
 import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
@@ -16,6 +17,9 @@ export interface FriendCardProps {
 
 const FriendCard: FC<FriendCardProps> = ({ friend }) => {
   const currentUser = useAuthenticatedUser();
+  const [menuOpened, setMenuOpened] = useState(false);
+
+  // == Join url
   const [joinUrl, setJoinUrl] = useState<string>("");
   useEffect(() => {
     const joinPath = routes.users.show.path({
@@ -28,6 +32,19 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
     const joinUrl = new URL(joinPath, location.origin);
     setJoinUrl(joinUrl.toString());
   }, [currentUser.handle, friend.access_token]);
+
+  // == Remove friend
+  const { trigger: deleteFriend, mutating: deletingFriend } = useRouteMutation(
+    routes.friends.destroy,
+    {
+      params: { id: friend.id },
+      descriptor: "remove friend",
+      onSuccess: () => {
+        toast.success("friend removed");
+        mutateRoute(routes.friends.index);
+      },
+    },
+  );
 
   return (
     <Card withBorder>
@@ -48,7 +65,7 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
               notifiable
             </Badge>
           )}
-          <Menu width={170}>
+          <Menu width={170} opened={menuOpened} onChange={setMenuOpened}>
             <Menu.Target>
               <ActionIcon variant="subtle" size="compact-xs">
                 <MenuIcon />
@@ -85,10 +102,37 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
               >
                 edit name
               </Menu.Item>
+              <Menu.Item
+                leftSection={<RemoveIcon />}
+                onClick={() => {
+                  openConfirmModal({
+                    title: "really remove friend?",
+                    children: <>you can't undo this action</>,
+                    cancelProps: { variant: "light", color: "gray" },
+                    groupProps: { gap: "xs" },
+                    labels: {
+                      confirm: "do it",
+                      cancel: "wait nvm",
+                    },
+                    styles: {
+                      header: {
+                        minHeight: 0,
+                        paddingBottom: 0,
+                      },
+                    },
+                    onConfirm: () => {
+                      void deleteFriend();
+                    },
+                  });
+                }}
+              >
+                remove friend
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         </Group>
       </Group>
+      <LoadingOverlay visible={deletingFriend} />
     </Card>
   );
 };

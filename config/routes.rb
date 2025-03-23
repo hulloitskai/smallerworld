@@ -71,12 +71,8 @@ Rails.application.routes.draw do
   resource :world, only: :show, export: { namespace: "world" }
 
   # == Friends
-  resources(
-    :friends,
-    path: "/world/friends",
-    only: %i[index create update],
-    export: true,
-  ) do
+  resources :friends, only: :index, path: "/world/friends", export: true
+  resources :friends, only: %i[create update destroy], export: true do
     member do
       post :pause
     end

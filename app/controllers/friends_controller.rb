@@ -67,8 +67,9 @@ class FriendsController < ApplicationController
 
   # POST /friends/:id/pause
   def pause
-    current_user = authenticate_user!
-    friend = current_user.friends.find(params.fetch(:id))
+    friend_id = T.let(params.fetch(:id), String)
+    friend = Friend.find(friend_id)
+    authorize!(friend)
     friend.paused_since = Time.current
     if friend.save
       render(json: { friend: FriendSerializer.one(friend) })
@@ -78,5 +79,14 @@ class FriendsController < ApplicationController
         status: :unprocessable_entity,
       )
     end
+  end
+
+  # DELETE /friends/:id
+  def destroy
+    friend_id = T.let(params.fetch(:id), String)
+    friend = Friend.find(friend_id)
+    authorize!(friend)
+    friend.destroy!
+    render(json: {})
   end
 end

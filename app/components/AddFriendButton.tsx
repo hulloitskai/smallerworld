@@ -10,6 +10,7 @@ import QRCode from "react-qr-code";
 import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
 import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import EmojiIcon from "~icons/heroicons/face-smile";
+import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
 
 import { type Friend, type JoinRequest } from "~/types";
@@ -48,6 +49,7 @@ interface ModalBodyProps {
 
 const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
   const currentUser = useAuthenticatedUser();
+  const [revealBackToHomeButton, setRevealBackToHomeButton] = useState(false);
 
   // == Form
   const initialValues = useMemo(
@@ -80,6 +82,9 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
     onSuccess: (_data: { friend: Friend }) => {
       void mutateRoute(routes.friends.index);
       void mutateRoute(routes.joinRequests.index);
+      setTimeout(() => {
+        setRevealBackToHomeButton(true);
+      }, 2000);
     },
   });
   useDidUpdate(() => {
@@ -150,17 +155,16 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
               disabled={!!friend}
               style={{ flexGrow: 1 }}
             />
-            <Button
-              type="submit"
-              leftSection={<AddIcon />}
-              style={{ alignSelf: "end" }}
-              disabled={!values.name.trim() || !!friend}
-              loading={submitting}
-              className={classes.addButton}
-            >
-              create invite
-            </Button>
           </Group>
+          <Button
+            type="submit"
+            leftSection={<QRCodeIcon />}
+            disabled={!values.name.trim() || !!friend}
+            loading={submitting}
+            className={classes.addButton}
+          >
+            create invite link
+          </Button>
         </Stack>
       </form>
       {friend && !!friendJoinUrl && (
@@ -222,6 +226,18 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
                 )}
               </CopyButton>
             </Stack>
+            <Transition transition="fade-up" mounted={revealBackToHomeButton}>
+              {style => (
+                <Button
+                  component={Link}
+                  href={routes.world.show.path()}
+                  leftSection={<BackIcon />}
+                  {...{ style }}
+                >
+                  back to your world
+                </Button>
+              )}
+            </Transition>
           </Stack>
         </>
       )}

@@ -1,4 +1,6 @@
 .addButton {
+  align-self: center;
+
   :global(.mantine-Button-section) {
     &[data-position="left"] {
       margin-right: 6px;
