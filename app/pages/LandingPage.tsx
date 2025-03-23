@@ -1,3 +1,7 @@
+import { Overlay } from "@mantine/core";
+
+import PlayIcon from "~icons/heroicons/play-20-solid";
+
 import demoVideoSrc from "~/assets/videos/demo.mp4";
 
 import AppLayout from "~/components/AppLayout";
@@ -8,25 +12,51 @@ import classes from "./LandingPage.module.css";
 export interface LandingPageProps extends SharedPageProps {}
 
 const LandingPage: PageComponent<LandingPageProps> = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [revealVideo, setRevealVideo] = useState(false);
   return (
     <Stack align="center" gap="xl">
       <Title className={classes.opener} ta="center">
         a <Emph>life log</Emph> that your friends can{" "}
         <Emph>pin to their home screen</Emph>
       </Title>
-      <Box
-        component="video"
-        src={demoVideoSrc}
-        autoPlay
-        muted
-        loop
-        playsInline
-        controls={false}
-        disablePictureInPicture
-        disableRemotePlayback
-        maw={275}
-        style={{ borderRadius: "var(--mantine-radius-default)" }}
-      />
+      <Box pos="relative">
+        <Box
+          component="video"
+          ref={videoRef}
+          src={demoVideoSrc}
+          muted
+          loop
+          playsInline
+          controls={false}
+          autoPlay
+          disablePictureInPicture
+          disableRemotePlayback
+          maw={275}
+          style={{ borderRadius: "var(--mantine-radius-default)" }}
+        />
+        {!revealVideo && (
+          <Overlay backgroundOpacity={0} blur={3}>
+            <Center h="100%">
+              <Button
+                variant="filled"
+                leftSection={<PlayIcon />}
+                onClick={() => {
+                  const video = videoRef.current;
+                  if (video) {
+                    video.pause();
+                    video.currentTime = 0;
+                    setRevealVideo(true);
+                    void video.play();
+                  }
+                }}
+              >
+                ok show me more
+              </Button>
+            </Center>
+          </Overlay>
+        )}
+      </Box>
       <Card withBorder>
         <Stack gap={6}>
           <Stack align="center" gap={4}>
