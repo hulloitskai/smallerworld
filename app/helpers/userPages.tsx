@@ -14,7 +14,10 @@ const userPagePostsGetKey = (
   limit?: number,
 ): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
-    const query: Record<string, any> = { limit: limit ?? 5 };
+    const query: Record<string, any> = {
+      limit: limit ?? 5,
+      friend_token: friendAccessToken,
+    };
     if (previousPageData) {
       const { next } = previousPageData.pagination;
       if (!next) {
@@ -22,13 +25,7 @@ const userPagePostsGetKey = (
       }
       query.page = next;
     }
-    return routes.users.posts.path({
-      id: userId,
-      query: {
-        friend_token: friendAccessToken,
-        limit,
-      },
-    });
+    return routes.users.posts.path({ id: userId, query });
   };
 };
 

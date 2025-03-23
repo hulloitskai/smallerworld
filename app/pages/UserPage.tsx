@@ -7,6 +7,7 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 import AppLayout from "~/components/AppLayout";
 import FriendNotificationsButton from "~/components/FriendNotificationsButton";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
+import LoadMoreButton from "~/components/LoadMoreButton";
 import PostCard from "~/components/PostCard";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
@@ -139,8 +140,9 @@ interface FeedProps {
 
 const Feed: FC<FeedProps> = ({ user, replyPhoneNumber }) => {
   const currentFriend = useCurrentFriend();
-  const { posts } = useUserPagePosts(user.id);
   const { post_id } = useQueryParams();
+  const { posts, hasMorePosts, setSize } = useUserPagePosts(user.id);
+  const [loadingMore, setLoadingMore] = useState(false);
   return (
     <Stack>
       {posts ? (
@@ -153,17 +155,33 @@ const Feed: FC<FeedProps> = ({ user, replyPhoneNumber }) => {
             </Stack>
           </Card>
         ) : (
-          posts.map(post => (
-            <PostCard
-              key={post.id}
-              {...{ post }}
-              blurContent={!currentFriend && post.visibility !== "public"}
-              focus={post_id === post.id}
-              actions={
-                <FriendPostCardActions {...{ user, post, replyPhoneNumber }} />
-              }
-            />
-          ))
+          <>
+            {posts.map(post => (
+              <PostCard
+                key={post.id}
+                {...{ post }}
+                blurContent={!currentFriend && post.visibility !== "public"}
+                focus={post_id === post.id}
+                actions={
+                  <FriendPostCardActions
+                    {...{ user, post, replyPhoneNumber }}
+                  />
+                }
+              />
+            ))}
+            {hasMorePosts && (
+              <LoadMoreButton
+                loading={loadingMore}
+                style={{ alignSelf: "center" }}
+                onVisible={() => {
+                  setLoadingMore(true);
+                  void setSize(size => size + 1).finally(() => {
+                    setLoadingMore(false);
+                  });
+                }}
+              />
+            )}
+          </>
         )
       ) : (
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

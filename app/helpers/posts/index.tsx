@@ -63,11 +63,7 @@ const postsGetKey = (limit?: number): SWRInfiniteKeyLoader<PostsData> => {
       }
       query.page = next;
     }
-    return routes.posts.index.path({
-      query: {
-        limit,
-      },
-    });
+    return routes.posts.index.path({ query });
   };
 };
 

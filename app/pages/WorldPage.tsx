@@ -11,6 +11,7 @@ import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import AuthorPostCardActions from "~/components/AuthorPostCardActions";
 import { openInstallationInstructionsModal } from "~/components/InstallationInstructionsModal";
+import LoadMoreButton from "~/components/LoadMoreButton";
 import NewPost from "~/components/NewPost";
 import PostCard from "~/components/PostCard";
 import UserNotificationsButton from "~/components/UserNotificationsButton";
@@ -233,7 +234,8 @@ WorldPage.layout = page => (
 export default WorldPage;
 
 const Feed: FC = () => {
-  const { posts } = usePosts();
+  const { posts, setSize, hasMorePosts } = usePosts();
+  const [loadingMore, setLoadingMore] = useState(false);
   return (
     <Stack>
       {posts ? (
@@ -263,13 +265,27 @@ const Feed: FC = () => {
             </Stack>
           </Card>
         ) : (
-          posts.map(post => (
-            <PostCard
-              key={post.id}
-              {...{ post }}
-              actions={<AuthorPostCardActions {...{ post }} />}
-            />
-          ))
+          <>
+            {posts.map(post => (
+              <PostCard
+                key={post.id}
+                {...{ post }}
+                actions={<AuthorPostCardActions {...{ post }} />}
+              />
+            ))}
+            {hasMorePosts && (
+              <LoadMoreButton
+                loading={loadingMore}
+                style={{ alignSelf: "center" }}
+                onVisible={() => {
+                  setLoadingMore(true);
+                  void setSize(size => size + 1).finally(() => {
+                    setLoadingMore(false);
+                  });
+                }}
+              />
+            )}
+          </>
         )
       ) : (
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
