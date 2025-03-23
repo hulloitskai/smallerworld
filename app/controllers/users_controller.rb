@@ -61,7 +61,7 @@ class UsersController < ApplicationController
   def posts
     user_id = T.let(params.fetch(:id), String)
     user = User.find(user_id)
-    posts = user.posts
+    posts = user.posts.includes(:image_blob)
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end

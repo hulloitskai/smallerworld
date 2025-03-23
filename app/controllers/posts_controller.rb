@@ -10,9 +10,8 @@ class PostsController < ApplicationController
   # GET /posts
   def index
     user = authenticate_user!
-    pagy, paginated_posts = pagy_keyset(
-      user.posts.order(created_at: :desc, id: :asc),
-    )
+    posts = user.posts.includes(:image_blob).order(created_at: :desc, id: :asc)
+    pagy, paginated_posts = pagy_keyset(posts)
     render(json: {
       posts: PostSerializer.many(paginated_posts),
       pagination: {

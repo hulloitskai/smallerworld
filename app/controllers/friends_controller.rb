@@ -13,8 +13,16 @@ class FriendsController < ApplicationController
       format.json do
         current_user = authenticate_user!
         friends = current_user.friends.reverse_chronological
+        notifiable_friend_ids = PushRegistration
+          .where(owner: friends)
+          .pluck(:owner_id)
+          .to_set
+        friend_views = friends.map do |friend|
+          notifiable = notifiable_friend_ids.include?(friend.id)
+          FriendView.new(friend:, notifiable:)
+        end
         render(json: {
-          friends: FriendSerializer.many(friends),
+          friends: FriendViewSerializer.many(friend_views),
         })
       end
     end

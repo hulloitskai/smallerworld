@@ -25,9 +25,8 @@ const EmailLayout = <EmailProps extends SharedPageProps>({
   preview: previewProp,
   children,
 }: EmailLayoutProps<EmailProps>) => {
-  const pageProps = usePageProps<EmailProps>();
-  const preview = useResolveDynamicProp(previewProp, pageProps);
-  const header = useResolveDynamicProp(headerProps, pageProps);
+  const preview = useResolveDynamicProp(previewProp);
+  const header = useResolveDynamicProp(headerProps);
   return (
     <>
       {!!preview && <Preview>{preview}</Preview>}

@@ -22,7 +22,7 @@ import {
   useIsStandalone,
 } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
-import { type Friend, type User } from "~/types";
+import { type FriendView, type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
 
@@ -43,9 +43,12 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
   const isInstallable = useIsInstallable(installPromptEvent);
 
   // == Friends
-  const { data } = useRouteSWR<{ friends: Friend[] }>(routes.friends.index, {
-    descriptor: "load friends",
-  });
+  const { data } = useRouteSWR<{ friends: FriendView[] }>(
+    routes.friends.index,
+    {
+      descriptor: "load friends",
+    },
+  );
   const { friends } = data ?? {};
 
   return (

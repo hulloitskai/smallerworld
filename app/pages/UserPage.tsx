@@ -13,6 +13,7 @@ import { openUserPageInstallationInstructionsModal } from "~/components/UserPage
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { useIsStandalone } from "~/helpers/pwa";
 import { useUserPagePosts } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
@@ -100,11 +101,12 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
 
 UserPage.layout = page => (
   <AppLayout<UserPageProps>
-    title={({ user, currentFriend, intent }) =>
-      currentFriend && intent === "join"
+    title={({ user, currentFriend }, { url }) => {
+      const { intent } = queryParamsFromPath(url);
+      return currentFriend && intent === "join"
         ? `you're invited to ${user.name}'s world`
-        : `${user.name}'s world`
-    }
+        : `${user.name}'s world`;
+    }}
     icons={({ faviconSrc, faviconImageSrc, appleTouchIconSrc }) => ({
       faviconSrc,
       faviconImageSrc,

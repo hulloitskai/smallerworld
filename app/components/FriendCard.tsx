@@ -4,15 +4,14 @@ import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
 import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
-// import PauseIcon from "~icons/heroicons/pause-20-solid";
-import { type Friend } from "~/types";
+import { type Friend, type FriendView } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
 import classes from "./FriendCard.module.css";
 
 export interface FriendCardProps {
-  friend: Friend;
+  friend: FriendView;
 }
 
 const FriendCard: FC<FriendCardProps> = ({ friend }) => {
