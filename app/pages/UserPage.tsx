@@ -1,4 +1,4 @@
-import { ActionIcon, type BoxProps, Image, Overlay } from "@mantine/core";
+import { ActionIcon, Image, Overlay, Popover, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { mutate } from "swr";
 
@@ -54,31 +54,56 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   return (
     <>
       <Stack>
-        <Stack align="center" gap="sm">
-          <Image
-            src={user.page_icon.src}
-            srcSet={user.page_icon.src_set}
-            w={ICON_SIZE}
-            h={ICON_SIZE}
-            fit="cover"
-            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-            style={{
-              flex: "unset",
-              boxShadow: "var(--mantine-shadow-lg)",
-            }}
-          />
-          <Stack gap={4} align="center">
-            <Title size="h2" lh="xs" ta="center">
-              {user.name}&apos;s world
-            </Title>
-            {currentFriend && isStandalone && (
-              <Group gap="xs">
-                <UserPageNotificationsButton />
-                {registration && <RefreshPostsButton userId={user.id} />}
-              </Group>
-            )}
+        <Box pos="relative">
+          <Stack align="center" gap="sm">
+            <Image
+              src={user.page_icon.src}
+              srcSet={user.page_icon.src_set}
+              w={ICON_SIZE}
+              h={ICON_SIZE}
+              fit="cover"
+              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+              style={{
+                flex: "unset",
+                boxShadow: "var(--mantine-shadow-lg)",
+              }}
+            />
+            <Stack gap={4} align="center">
+              <Title size="h2" lh="xs" ta="center">
+                {user.name}&apos;s world
+              </Title>
+              {currentFriend && isStandalone && (
+                <Group gap="xs">
+                  <UserPageNotificationsButton />
+                  {registration && <RefreshPostsButton userId={user.id} />}
+                </Group>
+              )}
+            </Stack>
           </Stack>
-        </Stack>
+          <Popover>
+            <Popover.Target>
+              <ActionIcon pos="absolute" top={-6} right={0}>
+                <SmallerWorldIcon />
+              </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Stack gap={8}>
+                <Text ta="center" ff="heading" fw={600}>
+                  wanna make your own smaller world?
+                </Text>
+                <Button
+                  component="a"
+                  target="_blank"
+                  href={routes.login.new.path()}
+                  leftSection={<OpenExternalIcon />}
+                  style={{ alignSelf: "center" }}
+                >
+                  create your world
+                </Button>
+              </Stack>
+            </Popover.Dropdown>
+          </Popover>
+        </Box>
         <Box pos="relative">
           <Feed {...{ user, replyPhoneNumber }} />
           {isStandalone && registration === null && (

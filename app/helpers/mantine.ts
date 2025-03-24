@@ -246,6 +246,9 @@ const createTheme = (
           withArrow: true,
           middlewares: floatingMiddlewares,
         },
+        classNames: {
+          dropdown: classes.popover,
+        },
       }),
       Tooltip: Tooltip.extend({
         defaultProps: {
@@ -270,6 +273,7 @@ const createTheme = (
       }),
       Divider: Divider.extend({
         classNames: {
+          root: classes.divider,
           label: classes.dividerLabel,
         },
       }),
