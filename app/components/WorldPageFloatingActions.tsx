@@ -112,7 +112,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           >
             {style => (
               <ActionIcon
-                variant="white"
+                variant="outline"
                 size={36}
                 className={classes.pinnedPostsButton}
                 {...{ style }}

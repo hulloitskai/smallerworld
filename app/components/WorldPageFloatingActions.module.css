@@ -20,6 +20,7 @@
   pointer-events: auto;
   box-shadow: var(--mantine-shadow-lg);
   overflow: visible;
+  background-color: var(--mantine-color-white);
 
   :global(.mantine-ActionIcon-icon) {
     font-size: var(--mantine-font-size-lg);
