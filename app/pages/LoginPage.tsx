@@ -1,4 +1,4 @@
-import { InputBase, InputWrapper, PinInput } from "@mantine/core";
+import { InputBase, InputWrapper, PinInput, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
@@ -152,14 +152,20 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                 </InputWrapper>
               )}
             </Transition>
-            <Button
-              type="submit"
-              leftSection={showCodeInput ? <SignInIcon /> : <PhoneIcon />}
-              disabled={!stepComplete}
-              loading={submitting}
-            >
-              {showCodeInput ? "sign in" : "send login code"}
-            </Button>
+            <Stack gap={2}>
+              <Button
+                type="submit"
+                leftSection={showCodeInput ? <SignInIcon /> : <PhoneIcon />}
+                disabled={!stepComplete}
+                loading={submitting}
+              >
+                {showCodeInput ? "sign in" : "send login code"}
+              </Button>
+              <Text size="xs" c="dimmed">
+                by continuing, you agree to receive text messages from{" "}
+                <span style={{ fontWeight: 600 }}>smaller world</span>
+              </Text>
+            </Stack>
           </Stack>
         </form>
       </Card.Section>
