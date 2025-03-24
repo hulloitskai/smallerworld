@@ -69,7 +69,7 @@ class PushRegistration < ApplicationRecord
 
   sig { void }
   def push_test_notification
-    payload = { test: true, page_icon_url: }
+    payload = { page_icon_url: }
     push_subscription!.push_payload(payload.compact)
   end
 

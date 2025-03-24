@@ -155,9 +155,7 @@ const useRouteKey = (
   return key;
 };
 
-export const mutateRoute = (
+export const mutateRoute = <Data, T = Data>(
   route: PathHelper,
   params: RequestOptions["params"] = {},
-) => {
-  void mutate(route.path(params));
-};
+) => mutate<Data, T>(route.path(params));

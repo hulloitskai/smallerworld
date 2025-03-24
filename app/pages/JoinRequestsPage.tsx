@@ -1,10 +1,6 @@
-import { CopyButton } from "@mantine/core";
-
-import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
+import JoinRequestCard from "~/components/JoinRequestCard";
 import { type JoinRequest, type User } from "~/types";
-
-import classes from "./JoinRequestsPage.module.css";
 
 export interface JoinRequestsPageProps extends SharedPageProps {
   currentUser: User;
@@ -67,42 +63,3 @@ JoinRequestsPage.layout = page => (
 );
 
 export default JoinRequestsPage;
-
-interface JoinRequestCardProps {
-  joinRequest: JoinRequest;
-}
-
-const JoinRequestCard: FC<JoinRequestCardProps> = ({ joinRequest }) => {
-  return (
-    <Card withBorder>
-      <Card.Section inheritPadding py={8}>
-        <Group justify="center">
-          <Time
-            format={DateTime.DATETIME_MED}
-            size="xs"
-            inline
-            className={classes.timestamp}
-            display="block"
-          >
-            {joinRequest.created_at}
-          </Time>
-        </Group>
-      </Card.Section>
-      <Group align="center" gap="xs" justify="space-between">
-        <List className={classes.cardList}>
-          <List.Item icon={<UserIcon />}>{joinRequest.name}</List.Item>
-          <List.Item icon={<PhoneIcon />}>
-            <CopyButton value={joinRequest.phone_number}>
-              {({ copied, copy }) => (
-                <Tooltip label={copied ? "copied" : "copy"}>
-                  <Anchor onClick={copy}>{joinRequest.phone_number}</Anchor>
-                </Tooltip>
-              )}
-            </CopyButton>
-          </List.Item>
-        </List>
-        <AddFriendButton fromJoinRequest={joinRequest} />
-      </Group>
-    </Card>
-  );
-};

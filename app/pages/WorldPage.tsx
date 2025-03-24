@@ -211,11 +211,6 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
 WorldPage.layout = page => (
   <AppLayout<WorldPageProps>
     title="your world"
-    icons={({ faviconSrc, faviconImageSrc, appleTouchIconSrc }) => ({
-      faviconSrc,
-      faviconImageSrc,
-      appleTouchIconSrc,
-    })}
     manifestUrl={({ currentUser }) =>
       routes.users.manifest.path({ id: currentUser.id })
     }
@@ -223,11 +218,34 @@ WorldPage.layout = page => (
     containerSize="xs"
     withGutter
   >
+    <IconsMeta />
     {page}
   </AppLayout>
 );
 
 export default WorldPage;
+
+const IconsMeta: FC = () => {
+  const { faviconSrc, faviconImageSrc, appleTouchIconSrc } =
+    usePageProps<WorldPageProps>();
+  return (
+    <Head>
+      <link head-key="favicon" rel="icon" href={faviconSrc} />
+      <link
+        head-key="favicon-image"
+        rel="icon"
+        type="image/png"
+        href={faviconImageSrc}
+        sizes="96x96"
+      />
+      <link
+        head-key="apple-touch-icon"
+        rel="apple-touch-icon"
+        href={appleTouchIconSrc}
+      />
+    </Head>
+  );
+};
 
 const Feed: FC = () => {
   const { posts, setSize, hasMorePosts } = usePosts();

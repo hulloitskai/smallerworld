@@ -32,6 +32,11 @@ class PostReaction < ApplicationRecord
   has_one :post_author, through: :post, source: :author
   belongs_to :friend
 
+  sig { returns(Post) }
+  def post!
+    post or raise ActiveRecord::RecordNotFound, "Missing post"
+  end
+
   sig { returns(Friend) }
   def friend!
     friend or raise ActiveRecord::RecordNotFound, "Missing friend"
@@ -46,7 +51,7 @@ class PostReaction < ApplicationRecord
   validates :emoji, presence: true, uniqueness: { scope: %i[post friend] }
 
   # == Callbacks
-  after_create :create_notifications!
+  after_create :create_notifications!, unless: :friend_already_reacted_to_post?
 
   # == Noticeable
   sig do
@@ -65,5 +70,17 @@ class PostReaction < ApplicationRecord
   sig { void }
   def create_notifications!
     notifications.create!(recipient: post_author!)
+  end
+
+  private
+
+  # == Helpers
+  sig { returns(T::Boolean) }
+  def friend_already_reacted_to_post?
+    reactions = post!.reactions
+    if (id = self[:id])
+      reactions = reactions.where.not(id: id)
+    end
+    reactions.exists?(friend: friend!)
   end
 end

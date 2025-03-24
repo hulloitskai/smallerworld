@@ -24,12 +24,10 @@ import { SidebarControlsProvider } from "./SidebarControlsProvider";
 import classes from "./AppLayout.module.css";
 
 export interface AppLayoutProps<PageProps extends SharedPageProps>
-  extends Omit<AppMetaProps, "title" | "description" | "manifestUrl" | "icons">,
+  extends Omit<AppMetaProps, "title" | "description" | "manifestUrl">,
     Omit<AppShellProps, "title"> {
   title?: DynamicProp<PageProps, AppMetaProps["title"]>;
   description?: DynamicProp<PageProps, AppMetaProps["description"]>;
-  icons?: DynamicProp<PageProps, AppMetaProps["icons"]>;
-  manifestUrl?: DynamicProp<PageProps, AppMetaProps["manifestUrl"]>;
   breadcrumbs?: DynamicProp<PageProps, (AppBreadcrumb | null | false)[]>;
   withContainer?: boolean;
   containerSize?: MantineSize | (string & {}) | number;
@@ -38,6 +36,7 @@ export interface AppLayoutProps<PageProps extends SharedPageProps>
   gutterSize?: MantineSize | (string & {}) | number;
   sidebar?: DynamicProp<PageProps, ReactNode>;
   logoHref?: DynamicProp<PageProps, AppHeaderProps["logoHref"]>;
+  manifestUrl?: DynamicProp<PageProps, AppMetaProps["manifestUrl"]>;
 }
 
 export interface AppBreadcrumb {
@@ -50,8 +49,6 @@ const LAYOUT_WITH_BORDER = false;
 const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   title: titleProp,
   description: descriptionProp,
-  icons: iconsProp,
-  manifestUrl: manifestUrlProp,
   imageUrl,
   noIndex,
   breadcrumbs: breadcrumbsProp,
@@ -62,6 +59,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   gutterSize,
   sidebar: sidebarProp,
   logoHref: logoHrefProp,
+  manifestUrl: manifestUrlProp,
   children,
   padding,
   ...otherProps
@@ -73,8 +71,6 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   const title = useResolveDynamicProp(titleProp);
   const description = useResolveDynamicProp(descriptionProp);
   const manifestUrl = useResolveDynamicProp(manifestUrlProp);
-  const icons = useResolveDynamicProp(iconsProp);
-
   // == Breadcrumbs
   const page = usePage<PageProps>();
   const breadcrumbs = useMemo<AppBreadcrumb[]>(() => {
@@ -124,9 +120,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 
   return (
     <PageLayout>
-      <AppMeta
-        {...{ title, description, manifestUrl, imageUrl, noIndex, icons }}
-      />
+      <AppMeta {...{ title, description, imageUrl, noIndex, manifestUrl }} />
       <SidebarControlsProvider controls={sidebarControls}>
         <AppShell
           withBorder={LAYOUT_WITH_BORDER}
@@ -146,7 +140,11 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
           }}
           {...otherProps}
         >
-          {isStandalone === false && <AppHeader {...{ logoHref }} />}
+          {isStandalone === false ? (
+            <AppHeader {...{ logoHref }} />
+          ) : (
+            <AppShell.Header />
+          )}
           {sidebar}
           <AppShell.Main className={classes.main}>
             {!isEmpty(breadcrumbs) && (
@@ -177,13 +175,6 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
             {content}
           </AppShell.Main>
           <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
-          {/* <Center
-            component="footer"
-            className={classes.footer}
-            mod={{ "with-border": LAYOUT_WITH_BORDER }}
-          >
-            <Attribution />
-          </Center> */}
         </AppShell>
       </SidebarControlsProvider>
     </PageLayout>

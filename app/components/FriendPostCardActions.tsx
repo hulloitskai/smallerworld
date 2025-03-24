@@ -68,8 +68,8 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   }, [replyPhoneNumber, post.reply_snippet, preferredMessagingPlatform]);
 
   return (
-    <Group {...{ ref }} gap={2}>
-      <Group gap={2} wrap="wrap">
+    <Group {...{ ref }} align="start" gap={2}>
+      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
         {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
           <ReactionButton
             key={emoji}
@@ -77,11 +77,11 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             {...{ emoji, reactions }}
           />
         ))}
-        <NewReactionButton
-          postId={post.id}
-          hasExistingReactions={!isEmpty(reactions)}
-        />
       </Group>
+      <NewReactionButton
+        postId={post.id}
+        hasExistingReactions={!isEmpty(reactions)}
+      />
       <Text inline fz="lg" className={postCardClasses.divider}>
         /
       </Text>
@@ -204,7 +204,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
           }
         : null,
       onSuccess: () => {
-        mutateRoute(routes.postReactions.index, { post_id: postId });
+        void mutateRoute(routes.postReactions.index, { post_id: postId });
       },
     },
   );
@@ -310,7 +310,7 @@ const ReactionButton: FC<ReactionButtonProps> = ({
             });
         void action
           .then(() => {
-            mutateRoute(routes.postReactions.index, { post_id: postId });
+            void mutateRoute(routes.postReactions.index, { post_id: postId });
           })
           .finally(() => {
             setMutating(false);

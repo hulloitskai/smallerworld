@@ -134,12 +134,7 @@ UserPage.layout = page => (
         ? `you're invited to ${user.name}'s world`
         : `${user.name}'s world`;
     }}
-    icons={({ faviconSrc, faviconImageSrc, appleTouchIconSrc }) => ({
-      faviconSrc,
-      faviconImageSrc,
-      appleTouchIconSrc,
-    })}
-    manifestUrl={({ user, currentFriend }) =>
+    manifestUrl={({ currentFriend, user }) =>
       currentFriend
         ? routes.users.manifest.path({
             id: user.id,
@@ -147,17 +142,40 @@ UserPage.layout = page => (
               friend_token: currentFriend.access_token,
             },
           })
-        : undefined
+        : null
     }
     withContainer
     containerSize="xs"
     withGutter
   >
+    <IconsMeta />
     {page}
   </AppLayout>
 );
 
 export default UserPage;
+
+const IconsMeta: FC = () => {
+  const { faviconSrc, faviconImageSrc, appleTouchIconSrc } =
+    usePageProps<UserPageProps>();
+  return (
+    <Head>
+      <link head-key="favicon" rel="icon" href={faviconSrc} />
+      <link
+        head-key="favicon-image"
+        rel="icon"
+        type="image/png"
+        href={faviconImageSrc}
+        sizes="96x96"
+      />
+      <link
+        head-key="apple-touch-icon"
+        rel="apple-touch-icon"
+        href={appleTouchIconSrc}
+      />
+    </Head>
+  );
+};
 
 interface FeedProps {
   user: User;

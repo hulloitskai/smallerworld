@@ -1,4 +1,6 @@
 .newReactionButton {
+  flex-shrink: 0;
+
   &[data-opened] {
     background-color: var(--mantine-color-primary-light-hover);
   }
@@ -13,6 +15,7 @@
 }
 
 .replyButton {
+  flex-shrink: 0;
   -webkit-touch-callout: none;
 
   &[data-replied] {

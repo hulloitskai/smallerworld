@@ -5,38 +5,25 @@ import { useDocumentVisibility } from "@mantine/hooks";
 const APP_META_SITE_TYPE = "website";
 const APP_META_SITE_NAME = "smaller world";
 const APP_META_SITE_DESCRIPTION = "a smaller world for you and your friends :)";
-const APP_META_SITE_IMAGE = "/banner.png";
+const APP_META_SITE_IMAGE = undefined; //"/banner.png";
 const APP_META_TITLE_SEPARATOR = "|";
-const APP_ICONS: AppIcons = {
-  faviconSrc: "/favicon.ico",
-  faviconImageSrc: "/favicon-96x96.png",
-  appleTouchIconSrc: "/apple-touch-icon.png",
-};
 
 export interface AppMetaProps {
   siteName?: string;
   title?: string | string[];
   description?: string | null;
   imageUrl?: string | null;
-  manifestUrl?: string | null;
   noIndex?: boolean;
-  icons?: AppIcons;
-}
-
-export interface AppIcons {
-  faviconSrc: string;
-  faviconImageSrc: string;
-  appleTouchIconSrc: string;
+  manifestUrl?: string | null;
 }
 
 const AppMeta: FC<AppMetaProps> = ({
   description = APP_META_SITE_DESCRIPTION,
   imageUrl = APP_META_SITE_IMAGE,
-  manifestUrl,
   noIndex,
   siteName = APP_META_SITE_NAME,
   title: titleProp,
-  icons = APP_ICONS,
+  manifestUrl,
 }) => {
   const isStandalone = useIsStandalone();
   const pageVisibility = useDocumentVisibility();
@@ -73,9 +60,13 @@ const AppMeta: FC<AppMetaProps> = ({
 
   return (
     <Head>
-      <title>{tabTitle}</title>
-      {!!manifestUrl && <link rel="manifest" href={manifestUrl} />}
-      {!!description && <meta name="description" content={description} />}
+      <title head-key="title">{tabTitle}</title>
+      {!!description && (
+        <meta head-key="description" name="description" content={description} />
+      )}
+      {!!manifestUrl && (
+        <link head-key="manifest" rel="manifest" href={manifestUrl} />
+      )}
       <meta property="og:site_name" content={siteName} />
       <meta property="og:type" content={APP_META_SITE_TYPE} />
       {!!pageTitle && <meta property="og:title" content={pageTitle} />}
@@ -90,18 +81,6 @@ const AppMeta: FC<AppMetaProps> = ({
       )}
       {!!imageUrl && <meta name="twitter:image" content={imageUrl} />}
       {noIndex && <meta name="robots" content="noindex" />}
-      <link rel="shortcut icon" href={icons.faviconSrc} />
-      <link
-        rel="icon"
-        type="image/png"
-        href={icons.faviconImageSrc}
-        sizes="96x96"
-      />
-      <link
-        rel="apple-touch-icon"
-        sizes="180x180"
-        href={icons.appleTouchIconSrc}
-      />
       <link
         rel="preload"
         as="font"

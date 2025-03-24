@@ -41,7 +41,7 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
       descriptor: "remove friend",
       onSuccess: () => {
         toast.success("friend removed");
-        mutateRoute(routes.friends.index);
+        void mutateRoute(routes.friends.index);
       },
     },
   );
@@ -169,7 +169,7 @@ const EditFriendModalBody: FC<EditFriendModalBodyProps> = ({
     descriptor: "update friend",
     initialValues,
     onSuccess: ({ friend }: { friend: Friend }) => {
-      mutateRoute(routes.friends.index);
+      void mutateRoute(routes.friends.index);
       onFriendUpdated?.(friend);
     },
   });

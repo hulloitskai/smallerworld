@@ -151,7 +151,7 @@ const NotificationSettingsForm: FC<NotificationSettingsFormProps> = ({
     transformValues: values => ({ notification_settings: values }),
     onSuccess: () => {
       toast.success("notification preferences updated");
-      mutateRoute(routes.friendNotificationSettings.show, {
+      void mutateRoute(routes.friendNotificationSettings.show, {
         query: {
           friend_token: currentFriend.access_token,
         },

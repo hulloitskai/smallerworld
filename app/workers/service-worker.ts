@@ -50,8 +50,9 @@ self.addEventListener("push", event => {
   if (import.meta.env.RAILS_ENV === "development") {
     console.debug("Push event", data);
   }
-  const { notification, test, page_icon_url, badge_count } = data;
+  const { notification, page_icon_url, badge_count } = data;
   const actions: Promise<void>[] = [];
+
   // Set app badge if no window is currently visible.
   if (badge_count && navigator.setAppBadge) {
     console.debug("Setting app badge", badge_count);
@@ -64,6 +65,7 @@ self.addEventListener("push", event => {
       }),
     );
   }
+
   if (notification) {
     const { title, icon, ...options } = renderNotification(notification);
     actions.push(
@@ -75,7 +77,7 @@ self.addEventListener("push", event => {
         })
         .then(() => markAsDelivered(notification)),
     );
-  } else if (test) {
+  } else {
     actions.push(
       self.registration.showNotification("test notification", {
         body: "this is a test notification. if you are seeing this, then your push notifications are working!",

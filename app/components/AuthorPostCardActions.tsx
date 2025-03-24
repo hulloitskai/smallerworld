@@ -45,7 +45,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
   );
 
   return (
-    <Group {...{ ref }} justify="space-between" gap={2}>
+    <Group {...{ ref }} align="start" justify="space-between" gap={2}>
       {!!notifiedFriends && (
         <Badge
           variant="transparent"
@@ -55,7 +55,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
           {notifiedFriends} notified
         </Badge>
       )}
-      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
+      <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
         {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
           <Badge
             key={emoji}
@@ -68,7 +68,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
           </Badge>
         ))}
       </Group>
-      <Group gap={2}>
+      <Group gap={2} style={{ flexShrink: 0 }}>
         <EditPostButton {...{ post }} />
         <DeletePostButton postId={post.id} />
       </Group>

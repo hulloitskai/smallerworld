@@ -5,6 +5,9 @@
 }
 
 .divider {
+  display: block;
+  flex-shrink: 0;
+  margin-top: 2px;
   color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3));
 }
 

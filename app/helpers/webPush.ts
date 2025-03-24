@@ -176,7 +176,7 @@ const registerSubscription = (
       },
     },
   }).then(() => {
-    mutateRoute(routes.pushSubscriptions.lookup, { query });
+    void mutateRoute(routes.pushSubscriptions.lookup, { query });
   });
 };
 
@@ -219,7 +219,7 @@ export const useWebPushUnsubscribe = ({
           })
             .then(() => subscription.unsubscribe())
             .then(() => {
-              mutateRoute(routes.pushSubscriptions.lookup, {
+              void mutateRoute(routes.pushSubscriptions.lookup, {
                 query: currentFriend
                   ? { friend_token: currentFriend.access_token }
                   : undefined,
