@@ -70,7 +70,7 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
                   setOpened(true);
                 }}
               >
-                events you&apos;re invited to
+                {possessive(user.name)} upcoming events
               </Button>
             )}
           </Transition>

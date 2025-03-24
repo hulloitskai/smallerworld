@@ -173,7 +173,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
           <Stack gap="lg" align="center">
             <Box ta="center">
               <Title order={3} lh="xs">
-                {friend.name}&apos;s invite link
+                {possessive(friend.name)} invite link
               </Title>
               <Text size="sm" c="dimmed" display="block">
                 {fromJoinRequest ? (

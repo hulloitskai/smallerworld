@@ -72,7 +72,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
             />
             <Stack gap={4} align="center">
               <Title size="h2" lh="xs" ta="center">
-                {user.name}&apos;s world
+                {possessive(user.name)} world
               </Title>
               {currentFriend && isStandalone && (
                 <Group gap="xs">

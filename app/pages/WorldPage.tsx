@@ -67,7 +67,7 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
             />
             <Stack gap={4} align="center">
               <Title size="h2" lh="xs" ta="center">
-                {user.name}&apos;s world
+                {possessive(user.name)} world
               </Title>
               <Group gap={8}>
                 {(!isStandalone || !!registration) && (

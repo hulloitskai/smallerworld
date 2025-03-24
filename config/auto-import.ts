@@ -54,6 +54,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/routes/swr": ["useRouteSWR", "useRouteMutation", "mutateRoute"],
     "~/helpers/form": ["useFieldsFilled", "useForm"],
     "~/helpers/utils": ["resolve", "isTruthy"],
+    "~/helpers/formatting": ["possessive"],
     "@fullstory/browser": ["FullStory", ["isInitialized", "isFsInitialized"]],
     "@inertiajs/react": ["Link", "router"],
     "@mantine/core": [
