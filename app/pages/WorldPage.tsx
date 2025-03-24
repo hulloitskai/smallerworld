@@ -13,8 +13,8 @@ import AuthorPostCardActions from "~/components/AuthorPostCardActions";
 import { openInstallationInstructionsModal } from "~/components/InstallationInstructionsModal";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import PostCard from "~/components/PostCard";
-import UserNotificationsButton from "~/components/UserNotificationsButton";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
+import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPromptEvent, useIsInstallable } from "~/helpers/pwa";
@@ -145,7 +145,7 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
                     </Text>
                   </Box>
                 )}
-                {isStandalone && <UserNotificationsButton />}
+                {isStandalone && <WorldPageNotificationsButton />}
               </Group>
             </Stack>
           </Stack>

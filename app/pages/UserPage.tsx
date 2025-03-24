@@ -5,12 +5,12 @@ import { mutate } from "swr";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import FriendNotificationsButton from "~/components/FriendNotificationsButton";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import PostCard from "~/components/PostCard";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
+import UserPageNotificationsButton from "~/components/UserPageNotificationsButton";
 import UserPagePinnedPosts from "~/components/UserPagePinnedPosts";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
@@ -73,7 +73,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
             </Title>
             {currentFriend && isStandalone && (
               <Group gap="xs">
-                <FriendNotificationsButton />
+                <UserPageNotificationsButton />
                 {registration && <RefreshPostsButton userId={user.id} />}
               </Group>
             )}

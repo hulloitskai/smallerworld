@@ -24,7 +24,7 @@ export const useContact = (
     setResult(result => ({ ...result, loading: true }));
     const { onTriggered, ...params } = options ?? {};
     fetchRoute<{ mailto: string; sms: string }>(routes.contactUrl.show, {
-      descriptor: "load contact email",
+      descriptor: "load contact info",
       params: { query: params },
     })
       .then(

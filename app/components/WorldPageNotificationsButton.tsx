@@ -2,7 +2,9 @@ import { ActionIcon, Loader } from "@mantine/core";
 
 import { useWebPush } from "~/helpers/webPush";
 
-const UserNotificationsButton: FC = () => {
+import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
+
+const WorldPageNotificationsButton: FC = () => {
   // == Web push
   const {
     subscription,
@@ -52,7 +54,7 @@ const UserNotificationsButton: FC = () => {
           <Menu.Dropdown>
             <SendTestNotificationMenuItem
               {...{ subscription }}
-              onNotificationSent={() => {
+              onClose={() => {
                 setMenuOpened(false);
               }}
             />
@@ -63,38 +65,62 @@ const UserNotificationsButton: FC = () => {
   );
 };
 
-export default UserNotificationsButton;
+export default WorldPageNotificationsButton;
 
 interface SendTestNotificationMenuItemProps {
   subscription: PushSubscription;
-  onNotificationSent: () => void;
+  onClose: () => void;
 }
 
 const SendTestNotificationMenuItem: FC<SendTestNotificationMenuItemProps> = ({
   subscription,
-  onNotificationSent,
+  onClose,
 }) => {
-  const { trigger, mutating } = useRouteMutation(
+  const { trigger, mutating, data } = useRouteMutation<{}>(
     routes.pushSubscriptions.test,
     {
       descriptor: "send test notification",
-      onSuccess: onNotificationSent,
     },
   );
 
   return (
-    <Menu.Item
-      closeMenuOnClick={false}
-      leftSection={mutating ? <Loader size="xs" /> : <NotificationIcon />}
-      onClick={() => {
-        void trigger({
-          push_subscription: {
-            endpoint: subscription.endpoint,
-          },
-        });
-      }}
-    >
-      send test notification
-    </Menu.Item>
+    <>
+      <Menu.Item
+        closeMenuOnClick={false}
+        leftSection={mutating ? <Loader size="xs" /> : <NotificationIcon />}
+        onClick={() => {
+          void trigger({
+            push_subscription: {
+              endpoint: subscription.endpoint,
+            },
+          });
+        }}
+      >
+        send test notification
+      </Menu.Item>
+      {data && (
+        <Menu.Item
+          component="div"
+          disabled
+          pt={2}
+          pb={6}
+          style={{ cursor: "default" }}
+        >
+          <Anchor
+            component="button"
+            size="xs"
+            ta="center"
+            mx="auto"
+            display="block"
+            onClick={() => {
+              onClose();
+              openNotificationsTroubleshootingModal();
+            }}
+          >
+            didn&apos;t get anything?
+          </Anchor>
+        </Menu.Item>
+      )}
+    </>
   );
 };

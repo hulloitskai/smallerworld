@@ -5,9 +5,13 @@ import { POST_TYPE_TO_LABEL, POST_TYPES } from "~/helpers/posts";
 import { useWebPush } from "~/helpers/webPush";
 import { type FriendNotificationSettings } from "~/types";
 
-export interface FriendNotificationsButtonProps {}
+import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
-const FriendNotificationsButton: FC<FriendNotificationsButtonProps> = () => {
+export interface UserPageNotificationsButtonProps {}
+
+const UserPageNotificationsButton: FC<
+  UserPageNotificationsButtonProps
+> = () => {
   const {
     subscription,
     registration,
@@ -25,6 +29,7 @@ const FriendNotificationsButton: FC<FriendNotificationsButtonProps> = () => {
     [supported, registration], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
+  const [dropdownOpened, setDropdownOpened] = useState(false);
   return (
     <>
       {subscription === undefined ? (
@@ -42,14 +47,29 @@ const FriendNotificationsButton: FC<FriendNotificationsButtonProps> = () => {
           enable push notifications
         </Button>
       ) : (
-        <Popover width={270}>
+        <Popover
+          width={270}
+          opened={dropdownOpened}
+          onChange={setDropdownOpened}
+        >
           <Popover.Target>
-            <Button color="gray" leftSection={<NotificationIcon />}>
+            <Button
+              color="gray"
+              leftSection={<NotificationIcon />}
+              onClick={() => {
+                setDropdownOpened(true);
+              }}
+            >
               notification settings
             </Button>
           </Popover.Target>
           <Popover.Dropdown pb={0}>
-            <NotificationPopoverBody {...{ subscription }} />
+            <NotificationPopoverBody
+              {...{ subscription }}
+              onClose={() => {
+                setDropdownOpened(false);
+              }}
+            />
           </Popover.Dropdown>
         </Popover>
       )}
@@ -57,14 +77,16 @@ const FriendNotificationsButton: FC<FriendNotificationsButtonProps> = () => {
   );
 };
 
-export default FriendNotificationsButton;
+export default UserPageNotificationsButton;
 
 interface NotificationPopoverBodyProps {
   subscription: PushSubscription;
+  onClose: () => void;
 }
 
 const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
   subscription,
+  onClose,
 }) => {
   const currentFriend = useAuthenticatedFriend();
 
@@ -90,7 +112,7 @@ const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
       )}
       <Divider mt="md" mx="calc(-1 * var(--mantine-spacing-md))" />
       <Center py={8}>
-        <SendTestNotificationButton {...{ subscription }} />
+        <SendTestNotificationButton {...{ subscription, onClose }} />
       </Center>
     </Stack>
   );
@@ -190,13 +212,15 @@ const NotificationSettingsForm: FC<NotificationSettingsFormProps> = ({
 
 interface SendTestNotificationButtonProps {
   subscription: PushSubscription;
+  onClose: () => void;
 }
 
 const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
   subscription,
+  onClose,
 }) => {
   const currentFriend = useAuthenticatedFriend();
-  const { trigger, mutating } = useRouteMutation(
+  const { trigger, mutating, data } = useRouteMutation<{}>(
     routes.pushSubscriptions.test,
     {
       descriptor: "send test notification",
@@ -209,20 +233,35 @@ const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
   );
 
   return (
-    <Button
-      loading={mutating}
-      variant="subtle"
-      size="compact-sm"
-      leftSection={<NotificationIcon />}
-      onClick={() => {
-        void trigger({
-          push_subscription: {
-            endpoint: subscription.endpoint,
-          },
-        });
-      }}
-    >
-      send test notification
-    </Button>
+    <Stack gap={2}>
+      <Button
+        loading={mutating}
+        variant="subtle"
+        size="compact-sm"
+        leftSection={<NotificationIcon />}
+        onClick={() => {
+          void trigger({
+            push_subscription: {
+              endpoint: subscription.endpoint,
+            },
+          });
+        }}
+      >
+        send test notification
+      </Button>
+      {data && (
+        <Anchor
+          component="button"
+          size="xs"
+          ta="center"
+          onClick={() => {
+            onClose();
+            openNotificationsTroubleshootingModal();
+          }}
+        >
+          didn&apos;t get anything?
+        </Anchor>
+      )}
+    </Stack>
   );
 };
