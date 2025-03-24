@@ -1,5 +1,7 @@
 import { ActionIcon, Image, Overlay, Popover, Text } from "@mantine/core";
+import { useDocumentVisibility } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
+import { DateTime } from "luxon";
 import { mutate } from "swr";
 
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
@@ -122,6 +124,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
         <UserPageRequestInvitationAlert {...{ user }} />
       )}
       <UserPagePinnedPosts {...{ user, replyPhoneNumber }} />
+      <WelcomeBackToast />
     </>
   );
 };
@@ -283,4 +286,36 @@ const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
       <RefreshIcon />
     </ActionIcon>
   );
+};
+
+const WelcomeBackToast: FC = () => {
+  const currentFriend = useCurrentFriend();
+  const visibility = useDocumentVisibility();
+  const lastWelcomedRef = useRef<DateTime | null>(null);
+  useEffect(() => {
+    if (!currentFriend && visibility === "hidden") {
+      return;
+    }
+    if (
+      lastWelcomedRef.current &&
+      lastWelcomedRef.current.diffNow().hours < 1
+    ) {
+      return;
+    }
+    if (currentFriend && visibility === "visible") {
+      lastWelcomedRef.current = DateTime.now();
+      const friendName = [currentFriend.emoji, currentFriend.name]
+        .filter(Boolean)
+        .join(" ");
+      const timeout = setTimeout(() => {
+        toast.success(`welcome back, ${friendName}`, {
+          duration: 2400,
+        });
+      }, 1000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
 };

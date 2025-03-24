@@ -140,9 +140,8 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             </Text>
             <Group justify="center" gap="sm">
               {MESSAGING_PLATFORMS.map(platform => (
-                <Stack gap={2} align="center" miw={60}>
+                <Stack key={platform} gap={2} align="center" miw={60}>
                   <ActionIcon
-                    key={platform}
                     component="a"
                     target="_blank"
                     rel="noopener noreferrer nofollow"
