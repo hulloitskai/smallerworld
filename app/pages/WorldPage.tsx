@@ -12,16 +12,12 @@ import AppLayout from "~/components/AppLayout";
 import AuthorPostCardActions from "~/components/AuthorPostCardActions";
 import { openInstallationInstructionsModal } from "~/components/InstallationInstructionsModal";
 import LoadMoreButton from "~/components/LoadMoreButton";
-import NewPost from "~/components/NewPost";
 import PostCard from "~/components/PostCard";
 import UserNotificationsButton from "~/components/UserNotificationsButton";
+import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { usePosts } from "~/helpers/posts";
-import {
-  useInstallPromptEvent,
-  useIsInstallable,
-  useIsStandalone,
-} from "~/helpers/pwa";
+import { useInstallPromptEvent, useIsInstallable } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
 import { type FriendView, type User } from "~/types";
 
@@ -207,7 +203,7 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
           )}
         </Box>
       </Stack>
-      <NewPost disabled={isStandalone && registration === null} />
+      <WorldPageFloatingActions />
     </>
   );
 };

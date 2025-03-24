@@ -2,7 +2,6 @@ import { AppShell, type AppShellHeaderProps, Burger } from "@mantine/core";
 
 // import { Image } from "@mantine/core";
 // import logoSrc from "~/assets/images/logo-circle.png";
-import { useIsStandalone } from "~/helpers/pwa";
 import { useSidebarControls } from "~/helpers/sidebar";
 
 import AppMenu from "./AppMenu";

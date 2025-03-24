@@ -25,7 +25,7 @@ const userPagePostsGetKey = (
       }
       query.page = next;
     }
-    return routes.users.posts.path({ id: userId, query });
+    return routes.userPosts.index.path({ user_id: userId, query });
   };
 };
 

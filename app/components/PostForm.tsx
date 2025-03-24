@@ -1,6 +1,13 @@
-import { ActionIcon, SegmentedControl, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  InputWrapper,
+  SegmentedControl,
+  Text,
+} from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import { type Editor } from "@tiptap/react";
 
+import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
 
 import {
@@ -16,6 +23,7 @@ import ImageInput from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
 
 import classes from "./PostForm.module.css";
+import "@mantine/dates/styles.layer.css";
 
 type PostFormProps =
   | {
@@ -64,6 +72,7 @@ const PostForm: FC<PostFormProps> = props => {
       emoji: post?.emoji ?? "",
       image_upload: post?.image ? { signedId: post.image.signed_id } : null,
       visibility: post?.visibility ?? "friends",
+      pinned_until: post?.pinned_until ?? "",
     }),
     [post],
   );
@@ -77,6 +86,7 @@ const PostForm: FC<PostFormProps> = props => {
     reset,
     setInitialValues,
     isDirty,
+    errors,
   } = useForm<
     { post: Post },
     FormValues,
@@ -111,6 +121,7 @@ const PostForm: FC<PostFormProps> = props => {
     onSuccess: ({ post }) => {
       editorRef.current?.commands.clearContent();
       void mutatePosts();
+      void mutateRoute(routes.posts.pinned);
       if ("onPostCreated" in props) {
         props.onPostCreated?.(post);
       } else if ("onPostUpdated" in props) {
@@ -123,6 +134,12 @@ const PostForm: FC<PostFormProps> = props => {
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const todayDate = useMemo(() => DateTime.now().toJSDate(), []);
+  const pinnedUntil = useMemo(() => {
+    if (values.pinned_until) {
+      return DateTime.fromISO(values.pinned_until).toJSDate();
+    }
+  }, [values.pinned_until]);
   const [showImageInput, setShowImageInput] = useState(false);
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
   return (
@@ -183,21 +200,30 @@ const PostForm: FC<PostFormProps> = props => {
           {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
             <TextInput
               {...getInputProps("title")}
-              placeholder={titlePlaceholder}
+              {...(!!titlePlaceholder && {
+                placeholder: `(optional) ${titlePlaceholder}`,
+              })}
+              styles={{
+                input: {
+                  fontFamily: "var(--mantine-font-family-headings)",
+                },
+              }}
             />
           )}
-          <LazyPostEditor
-            {...getInputProps("body_html")}
-            initialValue={initialValues?.body_html}
-            placeholder={bodyPlaceholder}
-            onEditorCreated={editor => {
-              editorRef.current = editor;
-              setBodyTextEmpty(editor.getText().trim() === "");
-            }}
-            onUpdate={({ editor }) => {
-              setBodyTextEmpty(editor.getText().trim() === "");
-            }}
-          />
+          <InputWrapper error={errors.body_html}>
+            <LazyPostEditor
+              {...getInputProps("body_html")}
+              initialValue={initialValues?.body_html}
+              placeholder={bodyPlaceholder}
+              onEditorCreated={editor => {
+                editorRef.current = editor;
+                setBodyTextEmpty(editor.getText().trim() === "");
+              }}
+              onUpdate={({ editor }) => {
+                setBodyTextEmpty(editor.getText().trim() === "");
+              }}
+            />
+          </InputWrapper>
           {showImageInput || values.image_upload ? (
             <ImageInput
               {...getInputProps("image_upload")}
@@ -217,12 +243,36 @@ const PostForm: FC<PostFormProps> = props => {
               attach an image
             </Button>
           )}
-          <Group justify="end">
+          <Group gap="xs" align="start" justify="end" mt="xs">
+            {postType === "invitation" && (
+              <DateInput
+                placeholder="keep pinned until"
+                leftSection={<CalendarIcon />}
+                value={pinnedUntil}
+                error={errors.pinned_until}
+                required
+                withAsterisk={false}
+                popoverProps={{ position: "bottom" }}
+                style={{ flexShrink: 1 }}
+                minDate={todayDate}
+                onChange={date => {
+                  setFieldValue(
+                    "pinned_until",
+                    date
+                      ? DateTime.fromJSDate(date)
+                          .set({ hour: 23, minute: 59, second: 59 })
+                          .toISO()
+                      : "",
+                  );
+                }}
+              />
+            )}
             <Button
               type="submit"
               leftSection={post ? <SaveIcon /> : <SendIcon />}
               disabled={bodyTextEmpty || !isDirty()}
               loading={submitting}
+              style={{ flexShrink: 0 }}
             >
               {post ? "save" : "post"}
             </Button>

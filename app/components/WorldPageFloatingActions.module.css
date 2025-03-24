@@ -1,0 +1,39 @@
+.menuItemSection {
+  color: var(--mantine-color-primary-outline);
+}
+
+.menuItemLabel {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 500;
+}
+
+.menuButton {
+  pointer-events: auto;
+  box-shadow: var(--mantine-shadow-lg);
+
+  &[data-expanded] {
+    background-color: var(--mantine-color-primary-filled-hover);
+  }
+}
+
+.pinnedPostsButton {
+  pointer-events: auto;
+  box-shadow: var(--mantine-shadow-lg);
+  overflow: visible;
+
+  :global(.mantine-ActionIcon-icon) {
+    font-size: var(--mantine-font-size-lg);
+  }
+
+  :global(.mantine-Indicator-indicator) {
+    font-family: var(--mantine-font-family-headings);
+    min-height: var(--indicator-size);
+    padding-inline: 0px;
+  }
+}
+
+.pinnedPostUntilBadge {
+  :global(.mantine-Badge-label) {
+    text-transform: lowercase;
+  }
+}

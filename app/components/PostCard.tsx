@@ -48,7 +48,7 @@ const PostCard: FC<PostCardProps> = ({
       {...otherProps}
     >
       <Card.Section inheritPadding pt="xs" pb={10}>
-        <Group gap={8} align="start">
+        <Group gap={8} align="center">
           {!!post.emoji && (
             <Text size="lg" inline display="block">
               {post.emoji}
@@ -67,15 +67,22 @@ const PostCard: FC<PostCardProps> = ({
               {POST_TYPE_TO_LABEL[post.type]}
             </Text>
           </Group>
-          <Time
-            format={DateTime.DATETIME_MED}
-            size="xs"
-            inline
-            className={classes.timestamp}
-            display="block"
-          >
-            {post.created_at}
-          </Time>
+          {post.pinned_until ? (
+            <Box className={classes.timestamp} mod={{ pinned: true }}>
+              expires{" "}
+              <Time format={DateTime.DATE_MED} inline inherit>
+                {post.pinned_until ?? post.created_at}
+              </Time>
+            </Box>
+          ) : (
+            <Time
+              format={DateTime.DATETIME_MED}
+              inline
+              className={classes.timestamp}
+            >
+              {post.created_at}
+            </Time>
+          )}
           {post.visibility === "public" && (
             <Tooltip
               label="this post is publicly visible"

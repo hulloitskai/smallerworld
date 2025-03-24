@@ -6,21 +6,23 @@
 #
 # Table name: posts
 #
-#  id         :uuid             not null, primary key
-#  body_html  :text             not null
-#  emoji      :string           not null
-#  title      :string
-#  type       :string           not null
-#  visibility :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  author_id  :uuid             not null
+#  id           :uuid             not null, primary key
+#  body_html    :text             not null
+#  emoji        :string           not null
+#  pinned_until :datetime
+#  title        :string
+#  type         :string           not null
+#  visibility   :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  author_id    :uuid             not null
 #
 # Indexes
 #
-#  index_posts_on_author_id   (author_id)
-#  index_posts_on_type        (type)
-#  index_posts_on_visibility  (visibility)
+#  index_posts_on_author_id     (author_id)
+#  index_posts_on_pinned_until  (pinned_until)
+#  index_posts_on_type          (type)
+#  index_posts_on_visibility    (visibility)
 #
 # Foreign Keys
 #
@@ -87,6 +89,7 @@ class Post < ApplicationRecord
   scope :visible_to_chosen_family, -> {
     where(visibility: %i[public friends chosen_family])
   }
+  scope :currently_pinned, -> { where("pinned_until > NOW()") }
 
   # == Noticeable
   sig do

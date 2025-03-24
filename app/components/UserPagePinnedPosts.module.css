@@ -1,0 +1,22 @@
+.button {
+  pointer-events: auto;
+  padding-left: 8px;
+  padding-right: 12px;
+  box-shadow: var(--mantine-shadow-lg);
+
+  &[data-expanded] {
+    background-color: var(--mantine-color-primary-filled-hover);
+  }
+}
+
+.buttonBadge {
+  --badge-size: rem(20px);
+
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 500;
+  border-radius: var(--mantine-radius-xl);
+  width: var(--badge-size);
+  height: var(--badge-size);
+  background-color: var(--mantine-color-white);
+  color: var(--mantine-color-primary-filled);
+}

@@ -8,10 +8,15 @@ class FriendsController < ApplicationController
   # == Actions
   # GET /friends
   def index
+    current_user = authenticate_user!
     respond_to do |format|
-      format.html { render(inertia: "FriendsPage") }
+      format.html do
+        show_installed_users = current_user.admin?
+        render(inertia: "FriendsPage", props: {
+          "showInstalledUsers" => show_installed_users,
+        })
+      end
       format.json do
-        current_user = authenticate_user!
         friends = current_user.friends.reverse_chronological
         notifiable_friend_ids = PushRegistration
           .where(owner: friends)

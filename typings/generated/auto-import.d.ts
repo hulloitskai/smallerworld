@@ -129,6 +129,7 @@ declare global {
   const useEnv: typeof import('~/helpers/meta')['useEnv']
   const useFieldsFilled: typeof import('~/helpers/form')['useFieldsFilled']
   const useForm: typeof import('~/helpers/form')['useForm']
+  const useIsStandalone: typeof import('~/helpers/pwa')['useIsStandalone']
   const useMantineColorScheme: typeof import('@mantine/core')['useMantineColorScheme']
   const useMantineTheme: typeof import('@mantine/core')['useMantineTheme']
   const useMediaQuery: typeof import('@mantine/hooks')['useMediaQuery']

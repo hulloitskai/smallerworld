@@ -12,7 +12,7 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/layout";
-import { useClearAppBadge, useIsStandalone } from "~/helpers/pwa";
+import { useClearAppBadge } from "~/helpers/pwa";
 import { type SidebarControls } from "~/helpers/sidebar";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";

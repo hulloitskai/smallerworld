@@ -2,8 +2,6 @@ import bricolageGrotesqueSrc from "@fontsource-variable/bricolage-grotesque/file
 import manropeWoff2Src from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
 import { useDocumentVisibility } from "@mantine/hooks";
 
-import { useIsStandalone } from "~/helpers/pwa";
-
 const APP_META_SITE_TYPE = "website";
 const APP_META_SITE_NAME = "smaller world";
 const APP_META_SITE_DESCRIPTION = "a smaller world for you and your friends :)";

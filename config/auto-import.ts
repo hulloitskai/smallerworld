@@ -49,6 +49,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/json": ["formatJSON"],
     "~/helpers/meta": ["env", "getMeta", "requireMeta", "useEnv"],
     "~/helpers/alerts": ["toastChangesSaved"],
+    "~/helpers/pwa": ["useIsStandalone"],
     "~/helpers/routes": [["default", "routes"]],
     "~/helpers/routes/fetch": ["fetchRoute"],
     "~/helpers/routes/swr": ["useRouteSWR", "useRouteMutation", "mutateRoute"],

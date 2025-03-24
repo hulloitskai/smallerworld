@@ -11,11 +11,11 @@ import LoadMoreButton from "~/components/LoadMoreButton";
 import PostCard from "~/components/PostCard";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
+import UserPagePinnedPosts from "~/components/UserPagePinnedPosts";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import { useIsStandalone } from "~/helpers/pwa";
 import { useUserPagePosts } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
 import { type FriendNotificationSettings, type User } from "~/types";
@@ -96,6 +96,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
       ) : (
         <UserPageRequestInvitationAlert {...{ user }} />
       )}
+      <UserPagePinnedPosts userId={user.id} />
     </>
   );
 };

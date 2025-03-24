@@ -19,8 +19,13 @@
 .timestamp {
   color: var(--mantine-color-dimmed);
   text-transform: lowercase;
+  font-size: var(--mantine-font-size-xs);
   font-weight: 500;
   font-family: var(--mantine-font-family-headings);
+
+  &[data-pinned] {
+    color: alpha(var(--mantine-color-primary-light-color), 0.8);
+  }
 }
 
 .contentSection {

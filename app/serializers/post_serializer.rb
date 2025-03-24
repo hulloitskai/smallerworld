@@ -8,6 +8,7 @@ class PostSerializer < ApplicationSerializer
              :title,
              :body_html,
              :emoji,
+             :pinned_until,
              type: { type: "PostType" },
              visibility: { type: "PostVisibility" },
              reply_snippet: { type: :string }

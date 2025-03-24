@@ -86,16 +86,28 @@ Rails.application.routes.draw do
   resources :users, only: [], export: true do
     member do
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
-      get :posts
       post :request_invitation
     end
   end
 
   # == Posts
   resources :posts, only: %i[index create update destroy], export: true do
+    collection do
+      get :pinned
+    end
     member do
       get :stats
       post :mark_as_replied
+    end
+  end
+  resources(
+    :user_posts,
+    path: "/users/:user_id/posts",
+    only: :index,
+    export: true,
+  ) do
+    collection do
+      get :pinned
     end
   end
 

@@ -20,6 +20,17 @@ class PostsController < ApplicationController
     })
   end
 
+  # GET /posts/pinned
+  def pinned
+    user = authenticate_user!
+    posts = user
+      .posts
+      .currently_pinned
+      .includes(:image_blob)
+      .order(pinned_until: :asc)
+    render(json: { posts: PostSerializer.many(posts) })
+  end
+
   # GET /posts/:id/stats
   def stats
     post_id = T.let(params.fetch(:id), String)
@@ -34,7 +45,15 @@ class PostsController < ApplicationController
   def create
     current_user = authenticate_user!
     post_params = T.let(
-      params.expect(post: %i[type title body_html emoji image visibility]),
+      params.expect(post: %i[
+        type
+        title
+        body_html
+        emoji
+        image
+        visibility
+        pinned_until
+      ]),
       ActionController::Parameters,
     )
     post = current_user.posts.build(post_params)
@@ -56,6 +75,7 @@ class PostsController < ApplicationController
       emoji
       image
       visibility
+      pinned_until
     ])
     if post.update(post_params)
       render(json: { post: PostSerializer.one(post) })
