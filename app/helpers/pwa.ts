@@ -38,13 +38,14 @@ export const useClearAppBadge = () => {
   const visibility = useDocumentVisibility();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
+  const clearNotificationParams = currentFriend
+    ? { query: { friend_token: currentFriend.access_token } }
+    : currentUser
+      ? {}
+      : null;
   const { trigger } = useRouteMutation(routes.notifications.cleared, {
     descriptor: "mark notifications as cleared",
-    params: currentFriend
-      ? { query: { friend_token: currentFriend.access_token } }
-      : currentUser
-        ? {}
-        : null,
+    params: clearNotificationParams,
     failSilently: true,
     onSuccess: () => {
       console.info("notifications cleared");
@@ -57,9 +58,11 @@ export const useClearAppBadge = () => {
       "clearAppBadge" in navigator
     ) {
       void navigator.clearAppBadge();
-      void trigger();
+      if (clearNotificationParams) {
+        void trigger();
+      }
     }
-  }, [isStandalone, trigger, visibility]);
+  }, [isStandalone, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 export const useIsInstallable = (
