@@ -48,7 +48,6 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/inertia/routing": ["useQueryParams"],
     "~/helpers/json": ["formatJSON"],
     "~/helpers/meta": ["env", "getMeta", "requireMeta", "useEnv"],
-    "~/helpers/alerts": ["toastChangesSaved"],
     "~/helpers/pwa": ["useIsStandalone"],
     "~/helpers/routes": [["default", "routes"]],
     "~/helpers/routes/fetch": ["fetchRoute"],

@@ -118,7 +118,7 @@ const ImageInput: FC<ImageInputProps> = ({
                     handleChange(value);
                   })
                   .catch((error: Error) => {
-                    toast.error("Failed to upload image", {
+                    toast.error("failed to upload image", {
                       description: error.message,
                     });
                   })

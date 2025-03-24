@@ -25,7 +25,7 @@ export const fetchRoute = async <Data>(
     const { body } = responseError; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     if (body !== null && typeof body === "object" && "error" in body) {
       const { error } = body; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
-      console.error(`Failed to ${descriptor}`, error);
+      console.error(`failed to ${descriptor}`, error);
       if (!failSilently) {
         toast.error(`failed to ${descriptor}`, {
           description:
@@ -35,7 +35,7 @@ export const fetchRoute = async <Data>(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       throw new Error(error);
     } else {
-      console.error(`Failed to ${descriptor}`, responseError);
+      console.error(`failed to ${descriptor}`, responseError);
       if (!failSilently) {
         toast.error(`failed to ${descriptor}`, {
           description: responseError.message,

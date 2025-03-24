@@ -59,8 +59,8 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                   })
                   .then(({ error }) => {
                     if (error) {
-                      console.error("Failed to complete sign-in", error);
-                      toast.error("Failed to complete sign-in", {
+                      console.error("failed to complete sign-in", error);
+                      toast.error("failed to complete sign-in", {
                         description: error.message,
                       });
                     } else {
@@ -68,8 +68,8 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                     }
                   })
                   .catch((error: Error) => {
-                    console.error("Unexpected error during sign-in", error);
-                    toast.error("Unexpected error during sign-in");
+                    console.error("unexpected error during sign-in", error);
+                    toast.error("unexpected error during sign-in");
                   })
                   .finally(() => {
                     setSubmitting(false);
@@ -82,7 +82,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                   })
                   .then(({ error, data }) => {
                     if (error) {
-                      console.error("Failed to initiate sign-in", error);
+                      console.error("failed to initiate sign-in", error);
                     } else {
                       setShowCodeInput(true);
                       if (data.messageId === "test-otp") {
@@ -152,7 +152,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                 </InputWrapper>
               )}
             </Transition>
-            <Stack gap={2}>
+            <Stack gap={6}>
               <Button
                 type="submit"
                 leftSection={showCodeInput ? <SignInIcon /> : <PhoneIcon />}
@@ -161,8 +161,14 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               >
                 {showCodeInput ? "sign in" : "send login code"}
               </Button>
-              <Text size="xs" c="dimmed">
-                by continuing, you agree to receive text messages from{" "}
+              <Text
+                size="xs"
+                c="dimmed"
+                ta="center"
+                maw={240}
+                style={{ alignSelf: "center" }}
+              >
+                by continuing, you agree to receive sms messages from{" "}
                 <span style={{ fontWeight: 600 }}>smaller world</span>
               </Text>
             </Stack>

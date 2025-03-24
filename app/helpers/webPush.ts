@@ -159,10 +159,10 @@ const registerSubscription = (
     "keys.p256dh",
   );
   if (!keys?.auth) {
-    throw new Error("Missing auth key");
+    throw new Error("missing auth key");
   }
   if (!keys?.p256dh) {
-    throw new Error("Missing p256dh key");
+    throw new Error("missing p256dh key");
   }
   const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
   return fetchRoute<void>(routes.pushSubscriptions.create, {

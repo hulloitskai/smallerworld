@@ -47,7 +47,7 @@ export const useClearAppBadge = () => {
         : null,
     failSilently: true,
     onSuccess: () => {
-      console.info("Notifications cleared");
+      console.info("notifications cleared");
     },
   });
   useEffect(() => {

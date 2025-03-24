@@ -19,7 +19,7 @@ export const handleServiceWorkerNavigation = (): void => {
     const { action } = event.data;
     if (action === "navigate") {
       console.info(
-        "Received navigation request from service worker",
+        "received navigation request from service worker",
         event.data,
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
