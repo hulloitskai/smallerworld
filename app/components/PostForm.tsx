@@ -118,8 +118,11 @@ const PostForm: FC<PostFormProps> = props => {
           }),
         }),
     initialValues,
-    onSuccess: ({ post }) => {
-      editorRef.current?.commands.clearContent();
+    onSuccess: ({ post }, { reset }) => {
+      if (!("post" in props)) {
+        reset();
+        editorRef.current?.commands.clearContent();
+      }
       void mutatePosts();
       void mutateRoute(routes.posts.pinned);
       if ("onPostCreated" in props) {
