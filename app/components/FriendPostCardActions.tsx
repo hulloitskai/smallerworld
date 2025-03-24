@@ -19,7 +19,7 @@ import EmojiPopover from "./EmojiPopover";
 import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
-interface FriendPostCardActionsProps {
+export interface FriendPostCardActionsProps {
   user: User;
   post: PostView;
   replyPhoneNumber: string | null;

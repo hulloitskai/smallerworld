@@ -121,7 +121,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
       ) : (
         <UserPageRequestInvitationAlert {...{ user }} />
       )}
-      <UserPagePinnedPosts userId={user.id} />
+      <UserPagePinnedPosts {...{ user, replyPhoneNumber }} />
     </>
   );
 };

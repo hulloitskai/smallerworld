@@ -1,25 +1,29 @@
 import { Affix, Button } from "@mantine/core";
 
-import { type Post } from "~/types";
+import { type PostView } from "~/types";
 
-import AuthorPostCardActions from "./AuthorPostCardActions";
+import FriendPostCardActions, {
+  type FriendPostCardActionsProps,
+} from "./FriendPostCardActions";
 import PostCard from "./PostCard";
 
 import classes from "./UserPagePinnedPosts.module.css";
 
-export interface UserPagePinnedPostsProps {
-  userId: string;
-}
+export interface UserPagePinnedPostsProps
+  extends Pick<FriendPostCardActionsProps, "user" | "replyPhoneNumber"> {}
 
-const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({ userId }) => {
+const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
+  user,
+  replyPhoneNumber,
+}) => {
   const currentFriend = useCurrentFriend();
   const isStandalone = useIsStandalone();
 
   // == Load pinned posts
-  const { data } = useRouteSWR<{ posts: Post[] }>(routes.userPosts.pinned, {
+  const { data } = useRouteSWR<{ posts: PostView[] }>(routes.userPosts.pinned, {
     params: currentFriend
       ? {
-          user_id: userId,
+          user_id: user.id,
           query: {
             friend_token: currentFriend.access_token,
           },
@@ -71,7 +75,11 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({ userId }) => {
                           <PostCard
                             key={post.id}
                             {...{ post }}
-                            actions={<AuthorPostCardActions {...{ post }} />}
+                            actions={
+                              <FriendPostCardActions
+                                {...{ user, post, replyPhoneNumber }}
+                              />
+                            }
                           />
                         ))}
                       </Stack>
