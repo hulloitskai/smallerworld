@@ -28,6 +28,7 @@
     }
 
     .modalHeader {
+      min-height: 0px;
       align-items: start;
       padding-bottom: 6px;
     }

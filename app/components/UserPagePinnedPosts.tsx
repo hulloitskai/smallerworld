@@ -1,4 +1,4 @@
-import { Affix, Button } from "@mantine/core";
+import { Affix, Button, Drawer, Modal } from "@mantine/core";
 
 import { type PostView } from "~/types";
 
@@ -35,6 +35,11 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
 
   // == Affix
   const affixInset = "var(--mantine-spacing-xl)";
+
+  const { breakpoints } = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs})`);
+  const ModalOrDrawer = isMobile ? Drawer : Modal;
+  const [opened, setOpened] = useState(false);
   return (
     <>
       <Space h={50} />
@@ -62,37 +67,35 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
                 }
                 {...{ style }}
                 onClick={() => {
-                  openModal({
-                    title: "your upcoming invitations",
-                    styles: {
-                      header: {
-                        minHeight: 0,
-                      },
-                    },
-                    children: (
-                      <Stack>
-                        {pinnedPosts.map(post => (
-                          <PostCard
-                            key={post.id}
-                            {...{ post }}
-                            actions={
-                              <FriendPostCardActions
-                                {...{ user, post, replyPhoneNumber }}
-                              />
-                            }
-                          />
-                        ))}
-                      </Stack>
-                    ),
-                  });
+                  setOpened(true);
                 }}
               >
-                your invitations
+                events you&apos;re invited to
               </Button>
             )}
           </Transition>
         </Center>
       </Affix>
+      <ModalOrDrawer
+        title="invitations to stuff i'm doing"
+        size="var(--container-size-xs)"
+        {...{ opened }}
+        onClose={() => {
+          setOpened(false);
+        }}
+      >
+        <Stack>
+          {pinnedPosts.map(post => (
+            <PostCard
+              key={post.id}
+              {...{ post }}
+              actions={
+                <FriendPostCardActions {...{ user, post, replyPhoneNumber }} />
+              }
+            />
+          ))}
+        </Stack>
+      </ModalOrDrawer>
     </>
   );
 };

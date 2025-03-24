@@ -1,7 +1,6 @@
 .modal {
   :global(.mantine-Modal-header) {
     line-height: var(--mantine-line-height-xs);
-    min-height: 0px;
   }
 }
 

@@ -1,4 +1,4 @@
-import { ActionIcon, Affix, Indicator, Modal } from "@mantine/core";
+import { ActionIcon, Affix, Drawer, Indicator, Modal } from "@mantine/core";
 import {
   createHtmlPortalNode,
   InPortal,
@@ -36,8 +36,14 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   });
   const pinnedPosts = data?.posts ?? [];
 
-  // == Drawer / Modal
-  const portalNode = useMemo(() => createHtmlPortalNode(), []);
+  // == New post modal
+  const newPostPortalNode = useMemo(() => createHtmlPortalNode(), []);
+
+  // == Pinned posts drawer / modal
+  const { breakpoints } = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs})`);
+  const PinnedPostsModalOrDrawer = isMobile ? Drawer : Modal;
+  const [pinnedPostsOpened, setPinnedPostsOpened] = useState(false);
 
   // == Affix
   const affixInset = "var(--mantine-spacing-xl)";
@@ -46,7 +52,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   return (
     <>
       <Space h={50} />
-      <InPortal node={portalNode}>
+      <InPortal node={newPostPortalNode}>
         <PostForm
           postType={postType ?? previousPostType ?? null}
           onPostCreated={() => {
@@ -117,25 +123,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                 className={classes.pinnedPostsButton}
                 {...{ style }}
                 onClick={() => {
-                  openModal({
-                    title: "your active invitations",
-                    styles: {
-                      header: {
-                        minHeight: 0,
-                      },
-                    },
-                    children: (
-                      <Stack>
-                        {pinnedPosts.map(post => (
-                          <PostCard
-                            key={post.id}
-                            {...{ post }}
-                            actions={<AuthorPostCardActions {...{ post }} />}
-                          />
-                        ))}
-                      </Stack>
-                    ),
-                  });
+                  setPinnedPostsOpened(true);
                 }}
               >
                 <Indicator label={pinnedPosts.length} size={16} offset={-4}>
@@ -154,8 +142,26 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           setPostType(null);
         }}
       >
-        <OutPortal node={portalNode} />
+        <OutPortal node={newPostPortalNode} />
       </Modal>
+      <PinnedPostsModalOrDrawer
+        title="your invitations to your friends"
+        size="var(--container-size-xs)"
+        opened={pinnedPostsOpened}
+        onClose={() => {
+          setPinnedPostsOpened(false);
+        }}
+      >
+        <Stack>
+          {pinnedPosts.map(post => (
+            <PostCard
+              key={post.id}
+              {...{ post }}
+              actions={<AuthorPostCardActions {...{ post }} />}
+            />
+          ))}
+        </Stack>
+      </PinnedPostsModalOrDrawer>
     </>
   );
 };

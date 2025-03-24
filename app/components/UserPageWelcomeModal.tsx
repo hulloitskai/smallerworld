@@ -10,8 +10,6 @@ import { type User } from "~/types";
 import HomeScreenPreview from "./HomeScreenPreview";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
-import classes from "./UserPageWelcomeModal.module.css";
-
 export interface UserPageWelcomeModalProps
   extends Omit<ModalBodyProps, "modalId"> {}
 
@@ -21,7 +19,6 @@ export const openUserPageWelcomeModal = (
   const modalId = uuid();
   openModal({
     modalId: modalId,
-    className: classes.modal,
     children: <ModalBody {...{ modalId }} {...props} />,
   });
 };
