@@ -118,13 +118,15 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           )}
         </Box>
       </Stack>
+      <UserPagePinnedPosts {...{ user, replyPhoneNumber }} />
       {currentFriend ? (
-        <UserPageInstallAlert {...{ user }} />
+        <>
+          <UserPageInstallAlert {...{ user }} />
+          {isStandalone && !!registration && <WelcomeBackToast />}
+        </>
       ) : (
         <UserPageRequestInvitationAlert {...{ user }} />
       )}
-      <UserPagePinnedPosts {...{ user, replyPhoneNumber }} />
-      <WelcomeBackToast />
     </>
   );
 };
@@ -289,28 +291,23 @@ const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
 };
 
 const WelcomeBackToast: FC = () => {
-  const currentFriend = useCurrentFriend();
+  const currentFriend = useAuthenticatedFriend();
   const visibility = useDocumentVisibility();
-  const lastWelcomedRef = useRef<DateTime | null>(null);
+  const lastCheckedRef = useRef<DateTime | null>(null);
   useEffect(() => {
-    if (!currentFriend && visibility === "hidden") {
+    if (visibility === "hidden") {
       return;
     }
-    if (
-      lastWelcomedRef.current &&
-      lastWelcomedRef.current.diffNow().hours < 1
-    ) {
+    if (lastCheckedRef.current && lastCheckedRef.current.diffNow().hours < 1) {
       return;
     }
-    if (currentFriend && visibility === "visible") {
-      lastWelcomedRef.current = DateTime.now();
+    lastCheckedRef.current = DateTime.now();
+    if (visibility === "visible") {
       const friendName = [currentFriend.emoji, currentFriend.name]
         .filter(Boolean)
         .join(" ");
       const timeout = setTimeout(() => {
-        toast.success(`welcome back, ${friendName}`, {
-          duration: 2400,
-        });
+        toast.success(`welcome back, ${friendName}`, { duration: 2400 });
       }, 1000);
       return () => {
         clearTimeout(timeout);
