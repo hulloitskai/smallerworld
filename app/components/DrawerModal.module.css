@@ -9,6 +9,7 @@
   display: flex;
   flex-direction: column;
   z-index: 190;
+  max-height: 80%;
 
   &[data-disabled] {
     pointer-events: none !important;
@@ -24,7 +25,7 @@
     var(--mb-padding, var(--mantine-spacing-md)) -
       calc(0.3125rem * var(--mantine-scale))
   );
-  padding-bottom: 6px;
+  padding-bottom: var(--mantine-spacing-xs);
   position: sticky;
   top: 0;
   background-color: var(--mantine-color-body);
@@ -50,6 +51,10 @@
   > div > div {
     min-width: 0px;
   }
+}
+
+.modalHeader {
+  padding-bottom: var(--mantine-spacing-xs);
 }
 
 .modalViewport {

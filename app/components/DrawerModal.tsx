@@ -160,7 +160,10 @@ const DrawerModal: FC<DrawerModalProps> = ({
       <Modal
         size="var(--container-size-xs)"
         {...{ title }}
-        classNames={{ content: classes.modalContent }}
+        classNames={{
+          content: classes.modalContent,
+          header: classes.modalHeader,
+        }}
         scrollAreaComponent={ModalScrollArea}
         closeOnEscape={isEmpty(openModals)}
         opened={isMobileSize === false && opened}

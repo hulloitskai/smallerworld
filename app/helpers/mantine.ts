@@ -26,7 +26,7 @@ import {
   TypographyStylesProvider,
 } from "@mantine/core";
 import { type PopoverMiddlewares } from "@mantine/core/lib/components/Popover/Popover.types";
-import { DatePicker } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 
 import { type Rect, useSafeViewportRect } from "./safeArea";
 
@@ -278,7 +278,7 @@ const createTheme = (
           label: classes.dividerLabel,
         },
       }),
-      DatePicker: DatePicker.extend({
+      DateInput: DateInput.extend({
         defaultProps: {
           firstDayOfWeek: 0,
         },
