@@ -56,9 +56,10 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
 
   return (
     <>
-      <Stack gap="xl">
+      <Stack>
         {currentUser && !currentFriend && (
           <Alert
+            mb="xl"
             styles={{
               root: { alignSelf: "stretch" },
               body: { rowGap: rem(4) },
@@ -83,87 +84,90 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
             </Group>
           </Alert>
         )}
-        <Stack>
-          <Box pos="relative">
-            <Stack align="center" gap="sm">
-              <Image
-                src={user.page_icon.src}
-                srcSet={user.page_icon.src_set}
-                w={ICON_SIZE}
-                h={ICON_SIZE}
-                fit="cover"
-                radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-                style={{
-                  flex: "unset",
-                  boxShadow: "var(--mantine-shadow-lg)",
-                }}
-              />
-              <Stack gap={4} align="center">
-                <Title size="h2" lh="xs" ta="center">
-                  {possessive(user.name)} world
-                </Title>
-                {isStandalone ? (
-                  <>
-                    {currentFriend && (
-                      <Group gap="xs">
-                        <UserPageNotificationsButton />
-                        {registration && (
-                          <UserPageRefreshButton userId={user.id} />
-                        )}
-                      </Group>
-                    )}
-                  </>
-                ) : (
-                  <UserPageUpcomingEventsButton
-                    {...{ user, replyPhoneNumber }}
-                    style={{ alignSelf: "center" }}
-                  />
-                )}
-              </Stack>
-            </Stack>
-            <Popover>
-              <Popover.Target>
-                <ActionIcon pos="absolute" top={-6} right={0}>
-                  <SmallerWorldIcon />
-                </ActionIcon>
-              </Popover.Target>
-              <Popover.Dropdown>
-                <Stack gap={8}>
-                  <Text ta="center" ff="heading" fw={600}>
-                    wanna make your own smaller world?
-                  </Text>
-                  <Button
-                    component="a"
-                    target="_blank"
-                    href={routes.login.new.path()}
-                    leftSection={<OpenExternalIcon />}
-                    style={{ alignSelf: "center" }}
-                  >
-                    create your world
-                  </Button>
-                </Stack>
-              </Popover.Dropdown>
-            </Popover>
-          </Box>
-          <Box pos="relative">
-            <UserPageFeed {...{ user, replyPhoneNumber }} />
-            {isStandalone && registration === null && (
-              <Overlay backgroundOpacity={0} blur={3}>
-                <Image
-                  src={swirlyUpArrowSrc}
-                  className={classes.notificationsRequiredIndicatorArrow}
+        <Box pos="relative">
+          <Stack align="center" gap="sm">
+            <Image
+              src={user.page_icon.src}
+              srcSet={user.page_icon.src_set}
+              w={ICON_SIZE}
+              h={ICON_SIZE}
+              fit="cover"
+              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+              style={{
+                flex: "unset",
+                boxShadow: "var(--mantine-shadow-lg)",
+              }}
+            />
+            <Stack gap={4} align="center">
+              <Title size="h2" lh="xs" ta="center">
+                {possessive(user.name)} world
+              </Title>
+              {isStandalone ? (
+                <>
+                  {currentFriend && (
+                    <Group gap="xs">
+                      <UserPageNotificationsButton />
+                      {registration && (
+                        <UserPageRefreshButton userId={user.id} />
+                      )}
+                    </Group>
+                  )}
+                </>
+              ) : isStandalone === false ? (
+                <UserPageUpcomingEventsButton
+                  {...{ user, replyPhoneNumber }}
+                  style={{ alignSelf: "center" }}
                 />
-              </Overlay>
-            )}
-          </Box>
-        </Stack>
+              ) : (
+                <Skeleton>
+                  <Button>placeholder</Button>
+                </Skeleton>
+              )}
+            </Stack>
+          </Stack>
+          <Popover>
+            <Popover.Target>
+              <ActionIcon pos="absolute" top={-6} right={0}>
+                <SmallerWorldIcon />
+              </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Stack gap={8}>
+                <Text ta="center" ff="heading" fw={600}>
+                  wanna make your own smaller world?
+                </Text>
+                <Button
+                  component="a"
+                  target="_blank"
+                  href={routes.login.new.path()}
+                  leftSection={<OpenExternalIcon />}
+                  style={{ alignSelf: "center" }}
+                >
+                  create your world
+                </Button>
+              </Stack>
+            </Popover.Dropdown>
+          </Popover>
+        </Box>
+        <Box pos="relative">
+          <UserPageFeed {...{ user, replyPhoneNumber }} />
+          {isStandalone && registration === null && (
+            <Overlay backgroundOpacity={0} blur={3}>
+              <Image
+                src={swirlyUpArrowSrc}
+                className={classes.notificationsRequiredIndicatorArrow}
+              />
+            </Overlay>
+          )}
+        </Box>
       </Stack>
-      {isStandalone ? (
+      {isStandalone && (
         <>
           <UserPageFloatingActions {...{ user, replyPhoneNumber }} />
           {!!registration && <WelcomeBackToast />}
         </>
-      ) : (
+      )}
+      {isStandalone === false && (
         <>
           {currentFriend && (
             <UserPageInstallAlert {...{ currentFriend, user }} />
