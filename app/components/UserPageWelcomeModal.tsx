@@ -115,9 +115,8 @@ const useDirectLinkToInstallInstructions = (user: User): string | null => {
           intent: "installation_instructions",
         },
       });
-      const instructionsUrl = new URL(instructionsPath, location.href);
       setInstructionsDirectLink(
-        "com-apple-mobilesafari-tab:" + instructionsUrl.toString(),
+        `x-safari-https://${location.host}${instructionsPath}`,
       );
     }
   }, [user.handle, currentFriend.access_token]);
