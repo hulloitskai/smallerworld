@@ -21,6 +21,15 @@
   box-shadow: var(--mantine-shadow-lg);
   overflow: visible;
   background-color: var(--mantine-color-white);
+  color: var(--mantine-color-primary-filled);
+  border-color: var(--mantine-color-primary-filled);
+
+  @mixin hover {
+    background-color: light-dark(
+      var(--mantine-color-gray-1),
+      var(--mantine-color-gray-3)
+    );
+  }
 
   :global(.mantine-ActionIcon-icon) {
     font-size: var(--mantine-font-size-lg);
