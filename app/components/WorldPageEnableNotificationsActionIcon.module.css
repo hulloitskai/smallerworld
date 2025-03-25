@@ -1,0 +1,21 @@
+.arrow {
+  position: absolute;
+  bottom: 22px;
+  left: 26px;
+  width: 60px;
+  transform: rotate(-30deg);
+
+  @mixin dark {
+    filter: invert(1);
+  }
+}
+
+.arrowLabel {
+  font-family: "Single Day", Manrope, cursive;
+  position: absolute;
+  bottom: 100px;
+  left: 24px;
+  width: 80px;
+  line-height: 1;
+  transform: rotate(-28deg);
+}

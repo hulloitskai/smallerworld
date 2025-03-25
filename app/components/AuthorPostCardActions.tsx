@@ -93,7 +93,7 @@ const DeletePostButton: FC<DeletePostButtonProps> = ({ postId }) => {
 
   return (
     <DeleteButton
-      className={classes.deleteButton}
+      className={classes.dullButton}
       loading={mutating}
       variant="subtle"
       color="gray"
@@ -112,6 +112,7 @@ interface EditPostButtonProps {
 const EditPostButton: FC<EditPostButtonProps> = ({ post }) => {
   return (
     <Button
+      className={classes.dullButton}
       variant="subtle"
       color="gray"
       size="compact-xs"

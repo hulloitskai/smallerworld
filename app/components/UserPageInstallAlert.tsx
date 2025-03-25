@@ -20,9 +20,13 @@ const ALERT_INSET = "var(--mantine-spacing-md)";
 
 const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
   const isStandalone = useIsStandalone();
-  const installPromptEvent = useInstallPromptEvent();
-  const isInstallable = useIsInstallable(installPromptEvent);
   const { modals } = useModals();
+
+  // == Install to home screen
+  const installPromptEvent = useInstallPromptEvent();
+  const [installing, setInstalling] = useState(false);
+  const isInstallable = useIsInstallable(installPromptEvent);
+
   return (
     <Affix
       position={{
@@ -53,10 +57,14 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                   size="compact-sm"
                   leftSection={<InstallIcon />}
                   className={classes.button}
+                  loading={installing}
                   disabled={isInstallable === false}
                   onClick={() => {
                     if (installPromptEvent) {
-                      void installPromptEvent.prompt();
+                      setInstalling(true);
+                      void installPromptEvent.prompt().then(() => {
+                        setInstalling(false);
+                      });
                     } else {
                       openUserPageInstallationInstructionsModal({ user });
                     }

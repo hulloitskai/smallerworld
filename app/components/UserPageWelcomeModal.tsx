@@ -35,7 +35,10 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
     () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
     [currentFriend],
   );
+
+  // == Install to home screen
   const installPromptEvent = useInstallPromptEvent();
+  const [installing, setInstalling] = useState(false);
   const isInstallable = useIsInstallable(installPromptEvent);
   const directLinkToInstallInstructions =
     useDirectLinkToInstallInstructions(user);
@@ -66,7 +69,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
       <Stack gap={4} align="center">
         <Button<"button" | "a">
           leftSection={<InstallIcon />}
-          loading={isInstallable === undefined}
+          loading={isInstallable === undefined || installing}
           disabled={isInstallable === false}
           {...(directLinkToInstallInstructions
             ? {
@@ -77,7 +80,10 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
             : {
                 onClick: () => {
                   if (installPromptEvent) {
-                    void installPromptEvent.prompt();
+                    setInstalling(true);
+                    void installPromptEvent.prompt().then(() => {
+                      setInstalling(false);
+                    });
                   } else if (isIosSafari()) {
                     openUserPageInstallationInstructionsModal({ user });
                     closeModal(modalId);
@@ -100,7 +106,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
   );
 };
 
-const useDirectLinkToInstallInstructions = (user: User) => {
+const useDirectLinkToInstallInstructions = (user: User): string | null => {
   const currentFriend = useAuthenticatedFriend();
   const [instructionsDirectLink, setInstructionsDirectLink] = useState<
     string | null
@@ -114,9 +120,10 @@ const useDirectLinkToInstallInstructions = (user: User) => {
           intent: "installation_instructions",
         },
       });
-      const instructionsUrl = new URL(instructionsPath, location.origin);
-      instructionsUrl.protocol = "x-safari-https:";
-      setInstructionsDirectLink(instructionsUrl.toString());
+      const instructionsUrl = new URL(instructionsPath, location.href);
+      setInstructionsDirectLink(
+        "com-apple-mobilesafari-tab:" + instructionsUrl.toString(),
+      );
     }
   }, [user.handle, currentFriend.access_token]);
   return instructionsDirectLink;

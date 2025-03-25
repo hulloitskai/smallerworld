@@ -4,15 +4,14 @@ import { takeRight } from "lodash-es";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
-import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import AuthorPostCardActions from "~/components/AuthorPostCardActions";
-import { openInstallationInstructionsModal } from "~/components/InstallationInstructionsModal";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import PostCard from "~/components/PostCard";
+import WorldPageEnableNotificationsActionIcon from "~/components/WorldPageEnableNotificationsActionIcon";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
@@ -97,53 +96,8 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
                     your friends
                   </Button>
                 )}
-                {isInstallable && isStandalone === false && (
-                  <Box pos="relative">
-                    <Head>
-                      <link
-                        rel="preconnect"
-                        href="https://fonts.googleapis.com"
-                      />
-                      <link
-                        rel="preconnect"
-                        href="https://fonts.gstatic.com"
-                        crossOrigin="anonymous"
-                      />
-                      <link
-                        href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap"
-                        rel="stylesheet"
-                      />
-                    </Head>
-                    <ActionIcon
-                      variant="light"
-                      size="lg"
-                      onClick={() => {
-                        openInstallationInstructionsModal({
-                          title: "enable notifications",
-                          pageName: "smaller world",
-                          pageIcon: user.page_icon,
-                          children: (
-                            <Text size="sm" ta="center" maw={300} mx="auto">
-                              pin this page to your home screen so you can{" "}
-                              <span style={{ fontWeight: 600 }}>
-                                get notified when friends react to your posts
-                              </span>
-                              !
-                            </Text>
-                          ),
-                        });
-                      }}
-                    >
-                      <NotificationIcon />
-                    </ActionIcon>
-                    <Image
-                      src={bottomLeftArrowSrc}
-                      className={classes.enableNotificationsArrow}
-                    />
-                    <Text className={classes.enableNotificationsText}>
-                      enable notifs :)
-                    </Text>
-                  </Box>
+                {isStandalone === false && isInstallable && (
+                  <WorldPageEnableNotificationsActionIcon {...{ user }} />
                 )}
                 {isStandalone && <WorldPageNotificationsButton />}
               </Group>
