@@ -31,6 +31,8 @@ export const setupSentry = () => {
       ],
       ignoreErrors: [
         "ResizeObserver loop completed with undelivered notifications.",
+        "Failed to fetch",
+        "Load failed",
         /^Error loading edge\.fullstory\.com/,
       ],
     };
