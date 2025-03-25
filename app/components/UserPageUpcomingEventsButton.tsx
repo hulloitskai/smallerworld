@@ -1,7 +1,9 @@
-import { type BoxProps, Drawer, Modal } from "@mantine/core";
+import { type BoxProps } from "@mantine/core";
 
+import { useUserPageDialogOpened } from "~/helpers/userPages";
 import { type PostView } from "~/types";
 
+import DrawerModal from "./DrawerModal";
 import FriendPostCardActions, {
   type FriendPostCardActionsProps,
 } from "./FriendPostCardActions";
@@ -34,10 +36,12 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
   });
   const pinnedPosts = data?.posts ?? [];
 
-  const { breakpoints } = useMantineTheme();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs})`);
-  const ModalOrDrawer = isMobile ? Drawer : Modal;
-  const [opened, setOpened] = useState(false);
+  // == Drawer modal
+  const [drawerModalOpened, setDrawerModalOpened] = useState(false);
+
+  // == Page dialog state
+  useUserPageDialogOpened(drawerModalOpened);
+
   return (
     <>
       <Transition transition="pop" mounted={!isEmpty(pinnedPosts)}>
@@ -50,7 +54,7 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
               <Center className={classes.badge}>{pinnedPosts.length}</Center>
             }
             onClick={() => {
-              setOpened(true);
+              setDrawerModalOpened(true);
             }}
             {...{ style }}
             {...otherProps}
@@ -59,23 +63,11 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
           </Button>
         )}
       </Transition>
-      <ModalOrDrawer
+      <DrawerModal
         title="invitations to stuff i'm doing"
-        {...(isMobile
-          ? {
-              size: "lg",
-              styles: {
-                content: {
-                  paddingBottom: "var(--safe-area-inset-bottom, 0px)",
-                },
-              },
-            }
-          : {
-              size: "var(--container-size-xs)",
-            })}
-        {...{ opened }}
+        opened={drawerModalOpened}
         onClose={() => {
-          setOpened(false);
+          setDrawerModalOpened(false);
         }}
       >
         <Stack>
@@ -90,7 +82,7 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
             />
           ))}
         </Stack>
-      </ModalOrDrawer>
+      </DrawerModal>
     </>
   );
 };

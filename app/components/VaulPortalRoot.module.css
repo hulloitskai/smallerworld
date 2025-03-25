@@ -1,0 +1,14 @@
+.root {
+  position: fixed;
+  z-index: 200;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100dvh;
+  transform: translate3d(0px, 0px, 0px);
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+}

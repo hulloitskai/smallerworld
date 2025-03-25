@@ -1,0 +1,60 @@
+.drawerContent {
+  background-color: var(--mantine-color-body);
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  z-index: 190;
+
+  &[data-disabled] {
+    pointer-events: none !important;
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--mb-padding, var(--mantine-spacing-md));
+  padding-inline-end: calc(
+    var(--mb-padding, var(--mantine-spacing-md)) -
+      calc(0.3125rem * var(--mantine-scale))
+  );
+  padding-bottom: 6px;
+  position: sticky;
+  top: 0;
+  background-color: var(--mantine-color-body);
+  z-index: 195;
+  transition: padding-inline-end 0.1s;
+}
+
+.drawerViewport {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.drawerBody {
+  padding-inline: var(--mantine-spacing-md);
+  padding-bottom: calc(
+    var(--mantine-spacing-md) + var(--safe-area-inset-bottom, 0px)
+  );
+}
+
+.modalContent {
+  > div > div {
+    min-width: 0px;
+  }
+}
+
+.modalViewport {
+  > div {
+    width: 100%;
+    table-layout: fixed;
+  }
+}

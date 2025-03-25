@@ -1,12 +1,11 @@
 import { Affix, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
+import { useInstallPrompt, useIsIosSafari } from "~/helpers/pwa";
 import {
-  useInstallPrompt,
-  useIsIosSafari,
-  useIsStandalone,
-} from "~/helpers/pwa";
-import { useDirectLinkToInstallInstructions } from "~/helpers/userPages";
+  useDirectLinkToInstallInstructions,
+  useUserPageDialogOpened,
+} from "~/helpers/userPages";
 import { type User } from "~/types/generated";
 
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
@@ -20,8 +19,8 @@ export interface UserPageInstallAlertProps {
 const ALERT_INSET = "var(--mantine-spacing-md)";
 
 const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
-  const isStandalone = useIsStandalone();
   const { modals } = useModals();
+  const pageDialogOpened = useUserPageDialogOpened();
 
   // == Install to home screen
   const { install, installing } = useInstallPrompt();
@@ -31,6 +30,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
 
   return (
     <Affix
+      zIndex={180}
       position={{
         bottom: `calc(${ALERT_INSET} + var(--safe-area-inset-bottom, 0px))`,
         left: ALERT_INSET,
@@ -39,7 +39,8 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
     >
       <Transition
         transition="pop"
-        mounted={isEmpty(modals) && isStandalone === false}
+        mounted={isEmpty(modals) && !pageDialogOpened}
+        enterDelay={100}
       >
         {style => (
           <Alert

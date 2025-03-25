@@ -1,20 +1,16 @@
 import { Avatar, Image, Overlay, Text } from "@mantine/core";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
-import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
-import AuthorPostCardActions from "~/components/AuthorPostCardActions";
-import LoadMoreButton from "~/components/LoadMoreButton";
-import PostCard from "~/components/PostCard";
 import WorldPageEnableNotificationsActionIcon from "~/components/WorldPageEnableNotificationsActionIcon";
+import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { usePosts } from "~/helpers/posts";
 import { useIsIosSafari } from "~/helpers/pwa";
 import { useInstallPrompt } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
@@ -140,7 +136,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({ friends }) => {
           </Alert>
         )}
         <Box pos="relative">
-          <Feed />
+          <WorldPageFeed />
           {isStandalone && registration === null && (
             <Overlay backgroundOpacity={0} blur={3}>
               <Image
@@ -192,67 +188,5 @@ const IconsMeta: FC = () => {
         href={appleTouchIconSrc}
       />
     </Head>
-  );
-};
-
-const Feed: FC = () => {
-  const { posts, setSize, hasMorePosts } = usePosts();
-  const [loadingMore, setLoadingMore] = useState(false);
-  return (
-    <Stack>
-      {posts ? (
-        isEmpty(posts) ? (
-          <Card withBorder>
-            <Stack justify="center" gap={2} ta="center" mih={60}>
-              <Title order={4} lh="xs">
-                no posts yet!
-              </Title>
-              <Text size="sm">
-                create a new post with the{" "}
-                <Badge
-                  variant="filled"
-                  mx={4}
-                  px={4}
-                  styles={{
-                    root: {
-                      verticalAlign: "middle",
-                    },
-                    label: { display: "flex", alignItems: "center" },
-                  }}
-                >
-                  <NewIcon />
-                </Badge>{" "}
-                button :)
-              </Text>
-            </Stack>
-          </Card>
-        ) : (
-          <>
-            {posts.map(post => (
-              <PostCard
-                key={post.id}
-                {...{ post }}
-                actions={<AuthorPostCardActions {...{ post }} />}
-              />
-            ))}
-            {hasMorePosts && (
-              <LoadMoreButton
-                loading={loadingMore}
-                style={{ alignSelf: "center" }}
-                onVisible={() => {
-                  setLoadingMore(true);
-                  void setSize(size => size + 1).finally(() => {
-                    setLoadingMore(false);
-                  });
-                }}
-              />
-            )}
-          </>
-        )
-      ) : (
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        [...new Array(3)].map((_, i) => <Skeleton key={i} h={120} />)
-      )}
-    </Stack>
   );
 };

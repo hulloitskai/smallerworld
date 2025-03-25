@@ -1,4 +1,4 @@
-import { Affix, Drawer, Indicator, Modal } from "@mantine/core";
+import { Affix, Indicator, Modal } from "@mantine/core";
 import {
   createHtmlPortalNode,
   InPortal,
@@ -17,6 +17,7 @@ import { useWebPush } from "~/helpers/webPush";
 import { type Post, type PostType } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
+import DrawerModal from "./DrawerModal";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 
@@ -39,16 +40,15 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   // == New post modal
   const newPostPortalNode = useMemo(() => createHtmlPortalNode(), []);
 
-  // == Pinned posts drawer / modal
-  const { breakpoints } = useMantineTheme();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs})`);
-  const PinnedPostsModalOrDrawer = isMobile ? Drawer : Modal;
-  const [pinnedPostsOpened, setPinnedPostsOpened] = useState(false);
+  // == Pinned posts drawer modal
+  const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
+    useState(false);
 
   // == Affix
   const affixInset = "var(--mantine-spacing-xl)";
 
-  const actionsVisible = !isStandalone || !!registration;
+  const actionsVisible =
+    (isStandalone === false || !!registration) && !pinnedPostsDrawerModalOpened;
   return (
     <>
       <Space className={classes.space} />
@@ -61,6 +61,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
         />
       </InPortal>
       <Affix
+        zIndex={180}
         position={{
           bottom: `max(${affixInset}, var(--safe-area-inset-bottom, 0px))`,
           left: affixInset,
@@ -73,7 +74,11 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           gap={8}
           style={{ pointerEvents: "none" }}
         >
-          <Transition transition="pop" mounted={actionsVisible}>
+          <Transition
+            transition="pop"
+            mounted={actionsVisible}
+            enterDelay={100}
+          >
             {style => (
               <Menu
                 width={220}
@@ -115,6 +120,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           <Transition
             transition="pop"
             mounted={actionsVisible && !isEmpty(pinnedPosts)}
+            enterDelay={100}
           >
             {style => (
               <ActionIcon
@@ -123,7 +129,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                 className={classes.pinnedPostsButton}
                 {...{ style }}
                 onClick={() => {
-                  setPinnedPostsOpened(true);
+                  setPinnedPostsDrawerModalOpened(true);
                 }}
               >
                 <Indicator label={pinnedPosts.length} size={16} offset={-4}>
@@ -144,23 +150,11 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
       >
         <OutPortal node={newPostPortalNode} />
       </Modal>
-      <PinnedPostsModalOrDrawer
+      <DrawerModal
         title="your invitations to your friends"
-        {...(isMobile
-          ? {
-              size: "lg",
-              styles: {
-                content: {
-                  paddingBottom: "var(--safe-area-inset-bottom, 0px)",
-                },
-              },
-            }
-          : {
-              size: "var(--container-size-xs)",
-            })}
-        opened={pinnedPostsOpened}
+        opened={pinnedPostsDrawerModalOpened}
         onClose={() => {
-          setPinnedPostsOpened(false);
+          setPinnedPostsDrawerModalOpened(false);
         }}
       >
         <Stack>
@@ -172,7 +166,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
             />
           ))}
         </Stack>
-      </PinnedPostsModalOrDrawer>
+      </DrawerModal>
     </>
   );
 };

@@ -55,6 +55,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/form": ["useFieldsFilled", "useForm"],
     "~/helpers/utils": ["resolve", "isTruthy"],
     "~/helpers/formatting": ["possessive"],
+    "~/helpers/layouts": ["useIsMobileSize"],
     "@fullstory/browser": ["FullStory", ["isInitialized", "isFsInitialized"]],
     "@inertiajs/react": ["Link", "router"],
     "@mantine/core": [

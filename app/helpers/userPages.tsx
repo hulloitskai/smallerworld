@@ -1,5 +1,6 @@
 import { isIosWebview } from "@braintree/browser-detection";
 import { useNetwork } from "@mantine/hooks";
+import { createContext, useContext } from "react";
 import { mutate } from "swr";
 import useSWRInfinite, {
   type SWRInfiniteConfiguration,
@@ -93,4 +94,33 @@ export const useDirectLinkToInstallInstructions = (
     }
   }, [user.handle, currentFriend?.access_token]);
   return instructionsDirectLink;
+};
+
+export interface UserPageDialogState {
+  opened: boolean;
+  setOpened: (opened: boolean) => void;
+}
+
+export const UserPageDialogStateContext = createContext<
+  UserPageDialogState | undefined
+>(undefined);
+
+const useUserPageDialogState = (): UserPageDialogState => {
+  const state = useContext(UserPageDialogStateContext);
+  if (!state) {
+    throw new Error(
+      "useUserPageDialogState must be used within a UserPageDialogStateProvider",
+    );
+  }
+  return state;
+};
+
+export const useUserPageDialogOpened = (opened?: boolean): boolean => {
+  const state = useUserPageDialogState();
+  useEffect(() => {
+    if (typeof opened === "boolean") {
+      state.setOpened(opened);
+    }
+  }, [opened]); // eslint-disable-line react-hooks/exhaustive-deps
+  return state.opened;
 };

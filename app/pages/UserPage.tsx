@@ -2,24 +2,22 @@ import { Image, Overlay, Popover, Text } from "@mantine/core";
 import { useDocumentVisibility } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { DateTime } from "luxon";
-import { mutate } from "swr";
 
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import FriendPostCardActions from "~/components/FriendPostCardActions";
-import LoadMoreButton from "~/components/LoadMoreButton";
-import PostCard from "~/components/PostCard";
+import UserPageDialogStateProvider from "~/components/UserPageDialogStateProvider";
+import UserPageFeed from "~/components/UserPageFeed";
 import UserPageFloatingActions from "~/components/UserPageFloatingActions";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
 import UserPageNotificationsButton from "~/components/UserPageNotificationsButton";
+import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import { useUserPagePosts } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
 import { type FriendNotificationSettings, type User } from "~/types";
 
@@ -41,9 +39,10 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
   const { registration } = useWebPush();
-  const { modals } = useModals();
-  const { intent } = useQueryParams();
 
+  // == Auto-open modal
+  const { intent } = useQueryParams();
+  const { modals } = useModals();
   useEffect(() => {
     if (!isEmpty(modals) || !currentFriend) {
       return;
@@ -103,26 +102,22 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                 <Title size="h2" lh="xs" ta="center">
                   {possessive(user.name)} world
                 </Title>
-                {currentFriend ? (
+                {isStandalone ? (
                   <>
-                    {isStandalone && (
+                    {currentFriend && (
                       <Group gap="xs">
                         <UserPageNotificationsButton />
                         {registration && (
-                          <RefreshPostsButton userId={user.id} />
+                          <UserPageRefreshButton userId={user.id} />
                         )}
                       </Group>
                     )}
                   </>
                 ) : (
-                  <>
-                    {isStandalone === false && (
-                      <UserPageUpcomingEventsButton
-                        {...{ user, replyPhoneNumber }}
-                        style={{ alignSelf: "center" }}
-                      />
-                    )}
-                  </>
+                  <UserPageUpcomingEventsButton
+                    {...{ user, replyPhoneNumber }}
+                    style={{ alignSelf: "center" }}
+                  />
                 )}
               </Stack>
             </Stack>
@@ -151,7 +146,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
             </Popover>
           </Box>
           <Box pos="relative">
-            <Feed {...{ user, replyPhoneNumber }} />
+            <UserPageFeed {...{ user, replyPhoneNumber }} />
             {isStandalone && registration === null && (
               <Overlay backgroundOpacity={0} blur={3}>
                 <Image
@@ -163,16 +158,19 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           </Box>
         </Stack>
       </Stack>
-      {isStandalone && (
-        <UserPageFloatingActions {...{ user, replyPhoneNumber }} />
-      )}
-      {currentFriend ? (
+      {isStandalone ? (
         <>
-          <UserPageInstallAlert {...{ user }} />
-          {isStandalone && !!registration && <WelcomeBackToast />}
+          <UserPageFloatingActions {...{ user, replyPhoneNumber }} />
+          {!!registration && <WelcomeBackToast />}
         </>
       ) : (
-        <UserPageRequestInvitationAlert {...{ user }} />
+        <>
+          {currentFriend ? (
+            <UserPageInstallAlert {...{ user }} />
+          ) : (
+            <UserPageRequestInvitationAlert {...{ user }} />
+          )}
+        </>
       )}
     </>
   );
@@ -201,7 +199,7 @@ UserPage.layout = page => (
     withGutter
   >
     <IconsMeta />
-    {page}
+    <UserPageDialogStateProvider>{page}</UserPageDialogStateProvider>
   </AppLayout>
 );
 
@@ -226,114 +224,6 @@ const IconsMeta: FC = () => {
         href={appleTouchIconSrc}
       />
     </Head>
-  );
-};
-
-interface FeedProps {
-  user: User;
-  replyPhoneNumber: string | null;
-}
-
-const Feed: FC<FeedProps> = ({ user, replyPhoneNumber }) => {
-  const currentFriend = useCurrentFriend();
-  const { post_id } = useQueryParams();
-  const { posts, hasMorePosts, setSize } = useUserPagePosts(user.id);
-  const [loadingMore, setLoadingMore] = useState(false);
-  return (
-    <Stack>
-      {posts ? (
-        isEmpty(posts) ? (
-          <Card withBorder>
-            <Stack justify="center" gap={2} ta="center" mih={60}>
-              <Title order={4} lh="xs">
-                no posts yet!
-              </Title>
-            </Stack>
-          </Card>
-        ) : (
-          <>
-            {posts.map(post => (
-              <PostCard
-                key={post.id}
-                {...{ post }}
-                blurContent={!currentFriend && post.visibility !== "public"}
-                focus={post_id === post.id}
-                actions={
-                  <FriendPostCardActions
-                    {...{ user, post, replyPhoneNumber }}
-                  />
-                }
-              />
-            ))}
-            {hasMorePosts && (
-              <LoadMoreButton
-                loading={loadingMore}
-                style={{ alignSelf: "center" }}
-                onVisible={() => {
-                  setLoadingMore(true);
-                  void setSize(size => size + 1).finally(() => {
-                    setLoadingMore(false);
-                  });
-                }}
-              />
-            )}
-          </>
-        )
-      ) : (
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        [...new Array(3)].map((_, i) => <Skeleton key={i} h={120} />)
-      )}
-    </Stack>
-  );
-};
-
-interface RefreshPostsButtonProps extends BoxProps {
-  userId: string;
-}
-
-const RefreshPostsButton: FC<RefreshPostsButtonProps> = ({
-  userId,
-  ...otherProps
-}) => {
-  const {
-    mutate: mutatePosts,
-    isValidating,
-    posts,
-  } = useUserPagePosts(userId, {
-    revalidateOnMount: false,
-  });
-
-  return (
-    <ActionIcon
-      variant="light"
-      color="gray"
-      size="lg"
-      loading={isValidating}
-      onClick={() => {
-        const firstPost = first(posts);
-        void mutate((key: string) => {
-          if (typeof key === "string") {
-            return key.startsWith("/posts");
-          }
-        });
-        void mutatePosts().then(pages => {
-          const latestFirstPage = first(pages);
-          const latestFirstPost = first(latestFirstPage?.posts);
-          if (
-            firstPost &&
-            latestFirstPost &&
-            firstPost.id === latestFirstPost.id
-          ) {
-            toast.success("no new posts", {
-              description: "you're all caught up :)",
-            });
-          }
-        });
-      }}
-      {...otherProps}
-    >
-      <RefreshIcon />
-    </ActionIcon>
   );
 };
 

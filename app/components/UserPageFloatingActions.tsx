@@ -1,7 +1,9 @@
-import { Affix, Drawer, Modal } from "@mantine/core";
+import { Affix } from "@mantine/core";
 
+import { useUserPageDialogOpened } from "~/helpers/userPages";
 import { type PostView } from "~/types";
 
+import DrawerModal from "./DrawerModal";
 import FriendPostCardActions, {
   type FriendPostCardActionsProps,
 } from "./FriendPostCardActions";
@@ -12,12 +14,13 @@ import classes from "./UserPageFloatingActions.module.css";
 export interface UserPageFloatingActionsProps
   extends Pick<FriendPostCardActionsProps, "user" | "replyPhoneNumber"> {}
 
+const AFFIX_INSET = "var(--mantine-spacing-xl)";
+
 const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
   user,
   replyPhoneNumber,
 }) => {
   const currentFriend = useCurrentFriend();
-  const isStandalone = useIsStandalone();
 
   // == Load pinned posts
   const { data } = useRouteSWR<{ posts: PostView[] }>(routes.userPosts.pinned, {
@@ -33,27 +36,30 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
   });
   const pinnedPosts = data?.posts ?? [];
 
-  // == Affix
-  const affixInset = "var(--mantine-spacing-xl)";
+  // == Pinned posts drawer modal
+  const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
+    useState(false);
 
-  const { breakpoints } = useMantineTheme();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs})`);
-  const ModalOrDrawer = isMobile ? Drawer : Modal;
-  const [opened, setOpened] = useState(false);
+  // == Page dialog state
+  const pageDialogOpened = useUserPageDialogOpened(
+    pinnedPostsDrawerModalOpened,
+  );
+
   return (
     <>
       <Space className={classes.space} />
       <Affix
+        zIndex={180}
         position={{
-          bottom: `max(${affixInset}, var(--safe-area-inset-bottom, 0px))`,
-          left: affixInset,
-          right: affixInset,
+          bottom: `max(${AFFIX_INSET}, var(--safe-area-inset-bottom, 0px))`,
+          left: AFFIX_INSET,
+          right: AFFIX_INSET,
         }}
       >
         <Center style={{ pointerEvents: "none" }}>
           <Transition
             transition="pop"
-            mounted={!!isStandalone && !isEmpty(pinnedPosts)}
+            mounted={!pageDialogOpened && !isEmpty(pinnedPosts)}
           >
             {style => (
               <Button
@@ -67,7 +73,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
                 }
                 {...{ style }}
                 onClick={() => {
-                  setOpened(true);
+                  setPinnedPostsDrawerModalOpened(true);
                 }}
               >
                 {possessive(user.name)} upcoming events
@@ -76,23 +82,11 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
           </Transition>
         </Center>
       </Affix>
-      <ModalOrDrawer
+      <DrawerModal
         title="invitations to stuff i'm doing"
-        {...(isMobile
-          ? {
-              size: "lg",
-              styles: {
-                content: {
-                  paddingBottom: "var(--safe-area-inset-bottom, 0px)",
-                },
-              },
-            }
-          : {
-              size: "var(--container-size-xs)",
-            })}
-        {...{ opened }}
+        opened={pinnedPostsDrawerModalOpened}
         onClose={() => {
-          setOpened(false);
+          setPinnedPostsDrawerModalOpened(false);
         }}
       >
         <Stack>
@@ -106,7 +100,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
             />
           ))}
         </Stack>
-      </ModalOrDrawer>
+      </DrawerModal>
     </>
   );
 };

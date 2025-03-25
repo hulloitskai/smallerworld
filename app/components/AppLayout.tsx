@@ -11,7 +11,7 @@ import {
   type DynamicProp,
   resolveDynamicProp,
   useResolveDynamicProp,
-} from "~/helpers/layout";
+} from "~/helpers/appLayout";
 import { useClearAppBadge } from "~/helpers/pwa";
 import { type SidebarControls } from "~/helpers/sidebar";
 
@@ -138,6 +138,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
             header: classes.header,
             navbar: classes.navbar,
           }}
+          data-vaul-drawer-wrapper
           {...otherProps}
         >
           {isStandalone === false ? (

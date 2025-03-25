@@ -10,7 +10,7 @@ import {
 } from "@react-email/components";
 
 import { Heading, Link, Text } from "~/components/email";
-import { type DynamicProp, useResolveDynamicProp } from "~/helpers/layout";
+import { type DynamicProp, useResolveDynamicProp } from "~/helpers/appLayout";
 
 import "@mantine/core/styles.css";
 

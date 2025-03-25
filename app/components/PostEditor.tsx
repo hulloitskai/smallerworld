@@ -67,6 +67,7 @@ const PostEditor: FC<PostEditorProps> = ({
           "--editor-content-editable-min-height": `${contentEditableMinHeight}px`,
         }),
       }}
+      data-vaul-no-drag
       {...otherProps}
     >
       <RichTextEditor.Content />

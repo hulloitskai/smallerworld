@@ -20,5 +20,5 @@ bin/setup
 ## todos
 
 - [ ] add android chrome add-to-homescreen instructions
-- [ ] show upcoming events when not logged in
-- [ ] hide link href when not logged in
+- [x] show upcoming events when not logged in
+- [x] hide link href when not logged in

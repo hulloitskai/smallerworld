@@ -133,7 +133,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                     variant="default"
                     required
                     withAsterisk={false}
-                    w={54}
+                    w={60}
                   />
                   {children}
                 </Group>
