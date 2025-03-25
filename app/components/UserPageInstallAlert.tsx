@@ -60,7 +60,6 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                   leftSection={<InstallIcon />}
                   className={classes.button}
                   loading={installing}
-                  disabled={!install && !isIosSafari}
                   {...(directLinkToInstallInstructions
                     ? {
                         component: "a",
@@ -68,6 +67,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                       }
                     : {
                         component: "button",
+                        disabled: !install && !isIosSafari,
                         onClick: () => {
                           if (install) {
                             void install();

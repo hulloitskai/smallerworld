@@ -18,6 +18,7 @@ const WorldPageEnableNotificationsActionIcon: FC<
 > = ({ user, ...otherProps }) => {
   const { install, installing } = useInstallPrompt();
   const isIosSafari = useIsIosSafari();
+  const [installerOpened, setInstallerOpened] = useState(false);
   return (
     <Box pos="relative" {...otherProps}>
       <Head>
@@ -32,7 +33,11 @@ const WorldPageEnableNotificationsActionIcon: FC<
           rel="stylesheet"
         />
       </Head>
-      <Popover width={245} disabled={!install}>
+      <Popover
+        width={245}
+        opened={installerOpened}
+        onChange={setInstallerOpened}
+      >
         <Popover.Target>
           <ActionIcon
             variant="light"
@@ -41,7 +46,7 @@ const WorldPageEnableNotificationsActionIcon: FC<
             disabled={!install && !isIosSafari}
             onClick={() => {
               if (install) {
-                void install();
+                setInstallerOpened(true);
               } else {
                 openInstallationInstructionsModal({
                   title: "pin this page to enable notifications",
@@ -63,23 +68,24 @@ const WorldPageEnableNotificationsActionIcon: FC<
             <NotificationIcon />
           </ActionIcon>
         </Popover.Target>
-        {install && (
-          <Popover.Dropdown>
-            <Stack gap={6}>
-              <Text ff="heading" fw={600}>
-                install this page to enable notifications &lt;3
-              </Text>
-              <Button
-                leftSection={<InstallIcon />}
-                onClick={() => {
+        <Popover.Dropdown>
+          <Stack gap={6}>
+            <Text ff="heading" fw={600}>
+              install this page to enable notifications &lt;3
+            </Text>
+            <Button
+              leftSection={<InstallIcon />}
+              disabled={!install}
+              {...(!!install && {
+                onClick: () => {
                   void install();
-                }}
-              >
-                install to home screen
-              </Button>
-            </Stack>
-          </Popover.Dropdown>
-        )}
+                },
+              })}
+            >
+              install to home screen
+            </Button>
+          </Stack>
+        </Popover.Dropdown>
       </Popover>
       <Image src={bottomLeftArrowSrc} className={classes.arrow} />
       <Text className={classes.arrowLabel}>enable notifs :)</Text>

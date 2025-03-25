@@ -68,7 +68,6 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
         <Button<"a" | "button">
           leftSection={<InstallIcon />}
           loading={installing}
-          disabled={!install && !isIosSafari}
           {...(directLinkToInstallInstructions
             ? {
                 component: "a",
@@ -76,6 +75,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
               }
             : {
                 component: "button",
+                disabled: !install && !isIosSafari,
                 onClick: () => {
                   if (install) {
                     void install();
