@@ -14,6 +14,14 @@
   }
 }
 
+.repliersCount {
+  color: var(--mantine-color-body);
+  position: absolute;
+  inset: 0;
+  font-family: var(--mantine-font-family-headings);
+  padding-bottom: 1px;
+}
+
 .replyButton {
   flex-shrink: 0;
   -webkit-touch-callout: none;

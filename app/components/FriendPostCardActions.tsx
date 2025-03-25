@@ -103,12 +103,8 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                 <ReplyIcon />
                 {post.repliers > 0 && post.repliers < 40 && (
                   <Center
-                    pos="absolute"
-                    inset={0}
-                    c="white"
                     fz={post.repliers > 20 ? 7 : post.repliers > 10 ? 8 : 9}
-                    ff="heading"
-                    pb={1}
+                    className={classes.repliersCount}
                   >
                     {post.repliers}
                   </Center>
