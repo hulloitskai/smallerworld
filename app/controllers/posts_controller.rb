@@ -27,7 +27,7 @@ class PostsController < ApplicationController
       .posts
       .currently_pinned
       .includes(:image_blob)
-      .order(pinned_until: :asc)
+      .order(pinned_until: :asc, created_at: :desc)
     render(json: { posts: PostSerializer.many(posts) })
   end
 

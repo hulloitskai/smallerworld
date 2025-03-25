@@ -15,6 +15,7 @@ class UserPostsController < ApplicationController
       posts.order(created_at: :desc, id: :asc),
       limit: 5,
     )
+    paginated_posts = T.cast(paginated_posts, T::Array[Post])
     unless current_friend
       paginated_posts.map! do |post|
         post.visibility == :public ? post : MaskedPost.new(post:)
@@ -59,7 +60,7 @@ class UserPostsController < ApplicationController
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end
-    posts = posts.order(pinned_until: :asc).to_a
+    posts = posts.order(pinned_until: :asc, created_at: :desc).to_a
     unless current_friend
       posts.map! do |post|
         post.visibility == :public ? post : MaskedPost.new(post:)
