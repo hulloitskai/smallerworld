@@ -9,7 +9,11 @@ import {
   type UseFormInput,
   type UseFormReturnType,
 } from "@mantine/form";
-import { type _TransformValues, type LooseKeys } from "@mantine/form/lib/types";
+import {
+  type _TransformValues,
+  type FormErrors,
+  type LooseKeys,
+} from "@mantine/form/lib/types";
 import { type FormEvent, startTransition } from "react";
 import scrollIntoView from "scroll-into-view";
 import { toast } from "sonner";
@@ -131,6 +135,7 @@ export interface FormOptions<
     form: PartialFormHelper<Values, TransformValues>,
   ) => void;
   onError?: (form: PartialFormHelper<Values, TransformValues>) => void;
+  transformErrors?: (errors: Errors) => FormErrors;
 }
 
 export interface FormHelper<
@@ -175,6 +180,7 @@ export const useForm = <
     onSuccess,
     params,
     transformValues,
+    transformErrors,
     ...otherOptions
   } = options;
   const form = useMantineForm<Values, TransformValues>({
@@ -222,9 +228,12 @@ export const useForm = <
                 onFailure?.(error, form);
               } else if (typeof body.errors === "object") {
                 const { errors } = body;
-                form.setErrors(errors);
+                const formErrors = transformErrors
+                  ? transformErrors(errors)
+                  : errors;
+                form.setErrors(formErrors);
                 console.warn(`couldn't ${descriptor}`, errors);
-                const formWithErrors = { ...form, errors };
+                const formWithErrors = { ...form, errors: formErrors };
                 if (!failSilently) {
                   showFormErrorsAlert(formWithErrors, `couldn't ${descriptor}`);
                 }

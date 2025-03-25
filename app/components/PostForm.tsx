@@ -116,6 +116,10 @@ const PostForm: FC<PostFormProps> = props => {
               image: image_upload?.signedId ?? null,
             },
           }),
+          transformErrors: ({ image, ...errors }) => ({
+            ...errors,
+            image_upload: image,
+          }),
         }),
     initialValues,
     onSuccess: ({ post }, { reset }) => {
