@@ -16,7 +16,8 @@ import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { usePosts } from "~/helpers/posts";
-import { useInstallPromptEvent, useIsInstallable } from "~/helpers/pwa";
+import { useIsIosSafari } from "~/helpers/pwa";
+import { useInstallPrompt } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
 import { type FriendView, type User } from "~/types";
 
@@ -35,8 +36,10 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
   const isStandalone = useIsStandalone();
   const user = useAuthenticatedUser();
   const { registration } = useWebPush();
-  const installPromptEvent = useInstallPromptEvent();
-  const isInstallable = useIsInstallable(installPromptEvent);
+
+  // == Add to home screen
+  const { install } = useInstallPrompt();
+  const isIosSafari = useIsIosSafari();
 
   // == Friends
   const { data } = useRouteSWR<{ friends: FriendView[] }>(
@@ -96,7 +99,7 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
                     your friends
                   </Button>
                 )}
-                {isStandalone === false && isInstallable && (
+                {isStandalone === false && (!!install || isIosSafari) && (
                   <WorldPageEnableNotificationsActionIcon {...{ user }} />
                 )}
                 {isStandalone && <WorldPageNotificationsButton />}

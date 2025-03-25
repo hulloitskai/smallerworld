@@ -28,8 +28,10 @@ export const useContact = (
           location.href = params.type === "sms" ? sms : mailto;
           onTriggered?.();
         },
-        (error: Error) => {
-          setResult(result => ({ ...result, error }));
+        error => {
+          if (error instanceof Error) {
+            setResult(result => ({ ...result, error }));
+          }
         },
       )
       .finally(() => {

@@ -67,9 +67,13 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                       router.visit(routes.world.show.path());
                     }
                   })
-                  .catch((error: Error) => {
+                  .catch(error => {
                     console.error("unexpected error during sign-in", error);
-                    toast.error("unexpected error during sign-in");
+                    if (error instanceof Error) {
+                      toast.error("unexpected error during sign-in", {
+                        description: error.message,
+                      });
+                    }
                   })
                   .finally(() => {
                     setSubmitting(false);

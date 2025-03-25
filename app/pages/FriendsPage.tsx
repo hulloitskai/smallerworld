@@ -100,10 +100,13 @@ export default FriendsPage;
 const InstalledUsersCard: FC = () => {
   const [userHandles, setUserHandles] = useState<string[] | undefined>();
   useEffect(() => {
-    void queryInstalledUserHandles().then(setUserHandles, (error: Error) => {
-      toast.error("failed to lookup installed user apps", {
-        description: error.message,
-      });
+    void queryInstalledUserHandles().then(setUserHandles, error => {
+      console.error("failed to lookup installed user apps", error);
+      if (error instanceof Error) {
+        toast.error("failed to lookup installed user apps", {
+          description: error.message,
+        });
+      }
     });
   }, []);
 

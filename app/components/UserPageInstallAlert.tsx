@@ -2,8 +2,8 @@ import { Affix, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import {
-  useInstallPromptEvent,
-  useIsInstallable,
+  useInstallPrompt,
+  useIsIosSafari,
   useIsStandalone,
 } from "~/helpers/pwa";
 import { type User } from "~/types/generated";
@@ -23,9 +23,8 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
   const { modals } = useModals();
 
   // == Install to home screen
-  const installPromptEvent = useInstallPromptEvent();
-  const [installing, setInstalling] = useState(false);
-  const isInstallable = useIsInstallable(installPromptEvent);
+  const { install, installing } = useInstallPrompt();
+  const isIosSafari = useIsIosSafari();
 
   return (
     <Affix
@@ -58,13 +57,10 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                   leftSection={<InstallIcon />}
                   className={classes.button}
                   loading={installing}
-                  disabled={isInstallable === false}
+                  disabled={!install && !isIosSafari}
                   onClick={() => {
-                    if (installPromptEvent) {
-                      setInstalling(true);
-                      void installPromptEvent.prompt().then(() => {
-                        setInstalling(false);
-                      });
+                    if (install) {
+                      void install();
                     } else {
                       openUserPageInstallationInstructionsModal({ user });
                     }
@@ -72,7 +68,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                 >
                   pin this page
                 </Button>
-                {isInstallable === false && (
+                {!install && isIosSafari === false && (
                   <Text
                     size="xs"
                     opacity={0.6}

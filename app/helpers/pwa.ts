@@ -11,7 +11,7 @@ export const useIsStandalone = (): boolean | undefined => {
   }
 };
 
-export const useInstallPromptEvent = ():
+const useInstallPromptEvent = ():
   | BeforeInstallPromptEvent
   | undefined
   | null => {
@@ -31,6 +31,44 @@ export const useInstallPromptEvent = ():
     };
   }, []);
   return event;
+};
+
+export interface InstallPromptReturn {
+  installing: boolean;
+  install: (() => Promise<void>) | undefined;
+  error: Error | undefined;
+}
+
+export const useInstallPrompt = (): InstallPromptReturn => {
+  const installPromptEvent = useInstallPromptEvent();
+  const [installing, setInstalling] = useState(false);
+  const [error, setError] = useState<Error | undefined>();
+  const install = useMemo<(() => Promise<void>) | undefined>(() => {
+    if (installPromptEvent) {
+      return () => {
+        setInstalling(true);
+        return installPromptEvent
+          .prompt()
+          .catch(error => {
+            console.error("failed to install to home screen", error);
+            if (error instanceof Error) {
+              setError(error);
+              toast.error("failed to install to home screen", {
+                description: error.message,
+              });
+            }
+          })
+          .finally(() => {
+            setInstalling(false);
+          });
+      };
+    }
+  }, [installPromptEvent]);
+  return {
+    installing,
+    install,
+    error,
+  };
 };
 
 export const useClearAppBadge = () => {
@@ -65,14 +103,10 @@ export const useClearAppBadge = () => {
   }, [isStandalone, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
-export const useIsInstallable = (
-  installEvent: Event | null | undefined,
-): boolean | undefined => {
-  const [isInstallable, setIsInstallable] = useState<boolean | undefined>(() =>
-    installEvent ? true : undefined,
-  );
+export const useIsIosSafari = (): boolean | undefined => {
+  const [isSafari, setIsSafari] = useState<boolean | undefined>();
   useEffect(() => {
-    setIsInstallable(!!installEvent || isIosSafari());
-  }, [installEvent]);
-  return isInstallable;
+    setIsSafari(isIosSafari());
+  }, []);
+  return isSafari;
 };

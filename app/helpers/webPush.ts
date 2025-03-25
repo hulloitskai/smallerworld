@@ -111,16 +111,17 @@ export const useWebPushSubscribe = ({
         )
         .then(
           subscription =>
-            registerSubscription(subscription, currentFriend?.access_token)
-              .then()
-              .then(
-                () => {
-                  onSubscribed(subscription);
-                },
-                (error: Error) => {
-                  reportProblem(error.message);
-                },
-              ),
+            registerSubscription(
+              subscription,
+              currentFriend?.access_token,
+            ).then(
+              () => {
+                onSubscribed(subscription);
+              },
+              (error: Error) => {
+                reportProblem(error.message);
+              },
+            ),
           (error: Error) => {
             setSubscribeError(error);
             toast.error("couldn't subscribe to push notifications", {
@@ -181,9 +182,7 @@ const registerSubscription = (
 };
 
 const reportProblem = (message: string): never => {
-  toast.error("something went wrong", {
-    description: message,
-  });
+  toast.error("something went wrong", { description: message });
   console.error(message);
   throw new Error(message);
 };

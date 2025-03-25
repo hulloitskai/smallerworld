@@ -3,8 +3,7 @@ import { Text } from "@mantine/core";
 import { closeModal } from "@mantine/modals";
 import { v4 as uuid } from "uuid";
 
-import { isIosSafari } from "~/helpers/browserDetection";
-import { useInstallPromptEvent, useIsInstallable } from "~/helpers/pwa";
+import { useInstallPrompt, useIsIosSafari } from "~/helpers/pwa";
 import { type User } from "~/types";
 
 import HomeScreenPreview from "./HomeScreenPreview";
@@ -36,10 +35,9 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
     [currentFriend],
   );
 
-  // == Install to home screen
-  const installPromptEvent = useInstallPromptEvent();
-  const [installing, setInstalling] = useState(false);
-  const isInstallable = useIsInstallable(installPromptEvent);
+  // == Add to home screen
+  const { install, installing } = useInstallPrompt();
+  const isIosSafari = useIsIosSafari();
   const directLinkToInstallInstructions =
     useDirectLinkToInstallInstructions(user);
 
@@ -69,8 +67,8 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
       <Stack gap={4} align="center">
         <Button<"button" | "a">
           leftSection={<InstallIcon />}
-          loading={isInstallable === undefined || installing}
-          disabled={isInstallable === false}
+          loading={installing}
+          disabled={!install && !isIosSafari}
           {...(directLinkToInstallInstructions
             ? {
                 component: "a",
@@ -79,12 +77,9 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
               }
             : {
                 onClick: () => {
-                  if (installPromptEvent) {
-                    setInstalling(true);
-                    void installPromptEvent.prompt().then(() => {
-                      setInstalling(false);
-                    });
-                  } else if (isIosSafari()) {
+                  if (install) {
+                    void install();
+                  } else {
                     openUserPageInstallationInstructionsModal({ user });
                     closeModal(modalId);
                   }
@@ -93,7 +88,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
         >
           pin to home screen
         </Button>
-        {isInstallable === false && (
+        {!install && isIosSafari === false && (
           <Text size="xs" c="dimmed">
             sorry, your browser isn&apos;t supported
             <Text span inherit visibleFrom="xs">
