@@ -165,9 +165,8 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
         </>
       ) : (
         <>
-          {currentFriend ? (
-            <UserPageInstallAlert {...{ user }} />
-          ) : (
+          {currentFriend && <UserPageInstallAlert {...{ user }} />}
+          {!currentFriend && !currentUser && (
             <UserPageRequestInvitationAlert {...{ user }} />
           )}
         </>
