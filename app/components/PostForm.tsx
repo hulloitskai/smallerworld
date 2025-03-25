@@ -255,7 +255,15 @@ const PostForm: FC<PostFormProps> = props => {
                 required
                 withAsterisk={false}
                 popoverProps={{ position: "bottom" }}
-                style={{ flexShrink: 1 }}
+                styles={{
+                  root: {
+                    flexGrow: 1,
+                    maxWidth: 190,
+                  },
+                  input: {
+                    textTransform: "lowercase",
+                  },
+                }}
                 minDate={todayDate}
                 onChange={date => {
                   setFieldValue(
