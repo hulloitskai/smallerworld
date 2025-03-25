@@ -6,6 +6,7 @@ import {
   useIsIosSafari,
   useIsStandalone,
 } from "~/helpers/pwa";
+import { useDirectLinkToInstallInstructions } from "~/helpers/userPages";
 import { type User } from "~/types/generated";
 
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
@@ -25,6 +26,8 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
   // == Install to home screen
   const { install, installing } = useInstallPrompt();
   const isIosSafari = useIsIosSafari();
+  const directLinkToInstallInstructions =
+    useDirectLinkToInstallInstructions(user);
 
   return (
     <Affix
@@ -51,20 +54,28 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                 life updates, personal invitations, poems, and more!
               </Text>
               <Group gap="xs">
-                <Button
+                <Button<"a" | "button">
                   variant="white"
                   size="compact-sm"
                   leftSection={<InstallIcon />}
                   className={classes.button}
                   loading={installing}
                   disabled={!install && !isIosSafari}
-                  onClick={() => {
-                    if (install) {
-                      void install();
-                    } else {
-                      openUserPageInstallationInstructionsModal({ user });
-                    }
-                  }}
+                  {...(directLinkToInstallInstructions
+                    ? {
+                        component: "a",
+                        href: directLinkToInstallInstructions,
+                      }
+                    : {
+                        component: "button",
+                        onClick: () => {
+                          if (install) {
+                            void install();
+                          } else {
+                            openUserPageInstallationInstructionsModal({ user });
+                          }
+                        },
+                      })}
                 >
                   pin this page
                 </Button>

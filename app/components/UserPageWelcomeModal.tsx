@@ -1,9 +1,9 @@
-import { isIosWebview } from "@braintree/browser-detection";
 import { Text } from "@mantine/core";
 import { closeModal } from "@mantine/modals";
 import { v4 as uuid } from "uuid";
 
 import { useInstallPrompt, useIsIosSafari } from "~/helpers/pwa";
+import { useDirectLinkToInstallInstructions } from "~/helpers/userPages";
 import { type User } from "~/types";
 
 import HomeScreenPreview from "./HomeScreenPreview";
@@ -65,7 +65,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
         </span>
       </Text>
       <Stack gap={4} align="center">
-        <Button<"button" | "a">
+        <Button<"a" | "button">
           leftSection={<InstallIcon />}
           loading={installing}
           disabled={!install && !isIosSafari}
@@ -73,9 +73,9 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
             ? {
                 component: "a",
                 href: directLinkToInstallInstructions,
-                target: "_blank",
               }
             : {
+                component: "button",
                 onClick: () => {
                   if (install) {
                     void install();
@@ -99,26 +99,4 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
       </Stack>
     </Stack>
   );
-};
-
-const useDirectLinkToInstallInstructions = (user: User): string | null => {
-  const currentFriend = useAuthenticatedFriend();
-  const [instructionsDirectLink, setInstructionsDirectLink] = useState<
-    string | null
-  >(null);
-  useEffect(() => {
-    if (isIosWebview()) {
-      const instructionsPath = routes.users.show.path({
-        handle: user.handle,
-        query: {
-          friend_token: currentFriend.access_token,
-          intent: "installation_instructions",
-        },
-      });
-      setInstructionsDirectLink(
-        `x-safari-https://${location.host}${instructionsPath}`,
-      );
-    }
-  }, [user.handle, currentFriend.access_token]);
-  return instructionsDirectLink;
 };
