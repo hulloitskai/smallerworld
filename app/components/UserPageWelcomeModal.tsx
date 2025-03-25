@@ -2,8 +2,11 @@ import { Text } from "@mantine/core";
 import { closeModal } from "@mantine/modals";
 import { v4 as uuid } from "uuid";
 
-import { useInstallPrompt, useIsIosSafari } from "~/helpers/pwa";
-import { useDirectLinkToInstallInstructions } from "~/helpers/userPages";
+import {
+  useInstallPrompt,
+  useIsIosSafari,
+  useIsIosWebview,
+} from "~/helpers/pwa";
 import { type User } from "~/types";
 
 import HomeScreenPreview from "./HomeScreenPreview";
@@ -38,9 +41,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
   // == Add to home screen
   const { install, installing } = useInstallPrompt();
   const isIosSafari = useIsIosSafari();
-  const directLinkToInstallInstructions =
-    useDirectLinkToInstallInstructions(user);
-
+  const isIosWebview = useIsIosWebview();
   return (
     <Stack gap="lg" align="center" pb="xs">
       <Stack gap={4}>
@@ -65,35 +66,33 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
         </span>
       </Text>
       <Stack gap={4} align="center">
-        <Button<"a" | "button">
+        <Button
           leftSection={<InstallIcon />}
           loading={installing}
-          {...(directLinkToInstallInstructions
-            ? {
-                component: "a",
-                href: directLinkToInstallInstructions,
-              }
-            : {
-                component: "button",
-                disabled: !install && !isIosSafari,
-                onClick: () => {
-                  if (install) {
-                    void install();
-                  } else {
-                    openUserPageInstallationInstructionsModal({ user });
-                    closeModal(modalId);
-                  }
-                },
-              })}
+          disabled={!install && !isIosSafari}
+          onClick={() => {
+            if (install) {
+              void install();
+            } else {
+              openUserPageInstallationInstructionsModal({ user });
+              closeModal(modalId);
+            }
+          }}
         >
           pin to home screen
         </Button>
         {!install && isIosSafari === false && (
           <Text size="xs" c="dimmed">
-            sorry, your browser isn&apos;t supported
-            <Text span inherit visibleFrom="xs">
-              —pls open on your phone!
-            </Text>
+            {isIosWebview ? (
+              "open in safari to continue"
+            ) : (
+              <>
+                sorry, your browser isn&apos;t supported
+                <Text span inherit visibleFrom="xs">
+                  —pls open on your phone!
+                </Text>
+              </>
+            )}
           </Text>
         )}
       </Stack>

@@ -1,4 +1,3 @@
-import { isIosWebview } from "@braintree/browser-detection";
 import { useNetwork } from "@mantine/hooks";
 import { createContext, useContext } from "react";
 import { mutate } from "swr";
@@ -7,8 +6,6 @@ import useSWRInfinite, {
   type SWRInfiniteKeyLoader,
   unstable_serialize,
 } from "swr/infinite";
-
-import { type User } from "~/types";
 
 import { type PostsData } from "./posts";
 
@@ -70,30 +67,6 @@ export const mutateUserPagePosts = (
   void mutate(
     unstable_serialize(userPagePostsGetKey(userId, friendAccessToken)),
   );
-};
-
-export const useDirectLinkToInstallInstructions = (
-  user: User,
-): string | null => {
-  const currentFriend = useCurrentFriend();
-  const [instructionsDirectLink, setInstructionsDirectLink] = useState<
-    string | null
-  >(null);
-  useEffect(() => {
-    if (isIosWebview() && currentFriend?.access_token) {
-      const instructionsPath = routes.users.show.path({
-        handle: user.handle,
-        query: {
-          friend_token: currentFriend.access_token,
-          intent: "installation_instructions",
-        },
-      });
-      setInstructionsDirectLink(
-        `x-safari-https://${location.host}${instructionsPath}`,
-      );
-    }
-  }, [user.handle, currentFriend?.access_token]);
-  return instructionsDirectLink;
 };
 
 export interface UserPageDialogState {

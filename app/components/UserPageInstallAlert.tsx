@@ -1,11 +1,12 @@
 import { Affix, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
-import { useInstallPrompt, useIsIosSafari } from "~/helpers/pwa";
 import {
-  useDirectLinkToInstallInstructions,
-  useUserPageDialogOpened,
-} from "~/helpers/userPages";
+  useInstallPrompt,
+  useIsIosSafari,
+  useIsIosWebview,
+} from "~/helpers/pwa";
+import { useUserPageDialogOpened } from "~/helpers/userPages";
 import { type User } from "~/types/generated";
 
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
@@ -25,8 +26,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
   // == Install to home screen
   const { install, installing } = useInstallPrompt();
   const isIosSafari = useIsIosSafari();
-  const directLinkToInstallInstructions =
-    useDirectLinkToInstallInstructions(user);
+  const isIosWebview = useIsIosWebview();
 
   return (
     <Affix
@@ -61,39 +61,39 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                   leftSection={<InstallIcon />}
                   className={classes.button}
                   loading={installing}
-                  {...(directLinkToInstallInstructions
-                    ? {
-                        component: "a",
-                        href: directLinkToInstallInstructions,
-                      }
-                    : {
-                        component: "button",
-                        disabled: !install && !isIosSafari,
-                        onClick: () => {
-                          if (install) {
-                            void install();
-                          } else {
-                            openUserPageInstallationInstructionsModal({ user });
-                          }
-                        },
-                      })}
+                  disabled={!install && !isIosSafari}
+                  onClick={() => {
+                    if (install) {
+                      void install();
+                    } else {
+                      openUserPageInstallationInstructionsModal({ user });
+                    }
+                  }}
                 >
                   pin this page
                 </Button>
-                {!install && isIosSafari === false && (
-                  <Text
-                    size="xs"
-                    opacity={0.6}
-                    lh={1.2}
-                    miw={0}
-                    style={{ flexGrow: 1 }}
-                  >
-                    sorry, your browser isn&apos;t supported
-                    <Text span inherit visibleFrom="xs">
-                      —pls open on your phone!
+                {!install &&
+                  isIosSafari === false &&
+                  isIosWebview === false && (
+                    <Text
+                      size="xs"
+                      opacity={0.6}
+                      lh={1.2}
+                      miw={0}
+                      style={{ flexGrow: 1 }}
+                    >
+                      {isIosWebview ? (
+                        "open in safari to continue"
+                      ) : (
+                        <>
+                          sorry, your browser isn&apos;t supported
+                          <Text span inherit visibleFrom="xs">
+                            —pls open on your phone!
+                          </Text>
+                        </>
+                      )}
                     </Text>
-                  </Text>
-                )}
+                  )}
               </Group>
             </Stack>
           </Alert>

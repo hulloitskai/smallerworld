@@ -1,3 +1,4 @@
+import { isIosWebview } from "@braintree/browser-detection";
 import { useDocumentVisibility, useMediaQuery } from "@mantine/hooks";
 import { useMounted } from "@mantine/hooks";
 
@@ -109,4 +110,12 @@ export const useIsIosSafari = (): boolean | undefined => {
     setIsSafari(isIosSafari());
   }, []);
   return isSafari;
+};
+
+export const useIsIosWebview = (): boolean | undefined => {
+  const [isWebview, setIsWebview] = useState<boolean | undefined>();
+  useEffect(() => {
+    setIsWebview(isIosWebview());
+  }, []);
+  return isWebview;
 };
