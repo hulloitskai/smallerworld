@@ -76,6 +76,12 @@ module GeneratedUrlHelpersModule
   def pause_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def pinned_posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def pinned_user_posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_reaction_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -86,9 +92,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def posts_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def posts_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_url(*args); end
@@ -212,6 +215,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_page_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def user_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_url(*args); end

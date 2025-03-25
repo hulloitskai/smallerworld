@@ -76,6 +76,12 @@ module GeneratedPathHelpersModule
   def pause_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def pinned_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def pinned_user_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -86,9 +92,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def posts_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_path(*args); end
@@ -212,6 +215,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_page_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def user_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_path(*args); end

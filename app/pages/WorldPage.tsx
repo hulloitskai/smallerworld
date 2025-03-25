@@ -1,5 +1,4 @@
 import { ActionIcon, Avatar, Image, Overlay, Text } from "@mantine/core";
-import { takeRight } from "lodash-es";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
@@ -19,7 +18,7 @@ import { usePosts } from "~/helpers/posts";
 import { useIsIosSafari } from "~/helpers/pwa";
 import { useInstallPrompt } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
-import { type FriendView, type User } from "~/types";
+import { type FriendInfo, type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
 
@@ -28,11 +27,12 @@ export interface WorldPageProps extends SharedPageProps {
   faviconSrc: string;
   faviconImageSrc: string;
   appleTouchIconSrc: string;
+  friends: FriendInfo[];
 }
 
 const ICON_SIZE = 96;
 
-const WorldPage: PageComponent<WorldPageProps> = () => {
+const WorldPage: PageComponent<WorldPageProps> = ({ friends }) => {
   const isStandalone = useIsStandalone();
   const user = useAuthenticatedUser();
   const { registration } = useWebPush();
@@ -40,15 +40,6 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
   // == Add to home screen
   const { install } = useInstallPrompt();
   const isIosSafari = useIsIosSafari();
-
-  // == Friends
-  const { data } = useRouteSWR<{ friends: FriendView[] }>(
-    routes.friends.index,
-    {
-      descriptor: "load friends",
-    },
-  );
-  const { friends } = data ?? {};
 
   return (
     <>
@@ -81,12 +72,12 @@ const WorldPage: PageComponent<WorldPageProps> = () => {
                     leftSection={
                       friends && !isEmpty(friends) ? (
                         <Avatar.Group className={classes.avatarGroup}>
-                          {takeRight(friends, 3).map(({ id, emoji }) => (
+                          {friends.map(({ id, emoji }) => (
                             <Avatar key={id} size="sm">
                               {emoji ? (
                                 <Text fz="md">{emoji}</Text>
                               ) : (
-                                <Box component={UserIcon} fz="sm" c="primary" />
+                                <Box component={UserIcon} fz="sm" c="white" />
                               )}
                             </Avatar>
                           ))}
