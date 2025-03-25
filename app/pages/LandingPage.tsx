@@ -34,8 +34,9 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
               href={routes.world.show.path()}
               variant="filled"
               leftSection={<SmallerWorldIcon />}
+              style={{ flexShrink: 0 }}
             >
-              my smaller world
+              your world
             </Button>
           </Group>
         </Alert>

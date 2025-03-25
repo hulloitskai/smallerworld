@@ -1,4 +1,4 @@
-import { ActionIcon, Image, Overlay, Popover, Text } from "@mantine/core";
+import { Image, Overlay, Popover, Text } from "@mantine/core";
 import { useDocumentVisibility } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { DateTime } from "luxon";
@@ -10,11 +10,12 @@ import AppLayout from "~/components/AppLayout";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import PostCard from "~/components/PostCard";
+import UserPageFloatingActions from "~/components/UserPageFloatingActions";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
 import UserPageNotificationsButton from "~/components/UserPageNotificationsButton";
-import UserPagePinnedPosts from "~/components/UserPagePinnedPosts";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
+import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
@@ -37,6 +38,7 @@ const ICON_SIZE = 96;
 
 const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   const isStandalone = useIsStandalone();
+  const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
   const { registration } = useWebPush();
   const { modals } = useModals();
@@ -55,70 +57,115 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
 
   return (
     <>
-      <Stack>
-        <Box pos="relative">
-          <Stack align="center" gap="sm">
-            <Image
-              src={user.page_icon.src}
-              srcSet={user.page_icon.src_set}
-              w={ICON_SIZE}
-              h={ICON_SIZE}
-              fit="cover"
-              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-              style={{
-                flex: "unset",
-                boxShadow: "var(--mantine-shadow-lg)",
-              }}
-            />
-            <Stack gap={4} align="center">
-              <Title size="h2" lh="xs" ta="center">
-                {possessive(user.name)} world
-              </Title>
-              {currentFriend && isStandalone && (
-                <Group gap="xs">
-                  <UserPageNotificationsButton />
-                  {registration && <RefreshPostsButton userId={user.id} />}
-                </Group>
-              )}
-            </Stack>
-          </Stack>
-          <Popover>
-            <Popover.Target>
-              <ActionIcon pos="absolute" top={-6} right={0}>
-                <SmallerWorldIcon />
-              </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Stack gap={8}>
-                <Text ta="center" ff="heading" fw={600}>
-                  wanna make your own smaller world?
+      <Stack gap="xl">
+        {currentUser && !currentFriend && (
+          <Alert
+            styles={{
+              root: { alignSelf: "stretch" },
+              body: { rowGap: rem(4) },
+            }}
+          >
+            <Group gap="xs" justify="space-between">
+              <Group align="start" gap={8}>
+                <Box component={PublicIcon} style={{ flexShrink: 0 }} mt={4} />
+                <Text ff="heading" fw={700}>
+                  your public profile
                 </Text>
-                <Button
-                  component="a"
-                  target="_blank"
-                  href={routes.login.new.path()}
-                  leftSection={<OpenExternalIcon />}
-                  style={{ alignSelf: "center" }}
-                >
-                  create your world
-                </Button>
-              </Stack>
-            </Popover.Dropdown>
-          </Popover>
-        </Box>
-        <Box pos="relative">
-          <Feed {...{ user, replyPhoneNumber }} />
-          {isStandalone && registration === null && (
-            <Overlay backgroundOpacity={0} blur={3}>
+              </Group>
+              <Button
+                component={Link}
+                href={routes.world.show.path()}
+                variant="white"
+                leftSection={<BackIcon />}
+                style={{ flexShrink: 0 }}
+              >
+                back to your world
+              </Button>
+            </Group>
+          </Alert>
+        )}
+        <Stack>
+          <Box pos="relative">
+            <Stack align="center" gap="sm">
               <Image
-                src={swirlyUpArrowSrc}
-                className={classes.notificationsRequiredIndicatorArrow}
+                src={user.page_icon.src}
+                srcSet={user.page_icon.src_set}
+                w={ICON_SIZE}
+                h={ICON_SIZE}
+                fit="cover"
+                radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+                style={{
+                  flex: "unset",
+                  boxShadow: "var(--mantine-shadow-lg)",
+                }}
               />
-            </Overlay>
-          )}
-        </Box>
+              <Stack gap={4} align="center">
+                <Title size="h2" lh="xs" ta="center">
+                  {possessive(user.name)} world
+                </Title>
+                {currentFriend ? (
+                  <>
+                    {isStandalone && (
+                      <Group gap="xs">
+                        <UserPageNotificationsButton />
+                        {registration && (
+                          <RefreshPostsButton userId={user.id} />
+                        )}
+                      </Group>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {isStandalone === false && (
+                      <UserPageUpcomingEventsButton
+                        {...{ user, replyPhoneNumber }}
+                        style={{ alignSelf: "center" }}
+                      />
+                    )}
+                  </>
+                )}
+              </Stack>
+            </Stack>
+            <Popover>
+              <Popover.Target>
+                <ActionIcon pos="absolute" top={-6} right={0}>
+                  <SmallerWorldIcon />
+                </ActionIcon>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Stack gap={8}>
+                  <Text ta="center" ff="heading" fw={600}>
+                    wanna make your own smaller world?
+                  </Text>
+                  <Button
+                    component="a"
+                    target="_blank"
+                    href={routes.login.new.path()}
+                    leftSection={<OpenExternalIcon />}
+                    style={{ alignSelf: "center" }}
+                  >
+                    create your world
+                  </Button>
+                </Stack>
+              </Popover.Dropdown>
+            </Popover>
+          </Box>
+          <Box pos="relative">
+            <Feed {...{ user, replyPhoneNumber }} />
+            {isStandalone && registration === null && (
+              <Overlay backgroundOpacity={0} blur={3}>
+                <Image
+                  src={swirlyUpArrowSrc}
+                  className={classes.notificationsRequiredIndicatorArrow}
+                />
+              </Overlay>
+            )}
+          </Box>
+        </Stack>
       </Stack>
-      <UserPagePinnedPosts {...{ user, replyPhoneNumber }} />
+      {isStandalone && (
+        <UserPageFloatingActions {...{ user, replyPhoneNumber }} />
+      )}
       {currentFriend ? (
         <>
           <UserPageInstallAlert {...{ user }} />

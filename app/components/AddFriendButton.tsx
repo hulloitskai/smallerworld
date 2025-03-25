@@ -1,10 +1,4 @@
-import {
-  ActionIcon,
-  Button,
-  type ButtonProps,
-  CopyButton,
-  Text,
-} from "@mantine/core";
+import { type ButtonProps, CopyButton, Text } from "@mantine/core";
 import QRCode from "react-qr-code";
 
 import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
@@ -19,7 +13,9 @@ import EmojiPopover from "./EmojiPopover";
 
 import classes from "./AddFriendButton.module.css";
 
-export interface AddFriendButtonProps extends ModalBodyProps, ButtonProps {}
+export interface AddFriendButtonProps
+  extends ModalBodyProps,
+    Omit<ButtonProps, "children"> {}
 
 const AddFriendButton: FC<AddFriendButtonProps> = ({
   fromJoinRequest,

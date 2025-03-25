@@ -1,9 +1,4 @@
-import {
-  ActionIcon,
-  InputWrapper,
-  SegmentedControl,
-  Text,
-} from "@mantine/core";
+import { InputWrapper, SegmentedControl, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { type Editor } from "@tiptap/react";
 

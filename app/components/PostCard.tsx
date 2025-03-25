@@ -37,6 +37,11 @@ const PostCard: FC<PostCardProps> = ({
       cardRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [focus]);
+  const pinnedUntil = useMemo(() => {
+    if (post.pinned_until) {
+      return DateTime.fromISO(post.pinned_until);
+    }
+  }, [post.pinned_until]);
 
   return (
     <Card
@@ -67,11 +72,11 @@ const PostCard: FC<PostCardProps> = ({
               {POST_TYPE_TO_LABEL[post.type]}
             </Text>
           </Group>
-          {post.pinned_until ? (
+          {pinnedUntil ? (
             <Box className={classes.timestamp} mod={{ pinned: true }}>
-              expires{" "}
+              {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
               <Time format={DateTime.DATE_MED} inline inherit>
-                {post.pinned_until ?? post.created_at}
+                {pinnedUntil}
               </Time>
             </Box>
           ) : (

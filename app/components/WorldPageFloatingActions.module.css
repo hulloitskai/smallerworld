@@ -1,3 +1,7 @@
+.space {
+  height: calc(rem(72px) + var(--safe-area-inset-bottom, 0px));
+}
+
 .menuItemSection {
   color: var(--mantine-color-primary-outline);
 }

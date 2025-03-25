@@ -1,4 +1,4 @@
-import { ActionIcon, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
 
 import { useWebPush } from "~/helpers/webPush";
 

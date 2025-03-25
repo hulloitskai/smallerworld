@@ -1,4 +1,4 @@
-import { ActionIcon, Popover, Text } from "@mantine/core";
+import { Popover, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 import { useLongPress } from "use-long-press";

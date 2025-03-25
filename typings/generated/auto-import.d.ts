@@ -7,6 +7,7 @@
 export {}
 declare global {
   const AccountIcon: typeof import('~/components/icons')['AccountIcon']
+  const ActionIcon: typeof import('@mantine/core')['ActionIcon']
   const AddIcon: typeof import('~/components/icons')['AddIcon']
   const AdminIcon: typeof import('~/components/icons')['AdminIcon']
   const Alert: typeof import('@mantine/core')['Alert']

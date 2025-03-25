@@ -1,5 +1,5 @@
 import { type CardProps } from "@mantine/core";
-import { ActionIcon, Progress, Text } from "@mantine/core";
+import { Progress, Text } from "@mantine/core";
 import { type Blob } from "@rails/activestorage";
 
 import { useUpload } from "~/helpers/upload";

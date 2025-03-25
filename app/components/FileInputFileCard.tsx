@@ -1,10 +1,9 @@
-import { type CardProps } from "@mantine/core";
-import { ActionIcon, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import prettyBytes from "pretty-bytes";
 
 import { type File } from "~/types";
 
-export interface FileInputFileCardProps extends CardProps {
+export interface FileInputFileCardProps extends BoxProps {
   signedId: string;
   onRemove?: () => void;
 }

@@ -63,6 +63,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "useMantineColorScheme",
       "getThemeColor",
       "parseThemeColor",
+      "ActionIcon",
       "Alert",
       "Anchor",
       "Badge",

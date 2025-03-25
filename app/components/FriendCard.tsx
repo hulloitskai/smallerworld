@@ -1,4 +1,4 @@
-import { ActionIcon, CopyButton, Text } from "@mantine/core";
+import { CopyButton, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
 import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";

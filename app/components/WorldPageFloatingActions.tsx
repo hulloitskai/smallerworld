@@ -1,4 +1,4 @@
-import { ActionIcon, Affix, Drawer, Indicator, Modal } from "@mantine/core";
+import { Affix, Drawer, Indicator, Modal } from "@mantine/core";
 import {
   createHtmlPortalNode,
   InPortal,
@@ -51,7 +51,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   const actionsVisible = !isStandalone || !!registration;
   return (
     <>
-      <Space h={50} />
+      <Space className={classes.space} />
       <InPortal node={newPostPortalNode}>
         <PostForm
           postType={postType ?? previousPostType ?? null}

@@ -1,4 +1,4 @@
-import { ActionIcon, Avatar, Image, Overlay, Text } from "@mantine/core";
+import { Avatar, Image, Overlay, Text } from "@mantine/core";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
@@ -43,7 +43,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({ friends }) => {
 
   return (
     <>
-      <Stack gap="lg" pb="xl">
+      <Stack gap="lg">
         <Box pos="relative">
           <Stack align="center" gap="sm">
             <Image

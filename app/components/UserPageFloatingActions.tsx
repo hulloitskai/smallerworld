@@ -1,4 +1,4 @@
-import { Affix, Button, Drawer, Modal } from "@mantine/core";
+import { Affix, Drawer, Modal } from "@mantine/core";
 
 import { type PostView } from "~/types";
 
@@ -7,12 +7,12 @@ import FriendPostCardActions, {
 } from "./FriendPostCardActions";
 import PostCard from "./PostCard";
 
-import classes from "./UserPagePinnedPosts.module.css";
+import classes from "./UserPageFloatingActions.module.css";
 
-export interface UserPagePinnedPostsProps
+export interface UserPageFloatingActionsProps
   extends Pick<FriendPostCardActionsProps, "user" | "replyPhoneNumber"> {}
 
-const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
+const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
   user,
   replyPhoneNumber,
 }) => {
@@ -21,15 +21,15 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
 
   // == Load pinned posts
   const { data } = useRouteSWR<{ posts: PostView[] }>(routes.userPosts.pinned, {
-    params: currentFriend
-      ? {
-          user_id: user.id,
-          query: {
-            friend_token: currentFriend.access_token,
-          },
-        }
-      : null,
-    descriptor: "load pinned posts",
+    params: {
+      user_id: user.id,
+      ...(currentFriend && {
+        query: {
+          friend_token: currentFriend.access_token,
+        },
+      }),
+    },
+    descriptor: "load posts",
   });
   const pinnedPosts = data?.posts ?? [];
 
@@ -42,7 +42,7 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Space h={50} />
+      <Space className={classes.space} />
       <Affix
         position={{
           bottom: `max(${affixInset}, var(--safe-area-inset-bottom, 0px))`,
@@ -59,9 +59,9 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
               <Button
                 variant="filled"
                 radius="xl"
-                className={classes.button}
+                className={classes.pinnedPostsButton}
                 leftSection={
-                  <Center className={classes.buttonBadge}>
+                  <Center className={classes.pinnedPostsButtonBadge}>
                     {pinnedPosts.length}
                   </Center>
                 }
@@ -111,4 +111,4 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
   );
 };
 
-export default UserPagePinnedPosts;
+export default UserPageFloatingActions;

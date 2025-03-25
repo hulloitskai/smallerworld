@@ -1,4 +1,4 @@
-import { ActionIcon, Image, Popover, Text } from "@mantine/core";
+import { Image, Popover, Text } from "@mantine/core";
 
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 

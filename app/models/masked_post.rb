@@ -25,7 +25,15 @@ class MaskedPost < T::Struct
   def body_html
     doc = Nokogiri::HTML5.fragment(post.body_html)
     doc.traverse do |node|
-      node.content = mask_sentence(node.content) if node.text?
+      # Mask text nodes
+      if node.text?
+        node.content = mask_sentence(node.content)
+      end
+
+      # Remove href attributes from all links
+      if node.name == "a" && node.has_attribute?("href")
+        node.remove_attribute("href")
+      end
     end
     doc.to_html
   end
