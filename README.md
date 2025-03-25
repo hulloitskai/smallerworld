@@ -16,3 +16,7 @@ git clone git@github.com:hulloitskai/smallerworld
 cd smallerworld
 bin/setup
 ```
+
+## todos
+
+- [ ] add android chrome add-to-homescreen instructions

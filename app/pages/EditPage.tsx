@@ -7,7 +7,7 @@ import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { type Image } from "~/types";
+import { type Image, type Upload } from "~/types";
 
 export interface EditPageProps extends SharedPageProps {}
 
@@ -18,7 +18,7 @@ const EditPage: PageComponent<EditPageProps> = () => {
   const initialValues = useMemo(
     () => ({
       name: currentUser.name,
-      page_icon_upload: { signedId: currentUser.page_icon.signed_id },
+      page_icon_upload: { signedId: currentUser.page_icon.signed_id } as Upload,
     }),
     [currentUser],
   );
@@ -83,7 +83,7 @@ const EditPage: PageComponent<EditPageProps> = () => {
                   withAsterisk={false}
                 />
                 <ImageInput
-                  {...getInputProps("page_icon_image")}
+                  {...getInputProps("page_icon_upload")}
                   label="your page icon"
                   center
                   h={ICON_IMAGE_INPUT_SIZE}
