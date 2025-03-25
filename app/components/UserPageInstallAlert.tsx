@@ -2,31 +2,40 @@ import { Affix, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import {
-  useInstallPrompt,
-  useIsIosSafari,
-  useIsIosWebview,
-} from "~/helpers/pwa";
-import { useUserPageDialogOpened } from "~/helpers/userPages";
-import { type User } from "~/types/generated";
+  isMobileSafari,
+  useBrowserDetection,
+  useIsIosAndStuckInAppBrowser,
+} from "~/helpers/browsers";
+import { useInstallPrompt } from "~/helpers/pwa";
+import {
+  openUserPageInMobileSafari,
+  useUserPageDialogOpened,
+} from "~/helpers/userPages";
+import { type Friend, type User } from "~/types/generated";
 
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
 import classes from "./UserPageInstallAlert.module.css";
 
 export interface UserPageInstallAlertProps {
+  currentFriend: Friend;
   user: User;
 }
 
 const ALERT_INSET = "var(--mantine-spacing-md)";
 
-const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
+const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
+  currentFriend,
+  user,
+}) => {
   const { modals } = useModals();
   const pageDialogOpened = useUserPageDialogOpened();
+  const browserDetection = useBrowserDetection();
+  const isIosAndStuckInAppBrowser =
+    useIsIosAndStuckInAppBrowser(browserDetection);
 
   // == Install to home screen
   const { install, installing } = useInstallPrompt();
-  const isIosSafari = useIsIosSafari();
-  const isIosWebview = useIsIosWebview();
 
   return (
     <Affix
@@ -61,39 +70,42 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({ user }) => {
                   leftSection={<InstallIcon />}
                   className={classes.button}
                   loading={installing}
-                  disabled={!install && !isIosSafari}
+                  disabled={!install && isIosAndStuckInAppBrowser}
                   onClick={() => {
                     if (install) {
                       void install();
-                    } else {
+                    } else if (
+                      browserDetection &&
+                      isMobileSafari(browserDetection.browser)
+                    ) {
                       openUserPageInstallationInstructionsModal({ user });
+                    } else {
+                      openUserPageInMobileSafari(user, currentFriend);
                     }
                   }}
                 >
                   pin this page
                 </Button>
-                {!install &&
-                  isIosSafari === false &&
-                  isIosWebview === false && (
-                    <Text
-                      size="xs"
-                      opacity={0.6}
-                      lh={1.2}
-                      miw={0}
-                      style={{ flexGrow: 1 }}
-                    >
-                      {isIosWebview ? (
-                        "open in safari to continue"
-                      ) : (
-                        <>
-                          sorry, your browser isn&apos;t supported
-                          <Text span inherit visibleFrom="xs">
-                            —pls open on your phone!
-                          </Text>
-                        </>
-                      )}
-                    </Text>
-                  )}
+                {!install && isIosAndStuckInAppBrowser && (
+                  <Text
+                    size="xs"
+                    opacity={0.6}
+                    lh={1.2}
+                    miw={0}
+                    style={{ flexGrow: 1 }}
+                  >
+                    {isIosAndStuckInAppBrowser ? (
+                      "open in safari to continue"
+                    ) : (
+                      <>
+                        sorry, your browser isn&apos;t supported
+                        <Text span inherit visibleFrom="xs">
+                          —pls open on your phone!
+                        </Text>
+                      </>
+                    )}
+                  </Text>
+                )}
               </Group>
             </Stack>
           </Alert>

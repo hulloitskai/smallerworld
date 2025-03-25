@@ -2,7 +2,8 @@ import { Image, Popover, Text } from "@mantine/core";
 
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
-import { useInstallPrompt, useIsIosSafari } from "~/helpers/pwa";
+import { isMobileSafari, useBrowserDetection } from "~/helpers/browsers";
+import { useInstallPrompt } from "~/helpers/pwa";
 import { type User } from "~/types";
 
 import { openInstallationInstructionsModal } from "./InstallationInstructionsModal";
@@ -16,8 +17,8 @@ export interface WorldPageEnableNotificationsActionIconProps extends BoxProps {
 const WorldPageEnableNotificationsActionIcon: FC<
   WorldPageEnableNotificationsActionIconProps
 > = ({ user, ...otherProps }) => {
+  const browserDetection = useBrowserDetection();
   const { install, installing } = useInstallPrompt();
-  const isIosSafari = useIsIosSafari();
   const [installerOpened, setInstallerOpened] = useState(false);
   return (
     <Box pos="relative" {...otherProps}>
@@ -43,7 +44,10 @@ const WorldPageEnableNotificationsActionIcon: FC<
             variant="light"
             size="lg"
             loading={installing}
-            disabled={!install && !isIosSafari}
+            disabled={
+              !install &&
+              (!browserDetection || !isMobileSafari(browserDetection.browser))
+            }
             onClick={() => {
               if (install) {
                 setInstallerOpened(true);

@@ -1,4 +1,3 @@
-import { isSafari } from "@braintree/browser-detection";
 import {
   CloseButton,
   Drawer,
@@ -18,6 +17,8 @@ import {
 } from "react-reverse-portal";
 import { Drawer as VaulDrawer } from "vaul";
 
+import { isDesktopSafari, useBrowserDetection } from "~/helpers/browsers";
+
 import VaulModalPortalTarget from "./VaulModalPortalTarget";
 import VaulPortalProvider from "./VaulPortalProvider";
 import VaulPortalRoot from "./VaulPortalRoot";
@@ -36,6 +37,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
   onClose,
   children,
 }) => {
+  const browserDetection = useBrowserDetection();
   const viewportRef = useRef<HTMLDivElement>(null);
   const portalNode = useMemo(() => createHtmlPortalNode(), []);
   const isMobileSize = useIsMobileSize();
@@ -45,12 +47,6 @@ const DrawerModal: FC<DrawerModalProps> = ({
   const openedRef = useRef(opened);
   isMobileSizeRef.current = isMobileSize;
   openedRef.current = opened;
-
-  // == Detect destkop safari
-  const [isDesktopSafari, setIsDesktopSafari] = useState<boolean | undefined>();
-  useEffect(() => {
-    setIsDesktopSafari(isSafari());
-  }, []);
 
   // == Open modals
   const { modals: openModals } = useModals();
@@ -79,7 +75,9 @@ const DrawerModal: FC<DrawerModalProps> = ({
     <VaulPortalProvider portalRoot={vaulPortalRoot}>
       <InPortal node={portalNode}>{children}</InPortal>
       <VaulDrawer.Root
-        shouldScaleBackground={!isDesktopSafari}
+        shouldScaleBackground={
+          browserDetection && !isDesktopSafari(browserDetection.browser)
+        }
         repositionInputs={false}
         open={isMobileSize === true && opened}
         onClose={() => {

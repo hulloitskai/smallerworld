@@ -7,6 +7,9 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
+import { type Friend, type User } from "~/types";
+
+import { openUrlInMobileSafari } from "./browsers";
 import { type PostsData } from "./posts";
 
 const userPagePostsGetKey = (
@@ -96,4 +99,19 @@ export const useUserPageDialogOpened = (opened?: boolean): boolean => {
     }
   }, [opened]); // eslint-disable-line react-hooks/exhaustive-deps
   return state.opened;
+};
+
+export const openUserPageInMobileSafari = (
+  user: User,
+  currentFriend: Friend,
+) => {
+  const path = routes.users.show.path({
+    handle: user.handle,
+    query: {
+      friend_token: currentFriend.access_token,
+      intent: "installation_instructions",
+    },
+  });
+  const url = new URL(path, location.href);
+  openUrlInMobileSafari(url.toString());
 };

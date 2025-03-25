@@ -48,7 +48,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
       return;
     }
     if (intent === "join") {
-      openUserPageWelcomeModal({ user });
+      openUserPageWelcomeModal({ user, currentFriend });
     } else if (intent === "installation_instructions") {
       openUserPageInstallationInstructionsModal({ user });
     }
@@ -165,7 +165,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
         </>
       ) : (
         <>
-          {currentFriend && <UserPageInstallAlert {...{ user }} />}
+          {currentFriend && (
+            <UserPageInstallAlert {...{ currentFriend, user }} />
+          )}
           {!currentFriend && !currentUser && (
             <UserPageRequestInvitationAlert {...{ user }} />
           )}

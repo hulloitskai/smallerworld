@@ -3,11 +3,13 @@ import { closeModal } from "@mantine/modals";
 import { v4 as uuid } from "uuid";
 
 import {
-  useInstallPrompt,
-  useIsIosSafari,
-  useIsIosWebview,
-} from "~/helpers/pwa";
-import { type User } from "~/types";
+  isMobileSafari,
+  useBrowserDetection,
+  useIsIosAndStuckInAppBrowser,
+} from "~/helpers/browsers";
+import { useInstallPrompt } from "~/helpers/pwa";
+import { openUserPageInMobileSafari } from "~/helpers/userPages";
+import { type Friend, type User } from "~/types";
 
 import HomeScreenPreview from "./HomeScreenPreview";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
@@ -27,12 +29,15 @@ export const openUserPageWelcomeModal = (
 
 interface ModalBodyProps {
   modalId: string;
+  currentFriend: Friend;
   user: User;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
-  const currentFriend = useAuthenticatedFriend();
+const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
+  const browserDetection = useBrowserDetection();
+  const isIosAndStuckInAppBrowser =
+    useIsIosAndStuckInAppBrowser(browserDetection);
   const friendNameWithEmoji = useMemo(
     () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
     [currentFriend],
@@ -40,8 +45,6 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
 
   // == Add to home screen
   const { install, installing } = useInstallPrompt();
-  const isIosSafari = useIsIosSafari();
-  const isIosWebview = useIsIosWebview();
   return (
     <Stack gap="lg" align="center" pb="xs">
       <Stack gap={4}>
@@ -69,21 +72,26 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, user }) => {
         <Button
           leftSection={<InstallIcon />}
           loading={installing}
-          disabled={!install && !isIosSafari}
+          disabled={!install && isIosAndStuckInAppBrowser}
           onClick={() => {
             if (install) {
               void install();
-            } else {
+            } else if (
+              browserDetection &&
+              isMobileSafari(browserDetection.browser)
+            ) {
               openUserPageInstallationInstructionsModal({ user });
               closeModal(modalId);
+            } else {
+              openUserPageInMobileSafari(user, currentFriend);
             }
           }}
         >
           pin to home screen
         </Button>
-        {!install && isIosSafari === false && (
+        {!install && isIosAndStuckInAppBrowser === false && (
           <Text size="xs" c="dimmed">
-            {isIosWebview ? (
+            {isIosAndStuckInAppBrowser ? (
               "open in safari to continue"
             ) : (
               <>
