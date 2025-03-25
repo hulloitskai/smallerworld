@@ -35,7 +35,7 @@ jobs:
         uses: getsentry/action-release@v3
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_ORG: smallerworld
         with:
           environment: production
           projects: smallerworld

@@ -1,4 +1,4 @@
-import { Overlay } from "@mantine/core";
+import { Overlay, Text } from "@mantine/core";
 
 import PlayIcon from "~icons/heroicons/play-20-solid";
 
@@ -12,10 +12,34 @@ import classes from "./LandingPage.module.css";
 export interface LandingPageProps extends SharedPageProps {}
 
 const LandingPage: PageComponent<LandingPageProps> = () => {
+  const currentUser = useCurrentUser();
+
+  // == Reveal demovideo
   const videoRef = useRef<HTMLVideoElement>(null);
   const [revealVideo, setRevealVideo] = useState(false);
+
   return (
     <Stack align="center" gap="xl">
+      {currentUser && (
+        <Alert
+          styles={{ root: { alignSelf: "stretch" }, body: { rowGap: rem(4) } }}
+        >
+          <Group gap="xs" justify="space-between">
+            <Text ff="heading" fw={700}>
+              welcome back, {currentUser.name}
+              <span style={{ marginLeft: rem(6) }}>➡️</span>
+            </Text>
+            <Button
+              component={Link}
+              href={routes.world.show.path()}
+              variant="filled"
+              leftSection={<SmallerWorldIcon />}
+            >
+              my smaller world
+            </Button>
+          </Group>
+        </Alert>
+      )}
       <Title className={classes.opener} ta="center">
         a <Emph>life log</Emph> that your friends can{" "}
         <Emph>pin to their home screen</Emph>
