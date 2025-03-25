@@ -11,11 +11,9 @@ import { type PostsData } from "./posts";
 const userPagePostsGetKey = (
   userId: string,
   friendAccessToken?: string,
-  limit?: number,
 ): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = {
-      limit: limit ?? 5,
       friend_token: friendAccessToken,
     };
     if (previousPageData) {
@@ -30,9 +28,7 @@ const userPagePostsGetKey = (
 };
 
 export interface UserPagePostsOptions
-  extends SWRInfiniteConfiguration<PostsData> {
-  limit?: number;
-}
+  extends SWRInfiniteConfiguration<PostsData> {}
 
 export const useUserPagePosts = (
   userId: string,
@@ -40,9 +36,9 @@ export const useUserPagePosts = (
 ) => {
   const currentFriend = useCurrentFriend();
   const { online } = useNetwork();
-  const { limit, ...swrConfiguration } = options ?? {};
+  const { ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    userPagePostsGetKey(userId, currentFriend?.access_token, limit),
+    userPagePostsGetKey(userId, currentFriend?.access_token),
     (path: string) =>
       fetchRoute(path, {
         descriptor: "load posts",
@@ -66,9 +62,8 @@ export const useUserPagePosts = (
 export const mutateUserPagePosts = (
   userId: string,
   friendAccessToken?: string,
-  limit?: number,
 ) => {
   void mutate(
-    unstable_serialize(userPagePostsGetKey(userId, friendAccessToken, limit)),
+    unstable_serialize(userPagePostsGetKey(userId, friendAccessToken)),
   );
 };

@@ -53,9 +53,9 @@ export interface PostsData {
   pagination: { next: string | null };
 }
 
-const postsGetKey = (limit?: number): SWRInfiniteKeyLoader<PostsData> => {
+const postsGetKey = (): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
-    const query: Record<string, any> = { limit: limit ?? 5 };
+    const query: Record<string, any> = {};
     if (previousPageData) {
       const { next } = previousPageData.pagination;
       if (!next) {
@@ -73,9 +73,9 @@ export interface PostsOptions extends SWRInfiniteConfiguration<PostsData> {
 
 export const usePosts = (options?: PostsOptions) => {
   const { online } = useNetwork();
-  const { limit, ...swrConfiguration } = options ?? {};
+  const { ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    postsGetKey(limit),
+    postsGetKey(),
     (path: string) => fetchRoute(path, { descriptor: "load posts" }),
     {
       keepPreviousData: true,
@@ -93,6 +93,6 @@ export const usePosts = (options?: PostsOptions) => {
   return { posts, hasMorePosts, ...swrResponse };
 };
 
-export const mutatePosts = (limit?: number) => {
-  void mutate(unstable_serialize(postsGetKey(limit)));
+export const mutatePosts = () => {
+  void mutate(unstable_serialize(postsGetKey()));
 };

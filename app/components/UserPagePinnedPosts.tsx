@@ -78,7 +78,18 @@ const UserPagePinnedPosts: FC<UserPagePinnedPostsProps> = ({
       </Affix>
       <ModalOrDrawer
         title="invitations to stuff i'm doing"
-        size="var(--container-size-xs)"
+        {...(isMobile
+          ? {
+              size: "lg",
+              styles: {
+                content: {
+                  paddingBottom: "var(--safe-area-inset-bottom, 0px)",
+                },
+              },
+            }
+          : {
+              size: "var(--container-size-xs)",
+            })}
         {...{ opened }}
         onClose={() => {
           setOpened(false);

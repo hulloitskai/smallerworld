@@ -16,6 +16,7 @@ class UserPostsController < ApplicationController
     end
     pagy, paginated_posts = pagy_keyset(
       posts.order(created_at: :desc, id: :asc),
+      limit: 5,
     )
     unless current_friend
       paginated_posts.map! do |post|

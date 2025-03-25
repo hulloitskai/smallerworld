@@ -146,7 +146,18 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
       </Modal>
       <PinnedPostsModalOrDrawer
         title="your invitations to your friends"
-        size="var(--container-size-xs)"
+        {...(isMobile
+          ? {
+              size: "lg",
+              styles: {
+                content: {
+                  paddingBottom: "var(--safe-area-inset-bottom, 0px)",
+                },
+              },
+            }
+          : {
+              size: "var(--container-size-xs)",
+            })}
         opened={pinnedPostsOpened}
         onClose={() => {
           setPinnedPostsOpened(false);
