@@ -170,7 +170,7 @@ const ServerInfoItem: FC<BoxProps> = props => {
 
   return (
     <Menu.Item component="div" disabled fz="xs" mod={{ info: true }} {...props}>
-      Server booted{" "}
+      server booted{" "}
       {bootedAt ? (
         <TimeAgo inherit>{bootedAt}</TimeAgo>
       ) : (
