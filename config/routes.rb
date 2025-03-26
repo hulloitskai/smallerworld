@@ -73,9 +73,6 @@ Rails.application.routes.draw do
   # == Friends
   resources :friends, only: :index, path: "/world/friends", export: true
   resources :friends, only: %i[create update destroy], export: true do
-    collection do
-      get :suggested
-    end
     # member do
     #   post :pause
     # end
@@ -88,6 +85,9 @@ Rails.application.routes.draw do
   get "/@:handle", to: "users#show", as: :user, export: true
   get "/@:handle/join", to: "users#join"
   resources :users, only: [], export: true do
+    collection do
+      get :joined
+    end
     member do
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
       post :request_invitation

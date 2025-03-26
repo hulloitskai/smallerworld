@@ -52,6 +52,9 @@ module GeneratedUrlHelpersModule
   def join_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def joined_users_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -194,9 +197,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def submit_test_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def suggested_friends_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_push_subscriptions_url(*args); end

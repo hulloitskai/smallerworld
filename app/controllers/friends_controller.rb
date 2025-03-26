@@ -30,29 +30,6 @@ class FriendsController < ApplicationController
     end
   end
 
-  # GET /friends/suggested
-  def suggested
-    current_user = authenticate_user!
-    friend_push_registrations = PushRegistration
-      .joins(:push_subscription)
-      .where(
-        owner_type: "Friend",
-        push_subscriptions: {
-          endpoint: current_user.push_endpoints,
-        },
-      )
-    friends = Friend.where(id: friend_push_registrations.select(:owner_id))
-    suggested_friends = User
-      .where.not(id: current_user.id)
-      .where(id: friends.select(:user_id))
-      .map do |user|
-        SuggestedFriend.new(user:)
-      end
-    render(json: {
-      "suggestedFriends" => SuggestedFriendSerializer.many(suggested_friends),
-    })
-  end
-
   # POST /friends
   def create
     current_user = authenticate_user!

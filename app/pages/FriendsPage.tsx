@@ -7,8 +7,8 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import FriendCard from "~/components/FriendCard";
-import SuggestedFriendCard from "~/components/SuggestedFriendCard";
-import { type FriendView, type SuggestedFriend, type User } from "~/types";
+import JoinedUserCard from "~/components/JoinedUserCard";
+import { type FriendView, type JoinedUser, type User } from "~/types";
 
 export interface FriendsPageProps extends SharedPageProps {
   currentUser: User;
@@ -30,13 +30,17 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
     [friends],
   );
 
-  // == Load suggested friends
-  const { data: suggestedFriendsData } = useRouteSWR<{
-    suggestedFriends: SuggestedFriend[];
-  }>(routes.friends.suggested, {
-    descriptor: "load suggested friends",
+  // == Load joined users
+  const { data: joinedUsersData } = useRouteSWR<{
+    users: JoinedUser[];
+  }>(routes.users.joined, {
+    descriptor: "load joined users",
   });
-  const { suggestedFriends } = suggestedFriendsData ?? {};
+  const { users: joinedUsers } = joinedUsersData ?? {};
+  const [joinedNonFriends, joinedFriends] = useMemo(
+    () => partition(joinedUsers, user => !!user.friend_access_token),
+    [joinedUsers],
+  );
 
   return (
     <Stack gap="xl">
@@ -82,20 +86,14 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
           )}
         </Stack>
       </Stack>
-      {isStandalone && !!suggestedFriends && !isEmpty(suggestedFriends) && (
+      {!!joinedUsers && !isEmpty(joinedUsers) && (
         <Stack gap="sm">
-          <Group gap="xs" justify="center">
-            <Title order={2} size="h3">
-              suggested friends
-            </Title>
-            <Badge>beta</Badge>
-          </Group>
+          <Title order={2} size="h3" ta="center">
+            worlds you&apos;re a part of
+          </Title>
           <Stack gap="xs">
-            {suggestedFriends.map(suggestedFriend => (
-              <SuggestedFriendCard
-                key={suggestedFriend.id}
-                {...{ suggestedFriend }}
-              />
+            {[...joinedNonFriends, ...joinedFriends].map(user => (
+              <JoinedUserCard key={user.id} {...{ user }} />
             ))}
           </Stack>
         </Stack>

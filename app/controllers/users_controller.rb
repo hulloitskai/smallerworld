@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  before_action :authenticate_user!, only: :joined
+
   # == Actions
   # GET /@:handle
   def show
@@ -29,6 +31,41 @@ class UsersController < ApplicationController
   def join
     handle = T.let(params.fetch(:handle), String)
     redirect_to(user_path(handle, intent: "join"))
+  end
+
+  # GET /users/joined
+  def joined
+    current_user = authenticate_user!
+    joined_friend_push_registrations = PushRegistration
+      .joins(:push_subscription)
+      .where(
+        owner_type: "Friend",
+        push_subscriptions: {
+          endpoint: current_user.push_endpoints,
+        },
+      )
+    joined_friends = Friend
+      .includes(:user)
+      .where(id: joined_friend_push_registrations.select(:owner_id))
+    friend_phone_numbers = current_user.friends
+      .where(
+        phone_number: joined_friends
+          .references(:user)
+          .select("users.phone_number"),
+      )
+      .pluck(:phone_number)
+      .to_set
+    joined_users = joined_friends.map do |friend|
+      user = friend.user!
+      JoinedUser.new(
+        user:,
+        friend_access_token: friend.access_token,
+        friended: friend_phone_numbers.include?(user.phone_number),
+      )
+    end
+    render(json: {
+      "users" => JoinedUserSerializer.many(joined_users),
+    })
   end
 
   # GET /users/:id/manifest.webmanifest?friend_token=...
