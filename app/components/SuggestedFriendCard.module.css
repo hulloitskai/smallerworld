@@ -1,0 +1,6 @@
+.list {
+  :global(.mantine-List-itemIcon) {
+    display: flex;
+    align-items: center;
+  }
+}

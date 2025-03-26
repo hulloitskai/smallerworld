@@ -48,9 +48,3 @@
     padding-inline: 0px;
   }
 }
-
-.pinnedPostUntilBadge {
-  :global(.mantine-Badge-label) {
-    text-transform: lowercase;
-  }
-}

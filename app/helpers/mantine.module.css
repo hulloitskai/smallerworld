@@ -53,6 +53,7 @@
     }
 
     .badgeLabel {
+      text-transform: none;
       font-family: var(--mantine-font-family-headings);
     }
 

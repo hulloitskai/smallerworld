@@ -7,7 +7,7 @@ import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
 
-import { type Friend, type JoinRequest } from "~/types";
+import { type Friend, type JoinRequest, type SuggestedFriend } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
@@ -19,6 +19,7 @@ export interface AddFriendButtonProps
 
 const AddFriendButton: FC<AddFriendButtonProps> = ({
   fromJoinRequest,
+  fromSuggestedFriend,
   ...otherProps
 }) => {
   return (
@@ -27,12 +28,12 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
       onClick={() => {
         openModal({
           title: "invite friend",
-          children: <ModalBody {...{ fromJoinRequest }} />,
+          children: <ModalBody {...{ fromJoinRequest, fromSuggestedFriend }} />,
         });
       }}
       {...otherProps}
     >
-      add friend
+      add as friend
     </Button>
   );
 };
@@ -41,19 +42,31 @@ export default AddFriendButton;
 
 interface ModalBodyProps {
   fromJoinRequest?: JoinRequest;
+  fromSuggestedFriend?: SuggestedFriend;
 }
 
-const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
+const ModalBody: FC<ModalBodyProps> = ({
+  fromJoinRequest,
+  fromSuggestedFriend,
+}) => {
   const currentUser = useAuthenticatedUser();
   const [revealBackToHomeButton, setRevealBackToHomeButton] = useState(false);
+  const prefilledInfo = useMemo<
+    { name: string; phone_number: string } | undefined
+  >(() => {
+    const info = fromJoinRequest ?? fromSuggestedFriend;
+    if (info) {
+      return pick(info, "name", "phone_number");
+    }
+  }, [fromJoinRequest, fromSuggestedFriend]);
 
   // == Form
   const initialValues = useMemo(
     () => ({
       emoji: "",
-      name: fromJoinRequest?.name ?? "",
+      name: prefilledInfo?.name ?? "",
     }),
-    [fromJoinRequest],
+    [prefilledInfo],
   );
   const {
     getInputProps,
@@ -72,7 +85,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
       friend: {
         emoji: emoji || null,
         name: name.trim(),
-        phone_number: fromJoinRequest?.phone_number ?? null,
+        phone_number: prefilledInfo?.phone_number ?? null,
       },
     }),
     onSuccess: (_data: { friend: Friend }) => {
@@ -106,12 +119,12 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
   }, [friend?.access_token, currentUser.handle]);
 
   const shareJoinUrlViaSmsUri = useMemo(() => {
-    if (!fromJoinRequest || !friendJoinUrl) {
+    if (!prefilledInfo?.phone_number || !friendJoinUrl) {
       return;
     }
     const message = `here's my smaller world invite link for you: ${friendJoinUrl}`;
-    return `sms:${fromJoinRequest.phone_number}?body=${encodeURIComponent(message)}`;
-  }, [fromJoinRequest, friendJoinUrl]);
+    return `sms:${prefilledInfo.phone_number}?body=${encodeURIComponent(message)}`;
+  }, [prefilledInfo?.phone_number, friendJoinUrl]);
   return (
     <Stack gap="lg">
       <form onSubmit={submit}>
@@ -172,7 +185,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
                 {possessive(friend.name)} invite link
               </Title>
               <Text size="sm" c="dimmed" display="block">
-                {fromJoinRequest ? (
+                {prefilledInfo ? (
                   <>
                     send your friend the link below, so they can add your page
                     to their home screen :)
@@ -186,7 +199,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest }) => {
               </Text>
             </Box>
             <Stack gap="xs" align="center">
-              {!fromJoinRequest && (
+              {!prefilledInfo && (
                 <QRCode
                   value={friendJoinUrl}
                   size={160}

@@ -151,31 +151,6 @@ self.addEventListener("notificationclick", event => {
   );
 });
 
-self.addEventListener("message", event => {
-  console.debug("Received message", event);
-  const { action } = event.data as { action: string };
-  const [port] = event.ports;
-  if (action === "list_installed_user_handles" && port) {
-    event.waitUntil(
-      self.clients
-        .claim()
-        .then(() =>
-          self.clients.matchAll({ type: "window", includeUncontrolled: true }),
-        )
-        .then(clients => {
-          const handles = clients.reduce<string[]>((handles, client) => {
-            const { pathname } = new URL(client.url);
-            if (pathname.startsWith("/@")) {
-              return [...handles, pathname.slice(2)];
-            }
-            return handles;
-          }, []);
-          port.postMessage({ handles });
-        }),
-    );
-  }
-});
-
 const pathname = (url: string): string => {
   const u = new URL(url, self.location.href);
   return u.pathname;

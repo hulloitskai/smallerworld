@@ -73,9 +73,6 @@ module GeneratedUrlHelpersModule
   def new_signup_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pause_friend_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def pinned_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -197,6 +194,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def submit_test_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def suggested_friends_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_push_subscriptions_url(*args); end

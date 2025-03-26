@@ -66,6 +66,11 @@ class User < ApplicationRecord
     Admin.phone_numbers.include?(phone_number)
   end
 
+  sig { returns(T::Array[String]) }
+  def push_endpoints
+    push_subscriptions.pluck(:endpoint)
+  end
+
   sig { returns(Post) }
   def create_welcome_post!
     posts.create!(

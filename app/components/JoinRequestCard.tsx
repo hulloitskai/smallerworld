@@ -30,11 +30,13 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({
     </Card.Section>
     <Group align="center" gap="xs" justify="space-between">
       <List className={classes.list}>
-        <List.Item icon={<UserIcon />}>{joinRequest.name}</List.Item>
+        <List.Item icon={<UserIcon />} fw={600}>
+          {joinRequest.name}
+        </List.Item>
         <List.Item icon={<PhoneIcon />}>
           <CopyButton value={joinRequest.phone_number}>
             {({ copied, copy }) => (
-              <Tooltip label={copied ? "copied" : "copy"}>
+              <Tooltip label={copied ? "copied!" : "copy?"} position="right">
                 <Anchor onClick={copy}>{joinRequest.phone_number}</Anchor>
               </Tooltip>
             )}

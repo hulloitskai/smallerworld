@@ -73,9 +73,12 @@ Rails.application.routes.draw do
   # == Friends
   resources :friends, only: :index, path: "/world/friends", export: true
   resources :friends, only: %i[create update destroy], export: true do
-    member do
-      post :pause
+    collection do
+      get :suggested
     end
+    # member do
+    #   post :pause
+    # end
   end
 
   # == Friend notification settings

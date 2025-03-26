@@ -15,6 +15,7 @@ module Notifiable
     has_many :push_registrations,
              as: :owner,
              dependent: :destroy
+    has_many :push_subscriptions, through: :push_registrations
     has_many :notifications, as: :recipient, dependent: :destroy
   end
 

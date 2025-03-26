@@ -422,6 +422,20 @@ class Friend
     sig { params(value: T::Enumerable[::PushRegistration]).void }
     def push_registrations=(value); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def push_subscription_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def push_subscription_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :push_subscriptions, through: :push_registrations`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::PushSubscription::PrivateCollectionProxy) }
+    def push_subscriptions; end
+
+    sig { params(value: T::Enumerable[::PushSubscription]).void }
+    def push_subscriptions=(value); end
+
     sig { returns(T.nilable(::JoinRequest)) }
     def reload_join_request; end
 

@@ -37,19 +37,3 @@ export const registerAndUpdateServiceWorker =
     navigator.serviceWorker
       .register(serviceWorkerUrl, { type: "module" })
       .then(registration => registration.update().then(() => registration));
-
-export const queryInstalledUserHandles = (): Promise<string[]> => {
-  return getOrRegisterServiceWorker().then(({ active }) => {
-    if (!active) {
-      throw new Error("No active service worker");
-    }
-    return new Promise(resolve => {
-      const { port1, port2 } = new MessageChannel();
-      port1.onmessage = event => {
-        const { handles } = event.data as { handles: string[] };
-        resolve(handles);
-      };
-      active.postMessage({ action: "list_installed_user_handles" }, [port2]);
-    });
-  });
-};

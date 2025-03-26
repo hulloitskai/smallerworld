@@ -73,9 +73,6 @@ module GeneratedPathHelpersModule
   def new_signup_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pause_friend_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def pinned_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -197,6 +194,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def submit_test_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def suggested_friends_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_path(*args); end
