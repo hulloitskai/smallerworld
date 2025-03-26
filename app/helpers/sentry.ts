@@ -31,10 +31,24 @@ export const setupSentry = () => {
       ],
       ignoreErrors: [
         "ResizeObserver loop completed with undelivered notifications.",
-        "Failed to fetch",
-        "Load failed",
         /^Error loading edge\.fullstory\.com/,
       ],
+      beforeSend(event) {
+        if (event.exception?.values) {
+          const isFailedToFetch = event.exception.values.some(exception => {
+            if (!(exception instanceof TypeError)) {
+              return false;
+            }
+            return ["Failed to fetch", "Load failed"].includes(
+              exception.message,
+            );
+          });
+          if (isFailedToFetch) {
+            return null;
+          }
+        }
+        return event;
+      },
     };
     init(options);
     const info = omitBy(omit(options, "ignoreErrors", "integrations"), isNil);
