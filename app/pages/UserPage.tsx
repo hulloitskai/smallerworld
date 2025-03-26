@@ -17,7 +17,11 @@ import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { useWebPush } from "~/helpers/webPush";
-import { type FriendNotificationSettings, type User } from "~/types";
+import {
+  type Friend,
+  type FriendNotificationSettings,
+  type User,
+} from "~/types";
 
 import classes from "./UserPage.module.css";
 
@@ -104,7 +108,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                 <>
                   {currentFriend && (
                     <Group gap="xs">
-                      <UserPageNotificationsButton />
+                      <UserPageNotificationsButton {...{ currentFriend }} />
                       {registration && (
                         <UserPageRefreshButton userId={user.id} />
                       )}
@@ -159,7 +163,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
       {isStandalone && (
         <>
           <UserPageFloatingActions {...{ user, replyPhoneNumber }} />
-          {!!registration && <WelcomeBackToast />}
+          {currentFriend && !!registration && (
+            <WelcomeBackToast {...{ currentFriend }} />
+          )}
         </>
       )}
       {isStandalone === false && (
@@ -227,8 +233,11 @@ const IconsMeta: FC = () => {
   );
 };
 
-const WelcomeBackToast: FC = () => {
-  const currentFriend = useAuthenticatedFriend();
+interface WelcomeBackToastProps {
+  currentFriend: Friend;
+}
+
+const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
   const visibility = useDocumentVisibility();
   const lastCheckedRef = useRef<DateTime | null>(null);
   useEffect(() => {

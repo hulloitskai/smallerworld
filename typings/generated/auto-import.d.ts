@@ -118,8 +118,6 @@ declare global {
   const toast: typeof import('sonner')['toast']
   const toastChangesSaved: typeof import('~/helpers/alerts')['toastChangesSaved']
   const uniqBy: typeof import('lodash-es')['uniqBy']
-  const useAuthenticatedFriend: typeof import('~/helpers/authentication')['useAuthenticatedFriend']
-  const useAuthenticatedUser: typeof import('~/helpers/authentication')['useAuthenticatedUser']
   const useCallback: typeof import('react')['useCallback']
   const useCurrentFriend: typeof import('~/helpers/authentication')['useCurrentFriend']
   const useCurrentUser: typeof import('~/helpers/authentication')['useCurrentUser']

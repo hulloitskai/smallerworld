@@ -5,18 +5,18 @@ import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
 import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
-import { type Friend, type FriendView } from "~/types";
+import { type Friend, type FriendView, type User } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
 import classes from "./FriendCard.module.css";
 
 export interface FriendCardProps {
+  currentUser: User;
   friend: FriendView;
 }
 
-const FriendCard: FC<FriendCardProps> = ({ friend }) => {
-  const currentUser = useAuthenticatedUser();
+const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
   const [menuOpened, setMenuOpened] = useState(false);
 
   // == Join url

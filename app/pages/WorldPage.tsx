@@ -30,12 +30,12 @@ export interface WorldPageProps extends SharedPageProps {
 const ICON_SIZE = 96;
 
 const WorldPage: PageComponent<WorldPageProps> = ({
+  currentUser,
   friends,
   pendingJoinRequests,
 }) => {
   const browserDetection = useBrowserDetection();
   const isStandalone = useIsStandalone();
-  const user = useAuthenticatedUser();
   const { registration } = useWebPush();
 
   // == Add to home screen
@@ -47,8 +47,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         <Box pos="relative">
           <Stack align="center" gap="sm">
             <Image
-              src={user.page_icon.src}
-              srcSet={user.page_icon.src_set}
+              src={currentUser.page_icon.src}
+              srcSet={currentUser.page_icon.src_set}
               w={ICON_SIZE}
               h={ICON_SIZE}
               fit="cover"
@@ -60,7 +60,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             />
             <Stack gap={4} align="center">
               <Title size="h2" lh="xs" ta="center">
-                {possessive(user.name)} world
+                {possessive(currentUser.name)} world
               </Title>
               <Group gap={8}>
                 {(!isStandalone || !!registration) && (
@@ -94,7 +94,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   (!!install ||
                     (browserDetection &&
                       isMobileSafari(browserDetection.browser))) && (
-                    <WorldPageEnableNotificationsActionIcon {...{ user }} />
+                    <WorldPageEnableNotificationsActionIcon
+                      {...{ currentUser }}
+                    />
                   )}
                 {isStandalone && <WorldPageNotificationsButton />}
               </Group>
@@ -130,7 +132,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               <Menu.Item
                 component="a"
                 leftSection={<OpenExternalIcon />}
-                href={routes.users.show.path({ handle: user.handle })}
+                href={routes.users.show.path({ handle: currentUser.handle })}
                 target="_blank"
               >
                 view public profile
@@ -159,7 +161,11 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               <Text inherit ff="heading" fw={600} c="primary" ml={6}>
                 invite a friend to join your world:
               </Text>
-              <AddFriendButton variant="white" size="compact-sm" />
+              <AddFriendButton
+                {...{ currentUser }}
+                variant="white"
+                size="compact-sm"
+              />
             </Group>
           </Alert>
         )}

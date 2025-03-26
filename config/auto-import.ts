@@ -38,12 +38,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "JoinRequestsIcon",
     ],
     "~/helpers/actioncable/subscription": ["useSubscription"],
-    "~/helpers/authentication": [
-      "useCurrentUser",
-      "useAuthenticatedUser",
-      "useCurrentFriend",
-      "useAuthenticatedFriend",
-    ],
+    "~/helpers/authentication": ["useCurrentUser", "useCurrentFriend"],
     "~/helpers/inertia/page": ["usePage", "usePageProps"],
     "~/helpers/inertia/routing": ["useQueryParams"],
     "~/helpers/json": ["formatJSON"],

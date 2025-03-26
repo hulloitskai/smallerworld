@@ -6,7 +6,9 @@ export interface JoinRequestsPageProps extends SharedPageProps {
   currentUser: User;
 }
 
-const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
+const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
+  currentUser,
+}) => {
   const { data } = useRouteSWR<{ joinRequests: JoinRequest[] }>(
     routes.joinRequests.index,
     {
@@ -36,7 +38,10 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = () => {
             <EmptyCard itemLabel="join requests" />
           ) : (
             joinRequests.map(joinRequest => (
-              <JoinRequestCard key={joinRequest.id} {...{ joinRequest }} />
+              <JoinRequestCard
+                key={joinRequest.id}
+                {...{ currentUser, joinRequest }}
+              />
             ))
           )
         ) : (

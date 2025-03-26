@@ -3,15 +3,16 @@ import { pluralize } from "inflection";
 
 import { POST_TYPE_TO_LABEL, POST_TYPES } from "~/helpers/posts";
 import { useWebPush } from "~/helpers/webPush";
-import { type FriendNotificationSettings } from "~/types";
+import { type Friend, type FriendNotificationSettings } from "~/types";
 
 import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
-export interface UserPageNotificationsButtonProps {}
+export interface UserPageNotificationsButtonProps
+  extends Pick<NotificationPopoverBodyProps, "currentFriend"> {}
 
-const UserPageNotificationsButton: FC<
-  UserPageNotificationsButtonProps
-> = () => {
+const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
+  currentFriend,
+}) => {
   const {
     subscription,
     registration,
@@ -65,7 +66,7 @@ const UserPageNotificationsButton: FC<
           </Popover.Target>
           <Popover.Dropdown pb={0}>
             <NotificationPopoverBody
-              {...{ subscription }}
+              {...{ currentFriend, subscription }}
               onClose={() => {
                 setDropdownOpened(false);
               }}
@@ -80,16 +81,16 @@ const UserPageNotificationsButton: FC<
 export default UserPageNotificationsButton;
 
 interface NotificationPopoverBodyProps {
+  currentFriend: Friend;
   subscription: PushSubscription;
   onClose: () => void;
 }
 
 const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
+  currentFriend,
   subscription,
   onClose,
 }) => {
-  const currentFriend = useAuthenticatedFriend();
-
   // == Load notification settings
   const { data } = useRouteSWR<{
     notificationSettings: FriendNotificationSettings;
@@ -106,26 +107,31 @@ const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
   return (
     <Stack gap={0}>
       {notificationSettings ? (
-        <NotificationSettingsForm {...{ notificationSettings }} />
+        <NotificationSettingsForm
+          {...{ currentFriend, notificationSettings }}
+        />
       ) : (
         <Skeleton h={100} />
       )}
       <Divider mt="md" mx="calc(-1 * var(--mantine-spacing-md))" />
       <Center py={8}>
-        <SendTestNotificationButton {...{ subscription, onClose }} />
+        <SendTestNotificationButton
+          {...{ currentFriend, subscription, onClose }}
+        />
       </Center>
     </Stack>
   );
 };
 
 interface NotificationSettingsFormProps {
+  currentFriend: Friend;
   notificationSettings: FriendNotificationSettings;
 }
 
 const NotificationSettingsForm: FC<NotificationSettingsFormProps> = ({
+  currentFriend,
   notificationSettings,
 }) => {
-  const currentFriend = useAuthenticatedFriend();
   const initialValues = useMemo(
     () => ({
       subscribed_post_types: notificationSettings.subscribed_post_types,
@@ -211,15 +217,16 @@ const NotificationSettingsForm: FC<NotificationSettingsFormProps> = ({
 };
 
 interface SendTestNotificationButtonProps {
+  currentFriend: Friend;
   subscription: PushSubscription;
   onClose: () => void;
 }
 
 const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
+  currentFriend,
   subscription,
   onClose,
 }) => {
-  const currentFriend = useAuthenticatedFriend();
   const { trigger, mutating, data } = useRouteMutation<{}>(
     routes.pushSubscriptions.test,
     {

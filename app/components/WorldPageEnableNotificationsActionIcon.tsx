@@ -11,12 +11,12 @@ import { openInstallationInstructionsModal } from "./InstallationInstructionsMod
 import classes from "./WorldPageEnableNotificationsActionIcon.module.css";
 
 export interface WorldPageEnableNotificationsActionIconProps extends BoxProps {
-  user: User;
+  currentUser: User;
 }
 
 const WorldPageEnableNotificationsActionIcon: FC<
   WorldPageEnableNotificationsActionIconProps
-> = ({ user, ...otherProps }) => {
+> = ({ currentUser, ...otherProps }) => {
   const browserDetection = useBrowserDetection();
   const { install, installing } = useInstallPrompt();
   const [installerOpened, setInstallerOpened] = useState(false);
@@ -55,7 +55,7 @@ const WorldPageEnableNotificationsActionIcon: FC<
                 openInstallationInstructionsModal({
                   title: "pin this page to enable notifications",
                   pageName: "smaller world",
-                  pageIcon: user.page_icon,
+                  pageIcon: currentUser.page_icon,
                   children: (
                     <Text size="sm" ta="center" maw={300} mx="auto">
                       pin this page to your home screen so you can{" "}

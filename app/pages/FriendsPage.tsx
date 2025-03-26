@@ -14,7 +14,7 @@ export interface FriendsPageProps extends SharedPageProps {
   currentUser: User;
 }
 
-const FriendsPage: PageComponent<FriendsPageProps> = () => {
+const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   // == Load friends
   const { data: friendsData } = useRouteSWR<{ friends: FriendView[] }>(
     routes.friends.index,
@@ -59,7 +59,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
           </Button>
         </Stack>
         <Stack gap="xs">
-          <AddFriendButton mih={60} size="md" />
+          <AddFriendButton {...{ currentUser }} size="md" mih={60} />
           {friends ? (
             isEmpty(friends) ? (
               <Card
@@ -75,7 +75,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
               </Card>
             ) : (
               [...notifiableFriends, ...unnotifiableFriends].map(friend => (
-                <FriendCard key={friend.id} {...{ friend }} />
+                <FriendCard key={friend.id} {...{ currentUser, friend }} />
               ))
             )
           ) : (

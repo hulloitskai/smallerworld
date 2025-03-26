@@ -7,14 +7,15 @@ import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { type Image, type Upload } from "~/types";
+import { type Image, type Upload, type User } from "~/types";
 
-export interface EditPageProps extends SharedPageProps {}
+export interface EditPageProps extends SharedPageProps {
+  currentUser: User;
+}
 
 const ICON_IMAGE_INPUT_SIZE = 110;
 
-const EditPage: PageComponent<EditPageProps> = () => {
-  const currentUser = useAuthenticatedUser();
+const EditPage: PageComponent<EditPageProps> = ({ currentUser }) => {
   const initialValues = useMemo(
     () => ({
       name: currentUser.name,

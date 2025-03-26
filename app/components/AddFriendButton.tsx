@@ -7,7 +7,12 @@ import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
 
-import { type Friend, type JoinedUser, type JoinRequest } from "~/types";
+import {
+  type Friend,
+  type JoinedUser,
+  type JoinRequest,
+  type User,
+} from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
@@ -18,6 +23,7 @@ export interface AddFriendButtonProps
     Omit<ButtonProps, "children"> {}
 
 const AddFriendButton: FC<AddFriendButtonProps> = ({
+  currentUser,
   fromJoinRequest,
   fromUser,
   ...otherProps
@@ -28,7 +34,9 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
       onClick={() => {
         openModal({
           title: "invite friend",
-          children: <ModalBody {...{ fromJoinRequest, fromUser }} />,
+          children: (
+            <ModalBody {...{ currentUser, fromJoinRequest, fromUser }} />
+          ),
         });
       }}
       {...otherProps}
@@ -41,12 +49,16 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
 export default AddFriendButton;
 
 interface ModalBodyProps {
+  currentUser: User;
   fromJoinRequest?: JoinRequest;
   fromUser?: JoinedUser;
 }
 
-const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest, fromUser }) => {
-  const currentUser = useAuthenticatedUser();
+const ModalBody: FC<ModalBodyProps> = ({
+  currentUser,
+  fromJoinRequest,
+  fromUser,
+}) => {
   const [revealBackToHomeButton, setRevealBackToHomeButton] = useState(false);
   const joinerInfo = useMemo<
     { name: string; phone_number: string } | undefined
