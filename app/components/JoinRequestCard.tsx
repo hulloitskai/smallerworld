@@ -14,9 +14,9 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({
   joinRequest,
   ...otherProps
 }) => (
-  <Card withBorder {...otherProps}>
+  <Card withBorder pb="sm" {...otherProps}>
     <Card.Section inheritPadding py={8}>
-      <Group justify="center">
+      <Group justify="end">
         <Time
           format={DateTime.DATETIME_MED}
           size="xs"
