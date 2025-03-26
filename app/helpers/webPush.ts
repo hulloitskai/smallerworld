@@ -8,7 +8,7 @@ const getPushManager = (): Promise<PushManager> =>
   getOrRegisterServiceWorker().then(({ pushManager }) => pushManager);
 
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
-  getPushManager().then(pushManager => pushManager.getSubscription());
+  getPushManager().then(pushManager => pushManager?.getSubscription() ?? null);
 
 export interface UseWebPushResult {
   supported: boolean | undefined;
