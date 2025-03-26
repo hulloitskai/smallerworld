@@ -92,7 +92,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   </Text>
                 ) : (
                   <>
-                    {!install && (
+                    {install === null && (
                       <Text className={classes.notSupportedText}>
                         sorry, your browser isn&apos;t supported
                         <Text span inherit visibleFrom="xs">

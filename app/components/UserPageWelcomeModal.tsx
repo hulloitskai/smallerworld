@@ -97,7 +97,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           </Text>
         ) : (
           <>
-            {!install && (
+            {install === null && (
               <Text className={classes.notSupportedText}>
                 sorry, your browser isn&apos;t supported
                 <Text span inherit visibleFrom="xs">

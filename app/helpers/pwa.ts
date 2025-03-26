@@ -33,7 +33,7 @@ const useInstallPromptEvent = ():
 
 export interface InstallPromptReturn {
   installing: boolean;
-  install: (() => Promise<void>) | undefined;
+  install: (() => Promise<void>) | null | undefined;
   error: Error | undefined;
 }
 
@@ -41,7 +41,7 @@ export const useInstallPrompt = (): InstallPromptReturn => {
   const installPromptEvent = useInstallPromptEvent();
   const [installing, setInstalling] = useState(false);
   const [error, setError] = useState<Error | undefined>();
-  const install = useMemo<(() => Promise<void>) | undefined>(() => {
+  const install = useMemo<(() => Promise<void>) | null | undefined>(() => {
     if (installPromptEvent) {
       return () => {
         setInstalling(true);
@@ -61,6 +61,7 @@ export const useInstallPrompt = (): InstallPromptReturn => {
           });
       };
     }
+    return installPromptEvent;
   }, [installPromptEvent]);
   return {
     installing,
