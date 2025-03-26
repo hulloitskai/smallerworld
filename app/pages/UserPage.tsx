@@ -57,7 +57,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   return (
     <>
       <Stack>
-        {currentUser && !currentFriend && (
+        {currentUser?.id === user.id && !currentFriend && (
           <Alert
             mb="xl"
             styles={{
@@ -172,7 +172,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           {currentFriend && (
             <UserPageInstallAlert {...{ currentFriend, user }} />
           )}
-          {!currentFriend && !currentUser && (
+          {!currentFriend && !(currentUser?.id === user.id) && (
             <UserPageRequestInvitationAlert {...{ user }} />
           )}
         </>

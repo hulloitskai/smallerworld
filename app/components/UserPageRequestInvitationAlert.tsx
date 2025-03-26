@@ -21,6 +21,9 @@ export const UserPageRequestInvitationAlert: FC<
 > = ({ user }) => {
   const { modals } = useModals();
 
+  // == Drawer modal
+  const [showDrawerModal, setShowDrawerModal] = useState(false);
+
   // == Auto-open modal
   const { intent } = useQueryParams();
   useEffect(() => {
@@ -28,9 +31,6 @@ export const UserPageRequestInvitationAlert: FC<
       setShowDrawerModal(true);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // == Drawer modal
-  const [showDrawerModal, setShowDrawerModal] = useState(false);
 
   // == Page modal state
   const pageDialogOpened = useUserPageDialogOpened(showDrawerModal);
