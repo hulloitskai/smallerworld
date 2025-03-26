@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
         render(
           inertia: "ErrorPage",
           props: {
-            title: "An unexpected error occurred",
+            title: "an unexpected error occurred",
             description: error.message,
             code: status,
             error: nil,
