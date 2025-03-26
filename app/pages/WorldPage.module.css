@@ -60,6 +60,7 @@
     font-family: var(--mantine-font-family-headings);
     min-height: var(--indicator-size);
     padding-inline: 0px;
+    z-index: 99;
   }
 }
 

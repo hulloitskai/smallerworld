@@ -967,6 +967,9 @@ class User
     def restore_phone_number!; end
 
     sig { void }
+    def restore_theme!; end
+
+    sig { void }
     def restore_updated_at!; end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
@@ -1011,11 +1014,62 @@ class User
     sig { returns(T::Boolean) }
     def saved_change_to_phone_number?; end
 
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_theme; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_theme?; end
+
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_updated_at; end
 
     sig { returns(T::Boolean) }
     def saved_change_to_updated_at?; end
+
+    sig { returns(T.nilable(::String)) }
+    def theme; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def theme=(value); end
+
+    sig { returns(T::Boolean) }
+    def theme?; end
+
+    sig { returns(T.nilable(::String)) }
+    def theme_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def theme_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def theme_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def theme_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def theme_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def theme_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def theme_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def theme_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def theme_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def theme_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def theme_was; end
+
+    sig { void }
+    def theme_will_change!; end
 
     sig { returns(::ActiveSupport::TimeWithZone) }
     def updated_at; end
@@ -1082,6 +1136,9 @@ class User
 
     sig { returns(T::Boolean) }
     def will_save_change_to_phone_number?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_theme?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_updated_at?; end

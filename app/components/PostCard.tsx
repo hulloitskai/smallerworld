@@ -12,7 +12,7 @@ import Lightbox from "yet-another-react-lightbox";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Image as ImageModel, type Post } from "~/types";
+import { type Image as ImageType, type Post } from "~/types";
 
 import classes from "./PostCard.module.css";
 import "yet-another-react-lightbox/styles.css";
@@ -151,7 +151,7 @@ const PostCard: FC<PostCardProps> = ({
 export default PostCard;
 
 interface PostImageProps extends BoxProps {
-  image: ImageModel;
+  image: ImageType;
 }
 
 const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {

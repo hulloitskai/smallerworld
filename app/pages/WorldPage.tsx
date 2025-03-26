@@ -125,7 +125,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               <Menu.Item
                 component={Link}
                 leftSection={<EditIcon />}
-                href={routes.signup.edit.path()}
+                href={routes.world.edit.path()}
               >
                 customize your page
               </Menu.Item>

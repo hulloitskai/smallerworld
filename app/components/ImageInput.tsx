@@ -8,7 +8,7 @@ import { type CSSProperties, useId } from "react";
 import PhotoIcon from "~icons/heroicons/photo-20-solid";
 
 import { upload } from "~/helpers/upload";
-import { type Image as ImageModel, type Upload } from "~/types";
+import { type Image as ImageType, type Upload } from "~/types";
 
 import classes from "./ImageInput.module.css";
 import "@mantine/dropzone/styles.layer.css";
@@ -28,7 +28,7 @@ export interface ImageInputProps
   defaultValue?: Upload | null;
   previewFit?: CSSProperties["objectFit"];
   onChange?: (value: Upload | null) => void;
-  onPreviewChange?: (image: ImageModel | null) => void;
+  onPreviewChange?: (image: ImageType | null) => void;
   radius?: ImageProps["radius"];
   center?: boolean;
 }
@@ -65,7 +65,7 @@ const ImageInput: FC<ImageInputProps> = ({
 
   // == Load preview image
   const { data, mutate } = useRouteSWR<{
-    image: ImageModel | null;
+    image: ImageType | null;
   }>(routes.images.show, {
     descriptor: "load preview image",
     params: resolvedValue ? { signed_id: resolvedValue.signedId } : null,
@@ -86,6 +86,7 @@ const ImageInput: FC<ImageInputProps> = ({
   return (
     <Input.Wrapper
       labelProps={{ htmlFor: inputId, ...labelProps }}
+      {...{ label }}
       {...otherProps}
     >
       <Stack

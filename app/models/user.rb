@@ -11,6 +11,7 @@
 #  name                          :string           not null
 #  notifications_last_cleared_at :datetime
 #  phone_number                  :string           not null
+#  theme                         :string
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #

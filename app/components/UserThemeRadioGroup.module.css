@@ -1,0 +1,28 @@
+.radioCard {
+  --card-size: rem(60px);
+
+  width: var(--card-size);
+  height: var(--card-size);
+  border-color: transparent;
+  border-radius: 999px;
+  background:;
+  padding: 3px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &[data-checked] {
+    border-color: var(--mantine-color-primary-outline);
+  }
+}
+
+.noTheme {
+  width: 100%;
+  height: 100%;
+  background-color: light-dark(
+    var(--mantine-color-gray-1),
+    var(--mantine-color-dark-9)
+  );
+  border-radius: 999px;
+}

@@ -13,6 +13,9 @@ module GeneratedPathHelpersModule
   def actual_db_schema_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def backdrop_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def change_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -25,7 +28,7 @@ module GeneratedPathHelpersModule
   def delivered_notification_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def edit_path(*args); end
+  def edit_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def file_path(*args); end

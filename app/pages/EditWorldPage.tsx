@@ -6,32 +6,43 @@ import ProfileIcon from "~icons/heroicons/user-circle-20-solid";
 import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
+import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { useUserTheme } from "~/helpers/userThemes";
 import { type Image, type Upload, type User } from "~/types";
 
-export interface EditPageProps extends SharedPageProps {
+export interface EditWorldPageProps extends SharedPageProps {
   currentUser: User;
 }
 
 const ICON_IMAGE_INPUT_SIZE = 110;
 
-const EditPage: PageComponent<EditPageProps> = ({ currentUser }) => {
+const EditWorldPage: PageComponent<EditWorldPageProps> = ({ currentUser }) => {
+  // == Form
   const initialValues = useMemo(
     () => ({
       name: currentUser.name,
-      page_icon_upload: { signedId: currentUser.page_icon.signed_id } as Upload,
+      page_icon_upload: {
+        signedId: currentUser.page_icon.signed_id,
+      } as Upload | null,
+      theme: currentUser.theme ?? ("" as const),
     }),
     [currentUser],
   );
   const { values, getInputProps, submitting, submit, isDirty } = useForm({
-    action: routes.signup.update,
+    action: routes.world.update,
     descriptor: "update page",
     initialValues,
-    transformValues: ({ page_icon_upload, ...values }) => ({
+    transformValues: ({ page_icon_upload, theme, ...values }) => ({
       user: {
         ...values,
         page_icon: page_icon_upload?.signedId ?? "",
+        theme: theme || null,
       },
+    }),
+    transformErrors: ({ page_icon, ...errors }) => ({
+      ...errors,
+      page_icon_upload: page_icon,
     }),
     validate: {
       name: hasLength({ max: 30 }, "Must be less than 30 characters"),
@@ -40,7 +51,10 @@ const EditPage: PageComponent<EditPageProps> = ({ currentUser }) => {
       router.visit(routes.world.show.path());
     },
   });
-  const [pageIcon, setPageIcon] = useState<Image | null>(
+  useUserTheme(values.theme || null);
+
+  // == Page icon preview
+  const [pageIconPreview, setPageIconPreview] = useState<Image | null>(
     () => currentUser.page_icon,
   );
 
@@ -63,7 +77,7 @@ const EditPage: PageComponent<EditPageProps> = ({ currentUser }) => {
             <Stack gap={4} align="center">
               <HomeScreenPreview
                 pageName={values.name}
-                pageIcon={pageIcon}
+                pageIcon={pageIconPreview}
                 arrowLabel="your page!"
               />
               <Text ta="center" size="xs" c="dimmed" fw={600}>
@@ -92,8 +106,9 @@ const EditPage: PageComponent<EditPageProps> = ({ currentUser }) => {
                   radius={ICON_IMAGE_INPUT_SIZE / APPLE_ICON_RADIUS_RATIO}
                   required
                   withAsterisk={false}
-                  onPreviewChange={setPageIcon}
+                  onPreviewChange={setPageIconPreview}
                 />
+                <UserThemeRadioGroup {...getInputProps("theme")} />
               </Stack>
               <Button
                 type="submit"
@@ -113,10 +128,10 @@ const EditPage: PageComponent<EditPageProps> = ({ currentUser }) => {
   );
 };
 
-EditPage.layout = page => (
-  <AppLayout title="edit your page">
+EditWorldPage.layout = page => (
+  <AppLayout title="customize your page">
     <Center>{page}</Center>
   </AppLayout>
 );
 
-export default EditPage;
+export default EditWorldPage;

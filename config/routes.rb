@@ -63,12 +63,13 @@ Rails.application.routes.draw do
     resource :signup,
              only: %i[new create],
              path_names: { new: "" }
-    get :edit, to: "signups#edit"
-    post :edit, to: "signups#update"
   end
 
   # == World
-  resource :world, only: :show, export: { namespace: "world" }
+  resource :world, only: %i[show edit update], export: { namespace: "world" }
+
+  # == Backdrops
+  resources :backdrops, only: :show, export: true
 
   # == Friends
   resources :friends, only: :index, path: "/world/friends", export: true

@@ -5,7 +5,6 @@ import {
   type ContainerProps,
   type MantineSize,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 
 import {
   type DynamicProp,
@@ -13,13 +12,16 @@ import {
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
 import { useClearAppBadge } from "~/helpers/pwa";
-import { type SidebarControls } from "~/helpers/sidebar";
+import {
+  USER_THEME_BACKGROUND_COLORS,
+  useUserTheme,
+} from "~/helpers/userThemes";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
 import AppMeta, { type AppMetaProps } from "./AppMeta";
 import PageContainer from "./PageContainer";
 import PageLayout from "./PageLayout";
-import { SidebarControlsProvider } from "./SidebarControlsProvider";
+import UserThemeProvider from "./UserThemeProvider";
 
 import classes from "./AppLayout.module.css";
 
@@ -34,7 +36,6 @@ export interface AppLayoutProps<PageProps extends SharedPageProps>
   containerProps?: ContainerProps;
   withGutter?: boolean;
   gutterSize?: MantineSize | (string & {}) | number;
-  sidebar?: DynamicProp<PageProps, ReactNode>;
   logoHref?: DynamicProp<PageProps, AppHeaderProps["logoHref"]>;
   manifestUrl?: DynamicProp<PageProps, AppMetaProps["manifestUrl"]>;
 }
@@ -57,7 +58,6 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   containerProps,
   withGutter,
   gutterSize,
-  sidebar: sidebarProp,
   logoHref: logoHrefProp,
   manifestUrl: manifestUrlProp,
   children,
@@ -82,23 +82,6 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   // == Header
   const logoHref = useResolveDynamicProp(logoHrefProp);
 
-  // == Sidebar
-  const sidebar = useResolveDynamicProp(sidebarProp);
-  const [
-    sidebarOpened,
-    { toggle: toggleSidebar, close: closeSidebar, open: openSidebar },
-  ] = useDisclosure();
-  const sidebarControls = useMemo<SidebarControls | null>(() => {
-    return sidebar
-      ? {
-          opened: sidebarOpened,
-          toggle: toggleSidebar,
-          close: closeSidebar,
-          open: openSidebar,
-        }
-      : null;
-  }, [sidebar, sidebarOpened, toggleSidebar, closeSidebar, openSidebar]);
-
   // == Content
   const { style: containerStyle, ...otherContainerProps } =
     containerProps ?? {};
@@ -118,68 +101,82 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
     children
   );
 
+  const shell = (
+    <UserThemedAppShell
+      withBorder={LAYOUT_WITH_BORDER}
+      header={{ height: isStandalone === false ? 46 : 0 }}
+      padding={padding ?? (withContainer ? undefined : "md")}
+      classNames={{
+        root: classes.shell,
+        header: classes.header,
+        navbar: classes.navbar,
+      }}
+      data-vaul-drawer-wrapper
+      {...otherProps}
+    >
+      {isStandalone === false && <AppHeader {...{ logoHref }} />}
+      <AppShell.Main className={classes.main} {...(isStandalone && { pt: 16 })}>
+        {!isEmpty(breadcrumbs) && (
+          <Breadcrumbs
+            mx={10}
+            mt={6}
+            classNames={{
+              separator: classes.breadcrumbSeparator,
+            }}
+            styles={{
+              root: {
+                flexWrap: "wrap",
+                rowGap: rem(4),
+              },
+              separator: {
+                marginLeft: 6,
+                marginRight: 6,
+              },
+            }}
+          >
+            {breadcrumbs.map(({ title, href }, index) => (
+              <Anchor component={Link} href={href} key={index} size="sm">
+                {title}
+              </Anchor>
+            ))}
+          </Breadcrumbs>
+        )}
+        {content}
+      </AppShell.Main>
+      <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
+    </UserThemedAppShell>
+  );
   return (
     <PageLayout>
       <AppMeta {...{ title, description, imageUrl, noIndex, manifestUrl }} />
-      <SidebarControlsProvider controls={sidebarControls}>
-        <AppShell
-          withBorder={LAYOUT_WITH_BORDER}
-          header={{ height: isStandalone === false ? 46 : 16 }}
-          {...(sidebar && {
-            navbar: {
-              width: 240,
-              breakpoint: "sm",
-              collapsed: { mobile: !sidebarOpened },
-            },
-          })}
-          padding={padding ?? (withContainer ? undefined : "md")}
-          classNames={{
-            root: classes.shell,
-            header: classes.header,
-            navbar: classes.navbar,
-          }}
-          data-vaul-drawer-wrapper
-          {...otherProps}
-        >
-          {isStandalone === false ? (
-            <AppHeader {...{ logoHref }} />
-          ) : (
-            <AppShell.Header />
-          )}
-          {sidebar}
-          <AppShell.Main className={classes.main}>
-            {!isEmpty(breadcrumbs) && (
-              <Breadcrumbs
-                mx={10}
-                mt={6}
-                classNames={{
-                  separator: classes.breadcrumbSeparator,
-                }}
-                styles={{
-                  root: {
-                    flexWrap: "wrap",
-                    rowGap: rem(4),
-                  },
-                  separator: {
-                    marginLeft: 6,
-                    marginRight: 6,
-                  },
-                }}
-              >
-                {breadcrumbs.map(({ title, href }, index) => (
-                  <Anchor component={Link} href={href} key={index} size="sm">
-                    {title}
-                  </Anchor>
-                ))}
-              </Breadcrumbs>
-            )}
-            {content}
-          </AppShell.Main>
-          <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
-        </AppShell>
-      </SidebarControlsProvider>
+      <UserThemeProvider>{shell}</UserThemeProvider>
     </PageLayout>
   );
 };
 
 export default AppLayout;
+
+const UserThemedAppShell: FC<AppShellProps> = ({
+  style,
+  children,
+  ...otherProps
+}) => {
+  const theme = useUserTheme();
+  return (
+    <AppShell
+      className={classes.main}
+      style={[
+        style,
+        {
+          ...(theme && {
+            "--mantine-color-body": USER_THEME_BACKGROUND_COLORS[theme],
+          }),
+        },
+      ]}
+      mod={{ "user-theme": theme }}
+      {...otherProps}
+    >
+      {children}
+    </AppShell>
+  );
+};

@@ -132,6 +132,7 @@ const createTheme = (
       Card: Card.extend({
         classNames: {
           root: classes.card,
+          section: classes.cardSection,
         },
       }),
       Drawer: Drawer.extend({
@@ -192,6 +193,7 @@ const createTheme = (
           item: classes.menuItem,
           itemSection: classes.menuItemSection,
           itemLabel: classes.menuItemLabel,
+          divider: cn(classes.menuDivider, classes.divider),
         },
       }),
       NavLink: NavLink.extend({

@@ -1,8 +1,4 @@
-import { AppShell, type AppShellHeaderProps, Burger } from "@mantine/core";
-
-// import { Image } from "@mantine/core";
-// import logoSrc from "~/assets/images/logo-circle.png";
-import { useSidebarControls } from "~/helpers/sidebar";
+import { AppShell, type AppShellHeaderProps } from "@mantine/core";
 
 import AppMenu from "./AppMenu";
 
@@ -15,7 +11,6 @@ export interface AppHeaderProps extends Omit<AppShellHeaderProps, "children"> {
 const AppHeader = forwardRef<HTMLDivElement, AppHeaderProps>(
   ({ className, logoHref, ...otherProps }, ref) => {
     const isStandalone = useIsStandalone();
-    const sidebarControls = useSidebarControls();
     return (
       <AppShell.Header
         {...{ ref }}
@@ -25,15 +20,6 @@ const AppHeader = forwardRef<HTMLDivElement, AppHeaderProps>(
       >
         <Group justify="space-between" gap={8} h="100%">
           <Group gap={4}>
-            {sidebarControls && (
-              <Burger
-                className={classes.clickable}
-                opened={sidebarControls.opened}
-                onClick={sidebarControls.toggle}
-                hiddenFrom="sm"
-                size="sm"
-              />
-            )}
             <Button
               component={Link}
               href={logoHref ?? routes.start.show.path()}

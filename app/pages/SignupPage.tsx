@@ -7,8 +7,10 @@ import ProfileIcon from "~icons/heroicons/user-circle-20-solid";
 import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
+import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { APPLE_ICON_RADIUS_RATIO, CANONICAL_DOMAIN } from "~/helpers/app";
-import { type Image, type Upload } from "~/types";
+import { useUserTheme } from "~/helpers/userThemes";
+import { type Image, type Upload, type UserTheme } from "~/types";
 
 export interface SignupPageProps extends SharedPageProps {}
 
@@ -22,6 +24,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
       name: "",
       prefixed_handle: "",
       page_icon_upload: null as Upload | null,
+      theme: "" as UserTheme | "",
     },
     transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => ({
       user: {
@@ -29,6 +32,11 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
         handle: prefixed_handle.replace(/^@/, ""),
         page_icon: page_icon_upload?.signedId ?? "",
       },
+    }),
+    transformErrors: ({ page_icon, handle, ...errors }) => ({
+      ...errors,
+      prefixed_handle: handle,
+      page_icon_upload: page_icon,
     }),
     validate: {
       name: hasLength({ max: 30 }, "Must be less than 30 characters"),
@@ -43,7 +51,6 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
       router.visit(routes.world.show.path());
     },
   });
-  const [pageIcon, setPageIcon] = useState<Image | null>(null);
   useEffect(() => {
     if (values.name) {
       const handle = values.name
@@ -52,6 +59,10 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
       setFieldValue("prefixed_handle", `@${handle}`);
     }
   }, [values.name]); // eslint-disable-line react-hooks/exhaustive-deps
+  useUserTheme(values.theme || null);
+
+  // == Page icon preview
+  const [pageIconPreview, setPageIconPreview] = useState<Image | null>(null);
 
   return (
     <Card w="100%" maw={380} withBorder>
@@ -63,7 +74,7 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
           <Stack gap={4} align="center">
             <HomeScreenPreview
               pageName={values.name}
-              pageIcon={pageIcon}
+              pageIcon={pageIconPreview}
               arrowLabel="your page!"
             />
             <Text ta="center" size="xs" c="dimmed" fw={600}>
@@ -121,8 +132,9 @@ const SignupPage: PageComponent<SignupPageProps> = () => {
                 radius={ICON_IMAGE_INPUT_SIZE / APPLE_ICON_RADIUS_RATIO}
                 required
                 withAsterisk={false}
-                onPreviewChange={setPageIcon}
+                onPreviewChange={setPageIconPreview}
               />
+              <UserThemeRadioGroup {...getInputProps("theme")} />
             </Stack>
             <Button
               type="submit"

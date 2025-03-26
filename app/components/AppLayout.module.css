@@ -11,28 +11,6 @@
     var(--app-shell-header-height) + var(--safe-area-inset-top, 0px)
   );
   padding-top: var(--safe-area-inset-top, 0px);
-  background-color: transparent;
-
-  &::before {
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: -8px;
-    content: "";
-    backdrop-filter: blur(4px);
-    background-image: linear-gradient(
-      to top,
-      transparent,
-      alpha(var(--mantine-color-body), 0.8)
-    );
-    mask: linear-gradient(to top, transparent, black rem(24px));
-  }
-
-  [data-radix-focus-guard] + :global(#app) &::before {
-    visibility: hidden;
-  }
 }
 
 .footer {

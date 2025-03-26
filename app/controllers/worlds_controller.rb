@@ -38,4 +38,26 @@ class WorldsController < ApplicationController
       "pendingJoinRequests" => pending_join_requests,
     })
   end
+
+  # GET /world/edit
+  def edit
+    render(inertia: "EditWorldPage")
+  end
+
+  # PUT /world
+  def update
+    user = authenticate_user!
+    user_params = T.let(
+      params.expect(user: %i[name page_icon theme]),
+      ActionController::Parameters,
+    )
+    if user.update(user_params)
+      render(json: { user: UserSerializer.one(user) })
+    else
+      render(
+        json: { errors: user.form_errors },
+        status: :unprocessable_entity,
+      )
+    end
+  end
 end

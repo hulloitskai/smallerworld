@@ -4,7 +4,6 @@
 class SignupsController < ApplicationController
   # == Filters
   before_action :require_supabase_authentication!, only: %i[new create]
-  before_action :authenticate_user!, only: :edit
 
   # == Actions
   # GET /signup
@@ -16,11 +15,6 @@ class SignupsController < ApplicationController
     end
   end
 
-  # GET /edit
-  def edit
-    render(inertia: "EditPage")
-  end
-
   # POST /signup
   def create
     auth_claims = supabase_auth_claims or raise "Missing Supabase auth claims"
@@ -30,20 +24,6 @@ class SignupsController < ApplicationController
       user.phone_number = auth_claims.fetch("phone")
     end
     if user.save
-      render(json: { user: UserSerializer.one(user) })
-    else
-      render(json: { errors: user.form_errors }, status: :unprocessable_entity)
-    end
-  end
-
-  # POST /edit
-  def update
-    user = authenticate_user!
-    user_params = T.let(
-      params.expect(user: %i[name page_icon]),
-      ActionController::Parameters,
-    )
-    if user.update(user_params)
       render(json: { user: UserSerializer.one(user) })
     else
       render(json: { errors: user.form_errors }, status: :unprocessable_entity)

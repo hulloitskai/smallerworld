@@ -27,6 +27,12 @@
       }
     }
 
+    [data-user-theme] .input {
+      @mixin dark {
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
+
     .modalHeader {
       min-height: 0px;
       align-items: start;
@@ -64,9 +70,36 @@
       }
     }
 
+    [data-user-theme] .card {
+      @mixin dark {
+        --blur-radius: rem(8px);
+        background-color: alpha(var(--mantine-color-black), 0.4);
+        backdrop-filter: blur(var(--blur-radius));
+        -webkit-backdrop-filter: blur(var(--blur-radius));
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
+
+    [data-user-theme] .cardSection {
+      @mixin dark {
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
+
     .dropdown {
       @mixin dark {
         background-color: var(--mantine-color-dark-8);
+      }
+    }
+
+    [data-user-theme] .dropdown {
+      @mixin dark {
+        --blur-radius: rem(8px);
+
+        background-color: alpha(var(--mantine-color-black), 0.4);
+        backdrop-filter: blur(var(--blur-radius));
+        -webkit-backdrop-filter: blur(var(--blur-radius));
+        border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
 
@@ -138,6 +171,16 @@
     @mixin dark {
       --divider-color: var(--mantine-color-dark-6);
     }
+  }
+
+  [data-user-theme] .divider {
+    @mixin dark {
+      --divider-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+
+  .menuDivider {
+    border-color: var(--divider-color) !important;
   }
 
   .dividerLabel {
