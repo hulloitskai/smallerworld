@@ -10,6 +10,7 @@
   :global(.epr-search-container) input {
     font-size: var(--mantine-font-size-md);
     font-family: var(--mantine-font-family);
+    border-radius: var(--mantine-radius-default);
 
     &:focus {
       border-color: var(--mantine-color-primary-outline);
@@ -17,7 +18,6 @@
 
     @mixin dark {
       background-color: transparent;
-      border-radius: var(--mantine-radius-default);
     }
   }
 

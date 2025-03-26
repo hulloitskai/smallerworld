@@ -8,10 +8,15 @@ import classes from "./EmojiPicker.module.css";
 
 export interface EmojiPickerProps extends PickerProps {}
 
-const EmojiPicker: FC<EmojiPickerProps> = ({ className, ...otherProps }) => (
+const EmojiPicker: FC<EmojiPickerProps> = ({
+  className,
+  reactionsDefaultOpen,
+  ...otherProps
+}) => (
   <_EmojiPicker
     className={cn("EmojiPicker", classes.picker, className)}
-    autoFocusSearch
+    autoFocusSearch={!reactionsDefaultOpen}
+    {...{ reactionsDefaultOpen }}
     previewConfig={{ showPreview: false }}
     emojiStyle={EmojiStyle.NATIVE}
     skinTonesDisabled
