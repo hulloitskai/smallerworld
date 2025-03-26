@@ -67,7 +67,7 @@ class Notification < ApplicationRecord
   end
 
   # == Callbacks
-  after_create_commit :push_later, unless: :pushed?
+  after_create :push_later, unless: :pushed?
 
   # == Scopes
   scope :to_friends, -> { where(recipient_type: "Friend") }

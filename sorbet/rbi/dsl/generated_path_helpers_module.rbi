@@ -13,9 +13,6 @@ module GeneratedPathHelpersModule
   def actual_db_schema_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def backdrop_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def change_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

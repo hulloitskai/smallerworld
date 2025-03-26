@@ -81,7 +81,7 @@ class Post < ApplicationRecord
   validates :title, presence: true, allow_nil: true
 
   # == Callbacks
-  after_create :create_notifications!
+  after_create :create_notifications_later
 
   # == Scopes
   scope :visible_to_public, -> { where(visibility: :public) }
@@ -118,6 +118,11 @@ class Post < ApplicationRecord
         notifications.create!(recipient: friend, push_delay: 1.minute)
       end
     end
+  end
+
+  sig { void }
+  def create_notifications_later
+    CreatePostNotificationsJob.perform_later(self)
   end
 
   sig { returns(Friend::PrivateRelation) }
