@@ -36,15 +36,19 @@ export const setupSentry = () => {
       ],
       beforeSend(event) {
         if (event.exception?.values) {
-          const isFailedToFetch = event.exception.values.some(
-            ({ type, value }) => {
-              if (type !== "TypeError" || !value) {
-                return false;
-              }
-              return ["Failed to fetch", "Load failed"].includes(value);
-            },
-          );
-          if (isFailedToFetch) {
+          const shouldSend = event.exception.values.every(({ type, value }) => {
+            if (!value) {
+              return false;
+            }
+            if (
+              type === "TypeError" &&
+              ["Failed to fetch", "Load failed"].includes(value)
+            ) {
+              return false;
+            }
+            return true;
+          });
+          if (!shouldSend) {
             return null;
           }
         }

@@ -1,4 +1,8 @@
-import { type FetchOptions, type HeaderOptions } from "@js-from-routes/client";
+import {
+  type FetchOptions,
+  type HeaderOptions,
+  type ResponseError,
+} from "@js-from-routes/client";
 import { Config } from "@js-from-routes/client";
 import { identity } from "lodash-es";
 
@@ -51,4 +55,20 @@ export const setupRoutes = (): void => {
   };
   Config.deserializeData = identity;
   Config.serializeData = identity;
+  Config.unwrapResponseError = async (response, responseAs) => {
+    const error: ResponseError = new Error(
+      response.statusText ||
+        `HTTP Client Error with status code: ${response.status}`,
+    );
+    error.response = response;
+    try {
+      /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+      const body = await Config.unwrapResponse(response, responseAs);
+      error.body = responseAs === "json" ? Config.deserializeData(body) : body;
+      /* eslint-enable @typescript-eslint/no-unsafe-assignment */
+    } catch (error) {
+      console.error("failed to unwrap response error", error);
+    }
+    return error;
+  };
 };
