@@ -13,8 +13,8 @@ export const useBrowserDetection = (): IResult | undefined => {
 export const isMobileSafari = (browser: IBrowser): boolean =>
   browser.name === "Mobile Safari";
 
-export const isDesktopSafari = (browser: IBrowser): boolean =>
-  browser.name === "Safari";
+// export const isDesktopSafari = (browser: IBrowser): boolean =>
+//   browser.name === "Safari";
 
 const isInAppBrowser = (browser: IBrowser): boolean => browser.type === "inapp";
 

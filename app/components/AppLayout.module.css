@@ -29,6 +29,10 @@
     );
     mask: linear-gradient(to top, transparent, black rem(24px));
   }
+
+  [data-radix-focus-guard] + :global(#app) &::before {
+    visibility: hidden;
+  }
 }
 
 .footer {
