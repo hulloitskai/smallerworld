@@ -33,7 +33,7 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
       }}
       {...otherProps}
     >
-      add as friend
+      invite to your world
     </Button>
   );
 };
@@ -88,6 +88,7 @@ const ModalBody: FC<ModalBodyProps> = ({ fromJoinRequest, fromUser }) => {
     onSuccess: (_data: { friend: Friend }) => {
       void mutateRoute(routes.friends.index);
       void mutateRoute(routes.joinRequests.index);
+      void mutateRoute(routes.users.joined);
       setTimeout(() => {
         setRevealBackToHomeButton(true);
       }, 2000);

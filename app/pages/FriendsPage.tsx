@@ -15,8 +15,6 @@ export interface FriendsPageProps extends SharedPageProps {
 }
 
 const FriendsPage: PageComponent<FriendsPageProps> = () => {
-  const isStandalone = useIsStandalone();
-
   // == Load friends
   const { data: friendsData } = useRouteSWR<{ friends: FriendView[] }>(
     routes.friends.index,
@@ -37,8 +35,8 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
     descriptor: "load joined users",
   });
   const { users: joinedUsers } = joinedUsersData ?? {};
-  const [joinedNonFriends, joinedFriends] = useMemo(
-    () => partition(joinedUsers, user => !!user.friend_access_token),
+  const [joinedFriends, joinedNonFriends] = useMemo(
+    () => partition(joinedUsers, user => user.friended),
     [joinedUsers],
   );
 
@@ -88,9 +86,12 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
       </Stack>
       {!!joinedUsers && !isEmpty(joinedUsers) && (
         <Stack gap="sm">
-          <Title order={2} size="h3" ta="center">
-            worlds you&apos;re a part of
-          </Title>
+          <Stack gap={4} align="center">
+            <Box component={SmallerWorldIcon} fz="xl" />
+            <Title order={2} size="h3" ta="center">
+              your friends&apos; worlds
+            </Title>
+          </Stack>
           <Stack gap="xs">
             {[...joinedNonFriends, ...joinedFriends].map(user => (
               <JoinedUserCard key={user.id} {...{ user }} />

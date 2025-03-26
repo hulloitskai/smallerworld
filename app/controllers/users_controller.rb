@@ -36,26 +36,16 @@ class UsersController < ApplicationController
   # GET /users/joined
   def joined
     current_user = authenticate_user!
-    joined_friend_push_registrations = PushRegistration
-      .joins(:push_subscription)
-      .where(
-        owner_type: "Friend",
-        push_subscriptions: {
-          endpoint: current_user.push_endpoints,
-        },
-      )
-    joined_friends = Friend
-      .includes(:user)
-      .where(id: joined_friend_push_registrations.select(:owner_id))
+    colocated_friends = current_user.colocated_friends
     friend_phone_numbers = current_user.friends
       .where(
-        phone_number: joined_friends
+        phone_number: colocated_friends
           .references(:user)
           .select("users.phone_number"),
       )
       .pluck(:phone_number)
       .to_set
-    joined_users = joined_friends.map do |friend|
+    joined_users = colocated_friends.map do |friend|
       user = friend.user!
       JoinedUser.new(
         user:,

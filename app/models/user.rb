@@ -66,9 +66,19 @@ class User < ApplicationRecord
     Admin.phone_numbers.include?(phone_number)
   end
 
-  sig { returns(T::Array[String]) }
-  def push_endpoints
-    push_subscriptions.pluck(:endpoint)
+  sig { returns(Friend::PrivateRelation) }
+  def colocated_friends
+    friend_push_registrations = PushRegistration
+      .joins(:push_subscription)
+      .where(
+        owner_type: "Friend",
+        push_subscriptions: {
+          endpoint: push_subscriptions.select(:endpoint),
+        },
+      )
+    Friend
+      .includes(:user)
+      .where(id: friend_push_registrations.select(:owner_id))
   end
 
   sig { returns(Post) }

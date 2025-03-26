@@ -14,8 +14,19 @@ const JoinedUserCard: FC<JoinedUserCardProps> = ({ user, ...otherProps }) => (
   <Card withBorder pb="sm" {...otherProps}>
     <Group align="center" gap="xs" justify="space-between">
       <List className={classes.list}>
-        <List.Item icon={<UserIcon />} fw={600}>
-          {user.name}
+        <List.Item icon={<UserIcon />}>
+          <Anchor
+            href={routes.users.show.path({
+              handle: user.handle,
+              query: {
+                friend_token: user.friend_access_token,
+              },
+            })}
+            target="_blank"
+            fw={600}
+          >
+            {user.name}
+          </Anchor>
         </List.Item>
         <List.Item icon={<PhoneIcon />}>
           <CopyButton value={user.phone_number}>
@@ -25,19 +36,6 @@ const JoinedUserCard: FC<JoinedUserCardProps> = ({ user, ...otherProps }) => (
               </Tooltip>
             )}
           </CopyButton>
-        </List.Item>
-        <List.Item icon={<SmallerWorldIcon />}>
-          <Anchor
-            href={routes.users.show.path({
-              handle: user.handle,
-              query: {
-                friend_token: user.friend_access_token,
-              },
-            })}
-            target="_blank"
-          >
-            @{user.handle}
-          </Anchor>
         </List.Item>
       </List>
       {user.friended ? (
