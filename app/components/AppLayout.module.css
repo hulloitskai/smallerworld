@@ -28,6 +28,8 @@
 }
 
 .main {
+  --app-shell-footer-offset: var(--app-shell-footer-height, 0px);
+
   flex-grow: 1;
   background-color: var(--mantine-color-body);
   display: flex;
@@ -40,7 +42,9 @@
   );
   padding-bottom: 0px;
 
-  --app-shell-footer-offset: var(--app-shell-footer-height, 0px);
+  @media (display-mode: standalone) {
+    margin-top: max(var(--safe-area-inset-top, 0px), var(--mantine-spacing-md));
+  }
 }
 
 .navbar {

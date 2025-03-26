@@ -71,6 +71,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   const title = useResolveDynamicProp(titleProp);
   const description = useResolveDynamicProp(descriptionProp);
   const manifestUrl = useResolveDynamicProp(manifestUrlProp);
+
   // == Breadcrumbs
   const page = usePage<PageProps>();
   const breadcrumbs = useMemo<AppBreadcrumb[]>(() => {
@@ -104,7 +105,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   const shell = (
     <UserThemedAppShell
       withBorder={LAYOUT_WITH_BORDER}
-      header={{ height: isStandalone === false ? 46 : 0 }}
+      {...(isStandalone === false && { header: { height: 46 } })}
       padding={padding ?? (withContainer ? undefined : "md")}
       classNames={{
         root: classes.shell,
@@ -115,7 +116,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
       {...otherProps}
     >
       {isStandalone === false && <AppHeader {...{ logoHref }} />}
-      <AppShell.Main className={classes.main} {...(isStandalone && { pt: 16 })}>
+      <AppShell.Main className={classes.main}>
         {!isEmpty(breadcrumbs) && (
           <Breadcrumbs
             mx={10}
