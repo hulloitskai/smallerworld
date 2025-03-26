@@ -46,9 +46,16 @@ interface Insets {
 const getSafeAreaInsets = (): Insets => {
   const documentStyle = getComputedStyle(document.documentElement);
   const initialInsets = { left: 0, top: 0, right: 0, bottom: 0 };
-  return mapValues(initialInsets, (_, side) =>
-    getPixels(documentStyle.getPropertyValue(`--safe-area-inset-${side}`)),
-  );
+  try {
+    return mapValues(initialInsets, (_, side) =>
+      getPixels(documentStyle.getPropertyValue(`--safe-area-inset-${side}`)),
+    );
+  } catch (error) {
+    if (error instanceof ReferenceError) {
+      return initialInsets;
+    }
+    throw error;
+  }
 };
 
 const getPixels = (value: string): number =>
