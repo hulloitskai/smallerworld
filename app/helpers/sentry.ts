@@ -20,7 +20,7 @@ export const setupSentry = () => {
       environment: import.meta.env.RAILS_ENV,
       tracesSampleRate,
       profilesSampleRate,
-      enabled: import.meta.env.RAILS_ENV === "production",
+      // enabled: import.meta.env.RAILS_ENV === "production",
       sendDefaultPii: true,
       integrations: [
         contextLinesIntegration(),
@@ -35,14 +35,14 @@ export const setupSentry = () => {
       ],
       beforeSend(event) {
         if (event.exception?.values) {
-          const isFailedToFetch = event.exception.values.some(exception => {
-            if (!(exception instanceof TypeError)) {
-              return false;
-            }
-            return ["Failed to fetch", "Load failed"].includes(
-              exception.message,
-            );
-          });
+          const isFailedToFetch = event.exception.values.some(
+            ({ type, value }) => {
+              if (type !== "TypeError" || !value) {
+                return false;
+              }
+              return ["Failed to fetch", "Load failed"].includes(value);
+            },
+          );
           if (isFailedToFetch) {
             return null;
           }
