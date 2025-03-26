@@ -20,7 +20,7 @@
   background-position: -50rem top; /*50px*/
   background-repeat: no-repeat;
   background-size: 50rem 100%;
-  animation: shimmer 8s;
+  animation: shimmer 8s infinite;
   animation-delay: 1s;
   border: none;
 
@@ -41,7 +41,7 @@
       --button-hover,
       var(--mantine-primary-color-filled-hover)
     );
-    animation-play-state: paused;
+    background-position: -50rem top !important;
   }
 }
 
@@ -49,7 +49,7 @@
   --badge-size: rem(20px);
 
   font-family: var(--mantine-font-family-headings);
-  font-weight: 500;
+  font-weight: 700;
   border-radius: var(--mantine-radius-xl);
   width: var(--badge-size);
   height: var(--badge-size);
