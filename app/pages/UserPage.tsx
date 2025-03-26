@@ -3,8 +3,6 @@ import { useDocumentVisibility } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { DateTime } from "luxon";
 
-import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
-
 import AppLayout from "~/components/AppLayout";
 import UserPageDialogStateProvider from "~/components/UserPageDialogStateProvider";
 import UserPageFeed from "~/components/UserPageFeed";
@@ -153,10 +151,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           <UserPageFeed {...{ user, replyPhoneNumber }} />
           {isStandalone && registration === null && (
             <Overlay backgroundOpacity={0} blur={3}>
-              <Image
-                src={swirlyUpArrowSrc}
-                className={classes.notificationsRequiredIndicatorArrow}
-              />
+              <div className={classes.notificationsRequiredIndicatorArrow} />
             </Overlay>
           )}
         </Box>
