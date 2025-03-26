@@ -59,7 +59,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
           </Button>
         </Stack>
         <Stack gap="xs">
-          <AddFriendButton {...{ currentUser }} size="md" mih={60} />
+          <AddFriendButton {...{ currentUser }} size="md" mih={54} />
           {friends ? (
             isEmpty(friends) ? (
               <Card
