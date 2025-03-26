@@ -70,11 +70,11 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           more!
         </span>
       </Text>
-      <Stack gap={4} align="center">
+      <Stack gap={8} align="center">
         <Button
           leftSection={<InstallIcon />}
           loading={installing}
-          disabled={!install && isIosAndStuckInAppBrowser}
+          disabled={!!isIosAndStuckInAppBrowser || !install}
           onClick={() => {
             if (install) {
               void install();

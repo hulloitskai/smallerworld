@@ -70,7 +70,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   leftSection={<InstallIcon />}
                   className={classes.button}
                   loading={installing}
-                  disabled={!install && isIosAndStuckInAppBrowser}
+                  disabled={!!isIosAndStuckInAppBrowser || !install}
                   onClick={() => {
                     if (install) {
                       void install();
