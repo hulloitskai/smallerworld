@@ -123,7 +123,7 @@ const PostCard: FC<PostCardProps> = ({
           {post.image && <PostImage image={post.image} />}
         </Stack>
         {blurContent && (
-          <Overlay backgroundOpacity={0} blur={4} inset={1}>
+          <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
             <Center h="100%">
               <Alert
                 variant="outline"

@@ -70,7 +70,7 @@
       }
     }
 
-    &[data-user-theme] .card {
+    &[data-user-theme] .card:not(:global(.mantine-Modal-content) .card) {
       @mixin dark {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
@@ -87,7 +87,8 @@
       }
     }
 
-    &[data-user-theme] .cardSection {
+    &[data-user-theme]
+      .cardSection:not(:global(.mantine-Paper-root .cardSection)) {
       @mixin dark {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
@@ -99,7 +100,8 @@
       }
     }
 
-    &[data-user-theme] .dropdown {
+    &[data-user-theme]
+      .dropdown:not(:global(.mantine-Modal-content) .dropdown) {
       @mixin dark {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
@@ -218,10 +220,21 @@
       font-family: var(--mantine-font-family-headings);
     }
 
-    .popover {
+    .popoverDropdown {
       @mixin dark {
         --popover-border-color: var(--mantine-color-dark-6);
         background-color: var(--mantine-color-dark-8);
+      }
+    }
+
+    &[data-user-theme]
+      .popoverDropdown:not(:global(.mantine-Modal-content) .popoverDropdown) {
+      @mixin dark {
+        --blur-radius: rem(8px);
+        background-color: alpha(var(--mantine-color-black), 0.4);
+        backdrop-filter: blur(var(--blur-radius));
+        -webkit-backdrop-filter: blur(var(--blur-radius));
+        --popover-border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
   }

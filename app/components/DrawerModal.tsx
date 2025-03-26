@@ -85,6 +85,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
             style={{ backdropFilter: `blur(${rem(2)})` }}
           />
           <VaulDrawer.Content
+            className={cn("mantine-Modal-content", classes.drawerContent)}
             onEscapeKeyDown={event => {
               if (
                 !isEmpty(deferredOpenModals) ||
@@ -108,7 +109,6 @@ const DrawerModal: FC<DrawerModalProps> = ({
                 }
               }
             }}
-            className={classes.drawerContent}
             aria-describedby={undefined}
             {...(!isEmpty(deferredOpenModals) && {
               "data-disabled": true,

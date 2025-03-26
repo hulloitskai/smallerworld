@@ -206,6 +206,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
 
   return (
     <EmojiPopover
+      withinPortal={false}
       pickerProps={{
         reactionsDefaultOpen: !hasExistingReactions,
         reactions: [

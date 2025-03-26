@@ -250,7 +250,7 @@ const createTheme = (
           middlewares: floatingMiddlewares,
         },
         classNames: {
-          dropdown: classes.popover,
+          dropdown: classes.popoverDropdown,
         },
       }),
       Tooltip: Tooltip.extend({
@@ -283,6 +283,9 @@ const createTheme = (
       DateInput: DateInput.extend({
         defaultProps: {
           firstDayOfWeek: 0,
+        },
+        classNames: {
+          input: classes.input,
         },
       }),
     },
