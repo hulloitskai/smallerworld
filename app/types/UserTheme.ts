@@ -5,8 +5,9 @@ type UserTheme =
   | "kaleidoscope"
   | "girlyMac"
   | "shroomset"
-  | "lavaRave"
+  // | "lavaRave"
   | "darkSky"
-  | "pool";
+  | "pool"
+  | "gradients";
 
 export default UserTheme;
