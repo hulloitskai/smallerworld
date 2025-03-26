@@ -43,6 +43,22 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   const currentFriend = useCurrentFriend();
   const { registration } = useWebPush();
 
+  // == Reload user on visibility change
+  const visibility = useDocumentVisibility();
+  useDidUpdate(() => {
+    if (visibility === "visible" && isStandalone) {
+      void router.reload({
+        only: [
+          "csrf",
+          "user",
+          "faviconSrc",
+          "faviconImageSrc",
+          "appleTouchIconSrc",
+        ],
+      });
+    }
+  }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // == User theme
   useUserTheme(user.theme);
 
