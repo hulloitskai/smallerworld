@@ -39,3 +39,4 @@ jobs:
         with:
           environment: production
           projects: smallerworld
+          ignore_missing: true
