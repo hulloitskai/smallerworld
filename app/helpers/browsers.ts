@@ -1,4 +1,10 @@
-import { type IBrowser, type IOS, type IResult, UAParser } from "ua-parser-js";
+import {
+  type IBrowser,
+  type IDevice,
+  type IOS,
+  type IResult,
+  UAParser,
+} from "ua-parser-js";
 import { v4 as uuid } from "uuid";
 
 export const useBrowserDetection = (): IResult | undefined => {
@@ -10,15 +16,15 @@ export const useBrowserDetection = (): IResult | undefined => {
   return result;
 };
 
-export const isMobileSafari = (browser: IBrowser): boolean =>
-  browser.name === "Mobile Safari";
+const isMobileSafari = (browser: IBrowser): boolean =>
+  browser.is("Mobile Safari");
 
-// export const isDesktopSafari = (browser: IBrowser): boolean =>
-//   browser.name === "Safari";
+const isDesktop = (device: IDevice) =>
+  device.type !== "mobile" && device.type !== "tablet";
 
-const isInAppBrowser = (browser: IBrowser): boolean => browser.type === "inapp";
+const isInAppBrowser = (browser: IBrowser): boolean => browser.is("inapp");
 
-const isIos = (os: IOS): boolean => os.name === "iOS";
+const isIos = (os: IOS): boolean => os.is("iOS");
 
 const canUseShortcutsExploit = (os: IOS): boolean =>
   isIos(os) &&
@@ -26,7 +32,7 @@ const canUseShortcutsExploit = (os: IOS): boolean =>
   (os.version.startsWith("17") || os.version.startsWith("18.0"));
 
 const canOpenUrlInMobileSafari = ({ browser, os }: IResult): boolean =>
-  browser.name !== "Instagram" || canUseShortcutsExploit(os);
+  browser.is("Instagram") || canUseShortcutsExploit(os);
 
 const isIosAndStuckInAppBrowser = (result: IResult): boolean =>
   isIos(result.os) &&
@@ -39,6 +45,24 @@ export const useIsIosAndStuckInAppBrowser = (
   useMemo(() => {
     if (result) {
       return isIosAndStuckInAppBrowser(result);
+    }
+  }, [result]);
+
+export const useIsMobileSafari = (
+  result: IResult | undefined,
+): boolean | undefined =>
+  useMemo(() => {
+    if (result) {
+      return isMobileSafari(result.browser);
+    }
+  }, [result]);
+
+export const useIsDesktop = (
+  result: IResult | undefined,
+): boolean | undefined =>
+  useMemo(() => {
+    if (result) {
+      return isDesktop(result.device);
     }
   }, [result]);
 

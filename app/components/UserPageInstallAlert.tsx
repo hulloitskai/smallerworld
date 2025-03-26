@@ -2,9 +2,10 @@ import { Affix, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import {
-  isMobileSafari,
   useBrowserDetection,
+  useIsDesktop,
   useIsIosAndStuckInAppBrowser,
+  useIsMobileSafari,
 } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
 import {
@@ -30,9 +31,13 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
 }) => {
   const { modals } = useModals();
   const pageDialogOpened = useUserPageDialogOpened();
+
+  // == Browser detection
   const browserDetection = useBrowserDetection();
   const isIosAndStuckInAppBrowser =
     useIsIosAndStuckInAppBrowser(browserDetection);
+  const isMobileSafari = useIsMobileSafari(browserDetection);
+  const isDesktop = useIsDesktop(browserDetection);
 
   // == Install to home screen
   const { install, installing } = useInstallPrompt();
@@ -70,14 +75,13 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   leftSection={<InstallIcon />}
                   className={classes.button}
                   loading={installing}
-                  disabled={!!isIosAndStuckInAppBrowser || !install}
+                  disabled={
+                    !!isIosAndStuckInAppBrowser || (!isMobileSafari && !install)
+                  }
                   onClick={() => {
                     if (install) {
                       void install();
-                    } else if (
-                      browserDetection &&
-                      isMobileSafari(browserDetection.browser)
-                    ) {
+                    } else if (isMobileSafari) {
                       openUserPageInstallationInstructionsModal({ user });
                     } else {
                       openUserPageInMobileSafari(user, currentFriend);
@@ -92,12 +96,14 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   </Text>
                 ) : (
                   <>
-                    {install === null && (
+                    {install === null && !isMobileSafari && (
                       <Text className={classes.notSupportedText}>
                         sorry, your browser isn&apos;t supported
-                        <Text span inherit visibleFrom="xs">
-                          —pls open on your phone!
-                        </Text>
+                        {isDesktop && (
+                          <Text span inherit visibleFrom="xs">
+                            —pls open on your phone!
+                          </Text>
+                        )}
                       </Text>
                     )}
                   </>

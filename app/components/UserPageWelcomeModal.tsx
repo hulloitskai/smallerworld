@@ -3,9 +3,10 @@ import { closeModal } from "@mantine/modals";
 import { v4 as uuid } from "uuid";
 
 import {
-  isMobileSafari,
   useBrowserDetection,
+  useIsDesktop,
   useIsIosAndStuckInAppBrowser,
+  useIsMobileSafari,
 } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
 import { openUserPageInMobileSafari } from "~/helpers/userPages";
@@ -37,13 +38,17 @@ interface ModalBodyProps {
 
 // eslint-disable-next-line react-refresh/only-export-components
 const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
-  const browserDetection = useBrowserDetection();
-  const isIosAndStuckInAppBrowser =
-    useIsIosAndStuckInAppBrowser(browserDetection);
   const friendNameWithEmoji = useMemo(
     () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
     [currentFriend],
   );
+
+  // == Browser detection
+  const browserDetection = useBrowserDetection();
+  const isIosAndStuckInAppBrowser =
+    useIsIosAndStuckInAppBrowser(browserDetection);
+  const isMobileSafari = useIsMobileSafari(browserDetection);
+  const isDesktop = useIsDesktop(browserDetection);
 
   // == Add to home screen
   const { install, installing } = useInstallPrompt();
@@ -74,14 +79,13 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
         <Button
           leftSection={<InstallIcon />}
           loading={installing}
-          disabled={!!isIosAndStuckInAppBrowser || !install}
+          disabled={
+            !!isIosAndStuckInAppBrowser || (!isMobileSafari && !install)
+          }
           onClick={() => {
             if (install) {
               void install();
-            } else if (
-              browserDetection &&
-              isMobileSafari(browserDetection.browser)
-            ) {
+            } else if (isMobileSafari) {
               openUserPageInstallationInstructionsModal({ user });
               closeModal(modalId);
             } else {
@@ -97,12 +101,14 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           </Text>
         ) : (
           <>
-            {install === null && (
+            {install === null && !isMobileSafari && (
               <Text className={classes.notSupportedText}>
                 sorry, your browser isn&apos;t supported
-                <Text span inherit visibleFrom="xs">
-                  —pls open on your phone!
-                </Text>
+                {isDesktop && (
+                  <Text span inherit visibleFrom="xs">
+                    —pls open on your phone!
+                  </Text>
+                )}
               </Text>
             )}
           </>
