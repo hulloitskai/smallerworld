@@ -214,7 +214,7 @@ module GeneratedPathHelpersModule
   def update_rails_disk_service_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def user_page_path(*args); end
+  def user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def user_posts_path(*args); end

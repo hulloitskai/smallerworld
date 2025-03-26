@@ -25,6 +25,12 @@ class UsersController < ApplicationController
     })
   end
 
+  # GET /@:handle/join
+  def join
+    handle = T.let(params.fetch(:handle), String)
+    redirect_to(user_path(handle, intent: "join"))
+  end
+
   # GET /users/:id/manifest.webmanifest?friend_token=...
   def manifest
     current_friend = self.current_friend
@@ -38,11 +44,11 @@ class UsersController < ApplicationController
       "a smaller world for you and your friends :)"
     end
     start_url = if current_friend
-      user_page_path(user, friend_token: current_friend.access_token)
+      user_path(user, friend_token: current_friend.access_token)
     else
       world_path
     end
-    scope = current_friend ? user_page_path(user) : world_path
+    scope = current_friend ? user_path(user) : world_path
     render(
       json: {
         name:,

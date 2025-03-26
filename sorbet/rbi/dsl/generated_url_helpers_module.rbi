@@ -214,10 +214,10 @@ module GeneratedUrlHelpersModule
   def update_rails_disk_service_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def user_page_url(*args); end
+  def user_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def user_posts_url(*args); end
+  def user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_url(*args); end

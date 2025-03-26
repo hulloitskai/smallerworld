@@ -82,7 +82,8 @@ Rails.application.routes.draw do
   resource :friend_notification_settings, only: %i[show update], export: true
 
   # == Users
-  get "/@:handle", to: "users#show", as: :user_page, export: true
+  get "/@:handle", to: "users#show", as: :user, export: true
+  get "/@:handle/join", to: "users#join"
   resources :users, only: [], export: true do
     member do
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
