@@ -167,9 +167,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
       {isStandalone && (
         <>
           <UserPageFloatingActions {...{ user, replyPhoneNumber }} />
-          {currentFriend && !!registration && (
-            <WelcomeBackToast {...{ currentFriend }} />
-          )}
+          {currentFriend && <WelcomeBackToast {...{ currentFriend }} />}
         </>
       )}
       {isStandalone === false && (
@@ -242,6 +240,7 @@ interface WelcomeBackToastProps {
 }
 
 const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
+  const { registration } = useWebPush();
   const visibility = useDocumentVisibility();
   const lastCheckedRef = useRef<DateTime | null>(null);
   useEffect(() => {
@@ -252,6 +251,9 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
       return;
     }
     lastCheckedRef.current = DateTime.now();
+    if (!registration) {
+      return;
+    }
     if (visibility === "visible") {
       const friendName = [currentFriend.emoji, currentFriend.name]
         .filter(Boolean)

@@ -9,13 +9,13 @@ export interface Rect {
 
 export const useSafeViewportRect = (): Rect | undefined => {
   const [rect, setRect] = useState<Rect | undefined>();
-  const mobileStandalone = useMediaQuery(
+  const isMobileStandalone = useMediaQuery(
     "(display-mode: standalone) and (pointer: coarse)",
   );
   const viewport = useViewportSize();
   useEffect(() => {
     // Only detect safe area when in mobile standalone mode.
-    if (!mobileStandalone) {
+    if (!isMobileStandalone) {
       setRect(undefined);
       return;
     }
@@ -32,7 +32,7 @@ export const useSafeViewportRect = (): Rect | undefined => {
     const width = viewport.width - insets.left - insets.right;
     const height = viewport.height - insets.top - insets.bottom;
     setRect({ x, y, width, height });
-  }, [mobileStandalone, viewport]);
+  }, [isMobileStandalone, viewport]);
   return rect;
 };
 

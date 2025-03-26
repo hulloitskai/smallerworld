@@ -41,10 +41,6 @@
       (var(--app-shell-footer-height, 0px) + var(--safe-area-inset-bottom, 0px))
   );
   padding-bottom: 0px;
-
-  @media (display-mode: standalone) {
-    margin-top: max(var(--safe-area-inset-top, 0px), var(--mantine-spacing-md));
-  }
 }
 
 [data-user-theme] .main {
