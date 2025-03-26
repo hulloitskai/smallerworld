@@ -23,6 +23,7 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class User < ApplicationRecord
+  include NormalizesPhoneNumber
   include Notifiable
 
   # == FriendlyId
@@ -48,10 +49,8 @@ class User < ApplicationRecord
   end
 
   # == Normalizations
-  normalizes :phone_number, with: ->(number) {
-    phone = Phonelib.parse(number)
-    phone.to_s
-  }
+  normalizes :name, with: ->(name) { name.strip }
+  normalizes_phone_number :phone_number
 
   # == Validations
   validates :name, :handle, :phone_number, :page_icon, presence: true

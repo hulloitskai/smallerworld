@@ -37,6 +37,7 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Friend < ApplicationRecord
+  include NormalizesPhoneNumber
   include Notifiable
 
   # == Attributes
@@ -60,6 +61,10 @@ class Friend < ApplicationRecord
   def user!
     user or raise ActiveRecord::RecordNotFound, "Missing user"
   end
+
+  # == Normalizations
+  normalizes :name, with: ->(name) { name.strip }
+  normalizes_phone_number :phone_number
 
   # == Validations
   validates :name, presence: true, uniqueness: { scope: :user }
