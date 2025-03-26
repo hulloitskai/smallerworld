@@ -85,9 +85,9 @@ Rails.application.routes.draw do
   get "/@:handle", to: "users#show", as: :user, export: true
   get "/@:handle/join", to: "users#join"
   resources :users, only: [], export: true do
-    collection do
-      get :joined
-    end
+    # collection do
+    #   get :joined
+    # end
     member do
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
       post :request_invitation

@@ -52,9 +52,6 @@ module GeneratedPathHelpersModule
   def join_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def joined_users_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -52,9 +52,6 @@ module GeneratedUrlHelpersModule
   def join_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def joined_users_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

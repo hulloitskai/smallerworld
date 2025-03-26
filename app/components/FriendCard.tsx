@@ -42,7 +42,7 @@ const FriendCard: FC<FriendCardProps> = ({ friend }) => {
       onSuccess: () => {
         toast.success("friend removed");
         void mutateRoute(routes.friends.index);
-        void mutateRoute(routes.users.joined);
+        // void mutateRoute(routes.users.joined);
       },
     },
   );

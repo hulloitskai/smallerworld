@@ -7,8 +7,8 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import FriendCard from "~/components/FriendCard";
-import JoinedUserCard from "~/components/JoinedUserCard";
-import { type FriendView, type JoinedUser, type User } from "~/types";
+// import JoinedUserCard from "~/components/JoinedUserCard";
+import { type FriendView, /* type JoinedUser, */ type User } from "~/types";
 
 export interface FriendsPageProps extends SharedPageProps {
   currentUser: User;
@@ -28,17 +28,17 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
     [friends],
   );
 
-  // == Load joined users
-  const { data: joinedUsersData } = useRouteSWR<{
-    users: JoinedUser[];
-  }>(routes.users.joined, {
-    descriptor: "load joined users",
-  });
-  const { users: joinedUsers } = joinedUsersData ?? {};
-  const [joinedFriends, joinedNonFriends] = useMemo(
-    () => partition(joinedUsers, user => user.friended),
-    [joinedUsers],
-  );
+  // // == Load joined users
+  // const { data: joinedUsersData } = useRouteSWR<{
+  //   users: JoinedUser[];
+  // }>(routes.users.joined, {
+  //   descriptor: "load joined users",
+  // });
+  // const { users: joinedUsers } = joinedUsersData ?? {};
+  // const [joinedFriends, joinedNonFriends] = useMemo(
+  //   () => partition(joinedUsers, user => user.friended),
+  //   [joinedUsers],
+  // );
 
   return (
     <Stack gap="xl">
@@ -84,7 +84,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
           )}
         </Stack>
       </Stack>
-      {!!joinedUsers && !isEmpty(joinedUsers) && (
+      {/* {!!joinedUsers && !isEmpty(joinedUsers) && (
         <Stack gap="sm">
           <Stack gap={4} align="center">
             <Box component={SmallerWorldIcon} fz="xl" />
@@ -98,7 +98,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = () => {
             ))}
           </Stack>
         </Stack>
-      )}
+      )} */}
     </Stack>
   );
 };
