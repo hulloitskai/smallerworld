@@ -18,6 +18,8 @@
 
 .welcomeBackToast[data-sonner-toast] {
   width: fit-content;
+  left: 0;
+  right: 0;
   margin-inline: auto;
   padding-block: 8px;
   padding-inline: var(--mantine-spacing-xs);

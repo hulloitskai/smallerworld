@@ -1,11 +1,3 @@
-.toaster[data-sonner-toaster] {
-  width: calc(100% - var(--offset-left) - var(--offset-right));
-
-  @media (max-width: 600px) {
-    width: calc(100% - var(--mobile-offset-left) - var(--mobile-offset-right));
-  }
-}
-
 .toast {
   pointer-events: auto;
   align-items: start;

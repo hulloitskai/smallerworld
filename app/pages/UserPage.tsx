@@ -261,6 +261,7 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
           className: classes.welcomeBackToast,
           closeButton: false,
           duration: 2400,
+          position: "bottom-center",
         });
       }, 1000);
       return () => {
