@@ -48,7 +48,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   const affixInset = "var(--mantine-spacing-xl)";
 
   const actionsVisible =
-    /* (isStandalone === false || !!registration) && */ !pinnedPostsDrawerModalOpened;
+    (isStandalone === false || !!registration) && !pinnedPostsDrawerModalOpened;
   return (
     <>
       <Space className={classes.space} />

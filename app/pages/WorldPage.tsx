@@ -140,14 +140,14 @@ const WorldPage: PageComponent<WorldPageProps> = ({ friends }) => {
         )}
         <Box pos="relative">
           <WorldPageFeed />
-          {/* {isStandalone && registration === null && (
+          {isStandalone && registration === null && (
             <Overlay backgroundOpacity={0} blur={3}>
               <Image
                 src={swirlyUpArrowSrc}
                 className={classes.notificationsRequiredIndicatorArrow}
               />
             </Overlay>
-          )} */}
+          )}
         </Box>
       </Stack>
       <WorldPageFloatingActions />
