@@ -11,12 +11,28 @@ import classes from "./UserThemeProvider.module.css";
 export interface UserThemeProviderProps extends PropsWithChildren {}
 
 const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
+  const { url } = usePage();
+  const isWorldPage = useMemo(() => url.startsWith("/world"), [url]);
   const currentUser = useCurrentUser();
   const [overrideTheme, setOverrideTheme] = useState<
     UserTheme | null | undefined
   >();
   const appliedTheme =
-    overrideTheme !== undefined ? overrideTheme : (currentUser?.theme ?? null);
+    overrideTheme !== undefined
+      ? overrideTheme
+      : isWorldPage
+        ? (currentUser?.theme ?? null)
+        : null;
+
+  // == Set data-user-theme on body
+  useEffect(() => {
+    if (appliedTheme) {
+      document.body.setAttribute("data-user-theme", appliedTheme);
+      return () => {
+        document.body.removeAttribute("data-user-theme");
+      };
+    }
+  }, [appliedTheme]);
 
   // == Set color scheme
   const { setColorScheme, clearColorScheme } = useMantineColorScheme();

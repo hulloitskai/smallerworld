@@ -174,7 +174,6 @@ const UserThemedAppShell: FC<AppShellProps> = ({
           }),
         },
       ]}
-      mod={{ "user-theme": theme }}
       {...otherProps}
     >
       {children}

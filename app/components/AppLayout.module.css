@@ -47,6 +47,10 @@
   }
 }
 
+[data-user-theme] .main {
+  background: none;
+}
+
 .navbar {
   top: calc(
     var(--app-shell-header-offset, 0rem) + var(--safe-area-inset-top, 0px)

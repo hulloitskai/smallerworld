@@ -9,6 +9,19 @@
   }
 }
 
+[data-user-theme] .target {
+  @mixin dark {
+    --blur-radius: rem(8px);
+    background-color: alpha(var(--mantine-color-black), 0.4);
+    backdrop-filter: blur(var(--blur-radius));
+    -webkit-backdrop-filter: blur(var(--blur-radius));
+
+    &:not([data-expanded]) {
+      border-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+}
+
 .icon {
   --icon-color: var(--badge-color, var(--mantine-color-white));
 

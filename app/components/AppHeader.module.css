@@ -11,6 +11,7 @@
     bottom: -8px;
     content: "";
     backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     background-image: linear-gradient(
       to top,
       transparent,

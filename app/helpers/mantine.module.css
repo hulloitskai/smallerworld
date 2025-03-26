@@ -27,7 +27,7 @@
       }
     }
 
-    [data-user-theme] .input {
+    &[data-user-theme] .input {
       @mixin dark {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
@@ -70,17 +70,24 @@
       }
     }
 
-    [data-user-theme] .card {
+    &[data-user-theme] .card {
       @mixin dark {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
-        backdrop-filter: blur(var(--blur-radius));
-        -webkit-backdrop-filter: blur(var(--blur-radius));
         border-color: alpha(var(--mantine-color-white), 0.2);
+
+        &::before {
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          content: "";
+          backdrop-filter: blur(var(--blur-radius));
+          -webkit-backdrop-filter: blur(var(--blur-radius));
+        }
       }
     }
 
-    [data-user-theme] .cardSection {
+    &[data-user-theme] .cardSection {
       @mixin dark {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
@@ -92,10 +99,9 @@
       }
     }
 
-    [data-user-theme] .dropdown {
+    &[data-user-theme] .dropdown {
       @mixin dark {
         --blur-radius: rem(8px);
-
         background-color: alpha(var(--mantine-color-black), 0.4);
         backdrop-filter: blur(var(--blur-radius));
         -webkit-backdrop-filter: blur(var(--blur-radius));
@@ -165,55 +171,58 @@
         }
       }
     }
-  }
 
-  .divider {
-    @mixin dark {
-      --divider-color: var(--mantine-color-dark-6);
-    }
-  }
-
-  [data-user-theme] .divider {
-    @mixin dark {
-      --divider-color: alpha(var(--mantine-color-white), 0.2);
-    }
-  }
-
-  [data-user-theme] .menuDivider {
-    @mixin dark {
-    }
-    border-color: alpha(var(--mantine-color-white), 0.2);
-  }
-
-  .dividerLabel {
-    font-family: var(--mantine-font-family-headings);
-    font-weight: 500;
-  }
-
-  .menuItem {
-    &:not([data-disabled]) {
-      @mixin hover {
-        background-color: var(--mantine-primary-color-light);
+    .divider {
+      @mixin dark {
+        --divider-color: var(--mantine-color-dark-6);
       }
     }
-  }
 
-  .menuItemSection {
-    color: var(--mantine-color-primary-text);
-    width: 16px;
-    height: 16px;
-  }
+    &[data-user-theme] .divider {
+      @mixin dark {
+        --divider-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
 
-  .menuItemLabel {
-    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
-    font-weight: 500;
-    font-family: var(--mantine-font-family-headings);
-  }
+    &[data-user-theme] .menuDivider {
+      @mixin dark {
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
 
-  .popover {
-    @mixin dark {
-      --popover-border-color: var(--mantine-color-dark-6);
-      background-color: var(--mantine-color-dark-8);
+    .dividerLabel {
+      font-family: var(--mantine-font-family-headings);
+      font-weight: 500;
+    }
+
+    .menuItem {
+      &:not([data-disabled]) {
+        @mixin hover {
+          background-color: var(--mantine-primary-color-light);
+        }
+      }
+    }
+
+    .menuItemSection {
+      color: var(--mantine-color-primary-text);
+      width: 16px;
+      height: 16px;
+    }
+
+    .menuItemLabel {
+      color: light-dark(
+        var(--mantine-color-gray-7),
+        var(--mantine-color-dark-1)
+      );
+      font-weight: 500;
+      font-family: var(--mantine-font-family-headings);
+    }
+
+    .popover {
+      @mixin dark {
+        --popover-border-color: var(--mantine-color-dark-6);
+        background-color: var(--mantine-color-dark-8);
+      }
     }
   }
 }
