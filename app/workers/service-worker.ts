@@ -158,7 +158,10 @@ self.addEventListener("message", event => {
   if (action === "list_installed_user_handles" && port) {
     event.waitUntil(
       self.clients
-        .matchAll({ type: "window", includeUncontrolled: true })
+        .claim()
+        .then(() =>
+          self.clients.matchAll({ type: "window", includeUncontrolled: true }),
+        )
         .then(clients => {
           const handles = clients.reduce<string[]>((handles, client) => {
             const { pathname } = new URL(client.url);

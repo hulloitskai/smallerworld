@@ -11,10 +11,7 @@ class FriendsController < ApplicationController
     current_user = authenticate_user!
     respond_to do |format|
       format.html do
-        show_installed_users = current_user.admin?
-        render(inertia: "FriendsPage", props: {
-          "showInstalledUsers" => show_installed_users,
-        })
+        render(inertia: "FriendsPage")
       end
       format.json do
         friends = current_user.friends.reverse_chronological
