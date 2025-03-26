@@ -108,7 +108,6 @@ module SupabaseAuthentication
       session_data = refresh_supabase_session(refresh_token:)
       cookies[:supabase_session] = {
         value: encode_supabase_session_cookie(session_data),
-        secure: Rails.env.production?,
         expires: 1.year.from_now,
       }
       reset_supabase_authentication!
