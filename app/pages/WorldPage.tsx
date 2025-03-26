@@ -1,4 +1,4 @@
-import { Avatar, Image, Overlay, Text } from "@mantine/core";
+import { Avatar, Image, Indicator, Overlay, Text } from "@mantine/core";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
@@ -24,11 +24,15 @@ export interface WorldPageProps extends SharedPageProps {
   faviconImageSrc: string;
   appleTouchIconSrc: string;
   friends: FriendInfo[];
+  pendingJoinRequests: number;
 }
 
 const ICON_SIZE = 96;
 
-const WorldPage: PageComponent<WorldPageProps> = ({ friends }) => {
+const WorldPage: PageComponent<WorldPageProps> = ({
+  friends,
+  pendingJoinRequests,
+}) => {
   const browserDetection = useBrowserDetection();
   const isStandalone = useIsStandalone();
   const user = useAuthenticatedUser();
@@ -96,10 +100,23 @@ const WorldPage: PageComponent<WorldPageProps> = ({ friends }) => {
               </Group>
             </Stack>
           </Stack>
-          <Menu width={210} position="bottom-end" arrowOffset={16}>
+          <Menu width={220} position="bottom-end" arrowOffset={16}>
             <Menu.Target>
-              <ActionIcon pos="absolute" top={-6} right={0}>
-                <MenuIcon />
+              <ActionIcon
+                pos="absolute"
+                top={-6}
+                right={0}
+                className={classes.menuButton}
+              >
+                <Indicator
+                  className={classes.menuIndicator}
+                  label={pendingJoinRequests}
+                  size={16}
+                  offset={-4}
+                  disabled={!pendingJoinRequests}
+                >
+                  <MenuIcon />
+                </Indicator>
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
@@ -120,8 +137,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({ friends }) => {
               </Menu.Item>
               <Menu.Item
                 component={Link}
+                className={classes.joinRequestMenuItem}
                 leftSection={<JoinRequestsIcon />}
                 href={routes.joinRequests.index.path()}
+                {...(pendingJoinRequests > 0 && {
+                  rightSection: (
+                    <Badge variant="filled" px={6} py={0}>
+                      {pendingJoinRequests}
+                    </Badge>
+                  ),
+                })}
               >
                 view join requests
               </Menu.Item>

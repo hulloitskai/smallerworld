@@ -28,12 +28,14 @@ class WorldsController < ApplicationController
         .distinct
         .first(3 - friends.size)
     end
+    pending_join_requests = current_user.join_requests.pending.count
     render(inertia: "WorldPage", props: {
       "faviconSrc" => rails_representation_path(favicon_variant),
       "faviconImageSrc" => rails_representation_path(favicon_image_variant),
       "appleTouchIconSrc" =>
         rails_representation_path(apple_touch_icon_variant),
       friends: FriendInfoSerializer.many(friends),
+      "pendingJoinRequests" => pending_join_requests,
     })
   end
 end

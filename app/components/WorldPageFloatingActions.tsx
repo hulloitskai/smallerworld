@@ -124,15 +124,20 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           >
             {style => (
               <ActionIcon
+                className={classes.pinnedPostsButton}
                 variant="outline"
                 size={36}
-                className={classes.pinnedPostsButton}
                 {...{ style }}
                 onClick={() => {
                   setPinnedPostsDrawerModalOpened(true);
                 }}
               >
-                <Indicator label={pinnedPosts.length} size={16} offset={-4}>
+                <Indicator
+                  className={classes.pinnedPostsIndicator}
+                  label={pinnedPosts.length}
+                  size={16}
+                  offset={-4}
+                >
                   <MegaphoneIcon />
                 </Indicator>
               </ActionIcon>

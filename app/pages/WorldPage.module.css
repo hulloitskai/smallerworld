@@ -49,3 +49,24 @@
   line-height: 1;
   transform: rotate(-28deg);
 }
+
+.menuButton {
+  overflow: visible;
+}
+
+.menuIndicator {
+  :global(.mantine-Indicator-indicator) {
+    font-weight: 600;
+    font-family: var(--mantine-font-family-headings);
+    min-height: var(--indicator-size);
+    padding-inline: 0px;
+  }
+}
+
+.joinRequestMenuItem {
+  :global(.mantine-Menu-itemSection) {
+    &[data-position="right"] {
+      width: var(--mantine-spacing-lg);
+    }
+  }
+}
