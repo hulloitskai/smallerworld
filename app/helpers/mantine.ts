@@ -193,7 +193,7 @@ const createTheme = (
           item: classes.menuItem,
           itemSection: classes.menuItemSection,
           itemLabel: classes.menuItemLabel,
-          divider: cn(classes.menuDivider, classes.divider),
+          divider: classes.menuDivider,
         },
       }),
       NavLink: NavLink.extend({

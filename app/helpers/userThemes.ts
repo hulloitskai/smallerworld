@@ -37,6 +37,7 @@ export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
 export interface UserThemeContext {
   theme: UserTheme | null;
   setOverrideTheme: (theme: UserTheme | null) => void;
+  clearOverrideTheme: () => void;
 }
 
 export const UserThemeContext = createContext<UserThemeContext | undefined>(
@@ -50,7 +51,7 @@ export const useUserTheme = (
   if (!context) {
     throw new Error("useUserTheme must be used within a UserThemeProvider");
   }
-  const { theme, setOverrideTheme } = context;
+  const { theme, setOverrideTheme, clearOverrideTheme } = context;
   useEffect(() => {
     if (overrideTheme !== undefined) {
       setOverrideTheme(overrideTheme);
@@ -58,7 +59,7 @@ export const useUserTheme = (
   }, [overrideTheme]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     return () => {
-      setOverrideTheme(null);
+      clearOverrideTheme();
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return theme;

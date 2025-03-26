@@ -31,7 +31,11 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
 
   return (
     <UserThemeContext.Provider
-      value={{ theme: appliedTheme, setOverrideTheme }}
+      value={{
+        theme: appliedTheme,
+        setOverrideTheme,
+        clearOverrideTheme: () => setOverrideTheme(undefined),
+      }}
     >
       {!!appliedTheme && (
         <div

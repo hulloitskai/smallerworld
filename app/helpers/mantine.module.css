@@ -179,8 +179,10 @@
     }
   }
 
-  .menuDivider {
-    border-color: var(--divider-color) !important;
+  [data-user-theme] .menuDivider {
+    @mixin dark {
+    }
+    border-color: alpha(var(--mantine-color-white), 0.2);
   }
 
   .dividerLabel {
