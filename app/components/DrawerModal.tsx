@@ -10,12 +10,10 @@ import {
 } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 import { useDeferredValue } from "react";
-import {
-  createHtmlPortalNode,
-  InPortal,
-  OutPortal,
-} from "react-reverse-portal";
+import { InPortal, OutPortal } from "react-reverse-portal";
 import { Drawer as VaulDrawer } from "vaul";
+
+import { useHtmlPortalNode } from "~/helpers/react-reverse-portal";
 
 import VaulModalPortalTarget from "./VaulModalPortalTarget";
 import VaulPortalProvider from "./VaulPortalProvider";
@@ -36,7 +34,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
   children,
 }) => {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const portalNode = useMemo(() => createHtmlPortalNode(), []);
+  const portalNode = useHtmlPortalNode();
   const isMobileSize = useIsMobileSize();
 
   // == Refs
@@ -70,7 +68,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
 
   return (
     <VaulPortalProvider portalRoot={vaulPortalRoot}>
-      <InPortal node={portalNode}>{children}</InPortal>
+      {portalNode && <InPortal node={portalNode}>{children}</InPortal>}
       <VaulDrawer.Root
         shouldScaleBackground
         repositionInputs={false}
@@ -144,7 +142,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
                 <CloseButton component={VaulDrawer.Close} />
               </header>
               <div className={classes.drawerBody}>
-                <OutPortal node={portalNode} />
+                {portalNode && <OutPortal node={portalNode} />}
               </div>
             </div>
           </VaulDrawer.Content>
@@ -166,7 +164,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
           }
         }}
       >
-        <OutPortal node={portalNode} />
+        {portalNode && <OutPortal node={portalNode} />}
       </Modal>
     </VaulPortalProvider>
   );

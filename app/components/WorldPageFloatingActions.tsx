@@ -1,9 +1,5 @@
 import { Affix, Indicator, Modal } from "@mantine/core";
-import {
-  createHtmlPortalNode,
-  InPortal,
-  OutPortal,
-} from "react-reverse-portal";
+import { InPortal, OutPortal } from "react-reverse-portal";
 
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
@@ -13,6 +9,7 @@ import {
   POST_TYPE_TO_LABEL,
   POST_TYPES,
 } from "~/helpers/posts";
+import { useHtmlPortalNode } from "~/helpers/react-reverse-portal";
 import { useWebPush } from "~/helpers/webPush";
 import { type Post, type PostType } from "~/types";
 
@@ -38,7 +35,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   const pinnedPosts = data?.posts ?? [];
 
   // == New post modal
-  const newPostPortalNode = useMemo(() => createHtmlPortalNode(), []);
+  const newPostPortalNode = useHtmlPortalNode();
 
   // == Pinned posts drawer modal
   const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
@@ -52,14 +49,16 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   return (
     <>
       <Space className={classes.space} />
-      <InPortal node={newPostPortalNode}>
-        <PostForm
-          postType={postType ?? previousPostType ?? null}
-          onPostCreated={() => {
-            setPostType(null);
-          }}
-        />
-      </InPortal>
+      {newPostPortalNode && (
+        <InPortal node={newPostPortalNode}>
+          <PostForm
+            postType={postType ?? previousPostType ?? null}
+            onPostCreated={() => {
+              setPostType(null);
+            }}
+          />
+        </InPortal>
+      )}
       <Affix
         zIndex={180}
         position={{
@@ -153,7 +152,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           setPostType(null);
         }}
       >
-        <OutPortal node={newPostPortalNode} />
+        {newPostPortalNode && <OutPortal node={newPostPortalNode} />}
       </Modal>
       <DrawerModal
         title="your invitations to your friends"
