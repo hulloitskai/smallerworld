@@ -1,3 +1,7 @@
+.toaster[data-sonner-toaster] {
+  width: unset;
+}
+
 .toast {
   pointer-events: auto;
   align-items: start;

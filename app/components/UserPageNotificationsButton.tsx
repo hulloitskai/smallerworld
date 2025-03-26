@@ -34,8 +34,8 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
   return (
     <>
       {subscription === undefined ? (
-        <Button color="gray" loading />
-      ) : registration === null || subscription === null ? (
+        <Button loading />
+      ) : subscription === null || registration === null ? (
         <Button
           variant="filled"
           loading={loading || subscribing}
@@ -55,7 +55,6 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
         >
           <Popover.Target>
             <Button
-              color="gray"
               leftSection={<NotificationIcon />}
               onClick={() => {
                 setDropdownOpened(true);

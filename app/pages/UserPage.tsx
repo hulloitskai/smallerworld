@@ -253,7 +253,11 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
         .filter(Boolean)
         .join(" ");
       const timeout = setTimeout(() => {
-        toast.success(`welcome back, ${friendName}`, { duration: 2400 });
+        toast(`welcome back, ${friendName}`, {
+          className: classes.welcomeBackToast,
+          closeButton: false,
+          duration: 2400,
+        });
       }, 1000);
       return () => {
         clearTimeout(timeout);

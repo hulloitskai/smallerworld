@@ -21,7 +21,6 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
   return (
     <ActionIcon
       variant="light"
-      color="gray"
       size="lg"
       loading={isValidating}
       onClick={() => {

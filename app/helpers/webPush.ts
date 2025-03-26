@@ -76,7 +76,7 @@ export const useLookupPushRegistration = ({
         }),
   });
   const { registration } = data ?? {};
-  return subscription === null ? null : registration;
+  return subscription === null ? subscription : registration;
 };
 
 export interface WebPushSubscribeOptions {

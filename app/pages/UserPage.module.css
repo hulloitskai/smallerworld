@@ -15,3 +15,10 @@
   mask-repeat: no-repeat;
   mask-position: center;
 }
+
+.welcomeBackToast[data-sonner-toast] {
+  width: fit-content;
+  margin-inline: auto;
+  padding-block: 8px;
+  padding-inline: var(--mantine-spacing-xs);
+}
