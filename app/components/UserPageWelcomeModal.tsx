@@ -14,6 +14,8 @@ import { type Friend, type User } from "~/types";
 import HomeScreenPreview from "./HomeScreenPreview";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
+import classes from "./UserPageWelcomeModal.module.css";
+
 export interface UserPageWelcomeModalProps
   extends Omit<ModalBodyProps, "modalId"> {}
 
@@ -89,19 +91,21 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
         >
           pin to home screen
         </Button>
-        {!install && isIosAndStuckInAppBrowser === false && (
-          <Text size="xs" c="dimmed">
-            {isIosAndStuckInAppBrowser ? (
-              "open in safari to continue"
-            ) : (
-              <>
+        {isIosAndStuckInAppBrowser ? (
+          <Text className={classes.notSupportedText}>
+            "open in safari to continue"
+          </Text>
+        ) : (
+          <>
+            {!install && (
+              <Text className={classes.notSupportedText}>
                 sorry, your browser isn&apos;t supported
                 <Text span inherit visibleFrom="xs">
                   —pls open on your phone!
                 </Text>
-              </>
+              </Text>
             )}
-          </Text>
+          </>
         )}
       </Stack>
     </Stack>

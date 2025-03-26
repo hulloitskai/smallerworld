@@ -86,25 +86,21 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                 >
                   pin this page
                 </Button>
-                {!install && isIosAndStuckInAppBrowser && (
-                  <Text
-                    size="xs"
-                    opacity={0.6}
-                    lh={1.2}
-                    miw={0}
-                    style={{ flexGrow: 1 }}
-                  >
-                    {isIosAndStuckInAppBrowser ? (
-                      "open in safari to continue"
-                    ) : (
-                      <>
+                {isIosAndStuckInAppBrowser ? (
+                  <Text className={classes.notSupportedText}>
+                    "open in safari to continue"
+                  </Text>
+                ) : (
+                  <>
+                    {!install && (
+                      <Text className={classes.notSupportedText}>
                         sorry, your browser isn&apos;t supported
                         <Text span inherit visibleFrom="xs">
                           —pls open on your phone!
                         </Text>
-                      </>
+                      </Text>
                     )}
-                  </Text>
+                  </>
                 )}
               </Group>
             </Stack>
