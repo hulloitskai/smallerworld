@@ -29,8 +29,13 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   useEffect(() => {
     if (appliedTheme) {
       document.body.setAttribute("data-user-theme", appliedTheme);
+      document.body.style.setProperty(
+        "--mantine-color-body",
+        USER_THEME_BACKGROUND_COLORS[appliedTheme],
+      );
       return () => {
         document.body.removeAttribute("data-user-theme");
+        document.body.style.removeProperty("--mantine-color-body");
       };
     }
   }, [appliedTheme]);

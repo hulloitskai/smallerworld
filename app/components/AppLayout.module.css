@@ -1,6 +1,4 @@
 .shell {
-  /* --app-shell-footer-height: 44px; */
-
   @mixin dark {
     --app-shell-border-color: var(--mantine-color-dark-6);
   }
@@ -35,7 +33,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin-top: var(--safe-area-inset-top, 0px);
+  margin-top: max(var(--safe-area-inset-top, 0px), var(--mantine-spacing-xs));
   min-height: calc(
     100vh - var(--safe-area-inset-top, 0px) -
       (var(--app-shell-footer-height, 0px) + var(--safe-area-inset-bottom, 0px))
@@ -45,17 +43,6 @@
 
 [data-user-theme] .main {
   background: none;
-}
-
-.navbar {
-  top: calc(
-    var(--app-shell-header-offset, 0rem) + var(--safe-area-inset-top, 0px)
-  );
-  height: calc(
-    100vh - var(--safe-area-inset-top, 0px) -
-      var(--app-shell-header-offset, 0px)
-  );
-  padding-bottom: var(--safe-area-inset-bottom, 0px);
 }
 
 .breadcrumbSeparator {

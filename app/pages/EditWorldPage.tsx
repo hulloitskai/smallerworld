@@ -8,7 +8,6 @@ import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { useUserTheme } from "~/helpers/userThemes";
 import { type Image, type Upload, type User } from "~/types";
 
 export interface EditWorldPageProps extends SharedPageProps {

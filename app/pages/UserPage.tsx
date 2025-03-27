@@ -16,7 +16,6 @@ import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsBut
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import { useUserTheme } from "~/helpers/userThemes";
 import { useWebPush } from "~/helpers/webPush";
 import {
   type Friend,

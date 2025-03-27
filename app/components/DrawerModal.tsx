@@ -25,9 +25,12 @@ import mantineClasses from "~/helpers/mantine.module.css";
 export interface DrawerModalProps
   extends Required<
     Pick<ModalProps, "title" | "opened" | "onClose" | "children">
-  > {}
+  > {
+  contentClassName?: string;
+}
 
 const DrawerModal: FC<DrawerModalProps> = ({
+  contentClassName,
   title,
   opened,
   onClose,
@@ -85,7 +88,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
             style={{ backdropFilter: `blur(${rem(2)})` }}
           />
           <VaulDrawer.Content
-            className={cn("mantine-Modal-content", classes.drawerContent)}
+            className={cn(contentClassName, classes.drawerContent)}
             onEscapeKeyDown={event => {
               if (
                 !isEmpty(deferredOpenModals) ||
@@ -152,7 +155,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
         size="var(--container-size-xs)"
         {...{ title }}
         classNames={{
-          content: classes.modalContent,
+          content: cn(contentClassName, classes.modalContent),
           header: classes.modalHeader,
         }}
         scrollAreaComponent={ModalScrollArea}

@@ -79,6 +79,7 @@ declare global {
   const closeAllModals: typeof import('@mantine/modals')['closeAllModals']
   const cn: typeof import('clsx')['clsx']
   const createRef: typeof import('react')['createRef']
+  const createVaulModalPortalTarget: typeof import('~/helpers/vaul')['createVaulModalPortalTarget']
   const env: typeof import('~/helpers/meta')['env']
   const fetchRoute: typeof import('~/helpers/routes/fetch')['fetchRoute']
   const first: typeof import('lodash-es')['first']
@@ -146,6 +147,8 @@ declare global {
   const useShallowEffect: typeof import('@mantine/hooks')['useShallowEffect']
   const useState: typeof import('react')['useState']
   const useSubscription: typeof import('~/helpers/actioncable/subscription')['useSubscription']
+  const useUserTheme: typeof import('~/helpers/userThemes')['useUserTheme']
+  const useVaulPortalTarget: typeof import('~/helpers/vaul')['useVaulPortalTarget']
 }
 // for type re-export
 declare global {

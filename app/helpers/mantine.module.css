@@ -70,7 +70,7 @@
       }
     }
 
-    &[data-user-theme] .card:not(:global(.mantine-Modal-content) .card) {
+    &[data-user-theme] .card {
       @mixin dark {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
@@ -100,8 +100,7 @@
       }
     }
 
-    &[data-user-theme]
-      .dropdown:not(:global(.mantine-Modal-content) .dropdown) {
+    &[data-user-theme] .dropdown {
       @mixin dark {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
@@ -227,8 +226,7 @@
       }
     }
 
-    &[data-user-theme]
-      .popoverDropdown:not(:global(.mantine-Modal-content) .popoverDropdown) {
+    &[data-user-theme] .popoverDropdown {
       @mixin dark {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);

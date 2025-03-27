@@ -12,10 +12,6 @@ import {
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
 import { useClearAppBadge } from "~/helpers/pwa";
-import {
-  USER_THEME_BACKGROUND_COLORS,
-  useUserTheme,
-} from "~/helpers/userThemes";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
 import AppMeta, { type AppMetaProps } from "./AppMeta";
@@ -103,15 +99,11 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   );
 
   const shell = (
-    <UserThemedAppShell
+    <AppShell
       withBorder={LAYOUT_WITH_BORDER}
       {...(isStandalone === false && { header: { height: 46 } })}
       padding={padding ?? (withContainer ? undefined : "md")}
-      classNames={{
-        root: classes.shell,
-        header: classes.header,
-        navbar: classes.navbar,
-      }}
+      classNames={{ root: classes.shell, header: classes.header }}
       data-vaul-drawer-wrapper
       {...otherProps}
     >
@@ -145,7 +137,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
         {content}
       </AppShell.Main>
       <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
-    </UserThemedAppShell>
+    </AppShell>
   );
   return (
     <PageLayout>
@@ -156,27 +148,3 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 };
 
 export default AppLayout;
-
-const UserThemedAppShell: FC<AppShellProps> = ({
-  style,
-  children,
-  ...otherProps
-}) => {
-  const theme = useUserTheme();
-  return (
-    <AppShell
-      className={classes.main}
-      style={[
-        style,
-        {
-          ...(theme && {
-            "--mantine-color-body": USER_THEME_BACKGROUND_COLORS[theme],
-          }),
-        },
-      ]}
-      {...otherProps}
-    >
-      {children}
-    </AppShell>
-  );
-};

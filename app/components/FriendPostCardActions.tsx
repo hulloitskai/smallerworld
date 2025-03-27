@@ -185,7 +185,10 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
   postId,
   hasExistingReactions,
 }) => {
+  const vaulPortalTarget = useVaulPortalTarget();
   const currentFriend = useCurrentFriend();
+
+  // == Add reaction
   const { trigger: addReaction } = useRouteMutation<{ reaction: PostReaction }>(
     routes.postReactions.create,
     {
@@ -206,7 +209,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
 
   return (
     <EmojiPopover
-      withinPortal={false}
+      portalProps={{ target: vaulPortalTarget }}
       pickerProps={{
         reactionsDefaultOpen: !hasExistingReactions,
         reactions: [

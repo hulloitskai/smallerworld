@@ -9,7 +9,6 @@ import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { APPLE_ICON_RADIUS_RATIO, CANONICAL_DOMAIN } from "~/helpers/app";
-import { useUserTheme } from "~/helpers/userThemes";
 import { type Image, type Upload, type UserTheme } from "~/types";
 
 export interface SignupPageProps extends SharedPageProps {}

@@ -3,6 +3,7 @@
 }
 
 .content {
+  background-color: var(--mantine-color-white);
   border-radius: var(--editor-radius, var(--mantine-radius-default));
   overflow: hidden;
 
@@ -12,17 +13,3 @@
     padding-block: var(--mantine-spacing-xs);
   }
 }
-
-/* .toolbar {
-  border: none;
-  background-color: unset;
-  border-bottom-left-radius: var(
-    --editor-radius,
-    var(--mantine-radius-default)
-  );
-  border-bottom-right-radius: var(
-    --editor-radius,
-    var(--mantine-radius-default)
-  );
-  padding-top: 0;
-} */

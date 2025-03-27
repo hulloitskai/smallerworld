@@ -51,6 +51,8 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/utils": ["resolve", "isTruthy"],
     "~/helpers/formatting": ["possessive"],
     "~/helpers/layouts": ["useIsMobileSize"],
+    "~/helpers/userThemes": ["useUserTheme"],
+    "~/helpers/vaul": ["createVaulModalPortalTarget", "useVaulPortalTarget"],
     "@fullstory/browser": ["FullStory", ["isInitialized", "isFsInitialized"]],
     "@inertiajs/react": ["Link", "router"],
     "@mantine/core": [
