@@ -235,5 +235,11 @@
         --popover-border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
+
+    .richTextEditor {
+      @mixin light {
+        background-color: var(--mantine-color-white);
+      }
+    }
   }
 }

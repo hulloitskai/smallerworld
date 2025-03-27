@@ -60,7 +60,7 @@ class UserPostsController < ApplicationController
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end
-    posts = posts.order(pinned_until: :asc, created_at: :desc).to_a
+    posts = posts.order(pinned_until: :asc, created_at: :asc).to_a
     unless current_friend
       posts.map! do |post|
         post.visibility == :public ? post : MaskedPost.new(post:)

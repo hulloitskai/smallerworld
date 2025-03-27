@@ -1,4 +1,4 @@
-import { Affix, Indicator, Modal } from "@mantine/core";
+import { Affix, Indicator } from "@mantine/core";
 import { InPortal, OutPortal } from "react-reverse-portal";
 
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
@@ -144,16 +144,15 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           </Transition>
         </Group>
       </Affix>
-      <Modal
+      <DrawerModal
         title={<>new {postType ? POST_TYPE_TO_LABEL[postType] : "post"}</>}
-        size="var(--container-size-xs)"
         opened={!!postType}
         onClose={() => {
           setPostType(null);
         }}
       >
-        {newPostPortalNode && <OutPortal node={newPostPortalNode} />}
-      </Modal>
+        <>{newPostPortalNode && <OutPortal node={newPostPortalNode} />}</>
+      </DrawerModal>
       <DrawerModal
         title="your invitations to your friends"
         opened={pinnedPostsDrawerModalOpened}

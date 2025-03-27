@@ -19,6 +19,9 @@ bin/setup
 
 ## todos
 
-- [ ] add android chrome add-to-homescreen instructions
 - [x] show upcoming events when not logged in
 - [x] hide link href when not logged in
+- [x] correct pinned posts order
+- [x] add background gradients to user themes
+- [ ] add android chrome add-to-homescreen instructions
+- [ ] send notification when friend installs your smaller world

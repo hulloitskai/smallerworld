@@ -21,6 +21,12 @@
   }
 }
 
+[data-user-theme] .emojiButton {
+  @mixin dark {
+    border-color: alpha(var(--mantine-color-white), 0.2);
+  }
+}
+
 .notifiableBadge {
   :global(.mantine-Badge-label) {
     text-transform: none;

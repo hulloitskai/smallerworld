@@ -3,7 +3,6 @@
 }
 
 .content {
-  background-color: var(--mantine-color-white);
   border-radius: var(--editor-radius, var(--mantine-radius-default));
   overflow: hidden;
 

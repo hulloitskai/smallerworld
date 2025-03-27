@@ -37,6 +37,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
 
+  // == User theme
+  useUserTheme(currentUser.theme);
+
   // == Browser detection
   const browserDetection = useBrowserDetection();
   const isMobileSafari = useIsMobileSafari(browserDetection);

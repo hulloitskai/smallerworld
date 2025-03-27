@@ -27,3 +27,9 @@
     background-color: var(--mantine-color-default-hover);
   }
 }
+
+[data-user-theme] .emojiButton {
+  @mixin dark {
+    border-color: alpha(var(--mantine-color-white), 0.2);
+  }
+}

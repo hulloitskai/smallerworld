@@ -180,6 +180,7 @@ const PostForm: FC<PostFormProps> = props => {
           </EmojiPopover>
           <SegmentedControl
             {...getInputProps("visibility")}
+            className={classes.visibilitySegmentedControl}
             orientation="vertical"
             size="xs"
             data={POST_VISIBILITIES.map(visibility => ({

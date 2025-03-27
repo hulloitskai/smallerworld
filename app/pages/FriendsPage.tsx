@@ -15,6 +15,9 @@ export interface FriendsPageProps extends SharedPageProps {
 }
 
 const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
+  // == User theme
+  useUserTheme(currentUser.theme);
+
   // == Load friends
   const { data: friendsData } = useRouteSWR<{ friends: FriendView[] }>(
     routes.friends.index,

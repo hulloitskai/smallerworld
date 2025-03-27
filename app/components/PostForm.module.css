@@ -12,3 +12,24 @@
     background-color: var(--mantine-color-default-hover);
   }
 }
+
+[data-user-theme] .emojiButton {
+  @mixin dark {
+    border-color: alpha(var(--mantine-color-white), 0.2);
+  }
+}
+
+[data-user-theme] .visibilitySegmentedControl {
+  @mixin dark {
+    background-color: transparent;
+    border: 1px solid alpha(var(--mantine-color-white), 0.2);
+
+    :global(.mantine-SegmentedControl-indicator) {
+      background-color: var(--mantine-color-white);
+    }
+
+    :global(.mantine-SegmentedControl-label)[data-active] {
+      color: var(--mantine-color-body);
+    }
+  }
+}

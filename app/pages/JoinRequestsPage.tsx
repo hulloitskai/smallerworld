@@ -9,6 +9,10 @@ export interface JoinRequestsPageProps extends SharedPageProps {
 const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
   currentUser,
 }) => {
+  // == User theme
+  useUserTheme(currentUser.theme);
+
+  // == Load join requests
   const { data } = useRouteSWR<{ joinRequests: JoinRequest[] }>(
     routes.joinRequests.index,
     {
