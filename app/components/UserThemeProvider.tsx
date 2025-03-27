@@ -1,6 +1,7 @@
 import {
   DARK_USER_THEMES,
   USER_THEME_BACKGROUND_COLORS,
+  userThemeBackgroundImageSrc,
   userThemeBackgroundVideoSrc,
   UserThemeContext,
 } from "~/helpers/userThemes";
@@ -54,22 +55,29 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
       }}
     >
       {!!appliedTheme && (
-        <div
+        <Box
           className={classes.backdrop}
           role="backdrop"
           style={{
-            backgroundImage: `url(${userThemeBackgroundVideoSrc(appliedTheme)})`,
+            backgroundImage: `url(${
+              appliedTheme === "forest"
+                ? userThemeBackgroundImageSrc(appliedTheme)
+                : userThemeBackgroundVideoSrc(appliedTheme)
+            })`,
             backgroundColor: USER_THEME_BACKGROUND_COLORS[appliedTheme],
           }}
+          mod={{ "user-theme": appliedTheme }}
         >
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            src={userThemeBackgroundVideoSrc(appliedTheme)}
-          />
-        </div>
+          {appliedTheme !== "forest" && (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              src={userThemeBackgroundVideoSrc(appliedTheme)}
+            />
+          )}
+        </Box>
       )}
       {children}
     </UserThemeContext.Provider>

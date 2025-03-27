@@ -8,6 +8,6 @@ type UserTheme =
   // | "lavaRave"
   | "darkSky"
   | "pool"
-  | "gradients";
+  | "forest";
 
 export default UserTheme;

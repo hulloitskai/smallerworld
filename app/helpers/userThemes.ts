@@ -12,17 +12,16 @@ export const USER_THEMES: UserTheme[] = [
   // "lavaRave",
   "darkSky",
   "pool",
-  "gradients",
+  "forest",
 ];
 
-export const DARK_USER_THEMES: UserTheme[] = [
-  "darkSky",
-  "gradients",
-  "karaoke",
-];
+export const DARK_USER_THEMES: UserTheme[] = ["darkSky", "forest", "karaoke"];
 
 export const userThemeBackgroundVideoSrc = (theme: UserTheme): string =>
   `https://assets.getpartiful.com/backgrounds/${theme}/web.mp4`;
+
+export const userThemeBackgroundImageSrc = (theme: UserTheme): string =>
+  `https://assets.getpartiful.com/backgrounds/${theme}/web.jpg`;
 
 export const userThemeThumbnailSrc = (theme: UserTheme): string =>
   `https://assets.getpartiful.com/backgrounds/${theme}/thumbnail.png`;
@@ -37,7 +36,7 @@ export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   // lavaRave: "rgb(31, 0, 17)",
   darkSky: "rgb(23, 38, 72)",
   pool: "rgb(201, 231, 238)",
-  gradients: "rgb(24, 53, 30)",
+  forest: "rgb(24, 53, 30)",
 };
 
 export interface UserThemeContext {

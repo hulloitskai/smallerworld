@@ -10,4 +10,24 @@
     height: 100%;
     object-fit: cover;
   }
+
+  /* &[data-user-theme="forest"] {
+    animation: _4rFkjz 3s linear infinite;
+    background-size: 100% 50%;
+    height: 200%;
+    background-position: 0 0;
+    background-repeat: repeat-y;
+
+    @keyframes _4rFkjz {
+      0% {
+        background-position: 100% 100%;
+      }
+      70% {
+        background-position: 0 0;
+      }
+      to {
+        background-position: 0 0;
+      }
+    }
+  } */
 }
