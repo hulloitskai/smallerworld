@@ -68,7 +68,22 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
           }}
           mod={{ "user-theme": appliedTheme }}
         >
-          {appliedTheme !== "forest" && (
+          {appliedTheme === "forest" ? (
+            <div className={classes.forestContainer}>
+              <img
+                className={classes.forestImage}
+                src={userThemeBackgroundImageSrc("forest")}
+              />
+              <div
+                className={classes.forestBackdrop}
+                style={{
+                  backgroundImage: `url(${userThemeBackgroundImageSrc(
+                    appliedTheme,
+                  )}), linear-gradient(0deg, rgb(2, 0, 36) 0%, rgb(16, 33, 21) 0%, rgb(61, 132, 73) 38%, rgb(32, 69, 43) 100%)`,
+                }}
+              />
+            </div>
+          ) : (
             <video
               autoPlay
               muted

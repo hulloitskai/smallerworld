@@ -10,24 +10,35 @@
     height: 100%;
     object-fit: cover;
   }
+}
 
-  /* &[data-user-theme="forest"] {
-    animation: _4rFkjz 3s linear infinite;
-    background-size: 100% 50%;
-    height: 200%;
-    background-position: 0 0;
-    background-repeat: repeat-y;
+.forestContainer {
+  position: relative;
+  width: 100%;
+  animation: scroll 12s linear infinite;
 
-    @keyframes _4rFkjz {
-      0% {
-        background-position: 100% 100%;
-      }
-      70% {
-        background-position: 0 0;
-      }
-      to {
-        background-position: 0 0;
-      }
+  @keyframes scroll {
+    0% {
+      transform: translateZ(0);
     }
-  } */
+    100% {
+      transform: translate3D(0, -100%, 0);
+    }
+  }
+}
+
+.forestImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.forestBackdrop {
+  background-repeat: repeat-y;
+  background-size: 100% 50%;
+  width: 100%;
+  height: 200%;
+  left: 0;
+  top: 0;
+  position: absolute;
 }

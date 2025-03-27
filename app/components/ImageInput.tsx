@@ -1,4 +1,8 @@
-import { type ImageProps, type InputWrapperProps } from "@mantine/core";
+import {
+  getRadius,
+  type ImageProps,
+  type InputWrapperProps,
+} from "@mantine/core";
 import { Image, Input, rgba, Text } from "@mantine/core";
 import { type DropzoneProps } from "@mantine/dropzone";
 import { Dropzone } from "@mantine/dropzone";
@@ -98,12 +102,11 @@ const ImageInput: FC<ImageInputProps> = ({
       >
         <Box {...{ w, h }} p={4} pos="relative">
           <Image
-            w="100%"
-            h="100%"
-            fit={previewFit}
-            radius={radius ?? "var(--mantine-radius-default)"}
+            className={classes.image}
             src={image?.src}
             srcSet={image?.src_set}
+            fit={previewFit}
+            style={{ "--dropzone-radius": getRadius(radius) }}
           />
           <Dropzone
             className={classes.dropzone}
