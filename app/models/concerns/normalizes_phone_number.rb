@@ -15,15 +15,10 @@ module NormalizesPhoneNumber
     sig { params(names: Symbol).void }
     def normalizes_phone_number(*names)
       T.bind(self, T.class_of(ActiveRecord::Base))
-      normalizes(*T.unsafe(names), with: :normalize_phone_number)
+      normalizes(*T.unsafe(names), with: ->(number) {
+        phone = Phonelib.parse(number)
+        phone.to_s
+      })
     end
-  end
-
-  private
-
-  sig { params(number: String).returns(String) }
-  def normalize_phone_number(number)
-    phone = Phonelib.parse(number)
-    phone.to_s
   end
 end
