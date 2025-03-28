@@ -29,7 +29,7 @@ export const userThemeThumbnailSrc = (theme: UserTheme): string =>
 export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   cloudflow: "rgb(167, 200, 255)",
   watercolor: "rgb(239, 239, 239)",
-  karaoke: "rgb(3, 3, 120)",
+  karaoke: "#000037",
   kaleidoscope: "rgb(254, 221, 218)",
   girlyMac: "rgb(222, 112, 214)",
   shroomset: "rgb(249, 128, 10)",
