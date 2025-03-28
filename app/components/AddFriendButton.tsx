@@ -123,7 +123,7 @@ const ModalBody: FC<ModalBodyProps> = ({
           intent: "join",
         },
       });
-      const joinUrl = new URL(joinPath, location.href);
+      const joinUrl = hrefToUrl(joinPath);
       setFriendJoinUrl(joinUrl.toString());
     }
   }, [friend?.access_token, currentUser.handle]);

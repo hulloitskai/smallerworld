@@ -29,7 +29,7 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
         intent: "join",
       },
     });
-    const joinUrl = new URL(joinPath, location.origin);
+    const joinUrl = hrefToUrl(joinPath);
     setJoinUrl(joinUrl.toString());
   }, [currentUser.handle, friend.access_token]);
 

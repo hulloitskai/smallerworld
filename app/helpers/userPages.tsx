@@ -112,6 +112,6 @@ export const openUserPageInstallationInstructionsInMobileSafari = (
       intent: "installation_instructions",
     },
   });
-  const url = new URL(path, location.href);
+  const url = hrefToUrl(path);
   openUrlInMobileSafari(url.toString());
 };

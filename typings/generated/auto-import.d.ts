@@ -88,6 +88,7 @@ declare global {
   const get: typeof import('lodash-es')['get']
   const getMeta: typeof import('~/helpers/meta')['getMeta']
   const getThemeColor: typeof import('@mantine/core')['getThemeColor']
+  const hrefToUrl: typeof import('@inertiajs/core')['hrefToUrl']
   const humanize: typeof import('inflection')['humanize']
   const identity: typeof import('lodash-es')['identity']
   const inflect: typeof import('inflection')['inflect']

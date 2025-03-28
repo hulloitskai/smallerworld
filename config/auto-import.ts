@@ -55,6 +55,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/vaul": ["createVaulModalPortalTarget", "useVaulPortalTarget"],
     "@fullstory/browser": ["FullStory", ["isInitialized", "isFsInitialized"]],
     "@inertiajs/react": ["Link", "router"],
+    "@inertiajs/core": ["hrefToUrl"],
     "@mantine/core": [
       "rem",
       "useMantineTheme",

@@ -42,7 +42,10 @@ export const setupSentry = () => {
             }
             if (
               type === "TypeError" &&
-              ["Failed to fetch", "Load failed"].includes(value)
+              (value == "Load failed" ||
+                isFetchFailedMessage(value) ||
+                isScriptLoadFailedMessage(value) ||
+                isModuleImportFailedMessage(value))
             ) {
               return false;
             }
@@ -67,3 +70,12 @@ const getFloatMeta = (name: string) => {
   const value = getMeta(name);
   return value ? parseFloat(value) : undefined;
 };
+
+const isModuleImportFailedMessage = (message: string) =>
+  message === "Importing a module script failed.";
+
+const isFetchFailedMessage = (message: string) =>
+  message.startsWith("Failed to fetch");
+
+const isScriptLoadFailedMessage = (message: string) =>
+  message.startsWith("Script") && message.endsWith("load failed");
