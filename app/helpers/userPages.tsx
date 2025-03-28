@@ -101,7 +101,7 @@ export const useUserPageDialogOpened = (opened?: boolean): boolean => {
   return state.opened;
 };
 
-export const openUserPageInMobileSafari = (
+export const openUserPageInstallationInstructionsInMobileSafari = (
   user: User,
   currentFriend: Friend,
 ) => {

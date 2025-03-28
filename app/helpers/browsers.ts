@@ -16,31 +16,28 @@ export const useBrowserDetection = (): IResult | undefined => {
   return result;
 };
 
-export const isIos = (os: IOS): boolean => !!os && os.is("iOS");
-export const isAndroid = (os: IOS): boolean => !!os && os.is("Android");
+export const isIos = (result: IResult): boolean => result.os.is("iOS");
+export const isAndroid = (result: IResult): boolean => result.os.is("Android");
 
-const canUseShortcutsExploit = (os: IOS): boolean =>
-  isIos(os) &&
-  !!os.version &&
-  (os.version.startsWith("17") || os.version.startsWith("18.0"));
+const canUseShortcutsExploit = (result: IResult): boolean =>
+  isIos(result) &&
+  !!result.os.version &&
+  (result.os.version.startsWith("17") || result.os.version.startsWith("18.0"));
 
-export const isMobileSafari = (browser: IBrowser): boolean =>
-  browser.is("Mobile Safari");
+export const isMobileSafari = (result: IResult): boolean =>
+  result.browser.is("Mobile Safari");
 
-export const isDesktop = (device: IDevice): boolean =>
-  device.type !== "mobile" && device.type !== "tablet";
-
-export const isInAppBrowser = (browser: IBrowser): boolean =>
-  browser.is("inapp");
+export const isDesktop = (result: IResult): boolean =>
+  result.device.type !== "mobile" && result.device.type !== "tablet";
 
 export const canOpenUrlInMobileSafari = (result: IResult): boolean =>
-  isIos(result.os) &&
-  (!result.browser.is("Instagram") || canUseShortcutsExploit(result.os));
+  isIos(result) &&
+  (!result.browser.is("Instagram") || canUseShortcutsExploit(result));
 
-export const openUrlInMobileSafari = (url: string) => {
+export const openUrlInMobileSafari = (url: string): void => {
   const parser = new UAParser();
   const result = parser.getResult();
-  if (result.browser.name === "Instagram" && canUseShortcutsExploit(result)) {
+  if (result.browser.is("Instagram") && canUseShortcutsExploit(result)) {
     location.href = `shortcuts://x-callback-url/run-shortcut?name=${uuid()}&x-error=${encodeURIComponent(url)}`;
   } else if (url.startsWith("https://")) {
     location.href = `x-safari-${url}`;

@@ -49,7 +49,7 @@ const WorldPageEnableNotificationsActionIcon: FC<
             loading={installing}
             disabled={
               !browserDetection ||
-              (!isMobileSafari(browserDetection.browser) && !install)
+              (!isMobileSafari(browserDetection) && !install)
             }
             onClick={() => {
               if (install) {

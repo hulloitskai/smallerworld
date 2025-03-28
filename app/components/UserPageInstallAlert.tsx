@@ -5,14 +5,13 @@ import {
   canOpenUrlInMobileSafari,
   isAndroid,
   isDesktop,
-  isInAppBrowser,
   isIos,
   isMobileSafari,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
 import {
-  openUserPageInMobileSafari,
+  openUserPageInstallationInstructionsInMobileSafari,
   useUserPageDialogOpened,
 } from "~/helpers/userPages";
 import { type Friend, type User } from "~/types/generated";
@@ -77,39 +76,42 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   disabled={
                     !browserDetection ||
                     (!canOpenUrlInMobileSafari(browserDetection) &&
-                      !isMobileSafari(browserDetection?.browser) &&
+                      !isMobileSafari(browserDetection) &&
                       !install)
                   }
                   onClick={() => {
                     if (install) {
                       void install();
                     } else if (
-                      browserDetection &&
+                      !!browserDetection &&
                       !isMobileSafari(browserDetection)
                     ) {
                       openUserPageInstallationInstructionsModal({ user });
                     } else {
-                      openUserPageInMobileSafari(user, currentFriend);
+                      openUserPageInstallationInstructionsInMobileSafari(
+                        user,
+                        currentFriend,
+                      );
                     }
                   }}
                 >
                   pin this page
                 </Button>
-                {browserDetection && (
+                {!!browserDetection && (
                   <>
-                    {isIos(browserDetection.os) &&
-                      !isMobileSafari(browserDetection.browser) &&
+                    {isIos(browserDetection) &&
+                      !isMobileSafari(browserDetection) &&
                       !canOpenUrlInMobileSafari(browserDetection) && (
                         <Text className={classes.notSupportedText}>
                           open in Safari to continue
                         </Text>
                       )}
-                    {isAndroid(browserDetection.os) && !install && (
+                    {isAndroid(browserDetection) && !install && (
                       <Text className={classes.notSupportedText}>
                         open in Chrome to continue
                       </Text>
                     )}
-                    {isDesktop(browserDetection.device) && !install && (
+                    {isDesktop(browserDetection) && !install && (
                       <Text className={classes.notSupportedText}>
                         open on your phone to continue
                       </Text>

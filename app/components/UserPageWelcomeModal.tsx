@@ -11,7 +11,7 @@ import {
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
-import { openUserPageInMobileSafari } from "~/helpers/userPages";
+import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/userPages";
 import { type Friend, type User } from "~/types";
 
 import HomeScreenPreview from "./HomeScreenPreview";
@@ -80,40 +80,40 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           disabled={
             !browserDetection ||
             (!canOpenUrlInMobileSafari(browserDetection) &&
-              !isMobileSafari(browserDetection.browser) &&
+              !isMobileSafari(browserDetection) &&
               !install)
           }
           onClick={() => {
             if (install) {
               void install();
-            } else if (
-              !!browserDetection &&
-              isMobileSafari(browserDetection.browser)
-            ) {
+            } else if (!!browserDetection && isMobileSafari(browserDetection)) {
               openUserPageInstallationInstructionsModal({ user });
               closeModal(modalId);
             } else {
-              openUserPageInMobileSafari(user, currentFriend);
+              openUserPageInstallationInstructionsInMobileSafari(
+                user,
+                currentFriend,
+              );
             }
           }}
         >
           pin to home screen
         </Button>
-        {browserDetection && (
+        {!!browserDetection && (
           <>
-            {isIos(browserDetection.os) &&
-              !isMobileSafari(browserDetection.browser) &&
+            {isIos(browserDetection) &&
+              !isMobileSafari(browserDetection) &&
               !canOpenUrlInMobileSafari(browserDetection) && (
                 <Text className={classes.notSupportedText}>
                   open in Safari to continue
                 </Text>
               )}
-            {isAndroid(browserDetection.os) && !install && (
+            {isAndroid(browserDetection) && !install && (
               <Text className={classes.notSupportedText}>
                 open in Chrome to continue
               </Text>
             )}
-            {isDesktop(browserDetection.device) && !install && (
+            {isDesktop(browserDetection) && !install && (
               <Text className={classes.notSupportedText}>
                 open on your phone to continue
               </Text>

@@ -98,7 +98,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 {isStandalone === false &&
                   (!!install ||
                     (!!browserDetection &&
-                      isMobileSafari(browserDetection.browser))) && (
+                      isMobileSafari(browserDetection))) && (
                     <WorldPageEnableNotificationsActionIcon
                       {...{ currentUser }}
                     />
