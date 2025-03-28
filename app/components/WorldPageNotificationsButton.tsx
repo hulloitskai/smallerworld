@@ -5,6 +5,9 @@ import { useWebPush } from "~/helpers/webPush";
 import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
 const WorldPageNotificationsButton: FC = () => {
+  // == Menu
+  const [menuOpened, setMenuOpened] = useState(false);
+
   // == Web push
   const {
     subscription,
@@ -14,17 +17,6 @@ const WorldPageNotificationsButton: FC = () => {
     supported,
     loading,
   } = useWebPush();
-  useDidUpdate(
-    () => {
-      if (supported && registration === null) {
-        void subscribe();
-      }
-    },
-    [supported, registration], // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  // == Menu
-  const [menuOpened, setMenuOpened] = useState(false);
 
   return (
     <>

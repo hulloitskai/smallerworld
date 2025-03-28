@@ -1,7 +1,11 @@
-import { Popover, Switch } from "@mantine/core";
+import { InputWrapper, Popover } from "@mantine/core";
 import { pluralize } from "inflection";
 
-import { POST_TYPE_TO_LABEL, POST_TYPES } from "~/helpers/posts";
+import {
+  POST_TYPE_TO_ICON,
+  POST_TYPE_TO_LABEL,
+  POST_TYPES,
+} from "~/helpers/posts";
 import { useWebPush } from "~/helpers/webPush";
 import { type Friend, type FriendNotificationSettings } from "~/types";
 
@@ -13,6 +17,10 @@ export interface UserPageNotificationsButtonProps
 const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
   currentFriend,
 }) => {
+  // == Dropdown
+  const [dropdownOpened, setDropdownOpened] = useState(false);
+
+  // == Web push
   const {
     subscription,
     registration,
@@ -20,17 +28,12 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
     subscribing,
     supported,
     loading,
-  } = useWebPush();
-  useDidUpdate(
-    () => {
-      if (supported && registration === null) {
-        void subscribe();
-      }
+  } = useWebPush({
+    onSubscribed: () => {
+      setDropdownOpened(true);
     },
-    [supported, registration], // eslint-disable-line react-hooks/exhaustive-deps
-  );
+  });
 
-  const [dropdownOpened, setDropdownOpened] = useState(false);
   return (
     <>
       {subscription === undefined ? (
@@ -49,7 +52,8 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
         </Button>
       ) : (
         <Popover
-          width={270}
+          width={300}
+          shadow="md"
           opened={dropdownOpened}
           onChange={setDropdownOpened}
         >
@@ -171,8 +175,7 @@ const NotificationSettingsForm: FC<NotificationSettingsFormProps> = ({
   return (
     <form onSubmit={submit}>
       <Stack gap="xs">
-        <Switch.Group
-          {...getInputProps("subscribed_post_types")}
+        <InputWrapper
           label="i want to be notified about:"
           styles={{
             root: {
@@ -186,16 +189,26 @@ const NotificationSettingsForm: FC<NotificationSettingsFormProps> = ({
             },
           }}
         >
-          <Stack gap={4}>
-            {POST_TYPES.map(postType => (
-              <Switch
-                key={postType}
-                label={pluralize(POST_TYPE_TO_LABEL[postType])}
-                value={postType}
-              />
-            ))}
-          </Stack>
-        </Switch.Group>
+          <Chip.Group multiple {...getInputProps("subscribed_post_types")}>
+            <Group justify="center" gap={4} wrap="wrap">
+              {POST_TYPES.map(postType => (
+                <Chip key={postType} value={postType}>
+                  <Box
+                    component={POST_TYPE_TO_ICON[postType]}
+                    fz="xs"
+                    mr={2}
+                    style={{
+                      verticalAlign: "middle",
+                      position: "relative",
+                      bottom: rem(2),
+                    }}
+                  />{" "}
+                  {pluralize(POST_TYPE_TO_LABEL[postType])}
+                </Chip>
+              ))}
+            </Group>
+          </Chip.Group>
+        </InputWrapper>
         <Transition transition="fade" mounted={isDirty()}>
           {style => (
             <Button

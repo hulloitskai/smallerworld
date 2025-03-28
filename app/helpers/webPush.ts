@@ -26,12 +26,22 @@ export interface UseWebPushResult {
 
 export const WebPushContext = createContext<UseWebPushResult | null>(null);
 
-export const useWebPush = (): UseWebPushResult => {
+export interface WebPushOptions {
+  onSubscribed?: () => void;
+}
+
+export const useWebPush = (options?: WebPushOptions): UseWebPushResult => {
   const context = useContext(WebPushContext);
   if (!context) {
     throw new Error("useWebPush must be used within a WebPushProvider");
   }
-  return context;
+  return {
+    ...context,
+    subscribe: () =>
+      context.subscribe().then(() => {
+        options?.onSubscribed?.();
+      }),
+  };
 };
 
 export const useWebPushSupported = (): boolean | undefined => {

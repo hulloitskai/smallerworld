@@ -295,6 +295,11 @@ const createTheme = (
           content: classes.richTextEditorContent,
         },
       }),
+      Chip: Chip.extend({
+        defaultProps: {
+          variant: "outline",
+        },
+      }),
     },
   });
 };
