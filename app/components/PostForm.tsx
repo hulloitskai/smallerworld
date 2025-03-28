@@ -136,12 +136,15 @@ const PostForm: FC<PostFormProps> = props => {
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // == Pinned until
+  const vaulPortalTarget = useVaulPortalTarget();
   const todayDate = useMemo(() => DateTime.now().toJSDate(), []);
   const pinnedUntil = useMemo(() => {
     if (values.pinned_until) {
       return DateTime.fromISO(values.pinned_until).toJSDate();
     }
   }, [values.pinned_until]);
+
   const [showImageInput, setShowImageInput] = useState(false);
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
   return (
@@ -255,7 +258,12 @@ const PostForm: FC<PostFormProps> = props => {
                 error={errors.pinned_until}
                 required
                 withAsterisk={false}
-                popoverProps={{ position: "bottom" }}
+                popoverProps={{
+                  portalProps: {
+                    target: vaulPortalTarget,
+                  },
+                  position: "bottom",
+                }}
                 styles={{
                   root: {
                     flexGrow: 1,
