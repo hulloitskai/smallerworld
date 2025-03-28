@@ -39,6 +39,7 @@
 class Friend < ApplicationRecord
   include NormalizesPhoneNumber
   include Notifiable
+  include Noticeable
 
   # == Attributes
   enumerize :subscribed_post_types,
@@ -76,4 +77,21 @@ class Friend < ApplicationRecord
   scope :subscribed_to, ->(post_type) {
     where("? = ANY (subscribed_post_types)", post_type)
   }
+
+  # == Noticeable
+  sig do
+    override
+      .params(recipient: T.all(ActiveRecord::Base, Notifiable))
+      .returns(T::Hash[String, T.untyped])
+  end
+  def notification_payload(recipient)
+    payload = FriendNotificationPayload.new(friend: self)
+    FriendNotificationPayloadSerializer.one(payload)
+  end
+
+  # == Methods
+  sig { void }
+  def create_notification!
+    notifications.create!(recipient: user!)
+  end
 end

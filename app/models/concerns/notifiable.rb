@@ -26,6 +26,9 @@ module Notifiable
   sig { abstract.returns(Notification::PrivateCollectionProxy) }
   def notifications; end
 
+  sig { abstract.returns(::PushRegistration::PrivateCollectionProxy) }
+  def push_registrations; end
+
   # == Methods
   sig do
     returns(T.any(

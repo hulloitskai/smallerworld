@@ -51,7 +51,7 @@ class PostReaction < ApplicationRecord
   validates :emoji, presence: true, uniqueness: { scope: %i[post friend] }
 
   # == Callbacks
-  after_create :create_notifications!, unless: :friend_already_reacted_to_post?
+  after_create :create_notification!, unless: :friend_already_reacted_to_post?
 
   # == Noticeable
   sig do
@@ -68,7 +68,7 @@ class PostReaction < ApplicationRecord
 
   # == Methods
   sig { void }
-  def create_notifications!
+  def create_notification!
     notifications.create!(recipient: post_author!)
   end
 

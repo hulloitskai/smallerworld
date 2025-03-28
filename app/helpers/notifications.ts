@@ -1,4 +1,5 @@
 import {
+  type FriendNotificationPayload,
   type JoinRequestNotificationPayload,
   type Notification,
   type PostNotificationPayload,
@@ -57,8 +58,16 @@ export const renderNotification = (
         body: `request from ${join_request.name} (${join_request.phone_number})`,
       };
     }
-    default:
-      throw new Error(`Unknown notification type: ${notification.type}`);
+    case "Friend": {
+      const { friend } = notification.payload as FriendNotificationPayload;
+      const name = [friend.emoji, friend.name].filter(Boolean).join(" ");
+      return {
+        title: `${name} joined your world!`,
+        body: `${friend.name} installed your world on their phone :)`,
+      };
+    }
+    // default:
+    //   throw new Error(`Unknown notification type: ${notification.type}`);
   }
 };
 
@@ -93,7 +102,15 @@ export const notificationActionUrl = (notification: Notification): string => {
         },
       });
     }
-    default:
-      throw new Error(`Unknown notification type: ${notification.type}`);
+    case "Friend": {
+      const { friend } = notification.payload as FriendNotificationPayload;
+      return routes.friends.index.path({
+        query: {
+          friend_id: friend.id,
+        },
+      });
+    }
+    // default:
+    //   throw new Error(`Unknown notification type: ${notification.type}`);
   }
 };

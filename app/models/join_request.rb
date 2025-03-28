@@ -44,7 +44,7 @@ class JoinRequest < ApplicationRecord
   scope :accepted, -> { where.associated(:friend) }
 
   # == Callbacks
-  after_create :create_notifications!
+  after_create :create_notification!
 
   # == Noticeable
   sig do
@@ -61,7 +61,7 @@ class JoinRequest < ApplicationRecord
 
   # == Methods
   sig { void }
-  def create_notifications!
+  def create_notification!
     notifications.create!(recipient: user!)
   end
 end

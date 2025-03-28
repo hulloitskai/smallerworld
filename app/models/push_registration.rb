@@ -37,6 +37,9 @@ class PushRegistration < ApplicationRecord
   # == Validations
   validates :push_subscription, uniqueness: { scope: :owner }
 
+  # == Callbacks
+  after_create :create_friend_notification!
+
   # == Methods
   sig { returns(T.all(ActiveRecord::Base, Notifiable)) }
   def owner
@@ -89,5 +92,20 @@ class PushRegistration < ApplicationRecord
       variant = icon_blob.variant(resize_to_fill: [192, 192])
       Rails.application.routes.url_helpers.rails_representation_path(variant)
     end
+  end
+
+  sig { void }
+  def create_friend_notification!
+    return if has_other_push_registrations?
+
+    owner = self.owner
+    if owner.is_a?(Friend)
+      owner.create_notification!
+    end
+  end
+
+  sig { returns(T::Boolean) }
+  def has_other_push_registrations?
+    owner.push_registrations.where.not(id:).exists?
   end
 end

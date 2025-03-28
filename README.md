@@ -23,5 +23,5 @@ bin/setup
 - [x] hide link href when not logged in
 - [x] correct pinned posts order
 - [x] add background gradients to user themes
+- [x] send notification when friend installs your smaller world
 - [ ] add android chrome add-to-homescreen instructions
-- [ ] send notification when friend installs your smaller world
