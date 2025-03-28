@@ -2,7 +2,7 @@ import { Image, Popover, Text } from "@mantine/core";
 
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
-import { useBrowserDetection, useIsMobileSafari } from "~/helpers/browsers";
+import { isMobileSafari, useBrowserDetection } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
 import { type User } from "~/types";
 
@@ -22,7 +22,6 @@ const WorldPageEnableNotificationsActionIcon: FC<
 
   // == Browser detection
   const browserDetection = useBrowserDetection();
-  const isMobileSafari = useIsMobileSafari(browserDetection);
 
   return (
     <Box pos="relative" {...otherProps}>
@@ -48,7 +47,10 @@ const WorldPageEnableNotificationsActionIcon: FC<
             variant="light"
             size="lg"
             loading={installing}
-            disabled={!isMobileSafari && !install}
+            disabled={
+              !browserDetection ||
+              (!isMobileSafari(browserDetection.browser) && !install)
+            }
             onClick={() => {
               if (install) {
                 setInstallerOpened(true);

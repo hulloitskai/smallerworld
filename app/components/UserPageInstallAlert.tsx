@@ -2,10 +2,13 @@ import { Affix, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import {
+  canOpenUrlInMobileSafari,
+  isAndroid,
+  isDesktop,
+  isInAppBrowser,
+  isIos,
+  isMobileSafari,
   useBrowserDetection,
-  useIsDesktop,
-  useIsIosAndStuckInAppBrowser,
-  useIsMobileSafari,
 } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
 import {
@@ -34,10 +37,6 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
 
   // == Browser detection
   const browserDetection = useBrowserDetection();
-  const isIosAndStuckInAppBrowser =
-    useIsIosAndStuckInAppBrowser(browserDetection);
-  const isMobileSafari = useIsMobileSafari(browserDetection);
-  const isDesktop = useIsDesktop(browserDetection);
 
   // == Install to home screen
   const { install, installing } = useInstallPrompt();
@@ -76,12 +75,18 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   className={classes.button}
                   loading={installing}
                   disabled={
-                    !!isIosAndStuckInAppBrowser || (!isMobileSafari && !install)
+                    !browserDetection ||
+                    (!canOpenUrlInMobileSafari(browserDetection) &&
+                      !isMobileSafari(browserDetection?.browser) &&
+                      !install)
                   }
                   onClick={() => {
                     if (install) {
                       void install();
-                    } else if (isMobileSafari) {
+                    } else if (
+                      browserDetection &&
+                      !isMobileSafari(browserDetection)
+                    ) {
                       openUserPageInstallationInstructionsModal({ user });
                     } else {
                       openUserPageInMobileSafari(user, currentFriend);
@@ -90,20 +95,23 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                 >
                   pin this page
                 </Button>
-                {isIosAndStuckInAppBrowser ? (
-                  <Text className={classes.notSupportedText}>
-                    "open in safari to continue"
-                  </Text>
-                ) : (
+                {browserDetection && (
                   <>
-                    {install === null && !isMobileSafari && (
+                    {isIos(browserDetection.os) &&
+                      !isMobileSafari(browserDetection.browser) &&
+                      !canOpenUrlInMobileSafari(browserDetection) && (
+                        <Text className={classes.notSupportedText}>
+                          open in Safari to continue
+                        </Text>
+                      )}
+                    {isAndroid(browserDetection.os) && !install && (
                       <Text className={classes.notSupportedText}>
-                        sorry, your browser isn&apos;t supported
-                        {isDesktop && (
-                          <Text span inherit visibleFrom="xs">
-                            —pls open on your phone!
-                          </Text>
-                        )}
+                        open in Chrome to continue
+                      </Text>
+                    )}
+                    {isDesktop(browserDetection.device) && !install && (
+                      <Text className={classes.notSupportedText}>
+                        open on your phone to continue
                       </Text>
                     )}
                   </>

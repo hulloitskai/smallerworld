@@ -16,55 +16,26 @@ export const useBrowserDetection = (): IResult | undefined => {
   return result;
 };
 
-const isMobileSafari = (browser: IBrowser): boolean =>
-  browser.is("Mobile Safari");
-
-const isDesktop = (device: IDevice) =>
-  device.type !== "mobile" && device.type !== "tablet";
-
-const isInAppBrowser = (browser: IBrowser): boolean => browser.is("inapp");
-
-const isIos = (os: IOS): boolean => os.is("iOS");
+export const isIos = (os: IOS): boolean => !!os && os.is("iOS");
+export const isAndroid = (os: IOS): boolean => !!os && os.is("Android");
 
 const canUseShortcutsExploit = (os: IOS): boolean =>
   isIos(os) &&
   !!os.version &&
   (os.version.startsWith("17") || os.version.startsWith("18.0"));
 
-const canOpenUrlInMobileSafari = ({ browser, os }: IResult): boolean =>
-  browser.is("Instagram") || canUseShortcutsExploit(os);
+export const isMobileSafari = (browser: IBrowser): boolean =>
+  browser.is("Mobile Safari");
 
-const isIosAndStuckInAppBrowser = (result: IResult): boolean =>
+export const isDesktop = (device: IDevice): boolean =>
+  device.type !== "mobile" && device.type !== "tablet";
+
+export const isInAppBrowser = (browser: IBrowser): boolean =>
+  browser.is("inapp");
+
+export const canOpenUrlInMobileSafari = (result: IResult): boolean =>
   isIos(result.os) &&
-  isInAppBrowser(result.browser) &&
-  !canOpenUrlInMobileSafari(result);
-
-export const useIsIosAndStuckInAppBrowser = (
-  result: IResult | undefined,
-): boolean | undefined =>
-  useMemo(() => {
-    if (result) {
-      return isIosAndStuckInAppBrowser(result);
-    }
-  }, [result]);
-
-export const useIsMobileSafari = (
-  result: IResult | undefined,
-): boolean | undefined =>
-  useMemo(() => {
-    if (result) {
-      return isMobileSafari(result.browser);
-    }
-  }, [result]);
-
-export const useIsDesktop = (
-  result: IResult | undefined,
-): boolean | undefined =>
-  useMemo(() => {
-    if (result) {
-      return isDesktop(result.device);
-    }
-  }, [result]);
+  (!result.browser.is("Instagram") || canUseShortcutsExploit(result.os));
 
 export const openUrlInMobileSafari = (url: string) => {
   const parser = new UAParser();
