@@ -10,10 +10,6 @@
   flex-direction: column;
   z-index: 190;
   max-height: 80%;
-
-  &[data-disabled] {
-    pointer-events: none !important;
-  }
 }
 
 .drawerHeader {

@@ -18,7 +18,7 @@ export const createVaulPortalRoot = (): HTMLElement | undefined => {
 };
 
 export interface VaulPortalContext {
-  root: HTMLElement | undefined;
+  portalRoot: HTMLElement | undefined;
 }
 
 export const VaulPortalContext = createContext<VaulPortalContext | undefined>(
@@ -26,17 +26,17 @@ export const VaulPortalContext = createContext<VaulPortalContext | undefined>(
 );
 
 export const useVaulPortalTarget = (): HTMLElement | undefined => {
-  const { root } = useContext(VaulPortalContext) ?? {};
+  const { portalRoot } = useContext(VaulPortalContext) ?? {};
   const [target, setTarget] = useState<HTMLElement | undefined>();
   useEffect(() => {
-    if (root) {
+    if (portalRoot) {
       const target = document.createElement("div");
       target.dataset.portal = "true";
-      root.appendChild(target);
+      portalRoot.appendChild(target);
       setTarget(target);
     } else {
       setTarget(undefined);
     }
-  }, [root]);
+  }, [portalRoot]);
   return target;
 };

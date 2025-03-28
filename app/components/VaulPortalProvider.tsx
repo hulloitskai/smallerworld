@@ -10,9 +10,8 @@ const VaulPortalProvider: FC<VaulPortalProviderProps> = ({
   children,
   portalRoot,
 }) => {
-  const value = useMemo(() => ({ root: portalRoot }), [portalRoot]);
   return (
-    <VaulPortalContext.Provider {...{ value }}>
+    <VaulPortalContext.Provider value={{ portalRoot }}>
       {children}
     </VaulPortalContext.Provider>
   );

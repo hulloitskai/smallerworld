@@ -37,7 +37,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
   children,
 }) => {
   const viewportRef = useRef<HTMLDivElement>(null);
-  const portalNode = useHtmlPortalNode();
+  const contentPortalNode = useHtmlPortalNode();
   const isMobileSize = useIsMobileSize();
 
   // == Refs
@@ -71,7 +71,9 @@ const DrawerModal: FC<DrawerModalProps> = ({
 
   return (
     <VaulPortalProvider portalRoot={vaulPortalRoot}>
-      {portalNode && <InPortal node={portalNode}>{children}</InPortal>}
+      {contentPortalNode && (
+        <InPortal node={contentPortalNode}>{children}</InPortal>
+      )}
       <VaulDrawer.Root
         shouldScaleBackground
         repositionInputs={false}
@@ -114,12 +116,16 @@ const DrawerModal: FC<DrawerModalProps> = ({
             }}
             aria-describedby={undefined}
             {...(!isEmpty(deferredOpenModals) && {
-              "data-disabled": true,
+              style: {
+                pointerEvents: "none",
+              },
             })}
           >
             <VaulModalPortalTarget />
             <VaulPortalRoot
-              onMounted={setVaulPortalRoot}
+              onMounted={portalRoot => {
+                setVaulPortalRoot(portalRoot);
+              }}
               onUnmounted={() => {
                 setVaulPortalRoot(undefined);
               }}
@@ -145,7 +151,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
                 <CloseButton component={VaulDrawer.Close} />
               </header>
               <div className={classes.drawerBody}>
-                {portalNode && <OutPortal node={portalNode} />}
+                {contentPortalNode && <OutPortal node={contentPortalNode} />}
               </div>
             </div>
           </VaulDrawer.Content>
@@ -167,7 +173,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
           }
         }}
       >
-        {portalNode && <OutPortal node={portalNode} />}
+        {contentPortalNode && <OutPortal node={contentPortalNode} />}
       </Modal>
     </VaulPortalProvider>
   );

@@ -136,7 +136,6 @@ const PostForm: FC<PostFormProps> = props => {
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const vaulPortalTarget = useVaulPortalTarget();
   const todayDate = useMemo(() => DateTime.now().toJSDate(), []);
   const pinnedUntil = useMemo(() => {
     if (values.pinned_until) {
@@ -150,7 +149,6 @@ const PostForm: FC<PostFormProps> = props => {
       <Group gap="xs" align="start" justify="center">
         <Stack gap="xs">
           <EmojiPopover
-            portalProps={{ target: vaulPortalTarget }}
             onEmojiClick={({ emoji }) => {
               setFieldValue("emoji", emoji);
             }}

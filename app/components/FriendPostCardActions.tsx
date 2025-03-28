@@ -30,6 +30,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   post,
   replyPhoneNumber,
 }) => {
+  const vaulPortalTarget = useVaulPortalTarget();
   const currentFriend = useCurrentFriend();
   const { ref, inViewport } = useInViewport();
 
@@ -87,6 +88,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
       </Text>
       <Popover
         shadow="md"
+        portalProps={{ target: vaulPortalTarget }}
         opened={messagingPlatformSelectorOpened}
         onChange={setMessagingPlatformSelectorOpened}
       >
@@ -185,7 +187,6 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
   postId,
   hasExistingReactions,
 }) => {
-  const vaulPortalTarget = useVaulPortalTarget();
   const currentFriend = useCurrentFriend();
 
   // == Add reaction
@@ -209,7 +210,6 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
 
   return (
     <EmojiPopover
-      portalProps={{ target: vaulPortalTarget }}
       pickerProps={{
         reactionsDefaultOpen: !hasExistingReactions,
         reactions: [

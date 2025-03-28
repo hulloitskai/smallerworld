@@ -1,5 +1,4 @@
 import { Affix, Indicator } from "@mantine/core";
-import { InPortal, OutPortal } from "react-reverse-portal";
 
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
@@ -9,7 +8,6 @@ import {
   POST_TYPE_TO_LABEL,
   POST_TYPES,
 } from "~/helpers/posts";
-import { useHtmlPortalNode } from "~/helpers/react-reverse-portal";
 import { useWebPush } from "~/helpers/webPush";
 import { type Post, type PostType } from "~/types";
 
@@ -34,9 +32,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   });
   const pinnedPosts = data?.posts ?? [];
 
-  // == New post modal
-  const newPostPortalNode = useHtmlPortalNode();
-
   // == Pinned posts drawer modal
   const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
     useState(false);
@@ -49,16 +44,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   return (
     <>
       <Space className={classes.space} />
-      {newPostPortalNode && (
-        <InPortal node={newPostPortalNode}>
-          <PostForm
-            postType={postType ?? previousPostType ?? null}
-            onPostCreated={() => {
-              setPostType(null);
-            }}
-          />
-        </InPortal>
-      )}
       <Affix
         zIndex={180}
         position={{
@@ -151,11 +136,16 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           setPostType(null);
         }}
       >
-        <>{newPostPortalNode && <OutPortal node={newPostPortalNode} />}</>
+        <PostForm
+          postType={postType ?? previousPostType ?? null}
+          onPostCreated={() => {
+            setPostType(null);
+          }}
+        />
       </DrawerModal>
       <DrawerModal
         title="your invitations to your friends"
-        opened={pinnedPostsDrawerModalOpened}
+        opened={!postType && pinnedPostsDrawerModalOpened}
         onClose={() => {
           setPinnedPostsDrawerModalOpened(false);
         }}
