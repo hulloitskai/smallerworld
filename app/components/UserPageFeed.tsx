@@ -13,8 +13,11 @@ export interface UserPageFeedProps extends BoxProps {
 const UserPageFeed: FC<UserPageFeedProps> = ({ user, replyPhoneNumber }) => {
   const currentFriend = useCurrentFriend();
   const { post_id } = useQueryParams();
+
+  // == Load posts
   const { posts, hasMorePosts, setSize } = useUserPagePosts(user.id);
   const [loadingMore, setLoadingMore] = useState(false);
+
   return (
     <Stack>
       {posts ? (

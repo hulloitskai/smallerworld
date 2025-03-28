@@ -11,8 +11,12 @@ import PostCard from "./PostCard";
 export interface WorldPageFeedProps extends BoxProps {}
 
 const WorldPageFeed: FC<WorldPageFeedProps> = () => {
+  const { post_id } = useQueryParams();
+
+  // == Load posts
   const { posts, setSize, hasMorePosts } = usePosts();
   const [loadingMore, setLoadingMore] = useState(false);
+
   return (
     <Stack>
       {posts ? (
@@ -47,6 +51,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = () => {
               <PostCard
                 key={post.id}
                 {...{ post }}
+                focus={post_id === post.id}
                 actions={<AuthorPostCardActions {...{ post }} />}
               />
             ))}
