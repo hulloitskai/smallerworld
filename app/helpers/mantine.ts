@@ -291,7 +291,8 @@ const createTheme = (
       }),
       RichTextEditor: RichTextEditor.extend({
         classNames: {
-          root: cn(classes.richTextEditor, classes.input),
+          root: classes.input,
+          content: classes.richTextEditorContent,
         },
       }),
     },
