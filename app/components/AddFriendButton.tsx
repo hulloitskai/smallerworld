@@ -103,7 +103,7 @@ const ModalBody: FC<ModalBodyProps> = ({
       // void mutateRoute(routes.users.joined);
       setTimeout(() => {
         setRevealBackToHomeButton(true);
-      }, 2000);
+      }, 3000);
     },
   });
   useDidUpdate(() => {
