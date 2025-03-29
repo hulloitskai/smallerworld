@@ -190,7 +190,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
   const currentFriend = useCurrentFriend();
 
   // == Add reaction
-  const { trigger: addReaction } = useRouteMutation<{ reaction: PostReaction }>(
+  const { trigger, mutating } = useRouteMutation<{ reaction: PostReaction }>(
     routes.postReactions.create,
     {
       descriptor: "react to post",
@@ -228,7 +228,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
           );
           return;
         }
-        void addReaction({ reaction: { emoji } });
+        void trigger({ reaction: { emoji } });
       }}
     >
       {({ open, opened }) => (
@@ -237,6 +237,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
           variant="subtle"
           size="compact-xs"
           leftSection={<EmojiIcon />}
+          loading={mutating}
           onClick={open}
           mod={{ opened }}
         >
