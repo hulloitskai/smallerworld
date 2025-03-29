@@ -110,10 +110,22 @@ class Post < ApplicationRecord
   end
 
   # == Methods
+  sig { returns(Friend::PrivateRelation) }
+  def audience
+    friends = Friend.where(user_id: author_id)
+    if visibility == :chosen_family
+      friends.chosen_family
+    else
+      friends
+    end
+  end
+
   sig { void }
   def create_notifications!
+    return if visibility == :only_me
+
     transaction do
-      friends_to_notify = Friend.where(user_id: author_id).subscribed_to(type)
+      friends_to_notify = audience.subscribed_to(type)
       friends_to_notify.select(:id).find_each do |friend|
         notifications.create!(recipient: friend, push_delay: 1.minute)
       end

@@ -77,6 +77,7 @@ class Friend < ApplicationRecord
   scope :subscribed_to, ->(post_type) {
     where("? = ANY (subscribed_post_types)", post_type)
   }
+  scope :chosen_family, -> { where(chosen_family: true) }
 
   # == Noticeable
   sig do
