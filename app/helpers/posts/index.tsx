@@ -31,6 +31,11 @@ export const POST_VISIBILITIES: PostVisibility[] = [
   // "chosen_family",
 ];
 
+export const NONPRIVATE_POST_VISIBILITIES: PostVisibility[] = [
+  "friends",
+  "public",
+];
+
 export const POST_TYPE_TO_ICON: Record<
   PostType,
   FC<SVGProps<SVGSVGElement>>

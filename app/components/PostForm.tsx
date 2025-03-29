@@ -7,6 +7,7 @@ import ImageIcon from "~icons/heroicons/photo-20-solid";
 
 import {
   mutatePosts,
+  NONPRIVATE_POST_VISIBILITIES,
   POST_VISIBILITIES,
   POST_VISIBILITY_TO_ICON,
   POST_VISIBILITY_TO_LABEL,
@@ -136,6 +137,13 @@ const PostForm: FC<PostFormProps> = props => {
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // == Post visibilities
+  const postVisibilities = postType
+    ? ["invitation", "question"].includes(postType)
+      ? NONPRIVATE_POST_VISIBILITIES
+      : POST_VISIBILITIES
+    : undefined;
+
   // == Pinned until
   const vaulPortalTarget = useVaulPortalTarget();
   const todayDate = useMemo(() => DateTime.now().toJSDate(), []);
@@ -181,26 +189,30 @@ const PostForm: FC<PostFormProps> = props => {
               </ActionIcon>
             )}
           </EmojiPopover>
-          <SegmentedControl
-            {...getInputProps("visibility")}
-            className={classes.visibilitySegmentedControl}
-            orientation="vertical"
-            size="xs"
-            data={POST_VISIBILITIES.map(visibility => ({
-              label: (
-                <Tooltip
-                  label={<>visible to {POST_VISIBILITY_TO_LABEL[visibility]}</>}
-                  position="right"
-                  withArrow
-                >
-                  <Center h={20}>
-                    <Box component={POST_VISIBILITY_TO_ICON[visibility]} />
-                  </Center>
-                </Tooltip>
-              ),
-              value: visibility,
-            }))}
-          />
+          {postVisibilities && (
+            <SegmentedControl
+              {...getInputProps("visibility")}
+              className={classes.visibilitySegmentedControl}
+              orientation="vertical"
+              size="xs"
+              data={postVisibilities.map(visibility => ({
+                label: (
+                  <Tooltip
+                    label={
+                      <>visible to {POST_VISIBILITY_TO_LABEL[visibility]}</>
+                    }
+                    position="right"
+                    withArrow
+                  >
+                    <Center h={20}>
+                      <Box component={POST_VISIBILITY_TO_ICON[visibility]} />
+                    </Center>
+                  </Tooltip>
+                ),
+                value: visibility,
+              }))}
+            />
+          )}
         </Stack>
         <Stack gap="xs" style={{ flexGrow: 1 }}>
           {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
