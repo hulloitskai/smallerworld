@@ -20,13 +20,12 @@
 }
 
 [data-user-theme] .visibilitySegmentedControl {
+  border: 1px solid
+    light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
+
   @mixin dark {
     background-color: transparent;
     border: 1px solid alpha(var(--mantine-color-white), 0.2);
-
-    :global(.mantine-SegmentedControl-indicator) {
-      background-color: var(--mantine-color-white);
-    }
 
     :global(.mantine-SegmentedControl-label)[data-active] {
       color: var(--mantine-color-body);

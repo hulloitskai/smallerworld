@@ -9,6 +9,7 @@ import useSWRInfinite, {
 
 import JournalEntryIcon from "~icons/basil/book-solid";
 import InvitationIcon from "~icons/heroicons/envelope-open-20-solid";
+import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
 import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
@@ -26,6 +27,7 @@ export const POST_TYPES: PostType[] = [
 export const POST_VISIBILITIES: PostVisibility[] = [
   "friends",
   "public",
+  "only_me",
   // "chosen_family",
 ];
 
@@ -46,6 +48,7 @@ export const POST_VISIBILITY_TO_ICON: Record<
   public: PublicIcon,
   friends: FriendsIcon,
   chosen_family: ChosenFamilyIcon,
+  only_me: LockIcon,
 };
 
 export interface PostsData {

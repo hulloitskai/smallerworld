@@ -49,7 +49,7 @@ const PostCard: FC<PostCardProps> = ({
       className={cn("PostCard", classes.card)}
       withBorder
       shadow="sm"
-      mod={{ focus }}
+      mod={{ focus, "post-visibility": post.visibility }}
       {...otherProps}
     >
       <Card.Section inheritPadding pt="xs" pb={10}>
@@ -97,6 +97,22 @@ const PostCard: FC<PostCardProps> = ({
               <Box>
                 <Box
                   component={PublicIcon}
+                  fz={10.5}
+                  c="primary"
+                  display="block"
+                />
+              </Box>
+            </Tooltip>
+          )}
+          {post.visibility === "only_me" && (
+            <Tooltip
+              label="this post is visible only to you"
+              position="top-end"
+              arrowOffset={16}
+            >
+              <Box>
+                <Box
+                  component={LockIcon}
                   fz={10.5}
                   c="primary"
                   display="block"

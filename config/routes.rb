@@ -68,13 +68,16 @@ Rails.application.routes.draw do
   # == World
   resource :world, only: %i[show edit update], export: { namespace: "world" }
 
+  # == Join requests
+  get "/world/join_requests", to: "join_requests#index", export: true
+
   # == Friends
-  resources :friends, only: :index, path: "/world/friends", export: true
   resources :friends, only: %i[create update destroy], export: true do
     # member do
     #   post :pause
     # end
   end
+  get "/world/friends", to: "friends#index", export: true
 
   # == Friend notification settings
   resource :friend_notification_settings, only: %i[show update], export: true
@@ -119,12 +122,6 @@ Rails.application.routes.draw do
             only: %i[index create],
             export: true
   resources :post_reactions, only: :destroy, export: true
-
-  # == Join requests
-  resources :join_requests,
-            path: "/world/join_requests",
-            only: :index,
-            export: true
 
   # == Pages
   defaults export: true do

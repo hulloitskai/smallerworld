@@ -36,7 +36,7 @@ class Post < ApplicationRecord
 
   # == Attributes
   enumerize :type, in: %i[journal_entry poem invitation question]
-  enumerize :visibility, in: %i[public friends chosen_family]
+  enumerize :visibility, in: %i[public friends chosen_family only_me]
 
   sig { returns(String) }
   def body_text

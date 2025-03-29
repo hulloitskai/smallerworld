@@ -6,7 +6,7 @@ class JoinRequestsController < ApplicationController
   before_action :authenticate_user!
 
   # == Actions
-  # GET /join_requests
+  # GET /world/join_requests
   def index
     current_user = authenticate_user!
     respond_to do |format|

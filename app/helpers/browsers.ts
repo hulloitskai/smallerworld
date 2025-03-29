@@ -1,10 +1,4 @@
-import {
-  type IBrowser,
-  type IDevice,
-  type IOS,
-  type IResult,
-  UAParser,
-} from "ua-parser-js";
+import { type IResult, UAParser } from "ua-parser-js";
 import { v4 as uuid } from "uuid";
 
 export const useBrowserDetection = (): IResult | undefined => {

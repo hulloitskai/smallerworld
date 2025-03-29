@@ -49,9 +49,6 @@ module GeneratedPathHelpersModule
   def image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def join_requests_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -215,6 +212,12 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_friends_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_join_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_path(*args); end
