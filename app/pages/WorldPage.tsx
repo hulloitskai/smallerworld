@@ -1,4 +1,5 @@
 import { Avatar, Image, Indicator, Overlay, Text } from "@mantine/core";
+import { useModals } from "@mantine/modals";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
@@ -6,12 +7,13 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
-import WorldPageEnableNotificationsActionIcon from "~/components/WorldPageEnableNotificationsActionIcon";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
+import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPageInstallationInstructionsModal";
+import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { isMobileSafari, useBrowserDetection } from "~/helpers/browsers";
+import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
 import { useReregisterWithDeviceId, useWebPush } from "~/helpers/webPush";
 import { type FriendInfo, type User } from "~/types";
@@ -48,6 +50,23 @@ const WorldPage: PageComponent<WorldPageProps> = ({
 
   // == Add to home screen
   const { install } = useInstallPrompt();
+
+  // == Auto-open install modal on mobile
+  const { intent } = useQueryParams();
+  const { modals } = useModals();
+  useEffect(() => {
+    if (!isEmpty(modals)) {
+      return;
+    }
+    if (intent === "installation_instructions") {
+      openWorldPageInstallationInstructionsModal({ currentUser });
+    } else if (
+      intent === "install" ||
+      (!isStandalone && !!browserDetection && !isDesktop(browserDetection))
+    ) {
+      openWorldPageInstallModal({ currentUser });
+    }
+  }, [isStandalone, browserDetection, install]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -91,21 +110,13 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                           ))}
                         </Avatar.Group>
                       ) : (
-                        <Box component={FriendsIcon} />
+                        <FriendsIcon />
                       )
                     }
                   >
                     your friends
                   </Button>
                 )}
-                {isStandalone === false &&
-                  (!!install ||
-                    (!!browserDetection &&
-                      isMobileSafari(browserDetection))) && (
-                    <WorldPageEnableNotificationsActionIcon
-                      {...{ currentUser }}
-                    />
-                  )}
                 {isStandalone && <WorldPageNotificationsButton />}
               </Group>
             </Stack>

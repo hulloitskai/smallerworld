@@ -64,7 +64,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   // == User theme
   useUserTheme(user.theme);
 
-  // == Auto-open modal
+  // == Auto-open join modal
   const { intent } = useQueryParams();
   const { modals } = useModals();
   useEffect(() => {

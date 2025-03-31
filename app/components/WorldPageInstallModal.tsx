@@ -5,42 +5,37 @@ import { v4 as uuid } from "uuid";
 import {
   canOpenUrlInMobileSafari,
   isMobileStandaloneBrowser,
+  openUrlInMobileSafari,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
-import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/userPages";
-import { type Friend, type User } from "~/types";
+import { type User } from "~/types";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
 import HomeScreenPreview from "./HomeScreenPreview";
-import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
+import { openWorldPageInstallationInstructionsModal } from "./WorldPageInstallationInstructionsModal";
 
-export interface UserPageWelcomeModalProps
+export interface WorldPageInstallModalProps
   extends Omit<ModalBodyProps, "modalId"> {}
 
-export const openUserPageWelcomeModal = (
-  props: UserPageWelcomeModalProps,
+export const openWorldPageInstallModal = (
+  props: WorldPageInstallModalProps,
 ): void => {
   const modalId = uuid();
   openModal({
     modalId: modalId,
+    title: <>you&apos;ve created your own smaller&nbsp;world!</>,
     children: <ModalBody {...{ modalId }} {...props} />,
   });
 };
 
 interface ModalBodyProps {
   modalId: string;
-  currentFriend: Friend;
-  user: User;
+  currentUser: User;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
-  const friendNameWithEmoji = useMemo(
-    () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
-    [currentFriend],
-  );
-
+const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
   // == Browser detection
   const browserDetection = useBrowserDetection();
 
@@ -48,26 +43,13 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
   const { install, installing } = useInstallPrompt();
   return (
     <Stack gap="lg" align="center" pb="xs">
-      <Stack gap={4}>
-        <Title order={3} ta="center" maw={300}>
-          hi, {friendNameWithEmoji}!
-        </Title>
-        <Text ta="center" maw={300}>
-          i made this page to make it easy for you to get involved in my
-          life&apos;s adventures :)
-        </Text>
-      </Stack>
       <HomeScreenPreview
-        pageName={user.name}
-        pageIcon={user.page_icon}
-        arrowLabel="it's me!"
+        pageName={currentUser.name}
+        pageIcon={currentUser.page_icon}
+        arrowLabel="your world!"
       />
       <Text ta="center" maw={300}>
-        pin this page to your home screen so you can{" "}
-        <span style={{ fontWeight: 600 }}>
-          get notified about life updates, personal invitations, poems, and
-          more!
-        </span>
+        to continue, let&apos;s add your world to your home screen :)
       </Text>
       <Stack gap={8} align="center">
         <Button
@@ -86,13 +68,18 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
               !!browserDetection &&
               isMobileStandaloneBrowser(browserDetection)
             ) {
-              openUserPageInstallationInstructionsModal({ user });
+              openWorldPageInstallationInstructionsModal({
+                currentUser,
+              });
               closeModal(modalId);
             } else {
-              openUserPageInstallationInstructionsInMobileSafari(
-                user,
-                currentFriend,
-              );
+              const path = routes.world.show.path({
+                query: {
+                  intent: "installation_instructions",
+                },
+              });
+              const url = hrefToUrl(path);
+              openUrlInMobileSafari(url.toString());
             }
           }}
         >

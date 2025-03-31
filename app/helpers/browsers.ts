@@ -18,8 +18,8 @@ const canUseShortcutsExploit = (result: IResult): boolean =>
   !!result.os.version &&
   (result.os.version.startsWith("17") || result.os.version.startsWith("18.0"));
 
-export const isMobileSafari = (result: IResult): boolean =>
-  result.browser.is("Mobile Safari");
+export const isMobileStandaloneBrowser = (result: IResult): boolean =>
+  (isIos(result) || isAndroid(result)) && result.browser.type !== "inapp";
 
 export const isDesktop = (result: IResult): boolean =>
   result.device.type !== "mobile" && result.device.type !== "tablet";

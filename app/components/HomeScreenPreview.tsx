@@ -6,6 +6,8 @@ import logoPlaceholderSrc from "~/assets/images/logo-placeholder.jpg";
 
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 
+import SingleDayFontMeta from "./SingleDayFontMeta";
+
 import classes from "./HomeScreenPreview.module.css";
 
 export interface HomeScreenPreviewProps extends BoxProps {
@@ -24,18 +26,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
 }) => {
   return (
     <>
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Single+Day&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
+      <SingleDayFontMeta />
       <Box
         className={cn("HomescreenPreview", classes.container)}
         pos="relative"

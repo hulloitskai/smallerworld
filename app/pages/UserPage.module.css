@@ -1,7 +1,10 @@
 .installModal {
   :global(.mantine-Modal-header) {
     min-height: rem(40);
-    line-height: var(--mantine-line-height-xs);
+  }
+
+  :global(.mantine-Modal-title) {
+    line-height: var(--mantine-line-height-xs) !important;
   }
 }
 

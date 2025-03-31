@@ -3,10 +3,7 @@ import { useModals } from "@mantine/modals";
 
 import {
   canOpenUrlInMobileSafari,
-  isAndroid,
-  isDesktop,
-  isIos,
-  isMobileSafari,
+  isMobileStandaloneBrowser,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
@@ -16,6 +13,7 @@ import {
 } from "~/helpers/userPages";
 import { type Friend, type User } from "~/types/generated";
 
+import BrowserNotSupportedText from "./BrowserNotSupportedText";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
 import classes from "./UserPageInstallAlert.module.css";
@@ -75,16 +73,16 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   loading={installing}
                   disabled={
                     !browserDetection ||
-                    (!canOpenUrlInMobileSafari(browserDetection) &&
-                      !isMobileSafari(browserDetection) &&
-                      !install)
+                    (!install &&
+                      !isMobileStandaloneBrowser(browserDetection) &&
+                      !canOpenUrlInMobileSafari(browserDetection))
                   }
                   onClick={() => {
                     if (install) {
                       void install();
                     } else if (
                       !!browserDetection &&
-                      !isMobileSafari(browserDetection)
+                      isMobileStandaloneBrowser(browserDetection)
                     ) {
                       openUserPageInstallationInstructionsModal({ user });
                     } else {
@@ -97,27 +95,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                 >
                   pin this page
                 </Button>
-                {!!browserDetection && (
-                  <>
-                    {isIos(browserDetection) &&
-                      !isMobileSafari(browserDetection) &&
-                      !canOpenUrlInMobileSafari(browserDetection) && (
-                        <Text className={classes.notSupportedText}>
-                          open in Safari to continue
-                        </Text>
-                      )}
-                    {isAndroid(browserDetection) && !install && (
-                      <Text className={classes.notSupportedText}>
-                        open in Chrome to continue
-                      </Text>
-                    )}
-                    {isDesktop(browserDetection) && !install && (
-                      <Text className={classes.notSupportedText}>
-                        open on your phone to continue
-                      </Text>
-                    )}
-                  </>
-                )}
+                <BrowserNotSupportedText />
               </Group>
             </Stack>
           </Alert>

@@ -26,7 +26,7 @@ bin/setup
 - [x] auto-open notification settings after enable push notifs for first time
 - [x] send notification when friend installs your smaller world
 - [x] use chips instead of checkboxes for notification settings
-- [ ] register device ID when creating push registration
+- [x] register device ID when creating push registration
   - [ ] "make your own smaller world!" onscreen prompt
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] show notification settings panel before enabling push notifs
