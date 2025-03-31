@@ -1,14 +1,16 @@
-import { InputWrapper, Popover } from "@mantine/core";
-import { pluralize } from "inflection";
+import { Popover } from "@mantine/core";
 
 import {
-  POST_TYPE_TO_ICON,
-  POST_TYPE_TO_LABEL,
-  POST_TYPES,
-} from "~/helpers/posts";
+  useFriendNotificationSettings,
+  useFriendNotificationSettingsForm,
+} from "~/helpers/friendNotificationSettings";
+import { POST_TYPES } from "~/helpers/posts";
 import { useWebPush } from "~/helpers/webPush";
 import { type Friend, type FriendNotificationSettings } from "~/types";
 
+import FriendNotificationSettingsForm, {
+  FriendNotificationSettingsFormInputs,
+} from "./FriendNotificationSettingsForm";
 import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
 export interface UserPageNotificationsButtonProps
@@ -28,10 +30,20 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
     subscribing,
     supported,
     loading,
-  } = useWebPush({
-    onSubscribed: () => {
-      setDropdownOpened(true);
-    },
+  } = useWebPush();
+
+  // == Load notification settings
+  const { notificationSettings } = useFriendNotificationSettings(
+    currentFriend.access_token,
+  );
+
+  // == Notification settings form
+  const [defaultNotificationSettings] = useState<FriendNotificationSettings>(
+    () => ({ subscribed_post_types: POST_TYPES }),
+  );
+  const notificationSettingsForm = useFriendNotificationSettingsForm({
+    friend: currentFriend,
+    notificationSettings: notificationSettings ?? defaultNotificationSettings,
   });
 
   return (
@@ -39,17 +51,28 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
       {subscription === undefined ? (
         <Button loading />
       ) : subscription === null || registration === null ? (
-        <Button
-          variant="filled"
-          loading={loading || subscribing}
-          disabled={!supported}
-          leftSection={<NotificationIcon />}
-          onClick={() => {
-            void subscribe();
-          }}
-        >
-          enable push notifications
-        </Button>
+        <Card withBorder>
+          <Stack gap="sm">
+            <FriendNotificationSettingsFormInputs
+              form={notificationSettingsForm}
+            />
+            <Button
+              variant="filled"
+              loading={loading || subscribing}
+              disabled={!supported}
+              leftSection={<NotificationIcon />}
+              onClick={() => {
+                if (notificationSettingsForm.isDirty()) {
+                  notificationSettingsForm.submit();
+                }
+                void subscribe();
+              }}
+            >
+              enable push notifications
+            </Button>
+          </Stack>
+          <LoadingOverlay visible={!notificationSettings} />
+        </Card>
       ) : (
         <Popover
           width={300}
@@ -69,7 +92,7 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
           </Popover.Target>
           <Popover.Dropdown pb={0}>
             <NotificationPopoverBody
-              {...{ currentFriend, subscription }}
+              {...{ currentFriend, subscription, notificationSettings }}
               onClose={() => {
                 setDropdownOpened(false);
               }}
@@ -86,32 +109,22 @@ export default UserPageNotificationsButton;
 interface NotificationPopoverBodyProps {
   currentFriend: Friend;
   subscription: PushSubscription;
+  notificationSettings: FriendNotificationSettings | undefined;
   onClose: () => void;
 }
 
 const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
   currentFriend,
   subscription,
+  notificationSettings,
   onClose,
 }) => {
-  // == Load notification settings
-  const { data } = useRouteSWR<{
-    notificationSettings: FriendNotificationSettings;
-  }>(routes.friendNotificationSettings.show, {
-    descriptor: "load notification settings",
-    params: {
-      query: {
-        friend_token: currentFriend.access_token,
-      },
-    },
-  });
-  const { notificationSettings } = data ?? {};
-
   return (
     <Stack gap={0}>
       {notificationSettings ? (
-        <NotificationSettingsForm
-          {...{ currentFriend, notificationSettings }}
+        <FriendNotificationSettingsForm
+          friend={currentFriend}
+          {...{ notificationSettings }}
         />
       ) : (
         <Skeleton h={100} />
@@ -123,108 +136,6 @@ const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
         />
       </Center>
     </Stack>
-  );
-};
-
-interface NotificationSettingsFormProps {
-  currentFriend: Friend;
-  notificationSettings: FriendNotificationSettings;
-}
-
-const NotificationSettingsForm: FC<NotificationSettingsFormProps> = ({
-  currentFriend,
-  notificationSettings,
-}) => {
-  const initialValues = useMemo(
-    () => ({
-      subscribed_post_types: notificationSettings.subscribed_post_types,
-    }),
-    [notificationSettings.subscribed_post_types],
-  );
-  const {
-    submit,
-    reset,
-    setInitialValues,
-    getInputProps,
-    isDirty,
-    submitting,
-  } = useForm({
-    action: routes.friendNotificationSettings.update,
-    params: {
-      query: {
-        friend_token: currentFriend.access_token,
-      },
-    },
-    descriptor: "update notification preferences",
-    initialValues,
-    transformValues: values => ({ notification_settings: values }),
-    onSuccess: () => {
-      toast.success("notification preferences updated");
-      void mutateRoute(routes.friendNotificationSettings.show, {
-        query: {
-          friend_token: currentFriend.access_token,
-        },
-      });
-    },
-  });
-  useDidUpdate(() => {
-    setInitialValues(initialValues);
-    reset();
-  }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <form onSubmit={submit}>
-      <Stack gap="xs">
-        <InputWrapper
-          label="i want to be notified about:"
-          styles={{
-            root: {
-              display: "flex",
-              flexDirection: "column",
-              rowGap: rem(6),
-            },
-            label: {
-              fontFamily: "var(--mantine-font-family-headings)",
-              textAlign: "center",
-            },
-          }}
-        >
-          <Chip.Group multiple {...getInputProps("subscribed_post_types")}>
-            <Group justify="center" gap={4} wrap="wrap">
-              {POST_TYPES.map(postType => (
-                <Chip key={postType} value={postType}>
-                  <Box
-                    component={POST_TYPE_TO_ICON[postType]}
-                    fz="xs"
-                    mr={2}
-                    style={{
-                      verticalAlign: "middle",
-                      position: "relative",
-                      bottom: rem(2),
-                    }}
-                  />{" "}
-                  {pluralize(POST_TYPE_TO_LABEL[postType])}
-                </Chip>
-              ))}
-            </Group>
-          </Chip.Group>
-        </InputWrapper>
-        <Transition transition="fade" mounted={isDirty()}>
-          {style => (
-            <Button
-              type="submit"
-              size="compact-sm"
-              leftSection={<SaveIcon />}
-              loading={submitting}
-              disabled={!isDirty()}
-              style={[style, { alignSelf: "center" }]}
-            >
-              save preferences
-            </Button>
-          )}
-        </Transition>
-      </Stack>
-    </form>
   );
 };
 

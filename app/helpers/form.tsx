@@ -108,7 +108,7 @@ type PartialFormHelper<
   TransformValues extends (values: Values) => unknown,
 > = Omit<UseFormReturnType<Values, TransformValues>, "onSubmit" | "onReset">;
 
-export interface FormOptions<
+export interface FormParams<
   Data extends Record<string, any> & { error?: never },
   Values,
   TransformValues extends (values: Values) => unknown,
@@ -167,7 +167,7 @@ export const useForm = <
   Values extends Record<string, any> = {},
   TransformValues extends _TransformValues<Values> = (values: Values) => Values,
 >(
-  options: FormOptions<Data, Values, TransformValues>,
+  options: FormParams<Data, Values, TransformValues>,
 ): FormHelper<Data, Values, TransformValues> => {
   const {
     action,

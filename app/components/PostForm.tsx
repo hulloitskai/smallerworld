@@ -1,4 +1,4 @@
-import { InputWrapper, SegmentedControl, Text } from "@mantine/core";
+import { Input, SegmentedControl, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { type Editor } from "@tiptap/react";
 
@@ -229,7 +229,7 @@ const PostForm: FC<PostFormProps> = props => {
               }}
             />
           )}
-          <InputWrapper error={errors.body_html}>
+          <Input.Wrapper error={errors.body_html}>
             <LazyPostEditor
               {...getInputProps("body_html")}
               initialValue={initialValues?.body_html}
@@ -242,7 +242,7 @@ const PostForm: FC<PostFormProps> = props => {
                 setBodyTextEmpty(editor.getText().trim() === "");
               }}
             />
-          </InputWrapper>
+          </Input.Wrapper>
           {showImageInput || values.image_upload ? (
             <ImageInput
               {...getInputProps("image_upload")}

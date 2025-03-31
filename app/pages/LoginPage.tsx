@@ -1,4 +1,4 @@
-import { InputBase, InputWrapper, PinInput, Text } from "@mantine/core";
+import { Input, InputBase, PinInput, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
@@ -141,7 +141,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
             />
             <Transition transition="pop" mounted={showCodeInput}>
               {style => (
-                <InputWrapper
+                <Input.Wrapper
                   label="verification code"
                   description="enter the code sent to your phone"
                   {...{ style }}
@@ -153,7 +153,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                     autoFocus
                     hiddenInputProps={{ autoComplete: "one-time-code" }}
                   />
-                </InputWrapper>
+                </Input.Wrapper>
               )}
             </Transition>
             <Stack gap={6}>

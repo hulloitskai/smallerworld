@@ -4,7 +4,7 @@ import prettyBytes from "pretty-bytes";
 
 import { requireMeta } from "./meta";
 
-export interface UseUploadParams {
+export interface UploadParams {
   onProgress?: (progress: number) => void;
   onCompleted?: (blob: Blob) => void;
   onError?: (error: Error) => void;
@@ -20,7 +20,7 @@ export interface UploadState {
 }
 
 export const useLazyUpload = (
-  params: UseUploadParams = {},
+  params: UploadParams = {},
 ): [(file: File) => Promise<Blob>, UploadState] => {
   const [state, setState] = useState<UploadState>(() => ({
     blob: null,
@@ -116,10 +116,7 @@ export const useLazyUpload = (
   return [upload, state];
 };
 
-export const useUpload = (
-  file: File,
-  params?: UseUploadParams,
-): UploadState => {
+export const useUpload = (file: File, params?: UploadParams): UploadState => {
   const [upload, state] = useLazyUpload(params);
   const uploadStartedRef = useRef(false);
   useEffect(() => {

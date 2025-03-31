@@ -6,5 +6,5 @@ class FriendNotificationSettingsSerializer < ApplicationSerializer
   object_as :friend
 
   # == Attributes
-  attributes subscribed_post_types: { type: "PostType" }
+  attributes subscribed_post_types: { type: "PostType[]" }
 end
