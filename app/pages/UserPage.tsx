@@ -9,7 +9,7 @@ import UserPageFeed from "~/components/UserPageFeed";
 import UserPageFloatingActions from "~/components/UserPageFloatingActions";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
-import UserPageNotificationsButton from "~/components/UserPageNotificationsButton";
+import UserPageNotificationsButtonCard from "~/components/UserPageNotificationsButtonCard";
 import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
@@ -130,7 +130,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                 <>
                   {currentFriend && (
                     <Group gap="xs">
-                      <UserPageNotificationsButton {...{ currentFriend }} />
+                      <UserPageNotificationsButtonCard {...{ currentFriend }} />
                       {registration && (
                         <UserPageRefreshButton userId={user.id} />
                       )}

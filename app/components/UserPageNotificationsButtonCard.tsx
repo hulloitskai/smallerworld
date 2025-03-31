@@ -1,4 +1,4 @@
-import { Popover } from "@mantine/core";
+import { Popover, Text } from "@mantine/core";
 
 import {
   useFriendNotificationSettings,
@@ -13,12 +13,12 @@ import FriendNotificationSettingsForm, {
 } from "./FriendNotificationSettingsForm";
 import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
-export interface UserPageNotificationsButtonProps
+export interface UserPageNotificationsButtonCardProps
   extends Pick<NotificationPopoverBodyProps, "currentFriend"> {}
 
-const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
-  currentFriend,
-}) => {
+const UserPageNotificationsButtonCard: FC<
+  UserPageNotificationsButtonCardProps
+> = ({ currentFriend }) => {
   // == Dropdown
   const [dropdownOpened, setDropdownOpened] = useState(false);
 
@@ -52,24 +52,31 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
         <Button loading />
       ) : subscription === null || registration === null ? (
         <Card withBorder>
-          <Stack gap="sm">
+          <Stack>
             <FriendNotificationSettingsFormInputs
               form={notificationSettingsForm}
             />
-            <Button
-              variant="filled"
-              loading={loading || subscribing}
-              disabled={!supported}
-              leftSection={<NotificationIcon />}
-              onClick={() => {
-                if (notificationSettingsForm.isDirty()) {
-                  notificationSettingsForm.submit();
-                }
-                void subscribe();
-              }}
-            >
-              enable push notifications
-            </Button>
+            <Stack gap={4}>
+              <Button
+                variant="filled"
+                loading={loading || subscribing}
+                disabled={!supported}
+                leftSection={<NotificationIcon />}
+                onClick={() => {
+                  if (notificationSettingsForm.isDirty()) {
+                    notificationSettingsForm.submit();
+                  }
+                  void subscribe();
+                }}
+              >
+                enable push notifications
+              </Button>
+              {/* TODO: Remove this after April 15, 2025 */}
+              <Text size="xs" ta="center" maw={340} mx="auto">
+                if you are seeing this button for the second time, I AM SORRY i
+                fucked up and now you have to redo this step :(
+              </Text>
+            </Stack>
           </Stack>
           <LoadingOverlay visible={!notificationSettings} />
         </Card>
@@ -104,7 +111,7 @@ const UserPageNotificationsButton: FC<UserPageNotificationsButtonProps> = ({
   );
 };
 
-export default UserPageNotificationsButton;
+export default UserPageNotificationsButtonCard;
 
 interface NotificationPopoverBodyProps {
   currentFriend: Friend;
