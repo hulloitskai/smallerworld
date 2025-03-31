@@ -9,6 +9,7 @@
 #  id                   :uuid             not null, primary key
 #  owner_type           :string           not null
 #  created_at           :datetime         not null
+#  device_id            :uuid
 #  owner_id             :uuid             not null
 #  push_subscription_id :uuid             not null
 #

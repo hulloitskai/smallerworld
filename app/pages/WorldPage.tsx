@@ -13,7 +13,7 @@ import WorldPageNotificationsButton from "~/components/WorldPageNotificationsBut
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { isMobileSafari, useBrowserDetection } from "~/helpers/browsers";
 import { useInstallPrompt } from "~/helpers/pwa";
-import { useWebPush } from "~/helpers/webPush";
+import { useReregisterWithDeviceId, useWebPush } from "~/helpers/webPush";
 import { type FriendInfo, type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
@@ -34,6 +34,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   friends,
   pendingJoinRequests,
 }) => {
+  // TODO: Remove after April 15, 2025
+  useReregisterWithDeviceId();
+
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
 

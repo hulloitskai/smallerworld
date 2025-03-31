@@ -16,7 +16,7 @@ import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsBut
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import { useWebPush } from "~/helpers/webPush";
+import { useReregisterWithDeviceId, useWebPush } from "~/helpers/webPush";
 import {
   type Friend,
   type FriendNotificationSettings,
@@ -37,6 +37,9 @@ export interface UserPageProps extends SharedPageProps {
 const ICON_SIZE = 96;
 
 const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
+  // TODO: Remove after April 15, 2025
+  useReregisterWithDeviceId();
+
   const isStandalone = useIsStandalone();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -190,9 +193,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           {currentFriend && (
             <UserPageInstallAlert {...{ currentFriend, user }} />
           )}
-          {!currentFriend && !(currentUser?.id === user.id) && (
-            <UserPageRequestInvitationAlert {...{ user }} />
-          )}
+          {!currentFriend && <UserPageRequestInvitationAlert {...{ user }} />}
         </>
       )}
     </>

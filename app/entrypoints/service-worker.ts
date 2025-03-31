@@ -1,5 +1,6 @@
 import { pick } from "lodash-es";
 import invariant from "tiny-invariant";
+import { v4 as uuid } from "uuid";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
@@ -38,9 +39,59 @@ const markAsDelivered = (notification: PushNotification): Promise<void> =>
       );
     });
 
+const pathname = (url: string): string => {
+  const u = new URL(url, self.location.href);
+  return u.pathname;
+};
+
+const enableNavigationPreload = async () => {
+  if (self.registration.navigationPreload) {
+    // Enable navigation preloads!
+    await self.registration.navigationPreload.enable();
+  }
+};
+
 // == Claim clients
 self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    Promise.all([self.clients.claim(), enableNavigationPreload()]),
+  );
+});
+
+// == Device metadata server
+const DEVICE_ENDPOINT = "/device";
+
+self.addEventListener("fetch", event => {
+  const { request, preloadResponse } = event;
+
+  // == Device metadata server
+  if (pathname(request.url) === DEVICE_ENDPOINT) {
+    console.debug("Device metadata request intercepted", request.url);
+    return event.respondWith(
+      caches.open(DEVICE_ENDPOINT).then(cache =>
+        cache.match(request).then(response => {
+          if (response) {
+            return response;
+          }
+          const payload = { deviceId: uuid() };
+          response = new Response(JSON.stringify(payload), {
+            headers: { "Content-Type": "application/json" },
+          });
+          return cache.put(request, response).then(() => response);
+        }),
+      ),
+    );
+  }
+
+  // == Regular responses
+  return event.respondWith(
+    preloadResponse.then((response: Response | undefined) => {
+      if (response) {
+        return response;
+      }
+      return fetch(request);
+    }),
+  );
 });
 
 // == Push handlers
@@ -151,9 +202,4 @@ self.addEventListener("notificationclick", event => {
   );
 });
 
-const pathname = (url: string): string => {
-  const u = new URL(url, self.location.href);
-  return u.pathname;
-};
-
-console.info("Service worker installed");
+console.info("Service worker installed with scope", self.registration.scope);

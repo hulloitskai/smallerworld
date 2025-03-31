@@ -4,4 +4,5 @@
 class PushRegistrationSerializer < ApplicationSerializer
   # == Attributes
   identifier
+  attributes :device_id
 end

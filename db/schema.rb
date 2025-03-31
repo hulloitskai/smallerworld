@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_26_141411) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_29_062137) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -217,6 +217,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_26_141411) do
     t.uuid "owner_id", null: false
     t.uuid "push_subscription_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.uuid "device_id"
     t.index ["owner_type", "owner_id", "push_subscription_id"], name: "index_push_registrations_uniqueness", unique: true
     t.index ["owner_type", "owner_id"], name: "index_push_registrations_on_owner"
     t.index ["push_subscription_id"], name: "index_push_registrations_on_push_subscription_id"

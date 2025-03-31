@@ -21,6 +21,7 @@ import { setupSentry } from "~/helpers/sentry";
 import {
   handleServiceWorkerNavigation,
   registerAndUpdateServiceWorker,
+  unregisterOldServiceWorkers,
 } from "~/helpers/serviceWorker";
 import { setupSupabase } from "~/helpers/supabase";
 
@@ -38,6 +39,8 @@ setupSupabase();
 
 // == Service worker
 if ("serviceWorker" in navigator) {
+  // TODO: remove this after April 15, 2025
+  void unregisterOldServiceWorkers();
   void registerAndUpdateServiceWorker();
   void handleServiceWorkerNavigation();
 }

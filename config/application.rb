@@ -40,6 +40,7 @@ module SmallerWorld
     require "mapbox"
     require "contact"
     require "supabase"
+    require "service_worker_proxy"
 
     # == Configuration
     # Initialize configuration defaults for originally generated Rails version.

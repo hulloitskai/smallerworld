@@ -69,12 +69,9 @@ class User < ApplicationRecord
   sig { returns(Friend::PrivateRelation) }
   def colocated_friends
     friend_push_registrations = PushRegistration
-      .joins(:push_subscription)
       .where(
         owner_type: "Friend",
-        push_subscriptions: {
-          endpoint: push_subscriptions.select(:endpoint),
-        },
+        device_id: push_registrations.select(:device_id),
       )
     Friend
       .includes(:user)

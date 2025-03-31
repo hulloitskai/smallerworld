@@ -34,7 +34,7 @@
     "app/helpers/routes/setup.ts",
     "app/helpers/notifications.ts",
     "app/helpers/posts/formatting.ts",
-    "app/workers/service-worker.ts",
+    "app/entrypoints/service-worker.ts",
     "typings/env.d.ts",
     "typings/service-worker.d.ts"
   ]

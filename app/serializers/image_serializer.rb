@@ -13,6 +13,7 @@ class ImageSerializer < FileSerializer
     rails_representation_path(blob)
   end
   attribute :dimensions, type: "Dimensions", nullable: true do
+    blob.analyze unless blob.analyzed?
     width, height = blob.metadata.values_at("width", "height")
     if width.present? && height.present?
       { width:, height: }

@@ -62,6 +62,7 @@ export default ts.config(
           fixMixedExportsWithInlineTypeSpecifier: true,
         },
       ],
+      "@typescript-eslint/prefer-regexp-exec": "off",
     },
   },
   {

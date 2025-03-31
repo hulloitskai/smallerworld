@@ -201,6 +201,7 @@ class UsersController < ApplicationController
 
   sig { params(blob: ActiveStorage::Blob).returns([Integer, Integer]) }
   def blob_dimensions(blob)
+    blob.analyze unless blob.analyzed?
     blob.metadata.fetch_values("width", "height")
   end
 end

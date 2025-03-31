@@ -631,6 +631,51 @@ class PushRegistration
     sig { void }
     def created_at_will_change!; end
 
+    sig { returns(T.nilable(::String)) }
+    def device_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def device_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def device_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def device_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def device_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def device_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def device_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def device_id_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def device_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def device_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def device_id_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def device_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def device_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def device_id_was; end
+
+    sig { void }
+    def device_id_will_change!; end
+
     sig { returns(::String) }
     def id; end
 
@@ -860,6 +905,9 @@ class PushRegistration
     def restore_created_at!; end
 
     sig { void }
+    def restore_device_id!; end
+
+    sig { void }
     def restore_id!; end
 
     sig { void }
@@ -879,6 +927,12 @@ class PushRegistration
 
     sig { returns(T::Boolean) }
     def saved_change_to_created_at?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_device_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_device_id?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_id; end
@@ -912,6 +966,9 @@ class PushRegistration
 
     sig { returns(T::Boolean) }
     def will_save_change_to_created_at?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_device_id?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_id?; end

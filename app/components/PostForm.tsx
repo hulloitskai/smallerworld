@@ -34,6 +34,7 @@ type PostFormProps =
 const POST_TITLE_PLACEHOLDERS: Partial<Record<PostType, string>> = {
   journal_entry: "february 13, 2025",
   poem: "the invisible mirror",
+  invitation: "bake night 2!!",
 };
 
 const POST_TYPES_WITH_TITLE = Object.keys(POST_TITLE_PLACEHOLDERS);

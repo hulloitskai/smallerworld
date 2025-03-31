@@ -1,4 +1,17 @@
-import serviceWorkerUrl from "~/workers/service-worker.ts?worker&url";
+import rawServiceWorkerUrl from "~/entrypoints/service-worker.ts?worker&url";
+
+const buildServiceWorkerUrl = (): string => {
+  const params = new URLSearchParams();
+  params.set("worker", rawServiceWorkerUrl);
+  return "/sw?" + params.toString();
+};
+
+export const serviceWorkerUrl = buildServiceWorkerUrl();
+
+const REGISTRATION_OPTIONS: RegistrationOptions = {
+  type: "module",
+  scope: "/",
+};
 
 export const getOrRegisterServiceWorker =
   (): Promise<ServiceWorkerRegistration> =>
@@ -6,9 +19,10 @@ export const getOrRegisterServiceWorker =
       .getRegistration(serviceWorkerUrl)
       .then(registration => {
         if (!registration) {
-          return navigator.serviceWorker.register(serviceWorkerUrl, {
-            type: "module",
-          });
+          return navigator.serviceWorker.register(
+            serviceWorkerUrl,
+            REGISTRATION_OPTIONS,
+          );
         }
         return registration;
       });
@@ -35,5 +49,21 @@ export const handleServiceWorkerNavigation = (): void => {
 export const registerAndUpdateServiceWorker =
   (): Promise<ServiceWorkerRegistration> =>
     navigator.serviceWorker
-      .register(serviceWorkerUrl, { type: "module" })
+      .register(serviceWorkerUrl, REGISTRATION_OPTIONS)
       .then(registration => registration.update().then(() => registration));
+
+export const unregisterOldServiceWorkers = (): Promise<void> =>
+  navigator.serviceWorker.getRegistrations().then(async registrations => {
+    const currentScope = new URL("/", location.href).toString();
+    const oldRegistrations = registrations.filter(
+      registration => registration.scope !== currentScope,
+    );
+    if (isEmpty(oldRegistrations)) {
+      return;
+    }
+    const oldScopes = oldRegistrations.map(registration => registration.scope);
+    console.info("Unregistering old service workers with scopes:", oldScopes);
+    await Promise.all(
+      oldRegistrations.map(registration => registration.unregister()),
+    );
+  });

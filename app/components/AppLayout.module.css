@@ -33,7 +33,7 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin-top: max(var(--safe-area-inset-top, 0px), var(--mantine-spacing-xs));
+  margin-top: max(var(--safe-area-inset-top, 0px), var(--mantine-spacing-sm));
   min-height: calc(
     100vh - var(--safe-area-inset-top, 0px) -
       (var(--app-shell-footer-height, 0px) + var(--safe-area-inset-bottom, 0px))

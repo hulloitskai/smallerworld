@@ -79,6 +79,11 @@ export const useLookupPushRegistration = ({
               endpoint: subscription.endpoint,
             },
           },
+          onSuccess: ({ registration }) => {
+            if (registration) {
+              console.info("loaded push registration", registration);
+            }
+          },
         }
       : {
           // This prevents the route from being called
@@ -103,46 +108,39 @@ export const useWebPushSubscribe = ({
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
   const subscribe = useCallback((): Promise<void> => {
-    const subscribeAndRegister = (): Promise<void> =>
-      Promise.all<[Promise<PushManager>, Promise<string>]>([
+    const subscribeAndRegister = async (): Promise<void> => {
+      const [pushManager, publicKey, deviceId] = await Promise.all([
         getPushManager(),
         fetchPublicKey(),
-      ])
-        .then(
-          ([pushManager, publicKey]) =>
-            pushManager.subscribe({
-              userVisibleOnly: true,
-              applicationServerKey: createApplicationServerKey(publicKey),
-            }),
-          (error: Error): never => {
-            setSubscribeError(error);
-            return reportProblem(error.message);
-          },
-        )
-        .then(
-          subscription =>
-            registerSubscription(
-              subscription,
-              currentFriend?.access_token,
-            ).then(
-              () => {
-                onSubscribed(subscription);
-              },
-              (error: Error) => {
-                reportProblem(error.message);
-              },
-            ),
-          (error: Error) => {
-            setSubscribeError(error);
-            toast.error("couldn't subscribe to push notifications", {
-              description: error.message,
-            });
-            throw error;
-          },
-        )
-        .finally(() => {
-          setSubscribing(false);
+        fetchDeviceId(),
+      ]);
+      try {
+        const subscription = await pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: createApplicationServerKey(publicKey),
         });
+        try {
+          await registerSubscription(
+            subscription,
+            deviceId,
+            currentFriend?.access_token,
+          );
+          onSubscribed(subscription);
+        } catch (error) {
+          if (error instanceof Error) {
+            setSubscribeError(error);
+            reportProblem(error.message);
+          }
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setSubscribeError(error);
+          reportProblem(error.message);
+        }
+      } finally {
+        setSubscribing(false);
+      }
+    };
     setSubscribing(true);
     if (Notification.permission === "granted") {
       return subscribeAndRegister();
@@ -161,6 +159,7 @@ export const useWebPushSubscribe = ({
 
 const registerSubscription = (
   subscription: PushSubscription,
+  deviceId: string,
   friendAccessToken?: string,
 ): Promise<void> => {
   const { endpoint, keys } = pick(
@@ -185,16 +184,18 @@ const registerSubscription = (
         auth_key: keys.auth,
         p256dh_key: keys.p256dh,
       },
+      push_registration: {
+        device_id: deviceId,
+      },
     },
   }).then(() => {
     void mutateRoute(routes.pushSubscriptions.lookup, { query });
   });
 };
 
-const reportProblem = (message: string): never => {
+const reportProblem = (message: string): void => {
   toast.error("something went wrong", { description: message });
   console.error(message);
-  throw new Error(message);
 };
 
 export interface UseWebPushUnsubscribeOptions {
@@ -263,4 +264,18 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
     descriptor: "load web push public key",
     params: { query },
   }).then(({ publicKey }) => publicKey);
+};
+
+const fetchDeviceId = (): Promise<string> =>
+  fetch("/device")
+    .then(response => response.json())
+    .then((data: { deviceId: string }) => get(data, "deviceId"));
+
+export const useReregisterWithDeviceId = (): void => {
+  const { registration, subscribe } = useWebPush();
+  useEffect(() => {
+    if (registration && !registration.device_id) {
+      void subscribe();
+    }
+  }, [registration]); // eslint-disable-line react-hooks/exhaustive-deps
 };

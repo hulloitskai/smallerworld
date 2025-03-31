@@ -7,7 +7,7 @@
       "~/emails/*.tsx"
     ],
     "ssrBuildEnabled": true,
-    "ssrEntrypoint": "~/ssr/ssr.{js,jsx,ts,tsx}",
+    "ssrEntrypoint": "~/ssr/application.{js,jsx,ts,tsx}",
     "ssrOutputDir": "dist/ssr"
   },
   "development": {
