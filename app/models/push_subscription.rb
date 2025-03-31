@@ -45,7 +45,7 @@ class PushSubscription < ApplicationRecord
       logger.warn("Bad subscription: #{message}")
     end
     destroy or with_log_tags do |; message| # rubocop:disable Layout/SpaceAroundBlockParameters
-      message = "Failed to destroy expired or invalid subscription"
+      message = "Failed to destroy expired or invalid push subscription"
       logger.error(message)
       Sentry.capture_message(message)
     end
