@@ -40,8 +40,7 @@ setupSupabase();
 // == Service worker
 if ("serviceWorker" in navigator) {
   // TODO: remove this after April 15, 2025
-  void unregisterOldServiceWorkers();
-  void registerAndUpdateServiceWorker();
+  void unregisterOldServiceWorkers().then(registerAndUpdateServiceWorker);
   void handleServiceWorkerNavigation();
 }
 
