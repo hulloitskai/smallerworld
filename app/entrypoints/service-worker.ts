@@ -62,7 +62,7 @@ self.addEventListener("activate", event => {
 const DEVICE_ENDPOINT = "/device";
 
 self.addEventListener("fetch", event => {
-  const { request, preloadResponse } = event;
+  const { request /*, preloadResponse */ } = event;
 
   // == Device metadata server
   if (pathname(request.url) === DEVICE_ENDPOINT) {
@@ -84,14 +84,14 @@ self.addEventListener("fetch", event => {
   }
 
   // == Regular responses
-  return event.respondWith(
-    preloadResponse.then((response: Response | undefined) => {
-      if (response) {
-        return response;
-      }
-      return fetch(request);
-    }),
-  );
+  // return event.respondWith(
+  //   preloadResponse.then((response: Response | undefined) => {
+  //     if (response) {
+  //       return response;
+  //     }
+  //     return fetch(request);
+  //   }),
+  // );
 });
 
 // == Push handlers
