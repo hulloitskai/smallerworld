@@ -6,6 +6,7 @@ import { useLongPress } from "use-long-press";
 import ReplyIcon from "~icons/heroicons/chat-bubble-oval-left-20-solid";
 
 import {
+  messageUri,
   MESSAGING_PLATFORM_TO_ICON,
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
@@ -60,11 +61,11 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
     usePreferredMessagingPlatform(user.id);
   const replyUri = useMemo(() => {
     if (replyPhoneNumber && preferredMessagingPlatform) {
-      return createReplyUri(
-        replyPhoneNumber,
-        post.reply_snippet,
-        preferredMessagingPlatform,
-      );
+      let body = post.reply_snippet;
+      if (preferredMessagingPlatform === "whatsapp") {
+        body = formatReplySnippetForWhatsApp(body);
+      }
+      return messageUri(replyPhoneNumber, body, preferredMessagingPlatform);
     }
   }, [replyPhoneNumber, post.reply_snippet, preferredMessagingPlatform]);
 
@@ -147,11 +148,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                     size="lg"
                     {...(currentFriend &&
                       !!replyPhoneNumber && {
-                        href: createReplyUri(
-                          replyPhoneNumber,
-                          post.reply_snippet,
-                          platform,
-                        ),
+                        href: replyUri,
                         onClick: () => {
                           setPreferredMessagingPlatform(platform);
                           markAsReplied(post.id, currentFriend.access_token);
@@ -320,26 +317,6 @@ const ReactionButton: FC<ReactionButtonProps> = ({
       {reactions.length}
     </Button>
   );
-};
-
-const createReplyUri = (
-  phoneNumber: string,
-  replySnippet: string,
-  platform: "sms" | "telegram" | "whatsapp",
-) => {
-  const encodedBody = encodeURIComponent(
-    platform === "whatsapp"
-      ? formatReplySnippetForWhatsApp(replySnippet)
-      : replySnippet,
-  );
-  switch (platform) {
-    case "sms":
-      return `sms:${phoneNumber}?body=${encodedBody}`;
-    case "telegram":
-      return `https://t.me/${phoneNumber}?text=${encodedBody}`;
-    case "whatsapp":
-      return `https://wa.me/${phoneNumber}?text=${encodedBody}`;
-  }
 };
 
 const formatReplySnippetForWhatsApp = (replySnippet: string) => {

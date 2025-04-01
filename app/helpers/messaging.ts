@@ -32,3 +32,19 @@ export const usePreferredMessagingPlatform = (userId: string) =>
   useLocalStorage<MessagingPlatform | undefined>({
     key: `preferred_messaging_platform:${userId}`,
   });
+
+export const messageUri = (
+  phoneNumber: string,
+  body: string,
+  platform: "sms" | "telegram" | "whatsapp",
+): string => {
+  const encodedBody = encodeURIComponent(body);
+  switch (platform) {
+    case "sms":
+      return `sms:${phoneNumber}?body=${encodedBody}`;
+    case "telegram":
+      return `https://t.me/${phoneNumber}?text=${encodedBody}`;
+    case "whatsapp":
+      return `https://wa.me/${phoneNumber}?text=${encodedBody}`;
+  }
+};
