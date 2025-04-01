@@ -34,12 +34,12 @@ class PostReaction < ApplicationRecord
 
   sig { returns(Post) }
   def post!
-    post or raise ActiveRecord::RecordNotFound, "Missing post"
+    post or raise ActiveRecord::RecordNotFound, "Missing associated post"
   end
 
   sig { returns(Friend) }
   def friend!
-    friend or raise ActiveRecord::RecordNotFound, "Missing friend"
+    friend or raise ActiveRecord::RecordNotFound, "Missing associated friend"
   end
 
   sig { returns(User) }

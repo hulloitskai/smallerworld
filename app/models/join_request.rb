@@ -32,7 +32,7 @@ class JoinRequest < ApplicationRecord
 
   sig { returns(User) }
   def user!
-    user or raise ActiveRecord::RecordNotFound, "Missing user"
+    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
   # == Validations

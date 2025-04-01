@@ -1,4 +1,4 @@
-import { Loader } from "@mantine/core";
+import { Loader, Text } from "@mantine/core";
 
 import { useWebPush } from "~/helpers/webPush";
 
@@ -25,17 +25,30 @@ const WorldPageNotificationsButton: FC = () => {
           <NotificationIcon />
         </ActionIcon>
       ) : registration === null || subscription === null ? (
-        <Button
-          variant="filled"
-          loading={loading || subscribing}
-          disabled={!supported}
-          leftSection={<NotificationIcon />}
-          onClick={() => {
-            void subscribe();
-          }}
-        >
-          enable push notifications
-        </Button>
+        <Card withBorder>
+          <Stack>
+            <Stack gap={6}>
+              <Button
+                variant="filled"
+                loading={loading || subscribing}
+                disabled={!supported}
+                leftSection={<NotificationIcon />}
+                onClick={() => {
+                  void subscribe();
+                }}
+              >
+                enable push notifications
+              </Button>
+              {/* TODO: Remove this after April 15, 2025 */}
+              <Text size="xs" ta="center" maw={340} mx="auto">
+                (march 31) if you are seeing this button for the second time, I
+                AM SORRY i fucked up and now you have to redo this step :(
+                <br /> if it doesn&apos;t work, you have to fully close and then
+                re-open the app 💀
+              </Text>
+            </Stack>
+          </Stack>
+        </Card>
       ) : (
         <Menu opened={menuOpened} onChange={setMenuOpened}>
           <Menu.Target>

@@ -56,7 +56,7 @@ const UserPageNotificationsButtonCard: FC<
             <FriendNotificationSettingsFormInputs
               form={notificationSettingsForm}
             />
-            <Stack gap={4}>
+            <Stack gap={6}>
               <Button
                 variant="filled"
                 loading={loading || subscribing}
@@ -73,8 +73,10 @@ const UserPageNotificationsButtonCard: FC<
               </Button>
               {/* TODO: Remove this after April 15, 2025 */}
               <Text size="xs" ta="center" maw={340} mx="auto">
-                if you are seeing this button for the second time, I AM SORRY i
-                fucked up and now you have to redo this step :(
+                (march 31) if you are seeing this button for the second time, I
+                AM SORRY i fucked up and now you have to redo this step :(
+                <br /> if it doesn&apos;t work, you have to fully close and then
+                re-open the app 💀
               </Text>
             </Stack>
           </Stack>

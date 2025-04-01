@@ -63,7 +63,8 @@ class Notification < ApplicationRecord
 
   sig { returns(Noticeable) }
   def noticeable!
-    noticeable or raise ActiveRecord::RecordNotFound, "Missing noticeable"
+    noticeable or raise ActiveRecord::RecordNotFound,
+                        "Missing associated noticeable"
   end
 
   # == Callbacks

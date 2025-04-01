@@ -32,7 +32,7 @@ class PushRegistration < ApplicationRecord
   sig { returns(PushSubscription) }
   def push_subscription!
     push_subscription or
-      raise ActiveRecord::RecordNotFound, "Missing push subscription"
+      raise ActiveRecord::RecordNotFound, "Missing associated push subscription"
   end
 
   # == Validations
