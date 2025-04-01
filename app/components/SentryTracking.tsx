@@ -7,8 +7,8 @@ const SentryTracking: FC = () => {
   useEffect(() => {
     if (isInitialized()) {
       if (currentUser) {
-        const { id } = currentUser;
-        setUser({ id });
+        const { id, handle, name } = currentUser;
+        setUser({ id, username: handle, name });
       } else {
         setUser(null);
       }

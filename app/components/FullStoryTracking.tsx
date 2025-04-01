@@ -10,10 +10,15 @@ const FullStoryTracking: FC = () => {
   useShallowEffect(() => {
     if (isFsInitialized()) {
       if (currentUser) {
-        const { id, name } = currentUser;
+        const { id, name, handle } = currentUser;
         void FullStory("setIdentityAsync", {
           uid: id,
-          properties: { displayName: name },
+          properties: { displayName: name, handle },
+          schema: {
+            properties: {
+              handle: "string",
+            },
+          },
           anonymous: false,
         });
       } else {
