@@ -25,7 +25,7 @@ const WorldPageNotificationsButton: FC = () => {
           <NotificationIcon />
         </ActionIcon>
       ) : registration === null || subscription === null ? (
-        <Card withBorder>
+        <Card withBorder w="100%">
           <Stack>
             <Stack gap={6}>
               <Button
@@ -43,7 +43,9 @@ const WorldPageNotificationsButton: FC = () => {
               <Text size="xs" ta="center" maw={340} mx="auto">
                 (march 31) if you are seeing this button for the second time, I
                 AM SORRY i fucked up and now you have to redo this step :(
-                <br /> if it doesn&apos;t work, you have to fully close and then
+              </Text>
+              <Text size="xs" ta="center" maw={340} mx="auto">
+                if it doesn&apos;t work, you have to fully close and then
                 re-open the app 💀
               </Text>
             </Stack>

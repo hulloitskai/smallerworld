@@ -109,7 +109,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           </Alert>
         )}
         <Box pos="relative">
-          <Stack align="center" gap="sm">
+          <Stack gap="sm">
             <Image
               src={user.page_icon.src}
               srcSet={user.page_icon.src_set}
@@ -118,18 +118,19 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
               fit="cover"
               radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
               style={{
+                alignSelf: "center",
                 flex: "unset",
                 boxShadow: "var(--mantine-shadow-lg)",
               }}
             />
-            <Stack gap={4} align="center">
+            <Stack gap={4}>
               <Title size="h2" lh="xs" ta="center">
                 {possessive(user.name)} world
               </Title>
               {isStandalone ? (
                 <>
                   {currentFriend && (
-                    <Group gap="xs">
+                    <Group gap="xs" justify="center">
                       <UserPageNotificationsButtonCard {...{ currentFriend }} />
                       {registration && (
                         <UserPageRefreshButton userId={user.id} />

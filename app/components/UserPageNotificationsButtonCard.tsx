@@ -51,7 +51,7 @@ const UserPageNotificationsButtonCard: FC<
       {subscription === undefined ? (
         <Button loading />
       ) : subscription === null || registration === null ? (
-        <Card withBorder>
+        <Card withBorder w="100%">
           <Stack>
             <FriendNotificationSettingsFormInputs
               form={notificationSettingsForm}
@@ -75,7 +75,9 @@ const UserPageNotificationsButtonCard: FC<
               <Text size="xs" ta="center" maw={340} mx="auto">
                 (march 31) if you are seeing this button for the second time, I
                 AM SORRY i fucked up and now you have to redo this step :(
-                <br /> if it doesn&apos;t work, you have to fully close and then
+              </Text>
+              <Text size="xs" ta="center" maw={340} mx="auto">
+                if it doesn&apos;t work, you have to fully close and then
                 re-open the app 💀
               </Text>
             </Stack>

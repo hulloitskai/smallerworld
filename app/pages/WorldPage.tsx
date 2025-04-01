@@ -72,7 +72,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
     <>
       <Stack gap="lg">
         <Box pos="relative">
-          <Stack align="center" gap="sm">
+          <Stack gap="sm">
             <Image
               src={currentUser.page_icon.src}
               srcSet={currentUser.page_icon.src_set}
@@ -81,15 +81,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               fit="cover"
               radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
               style={{
+                alignSelf: "center",
                 flex: "unset",
                 boxShadow: "var(--mantine-shadow-lg)",
               }}
             />
-            <Stack gap={4} align="center">
+            <Stack gap={4}>
               <Title size="h2" lh="xs" ta="center">
                 {possessive(currentUser.name)} world
               </Title>
-              <Group gap={8}>
+              <Group gap={8} justify="center">
                 {(!isStandalone || !!registration) && (
                   <Button
                     component={Link}
