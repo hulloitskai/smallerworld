@@ -29,10 +29,10 @@ bin/setup
 - [x] send join invites using platform of user's choice
 - [x] register device ID when creating push registration
   - [?] "make your own smaller world!" onscreen prompt
-- [ ] add android/ios chrome add-to-homescreen instructions
-- [ ] show notification settings panel before enabling push notifs
-- [ ] post reminders button
+- [x] show notification settings panel before enabling push notifs
 - [ ] implement our own auth (bye Supabase!)
+- [ ] post reminders button
+- [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] onboarding redo (invite 3 friends, etc.)
 - [ ] make better landing page video
   - shows you going in and out of different worlds
