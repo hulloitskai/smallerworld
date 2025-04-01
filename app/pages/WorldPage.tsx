@@ -55,7 +55,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   const { intent } = useQueryParams();
   const { modals } = useModals();
   useEffect(() => {
-    if (!isEmpty(modals)) {
+    if (isStandalone === undefined || !isEmpty(modals)) {
       return;
     }
     if (intent === "installation_instructions") {

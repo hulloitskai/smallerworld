@@ -72,7 +72,17 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
       return;
     }
     if (intent === "join") {
-      openUserPageWelcomeModal({ user, currentFriend });
+      openUserPageWelcomeModal({
+        user,
+        currentFriend,
+        onInstalled: () => {
+          const url = new URL(location.href);
+          const { searchParams } = url;
+          searchParams.delete("intent");
+          url.search = searchParams.toString();
+          void router.replace({ url: url.toString() });
+        },
+      });
     } else if (intent === "installation_instructions") {
       openUserPageInstallationInstructionsModal({ user });
     }

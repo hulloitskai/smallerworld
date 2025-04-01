@@ -23,7 +23,7 @@ export const openUserPageWelcomeModal = (
 ): void => {
   const modalId = uuid();
   openModal({
-    modalId: modalId,
+    modalId,
     children: <ModalBody {...{ modalId }} {...props} />,
   });
 };
@@ -32,10 +32,16 @@ interface ModalBodyProps {
   modalId: string;
   currentFriend: Friend;
   user: User;
+  onInstalled: () => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
+const ModalBody: FC<ModalBodyProps> = ({
+  modalId,
+  currentFriend,
+  user,
+  onInstalled,
+}) => {
   const friendNameWithEmoji = useMemo(
     () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
     [currentFriend],
@@ -81,7 +87,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           }
           onClick={() => {
             if (install) {
-              void install();
+              void install().then(onInstalled);
             } else if (
               !!browserDetection &&
               isMobileStandaloneBrowser(browserDetection)
