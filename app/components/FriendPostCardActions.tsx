@@ -327,7 +327,11 @@ const createReplyUri = (
   replySnippet: string,
   platform: "sms" | "telegram" | "whatsapp",
 ) => {
-  const encodedBody = encodeURIComponent(replySnippet);
+  const encodedBody = encodeURIComponent(
+    platform === "whatsapp"
+      ? formatReplySnippetForWhatsApp(replySnippet)
+      : replySnippet,
+  );
   switch (platform) {
     case "sms":
       return `sms:${phoneNumber}?body=${encodedBody}`;
@@ -336,6 +340,10 @@ const createReplyUri = (
     case "whatsapp":
       return `https://wa.me/${phoneNumber}?text=${encodedBody}`;
   }
+};
+
+const formatReplySnippetForWhatsApp = (replySnippet: string) => {
+  return replySnippet.replace(/\n> \n/g, "\n") + "\u2800";
 };
 
 const markAsReplied = (postId: string, friendAccessToken: string) => {
