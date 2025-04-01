@@ -64,7 +64,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       intent === "install" ||
       (!isStandalone && !!browserDetection && !isDesktop(browserDetection))
     ) {
-      openWorldPageInstallModal({ currentUser });
+      openWorldPageInstallModal({
+        currentUser,
+        onInstalled: () => {
+          const url = new URL(location.href);
+          const { searchParams } = url;
+          searchParams.delete("intent");
+          url.search = searchParams.toString();
+          void router.replace({ url: url.toString() });
+        },
+      });
     }
   }, [isStandalone, browserDetection, install]); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -23,7 +23,7 @@ export const openWorldPageInstallModal = (
 ): void => {
   const modalId = uuid();
   openModal({
-    modalId: modalId,
+    modalId,
     title: <>you&apos;ve created your own smaller&nbsp;world!</>,
     children: <ModalBody {...{ modalId }} {...props} />,
   });
@@ -32,10 +32,15 @@ export const openWorldPageInstallModal = (
 interface ModalBodyProps {
   modalId: string;
   currentUser: User;
+  onInstalled: () => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
+const ModalBody: FC<ModalBodyProps> = ({
+  modalId,
+  currentUser,
+  onInstalled,
+}) => {
   // == Browser detection
   const browserDetection = useBrowserDetection();
 
@@ -63,7 +68,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
           }
           onClick={() => {
             if (install) {
-              void install();
+              void install().then(onInstalled);
             } else if (
               !!browserDetection &&
               isMobileStandaloneBrowser(browserDetection)
