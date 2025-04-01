@@ -64,6 +64,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
             {style => (
               <Button
                 variant="filled"
+                size="md"
                 radius="xl"
                 className={classes.pinnedPostsButton}
                 leftSection={

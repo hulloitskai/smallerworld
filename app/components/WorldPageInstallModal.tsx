@@ -58,6 +58,7 @@ const ModalBody: FC<ModalBodyProps> = ({
       </Text>
       <Stack gap={8} align="center">
         <Button
+          size="md"
           leftSection={<InstallIcon />}
           loading={installing}
           disabled={

@@ -39,3 +39,5 @@ bin/setup
   - shows you creating a post
   - shows a friend getting your post
   - shows friend replying to your post
+- [ ] arrow still isn't that obvious for enable push notifs
+  - don't allow scrolling until enabled?

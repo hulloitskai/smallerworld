@@ -78,6 +78,7 @@ const ModalBody: FC<ModalBodyProps> = ({
       <Stack gap={8} align="center">
         <Button
           leftSection={<InstallIcon />}
+          size="md"
           loading={installing}
           disabled={
             !browserDetection ||
