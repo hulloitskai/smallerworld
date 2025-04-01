@@ -632,6 +632,51 @@ class PushRegistration
     def created_at_will_change!; end
 
     sig { returns(T.nilable(::String)) }
+    def device_fingerprint; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def device_fingerprint=(value); end
+
+    sig { returns(T::Boolean) }
+    def device_fingerprint?; end
+
+    sig { returns(T.nilable(::String)) }
+    def device_fingerprint_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def device_fingerprint_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def device_fingerprint_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def device_fingerprint_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def device_fingerprint_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def device_fingerprint_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def device_fingerprint_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def device_fingerprint_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def device_fingerprint_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def device_fingerprint_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def device_fingerprint_was; end
+
+    sig { void }
+    def device_fingerprint_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
     def device_id; end
 
     sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
@@ -905,6 +950,9 @@ class PushRegistration
     def restore_created_at!; end
 
     sig { void }
+    def restore_device_fingerprint!; end
+
+    sig { void }
     def restore_device_id!; end
 
     sig { void }
@@ -922,11 +970,20 @@ class PushRegistration
     sig { void }
     def restore_push_subscription_id!; end
 
+    sig { void }
+    def restore_updated_at!; end
+
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
     sig { returns(T::Boolean) }
     def saved_change_to_created_at?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_device_fingerprint; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_device_fingerprint?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_device_id; end
@@ -964,8 +1021,62 @@ class PushRegistration
     sig { returns(T::Boolean) }
     def saved_change_to_push_subscription_id?; end
 
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def saved_change_to_updated_at; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_updated_at?; end
+
+    sig { returns(::ActiveSupport::TimeWithZone) }
+    def updated_at; end
+
+    sig { params(value: ::ActiveSupport::TimeWithZone).returns(::ActiveSupport::TimeWithZone) }
+    def updated_at=(value); end
+
+    sig { returns(T::Boolean) }
+    def updated_at?; end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def updated_at_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def updated_at_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def updated_at_came_from_user?; end
+
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def updated_at_change; end
+
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def updated_at_change_to_be_saved; end
+
+    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    def updated_at_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def updated_at_in_database; end
+
+    sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
+    def updated_at_previous_change; end
+
+    sig { params(from: ::ActiveSupport::TimeWithZone, to: ::ActiveSupport::TimeWithZone).returns(T::Boolean) }
+    def updated_at_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def updated_at_previously_was; end
+
+    sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
+    def updated_at_was; end
+
+    sig { void }
+    def updated_at_will_change!; end
+
     sig { returns(T::Boolean) }
     def will_save_change_to_created_at?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_device_fingerprint?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_device_id?; end
@@ -984,6 +1095,9 @@ class PushRegistration
 
     sig { returns(T::Boolean) }
     def will_save_change_to_push_subscription_id?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_updated_at?; end
   end
 
   module GeneratedRelationMethods

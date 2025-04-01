@@ -28,18 +28,22 @@ export const getOrRegisterServiceWorker =
       });
 
 export const handleServiceWorkerNavigation = (): void => {
-  const handleMessage = (event: MessageEvent<any>): void => {
+  const handleMessage = ({ data }: MessageEvent<any>): void => {
+    if (typeof data !== "object" || !("action" in data)) {
+      return;
+    }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { action } = event.data;
-    if (action === "navigate") {
-      console.info(
-        "received navigation request from service worker",
-        event.data,
-      );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const { url } = event.data;
-      if (typeof url === "string" && url !== location.href) {
+    const { action } = data;
+    switch (action) {
+      case "navigate": {
+        console.info("received navigation request from service worker", data);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const { url } = data;
+        if (typeof url !== "string" || url !== location.href) {
+          return;
+        }
         router.visit(url);
+        break;
       }
     }
   };

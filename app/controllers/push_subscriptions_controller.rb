@@ -27,13 +27,15 @@ class PushSubscriptionsController < ApplicationController
       p256dh_key
       auth_key
     ])
-    registration_params = params.expect(push_registration: [:device_id])
+    registration_params = params.expect(push_registration: %i[
+      device_id
+      device_fingerprint
+    ])
     endpoint = T.let(subscription_params.delete(:endpoint), String)
     subscription = PushSubscription.find_or_initialize_by(endpoint:)
     subscription.attributes = subscription_params
     registration = subscription.registrations.find_or_initialize_by(owner:)
-    registration.attributes = registration_params
-    subscription.save!
+    registration.update!(registration_params)
     render(json: {
       registration: PushRegistrationSerializer.one(registration),
     })

@@ -1,3 +1,4 @@
+// import { init as initSentry } from "@sentry/browser";
 import { pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
@@ -69,14 +70,14 @@ self.addEventListener("fetch", event => {
     console.debug("Device metadata request intercepted", request.url);
     return event.respondWith(
       caches.open(DEVICE_ENDPOINT).then(cache =>
-        cache.match(request).then(response => {
-          if (response) {
-            return response;
+        cache.match(request).then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
           }
           const payload = { deviceId: uuid() };
-          response = new Response(JSON.stringify(payload), {
-            headers: { "Content-Type": "application/json" },
-          });
+          const body = JSON.stringify(payload);
+          const headers: HeadersInit = { "Content-Type": "application/json" };
+          const response = new Response(body, { headers });
           return cache.put(request, response.clone()).then(() => response);
         }),
       ),
@@ -191,5 +192,25 @@ self.addEventListener("notificationclick", event => {
       }),
   );
 });
+
+// TODO: Configure Sentry for service worker?
+// self.addEventListener("message", ({ data }) => {
+//   if (typeof data !== "object" || !("action" in data)) {
+//     return;
+//   }
+//   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+//   const { action } = data;
+//   switch (action) {
+//     case "init_sentry": {
+//       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+//       const { dsn } = data;
+//       if (typeof dsn !== "string") {
+//         return;
+//       }
+//       initSentry({ dsn });
+//       break;
+//     }
+//   }
+// });
 
 console.info("Service worker installed with scope", self.registration.scope);

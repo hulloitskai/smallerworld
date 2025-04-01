@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 
 import { type PushRegistration } from "~/types";
 
+import { identifyVisitor } from "./fingerprinting";
 import { getOrRegisterServiceWorker } from "./serviceWorker";
 
 const getPushManager = (): Promise<PushManager> =>
@@ -79,6 +80,7 @@ export const useLookupPushRegistration = ({
               endpoint: subscription.endpoint,
             },
           },
+          failSilently: true,
           onSuccess: ({ registration }) => {
             if (registration) {
               console.info("loaded push registration", registration);
@@ -109,22 +111,25 @@ export const useWebPushSubscribe = ({
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
   const subscribe = useCallback((): Promise<void> => {
     const subscribeAndRegister = async (): Promise<void> => {
-      const [pushManager, publicKey, deviceId] = await Promise.all([
-        getPushManager(),
-        fetchPublicKey(),
-        fetchDeviceId(),
-      ]);
+      const [pushManager, publicKey, deviceId, visitorIdentity] =
+        await Promise.all([
+          getPushManager(),
+          fetchPublicKey(),
+          fetchDeviceId(),
+          identifyVisitor(),
+        ]);
       try {
         const subscription = await pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: createApplicationServerKey(publicKey),
         });
         try {
-          await registerSubscription(
+          await registerSubscription({
             subscription,
             deviceId,
-            currentFriend?.access_token,
-          );
+            deviceFingerprint: visitorIdentity.visitorId,
+            friendAccessToken: currentFriend?.access_token,
+          });
           onSubscribed(subscription);
         } catch (error) {
           if (error instanceof Error) {
@@ -157,11 +162,19 @@ export const useWebPushSubscribe = ({
   return [subscribe, { subscribing, subscribeError }];
 };
 
-const registerSubscription = (
-  subscription: PushSubscription,
-  deviceId: string,
-  friendAccessToken?: string,
-): Promise<void> => {
+interface RegisterSubscriptionParams {
+  subscription: PushSubscription;
+  deviceId: string;
+  deviceFingerprint: string;
+  friendAccessToken?: string;
+}
+
+const registerSubscription = ({
+  subscription,
+  deviceId,
+  deviceFingerprint,
+  friendAccessToken,
+}: RegisterSubscriptionParams): Promise<void> => {
   const { endpoint, keys } = pick(
     subscription.toJSON(),
     "endpoint",
@@ -186,6 +199,7 @@ const registerSubscription = (
       },
       push_registration: {
         device_id: deviceId,
+        device_fingerprint: deviceFingerprint,
       },
     },
   }).then(() => {
@@ -271,10 +285,13 @@ const fetchDeviceId = (): Promise<string> =>
     .then(response => response.json())
     .then((data: { deviceId: string }) => get(data, "deviceId"));
 
-export const useReregisterWithDeviceId = (): void => {
+export const useReregisterWithDeviceIdentifiers = (): void => {
   const { registration, subscribe } = useWebPush();
   useEffect(() => {
-    if (registration && !registration.device_id) {
+    if (
+      registration &&
+      (!registration.device_id || !registration.device_fingerprint)
+    ) {
       void subscribe();
     }
   }, [registration]); // eslint-disable-line react-hooks/exhaustive-deps

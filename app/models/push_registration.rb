@@ -7,14 +7,18 @@
 # Table name: push_registrations
 #
 #  id                   :uuid             not null, primary key
+#  device_fingerprint   :string
 #  owner_type           :string           not null
 #  created_at           :datetime         not null
+#  updated_at           :datetime         not null
 #  device_id            :uuid
 #  owner_id             :uuid             not null
 #  push_subscription_id :uuid             not null
 #
 # Indexes
 #
+#  index_push_registrations_on_device_fingerprint    (device_fingerprint)
+#  index_push_registrations_on_device_id             (device_id)
 #  index_push_registrations_on_owner                 (owner_type,owner_id)
 #  index_push_registrations_on_push_subscription_id  (push_subscription_id)
 #  index_push_registrations_uniqueness               (owner_type,owner_id,push_subscription_id) UNIQUE
