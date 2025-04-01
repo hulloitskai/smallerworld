@@ -19,13 +19,14 @@ class ServiceWorkerProxy
     query_values = Addressable::URI.parse("/?" + query_string).query_values
     if path == "/sw" && (worker_value = query_values["worker"])
       worker_uri = Addressable::URI.parse(worker_value)
-      if should_proxy?(env)
-        @proxy.call(env.merge(
-          "PATH_INFO" => worker_uri.path,
-          "REQUEST_PATH" => worker_uri.path,
-          "REQUEST_URI" => worker_value,
-          "QUERY_STRING" => worker_uri.query,
-        ))
+      rewritten_env = env.merge(
+        "PATH_INFO" => worker_uri.path,
+        "REQUEST_PATH" => worker_uri.path,
+        "REQUEST_URI" => worker_value,
+        "QUERY_STRING" => worker_uri.query,
+      )
+      if should_proxy?(rewritten_env)
+        @proxy.call(rewritten_env)
       else
         files = Rack::Files.new(Rails.public_path.to_s)
         files.call(env.merge(
