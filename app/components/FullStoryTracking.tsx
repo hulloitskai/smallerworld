@@ -3,19 +3,34 @@ import { FullStory } from "@fullstory/browser";
 const FullStoryTracking: FC = () => {
   const {
     component,
-    props: { currentUser },
+    props: { currentUser, currentFriend },
   } = usePage();
 
   // == Current user tracking
   useShallowEffect(() => {
     if (isFsInitialized()) {
-      if (currentUser) {
+      if (currentFriend) {
+        const { name, emoji } = currentFriend;
+        const displayName = [emoji, name].filter(Boolean).join(" ");
+        void FullStory("setIdentityAsync", {
+          uid: currentFriend.id,
+          properties: { displayName, type: "friend" },
+          schema: {
+            properties: {
+              type: "string",
+              handle: "string",
+            },
+          },
+          anonymous: false,
+        });
+      } else if (currentUser) {
         const { id, name, handle } = currentUser;
         void FullStory("setIdentityAsync", {
           uid: id,
-          properties: { displayName: name, handle },
+          properties: { displayName: name, handle, type: "user" },
           schema: {
             properties: {
+              type: "string",
               handle: "string",
             },
           },
@@ -25,7 +40,7 @@ const FullStoryTracking: FC = () => {
         void FullStory("setIdentityAsync", { anonymous: true });
       }
     }
-  }, [currentUser]);
+  }, [currentUser, currentFriend]);
 
   // == Page tracking
   useEffect(() => {
