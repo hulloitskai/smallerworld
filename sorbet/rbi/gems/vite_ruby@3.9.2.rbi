@@ -937,7 +937,9 @@ class ViteRuby::DevServerProxy < ::Rack::Proxy
   extend ::Forwardable
 
   # @return [DevServerProxy] a new instance of DevServerProxy
-  def initialize(*_arg0, **_arg1, &_arg2); end
+  #
+  # source://vite_ruby//lib/vite_ruby/dev_server_proxy.rb#10
+  def initialize(app = T.unsafe(nil), options = T.unsafe(nil)); end
 
   # source://forwardable/1.3.3/forwardable.rb#231
   def config(*args, **_arg1, &block); end
@@ -946,7 +948,8 @@ class ViteRuby::DevServerProxy < ::Rack::Proxy
   def dev_server_running?; end
 
   # Rack: Intercept asset requests and send them to the Vite server.
-  sig { params(env: T::Hash[::String, T.untyped]).returns(T.untyped) }
+  #
+  # source://vite_ruby//lib/vite_ruby/dev_server_proxy.rb#17
   def perform_request(env); end
 
   private

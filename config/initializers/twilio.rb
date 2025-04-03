@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 app_credentials = Rails.application.credentials
-twilio_credentials = if Rails.env.development?
-  app_credentials.twilio
-else
+twilio_credentials = if Rails.env.production?
   app_credentials.twilio!
+else
+  app_credentials.twilio
 end
 
 Twilio.configure do |config|
