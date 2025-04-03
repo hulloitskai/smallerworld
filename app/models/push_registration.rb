@@ -66,18 +66,18 @@ class PushRegistration < ApplicationRecord
 
   sig { params(notification: Notification).void }
   def push(notification)
+    badge_count = notification.recipient.notifications_since_last_cleared.count
     payload = {
       notification: PushNotificationSerializer.one(notification),
-      page_icon_url:,
-      badge_count:
-        notification.recipient.notifications_since_last_cleared.count,
+      "pageIconUrl" => page_icon_url,
+      "badgeCount" => badge_count,
     }
     push_subscription!.push_payload(payload.compact)
   end
 
   sig { void }
   def push_test_notification
-    payload = { page_icon_url: }
+    payload = { "pageIconUrl" => page_icon_url }
     push_subscription!.push_payload(payload.compact)
   end
 

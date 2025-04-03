@@ -15,9 +15,9 @@ declare const self: ServiceWorkerGlobalScope;
 
 interface NotificationData {
   notification?: PushNotification;
-  page_icon_url?: string;
+  pageIconUrl?: string;
   test?: true;
-  badge_count?: number;
+  badgeCount?: number;
 }
 
 // == Setup
@@ -101,16 +101,16 @@ self.addEventListener("push", event => {
   if (import.meta.env.RAILS_ENV === "development") {
     console.debug("Push event", data);
   }
-  const { notification, page_icon_url, badge_count } = data;
+  const { notification, pageIconUrl, badgeCount } = data;
   const actions: Promise<void>[] = [];
 
   // Set app badge if no window is currently visible.
-  if (badge_count && navigator.setAppBadge) {
-    console.debug("Setting app badge", badge_count);
+  if (badgeCount && navigator.setAppBadge) {
+    console.debug("Setting app badge", badgeCount);
     actions.push(
       self.clients.matchAll({ type: "window" }).then(clients => {
         if (!clients.some(client => client.visibilityState === "visible")) {
-          return navigator.setAppBadge(badge_count);
+          return navigator.setAppBadge(badgeCount);
         }
         return Promise.resolve();
       }),
@@ -123,7 +123,7 @@ self.addEventListener("push", event => {
       self.registration
         .showNotification(title, {
           ...options,
-          icon: icon ?? page_icon_url ?? DEFAULT_NOTIFICATION_ICON_URL,
+          icon: icon ?? pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
           data,
         })
         .then(() => markAsDelivered(notification)),
@@ -132,7 +132,7 @@ self.addEventListener("push", event => {
     actions.push(
       self.registration.showNotification("test notification", {
         body: "this is a test notification. if you are seeing this, then your push notifications are working!",
-        icon: page_icon_url ?? DEFAULT_NOTIFICATION_ICON_URL,
+        icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
       }),
     );
   }
