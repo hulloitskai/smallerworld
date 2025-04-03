@@ -83,7 +83,7 @@ export const useLookupPushRegistration = ({
           failSilently: true,
           onSuccess: ({ registration }) => {
             if (registration) {
-              console.info("loaded push registration", registration);
+              console.info("Loaded push registration", registration);
             }
           },
         }
@@ -209,7 +209,7 @@ const registerSubscription = ({
 
 const reportProblem = (message: string): void => {
   toast.error("something went wrong", { description: message });
-  console.error(message);
+  console.error("Web push error", message);
 };
 
 export interface UseWebPushUnsubscribeOptions {

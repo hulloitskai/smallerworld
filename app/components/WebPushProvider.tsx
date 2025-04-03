@@ -18,7 +18,7 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
     if (supported) {
       void getPushSubscription().then(setSubscription, error => {
         setSubscription(null);
-        console.error("failed to get current push subscription", error);
+        console.error("Failed to get current push subscription", error);
         if (error instanceof Error) {
           toast.error("failed to get current push subscription", {
             description: error.message,

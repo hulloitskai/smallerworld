@@ -48,7 +48,7 @@ export const useInstallPrompt = (): InstallPromptReturn => {
         return installPromptEvent
           .prompt()
           .catch(error => {
-            console.error("failed to install to home screen", error);
+            console.error("Failed to install to home screen", error);
             if (error instanceof Error) {
               setError(error);
               toast.error("failed to install to home screen", {
@@ -85,7 +85,7 @@ export const useClearAppBadge = () => {
     params: clearNotificationParams,
     failSilently: true,
     onSuccess: () => {
-      console.info("notifications cleared");
+      console.info("Notifications cleared");
     },
   });
   useEffect(() => {

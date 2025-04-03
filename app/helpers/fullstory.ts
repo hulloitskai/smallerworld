@@ -12,8 +12,8 @@ export const setupFullStory = () => {
       debug: true,
     };
     init(options);
-    console.info("initialized FullStory", options);
+    console.info("Initialized FullStory", options);
   } else {
-    console.warn("missing FullStory org ID; skipping initialization");
+    console.warn("Missing FullStory org ID; skipping initialization");
   }
 };

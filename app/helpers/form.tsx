@@ -217,7 +217,7 @@ export const useForm = <
                 startTransition(() => {
                   setError(error);
                 });
-                console.error(`failed to ${descriptor}`, error);
+                console.error(`Failed to ${descriptor}`, error);
                 if (!failSilently) {
                   toast.error(`failed to ${descriptor}`, {
                     description: sentencify(
@@ -232,7 +232,7 @@ export const useForm = <
                   ? transformErrors(errors)
                   : errors;
                 form.setErrors(formErrors);
-                console.warn(`couldn't ${descriptor}`, errors);
+                console.warn(`Couldn't ${descriptor}`, errors);
                 const formWithErrors = { ...form, errors: formErrors };
                 if (!failSilently) {
                   showFormErrorsAlert(formWithErrors, `couldn't ${descriptor}`);
@@ -240,7 +240,7 @@ export const useForm = <
                 onError?.(formWithErrors);
               }
             } else {
-              console.error("unknown error response", responseError);
+              console.error("Unknown error response", responseError);
               if (!failSilently) {
                 toast.error(`failed to ${descriptor}`, {
                   description: sentencify(

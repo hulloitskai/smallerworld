@@ -108,12 +108,13 @@ self.addEventListener("push", event => {
   if (badgeCount && navigator.setAppBadge) {
     console.debug("Setting app badge", badgeCount);
     actions.push(
-      self.clients.matchAll({ type: "window" }).then(clients => {
-        if (!clients.some(client => client.visibilityState === "visible")) {
-          return navigator.setAppBadge(badgeCount);
-        }
-        return Promise.resolve();
-      }),
+      self.clients
+        .matchAll({ type: "window", includeUncontrolled: true })
+        .then(async clients => {
+          if (clients.every(client => client.visibilityState === "hidden")) {
+            await navigator.setAppBadge(badgeCount);
+          }
+        }),
     );
   }
 
@@ -144,25 +145,29 @@ self.addEventListener("pushsubscriptionchange", event => {
   const { newSubscription, oldSubscription } = changeEvent;
   const newSubscriptionJSON = newSubscription?.toJSON();
   changeEvent.waitUntil(
-    routes.pushSubscriptions.change({
-      data: {
-        old_subscription: oldSubscription
-          ? { endpoint: oldSubscription.endpoint }
-          : null,
-        new_subscription: newSubscriptionJSON
-          ? {
-              endpoint: newSubscriptionJSON.endpoint,
-              p256dh_key: newSubscriptionJSON.keys?.p256dh,
-              auth_key: newSubscriptionJSON.keys?.auth,
-            }
-          : null,
-      },
-    }),
+    routes.pushSubscriptions
+      .change({
+        data: {
+          old_subscription: oldSubscription
+            ? { endpoint: oldSubscription.endpoint }
+            : null,
+          new_subscription: newSubscriptionJSON
+            ? {
+                endpoint: newSubscriptionJSON.endpoint,
+                p256dh_key: newSubscriptionJSON.keys?.p256dh,
+                auth_key: newSubscriptionJSON.keys?.auth,
+              }
+            : null,
+        },
+      })
+      .catch(error => {
+        console.error("Failed to change push subscription", error);
+      }),
   );
 });
 
 self.addEventListener("notificationclick", event => {
-  console.debug("Notification clicked", event);
+  console.debug("notification clicked", event);
   event.notification.close(); // Android needs explicit close
   invariant(event.notification.data, "Missing notification data");
   const { notification } = event.notification.data as NotificationData;
@@ -171,7 +176,7 @@ self.addEventListener("notificationclick", event => {
   }
   const actionUrl = notificationActionUrl(notification);
   const url = new URL(actionUrl, self.location.href).toString();
-  console.debug("Directing user to", url);
+  console.debug("directing user to", url);
   event.waitUntil(
     // Open the target URL
     self.clients

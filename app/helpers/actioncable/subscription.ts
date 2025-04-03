@@ -79,7 +79,7 @@ export const useSubscription = <
         received: (data: Data | { error?: string }) => {
           if ("error" in data) {
             const error = new Error(data.error);
-            console.error(`failed to ${descriptor}`, error);
+            console.error(`Failed to ${descriptor}`, error);
             if (!failSilently) {
               toast.error(`failed to ${descriptor}`, {
                 description: data.error,

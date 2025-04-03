@@ -67,7 +67,7 @@ export const setupRoutes = (): void => {
       error.body = responseAs === "json" ? Config.deserializeData(body) : body;
       /* eslint-enable @typescript-eslint/no-unsafe-assignment */
     } catch (error) {
-      console.error("failed to unwrap response error", error);
+      console.error("Failed to unwrap response error", error);
     }
     return error;
   };

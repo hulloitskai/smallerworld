@@ -13,7 +13,7 @@ export const setupInertia = (): void => {
   });
   router.on("exception", event => {
     console.error(
-      "an unexpected error occurred during an Inertia visit",
+      "An unexpected error occurred during an Inertia visit",
       event.detail.exception,
     );
   });
