@@ -41,7 +41,7 @@ class Notification < ApplicationRecord
 
   # == Associations
   belongs_to :noticeable, polymorphic: true
-  belongs_to :recipient, polymorphic: true
+  belongs_to :recipient, polymorphic: true, inverse_of: :received_notifications
 
   sig { returns(T.any(Friend, User)) }
   def recipient

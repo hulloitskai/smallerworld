@@ -16,7 +16,10 @@ module Notifiable
              as: :owner,
              dependent: :destroy
     has_many :push_subscriptions, through: :push_registrations
-    has_many :notifications, as: :recipient, dependent: :destroy
+    has_many :received_notifications,
+             class_name: "Notification",
+             as: :recipient,
+             dependent: :destroy
   end
 
   # == Interface
@@ -24,7 +27,7 @@ module Notifiable
   def notifications_last_cleared_at; end
 
   sig { abstract.returns(Notification::PrivateCollectionProxy) }
-  def notifications; end
+  def received_notifications; end
 
   sig { abstract.returns(::PushRegistration::PrivateCollectionProxy) }
   def push_registrations; end
@@ -36,11 +39,11 @@ module Notifiable
       Notification::PrivateCollectionProxy,
     ))
   end
-  def notifications_since_last_cleared
+  def notifications_received_since_last_cleared
     if (last_cleared_at = notifications_last_cleared_at)
-      notifications.where("created_at > ?", last_cleared_at)
+      received_notifications.where("created_at > ?", last_cleared_at)
     else
-      notifications
+      received_notifications
     end
   end
 end

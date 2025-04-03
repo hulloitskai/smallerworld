@@ -381,20 +381,6 @@ class User
     sig { params(value: T::Enumerable[::JoinRequest]).void }
     def join_requests=(value); end
 
-    sig { returns(T::Array[T.untyped]) }
-    def notification_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def notification_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :notifications`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::Notification::PrivateCollectionProxy) }
-    def notifications; end
-
-    sig { params(value: T::Enumerable[::Notification]).void }
-    def notifications=(value); end
-
     sig { returns(T.nilable(::ActiveStorage::Attachment)) }
     def page_icon_attachment; end
 
@@ -448,6 +434,20 @@ class User
 
     sig { params(value: T::Enumerable[::PushSubscription]).void }
     def push_subscriptions=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def received_notification_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def received_notification_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :received_notifications`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Notification::PrivateCollectionProxy) }
+    def received_notifications; end
+
+    sig { params(value: T::Enumerable[::Notification]).void }
+    def received_notifications=(value); end
 
     sig { returns(T.nilable(::ActiveStorage::Attachment)) }
     def reload_page_icon_attachment; end
