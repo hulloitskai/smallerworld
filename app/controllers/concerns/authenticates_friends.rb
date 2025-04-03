@@ -8,10 +8,21 @@ module AuthenticatesFriends
 
   requires_ancestor { ActionController::Base }
 
+  # == Errors
+  class MissingAccessToken < StandardError
+    def initialize(message = "Missing friend access token")
+      super
+    end
+  end
+
   included do
     T.bind(self, T.class_of(ActionController::Base))
 
+    # == Configuration
     authorize :friend, through: :current_friend
+
+    # == Exception handling
+    rescue_from MissingAccessToken, with: :handle_missing_friend_access_token
   end
 
   private
@@ -33,6 +44,12 @@ module AuthenticatesFriends
 
   sig { returns(Friend) }
   def authenticate_friend!
-    current_friend or raise "Invalid friend access token"
+    current_friend or raise MissingAccessToken
+  end
+
+  # == Rescue handlers
+  sig { params(error: MissingAccessToken).void }
+  def handle_missing_friend_access_token(error)
+    render(json: { error: error.message }, status: :unauthorized)
   end
 end

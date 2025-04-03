@@ -30,7 +30,7 @@ bin/setup
 - [x] register device ID when creating push registration
   - [?] "make your own smaller world!" onscreen prompt
 - [x] show notification settings panel before enabling push notifs
-- [ ] implement our own auth (bye Supabase!)
+- [x] implement our own auth (bye Supabase!)
 - [ ] post reminders button
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] onboarding redo (invite 3 friends, etc.)
@@ -41,3 +41,4 @@ bin/setup
   - shows friend replying to your post
 - [ ] arrow still isn't that obvious for enable push notifs
   - don't allow scrolling until enabled?
+- [ ] remove old supabase auth code

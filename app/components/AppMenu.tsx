@@ -4,7 +4,6 @@ import { Loader, type MenuItemProps, Text } from "@mantine/core";
 import MenuIcon from "~icons/heroicons/bars-3-20-solid";
 
 import { useContact } from "~/helpers/contact";
-import { createSupabaseClient } from "~/helpers/supabase";
 
 import classes from "./AppMenu.module.css";
 
@@ -83,7 +82,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
           <Menu.Item
             leftSection={<SignInIcon />}
             component={Link}
-            href={routes.login.new.path()}
+            href={routes.session.new.path()}
           >
             sign in
           </Menu.Item>
@@ -108,24 +107,22 @@ interface LogoutItemProps extends BoxProps {
 }
 
 const LogoutItem: FC<LogoutItemProps> = ({ onClose, ...otherProps }) => {
-  const [loading, setLoading] = useState(false);
+  // == Logout
+  const { trigger, mutating } = useRouteMutation(routes.sessions.destroy, {
+    descriptor: "sign out",
+    onSuccess: () => {
+      router.visit(routes.landing.show.path());
+      onClose();
+    },
+  });
+
   return (
     <Menu.Item
       pos="relative"
-      leftSection={loading ? <Loader size={12} /> : <SignOutIcon />}
+      leftSection={mutating ? <Loader size={12} /> : <SignOutIcon />}
       closeMenuOnClick={false}
       onClick={() => {
-        const supabase = createSupabaseClient();
-        setLoading(true);
-        void supabase.auth.signOut().then(({ error }) => {
-          setLoading(false);
-          if (error) {
-            toast.error("failed to sign out", { description: error.message });
-          } else {
-            onClose();
-            router.visit(routes.landing.show.path());
-          }
-        });
+        void trigger();
       }}
       {...otherProps}
     >

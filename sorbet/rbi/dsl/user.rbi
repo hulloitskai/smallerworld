@@ -460,6 +460,20 @@ class User
 
     sig { void }
     def reset_page_icon_blob; end
+
+    sig { returns(T::Array[T.untyped]) }
+    def session_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def session_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :sessions`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Session::PrivateCollectionProxy) }
+    def sessions; end
+
+    sig { params(value: T::Enumerable[::Session]).void }
+    def sessions=(value); end
   end
 
   module GeneratedAssociationRelationMethods

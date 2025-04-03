@@ -43,10 +43,10 @@ module GeneratedPathHelpersModule
   def good_job_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def home_path(*args); end
+  def image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def image_path(*args); end
+  def logout_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_path(*args); end
@@ -58,16 +58,19 @@ module GeneratedPathHelpersModule
   def mark_as_replied_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_login_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_signup_path(*args); end
+  def new_registration_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_session_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def phone_verification_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pinned_posts_path(*args); end
@@ -172,13 +175,16 @@ module GeneratedPathHelpersModule
   def rails_storage_redirect_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def registration_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def request_invitation_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def root_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def signup_path(*args); end
+  def session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end

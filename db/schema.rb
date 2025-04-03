@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_01_163658) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_01_204037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -178,6 +178,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_01_163658) do
     t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
   end
 
+  create_table "phone_verification_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "phone_number", null: false
+    t.string "verification_code", null: false
+    t.datetime "verified_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["verified_at"], name: "index_phone_verification_requests_on_verified_at"
+  end
+
   create_table "post_alerts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "post_id", null: false
     t.datetime "scheduled_for", precision: nil
@@ -245,6 +254,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_01_163658) do
     t.index ["endpoint"], name: "index_push_subscriptions_on_endpoint", unique: true
   end
 
+  create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.inet "ip_address", null: false
+    t.string "user_agent", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
   create_table "task_records", id: false, force: :cascade do |t|
     t.string "version", null: false
   end
@@ -274,4 +292,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_01_163658) do
   add_foreign_key "post_reply_receipts", "posts"
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "push_registrations", "push_subscriptions"
+  add_foreign_key "sessions", "users"
 end

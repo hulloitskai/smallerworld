@@ -1,10 +1,13 @@
 # typed: true
 # frozen_string_literal: true
 
+# TODO: Remove once everyone has migrated over to our own auth system, i.e.
+# after 2025-04-26.
 module SupabaseAuthentication
   extend T::Sig
   extend T::Helpers
   extend ActiveSupport::Concern
+  include Logging
 
   # == Constants
   SUPABASE_BASE64_PREFIX = "base64-"
@@ -19,6 +22,7 @@ module SupabaseAuthentication
   included do
     T.bind(self, T.class_of(ActionController::Base))
 
+    # == Filters
     before_action :refresh_supabase_session_if_necessary!
   end
 
@@ -93,28 +97,6 @@ module SupabaseAuthentication
   end
 
   sig { void }
-  def refresh_supabase_session_if_necessary!
-    session_data = supabase_session_data or return
-    access_token = session_data.fetch("access_token")
-    refresh_token = session_data.fetch("refresh_token")
-    begin
-      JWT.decode(
-        access_token,
-        supabase_jwt_secret,
-        true,
-        { algorithm: "HS256" },
-      )
-    rescue JWT::ExpiredSignature
-      session_data = refresh_supabase_session(refresh_token:)
-      cookies[:supabase_session] = {
-        value: encode_supabase_session_cookie(session_data),
-        expires: 1.year.from_now,
-      }
-      reset_supabase_authentication!
-    end
-  end
-
-  sig { void }
   def reset_supabase_authentication!
     SUPABASE_AUTHENTICATION_IVARS.each do |ivar|
       remove_instance_variable(ivar) if instance_variable_defined?(ivar)
@@ -138,13 +120,29 @@ module SupabaseAuthentication
   end
 
   # == Filter handlers
-  sig { returns(User) }
-  def authenticate_user!
-    current_user or raise UnauthenticatedError
-  end
-
   sig { void }
-  def require_supabase_authentication!
-    raise UnauthenticatedError unless supabase_authenticated?
+  def refresh_supabase_session_if_necessary!
+    session_data = supabase_session_data or return
+    access_token = session_data.fetch("access_token")
+    refresh_token = session_data.fetch("refresh_token")
+    begin
+      JWT.decode(
+        access_token,
+        supabase_jwt_secret,
+        true,
+        { algorithm: "HS256" },
+      )
+    rescue JWT::ExpiredSignature
+      session_data = refresh_supabase_session(refresh_token:)
+      cookies[:supabase_session] = {
+        value: encode_supabase_session_cookie(session_data),
+        expires: 1.year.from_now,
+      }
+      reset_supabase_authentication!
+    rescue => error
+      with_log_tags do
+        logger.error("Failed to refresh Supabase session: #{error}")
+      end
+    end
   end
 end

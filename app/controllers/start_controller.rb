@@ -4,13 +4,14 @@
 class StartController < ApplicationController
   # == Actions
   # GET /start
-  def show
-    if signed_in?
-      redirect_to(home_path)
-    elsif supabase_authenticated?
-      redirect_to(signup_path)
+  def redirect
+    next_path = if signed_in?
+      world_path
+    elsif valid_registration_token?
+      new_registration_path
     else
-      redirect_to(root_path)
+      root_path
     end
+    redirect_to(next_path)
   end
 end

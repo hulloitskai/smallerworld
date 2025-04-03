@@ -1,4 +1,4 @@
-# typed: strict
+# typed: true
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
@@ -9,8 +9,15 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   include Logging
   include RendersJsonException
-  include SupabaseAuthentication
+  include AuthenticatesUsers
   include AuthenticatesFriends
+
+  # == Errors
+  class AuthenticationRequired < StandardError
+    def initialize(message = "Missing friend access token")
+      super
+    end
+  end
 
   # == Filters
   around_action :with_error_context
@@ -42,7 +49,7 @@ class ApplicationController < ActionController::Base
     metadata
   end
 
-  # == Exception handlers
+  # == Exception handling
   rescue_from RuntimeError,
               ActiveRecord::RecordNotSaved,
               with: :handle_runtime_error
@@ -50,6 +57,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :handle_invalid_authenticity_token
   rescue_from UnauthenticatedError, with: :handle_unauthenticated_error
+  rescue_from AuthenticationRequired, with: :handle_authentication_required
 
   private
 
@@ -71,7 +79,7 @@ class ApplicationController < ActionController::Base
   # == Filter handlers
   sig { returns(T.any(Friend, User)) }
   def require_authentication!
-    current_friend || current_user or raise "Authentication required"
+    current_friend || current_user or raise AuthenticationRequired
   end
 
   # sig { void }
@@ -135,10 +143,10 @@ class ApplicationController < ActionController::Base
   def handle_unauthenticated_error(error)
     respond_to do |format|
       format.html do
-        if supabase_authenticated?
-          redirect_to(signup_path)
+        if valid_registration_token?
+          redirect_to(new_rails_conductor_inbound_email_path)
         else
-          redirect_to(new_login_path, alert: "Please sign in to continue")
+          redirect_to(new_session_path, alert: "Please sign in to continue")
         end
       end
       format.any do
@@ -159,28 +167,37 @@ class ApplicationController < ActionController::Base
     Sentry.capture_exception(exception)
   end
 
-  # == Rescue callbacks
+  # == Rescue handlers
   sig { params(error: ActionPolicy::Unauthorized).void }
   def handle_unauthorized(error)
-    if signed_in?
-      if request.format.json?
-        report_and_render_json_exception(error)
-      else
-        raise
-      end
+    if request.format.json?
+      report_and_render_json_exception(error)
     else
-      authenticate_user!
+      raise
     end
   end
 
   sig { params(exception: ActionController::InvalidAuthenticityToken).void }
   def handle_invalid_authenticity_token(exception)
     if request.inertia?
-      redirect_back_or_to("/", notice: "the page expired, please try again.")
+      flash.alert = "The page expired, please try again."
+      inertia_location(start_path)
     elsif request.format.json?
       report_and_render_json_exception(exception)
     else
       raise
+    end
+  end
+
+  sig { params(error: AuthenticationRequired).void }
+  def handle_authentication_required(error)
+    respond_to do |format|
+      format.html do
+        redirect_to(start_path, alert: "Please sign in to continue.")
+      end
+      format.any do
+        render(json: { error: error.message }, status: :unauthorized)
+      end
     end
   end
 end

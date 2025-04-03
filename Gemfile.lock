@@ -498,6 +498,12 @@ GEM
     thruster (0.1.10-arm64-darwin)
     thruster (0.1.10-x86_64-linux)
     timeout (0.4.3)
+    twilio-ruby (7.5.1)
+      benchmark
+      faraday (>= 0.9, < 3.0)
+      jwt (>= 1.5, < 3.0)
+      nokogiri (>= 1.6, < 2.0)
+      ostruct
     types_from_serializers (2.3.0)
       listen (~> 3.2)
       oj_serializers (~> 2.0, >= 2.0.2)
@@ -634,6 +640,7 @@ DEPENDENCIES
   store_model (~> 1.6)
   tapioca (~> 0.16.11)
   thruster
+  twilio-ruby (~> 7.5)
   types_from_serializers (~> 2.1)
   tzinfo-data
   unicode-emoji (~> 3.7)

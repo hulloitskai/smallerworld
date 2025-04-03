@@ -27,3 +27,8 @@ module ActionDispatch
     def [](key); end
   end
 end
+
+class ActionController::Base
+  include GeneratedUrlHelpersModule
+  include GeneratedPathHelpersModule
+end

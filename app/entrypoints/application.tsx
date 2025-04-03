@@ -24,7 +24,6 @@ import {
   registerAndUpdateServiceWorker,
   unregisterOldServiceWorkers,
 } from "~/helpers/serviceWorker";
-import { setupSupabase } from "~/helpers/supabase";
 
 import "./application.css";
 
@@ -36,7 +35,6 @@ setupActiveStorage();
 setupSentry();
 setupFullStory();
 setupClarity();
-setupSupabase();
 setupFingerprint();
 
 // == Service worker

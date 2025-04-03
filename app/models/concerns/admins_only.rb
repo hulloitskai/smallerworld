@@ -6,17 +6,20 @@ module AdminsOnly
   extend T::Helpers
   extend ActiveSupport::Concern
 
+  include AuthenticatesUsers
+
   requires_ancestor { ActionController::Base }
-  requires_ancestor { SupabaseAuthentication }
 
   included do
     T.bind(self, T.class_of(ActionController::Base))
 
+    # == Filters
     before_action :authorize_action!
   end
 
   private
 
+  # == Filter handlers
   sig { void }
   def authorize_action!
     user = authenticate_user!

@@ -52,24 +52,32 @@ Rails.application.routes.draw do
     end
   end
 
-  # == Logins
-  resource :login,
-           only: :new,
-           path_names: { new: "" },
-           export: { namespace: "login" }
+  # == Phone verification requests
+  resources :phone_verification_requests, only: :create, export: true
 
-  # == Signups
-  defaults export: { namespace: "signup" } do
-    resource :signup,
-             only: %i[new create],
-             path_names: { new: "" }
-  end
+  # == Sessions
+  resource :session,
+           only: %i[new create],
+           path: "/login",
+           path_names: { new: "" },
+           export: { namespace: "session" }
+  post "/logout" => "sessions#destroy", export: true
+
+  # == Registrations
+  resource :registration,
+           only: %i[new create],
+           path: "/signup",
+           path_names: { new: "" },
+           export: { namespace: "registration" }
+
+  # == Start
+  get "/start" => "start#redirect", export: { namespace: "start" }
 
   # == World
   resource :world, only: %i[show edit update], export: { namespace: "world" }
 
   # == Join requests
-  get "/world/join_requests", to: "join_requests#index", export: true
+  get "/world/join_requests" => "join_requests#index", export: true
 
   # == Friends
   resources :friends, only: %i[create update destroy], export: true do
@@ -77,14 +85,14 @@ Rails.application.routes.draw do
     #   post :pause
     # end
   end
-  get "/world/friends", to: "friends#index", export: true
+  get "/world/friends" => "friends#index", export: true
 
   # == Friend notification settings
   resource :friend_notification_settings, only: %i[show update], export: true
 
   # == Users
-  get "/@:handle", to: "users#show", as: :user, export: true
-  get "/@:handle/join", to: "users#join"
+  get "/@:handle" => "users#show", as: :user, export: true
+  get "/@:handle/join" => "users#join"
   resources :users, only: [], export: true do
     # collection do
     #   get :joined
@@ -124,11 +132,7 @@ Rails.application.routes.draw do
   resources :post_reactions, only: :destroy, export: true
 
   # == Pages
-  defaults export: true do
-    root "landing#show"
-    get :home, to: redirect("/world")
-    get :start, to: "start#show"
-  end
+  root "landing#show", export: true
   get "/src" => redirect(
     "https://github.com/hulloitskai/smallerworld",
     status: 302,

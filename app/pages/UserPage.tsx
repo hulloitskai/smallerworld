@@ -177,7 +177,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                 <Button
                   component="a"
                   target="_blank"
-                  href={routes.login.new.path()}
+                  href={routes.session.new.path()}
                   leftSection={<OpenExternalIcon />}
                   style={{ alignSelf: "center" }}
                 >

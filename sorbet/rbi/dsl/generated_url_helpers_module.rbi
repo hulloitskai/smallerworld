@@ -43,10 +43,10 @@ module GeneratedUrlHelpersModule
   def good_job_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def home_url(*args); end
+  def image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def image_url(*args); end
+  def logout_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def lookup_push_subscriptions_url(*args); end
@@ -58,16 +58,19 @@ module GeneratedUrlHelpersModule
   def mark_as_replied_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_login_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_signup_url(*args); end
+  def new_registration_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_session_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def phone_verification_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pinned_posts_url(*args); end
@@ -172,13 +175,16 @@ module GeneratedUrlHelpersModule
   def rails_storage_redirect_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def registration_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def request_invitation_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def root_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def signup_url(*args); end
+  def session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_url(*args); end

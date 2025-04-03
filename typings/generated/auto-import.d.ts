@@ -150,6 +150,7 @@ declare global {
   const useSubscription: typeof import('~/helpers/actioncable/subscription')['useSubscription']
   const useUserTheme: typeof import('~/helpers/userThemes')['useUserTheme']
   const useVaulPortalTarget: typeof import('~/helpers/vaul')['useVaulPortalTarget']
+  const uuid: typeof import('uuid')['v4']
 }
 // for type re-export
 declare global {

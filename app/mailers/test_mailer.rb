@@ -5,8 +5,8 @@ class TestMailer < ApplicationMailer
   sig { params(model: TestModel).returns(Mail::Message) }
   def test_email(model)
     mail(
-      to: Contact.email,
-      subject: "It's Kai!",
+      to: Contact.email_address,
+      subject: "this is a test email",
       inertia: "TestEmail",
       props: {
         model: model.to_h,

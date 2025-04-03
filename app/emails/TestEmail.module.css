@@ -1,5 +1,5 @@
 .results {
-  .mantine-Text-root {
+  :global(.mantine-Text-root) {
     margin: 0 !important;
   }
 }

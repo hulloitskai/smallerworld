@@ -87,6 +87,12 @@
       }
     }
 
+    .cardSection {
+      @mixin dark {
+        border-color: var(--mantine-color-dark-6);
+      }
+    }
+
     &[data-user-theme]
       .cardSection:not(:global(.mantine-Paper-root .cardSection)) {
       @mixin dark {

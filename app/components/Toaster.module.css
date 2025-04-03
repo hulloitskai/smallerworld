@@ -4,8 +4,17 @@
   padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
   border-radius: var(--mantine-radius-default);
 
+  @mixin dark {
+    background-color: var(--mantine-color-dark-8);
+    border-color: var(--mantine-color-dark-6);
+  }
+
   [data-icon] {
     margin-top: 3px;
+
+    @mixin dark {
+      color: var(--mantine-color-white);
+    }
   }
 
   [data-title],
@@ -15,12 +24,12 @@
   }
 
   [data-title] {
-    color: var(--mantine-color-black);
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
     font-size: var(--mantine-font-size-sm);
   }
 
   [data-description] {
-    color: alpha(var(--mantine-color-black), 0.75);
+    color: alpha(var(--mantine-color-text), 0.75);
     font-size: var(--mantine-font-size-sm);
   }
 

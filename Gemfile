@@ -171,6 +171,9 @@ gem "faker", "~> 3.5"
 # Count words
 gem "words_counted", "~> 1.0"
 
+# Send SMS with Twilio
+gem "twilio-ruby", "~> 7.5"
+
 group :development, :test do
   # Debug code with debug
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

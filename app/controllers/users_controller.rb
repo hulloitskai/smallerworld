@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: :joined
+  # before_action :authenticate_user!, only: :joined
 
   # == Actions
   # GET /@:handle
@@ -33,30 +33,30 @@ class UsersController < ApplicationController
     redirect_to(user_path(handle, intent: "join"))
   end
 
-  # GET /users/joined
-  def joined
-    current_user = authenticate_user!
-    colocated_friends = current_user.colocated_friends
-    friend_phone_numbers = current_user.friends
-      .where(
-        phone_number: colocated_friends
-          .references(:user)
-          .select("users.phone_number"),
-      )
-      .pluck(:phone_number)
-      .to_set
-    joined_users = colocated_friends.map do |friend|
-      user = friend.user!
-      JoinedUser.new(
-        user:,
-        friend_access_token: friend.access_token,
-        friended: friend_phone_numbers.include?(user.phone_number),
-      )
-    end
-    render(json: {
-      "users" => JoinedUserSerializer.many(joined_users),
-    })
-  end
+  # # GET /users/joined
+  # def joined
+  #   current_user = authenticate_user!
+  #   colocated_friends = current_user.colocated_friends
+  #   friend_phone_numbers = current_user.friends
+  #     .where(
+  #       phone_number: colocated_friends
+  #         .references(:user)
+  #         .select("users.phone_number"),
+  #     )
+  #     .pluck(:phone_number)
+  #     .to_set
+  #   joined_users = colocated_friends.map do |friend|
+  #     user = friend.user!
+  #     JoinedUser.new(
+  #       user:,
+  #       friend_access_token: friend.access_token,
+  #       friended: friend_phone_numbers.include?(user.phone_number),
+  #     )
+  #   end
+  #   render(json: {
+  #     "users" => JoinedUserSerializer.many(joined_users),
+  #   })
+  # end
 
   # GET /users/:id/manifest.webmanifest?friend_token=...
   def manifest

@@ -32,6 +32,7 @@ class User < ApplicationRecord
   friendly_id :handle, slug_column: :handle
 
   # == Associations
+  has_many :sessions, dependent: :destroy
   has_many :friends, dependent: :destroy
   has_many :posts,
            dependent: :destroy,
@@ -66,17 +67,17 @@ class User < ApplicationRecord
     Admin.phone_numbers.include?(phone_number)
   end
 
-  sig { returns(Friend::PrivateRelation) }
-  def colocated_friends
-    friend_push_registrations = PushRegistration
-      .where(
-        owner_type: "Friend",
-        device_id: push_registrations.select(:device_id),
-      )
-    Friend
-      .includes(:user)
-      .where(id: friend_push_registrations.select(:owner_id))
-  end
+  # sig { returns(Friend::PrivateRelation) }
+  # def colocated_friends
+  #   friend_push_registrations = PushRegistration
+  #     .where(
+  #       owner_type: "Friend",
+  #       device_id: push_registrations.select(:device_id),
+  #     )
+  #   Friend
+  #     .includes(:user)
+  #     .where(id: friend_push_registrations.select(:owner_id))
+  # end
 
   sig { returns(Post) }
   def create_welcome_post!
@@ -87,5 +88,12 @@ class User < ApplicationRecord
       title: "welcome to my smaller world!",
       body_html: "<p>this is a space where i'll:</p><ul><li><p>keep you updated about what's actually going on in my life</p></li><li><p>post asks for help when i need it</p></li><li><p>let you know about events and adventures that you can join me on</p></li></ul>", # rubocop:disable Layout/LineLength
     )
+  end
+
+  # == Helpers
+  sig { params(phone_number: String).returns(T.nilable(User)) }
+  def self.find_by_phone_number(phone_number)
+    phone_number = normalize_value_for(:phone_number, phone_number)
+    find_by(phone_number:)
   end
 end

@@ -83,6 +83,15 @@ self.addEventListener("fetch", event => {
       ),
     );
   }
+
+  // == Respond to preloads.
+  event.waitUntil(
+    event.preloadResponse.then((response: Response) => {
+      if (response) {
+        return event.respondWith(response);
+      }
+    }),
+  );
 });
 
 // == Push handlers

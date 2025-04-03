@@ -8,13 +8,13 @@ module Contact
 
   # == Accessors
   sig { returns(String) }
-  def self.email
-    credentials.email!
+  def self.email_address
+    credentials.email_address!
   end
 
   sig { returns(String) }
-  def self.phone
-    credentials.phone!
+  def self.phone_number
+    credentials.phone_number!
   end
 
   # == Helpers

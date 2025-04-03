@@ -1,37 +1,132 @@
 import { Input, InputBase, PinInput, Text } from "@mantine/core";
-import { useForm } from "@mantine/form";
 import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
 
 import AppLayout from "~/components/AppLayout";
-import { createSupabaseClient } from "~/helpers/supabase";
+import { type PhoneVerificationRequest } from "~/types";
 
 export interface LoginPageProps extends SharedPageProps {}
 
 const LoginPage: PageComponent<LoginPageProps> = () => {
+  const [showVerificationCodeInput, setShowVerificationCodeInput] =
+    useState(false);
+
   // == Form
-  const [showCodeInput, setShowCodeInput] = useState(false);
-  const {
-    values,
-    getInputProps,
-    onSubmit,
-    submitting,
-    setSubmitting,
-    setFieldValue,
-  } = useForm({
-    initialValues: {
-      country_code: "+1",
-      phone_without_country_code: "",
-      code: "",
+  const initialValues = {
+    phone_number_country_code: "+1",
+    phone_number_without_country_code: "",
+    verification_code: "",
+  };
+  type FormValues = typeof initialValues;
+  interface CreatePhoneVerificationRequestFormSubmission {
+    verification_request: {
+      phone_number: string;
+    };
+  }
+  interface CreateSessionFormSubmission {
+    login: {
+      phone_number: string;
+      verification_code: string;
+    };
+  }
+  type FormData =
+    | { verificationRequest?: PhoneVerificationRequest }
+    | { redirectUrl: string };
+  type TransformValues = (
+    values: FormValues,
+  ) =>
+    | CreatePhoneVerificationRequestFormSubmission
+    | CreateSessionFormSubmission;
+  const { values, getInputProps, submitting, setFieldValue, submit } = useForm<
+    FormData,
+    FormValues,
+    TransformValues
+  >({
+    initialValues,
+    validate: {
+      phone_number_without_country_code: (value, values) => {
+        const phoneNumber = parsePhoneFromParts(values);
+        if (!phoneNumber) {
+          return "Invalid phone number";
+        }
+      },
+    },
+    ...(showVerificationCodeInput
+      ? {
+          action: routes.session.create,
+          descriptor: "sign in",
+          transformValues: ({ verification_code, ...phonePartsValues }) => {
+            const phoneNumber = mustParsePhoneFromParts(phonePartsValues);
+            return {
+              login: {
+                phone_number: phoneNumber,
+                verification_code,
+              },
+            };
+          },
+        }
+      : {
+          action: routes.phoneVerificationRequests.create,
+          descriptor: "send login code",
+          transformValues: values => {
+            const phoneNumber = mustParsePhoneFromParts(values);
+            return {
+              verification_request: { phone_number: phoneNumber },
+            };
+          },
+        }),
+    onSuccess: data => {
+      if (showVerificationCodeInput) {
+        invariant("redirectUrl" in data, "Missing redirect URL after sign in");
+        router.visit(data.redirectUrl);
+      } else {
+        if ("verificationRequest" in data && data.verificationRequest) {
+          const { verification_code, verification_code_message } =
+            data.verificationRequest;
+          const toastId = uuid();
+          toast.success(
+            "simulating verification code delivery in development",
+            {
+              id: toastId,
+              description: (
+                <Stack align="start" gap={8}>
+                  <Box>&quot;{verification_code_message}&quot;</Box>
+                  <Button
+                    size="compact-sm"
+                    onClick={() => {
+                      setFieldValue("verification_code", verification_code);
+                      toast.dismiss(toastId);
+                    }}
+                  >
+                    auto-fill code
+                  </Button>
+                </Stack>
+              ),
+            },
+          );
+        }
+        setShowVerificationCodeInput(true);
+      }
     },
   });
+
   const stepComplete = useMemo(() => {
-    const { phone_without_country_code, country_code, code } = values;
-    if (showCodeInput) {
-      return !!code && !!phone_without_country_code && !!country_code;
+    const {
+      phone_number_without_country_code,
+      phone_number_country_code,
+      verification_code,
+    } = values;
+    const phoneNumber = [
+      phone_number_country_code,
+      phone_number_without_country_code,
+    ]
+      .filter(Boolean)
+      .join(" ");
+    if (showVerificationCodeInput) {
+      return !!phoneNumber && !!verification_code;
     }
-    return !!phone_without_country_code && !!country_code;
-  }, [showCodeInput, values]);
+    return !!phoneNumber;
+  }, [showVerificationCodeInput, values]);
 
   return (
     <Card w="100%" maw={380} withBorder>
@@ -41,72 +136,10 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
         </Title>
       </Card.Section>
       <Card.Section inheritPadding py="md">
-        <form
-          onSubmit={onSubmit(
-            ({ phone_without_country_code, country_code, code }) => {
-              const supabase = createSupabaseClient();
-              const { phoneNumber } = parsePhone(
-                [country_code, phone_without_country_code].join(" "),
-              );
-              invariant(phoneNumber, "Invalid phone number");
-              setSubmitting(true);
-              if (code) {
-                void supabase.auth
-                  .verifyOtp({
-                    type: "sms",
-                    phone: phoneNumber,
-                    token: code,
-                  })
-                  .then(({ error }) => {
-                    if (error) {
-                      console.error("failed to complete sign-in", error);
-                      toast.error("failed to complete sign-in", {
-                        description: error.message,
-                      });
-                    } else {
-                      router.visit(routes.world.show.path());
-                    }
-                  })
-                  .catch(error => {
-                    console.error("unexpected error during sign-in", error);
-                    if (error instanceof Error) {
-                      toast.error("unexpected error during sign-in", {
-                        description: error.message,
-                      });
-                    }
-                  })
-                  .finally(() => {
-                    setSubmitting(false);
-                  });
-              } else {
-                void supabase.auth
-                  .signInWithOtp({
-                    phone: phoneNumber,
-                    options: { channel: "sms", shouldCreateUser: true },
-                  })
-                  .then(({ error, data }) => {
-                    if (error) {
-                      console.error("failed to initiate sign-in", error);
-                    } else {
-                      setShowCodeInput(true);
-                      if (data.messageId === "test-otp") {
-                        toast.warning("This is a testing number", {
-                          description:
-                            "Please use your test login code to continue.",
-                        });
-                      }
-                    }
-                  })
-                  .finally(() => {
-                    setSubmitting(false);
-                  });
-              }
-            },
-          )}
-        >
+        <form onSubmit={submit}>
           <Stack gap="sm">
             <InputBase
-              {...getInputProps("phone_without_country_code")}
+              {...getInputProps("phone_number_without_country_code")}
               component={IMaskInput}
               mask="(000) 000-0000"
               type="tel"
@@ -114,7 +147,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               placeholder="(___) ___ ____"
               autoComplete="mobile tel-national"
               onAccept={value => {
-                setFieldValue("phone_without_country_code", value);
+                setFieldValue("phone_number_without_country_code", value);
               }}
               required
               withAsterisk={false}
@@ -125,7 +158,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               inputContainer={children => (
                 <Group gap={8} align="start">
                   <InputBase
-                    {...getInputProps("country_code")}
+                    {...getInputProps("phone_number_country_code")}
                     component={IMaskInput}
                     mask="+0[00]"
                     placeholder="+1"
@@ -139,15 +172,15 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                 </Group>
               )}
             />
-            <Transition transition="pop" mounted={showCodeInput}>
+            <Transition transition="pop" mounted={showVerificationCodeInput}>
               {style => (
                 <Input.Wrapper
-                  label="verification code"
+                  label="login code"
                   description="enter the code sent to your phone"
                   {...{ style }}
                 >
                   <PinInput
-                    {...getInputProps("code")}
+                    {...getInputProps("verification_code")}
                     type="number"
                     length={6}
                     autoFocus
@@ -159,11 +192,13 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
             <Stack gap={6}>
               <Button
                 type="submit"
-                leftSection={showCodeInput ? <SignInIcon /> : <PhoneIcon />}
+                leftSection={
+                  showVerificationCodeInput ? <SignInIcon /> : <PhoneIcon />
+                }
                 disabled={!stepComplete}
                 loading={submitting}
               >
-                {showCodeInput ? "sign in" : "send login code"}
+                {showVerificationCodeInput ? "sign in" : "send login code"}
               </Button>
               <Text
                 size="xs"
@@ -190,3 +225,30 @@ LoginPage.layout = page => (
 );
 
 export default LoginPage;
+
+interface PhonePartsFormValues {
+  phone_number_country_code: string;
+  phone_number_without_country_code: string;
+}
+
+const parsePhoneFromParts = ({
+  phone_number_country_code,
+  phone_number_without_country_code,
+}: PhonePartsFormValues): string | null => {
+  const number = [
+    phone_number_country_code,
+    phone_number_without_country_code,
+  ].join(" ");
+  const phone = parsePhone(number);
+  return phone.isValid ? phone.phoneNumber : null;
+};
+
+const mustParsePhoneFromParts = (
+  phonePartsValues: PhonePartsFormValues,
+): string => {
+  const phoneNumber = parsePhoneFromParts(phonePartsValues);
+  if (!phoneNumber) {
+    throw new Error("Invalid phone number");
+  }
+  return phoneNumber;
+};

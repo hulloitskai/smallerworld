@@ -1,6 +1,5 @@
 import { Text } from "@mantine/core";
 import { closeModal } from "@mantine/modals";
-import { v4 as uuid } from "uuid";
 
 import {
   canOpenUrlInMobileSafari,

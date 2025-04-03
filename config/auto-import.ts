@@ -133,6 +133,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     ],
     sonner: ["toast"],
     "tiny-invariant": [["default", "invariant"]],
+    uuid: [["v4", "uuid"]],
   },
 
   // == Types

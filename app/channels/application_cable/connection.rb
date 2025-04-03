@@ -12,8 +12,12 @@ module ApplicationCable
     # == Connection
     sig { void }
     def connect
-      self.current_user = find_verified_user
-      self.current_friend = find_verified_friend
+      if (friend = find_verified_friend) || (user = find_verified_user)
+        self.current_friend = friend
+        self.current_user = user
+      else
+        reject_unauthorized_connection
+      end
     end
 
     private
@@ -21,7 +25,9 @@ module ApplicationCable
     # == Helpers
     sig { returns(T.nilable(User)) }
     def find_verified_user
-      env["warden"].user
+      if (id = cookies.signed[:session_id]) && (session = Session.find_by(id:))
+        session.user
+      end
     end
 
     sig { returns(T.nilable(Friend)) }
