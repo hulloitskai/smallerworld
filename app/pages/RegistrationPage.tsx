@@ -9,6 +9,7 @@ import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { APPLE_ICON_RADIUS_RATIO, CANONICAL_DOMAIN } from "~/helpers/app";
+import { useTimeZone } from "~/helpers/time";
 import { type Image, type Upload, type UserTheme } from "~/types";
 
 export interface RegistrationPageProps extends SharedPageProps {}
@@ -16,6 +17,10 @@ export interface RegistrationPageProps extends SharedPageProps {}
 const ICON_IMAGE_INPUT_SIZE = 110;
 
 const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
+  // == Time zone
+  const timeZone = useTimeZone();
+
+  // == Form
   const { values, getInputProps, submitting, submit, setFieldValue } = useForm({
     action: routes.registration.create,
     descriptor: "complete signup",
@@ -25,13 +30,17 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       page_icon_upload: null as Upload | null,
       theme: "" as UserTheme | "",
     },
-    transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => ({
-      user: {
-        ...values,
-        handle: prefixed_handle.replace(/^@/, ""),
-        page_icon: page_icon_upload?.signedId ?? "",
-      },
-    }),
+    transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => {
+      invariant(timeZone, "Missing time zone");
+      return {
+        user: {
+          ...values,
+          handle: prefixed_handle.replace(/^@/, ""),
+          page_icon: page_icon_upload?.signedId ?? "",
+          time_zone_name: timeZone,
+        },
+      };
+    },
     transformErrors: ({ page_icon, handle, ...errors }) => ({
       ...errors,
       prefixed_handle: handle,
@@ -58,6 +67,8 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       setFieldValue("prefixed_handle", `@${handle}`);
     }
   }, [values.name]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // == User theme preview
   useUserTheme(values.theme || null);
 
   // == Page icon preview
@@ -140,6 +151,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
               leftSection={<ProfileIcon />}
               loading={submitting}
               disabled={
+                !timeZone ||
                 !values.name ||
                 values.prefixed_handle.length <= 1 ||
                 !values.page_icon_upload

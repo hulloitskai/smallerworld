@@ -642,6 +642,7 @@ DEPENDENCIES
   thruster
   twilio-ruby (~> 7.5)
   types_from_serializers (~> 2.1)
+  tzinfo (~> 2.0)
   tzinfo-data
   unicode-emoji (~> 3.7)
   validate_url (~> 1.0)

@@ -50,6 +50,8 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({ currentUser }) => {
       router.visit(routes.world.show.path());
     },
   });
+
+  // == User theme preview
   useUserTheme(values.theme || null);
 
   // == Page icon preview

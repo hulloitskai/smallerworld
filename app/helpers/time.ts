@@ -10,3 +10,12 @@ export const isTodayIsh = (parsedDate: DateTime): boolean => {
   }
   return false;
 };
+
+export const useTimeZone = (): string | undefined => {
+  const [timeZoneName, setTimeZoneName] = useState<string | undefined>();
+  useEffect(() => {
+    const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
+    setTimeZoneName(timeZone);
+  }, []);
+  return timeZoneName;
+};

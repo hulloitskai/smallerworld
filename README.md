@@ -31,6 +31,7 @@ bin/setup
   - [?] "make your own smaller world!" onscreen prompt
 - [x] show notification settings panel before enabling push notifs
 - [x] implement our own auth (bye Supabase!)
+- [x] keep user timezone up to date
 - [ ] post reminders button
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] onboarding redo (invite 3 friends, etc.)

@@ -22,12 +22,12 @@ class NotificationsController < ApplicationController
     render(json: {})
   end
 
-  # POST /notifications/cleared
-  def cleared
-    subject = require_authentication!
-    subject.update!(notifications_last_cleared_at: Time.current)
-    render(json: {})
-  end
+  # # POST /notifications/cleared
+  # def cleared
+  #   subject = require_authentication!
+  #   subject.update!(notifications_last_cleared_at: Time.current)
+  #   render(json: {})
+  # end
 
   private
 

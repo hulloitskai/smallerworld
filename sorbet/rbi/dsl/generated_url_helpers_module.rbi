@@ -16,9 +16,6 @@ module GeneratedUrlHelpersModule
   def change_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def cleared_notifications_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def contact_url_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -218,6 +215,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def visits_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_friends_url(*args); end

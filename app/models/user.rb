@@ -12,6 +12,7 @@
 #  notifications_last_cleared_at :datetime
 #  phone_number                  :string           not null
 #  theme                         :string
+#  time_zone_name                :string           not null
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #
@@ -23,13 +24,18 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class User < ApplicationRecord
+  extend FriendlyId
   include NormalizesPhoneNumber
   include Notifiable
 
   # == FriendlyId
-  extend FriendlyId
-
   friendly_id :handle, slug_column: :handle
+
+  # == Attributes
+  sig { returns(ActiveSupport::TimeZone) }
+  def time_zone
+    ActiveSupport::TimeZone.new(time_zone_name)
+  end
 
   # == Associations
   has_many :sessions, dependent: :destroy
@@ -54,9 +60,15 @@ class User < ApplicationRecord
   normalizes_phone_number :phone_number
 
   # == Validations
-  validates :name, :handle, :phone_number, :page_icon, presence: true
+  validates :name,
+            :handle,
+            :phone_number,
+            :page_icon,
+            :time_zone_name,
+            presence: true
   validates :name, length: { maximum: 30 }
   validates :handle, length: { minimum: 4 }
+  validate :validate_time_zone_name
 
   # == Callbacks
   after_create :create_welcome_post!
@@ -95,5 +107,15 @@ class User < ApplicationRecord
   def self.find_by_phone_number(phone_number)
     phone_number = normalize_value_for(:phone_number, phone_number)
     find_by(phone_number:)
+  end
+
+  private
+
+  # == Validators
+  sig { void }
+  def validate_time_zone_name
+    unless ActiveSupport::TimeZone.new(time_zone_name)
+      errors.add(:time_zone_name, :invalid, message: "invalid time zone")
+    end
   end
 end

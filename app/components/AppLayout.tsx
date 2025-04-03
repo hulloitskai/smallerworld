@@ -11,7 +11,7 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
-import { useClearAppBadge } from "~/helpers/pwa";
+import { useTrackVisit } from "~/helpers/visits";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
 import AppMeta, { type AppMetaProps } from "./AppMeta";
@@ -60,7 +60,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   padding,
   ...otherProps
 }: AppLayoutProps<PageProps>) => {
-  useClearAppBadge();
+  useTrackVisit();
   const isStandalone = useIsStandalone();
 
   // == Meta

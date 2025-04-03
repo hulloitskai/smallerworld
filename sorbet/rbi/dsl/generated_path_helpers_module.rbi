@@ -16,9 +16,6 @@ module GeneratedPathHelpersModule
   def change_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def cleared_notifications_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def contact_url_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -218,6 +215,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def visits_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_friends_path(*args); end

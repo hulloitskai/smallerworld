@@ -1,4 +1,4 @@
-import { useDocumentVisibility, useMediaQuery } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 import { useMounted } from "@mantine/hooks";
 
 export const useIsStandalone = (): boolean | undefined => {
@@ -68,36 +68,4 @@ export const useInstallPrompt = (): InstallPromptReturn => {
     install,
     error,
   };
-};
-
-export const useClearAppBadge = () => {
-  const isStandalone = useIsStandalone();
-  const visibility = useDocumentVisibility();
-  const currentUser = useCurrentUser();
-  const currentFriend = useCurrentFriend();
-  const clearNotificationParams = currentFriend
-    ? { query: { friend_token: currentFriend.access_token } }
-    : currentUser
-      ? {}
-      : null;
-  const { trigger } = useRouteMutation(routes.notifications.cleared, {
-    descriptor: "mark notifications as cleared",
-    params: clearNotificationParams,
-    failSilently: true,
-    onSuccess: () => {
-      console.info("Notifications cleared");
-    },
-  });
-  useEffect(() => {
-    if (
-      isStandalone &&
-      visibility === "visible" &&
-      "clearAppBadge" in navigator
-    ) {
-      void navigator.clearAppBadge();
-      if (clearNotificationParams) {
-        void trigger();
-      }
-    }
-  }, [isStandalone, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
 };

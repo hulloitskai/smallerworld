@@ -44,13 +44,13 @@ Rails.application.routes.draw do
 
   # == Notifications
   resources :notifications, only: [], export: true do
-    collection do
-      post :cleared
-    end
     member do
       post :delivered
     end
   end
+
+  # == Visits
+  post "/visit" => "visits#track", export: true
 
   # == Phone verification requests
   resources :phone_verification_requests, only: :create, export: true
