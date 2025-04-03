@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 app_credentials = Rails.application.credentials
-twilio_credentials = if Rails.env.production?
+twilio_credentials = if Rails.application.credentials_available? &&
+    Rails.env.production?
   app_credentials.twilio!
 else
   app_credentials.twilio
