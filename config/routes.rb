@@ -75,7 +75,7 @@ Rails.application.routes.draw do
 
   # == World
   resource :world, only: %i[show edit update], export: { namespace: "world" }
-  get "/home" => redirect("/world", status: 302)
+  get "/home" => redirect("/world")
 
   # == Join requests
   get "/world/join_requests" => "join_requests#index", export: true
