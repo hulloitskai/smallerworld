@@ -15,9 +15,13 @@ import classes from "./AuthorPostCardActions.module.css";
 
 export interface AuthorPostCardActionsProps {
   post: Post;
+  onFollowUpDrawerModalOpened?: () => void;
 }
 
-const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
+const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
+  post,
+  onFollowUpDrawerModalOpened,
+}) => {
   const { ref, inViewport } = useInViewport();
 
   // == Load post stats
@@ -99,12 +103,13 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
               actions
             </Button>
           </Menu.Target>
-          <Menu.Dropdown>
+          <Menu.Dropdown style={{ pointerEvents: "auto" }}>
             {post.type !== "follow_up" && (
               <Menu.Item
                 leftSection={<FollowUpIcon />}
                 onClick={() => {
                   setFollowUpOpened(true);
+                  onFollowUpDrawerModalOpened?.();
                 }}
               >
                 follow-up

@@ -155,7 +155,14 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
             <PostCard
               key={post.id}
               {...{ post }}
-              actions={<AuthorPostCardActions {...{ post }} />}
+              actions={
+                <AuthorPostCardActions
+                  {...{ post }}
+                  onFollowUpDrawerModalOpened={() => {
+                    setPinnedPostsDrawerModalOpened(false);
+                  }}
+                />
+              }
             />
           ))}
         </Stack>
