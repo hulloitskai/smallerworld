@@ -103,7 +103,10 @@ module SupabaseAuthentication
     end
   end
 
-  sig { params(refresh_token: String).returns(T::Hash[String, T.untyped]) }
+  sig do
+    params(refresh_token: String)
+      .returns(T.nilable(T::Hash[String, T.untyped]))
+  end
   def refresh_supabase_session(refresh_token:)
     response = Supabase.client.post(
       "/auth/v1/token",
@@ -114,7 +117,7 @@ module SupabaseAuthentication
     response.body.tap do |session_data|
       unless session_data.is_a?(Hash) &&
           session_data.dig("user", "role") == "authenticated"
-        raise "Failed to refresh Supabase session"
+        return nil
       end
     end
   end
@@ -133,16 +136,12 @@ module SupabaseAuthentication
         { algorithm: "HS256" },
       )
     rescue JWT::ExpiredSignature
-      session_data = refresh_supabase_session(refresh_token:)
+      session_data = refresh_supabase_session(refresh_token:) or return
       cookies[:supabase_session] = {
         value: encode_supabase_session_cookie(session_data),
         expires: 1.year.from_now,
       }
       reset_supabase_authentication!
-    rescue => error
-      with_log_tags do
-        logger.error("Failed to refresh Supabase session: #{error}")
-      end
     end
   end
 end

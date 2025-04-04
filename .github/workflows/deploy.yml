@@ -40,3 +40,4 @@ jobs:
           environment: production
           projects: smallerworld
           ignore_missing: true
+          disable_telemetry: true
