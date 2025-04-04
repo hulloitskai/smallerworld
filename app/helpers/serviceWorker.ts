@@ -50,11 +50,13 @@ export const handleServiceWorkerNavigation = (): void => {
   navigator.serviceWorker.addEventListener("message", handleMessage);
 };
 
-export const registerAndUpdateServiceWorker =
-  (): Promise<ServiceWorkerRegistration> =>
-    navigator.serviceWorker
-      .register(serviceWorkerUrl, REGISTRATION_OPTIONS)
-      .then(registration => registration.update().then(() => registration));
+export const registerAndUpdateServiceWorker = (): Promise<void> =>
+  navigator.serviceWorker.register(serviceWorkerUrl, REGISTRATION_OPTIONS).then(
+    registration => registration.update(),
+    error => {
+      console.warn("Failed to register or update service worker", error);
+    },
+  );
 
 export const unregisterOldServiceWorkers = (): Promise<void> =>
   navigator.serviceWorker.getRegistrations().then(async registrations => {
