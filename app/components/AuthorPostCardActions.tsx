@@ -164,7 +164,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
         </Menu>
       </Group>
       <DrawerModal
-        title={<>re: {post.snippet}</>}
+        title="new follow-up"
         opened={followUpOpened}
         onClose={() => {
           setFollowUpOpened(false);
