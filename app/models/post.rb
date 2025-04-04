@@ -94,7 +94,6 @@ class Post < ApplicationRecord
 
   # == Validations
   validates :type, :body_html, presence: true
-  validates :title, presence: true, if: :title_visible?
   validates :title, absence: true, unless: :title_visible?
   validates :quoted_post, presence: true, if: :follow_up?
   validates :quoted_post, absence: true, unless: :follow_up?
@@ -182,7 +181,7 @@ class Post < ApplicationRecord
 
   sig { returns(T::Boolean) }
   def title_visible?
-    type.in?(%i[journal_entry poem invitation])
+    journal_entry? || poem? || invitation?
   end
 
   # == Validators
