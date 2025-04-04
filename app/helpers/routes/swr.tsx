@@ -44,6 +44,7 @@ export const useRouteSWR = <
     serializeData,
     responseAs,
     headers,
+    onError,
     ...swrConfiguration
   } = options;
 
@@ -72,7 +73,22 @@ export const useRouteSWR = <
         responseAs,
         headers,
       }),
-    { isOnline: () => online, ...swrConfiguration },
+    {
+      isOnline: () => online,
+      onError: (error, key, config) => {
+        if (isCSRFError(error)) {
+          router.reload({
+            only: ["csrf"],
+            onSuccess: () => {
+              void mutate(key);
+            },
+          });
+        } else {
+          onError?.(error, key, config);
+        }
+      },
+      ...swrConfiguration,
+    },
   );
 
   return { fetching: isLoading, validating: isValidating, ...swrResponse };
