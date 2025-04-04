@@ -17,4 +17,11 @@ class PostNotificationPayloadPostSerializer < ApplicationSerializer
       rails_representation_path(variant)
     end
   end
+  attribute :quoted_post_image_src, type: :string, nullable: true do
+    if (quoted_post = post.quoted_post)
+      if (blob = quoted_post.image_blob)
+        rails_representation_path(blob.variant(resize_to_limit: [600, 400]))
+      end
+    end
+  end
 end
