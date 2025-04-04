@@ -33,6 +33,7 @@ export const setupSentry = () => {
         "ResizeObserver loop completed with undelivered notifications.",
         "HTTP Client Error with status code: 503",
         "Authentication required",
+        "Shutdown called.",
         /^Error loading edge\.fullstory\.com/,
       ],
       beforeSend(event) {
