@@ -1,4 +1,4 @@
-import { Popover, type PopoverProps } from "@mantine/core";
+import { Popover, type PopoverProps, RemoveScroll } from "@mantine/core";
 
 import EmojiPicker, { type EmojiPickerProps } from "./EmojiPicker";
 
@@ -38,14 +38,16 @@ const EmojiPopover: FC<EmojiPopoverProps> = ({
     >
       <Popover.Target>{children({ opened, open })}</Popover.Target>
       <Popover.Dropdown>
-        <EmojiPicker
-          className={classes.picker}
-          {...pickerProps}
-          onEmojiClick={(...args) => {
-            onEmojiClick(...args);
-            setOpened(false);
-          }}
-        />
+        <RemoveScroll>
+          <EmojiPicker
+            className={classes.picker}
+            {...pickerProps}
+            onEmojiClick={(...args) => {
+              onEmojiClick(...args);
+              setOpened(false);
+            }}
+          />
+        </RemoveScroll>
       </Popover.Dropdown>
     </Popover>
   );
