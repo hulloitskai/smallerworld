@@ -104,17 +104,16 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             </Button>
           </Menu.Target>
           <Menu.Dropdown style={{ pointerEvents: "auto" }}>
-            {post.type !== "follow_up" && (
-              <Menu.Item
-                leftSection={<FollowUpIcon />}
-                onClick={() => {
-                  setFollowUpOpened(true);
-                  onFollowUpDrawerModalOpened?.();
-                }}
-              >
-                follow-up
-              </Menu.Item>
-            )}
+            <Menu.Item
+              leftSection={<FollowUpIcon />}
+              disabled={post.type === "follow_up"}
+              onClick={() => {
+                setFollowUpOpened(true);
+                onFollowUpDrawerModalOpened?.();
+              }}
+            >
+              follow-up
+            </Menu.Item>
             <Menu.Item
               leftSection={<EditIcon />}
               onClick={() => {
