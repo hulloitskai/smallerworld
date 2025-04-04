@@ -368,6 +368,9 @@ class Post
     sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
     def build_image_blob(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
+    def build_quoted_post(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_author(*args, &blk); end
 
@@ -385,6 +388,12 @@ class Post
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
     def create_image_blob!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
+    def create_quoted_post(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
+    def create_quoted_post!(*args, &blk); end
 
     sig { returns(T.nilable(::ActiveStorage::Attachment)) }
     def image_attachment; end
@@ -412,6 +421,18 @@ class Post
     sig { params(value: T::Enumerable[::Notification]).void }
     def notifications=(value); end
 
+    sig { returns(T.nilable(::Post)) }
+    def quoted_post; end
+
+    sig { params(value: T.nilable(::Post)).void }
+    def quoted_post=(value); end
+
+    sig { returns(T::Boolean) }
+    def quoted_post_changed?; end
+
+    sig { returns(T::Boolean) }
+    def quoted_post_previously_changed?; end
+
     sig { returns(T::Array[T.untyped]) }
     def reaction_ids; end
 
@@ -435,6 +456,9 @@ class Post
     sig { returns(T.nilable(::ActiveStorage::Blob)) }
     def reload_image_blob; end
 
+    sig { returns(T.nilable(::Post)) }
+    def reload_quoted_post; end
+
     sig { returns(T::Array[T.untyped]) }
     def reply_receipt_ids; end
 
@@ -457,6 +481,9 @@ class Post
 
     sig { void }
     def reset_image_blob; end
+
+    sig { void }
+    def reset_quoted_post; end
   end
 
   module GeneratedAssociationRelationMethods
@@ -951,6 +978,51 @@ class Post
     sig { void }
     def pinned_until_will_change!; end
 
+    sig { returns(T.nilable(::String)) }
+    def quoted_post_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def quoted_post_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def quoted_post_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def quoted_post_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def quoted_post_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def quoted_post_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def quoted_post_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def quoted_post_id_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def quoted_post_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def quoted_post_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def quoted_post_id_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def quoted_post_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def quoted_post_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def quoted_post_id_was; end
+
+    sig { void }
+    def quoted_post_id_will_change!; end
+
     sig { void }
     def restore_author_id!; end
 
@@ -971,6 +1043,9 @@ class Post
 
     sig { void }
     def restore_pinned_until!; end
+
+    sig { void }
+    def restore_quoted_post_id!; end
 
     sig { void }
     def restore_title!; end
@@ -1025,6 +1100,12 @@ class Post
 
     sig { returns(T::Boolean) }
     def saved_change_to_pinned_until?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_quoted_post_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_quoted_post_id?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_title; end
@@ -1250,6 +1331,9 @@ class Post
 
     sig { returns(T::Boolean) }
     def will_save_change_to_pinned_until?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_quoted_post_id?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_title?; end

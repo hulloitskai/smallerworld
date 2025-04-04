@@ -5,6 +5,7 @@ export const POST_TYPE_TO_LABEL: Record<PostType, string> = {
   poem: "poem",
   invitation: "invitation",
   question: "question",
+  follow_up: "follow-up",
 };
 
 export const POST_VISIBILITY_TO_LABEL: Record<PostVisibility, string> = {

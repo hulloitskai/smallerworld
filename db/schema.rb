@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_04_041721) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_04_054201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -215,8 +215,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_041721) do
     t.datetime "updated_at", null: false
     t.string "visibility", null: false
     t.datetime "pinned_until", precision: nil
+    t.uuid "quoted_post_id"
     t.index ["author_id"], name: "index_posts_on_author_id"
     t.index ["pinned_until"], name: "index_posts_on_pinned_until"
+    t.index ["quoted_post_id"], name: "index_posts_on_quoted_post_id"
     t.index ["type"], name: "index_posts_on_type"
     t.index ["visibility"], name: "index_posts_on_visibility"
   end
@@ -281,6 +283,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_041721) do
   add_foreign_key "post_reactions", "posts"
   add_foreign_key "post_reply_receipts", "friends"
   add_foreign_key "post_reply_receipts", "posts"
+  add_foreign_key "posts", "posts", column: "quoted_post_id"
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "push_registrations", "push_subscriptions"
   add_foreign_key "sessions", "users"

@@ -194,7 +194,7 @@ self.addEventListener("notificationclick", event => {
               //
               // See: https://stackoverflow.com/questions/68949151/how-to-solve-service-worker-navigate-this-service-worker-is-not-the-clients-ac
               // return client.navigate(url);
-
+              //
               // So instead, use postMessage to trigger client-side navigation
               client.postMessage({ action: "navigate", url });
             }

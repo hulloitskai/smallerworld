@@ -53,6 +53,7 @@ class PostsController < ApplicationController
         image
         visibility
         pinned_until
+        quoted_post_id
       ]),
       ActionController::Parameters,
     )

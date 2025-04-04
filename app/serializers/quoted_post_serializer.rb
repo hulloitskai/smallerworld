@@ -1,7 +1,10 @@
 # typed: true
 # frozen_string_literal: true
 
-class PostSerializer < ApplicationSerializer
+class QuotedPostSerializer < ApplicationSerializer
+  # == Configuration
+  object_as :post
+
   # == Attributes
   identifier
   attributes :created_at,
@@ -9,12 +12,8 @@ class PostSerializer < ApplicationSerializer
              :body_html,
              :emoji,
              :pinned_until,
-             type: { type: "PostType" },
-             visibility: { type: "PostVisibility" },
-             snippet: { type: :string },
-             reply_snippet: { type: :string }
+             type: { type: "PostType" }
 
   # == Associations
   has_one :image_blob, as: :image, serializer: ImageSerializer, nullable: true
-  has_one :quoted_post, serializer: QuotedPostSerializer, nullable: true
 end

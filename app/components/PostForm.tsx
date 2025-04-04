@@ -17,17 +17,19 @@ import { type Post, type PostType } from "~/types";
 import EmojiPopover from "./EmojiPopover";
 import ImageInput from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
+import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostForm.module.css";
 import "@mantine/dates/styles.layer.css";
 
-type PostFormProps =
+export type PostFormProps =
   | {
       post: Post;
       onPostUpdated?: (post: Post) => void;
     }
   | {
       postType: PostType | null;
+      quotedPost?: Post;
       onPostCreated?: (post: Post) => void;
     };
 
@@ -45,11 +47,19 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   invitation:
     "i'm going to https://lu.ma/2323 tonight! pls come out if you're free :)",
   question: "liberty village food recs??",
+  follow_up: "um, actually...",
 };
 
 const PostForm: FC<PostFormProps> = props => {
-  const postType = "postType" in props ? props.postType : props.post.type;
+  const postType =
+    "postType" in props
+      ? props.postType
+      : "quotedPost" in props
+        ? "follow_up"
+        : props.post.type;
   const post = "post" in props ? props.post : null;
+  const quotedPost =
+    "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
 
   const titlePlaceholder = postType
     ? POST_TITLE_PLACEHOLDERS[postType]
@@ -111,6 +121,7 @@ const PostForm: FC<PostFormProps> = props => {
               type: postType,
               title: title || null,
               image: image_upload?.signedId ?? null,
+              quoted_post_id: quotedPost?.id ?? null,
             },
           }),
           transformErrors: ({ image, ...errors }) => ({
@@ -231,6 +242,7 @@ const PostForm: FC<PostFormProps> = props => {
           )}
           <Input.Wrapper error={errors.body_html}>
             <LazyPostEditor
+              {...getInputProps("body_html")}
               initialValue={initialValues?.body_html}
               placeholder={bodyPlaceholder}
               onEditorCreated={editor => {
@@ -242,24 +254,30 @@ const PostForm: FC<PostFormProps> = props => {
               }}
             />
           </Input.Wrapper>
-          {showImageInput || values.image_upload ? (
-            <ImageInput
-              {...getInputProps("image_upload")}
-              previewFit="contain"
-              h={140}
-            />
+          {quotedPost ? (
+            <QuotedPostCard post={quotedPost} />
           ) : (
-            <Button
-              color="gray"
-              size="compact-sm"
-              style={{ alignSelf: "center" }}
-              leftSection={<ImageIcon />}
-              onClick={() => {
-                setShowImageInput(true);
-              }}
-            >
-              attach an image
-            </Button>
+            <>
+              {showImageInput || values.image_upload ? (
+                <ImageInput
+                  {...getInputProps("image_upload")}
+                  previewFit="contain"
+                  h={140}
+                />
+              ) : (
+                <Button
+                  color="gray"
+                  size="compact-sm"
+                  style={{ alignSelf: "center" }}
+                  leftSection={<ImageIcon />}
+                  onClick={() => {
+                    setShowImageInput(true);
+                  }}
+                >
+                  attach an image
+                </Button>
+              )}
+            </>
           )}
           <Group gap="xs" align="start" justify="end" mt="xs">
             {postType === "invitation" && (

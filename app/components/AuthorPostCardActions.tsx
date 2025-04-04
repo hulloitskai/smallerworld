@@ -1,10 +1,14 @@
 import { useInViewport } from "@mantine/hooks";
+import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
+
+import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
+import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type Post, type PostReaction } from "~/types";
 
-import DeleteButton from "./DeleteButton";
+import DrawerModal from "./DrawerModal";
 import PostForm from "./PostForm";
 
 import classes from "./AuthorPostCardActions.module.css";
@@ -44,95 +48,133 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({ post }) => {
     [reactions],
   );
 
+  // == Delete post mutation
+  const { trigger: triggerDelete, mutating: deleting } = useRouteMutation(
+    routes.posts.destroy,
+    {
+      params: { id: post.id },
+      descriptor: "delete post",
+      onSuccess: () => {
+        void mutatePosts();
+      },
+    },
+  );
+
+  // == Follow-up drawer modal
+  const [followUpOpened, setFollowUpOpened] = useState(false);
+
   return (
-    <Group {...{ ref }} align="start" justify="space-between" gap={2}>
-      {!!notifiedFriends && (
-        <Badge
-          variant="transparent"
-          leftSection={<NotificationIcon />}
-          className={classes.notifiedBadge}
-        >
-          {notifiedFriends} notified
-        </Badge>
-      )}
-      <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
-        {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
+    <>
+      <Group {...{ ref }} align="start" justify="space-between" gap={2}>
+        {!!notifiedFriends && (
           <Badge
-            key={emoji}
             variant="transparent"
-            color="gray"
-            leftSection={emoji}
-            className={classes.reactionBadge}
+            leftSection={<NotificationIcon />}
+            className={classes.notifiedBadge}
           >
-            {reactions.length}
+            {notifiedFriends} notified
           </Badge>
-        ))}
+        )}
+        <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
+          {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
+            <Badge
+              key={emoji}
+              variant="transparent"
+              color="gray"
+              leftSection={emoji}
+              className={classes.reactionBadge}
+            >
+              {reactions.length}
+            </Badge>
+          ))}
+        </Group>
+        <Menu width={165}>
+          <Menu.Target>
+            <Button
+              variant="subtle"
+              size="compact-xs"
+              leftSection={<ActionsIcon />}
+              loading={deleting}
+            >
+              actions
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            {post.type !== "follow_up" && (
+              <Menu.Item
+                leftSection={<FollowUpIcon />}
+                onClick={() => {
+                  setFollowUpOpened(true);
+                }}
+              >
+                follow-up
+              </Menu.Item>
+            )}
+            <Menu.Item
+              leftSection={<EditIcon />}
+              onClick={() => {
+                openModal({
+                  title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
+                  size: "var(--container-size-xs)",
+                  children: (
+                    <PostForm
+                      {...{ post }}
+                      onPostUpdated={() => {
+                        closeAllModals();
+                      }}
+                    />
+                  ),
+                });
+              }}
+            >
+              edit post
+            </Menu.Item>
+            <Menu.Item
+              leftSection={<DeleteIcon />}
+              onClick={() => {
+                openConfirmModal({
+                  title: "really delete post?",
+                  children: <>you can't undo this action</>,
+                  cancelProps: { variant: "light", color: "gray" },
+                  groupProps: { gap: "xs" },
+                  labels: {
+                    confirm: "do it",
+                    cancel: "wait nvm",
+                  },
+                  styles: {
+                    header: {
+                      minHeight: 0,
+                      paddingBottom: 0,
+                    },
+                  },
+                  onConfirm: () => {
+                    void triggerDelete();
+                  },
+                });
+              }}
+            >
+              delete post
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       </Group>
-      <Group gap={2} style={{ flexShrink: 0 }}>
-        <EditPostButton {...{ post }} />
-        <DeletePostButton postId={post.id} />
-      </Group>
-    </Group>
+      <DrawerModal
+        title={<>re: {post.snippet}</>}
+        opened={followUpOpened}
+        onClose={() => {
+          setFollowUpOpened(false);
+        }}
+      >
+        <PostForm
+          postType="follow_up"
+          quotedPost={post}
+          onPostCreated={() => {
+            setFollowUpOpened(false);
+          }}
+        />
+      </DrawerModal>
+    </>
   );
 };
 
 export default AuthorPostCardActions;
-
-interface DeletePostButtonProps {
-  postId: string;
-}
-
-const DeletePostButton: FC<DeletePostButtonProps> = ({ postId }) => {
-  const { trigger, mutating } = useRouteMutation(routes.posts.destroy, {
-    params: { id: postId },
-    descriptor: "delete post",
-    onSuccess: () => {
-      void mutatePosts();
-    },
-  });
-
-  return (
-    <DeleteButton
-      className={classes.dullButton}
-      loading={mutating}
-      variant="subtle"
-      color="gray"
-      size="compact-xs"
-      onConfirm={() => {
-        void trigger();
-      }}
-    />
-  );
-};
-
-interface EditPostButtonProps {
-  post: Post;
-}
-
-const EditPostButton: FC<EditPostButtonProps> = ({ post }) => {
-  return (
-    <Button
-      className={classes.dullButton}
-      variant="subtle"
-      color="gray"
-      size="compact-xs"
-      leftSection={<EditIcon />}
-      onClick={() => {
-        openModal({
-          title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
-          size: "var(--container-size-xs)",
-          children: (
-            <PostForm
-              {...{ post }}
-              onPostUpdated={() => {
-                closeAllModals();
-              }}
-            />
-          ),
-        });
-      }}
-    >
-      edit
-    </Button>
-  );
-};

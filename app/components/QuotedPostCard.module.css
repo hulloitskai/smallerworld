@@ -1,0 +1,82 @@
+.card {
+  &[data-focus] {
+    border-color: var(--mantine-color-primary-outline);
+  }
+}
+
+.divider {
+  display: block;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3));
+}
+
+.footerSection {
+  :global(.mantine-Button-section) {
+    &[data-position="left"] {
+      margin-right: 4px;
+    }
+  }
+}
+
+.timestamp {
+  color: var(--mantine-color-dimmed);
+  text-transform: lowercase;
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 500;
+  font-family: var(--mantine-font-family-headings);
+
+  &[data-pinned] {
+    color: alpha(var(--mantine-color-primary-light-color), 0.8);
+  }
+}
+
+.contentSection {
+  position: relative;
+}
+
+.restrictedAlert {
+  padding: 8px 12px;
+  border-radius: var(--mantine-radius-xl);
+
+  @mixin dark {
+    --alert-color: var(--mantine-color-dark-1) !important;
+    --alert-bd: 1px solid var(--mantine-color-dark-2) !important;
+    --alert-bg: alpha(var(--mantine-color-black), 0.4) !important;
+  }
+
+  @mixin light {
+    --alert-bg: alpha(var(--mantine-color-white), 0.4) !important;
+    --alert-color: darken(var(--mantine-color-gray-6), 0.2) !important;
+  }
+
+  :global(.mantine-Alert-body) {
+    justify-content: center;
+  }
+
+  :global(.mantine-Alert-label) {
+    font-weight: 600;
+  }
+}
+
+.imageContainer {
+  margin-block: 8px;
+  align-self: center;
+}
+
+.image {
+  max-width: 240px;
+  max-height: 440px;
+  cursor: pointer;
+}
+
+.imageLightbox {
+  :global(.yarl__container) {
+    padding-top: var(--safe-area-inset-top, 0px);
+    padding-bottom: var(--safe-area-inset-bottom, 0px);
+  }
+
+  :global(.yarl__toolbar) {
+    top: var(--safe-area-inset-top, 0px);
+  }
+}

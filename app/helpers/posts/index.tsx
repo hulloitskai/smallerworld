@@ -8,6 +8,7 @@ import useSWRInfinite, {
 } from "swr/infinite";
 
 import JournalEntryIcon from "~icons/basil/book-solid";
+import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import InvitationIcon from "~icons/heroicons/envelope-open-20-solid";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
@@ -44,6 +45,7 @@ export const POST_TYPE_TO_ICON: Record<
   poem: PoemIcon,
   invitation: InvitationIcon,
   question: QuestionIcon,
+  follow_up: FollowUpIcon,
 };
 
 export const POST_VISIBILITY_TO_ICON: Record<

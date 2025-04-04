@@ -2,43 +2,23 @@ import {
   AspectRatio,
   type BoxProps,
   Image,
-  Overlay,
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
-import { type ReactNode } from "react";
 import Lightbox from "yet-another-react-lightbox";
 
-import LockIcon from "~icons/heroicons/lock-closed-20-solid";
-
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Image as ImageType, type Post } from "~/types";
+import { type Image as ImageType, type QuotedPost } from "~/types";
 
-import QuotedPostCard from "./QuotedPostCard";
-
-import classes from "./PostCard.module.css";
+import classes from "./QuotedPostCard.module.css";
 import "yet-another-react-lightbox/styles.css";
 
-export interface PostCardProps extends BoxProps {
-  post: Post;
-  actions: ReactNode;
-  blurContent?: boolean;
-  focus?: boolean;
+export interface QuotedPostCardProps extends BoxProps {
+  post: QuotedPost;
 }
 
-const PostCard: FC<PostCardProps> = ({
-  post,
-  actions,
-  blurContent,
-  focus,
-  ...otherProps
-}) => {
+const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (focus && cardRef.current) {
-      cardRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [focus]);
   const pinnedUntil = useMemo(() => {
     if (post.pinned_until) {
       return DateTime.fromISO(post.pinned_until);
@@ -48,10 +28,9 @@ const PostCard: FC<PostCardProps> = ({
   return (
     <Card
       ref={cardRef}
-      className={cn("PostCard", classes.card)}
+      className={cn("QuotedPostCard", classes.card)}
       withBorder
       shadow="sm"
-      mod={{ focus, "post-visibility": post.visibility }}
       {...otherProps}
     >
       <Card.Section inheritPadding pt="xs" pb={10}>
@@ -90,45 +69,9 @@ const PostCard: FC<PostCardProps> = ({
               {post.created_at}
             </Time>
           )}
-          {post.visibility === "public" && (
-            <Tooltip
-              label="this post is publicly visible"
-              position="top-end"
-              arrowOffset={16}
-            >
-              <Box>
-                <Box
-                  component={PublicIcon}
-                  fz={10.5}
-                  c="primary"
-                  display="block"
-                />
-              </Box>
-            </Tooltip>
-          )}
-          {post.visibility === "only_me" && (
-            <Tooltip
-              label="this post is visible only to you"
-              position="top-end"
-              arrowOffset={16}
-            >
-              <Box>
-                <Box
-                  component={LockIcon}
-                  fz={10.5}
-                  c="primary"
-                  display="block"
-                />
-              </Box>
-            </Tooltip>
-          )}
         </Group>
       </Card.Section>
-      <Card.Section
-        className={classes.contentSection}
-        inheritPadding
-        mod={{ "blur-content": blurContent }}
-      >
+      <Card.Section className={classes.contentSection} inheritPadding pb="xs">
         <Stack gap={6}>
           {!!post.title && (
             <Title order={3} size="h4">
@@ -139,37 +82,13 @@ const PostCard: FC<PostCardProps> = ({
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
           </TypographyStylesProvider>
           {post.image && <PostImage image={post.image} />}
-          {post.quoted_post && (
-            <QuotedPostCard post={post.quoted_post} mt={8} />
-          )}
         </Stack>
-        {blurContent && (
-          <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
-            <Center h="100%">
-              <Alert
-                variant="outline"
-                color="gray"
-                icon={<LockIcon />}
-                title="visible only to invited friends"
-                className={classes.restrictedAlert}
-              />
-            </Center>
-          </Overlay>
-        )}
-      </Card.Section>
-      <Card.Section
-        inheritPadding
-        pt="xs"
-        py="sm"
-        className={classes.footerSection}
-      >
-        {actions}
       </Card.Section>
     </Card>
   );
 };
 
-export default PostCard;
+export default QuotedPostCard;
 
 interface PostImageProps extends BoxProps {
   image: ImageType;
