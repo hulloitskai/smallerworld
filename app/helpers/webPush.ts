@@ -91,6 +91,7 @@ export const useLookupPushRegistration = ({
           // This prevents the route from being called
           params: null,
         }),
+    revalidateOnFocus: false,
   });
   const { registration } = data ?? {};
   return subscription === null ? subscription : registration;

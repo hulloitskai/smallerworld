@@ -29,6 +29,7 @@ const PostEditor: FC<PostEditorProps> = ({
   contentEditableMinHeight,
   ...otherProps
 }) => {
+  const [html, setHtml] = useState(initialValue);
   const editor = useEditor(
     {
       extensions: [
@@ -43,14 +44,18 @@ const PostEditor: FC<PostEditorProps> = ({
       content: initialValue,
       autofocus: true,
       onCreate: ({ editor }) => {
+        if (!!html && editor.getHTML() !== html) {
+          editor.commands.setContent(html);
+        }
         onEditorCreated?.(editor);
       },
       onUpdate: props => {
+        setHtml(props.editor.getHTML());
         onUpdate?.(props);
         onChange?.(props.editor.getHTML());
       },
     },
-    [placeholder, initialValue],
+    [initialValue, placeholder],
   );
 
   return (

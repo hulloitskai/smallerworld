@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_03_214211) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_04_041721) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -187,15 +187,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_214211) do
     t.index ["verified_at"], name: "index_phone_verification_requests_on_verified_at"
   end
 
-  create_table "post_alerts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "post_id", null: false
-    t.datetime "scheduled_for", precision: nil
-    t.text "message", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["post_id"], name: "index_post_alerts_on_post_id"
-  end
-
   create_table "post_reactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "post_id", null: false
     t.string "emoji", null: false
@@ -286,7 +277,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_03_214211) do
   add_foreign_key "friends", "join_requests"
   add_foreign_key "friends", "users"
   add_foreign_key "join_requests", "users"
-  add_foreign_key "post_alerts", "posts"
   add_foreign_key "post_reactions", "friends"
   add_foreign_key "post_reactions", "posts"
   add_foreign_key "post_reply_receipts", "friends"

@@ -40,6 +40,9 @@ module GeneratedPathHelpersModule
   def good_job_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def home_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -217,7 +220,7 @@ module GeneratedPathHelpersModule
   def user_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def visits_path(*args); end
+  def visit_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_friends_path(*args); end

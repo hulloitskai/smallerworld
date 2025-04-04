@@ -158,14 +158,14 @@ const DrawerModal: FC<DrawerModalProps> = ({
         </VaulDrawer.Portal>
       </VaulDrawer.Root>
       <Modal
-        size="var(--container-size-xs)"
-        {...{ title }}
         classNames={{
           content: cn(contentClassName, classes.modalContent),
           header: classes.modalHeader,
         }}
+        size="var(--container-size-xs)"
         scrollAreaComponent={ModalScrollArea}
         closeOnEscape={isEmpty(openModals)}
+        {...{ title }}
         opened={isMobileSize === false && opened}
         onClose={() => {
           if (isMobileSize === false && opened) {

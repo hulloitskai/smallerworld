@@ -231,7 +231,6 @@ const PostForm: FC<PostFormProps> = props => {
           )}
           <Input.Wrapper error={errors.body_html}>
             <LazyPostEditor
-              {...getInputProps("body_html")}
               initialValue={initialValues?.body_html}
               placeholder={bodyPlaceholder}
               onEditorCreated={editor => {

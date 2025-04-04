@@ -40,6 +40,9 @@ module GeneratedUrlHelpersModule
   def good_job_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def home_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -217,7 +220,7 @@ module GeneratedUrlHelpersModule
   def user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def visits_url(*args); end
+  def visit_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_friends_url(*args); end
