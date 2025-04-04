@@ -76,7 +76,6 @@ class Post < ApplicationRecord
   belongs_to :quoted_post, class_name: "Post", optional: true
   has_many :reactions, class_name: "PostReaction", dependent: :destroy
   has_many :reply_receipts, class_name: "PostReplyReceipt", dependent: :destroy
-  has_many :alerts, class_name: "PostAlert", dependent: :destroy
 
   sig { returns(User) }
   def author!

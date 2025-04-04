@@ -44,6 +44,7 @@ const PostEditor: FC<PostEditorProps> = ({
       content: initialValue,
       autofocus: true,
       onCreate: ({ editor }) => {
+        editor.commands.focus("end");
         if (!!html && editor.getHTML() !== html) {
           editor.commands.setContent(html);
         }

@@ -15,11 +15,11 @@
 }
 
 .repliersCount {
-  color: var(--mantine-color-body);
+  color: light-dark(var(--mantine-color-white), var(--mantine-color-black));
   position: absolute;
   inset: 0;
   font-family: var(--mantine-font-family-headings);
-  padding-bottom: 1px;
+  padding-bottom: 1.5px;
 }
 
 .replyButton {

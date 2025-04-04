@@ -1,4 +1,6 @@
 .card {
+  box-shadow: none;
+
   &[data-focus] {
     border-color: var(--mantine-color-primary-outline);
   }

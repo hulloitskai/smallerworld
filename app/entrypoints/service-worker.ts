@@ -45,18 +45,19 @@ const pathname = (url: string): string => {
   return u.pathname;
 };
 
-const enableNavigationPreload = async () => {
-  if (self.registration.navigationPreload) {
-    // Enable navigation preloads!
-    await self.registration.navigationPreload.enable();
-  }
-};
+// const enableNavigationPreload = async () => {
+//   if (self.registration.navigationPreload) {
+//     // Enable navigation preloads!
+//     await self.registration.navigationPreload.enable();
+//   }
+// };
 
 // == Claim clients
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    Promise.all([self.clients.claim(), enableNavigationPreload()]),
-  );
+  event.waitUntil(self.clients.claim());
+  // event.waitUntil(
+  //   Promise.all([self.clients.claim(), enableNavigationPreload()]),
+  // );
 });
 
 // == Device metadata server
@@ -68,7 +69,7 @@ self.addEventListener("fetch", event => {
   // == Device metadata server
   if (pathname(request.url) === DEVICE_ENDPOINT) {
     console.debug("Device metadata request intercepted", request.url);
-    return event.respondWith(
+    event.respondWith(
       caches.open(DEVICE_ENDPOINT).then(cache =>
         cache.match(request).then(cachedResponse => {
           if (cachedResponse) {
@@ -82,16 +83,17 @@ self.addEventListener("fetch", event => {
         }),
       ),
     );
+    return;
   }
 
-  // == Respond to preloads.
-  event.waitUntil(
-    event.preloadResponse.then((response: Response) => {
-      if (response) {
-        return event.respondWith(response);
-      }
-    }),
-  );
+  // // == Respond to preloads.
+  // event.waitUntil(
+  //   event.preloadResponse.then((response: Response) => {
+  //     if (response) {
+  //       event.respondWith(response);
+  //     }
+  //   }),
+  // );
 });
 
 // == Push handlers

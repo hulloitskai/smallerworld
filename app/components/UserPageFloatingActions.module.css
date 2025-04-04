@@ -50,10 +50,11 @@
 }
 
 .pinnedPostsButtonBadge {
-  --badge-size: rem(20px);
+  --badge-size: rem(28px);
 
   font-family: var(--mantine-font-family-headings);
   font-weight: 700;
+  font-size: var(--mantine-font-size-lg);
   border-radius: var(--mantine-radius-xl);
   width: var(--badge-size);
   height: var(--badge-size);

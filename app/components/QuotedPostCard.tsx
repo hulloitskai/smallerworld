@@ -30,7 +30,6 @@ const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
       ref={cardRef}
       className={cn("QuotedPostCard", classes.card)}
       withBorder
-      shadow="sm"
       {...otherProps}
     >
       <Card.Section inheritPadding pt="xs" pb={10}>

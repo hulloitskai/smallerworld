@@ -12,6 +12,7 @@ import {
   POST_VISIBILITY_TO_ICON,
   POST_VISIBILITY_TO_LABEL,
 } from "~/helpers/posts";
+import { type PostFormValues, useNewPostDraft } from "~/helpers/posts/form";
 import { type Post, type PostType } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
@@ -51,12 +52,7 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
 };
 
 const PostForm: FC<PostFormProps> = props => {
-  const postType =
-    "postType" in props
-      ? props.postType
-      : "quotedPost" in props
-        ? "follow_up"
-        : props.post.type;
+  const postType = "postType" in props ? props.postType : props.post.type;
   const post = "post" in props ? props.post : null;
   const quotedPost =
     "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
@@ -71,19 +67,22 @@ const PostForm: FC<PostFormProps> = props => {
   // == Editor
   const editorRef = useRef<Editor | null>();
 
+  // == New post draft
+  const [newPostDraft, saveNewPostDraft, clearNewPostDraft] = useNewPostDraft();
+
   // == Form
-  const initialValues = useMemo(
-    () => ({
-      title: post?.title ?? "",
-      body_html: post?.body_html ?? "",
-      emoji: post?.emoji ?? "",
-      image_upload: post?.image ? { signedId: post.image.signed_id } : null,
-      visibility: post?.visibility ?? "friends",
-      pinned_until: post?.pinned_until ?? "",
-    }),
-    [post],
-  );
-  type FormValues = typeof initialValues;
+  const initialValues = useMemo<PostFormValues>(() => {
+    const { title, body_html, emoji, image, visibility, pinned_until } =
+      post ?? {};
+    return {
+      title: title ?? "",
+      body_html: body_html ?? "",
+      emoji: emoji ?? "",
+      image_upload: image ? { signedId: image.signed_id } : null,
+      visibility: visibility ?? "friends",
+      pinned_until: pinned_until ?? "",
+    };
+  }, [post]);
   const {
     setFieldValue,
     getInputProps,
@@ -92,12 +91,13 @@ const PostForm: FC<PostFormProps> = props => {
     submitting,
     reset,
     setInitialValues,
+    setValues,
     isDirty,
     errors,
   } = useForm<
     { post: Post },
-    FormValues,
-    (values: FormValues) => { post: Record<string, any> }
+    PostFormValues,
+    (values: PostFormValues) => { post: Record<string, any> }
   >({
     ...(post
       ? {
@@ -115,15 +115,20 @@ const PostForm: FC<PostFormProps> = props => {
       : {
           action: routes.posts.create,
           descriptor: "create post",
-          transformValues: ({ title, image_upload, ...values }) => ({
-            post: {
-              ...values,
-              type: postType,
-              title: title || null,
-              image: image_upload?.signedId ?? null,
-              quoted_post_id: quotedPost?.id ?? null,
-            },
-          }),
+          transformValues: ({ title, image_upload, ...values }) => {
+            invariant(postType, "Missing post type");
+            return {
+              post: {
+                ...values,
+                type: postType,
+                title: POST_TYPES_WITH_TITLE.includes(postType)
+                  ? title || null
+                  : null,
+                image: image_upload?.signedId ?? null,
+                quoted_post_id: quotedPost?.id ?? null,
+              },
+            };
+          },
           transformErrors: ({ image, ...errors }) => ({
             ...errors,
             image_upload: image,
@@ -134,6 +139,7 @@ const PostForm: FC<PostFormProps> = props => {
       if (!("post" in props)) {
         reset();
         editorRef.current?.commands.clearContent();
+        clearNewPostDraft();
       }
       void mutatePosts();
       void mutateRoute(routes.posts.pinned);
@@ -165,8 +171,29 @@ const PostForm: FC<PostFormProps> = props => {
     }
   }, [values.pinned_until]);
 
-  const [showImageInput, setShowImageInput] = useState(false);
+  // == Body text empty state
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
+
+  // == Sync new post draft with form
+  useEffect(() => {
+    if (post || !postType || postType === "follow_up") {
+      return;
+    }
+    if (newPostDraft?.postType === postType) {
+      const { values } = newPostDraft;
+      setValues(values);
+      return () => {
+        reset();
+      };
+    }
+  }, [newPostDraft?.postType, postType]); // eslint-disable-line react-hooks/exhaustive-deps
+  useDidUpdate(() => {
+    if (!post && !!postType && postType !== "follow_up" && isDirty()) {
+      saveNewPostDraft({ postType, values });
+    }
+  }, [values]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const [showImageInput, setShowImageInput] = useState(false);
   return (
     <form onSubmit={submit}>
       <Group gap="xs" align="start" justify="center">
@@ -248,6 +275,13 @@ const PostForm: FC<PostFormProps> = props => {
               onEditorCreated={editor => {
                 editorRef.current = editor;
                 setBodyTextEmpty(editor.getText().trim() === "");
+                if (!post && postType && postType !== "follow_up") {
+                  if (newPostDraft?.postType === postType) {
+                    editor.commands.setContent(newPostDraft.values.body_html);
+                  } else {
+                    editor.commands.clearContent();
+                  }
+                }
               }}
               onUpdate={({ editor }) => {
                 setBodyTextEmpty(editor.getText().trim() === "");

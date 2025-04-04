@@ -1,5 +1,7 @@
 import { Affix, Indicator } from "@mantine/core";
 
+import DraftIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
+import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-solid";
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
@@ -8,6 +10,7 @@ import {
   POST_TYPE_TO_LABEL,
   POST_TYPES,
 } from "~/helpers/posts";
+import { useNewPostDraft } from "~/helpers/posts/form";
 import { useWebPush } from "~/helpers/webPush";
 import { type Post, type PostType } from "~/types";
 
@@ -35,6 +38,9 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   // == Pinned posts drawer modal
   const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
     useState(false);
+
+  // == New post draft
+  const [newPostDraft] = useNewPostDraft();
 
   // == Affix
   const affixInset = "var(--mantine-spacing-xl)";
@@ -73,15 +79,24 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                 }}
               >
                 <Menu.Target>
-                  <Button
-                    variant="filled"
-                    radius="xl"
-                    className={classes.menuButton}
-                    leftSection={<Box component={NewIcon} fz="lg" />}
+                  <Indicator
+                    className={classes.newPostDraftIndicator}
+                    color="white"
+                    label={<DraftIcon />}
+                    size={16}
+                    offset={4}
+                    disabled={!newPostDraft}
                     {...{ style }}
                   >
-                    share with your friends
-                  </Button>
+                    <Button
+                      variant="filled"
+                      radius="xl"
+                      className={classes.menuButton}
+                      leftSection={<Box component={NewIcon} fz="lg" />}
+                    >
+                      share with your friends
+                    </Button>
+                  </Indicator>
                 </Menu.Target>
                 <Menu.Dropdown style={{ pointerEvents: "auto" }}>
                   {POST_TYPES.map(type => (
@@ -90,6 +105,11 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                       leftSection={
                         <Box component={POST_TYPE_TO_ICON[type]} fz="md" />
                       }
+                      {...(type === newPostDraft?.postType && {
+                        rightSection: (
+                          <Box component={DraftCircleIcon} fz="md" c="white" />
+                        ),
+                      })}
                       onClick={() => {
                         setPostType(type);
                       }}
@@ -130,7 +150,16 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
         </Group>
       </Affix>
       <DrawerModal
-        title={<>new {postType ? POST_TYPE_TO_LABEL[postType] : "post"}</>}
+        title={
+          <>
+            new{" "}
+            {postType ? (
+              POST_TYPE_TO_LABEL[postType]
+            ) : (
+              <Skeleton>placeholder</Skeleton>
+            )}
+          </>
+        }
         opened={!!postType}
         onClose={() => {
           setPostType(null);
