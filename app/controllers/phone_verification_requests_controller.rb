@@ -15,6 +15,12 @@ class PhoneVerificationRequestsController < ApplicationController
       .expect(verification_request: [:phone_number])
     verification_request = PhoneVerificationRequest
       .new(verification_request_params)
+    with_log_tags do
+      logger.info(
+        "Sending verification code #{verification_request.verification_code} " \
+          "to #{verification_request.phone_number}",
+      )
+    end
     if verification_request.save
       if !Rails.env.production? && !TwilioService.enabled?
         render(json: {
