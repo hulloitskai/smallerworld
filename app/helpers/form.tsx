@@ -14,6 +14,7 @@ import {
   type FormErrors,
   type LooseKeys,
 } from "@mantine/form/lib/types";
+import { useShallowEffect } from "@mantine/hooks";
 import { type FormEvent, startTransition } from "react";
 import scrollIntoView from "scroll-into-view";
 import { toast } from "sonner";

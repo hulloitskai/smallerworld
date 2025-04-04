@@ -96,7 +96,6 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "useElementSize",
       "useMediaQuery",
       "useMounted",
-      "useShallowEffect",
       "usePrevious",
     ],
     "@mantine/modals": ["openModal", "closeAllModals"],

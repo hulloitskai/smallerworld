@@ -7,7 +7,7 @@ const FullStoryTracking: FC = () => {
   } = usePage();
 
   // == Current user tracking
-  useShallowEffect(() => {
+  useEffect(() => {
     if (isFsInitialized()) {
       if (currentFriend) {
         const { name, emoji } = currentFriend;

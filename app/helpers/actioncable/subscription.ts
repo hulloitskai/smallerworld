@@ -1,4 +1,4 @@
-import { useIsFirstRender, useNetwork } from "@mantine/hooks";
+import { useIsFirstRender, useNetwork, useShallowEffect } from "@mantine/hooks";
 import { type Subscription } from "@rails/actioncable";
 import { type SWRConfiguration } from "swr";
 import useSWRSubscription, {

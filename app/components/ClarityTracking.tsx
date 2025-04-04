@@ -7,7 +7,7 @@ const ClarityTracking: FC = () => {
   } = usePage();
 
   // == Current user tracking
-  useShallowEffect(() => {
+  useEffect(() => {
     if (currentUser) {
       const { id, name } = currentUser;
       if ("clarity" in window) {

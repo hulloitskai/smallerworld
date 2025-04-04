@@ -145,7 +145,6 @@ declare global {
   const useRef: typeof import('react')['useRef']
   const useRouteMutation: typeof import('~/helpers/routes/swr')['useRouteMutation']
   const useRouteSWR: typeof import('~/helpers/routes/swr')['useRouteSWR']
-  const useShallowEffect: typeof import('@mantine/hooks')['useShallowEffect']
   const useState: typeof import('react')['useState']
   const useSubscription: typeof import('~/helpers/actioncable/subscription')['useSubscription']
   const useUserTheme: typeof import('~/helpers/userThemes')['useUserTheme']
