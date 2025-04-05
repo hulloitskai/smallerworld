@@ -27,7 +27,7 @@ const AppHeader = forwardRef<HTMLDivElement, AppHeaderProps>(
               href={logoHref ?? routes.start.redirect.path()}
               variant="subtle"
               size="compact-md"
-              leftSection={<Image src={logoSrc} h={24} ml={6} mr={2} />}
+              leftSection={<Image src={logoSrc} h={24} />}
               className={classes.logoButton}
             >
               smaller world
