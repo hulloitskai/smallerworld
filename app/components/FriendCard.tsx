@@ -5,9 +5,9 @@ import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
 import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
-import { type Friend, type FriendView, type User } from "~/types";
+import { type FriendView, type User } from "~/types";
 
-import EmojiPopover from "./EmojiPopover";
+import EditFriendForm from "./EditFriendForm";
 
 import classes from "./FriendCard.module.css";
 
@@ -89,9 +89,9 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
                 leftSection={<EditIcon />}
                 onClick={() => {
                   openModal({
-                    title: "edit friend name",
+                    title: "change friend name",
                     children: (
-                      <EditFriendModalBody
+                      <EditFriendForm
                         {...{ friend }}
                         onFriendUpdated={() => {
                           closeAllModals();
@@ -139,92 +139,3 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
 };
 
 export default FriendCard;
-
-interface EditFriendModalBodyProps {
-  friend: Friend;
-  onFriendUpdated?: (friend: Friend) => void;
-}
-
-const EditFriendModalBody: FC<EditFriendModalBodyProps> = ({
-  friend,
-  onFriendUpdated,
-}) => {
-  const initialValues = useMemo(
-    () => ({
-      emoji: friend.emoji,
-      name: friend.name,
-    }),
-    [friend],
-  );
-  const {
-    submit,
-    values,
-    submitting,
-    getInputProps,
-    setFieldValue,
-    setInitialValues,
-    reset,
-  } = useForm({
-    action: routes.friends.update,
-    params: { id: friend.id },
-    descriptor: "update friend",
-    initialValues,
-    onSuccess: ({ friend }: { friend: Friend }) => {
-      void mutateRoute(routes.friends.index);
-      onFriendUpdated?.(friend);
-    },
-  });
-  useDidUpdate(() => {
-    setInitialValues(initialValues);
-    reset();
-  }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <form onSubmit={submit}>
-      <Stack gap="xs">
-        <Group gap="xs" align="start">
-          <EmojiPopover
-            onEmojiClick={({ emoji }) => {
-              setFieldValue("emoji", emoji);
-            }}
-          >
-            {({ open, opened }) => (
-              <ActionIcon
-                className={classes.emojiButton}
-                variant="default"
-                size={36}
-                mod={{ opened }}
-                onClick={() => {
-                  if (values.emoji) {
-                    setFieldValue("emoji", "");
-                  } else {
-                    open();
-                  }
-                }}
-              >
-                {values.emoji ? (
-                  <Text size="xl">{values.emoji}</Text>
-                ) : (
-                  <Box component={EmojiIcon} c="dimmed" />
-                )}
-              </ActionIcon>
-            )}
-          </EmojiPopover>
-          <TextInput
-            {...getInputProps("name")}
-            placeholder={friend.name}
-            style={{ flexGrow: 1 }}
-          />
-        </Group>
-        <Button
-          type="submit"
-          loading={submitting}
-          leftSection={<SaveIcon />}
-          style={{ alignSelf: "center" }}
-        >
-          save
-        </Button>
-      </Stack>
-    </form>
-  );
-};
