@@ -24,6 +24,7 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class JoinRequest < ApplicationRecord
+  include NormalizesPhoneNumber
   include Noticeable
 
   # == Associations
@@ -34,6 +35,10 @@ class JoinRequest < ApplicationRecord
   def user!
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
+
+  # == Normalizations
+  normalizes :name, with: ->(name) { name.strip }
+  normalizes_phone_number :phone_number
 
   # == Validations
   validates :name, :phone_number, presence: true
