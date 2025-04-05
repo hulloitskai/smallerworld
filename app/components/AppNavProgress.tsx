@@ -21,7 +21,7 @@ const AppNavProgress: FC<AppNavProgressProps> = () => {
       removeFinishListener();
     };
   }, []);
-  return <NavigationProgress className={classes.root} size={1.5} />;
+  return <NavigationProgress className={classes.progress} size={1.5} />;
 };
 
 export default AppNavProgress;
