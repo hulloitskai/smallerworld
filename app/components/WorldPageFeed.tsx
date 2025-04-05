@@ -14,8 +14,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = () => {
   const { post_id } = useQueryParams();
 
   // == Load posts
-  const { posts, setSize, hasMorePosts } = usePosts();
-  const [loadingMore, setLoadingMore] = useState(false);
+  const { posts, setSize, hasMorePosts, isValidating } = usePosts();
 
   return (
     <Stack>
@@ -57,13 +56,10 @@ const WorldPageFeed: FC<WorldPageFeedProps> = () => {
             ))}
             {hasMorePosts && (
               <LoadMoreButton
-                loading={loadingMore}
+                loading={isValidating}
                 style={{ alignSelf: "center" }}
                 onVisible={() => {
-                  setLoadingMore(true);
-                  void setSize(size => size + 1).finally(() => {
-                    setLoadingMore(false);
-                  });
+                  void setSize(size => size + 1);
                 }}
               />
             )}

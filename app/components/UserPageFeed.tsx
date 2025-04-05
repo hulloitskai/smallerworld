@@ -15,8 +15,9 @@ const UserPageFeed: FC<UserPageFeedProps> = ({ user, replyPhoneNumber }) => {
   const { post_id } = useQueryParams();
 
   // == Load posts
-  const { posts, hasMorePosts, setSize } = useUserPagePosts(user.id);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const { posts, hasMorePosts, setSize, isValidating } = useUserPagePosts(
+    user.id,
+  );
 
   return (
     <Stack>
@@ -46,13 +47,10 @@ const UserPageFeed: FC<UserPageFeedProps> = ({ user, replyPhoneNumber }) => {
             ))}
             {hasMorePosts && (
               <LoadMoreButton
-                loading={loadingMore}
+                loading={isValidating}
                 style={{ alignSelf: "center" }}
                 onVisible={() => {
-                  setLoadingMore(true);
-                  void setSize(size => size + 1).finally(() => {
-                    setLoadingMore(false);
-                  });
+                  void setSize(size => size + 1);
                 }}
               />
             )}
