@@ -41,6 +41,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
           src={pageIcon?.src ?? logoSrc}
           srcSet={pageIcon?.src_set}
           className={classes.appIcon}
+          mod={{ "with-padding": !pageIcon }}
         />
         <Text className={classes.appLabel}>{pageName || "(your name)"}</Text>
         <Text className={classes.yourPageLabel}>{arrowLabel}</Text>

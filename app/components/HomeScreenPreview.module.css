@@ -22,6 +22,10 @@
   height: var(--hp-icon-size);
   object-fit: cover;
   border-radius: calc(var(--hp-icon-size) / var(--hp-icon-radius-ratio));
+
+  &[data-with-padding] {
+    padding: 6px;
+  }
 }
 
 .appLabel {
