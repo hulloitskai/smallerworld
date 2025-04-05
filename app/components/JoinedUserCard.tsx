@@ -56,7 +56,7 @@ const JoinedUserCard: FC<JoinedUserCardProps> = ({
             }),
           })}
           target="_blank"
-          leftSection={<SmallerWorldIcon />}
+          // leftSection={<SmallerWorldIcon />}
         >
           visit world
         </Button>

@@ -63,7 +63,6 @@ declare global {
   const SignInIcon: typeof import('~/components/icons')['SignInIcon']
   const SignOutIcon: typeof import('~/components/icons')['SignOutIcon']
   const Skeleton: typeof import('@mantine/core')['Skeleton']
-  const SmallerWorldIcon: typeof import('~/components/icons')['SmallerWorldIcon']
   const Space: typeof import('@mantine/core')['Space']
   const Stack: typeof import('@mantine/core')['Stack']
   const SuccessIcon: typeof import('~/components/icons')['SuccessIcon']

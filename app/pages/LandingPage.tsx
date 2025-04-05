@@ -1,7 +1,8 @@
-import { Overlay, Text } from "@mantine/core";
+import { Image, Overlay, Text } from "@mantine/core";
 
 import PlayIcon from "~icons/heroicons/play-20-solid";
 
+import logoSrc from "~/assets/images/logo.png";
 import demoVideoSrc from "~/assets/videos/demo.mp4";
 
 import AppLayout from "~/components/AppLayout";
@@ -33,7 +34,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
               component={Link}
               href={routes.world.show.path()}
               variant="filled"
-              leftSection={<SmallerWorldIcon />}
+              leftSection={<Image src={logoSrc} h={24} />}
               style={{ flexShrink: 0 }}
             >
               your world
@@ -83,13 +84,17 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         )}
       </Box>
       <Card withBorder>
-        <Stack gap={6}>
-          <Stack align="center" gap={4}>
-            <Box component={SmallerWorldIcon} fz="xl" />
-            <Title order={2} size="h3" ta="center">
-              how it works
-            </Title>
-          </Stack>
+        <Stack gap={8}>
+          <Center
+            p={8}
+            bg="var(--mantine-color-white)"
+            style={{ borderRadius: 32, alignSelf: "center" }}
+          >
+            <Image src={logoSrc} w={44} h={44} />
+          </Center>
+          <Title order={2} size="h3" ta="center">
+            how it works
+          </Title>
           <List type="ordered" className={classes.list}>
             <List.Item>set up your page and custom home screen icon</List.Item>
             <List.Item>

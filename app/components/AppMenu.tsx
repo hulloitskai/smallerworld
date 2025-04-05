@@ -1,7 +1,9 @@
 import { type InertiaLinkProps } from "@inertiajs/react";
-import { Loader, type MenuItemProps, Text } from "@mantine/core";
+import { Image, Loader, type MenuItemProps, Text } from "@mantine/core";
 
 import MenuIcon from "~icons/heroicons/bars-3-20-solid";
+
+import logoSrc from "~/assets/images/logo.png";
 
 import { useContact } from "~/helpers/contact";
 
@@ -56,7 +58,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
           <>
             <MenuLink
               href={routes.world.show.path()}
-              leftSection={<SmallerWorldIcon />}
+              leftSection={<Image src={logoSrc} />}
             >
               your world
             </MenuLink>

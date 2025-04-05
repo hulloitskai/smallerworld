@@ -1,4 +1,6 @@
-import { AppShell, type AppShellHeaderProps } from "@mantine/core";
+import { AppShell, type AppShellHeaderProps, Image } from "@mantine/core";
+
+import logoSrc from "~/assets/images/logo.png";
 
 import AppMenu from "./AppMenu";
 
@@ -25,7 +27,7 @@ const AppHeader = forwardRef<HTMLDivElement, AppHeaderProps>(
               href={logoHref ?? routes.start.redirect.path()}
               variant="subtle"
               size="compact-md"
-              leftSection={<SmallerWorldIcon />}
+              leftSection={<Image src={logoSrc} h={24} ml={6} mr={2} />}
               className={classes.logoButton}
             >
               smaller world

@@ -54,10 +54,7 @@ const pathname = (url: string): string => {
 
 // == Claim clients
 self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
-  // event.waitUntil(
-  //   Promise.all([self.clients.claim(), enableNavigationPreload()]),
-  // );
+  event.waitUntil(self.skipWaiting().then(() => self.clients.claim()));
 });
 
 // == Device metadata server

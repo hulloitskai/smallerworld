@@ -3,6 +3,8 @@ import { useDocumentVisibility } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { DateTime } from "luxon";
 
+import logoSrc from "~/assets/images/logo.png";
+
 import AppLayout from "~/components/AppLayout";
 import UserPageDialogStateProvider from "~/components/UserPageDialogStateProvider";
 import UserPageFeed from "~/components/UserPageFeed";
@@ -165,8 +167,8 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           </Stack>
           <Popover>
             <Popover.Target>
-              <ActionIcon pos="absolute" top={-6} right={0}>
-                <SmallerWorldIcon />
+              <ActionIcon pos="absolute" top={0} right={0} size="lg">
+                <Image src={logoSrc} h={30} />
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>

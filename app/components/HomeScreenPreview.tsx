@@ -2,7 +2,7 @@ import { getRadius, Image, type MantineRadius, Text } from "@mantine/core";
 import { type ReactNode } from "react";
 
 import homeScreenSrc from "~/assets/images/home-screen.png";
-import logoPlaceholderSrc from "~/assets/images/logo-placeholder.jpg";
+import logoSrc from "~/assets/images/logo.png";
 
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 
@@ -38,7 +38,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
       >
         <Image src={homeScreenSrc} className={classes.homeScreen} />
         <Image
-          src={pageIcon?.src ?? logoPlaceholderSrc}
+          src={pageIcon?.src ?? logoSrc}
           srcSet={pageIcon?.src_set}
           className={classes.appIcon}
         />

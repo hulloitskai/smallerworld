@@ -27,7 +27,6 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "NotificationIcon",
       "EmojiIcon",
       "FriendsIcon",
-      "SmallerWorldIcon",
       "PhoneIcon",
       "ContinueIcon",
       "BackIcon",

@@ -20,7 +20,7 @@ const WorldPageNotificationsButton: FC = () => {
 
   return (
     <>
-      {subscription === undefined ? (
+      {registration === undefined || subscription === undefined ? (
         <Skeleton radius="xl" style={{ width: "unset" }}>
           <ActionIcon size="lg" variant="light">
             <NotificationIcon />
