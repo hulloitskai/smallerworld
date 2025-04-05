@@ -1,5 +1,5 @@
 .progress {
-  position: fixed;
+  position: absolute;
   top: var(--safe-area-inset-top, 0px);
 
   [role="progressbar"] {
