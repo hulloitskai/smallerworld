@@ -34,13 +34,13 @@ bin/setup
 - [x] keep user timezone up to date
 - [x] add 'follow-up' post type
 - [x] save drafts of new posts
-- [ ] add android/ios chrome add-to-homescreen instructions
-- [ ] onboarding redo (invite 3 friends, etc.)
-- [ ] make better landing page video
+- [x] make better landing page video
   - shows you going in and out of different worlds
   - shows you creating a post
   - shows a friend getting your post
   - shows friend replying to your post
+- [ ] add android/ios chrome add-to-homescreen instructions
+- [ ] onboarding redo (invite 3 friends, etc.)
 - [ ] arrow still isn't that obvious for enable push notifs
   - don't allow scrolling until enabled?
 - [ ] remove old supabase auth code
