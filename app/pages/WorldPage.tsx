@@ -43,7 +43,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   useReregisterWithDeviceIdentifiers();
 
   const isStandalone = useIsStandalone();
-  const { registration } = useWebPush();
+  const { registration, subscription } = useWebPush();
 
   // == User theme
   useUserTheme(currentUser.theme);
@@ -103,9 +103,13 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 {possessive(currentUser.name)} world
               </Title>
               <Group gap={8} justify="center">
-                {registration !== null && (
+                {registration === undefined || subscription === undefined ? (
+                  <Skeleton radius="xl" style={{ width: "unset" }}>
+                    <Button radius="xl">your friends</Button>
+                  </Skeleton>
+                ) : (
                   <>
-                    {!isStandalone || !!registration ? (
+                    {(!isStandalone || !!registration) && (
                       <Button
                         component={Link}
                         href={routes.friends.index.path()}
@@ -135,10 +139,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                       >
                         your friends
                       </Button>
-                    ) : (
-                      <Skeleton radius="xl" style={{ width: "unset" }}>
-                        <Button radius="xl">your friends</Button>
-                      </Skeleton>
                     )}
                   </>
                 )}
