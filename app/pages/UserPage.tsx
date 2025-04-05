@@ -157,8 +157,8 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                   style={{ alignSelf: "center" }}
                 />
               ) : (
-                <Skeleton>
-                  <Button>placeholder</Button>
+                <Skeleton style={{ alignSelf: "center", width: "unset" }}>
+                  <Button>some placeholder</Button>
                 </Skeleton>
               )}
             </Stack>

@@ -103,32 +103,44 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 {possessive(currentUser.name)} world
               </Title>
               <Group gap={8} justify="center">
-                {(!isStandalone || !!registration) && (
-                  <Button
-                    component={Link}
-                    href={routes.friends.index.path()}
-                    radius="xl"
-                    display="block"
-                    leftSection={
-                      friends && !isEmpty(friends) ? (
-                        <Avatar.Group className={classes.avatarGroup}>
-                          {friends.map(({ id, emoji }) => (
-                            <Avatar key={id} size="sm">
-                              {emoji ? (
-                                <Text fz="md">{emoji}</Text>
-                              ) : (
-                                <Box component={UserIcon} fz="sm" c="white" />
-                              )}
-                            </Avatar>
-                          ))}
-                        </Avatar.Group>
-                      ) : (
-                        <FriendsIcon />
-                      )
-                    }
-                  >
-                    your friends
-                  </Button>
+                {registration !== null && (
+                  <>
+                    {!isStandalone || !!registration ? (
+                      <Button
+                        component={Link}
+                        href={routes.friends.index.path()}
+                        radius="xl"
+                        display="block"
+                        leftSection={
+                          friends && !isEmpty(friends) ? (
+                            <Avatar.Group className={classes.avatarGroup}>
+                              {friends.map(({ id, emoji }) => (
+                                <Avatar key={id} size="sm">
+                                  {emoji ? (
+                                    <Text fz="md">{emoji}</Text>
+                                  ) : (
+                                    <Box
+                                      component={UserIcon}
+                                      fz="sm"
+                                      c="white"
+                                    />
+                                  )}
+                                </Avatar>
+                              ))}
+                            </Avatar.Group>
+                          ) : (
+                            <FriendsIcon />
+                          )
+                        }
+                      >
+                        your friends
+                      </Button>
+                    ) : (
+                      <Skeleton radius="xl" style={{ width: "unset" }}>
+                        <Button radius="xl">your friends</Button>
+                      </Skeleton>
+                    )}
+                  </>
                 )}
                 {isStandalone && <WorldPageNotificationsButton />}
               </Group>

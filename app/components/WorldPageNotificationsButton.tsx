@@ -21,9 +21,11 @@ const WorldPageNotificationsButton: FC = () => {
   return (
     <>
       {subscription === undefined ? (
-        <ActionIcon size="lg" variant="light" loading>
-          <NotificationIcon />
-        </ActionIcon>
+        <Skeleton radius="xl" style={{ width: "unset" }}>
+          <ActionIcon size="lg" variant="light">
+            <NotificationIcon />
+          </ActionIcon>
+        </Skeleton>
       ) : registration === null || subscription === null ? (
         <Card withBorder w="100%">
           <Stack>
