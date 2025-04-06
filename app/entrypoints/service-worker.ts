@@ -52,9 +52,14 @@ const pathname = (url: string): string => {
 //   }
 // };
 
+// == Skip waiting after install
+self.addEventListener("install", event => {
+  event.waitUntil(self.skipWaiting());
+});
+
 // == Claim clients
 self.addEventListener("activate", event => {
-  event.waitUntil(self.skipWaiting().then(() => self.clients.claim()));
+  event.waitUntil(self.clients.claim());
 });
 
 // == Device metadata server
