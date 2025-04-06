@@ -34,7 +34,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
               component={Link}
               href={routes.world.show.path()}
               variant="filled"
-              leftSection={<Image src={logoSrc} h={24} />}
+              leftSection={<Image src={logoSrc} h={24} w="unset" />}
               style={{ flexShrink: 0 }}
             >
               your world
@@ -90,7 +90,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
             bg="var(--mantine-color-white)"
             style={{ borderRadius: 32, alignSelf: "center" }}
           >
-            <Image src={logoSrc} w={44} h={44} />
+            <Image src={logoSrc} h={44} w="unset" />
           </Center>
           <Title order={2} size="h3" ta="center">
             how it works

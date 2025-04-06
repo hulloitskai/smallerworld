@@ -58,7 +58,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
           <>
             <MenuLink
               href={routes.world.show.path()}
-              leftSection={<Image src={logoSrc} />}
+              leftSection={<Image src={logoSrc} w="unset" />}
             >
               your world
             </MenuLink>
