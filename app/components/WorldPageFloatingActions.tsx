@@ -107,7 +107,10 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                       }
                       {...(type === newPostDraft?.postType && {
                         rightSection: (
-                          <Box component={DraftCircleIcon} fz="md" c="white" />
+                          <Box
+                            component={DraftCircleIcon}
+                            className={classes.menuItemDraftIcon}
+                          />
                         ),
                       })}
                       onClick={() => {

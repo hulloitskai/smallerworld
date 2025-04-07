@@ -11,6 +11,14 @@
   font-weight: 500;
 }
 
+.menuItemDraftIcon {
+  font-size: var(--mantine-font-size-md);
+  color: light-dark(
+    var(--mantine-color-primary-filled),
+    var(--mantine-color-white)
+  );
+}
+
 .menuButton {
   pointer-events: auto;
   box-shadow: var(--mantine-shadow-lg);

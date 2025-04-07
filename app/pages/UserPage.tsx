@@ -168,7 +168,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           <Popover>
             <Popover.Target>
               <ActionIcon pos="absolute" top={0} right={0} size="lg">
-                <Image src={logoSrc} h={28} w="unset" />
+                <Image src={logoSrc} h={26} w="unset" />
               </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>
