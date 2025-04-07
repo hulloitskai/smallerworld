@@ -224,6 +224,7 @@ UserPage.layout = page => (
         ? `you're invited to ${user.name}'s world`
         : `${user.name}'s world`;
     }}
+    imageUrl={({ faviconImageSrc }) => faviconImageSrc}
     manifestUrl={({ currentFriend, user }) =>
       currentFriend
         ? routes.users.manifest.path({

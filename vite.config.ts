@@ -30,7 +30,7 @@ export default defineConfig(() => {
       imports,
     }),
     iconsPlugin({ compiler: "jsx", jsx: "react" }),
-    imageOptimizerPlugin(),
+    imageOptimizerPlugin({ includePublic: false }),
     reactPlugin(),
     rubyPlugin(),
     fullReloadPlugin(

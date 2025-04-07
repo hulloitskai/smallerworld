@@ -233,6 +233,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
 WorldPage.layout = page => (
   <AppLayout<WorldPageProps>
     title="your world"
+    imageUrl={({ faviconImageSrc }) => faviconImageSrc}
     manifestUrl={({ currentUser }) =>
       routes.users.manifest.path({ id: currentUser.id })
     }

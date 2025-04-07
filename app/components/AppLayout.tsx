@@ -22,7 +22,10 @@ import UserThemeProvider from "./UserThemeProvider";
 import classes from "./AppLayout.module.css";
 
 export interface AppLayoutProps<PageProps extends SharedPageProps>
-  extends Omit<AppMetaProps, "title" | "description" | "manifestUrl">,
+  extends Omit<
+      AppMetaProps,
+      "title" | "description" | "imageUrl" | "manifestUrl"
+    >,
     Omit<AppShellProps, "title"> {
   title?: DynamicProp<PageProps, AppMetaProps["title"]>;
   description?: DynamicProp<PageProps, AppMetaProps["description"]>;
@@ -33,6 +36,7 @@ export interface AppLayoutProps<PageProps extends SharedPageProps>
   withGutter?: boolean;
   gutterSize?: MantineSize | (string & {}) | number;
   logoHref?: DynamicProp<PageProps, AppHeaderProps["logoHref"]>;
+  imageUrl?: DynamicProp<PageProps, AppMetaProps["imageUrl"]>;
   manifestUrl?: DynamicProp<PageProps, AppMetaProps["manifestUrl"]>;
 }
 
@@ -46,7 +50,7 @@ const LAYOUT_WITH_BORDER = false;
 const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   title: titleProp,
   description: descriptionProp,
-  imageUrl,
+  imageUrl: imageUrlProp,
   noIndex,
   breadcrumbs: breadcrumbsProp,
   withContainer,
@@ -66,6 +70,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   // == Meta
   const title = useResolveDynamicProp(titleProp);
   const description = useResolveDynamicProp(descriptionProp);
+  const imageUrl = useResolveDynamicProp(imageUrlProp);
   const manifestUrl = useResolveDynamicProp(manifestUrlProp);
 
   // == Breadcrumbs

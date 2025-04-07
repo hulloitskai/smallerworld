@@ -263,8 +263,8 @@ class Time
   sig { returns(ActiveSupport::TimeZone) }
   def self.zone; end
 
-  sig { returns(T.any(ActiveSupport::TimeWithZone, ::Time)) }
-  def self.current; end
+  # sig { returns(T.any(ActiveSupport::TimeWithZone, ::Time)) }
+  # def self.current; end
 end
 
 class Symbol
