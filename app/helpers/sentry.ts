@@ -31,6 +31,7 @@ export const setupSentry = () => {
       ],
       ignoreErrors: [
         "ResizeObserver loop completed with undelivered notifications.",
+        "HTTP Client Error with status code: 502",
         "HTTP Client Error with status code: 503",
         "Authentication required",
         "Shutdown called.",
