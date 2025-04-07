@@ -39,9 +39,9 @@ bin/setup
   - shows you creating a post
   - shows a friend getting your post
   - shows friend replying to your post
+- [x] fix phone number login for new zealand and costa rica
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] onboarding redo (invite 3 friends, etc.)
 - [ ] arrow still isn't that obvious for enable push notifs
   - don't allow scrolling until enabled?
 - [ ] remove old supabase auth code
-- [ ] fix phone number login for new zealand and costa rica

@@ -165,7 +165,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
               )}
             </Stack>
           </Stack>
-          <Popover>
+          <Popover position="bottom-end" arrowOffset={16}>
             <Popover.Target>
               <ActionIcon pos="absolute" top={0} right={0} size="lg">
                 <Image src={logoSrc} h={26} w="unset" />
@@ -181,7 +181,6 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                   target="_blank"
                   href={routes.session.new.path()}
                   leftSection={<OpenExternalIcon />}
-                  style={{ alignSelf: "center" }}
                 >
                   create your world
                 </Button>
