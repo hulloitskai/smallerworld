@@ -51,6 +51,9 @@ export const setupSentry = () => {
             ) {
               return false;
             }
+            if (type === "AxiosError" && value === "Network Error") {
+              return false;
+            }
             return true;
           });
           if (!shouldSend) {
