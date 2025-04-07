@@ -17,6 +17,14 @@
     }
   }
 
+  [data-content] {
+    flex-grow: 1;
+
+    & + button {
+      align-self: center;
+    }
+  }
+
   [data-title],
   [data-description] {
     font-family: var(--mantine-font-family);

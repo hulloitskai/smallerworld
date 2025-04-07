@@ -19,6 +19,7 @@ import { type FormEvent, startTransition } from "react";
 import scrollIntoView from "scroll-into-view";
 import { toast } from "sonner";
 
+import { isCSRFVerificationError, toastInvalidCSRFToken } from "./csrf";
 import { sentencify } from "./inflect";
 
 export const showFormErrorsAlert = <
@@ -219,7 +220,9 @@ export const useForm = <
                   setError(error);
                 });
                 console.error(`Failed to ${descriptor}`, error);
-                if (!failSilently) {
+                if (isCSRFVerificationError(error)) {
+                  toastInvalidCSRFToken();
+                } else if (!failSilently) {
                   toast.error(`failed to ${descriptor}`, {
                     description: sentencify(
                       error.message || "an unknown error occurred",

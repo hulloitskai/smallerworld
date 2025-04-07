@@ -7,6 +7,7 @@ import useSWR, {
   type SWRConfiguration,
   type SWRResponse,
 } from "swr";
+import { cache } from "swr/_internal";
 import useSWRMutation, {
   type SWRMutationConfiguration,
   type SWRMutationResponse,
@@ -78,7 +79,6 @@ export const useRouteSWR = <
       }),
     {
       isOnline: () => online,
-      isPaused: () => standaloneSession === undefined,
       ...swrConfiguration,
     },
   );
@@ -172,3 +172,7 @@ export const mutateRoute = <Data, T = Data>(
   route: PathHelper,
   params: RequestOptions["params"] = {},
 ) => mutate<Data, T>(route.path(params));
+
+export const resetSWRCache = async (): Promise<void> => {
+  await Promise.all([...cache.keys()].map(key => mutate(key)));
+};

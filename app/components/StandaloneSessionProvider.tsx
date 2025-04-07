@@ -4,6 +4,7 @@ import {
   type StandaloneSession,
   StandaloneSessionContext,
 } from "~/helpers/pwa/session";
+import { resetSWRCache } from "~/helpers/routes/swr";
 
 export interface StandaloneSessionProviderProps extends PropsWithChildren {}
 
@@ -35,6 +36,7 @@ const StandaloneSessionProvider: FC<StandaloneSessionProviderProps> = ({
           onSuccess: ({ props }) => {
             const { csrf } = props as unknown as SharedPageProps;
             setSession({ csrf });
+            void resetSWRCache();
           },
         });
       }
