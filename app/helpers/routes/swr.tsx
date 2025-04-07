@@ -12,7 +12,7 @@ import useSWRMutation, {
   type SWRMutationResponse,
 } from "swr/mutation";
 
-import { isCSRFError } from "~/helpers/csrf";
+import { useStandaloneSession } from "~/helpers/pwa/session";
 
 import { type FetchRouteOptions } from "./fetch";
 
@@ -44,7 +44,6 @@ export const useRouteSWR = <
     serializeData,
     responseAs,
     headers,
-    onError,
     ...swrConfiguration
   } = options;
 
@@ -55,11 +54,15 @@ export const useRouteSWR = <
   if (!swrConfiguration.isOnline) {
     delete swrConfiguration.isOnline;
   }
+  if (!swrConfiguration.isPaused) {
+    delete swrConfiguration.isPaused;
+  }
 
   const key = useRouteKey(route, params);
   const { online } = useNetwork();
+  const standaloneSession = useStandaloneSession();
   const { isLoading, isValidating, ...swrResponse } = useSWR<Data, Error>(
-    key,
+    standaloneSession === undefined ? null : key,
     async (url: string): Promise<Data> =>
       fetchRoute(url, {
         failSilently,
@@ -75,18 +78,7 @@ export const useRouteSWR = <
       }),
     {
       isOnline: () => online,
-      onError: (error, key, config) => {
-        if (isCSRFError(error)) {
-          router.reload({
-            only: ["csrf"],
-            onSuccess: () => {
-              void mutate(key);
-            },
-          });
-        } else {
-          onError?.(error, key, config);
-        }
-      },
+      isPaused: () => standaloneSession === undefined,
       ...swrConfiguration,
     },
   );
@@ -125,9 +117,9 @@ export const useRouteMutation = <
     serializeData,
     responseAs,
     headers,
-    onError,
     ...swrConfiguration
   } = options;
+
   const key = useRouteKey(route, params);
   const { isMutating: mutating, ...swr } = useSWRMutation<
     Data,
@@ -151,18 +143,6 @@ export const useRouteMutation = <
       }),
     {
       ...swrConfiguration,
-      onError: (error, key, config) => {
-        if (isCSRFError(error)) {
-          router.reload({
-            only: ["csrf"],
-            onSuccess: () => {
-              void mutate(key);
-            },
-          });
-        } else {
-          onError?.(error, key, config);
-        }
-      },
     },
   );
 

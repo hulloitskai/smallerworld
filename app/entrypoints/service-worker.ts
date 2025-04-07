@@ -45,12 +45,12 @@ const pathname = (url: string): string => {
   return u.pathname;
 };
 
-// const enableNavigationPreload = async () => {
-//   if (self.registration.navigationPreload) {
-//     // Enable navigation preloads!
-//     await self.registration.navigationPreload.enable();
-//   }
-// };
+const disableNavigationPreloads = async () => {
+  if (self.registration.navigationPreload) {
+    // Disable navigation preloads!
+    await self.registration.navigationPreload.disable();
+  }
+};
 
 // == Skip waiting after install
 self.addEventListener("install", event => {
@@ -59,7 +59,9 @@ self.addEventListener("install", event => {
 
 // == Claim clients
 self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    Promise.all([self.clients.claim(), disableNavigationPreloads()]),
+  );
 });
 
 // == Device metadata server

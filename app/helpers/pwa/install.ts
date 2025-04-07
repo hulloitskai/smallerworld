@@ -1,14 +1,3 @@
-import { useMediaQuery } from "@mantine/hooks";
-import { useMounted } from "@mantine/hooks";
-
-export const useIsStandalone = (): boolean | undefined => {
-  const mounted = useMounted();
-  const isStandalone = useMediaQuery("(display-mode: standalone)");
-  if (mounted) {
-    return isStandalone;
-  }
-};
-
 const useInstallPromptEvent = ():
   | BeforeInstallPromptEvent
   | undefined
@@ -31,13 +20,13 @@ const useInstallPromptEvent = ():
   return event;
 };
 
-export interface InstallPromptReturn {
+export interface InstallPromptResult {
   installing: boolean;
   install: (() => Promise<void>) | null | undefined;
   error: Error | undefined;
 }
 
-export const useInstallPrompt = (): InstallPromptReturn => {
+export const useInstallPrompt = (): InstallPromptResult => {
   const installPromptEvent = useInstallPromptEvent();
   const [installing, setInstalling] = useState(false);
   const [error, setError] = useState<Error | undefined>();

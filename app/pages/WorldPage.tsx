@@ -14,7 +14,7 @@ import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
-import { useInstallPrompt } from "~/helpers/pwa";
+import { useInstallPrompt } from "~/helpers/pwa/install";
 import {
   useReregisterWithDeviceIdentifiers,
   useWebPush,

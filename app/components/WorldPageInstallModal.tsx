@@ -7,7 +7,7 @@ import {
   openUrlInMobileSafari,
   useBrowserDetection,
 } from "~/helpers/browsers";
-import { useInstallPrompt } from "~/helpers/pwa";
+import { useInstallPrompt } from "~/helpers/pwa/install";
 import { type User } from "~/types";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";

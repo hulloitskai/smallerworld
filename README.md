@@ -44,3 +44,4 @@ bin/setup
 - [ ] arrow still isn't that obvious for enable push notifs
   - don't allow scrolling until enabled?
 - [ ] remove old supabase auth code
+- [ ] fix phone number login for new zealand and costa rica

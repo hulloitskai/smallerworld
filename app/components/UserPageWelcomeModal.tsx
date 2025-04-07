@@ -6,7 +6,7 @@ import {
   isMobileStandaloneBrowser,
   useBrowserDetection,
 } from "~/helpers/browsers";
-import { useInstallPrompt } from "~/helpers/pwa";
+import { useInstallPrompt } from "~/helpers/pwa/install";
 import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/userPages";
 import { type Friend, type User } from "~/types";
 
