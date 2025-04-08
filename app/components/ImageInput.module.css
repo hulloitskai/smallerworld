@@ -1,7 +1,11 @@
-.image {
+.previewImage {
   width: 100%;
   height: 100%;
   border-radius: calc(var(--dropzone-radius) * 0.85);
+
+  &:not([src]) {
+    visibility: hidden;
+  }
 }
 
 .dropzone {
@@ -12,10 +16,15 @@
       opacity: 0;
     }
 
-    &:not([data-loading]):hover {
-      background-color: var(--af-dropzone-backdrop);
-      > :global(.mantine-Dropzone-inner) {
-        opacity: 1;
+    &:not([data-loading]) {
+      @mixin hover {
+        background-color: alpha(
+          light-dark(var(--mantine-color-black), var(--mantine-color-dark-5)),
+          0.5
+        );
+        > :global(.mantine-Dropzone-inner) {
+          opacity: 1;
+        }
       }
     }
   }
@@ -37,6 +46,24 @@
     align-items: center;
     justify-content: center;
     transition: opacity 150ms ease;
+  }
+
+  > :global(.mantine-LoadingOverlay-root) {
+    border-radius: var(--dropzone-radius);
+  }
+}
+
+[data-user-theme] .dropzone {
+  @mixin dark {
+    --blur-radius: rem(8px);
+    border-color: alpha(var(--mantine-color-white), 0.2);
+    background-color: alpha(var(--mantine-color-black), 0.2);
+
+    &:not([data-loading]) {
+      @mixin hover {
+        background-color: alpha(var(--mantine-color-dark-5), 0.5);
+      }
+    }
   }
 }
 

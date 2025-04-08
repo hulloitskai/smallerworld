@@ -3,7 +3,7 @@ import {
   type ImageProps,
   type InputWrapperProps,
 } from "@mantine/core";
-import { Image, Input, rgba, Text } from "@mantine/core";
+import { Image, Input, Text } from "@mantine/core";
 import { type DropzoneProps } from "@mantine/dropzone";
 import { Dropzone } from "@mantine/dropzone";
 import { useUncontrolled } from "@mantine/hooks";
@@ -102,7 +102,7 @@ const ImageInput: FC<ImageInputProps> = ({
       >
         <Box {...{ w, h }} p={4} pos="relative">
           <Image
-            className={classes.image}
+            className={classes.previewImage}
             src={image?.src}
             srcSet={image?.src_set}
             fit={previewFit}
@@ -138,21 +138,14 @@ const ImageInput: FC<ImageInputProps> = ({
             pos="absolute"
             inset={0}
             inputProps={{ id: inputId }}
-            style={[
-              style,
-              ({ colors }) => ({
-                "--af-dropzone-backdrop": rgba(colors.dark[5], 0.8),
-              }),
-            ]}
             mod={{ "with-src": !!image, disabled }}
-            {...{ loading, disabled }}
+            {...{ loading, disabled, style }}
           >
-            <Stack align="center" gap={8}>
+            <Stack align="center" gap={4}>
               <Box component={PhotoIcon} className={classes.dropzoneIcon} />
               <Text
                 size="xs"
                 c="dark.1"
-                lh={1.3}
                 fw={500}
                 style={{ textAlign: "center" }}
               >
