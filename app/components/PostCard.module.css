@@ -105,3 +105,37 @@
     top: var(--safe-area-inset-top, 0px);
   }
 }
+
+.closeButton {
+  @mixin hover {
+    svg {
+      color: var(--mantine-color-white) !important;
+    }
+  }
+}
+
+.zoomButtons {
+  :global(.mantine-ActionIcon-root) {
+    :global(.mantine-ActionIcon-icon) {
+      font-size: var(--mantine-font-size-lg);
+      /* color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1)); */
+      border-radius: var(--mantine-radius-md);
+    }
+
+    &:disabled {
+      background-color: transparent;
+
+      :global(.mantine-ActionIcon-icon) {
+        opacity: 0.8;
+      }
+    }
+
+    &:not(:disabled) {
+      @mixin hover {
+        :global(.mantine-ActionIcon-icon) {
+          color: var(--mantine-color-primary-outline);
+        }
+      }
+    }
+  }
+}

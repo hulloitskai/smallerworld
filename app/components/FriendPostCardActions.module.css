@@ -30,3 +30,14 @@
     color: var(--mantine-color-dimmed);
   }
 }
+
+.messagingPlatformSelectorHint {
+  text-align: center;
+  color: var(--mantine-color-dimmed);
+}
+
+[data-user-theme] .messagingPlatformSelectorHint {
+  @mixin dark {
+    color: var(--mantine-color-dark-0);
+  }
+}

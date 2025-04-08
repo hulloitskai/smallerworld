@@ -1,15 +1,20 @@
 import {
   AspectRatio,
   type BoxProps,
+  CloseButton,
   Image,
+  Loader,
   Overlay,
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
 import { type ReactNode } from "react";
 import Lightbox from "yet-another-react-lightbox";
+import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
+import ZoomOutIcon from "~icons/heroicons/magnifying-glass-minus-20-solid";
+import ZoomInIcon from "~icons/heroicons/magnifying-glass-plus-20-solid";
 
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type Image as ImageType, type Post } from "~/types";
@@ -201,6 +206,7 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
       {children}
       <Lightbox
         className={classes.imageLightbox}
+        plugins={[LightboxZoomPlugin]}
         open={lightboxOpened}
         close={() => {
           setLightboxOpened(false);
@@ -218,6 +224,37 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
         render={{
           buttonPrev: () => null,
           buttonNext: () => null,
+          buttonClose: () => (
+            <CloseButton
+              className={classes.closeButton}
+              variant="transparent"
+              size="lg"
+              onClick={() => {
+                setLightboxOpened(false);
+              }}
+            />
+          ),
+          buttonZoom: ({ zoomIn, zoomOut, zoom, maxZoom }) => (
+            <Group gap={0} className={classes.zoomButtons}>
+              <ActionIcon
+                variant="transparent"
+                size="lg"
+                onClick={zoomOut}
+                disabled={zoom <= 1}
+              >
+                <ZoomOutIcon />
+              </ActionIcon>
+              <ActionIcon
+                variant="transparent"
+                size="lg"
+                onClick={zoomIn}
+                disabled={zoom >= maxZoom}
+              >
+                <ZoomInIcon />
+              </ActionIcon>
+            </Group>
+          ),
+          iconLoading: () => <Loader />,
         }}
       />
     </Box>

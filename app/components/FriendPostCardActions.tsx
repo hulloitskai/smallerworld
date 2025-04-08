@@ -88,6 +88,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
         /
       </Text>
       <Popover
+        width={265}
         shadow="md"
         portalProps={{ target: vaulPortalTarget }}
         opened={messagingPlatformSelectorOpened}
@@ -163,8 +164,12 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                 </Stack>
               ))}
             </Group>
-            <Text size="xs" ta="center" c="dimmed">
-              smaller world will remember your choice
+            <Text size="xs" className={classes.messagingPlatformSelectorHint}>
+              <span style={{ fontWeight: 600 }}>
+                smaller world will remember your choice.
+              </span>
+              <br />
+              to open this menu again, hold the reply button.
             </Text>
           </Stack>
         </Popover.Dropdown>
