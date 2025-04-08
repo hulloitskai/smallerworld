@@ -1,8 +1,19 @@
-.timestamp {
-  color: var(--mantine-color-dimmed);
-  text-transform: lowercase;
-  font-weight: 500;
-  font-family: var(--mantine-font-family-headings);
+.card {
+  overflow: visible;
+  margin-top: 6px;
+}
+
+.timestampBadge {
+  position: absolute;
+  top: -8px;
+  right: var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-md);
+
+  :global(.mantine-Badge-label) {
+    text-transform: lowercase;
+    font-weight: 500;
+    font-family: var(--mantine-font-family-headings);
+  }
 }
 
 .list {

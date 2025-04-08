@@ -14,22 +14,14 @@ interface JoinRequestCardProps extends CardProps {
 const JoinRequestCard: FC<JoinRequestCardProps> = ({
   currentUser,
   joinRequest,
+  className,
   ...otherProps
 }) => (
-  <Card withBorder pb="sm" {...otherProps}>
-    <Card.Section inheritPadding py={8}>
-      <Group justify="end">
-        <Time
-          format={DateTime.DATETIME_MED}
-          size="xs"
-          inline
-          className={classes.timestamp}
-          display="block"
-        >
-          {joinRequest.created_at}
-        </Time>
-      </Group>
-    </Card.Section>
+  <Card
+    className={cn("JoinRequestCard", className, classes.card)}
+    withBorder
+    {...otherProps}
+  >
     <Group align="center" gap="xs" justify="space-between">
       <List className={classes.list}>
         <List.Item icon={<UserIcon />} fw={600}>
@@ -47,6 +39,11 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({
       </List>
       <AddFriendButton {...{ currentUser }} fromJoinRequest={joinRequest} />
     </Group>
+    <Badge className={classes.timestampBadge} variant="default">
+      <Time format={DateTime.DATETIME_MED} inline inherit>
+        {joinRequest.created_at}
+      </Time>
+    </Badge>
   </Card>
 );
 
