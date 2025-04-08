@@ -9,6 +9,7 @@
     var(--app-shell-header-height) + var(--safe-area-inset-top, 0px)
   );
   padding-top: var(--safe-area-inset-top, 0px);
+  position: sticky;
 }
 
 .footer {
