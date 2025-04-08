@@ -23,7 +23,7 @@
   margin-inline: auto;
   width: 160px;
 
-  @mixin light {
+  @mixin where-light {
     filter: invert(1);
   }
 }

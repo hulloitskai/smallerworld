@@ -2,6 +2,12 @@
   height: calc(rem(72px) + var(--safe-area-inset-bottom, 0px));
 }
 
+.menuDropdown {
+  @mixin where-dark-user-theme {
+    background-color: alpha(var(--mantine-color-black), 0.7);
+  }
+}
+
 .menuItemSection {
   color: var(--mantine-color-primary-outline);
 }

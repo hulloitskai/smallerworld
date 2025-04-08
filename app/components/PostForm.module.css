@@ -4,8 +4,12 @@
     var(--mantine-color-dark-4)
   );
 
-  @mixin dark {
+  @mixin where-dark {
     background-color: transparent;
+  }
+
+  @mixin where-dark-user-theme {
+    border-color: alpha(var(--mantine-color-white), 0.2);
   }
 
   &[data-opened] {
@@ -13,19 +17,11 @@
   }
 }
 
-[data-user-theme] .emojiButton {
-  @mixin dark {
-    border-color: alpha(var(--mantine-color-white), 0.2);
-  }
-}
-
 .visibilitySegmentedControl {
   border: 1px solid
     light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
-}
 
-[data-user-theme] .visibilitySegmentedControl {
-  @mixin dark {
+  @mixin where-dark-user-theme {
     background-color: transparent;
     border: 1px solid alpha(var(--mantine-color-white), 0.2);
 

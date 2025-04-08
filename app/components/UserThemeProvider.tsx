@@ -18,13 +18,13 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   // == Apply theme on document body
   useEffect(() => {
     if (theme) {
-      document.body.setAttribute("data-user-theme", theme);
+      document.documentElement.setAttribute("data-user-theme", theme);
       document.body.style.setProperty(
         "--mantine-color-body",
         USER_THEME_BACKGROUND_COLORS[theme],
       );
       return () => {
-        document.body.removeAttribute("data-user-theme");
+        document.documentElement.removeAttribute("data-user-theme");
         document.body.style.removeProperty("--mantine-color-body");
       };
     }
@@ -56,7 +56,6 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
             backgroundImage: themeBackgroundImage(theme),
             backgroundColor: USER_THEME_BACKGROUND_COLORS[theme],
           }}
-          mod={{ "user-theme": theme }}
         >
           {theme === "forest" ? (
             <div className={classes.forestContainer}>

@@ -22,13 +22,12 @@
 
     .input {
       font-size: var(--mantine-font-size-md);
-      @mixin dark {
+
+      @mixin where-dark {
         --input-bg: transparent;
       }
-    }
 
-    &[data-user-theme] .input {
-      @mixin dark {
+      @mixin where-dark-user-theme {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
@@ -64,14 +63,12 @@
     }
 
     .card {
-      @mixin dark {
+      @mixin where-dark {
         background-color: var(--mantine-color-dark-8);
         border-color: var(--mantine-color-dark-6);
       }
-    }
 
-    &[data-user-theme] .card {
-      @mixin dark {
+      @mixin where-dark-user-theme {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
         border-color: alpha(var(--mantine-color-white), 0.2);
@@ -88,26 +85,23 @@
     }
 
     .cardSection {
-      @mixin dark {
+      @mixin where-dark {
         border-color: var(--mantine-color-dark-6);
       }
-    }
 
-    &[data-user-theme]
-      .cardSection:not(:global(.mantine-Paper-root .cardSection)) {
-      @mixin dark {
-        border-color: alpha(var(--mantine-color-white), 0.2);
+      @mixin where-dark-user-theme {
+        &:not(:global(.mantine-Paper-root .cardSection)) {
+          border-color: alpha(var(--mantine-color-white), 0.2);
+        }
       }
     }
 
     .dropdown {
-      @mixin dark {
+      @mixin where-dark {
         background-color: var(--mantine-color-dark-8);
       }
-    }
 
-    &[data-user-theme] .dropdown {
-      @mixin dark {
+      @mixin where-dark-user-theme {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
         backdrop-filter: blur(var(--blur-radius));
@@ -180,19 +174,17 @@
     }
 
     .divider {
-      @mixin dark {
+      @mixin where-dark {
         --divider-color: var(--mantine-color-dark-6);
       }
-    }
 
-    &[data-user-theme] .divider {
-      @mixin dark {
+      @mixin where-dark-user-theme {
         --divider-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
 
-    &[data-user-theme] .menuDivider {
-      @mixin dark {
+    .menuDivider {
+      @mixin where-dark-user-theme {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
@@ -203,7 +195,7 @@
     }
 
     .menuItem {
-      &:not([data-disabled]) {
+      &:not(:disabled) {
         @mixin hover {
           background-color: var(--mantine-primary-color-light);
         }
@@ -226,14 +218,12 @@
     }
 
     .popoverDropdown {
-      @mixin dark {
+      @mixin where-dark {
         --popover-border-color: var(--mantine-color-dark-6);
         background-color: var(--mantine-color-dark-8);
       }
-    }
 
-    &[data-user-theme] .popoverDropdown {
-      @mixin dark {
+      @mixin where-dark-user-theme {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
         backdrop-filter: blur(var(--blur-radius));
@@ -243,7 +233,7 @@
     }
 
     .richTextEditorContent {
-      @mixin light {
+      @mixin where-light {
         background-color: var(--mantine-color-white);
       }
     }

@@ -7,10 +7,8 @@
   &[data-expanded] {
     border-color: var(--mantine-color-primary-filled);
   }
-}
 
-[data-user-theme] .target {
-  @mixin dark {
+  @mixin where-dark-user-theme {
     --blur-radius: rem(8px);
     background-color: alpha(var(--mantine-color-black), 0.4);
     backdrop-filter: blur(var(--blur-radius));

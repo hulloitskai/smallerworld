@@ -74,6 +74,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                 width={220}
                 shadow="sm"
                 classNames={{
+                  dropdown: classes.menuDropdown,
                   itemLabel: classes.menuItemLabel,
                   itemSection: classes.menuItemSection,
                 }}

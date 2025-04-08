@@ -7,11 +7,11 @@
       0 0 10px var(--progress-section-color),
       0 0 5px var(--progress-section-color);
   }
-}
 
-[data-user-theme] .progress {
-  background-color: alpha(
-    light-dark(var(--mantine-color-black), var(--mantine-color-white)),
-    0.2
-  );
+  @mixin where-dark-user-theme {
+    background-color: alpha(
+      light-dark(var(--mantine-color-black), var(--mantine-color-white)),
+      0.2
+    );
+  }
 }

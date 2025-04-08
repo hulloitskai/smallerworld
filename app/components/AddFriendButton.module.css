@@ -19,17 +19,15 @@
     var(--mantine-color-dark-4)
   );
 
-  @mixin dark {
-    background-color: transparent;
-  }
-
   &[data-opened] {
     background-color: var(--mantine-color-default-hover);
   }
-}
 
-[data-user-theme] .emojiButton {
-  @mixin dark {
+  @mixin where-dark {
+    background-color: transparent;
+  }
+
+  @mixin where-dark-user-theme {
     border-color: alpha(var(--mantine-color-white), 0.2);
   }
 }

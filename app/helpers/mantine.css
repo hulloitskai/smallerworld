@@ -15,7 +15,7 @@
 body {
   --mantine-line-height: var(--mantine-line-height-xs);
 
-  @mixin dark {
+  @mixin where-dark {
     --mantine-color-body: var(--mantine-color-dark-9);
     --mantine-color-default: var(--mantine-color-dark-8);
     --mantine-color-default-border: var(--mantine-color-dark-6);

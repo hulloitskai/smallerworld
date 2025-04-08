@@ -34,10 +34,8 @@
 .messagingPlatformSelectorHint {
   text-align: center;
   color: var(--mantine-color-dimmed);
-}
 
-[data-user-theme] .messagingPlatformSelectorHint {
-  @mixin dark {
+  @mixin where-dark-user-theme {
     color: var(--mantine-color-dark-0);
   }
 }

@@ -2,6 +2,14 @@ export default {
   plugins: {
     "postcss-preset-mantine": {
       autoRem: true,
+      mixins: {
+        "where-dark-user-theme": {
+          ":where([data-mantine-color-scheme='dark']):where([data-user-theme]) &":
+            {
+              "@mixin-content": {},
+            },
+        },
+      },
     },
     "postcss-simple-vars": {
       variables: {

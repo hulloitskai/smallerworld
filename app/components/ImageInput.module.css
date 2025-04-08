@@ -9,6 +9,18 @@
 }
 
 .dropzone {
+  @mixin where-dark-user-theme {
+    --blur-radius: rem(8px);
+    border-color: alpha(var(--mantine-color-white), 0.2);
+    background-color: alpha(var(--mantine-color-black), 0.2);
+
+    &:not([data-loading]) {
+      @mixin hover {
+        background-color: alpha(var(--mantine-color-dark-5), 0.5);
+      }
+    }
+  }
+
   &[data-with-src] {
     background-color: transparent;
 
@@ -50,20 +62,6 @@
 
   > :global(.mantine-LoadingOverlay-root) {
     border-radius: var(--dropzone-radius);
-  }
-}
-
-[data-user-theme] .dropzone {
-  @mixin dark {
-    --blur-radius: rem(8px);
-    border-color: alpha(var(--mantine-color-white), 0.2);
-    background-color: alpha(var(--mantine-color-black), 0.2);
-
-    &:not([data-loading]) {
-      @mixin hover {
-        background-color: alpha(var(--mantine-color-dark-5), 0.5);
-      }
-    }
   }
 }
 
