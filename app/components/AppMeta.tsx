@@ -5,7 +5,7 @@ import { useDocumentVisibility } from "@mantine/hooks";
 const APP_META_SITE_TYPE = "website";
 const APP_META_SITE_NAME = "smaller world";
 const APP_META_SITE_DESCRIPTION = "a smaller world for you and your friends :)";
-const APP_META_SITE_IMAGE = "/icon.png";
+const APP_META_SITE_IMAGE = "/banner.png";
 const APP_META_TITLE_SEPARATOR = "|";
 
 export interface AppMetaProps {

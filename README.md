@@ -40,6 +40,8 @@ bin/setup
   - shows a friend getting your post
   - shows friend replying to your post
 - [x] fix phone number login for new zealand and costa rica
+- [ ] zoom into images on fullscreen carousel
+- [ ] why does add-to-homescreen instructions image #2 never load properly?
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] onboarding redo (invite 3 friends, etc.)
 - [ ] arrow still isn't that obvious for enable push notifs
