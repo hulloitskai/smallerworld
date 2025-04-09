@@ -8,6 +8,13 @@
   }
 }
 
+.friendIcon {
+  color: light-dark(
+    var(--mantine-color-primary-filled),
+    var(--mantine-color-white)
+  );
+}
+
 .installInstructionsList {
   font-weight: 500;
   display: flex;
@@ -46,6 +53,35 @@
   :global(.mantine-Menu-itemSection) {
     &[data-position="right"] {
       width: var(--mantine-spacing-lg);
+    }
+  }
+}
+
+.checkableListItem {
+  &[data-checked] {
+    text-decoration: line-through;
+
+    :global(.mantine-Checkbox-icon) {
+      /* --dot-size: 6px; */
+
+      &::after {
+        content: "";
+        width: var(--dot-size);
+        height: var(--dot-size);
+        background-color: var(--mantine-color-white);
+        border-radius: var(--mantine-radius-md);
+      }
+
+      /* width: unset;
+      width: unset;
+
+      rect {
+        --checkbox-size: 6px;
+        rx: var(--mantine-radius-md);
+
+        width: var(--checkbox-size);
+        height: var(--checkbox-size);
+      } */
     }
   }
 }

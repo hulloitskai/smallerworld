@@ -1,4 +1,4 @@
-import { Popover, Text } from "@mantine/core";
+import { Popover } from "@mantine/core";
 
 import {
   useFriendNotificationSettings,
@@ -56,31 +56,20 @@ const UserPageNotificationsButtonCard: FC<
             <FriendNotificationSettingsFormInputs
               form={notificationSettingsForm}
             />
-            <Stack gap={6}>
-              <Button
-                variant="filled"
-                loading={loading || subscribing}
-                disabled={!supported}
-                leftSection={<NotificationIcon />}
-                onClick={() => {
-                  if (notificationSettingsForm.isDirty()) {
-                    notificationSettingsForm.submit();
-                  }
-                  void subscribe();
-                }}
-              >
-                enable push notifications
-              </Button>
-              {/* TODO: Remove this after April 15, 2025 */}
-              <Text size="xs" ta="center" maw={340} mx="auto">
-                (march 31) if you are seeing this button for the second time, I
-                AM SORRY i fucked up and now you have to redo this step :(
-              </Text>
-              <Text size="xs" ta="center" maw={340} mx="auto">
-                if it doesn&apos;t work, you have to fully close and then
-                re-open the app 💀
-              </Text>
-            </Stack>
+            <Button
+              variant="filled"
+              loading={loading || subscribing}
+              disabled={!supported}
+              leftSection={<NotificationIcon />}
+              onClick={() => {
+                if (notificationSettingsForm.isDirty()) {
+                  notificationSettingsForm.submit();
+                }
+                void subscribe();
+              }}
+            >
+              enable push notifications
+            </Button>
           </Stack>
           <LoadingOverlay visible={!notificationSettings} />
         </Card>

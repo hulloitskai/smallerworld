@@ -1,11 +1,19 @@
-import { Avatar, Image, Indicator, Overlay, Text } from "@mantine/core";
+import {
+  Avatar,
+  Image,
+  Indicator,
+  type ListItemProps,
+  Overlay,
+  Text,
+} from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
+import EllipsisHorizontalIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
+import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
-import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
@@ -14,6 +22,7 @@ import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
+import { usePosts } from "~/helpers/posts";
 import { useInstallPrompt } from "~/helpers/pwa/install";
 import {
   useReregisterWithDeviceIdentifiers,
@@ -82,6 +91,19 @@ const WorldPage: PageComponent<WorldPageProps> = ({
     }
   }, [isStandalone, browserDetection, install]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // == Tutorial alert
+  const { posts } = usePosts();
+  const hasOneUserCreatedPost = useMemo<boolean | undefined>(() => {
+    if (posts) {
+      const accountCreatedAt = DateTime.fromISO(currentUser.created_at);
+      const cutoff = accountCreatedAt.plus({ seconds: 1 });
+      return posts.some(post => {
+        const postCreatedAt = DateTime.fromISO(post.created_at);
+        return postCreatedAt > cutoff;
+      });
+    }
+  }, [posts]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <>
       <Stack gap="lg">
@@ -128,7 +150,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                                     <Box
                                       component={UserIcon}
                                       fz="sm"
-                                      c="white"
+                                      className={classes.friendIcon}
                                     />
                                   )}
                                 </Avatar>
@@ -202,20 +224,80 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             </Menu.Dropdown>
           </Menu>
         </Box>
-        {(!isStandalone || !!registration) && !!friends && isEmpty(friends) && (
-          <Alert>
-            <Group justify="space-between">
-              <Text inherit ff="heading" fw={600} c="primary" ml={6}>
-                invite a friend to join your world:
-              </Text>
-              <AddFriendButton
-                {...{ currentUser }}
-                variant="white"
-                size="compact-sm"
-              />
-            </Group>
-          </Alert>
-        )}
+        {(!isStandalone || !!registration) &&
+          (hasOneUserCreatedPost === false ||
+            (!!friends && friends.length < 3)) && (
+            <Alert
+              variant="outline"
+              title={
+                <Group gap={8}>
+                  <Image src={logoSrc} w={20} />
+                  <Text inherit mt={1}>
+                    let&apos;s bring your world to life!
+                  </Text>
+                </Group>
+              }
+              styles={{
+                icon: {
+                  marginRight: "var(--mantine-spacing-xs)",
+                },
+                body: {
+                  rowGap: rem(8),
+                },
+              }}
+            >
+              <List>
+                <CheckableListItem
+                  checked={
+                    friends.length >= 3
+                      ? true
+                      : isEmpty(friends)
+                        ? false
+                        : "partial"
+                  }
+                >
+                  invite{" "}
+                  <span
+                    style={{
+                      ...(!isEmpty(friends) &&
+                        friends.length < 3 && {
+                          color: "var(--mantine-color-dimmed)",
+                          textDecoration: "line-through",
+                        }),
+                    }}
+                  >
+                    3 friends
+                  </span>{" "}
+                  <span
+                    style={{
+                      fontWeight: 500,
+                      ...(isEmpty(friends) &&
+                        friends.length < 3 && {
+                          display: "none",
+                        }),
+                    }}
+                  >
+                    {3 - friends.length} more{" "}
+                    {inflect("friend", 3 - friends.length)}{" "}
+                  </span>
+                  to join your world 👯
+                </CheckableListItem>
+                <CheckableListItem checked={!!hasOneUserCreatedPost}>
+                  write your first post! ✍️
+                </CheckableListItem>
+              </List>
+              {/* <Group justify="space-between">
+                <Text inherit ff="heading" fw={600}>
+                  invite a friend to join your world:
+                </Text>
+                <AddFriendButton
+                  {...{ currentUser }}
+                  variant="white"
+                  size="compact-sm"
+                />
+              </Group> */}
+            </Alert>
+          )}
         <Box pos="relative">
           <WorldPageFeed />
           {isStandalone && registration === null && (
@@ -270,5 +352,37 @@ const IconsMeta: FC = () => {
         href={appleTouchIconSrc}
       />
     </Head>
+  );
+};
+
+interface CheckableListItemProps extends Omit<ListItemProps, "icon"> {
+  checked: boolean | "partial";
+}
+
+const CheckableListItem: FC<CheckableListItemProps> = ({
+  className,
+  checked,
+  children,
+  ...otherProps
+}) => {
+  return (
+    <List.Item
+      className={cn(classes.checkableListItem, className)}
+      icon={
+        <Checkbox
+          checked={checked === true}
+          {...(checked === "partial" && {
+            indeterminate: true,
+            icon: EllipsisHorizontalIcon,
+          })}
+          radius="sm"
+          readOnly
+        />
+      }
+      mod={{ checked }}
+      {...otherProps}
+    >
+      {children}
+    </List.Item>
   );
 };

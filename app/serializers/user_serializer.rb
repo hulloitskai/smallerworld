@@ -4,7 +4,8 @@
 class UserSerializer < ApplicationSerializer
   # == Attributes
   identifier
-  attributes :name,
+  attributes :created_at,
+             :name,
              :handle,
              theme: { type: "UserTheme", nullable: true }
 
