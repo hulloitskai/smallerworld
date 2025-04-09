@@ -39,6 +39,7 @@
     100vh - var(--safe-area-inset-top, 0px) -
       (var(--app-shell-footer-height, 0px) + var(--safe-area-inset-bottom, 0px))
   );
+  padding-top: var(--app-shell-padding);
   padding-bottom: 0px;
 
   :where([data-user-theme]) & {

@@ -43,8 +43,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         </Alert>
       )}
       <Title className={classes.opener} ta="center">
-        a <Emph>life log</Emph> that your friends can{" "}
-        <Emph>pin to their home screen</Emph>
+        a <Emph>direct connection</Emph> to your personal support network
       </Title>
       <Box pos="relative">
         <Box
@@ -118,7 +117,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
 };
 
 LandingPage.layout = page => (
-  <AppLayout<LandingPageProps> withContainer containerSize="xs" withGutter>
+  <AppLayout<LandingPageProps> withContainer containerSize="xs">
     {page}
   </AppLayout>
 );
