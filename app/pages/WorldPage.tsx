@@ -180,6 +180,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 leftSection={<OpenExternalIcon />}
                 href={routes.users.show.path({ handle: currentUser.handle })}
                 target="_blank"
+                rel="noopener"
               >
                 view public profile
               </Menu.Item>

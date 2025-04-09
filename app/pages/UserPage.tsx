@@ -179,6 +179,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                 <Button
                   component="a"
                   target="_blank"
+                  rel="noopener"
                   href={routes.session.new.path()}
                   leftSection={<OpenExternalIcon />}
                 >

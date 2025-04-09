@@ -98,8 +98,8 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
           <Button
             component="a"
             {...(!messagingPlatformSelectorOpened && { href: replyUri })}
-            rel="noopener noreferrer nofollow"
             target="_blank"
+            rel="noopener noreferrer nofollow"
             variant="subtle"
             size="compact-xs"
             leftSection={
