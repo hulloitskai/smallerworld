@@ -8,11 +8,13 @@ import {
   isMobileStandaloneBrowser,
   useBrowserDetection,
 } from "~/helpers/browsers";
+import { useInstallPrompt } from "~/helpers/pwa/install";
 
 import classes from "./BrowserNotSupportedText.module.css";
 
 const BrowserNotSupportedText: FC = () => {
   const browserDetection = useBrowserDetection();
+  const { install } = useInstallPrompt();
   if (!browserDetection) {
     return null;
   }
@@ -31,7 +33,7 @@ const BrowserNotSupportedText: FC = () => {
       <Text className={classes.text}>open in your browser to continue</Text>
     );
   }
-  if (isDesktop(browserDetection)) {
+  if (!install && isDesktop(browserDetection)) {
     return <Text className={classes.text}>open on your phone to continue</Text>;
   }
   return null;

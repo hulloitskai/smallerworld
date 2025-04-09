@@ -65,7 +65,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       openWorldPageInstallationInstructionsModal({ currentUser });
     } else if (
       intent === "install" ||
-      (!isStandalone && !!browserDetection && !isDesktop(browserDetection))
+      (!isStandalone &&
+        !!browserDetection &&
+        (!!install || !isDesktop(browserDetection)))
     ) {
       openWorldPageInstallModal({
         currentUser,
