@@ -42,22 +42,12 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   // == New post draft
   const [newPostDraft] = useNewPostDraft();
 
-  // == Affix
-  const affixInset = "var(--mantine-spacing-xl)";
-
   const actionsVisible =
     (isStandalone === false || !!registration) && !pinnedPostsDrawerModalOpened;
   return (
     <>
       <Space className={classes.space} />
-      <Affix
-        zIndex={180}
-        position={{
-          bottom: `max(${affixInset}, var(--safe-area-inset-bottom, 0px))`,
-          left: affixInset,
-          right: affixInset,
-        }}
-      >
+      <Affix className={classes.affix} position={{}}>
         <Group
           align="center"
           justify="center"

@@ -32,11 +32,9 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
       closeDelay={200}
       {...{ opened }}
       onChange={setOpened}
-      shadow="sm"
       offset={4}
       width={220}
       arrowPosition="center"
-      withinPortal={false}
       classNames={{
         dropdown: classes.dropdown,
         item: classes.item,

@@ -23,8 +23,6 @@ export interface UserPageInstallAlertProps {
   user: User;
 }
 
-const ALERT_INSET = "var(--mantine-spacing-md)";
-
 const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
   currentFriend,
   user,
@@ -39,14 +37,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
   const { install, installing } = useInstallPrompt();
 
   return (
-    <Affix
-      zIndex={180}
-      position={{
-        bottom: `calc(${ALERT_INSET} + var(--safe-area-inset-bottom, 0px))`,
-        left: ALERT_INSET,
-        right: ALERT_INSET,
-      }}
-    >
+    <Affix className={classes.affix} position={{}}>
       <Transition
         transition="pop"
         mounted={isEmpty(modals) && !pageDialogOpened}

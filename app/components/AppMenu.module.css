@@ -42,6 +42,7 @@
 
 .dropdown {
   pointer-events: auto;
+  box-shadow: var(--mantine-shadow-md);
 
   .target:not([data-expanded]) + & {
     pointer-events: none;

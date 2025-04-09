@@ -14,8 +14,6 @@ import classes from "./UserPageFloatingActions.module.css";
 export interface UserPageFloatingActionsProps
   extends Pick<FriendPostCardActionsProps, "user" | "replyPhoneNumber"> {}
 
-const AFFIX_INSET = "var(--mantine-spacing-xl)";
-
 const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
   user,
   replyPhoneNumber,
@@ -48,14 +46,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
   return (
     <>
       <Space className={classes.space} />
-      <Affix
-        zIndex={180}
-        position={{
-          bottom: `max(${AFFIX_INSET}, var(--safe-area-inset-bottom, 0px))`,
-          left: AFFIX_INSET,
-          right: AFFIX_INSET,
-        }}
-      >
+      <Affix className={classes.affix} position={{}}>
         <Center style={{ pointerEvents: "none" }}>
           <Transition
             transition="pop"

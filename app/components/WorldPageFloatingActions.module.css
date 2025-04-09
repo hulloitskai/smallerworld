@@ -1,3 +1,11 @@
+.affix {
+  --affix-inset: var(--mantine-spacing-xl);
+  --affix-bottom: calc(var(--affix-inset) + var(--safe-area-inset-bottom, 0px));
+  --affix-left: var(--affix-inset);
+  --affix-right: var(--affix-inset);
+  --affix-z-index: 180;
+}
+
 .space {
   height: calc(rem(72px) + var(--safe-area-inset-bottom, 0px));
 }

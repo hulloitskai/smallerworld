@@ -14,8 +14,6 @@ export interface UserPageRequestInvitationAlertProps {
   user: User;
 }
 
-const ALERT_INSET = "var(--mantine-spacing-md)";
-
 export const UserPageRequestInvitationAlert: FC<
   UserPageRequestInvitationAlertProps
 > = ({ user }) => {
@@ -37,14 +35,7 @@ export const UserPageRequestInvitationAlert: FC<
 
   return (
     <>
-      <Affix
-        zIndex={180}
-        position={{
-          left: ALERT_INSET,
-          right: ALERT_INSET,
-          bottom: `calc(${ALERT_INSET} + var(--safe-area-inset-bottom, 0px))`,
-        }}
-      >
+      <Affix className={classes.affix} position={{}}>
         <Transition
           transition="pop"
           mounted={isEmpty(modals) && !pageDialogOpened}
