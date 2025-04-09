@@ -1,4 +1,4 @@
-import { Image, Overlay, Popover, Text } from "@mantine/core";
+import { Image, Overlay, Popover, RemoveScroll, Text } from "@mantine/core";
 import { useDocumentVisibility } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { DateTime } from "luxon";
@@ -192,9 +192,11 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
         <Box pos="relative">
           <UserPageFeed {...{ user, replyPhoneNumber }} />
           {isStandalone && registration === null && (
-            <Overlay backgroundOpacity={0} blur={3}>
-              <div className={classes.notificationsRequiredIndicatorArrow} />
-            </Overlay>
+            <RemoveScroll>
+              <Overlay backgroundOpacity={0} blur={3}>
+                <div className={classes.notificationsRequiredIndicatorArrow} />
+              </Overlay>
+            </RemoveScroll>
           )}
         </Box>
       </Stack>

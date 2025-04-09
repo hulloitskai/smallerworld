@@ -4,6 +4,7 @@ import {
   Indicator,
   type ListItemProps,
   Overlay,
+  RemoveScroll,
   Text,
 } from "@mantine/core";
 import { useModals } from "@mantine/modals";
@@ -301,12 +302,14 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         <Box pos="relative">
           <WorldPageFeed />
           {isStandalone && registration === null && (
-            <Overlay backgroundOpacity={0} blur={3}>
-              <Image
-                src={swirlyUpArrowSrc}
-                className={classes.notificationsRequiredIndicatorArrow}
-              />
-            </Overlay>
+            <RemoveScroll>
+              <Overlay backgroundOpacity={0} blur={3}>
+                <Image
+                  src={swirlyUpArrowSrc}
+                  className={classes.notificationsRequiredIndicatorArrow}
+                />
+              </Overlay>
+            </RemoveScroll>
           )}
         </Box>
       </Stack>
