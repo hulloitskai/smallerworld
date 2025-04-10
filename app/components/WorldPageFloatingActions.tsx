@@ -1,4 +1,5 @@
 import { Affix, Indicator } from "@mantine/core";
+import { useModals } from "@mantine/modals";
 
 import DraftIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
 import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-solid";
@@ -28,6 +29,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   const { registration } = useWebPush();
   const [postType, setPostType] = useState<PostType | null>(null);
   const previousPostType = usePrevious(postType);
+  const { modals } = useModals();
 
   // == Load pinned posts
   const { data } = useRouteSWR<{ posts: Post[] }>(routes.posts.pinned, {
@@ -47,101 +49,111 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   return (
     <>
       <Space className={classes.space} />
-      <Affix className={classes.affix} position={{}}>
-        <Group
-          align="center"
-          justify="center"
-          gap={8}
-          style={{ pointerEvents: "none" }}
+      <Affix className={classes.affix} position={{}} zIndex={180}>
+        <Transition
+          transition="pop"
+          mounted={
+            isEmpty(modals) && !postType && !pinnedPostsDrawerModalOpened
+          }
+          enterDelay={100}
         >
-          <Transition
-            transition="pop"
-            mounted={actionsVisible}
-            enterDelay={100}
-          >
-            {style => (
-              <Menu
-                width={220}
-                shadow="sm"
-                classNames={{
-                  dropdown: classes.menuDropdown,
-                  itemLabel: classes.menuItemLabel,
-                  itemSection: classes.menuItemSection,
-                }}
+          {style => (
+            <Group
+              align="center"
+              justify="center"
+              gap={8}
+              style={[style, { pointerEvents: "none" }]}
+            >
+              <Transition
+                transition="pop"
+                mounted={actionsVisible}
+                enterDelay={100}
               >
-                <Menu.Target>
-                  <Indicator
-                    className={classes.newPostDraftIndicator}
-                    color="white"
-                    label={<DraftIcon />}
-                    size={16}
-                    offset={4}
-                    disabled={!newPostDraft}
-                    {...{ style }}
+                {style => (
+                  <Menu
+                    width={220}
+                    shadow="sm"
+                    classNames={{
+                      dropdown: classes.menuDropdown,
+                      itemLabel: classes.menuItemLabel,
+                      itemSection: classes.menuItemSection,
+                    }}
                   >
-                    <Button
-                      variant="filled"
-                      radius="xl"
-                      className={classes.menuButton}
-                      leftSection={<Box component={NewIcon} fz="lg" />}
-                    >
-                      share with your friends
-                    </Button>
-                  </Indicator>
-                </Menu.Target>
-                <Menu.Dropdown style={{ pointerEvents: "auto" }}>
-                  {POST_TYPES.map(type => (
-                    <Menu.Item
-                      key={type}
-                      leftSection={
-                        <Box component={POST_TYPE_TO_ICON[type]} fz="md" />
-                      }
-                      {...(type === newPostDraft?.postType && {
-                        rightSection: (
-                          <Box
-                            component={DraftCircleIcon}
-                            className={classes.menuItemDraftIcon}
-                          />
-                        ),
-                      })}
-                      onClick={() => {
-                        setPostType(type);
-                      }}
-                    >
-                      new {POST_TYPE_TO_LABEL[type]}
-                    </Menu.Item>
-                  ))}
-                </Menu.Dropdown>
-              </Menu>
-            )}
-          </Transition>
-          <Transition
-            transition="pop"
-            mounted={actionsVisible && !isEmpty(pinnedPosts)}
-            enterDelay={100}
-          >
-            {style => (
-              <ActionIcon
-                className={classes.pinnedPostsButton}
-                variant="outline"
-                size={36}
-                {...{ style }}
-                onClick={() => {
-                  setPinnedPostsDrawerModalOpened(true);
-                }}
+                    <Menu.Target>
+                      <Indicator
+                        className={classes.newPostDraftIndicator}
+                        color="white"
+                        label={<DraftIcon />}
+                        size={16}
+                        offset={4}
+                        disabled={!newPostDraft}
+                        {...{ style }}
+                      >
+                        <Button
+                          variant="filled"
+                          radius="xl"
+                          className={classes.menuButton}
+                          leftSection={<Box component={NewIcon} fz="lg" />}
+                        >
+                          share with your friends
+                        </Button>
+                      </Indicator>
+                    </Menu.Target>
+                    <Menu.Dropdown style={{ pointerEvents: "auto" }}>
+                      {POST_TYPES.map(type => (
+                        <Menu.Item
+                          key={type}
+                          leftSection={
+                            <Box component={POST_TYPE_TO_ICON[type]} fz="md" />
+                          }
+                          {...(type === newPostDraft?.postType && {
+                            rightSection: (
+                              <Box
+                                component={DraftCircleIcon}
+                                className={classes.menuItemDraftIcon}
+                              />
+                            ),
+                          })}
+                          onClick={() => {
+                            setPostType(type);
+                          }}
+                        >
+                          new {POST_TYPE_TO_LABEL[type]}
+                        </Menu.Item>
+                      ))}
+                    </Menu.Dropdown>
+                  </Menu>
+                )}
+              </Transition>
+              <Transition
+                transition="pop"
+                mounted={actionsVisible && !isEmpty(pinnedPosts)}
+                enterDelay={100}
               >
-                <Indicator
-                  className={classes.pinnedPostsIndicator}
-                  label={pinnedPosts.length}
-                  size={16}
-                  offset={-4}
-                >
-                  <MegaphoneIcon />
-                </Indicator>
-              </ActionIcon>
-            )}
-          </Transition>
-        </Group>
+                {style => (
+                  <ActionIcon
+                    className={classes.pinnedPostsButton}
+                    variant="outline"
+                    size={36}
+                    {...{ style }}
+                    onClick={() => {
+                      setPinnedPostsDrawerModalOpened(true);
+                    }}
+                  >
+                    <Indicator
+                      className={classes.pinnedPostsIndicator}
+                      label={pinnedPosts.length}
+                      size={16}
+                      offset={-4}
+                    >
+                      <MegaphoneIcon />
+                    </Indicator>
+                  </ActionIcon>
+                )}
+              </Transition>
+            </Group>
+          )}
+        </Transition>
       </Affix>
       <DrawerModal
         title={

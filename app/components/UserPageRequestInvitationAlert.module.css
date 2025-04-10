@@ -3,7 +3,6 @@
   --affix-left: var(--affix-inset);
   --affix-right: var(--affix-inset);
   --affix-bottom: calc(var(--affix-inset) + var(--safe-area-inset-bottom, 0px));
-  --affix-z-index: 180;
 }
 
 .alert {

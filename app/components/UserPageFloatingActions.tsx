@@ -46,7 +46,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
   return (
     <>
       <Space className={classes.space} />
-      <Affix className={classes.affix} position={{}}>
+      <Affix className={classes.affix} position={{}} zIndex={180}>
         <Center style={{ pointerEvents: "none" }}>
           <Transition
             transition="pop"

@@ -35,7 +35,7 @@ export const UserPageRequestInvitationAlert: FC<
 
   return (
     <>
-      <Affix className={classes.affix} position={{}}>
+      <Affix className={classes.affix} position={{}} zIndex={180}>
         <Transition
           transition="pop"
           mounted={isEmpty(modals) && !pageDialogOpened}
