@@ -20,7 +20,6 @@ export const setupSentry = () => {
       environment: import.meta.env.RAILS_ENV,
       tracesSampleRate,
       profilesSampleRate,
-      // enabled: import.meta.env.RAILS_ENV === "production",
       sendDefaultPii: true,
       integrations: [
         contextLinesIntegration(),
@@ -35,6 +34,7 @@ export const setupSentry = () => {
         "HTTP Client Error with status code: 503",
         "Authentication required",
         "Shutdown called.",
+        "Capture disabled. Turn on debug mode for more information.",
         /^Error loading edge\.fullstory\.com/,
       ],
       beforeSend(event) {
