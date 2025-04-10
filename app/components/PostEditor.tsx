@@ -43,6 +43,12 @@ const PostEditor: FC<PostEditorProps> = ({
         LinkExtension.configure({ defaultProtocol: "https" }),
         PlaceholderExtension.configure({ placeholder }),
       ],
+      editorProps: {
+        attributes: {
+          class: classes.contentEditable!,
+          "data-vaul-no-drag": "true",
+        },
+      },
       content: initialValue,
       autofocus: true,
       onCreate: ({ editor }) => {
@@ -70,12 +76,11 @@ const PostEditor: FC<PostEditorProps> = ({
       classNames={{
         root: classes.editor,
         content: classes.content,
-        // toolbar: classes.toolbar,
       }}
       style={{
         ...(radius && { "--editor-radius": getRadius(radius) }),
         ...(contentEditableMinHeight && {
-          "--editor-content-editable-min-height": `${contentEditableMinHeight}px`,
+          "--editor-content-editable-min-height": rem(contentEditableMinHeight),
         }),
       }}
       data-vaul-no-drag

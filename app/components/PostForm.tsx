@@ -265,6 +265,11 @@ const PostForm: FC<PostFormProps> = props => {
                   fontFamily: "var(--mantine-font-family-headings)",
                 },
               }}
+              {...(vaulPortalTarget && {
+                onPointerDownCapture: ({ nativeEvent }) => {
+                  nativeEvent.stopImmediatePropagation();
+                },
+              })}
             />
           )}
           <Input.Wrapper error={errors.body_html}>
@@ -286,6 +291,11 @@ const PostForm: FC<PostFormProps> = props => {
               onUpdate={({ editor }) => {
                 setBodyTextEmpty(editor.getText().trim() === "");
               }}
+              {...(vaulPortalTarget && {
+                onPointerDownCapture: ({ nativeEvent }) => {
+                  nativeEvent.stopImmediatePropagation();
+                },
+              })}
             />
           </Input.Wrapper>
           {quotedPost ? (
@@ -348,6 +358,7 @@ const PostForm: FC<PostFormProps> = props => {
                       : "",
                   );
                 }}
+                data-vaul-no-drag
               />
             )}
             <Button
