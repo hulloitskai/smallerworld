@@ -318,6 +318,7 @@ const PostForm: FC<PostFormProps> = props => {
               <DateInput
                 placeholder="keep pinned until"
                 leftSection={<CalendarIcon />}
+                minDate={todayDate}
                 value={pinnedUntil}
                 error={errors.pinned_until}
                 required
@@ -337,16 +338,13 @@ const PostForm: FC<PostFormProps> = props => {
                     textTransform: "lowercase",
                   },
                 }}
-                minDate={todayDate}
                 onChange={date => {
-                  setFieldValue(
-                    "pinned_until",
-                    date
-                      ? DateTime.fromJSDate(date)
-                          .set({ hour: 23, minute: 59, second: 59 })
-                          .toISO()
-                      : "",
-                  );
+                  const value = date
+                    ? DateTime.fromJSDate(date)
+                        .set({ hour: 23, minute: 59, second: 59 })
+                        .toISO()
+                    : "";
+                  setFieldValue("pinned_until", value);
                 }}
                 data-vaul-no-drag
               />

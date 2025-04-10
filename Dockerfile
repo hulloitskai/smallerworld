@@ -45,7 +45,6 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
 
 # Install NodeJS
 COPY .node-version ./
-ENV NODE_ENV=production
 RUN --mount=type=cache,target=/var/cache,sharing=locked \
   --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
   BUILD_DEPS="git curl" set -eux && \
@@ -85,24 +84,9 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
 COPY .bash_profile .inputrc /root/
 COPY starship.toml /root/.config/starship.toml
 
-# == System with Playwright
-FROM system AS system-with-playwright
-ENV PLAYWRIGHT_VERSION=1.45
-
-# Install Playwright
-RUN --mount=type=cache,target=/var/cache,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-  --mount=type=cache,target=/root/.npm,sharing=locked \
-  set -eux && \
-  npm install -g playwright@$PLAYWRIGHT_VERSION && \
-  playwright install --with-deps chromium && \
-  apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  rm -r /var/log/* && \
-  playwright --version
-
 
 # == Base (without built assets)
-FROM system-with-playwright AS base
+FROM system AS base
 
 # Install Ruby dependencies
 COPY Gemfile Gemfile.lock ./
