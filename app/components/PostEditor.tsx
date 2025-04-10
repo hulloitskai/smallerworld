@@ -94,6 +94,7 @@ const PostEditor: FC<PostEditorProps> = ({
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />
             <RichTextEditor.Italic />
+            <RichTextEditor.Strikethrough />
             <RichTextEditor.Link
               popoverProps={{
                 withArrow: false,
