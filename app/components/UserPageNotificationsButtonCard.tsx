@@ -1,4 +1,4 @@
-import { Popover } from "@mantine/core";
+import { Popover, Text } from "@mantine/core";
 
 import {
   useFriendNotificationSettings,
@@ -56,20 +56,27 @@ const UserPageNotificationsButtonCard: FC<
             <FriendNotificationSettingsFormInputs
               form={notificationSettingsForm}
             />
-            <Button
-              variant="filled"
-              loading={loading || subscribing}
-              disabled={!supported}
-              leftSection={<NotificationIcon />}
-              onClick={() => {
-                if (notificationSettingsForm.isDirty()) {
-                  notificationSettingsForm.submit();
-                }
-                void subscribe();
-              }}
-            >
-              enable push notifications
-            </Button>
+            <Stack gap={4}>
+              <Button
+                variant="filled"
+                loading={loading || subscribing}
+                disabled={!supported}
+                leftSection={<NotificationIcon />}
+                onClick={() => {
+                  if (notificationSettingsForm.isDirty()) {
+                    notificationSettingsForm.submit();
+                  }
+                  void subscribe();
+                }}
+              >
+                enable push notifications
+              </Button>
+              {!supported && (
+                <Text size="xs" c="dimmed" ta="center">
+                  push notifications not supported on this device :(
+                </Text>
+              )}
+            </Stack>
           </Stack>
           <LoadingOverlay visible={!notificationSettings} />
         </Card>

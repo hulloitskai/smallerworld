@@ -1,4 +1,4 @@
-import { Loader } from "@mantine/core";
+import { Loader, Text } from "@mantine/core";
 
 import { useWebPush } from "~/helpers/webPush";
 
@@ -27,17 +27,24 @@ const WorldPageNotificationsButton: FC = () => {
           </ActionIcon>
         </Skeleton>
       ) : registration === null || subscription === null ? (
-        <Button
-          variant="filled"
-          loading={loading || subscribing}
-          disabled={!supported}
-          leftSection={<NotificationIcon />}
-          onClick={() => {
-            void subscribe();
-          }}
-        >
-          enable push notifications
-        </Button>
+        <Stack gap={4}>
+          <Button
+            variant="filled"
+            loading={loading || subscribing}
+            disabled={!supported}
+            leftSection={<NotificationIcon />}
+            onClick={() => {
+              void subscribe();
+            }}
+          >
+            enable push notifications
+          </Button>
+          {!supported && (
+            <Text size="xs" c="dimmed" ta="center">
+              push notifications not supported on this device :(
+            </Text>
+          )}
+        </Stack>
       ) : (
         <Menu opened={menuOpened} onChange={setMenuOpened}>
           <Menu.Target>

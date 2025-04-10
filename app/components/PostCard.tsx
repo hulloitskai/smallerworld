@@ -221,6 +221,11 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
           },
         ]}
         carousel={{ finite: true }}
+        controller={{
+          closeOnBackdropClick: true,
+          closeOnPullDown: true,
+          closeOnPullUp: true,
+        }}
         render={{
           buttonPrev: () => null,
           buttonNext: () => null,
