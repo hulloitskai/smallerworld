@@ -1,8 +1,13 @@
 import { getRadius, type MantineRadius } from "@mantine/core";
 import { RichTextEditor, type RichTextEditorProps } from "@mantine/tiptap";
-import LinkExtension from "@tiptap/extension-link";
+import { Link as LinkExtension } from "@mantine/tiptap";
 import PlaceholderExtension from "@tiptap/extension-placeholder";
-import { type Editor, type EditorOptions, useEditor } from "@tiptap/react";
+import {
+  BubbleMenu,
+  type Editor,
+  type EditorOptions,
+  useEditor,
+} from "@tiptap/react";
 import StarterKitExtension from "@tiptap/starter-kit";
 
 import classes from "./PostEditor.module.css";
@@ -29,16 +34,13 @@ const PostEditor: FC<PostEditorProps> = ({
   contentEditableMinHeight,
   ...otherProps
 }) => {
+  // == Editor
   const [html, setHtml] = useState(initialValue);
   const editor = useEditor(
     {
       extensions: [
-        StarterKitExtension.configure({
-          italic: false,
-          heading: false,
-          history: false,
-        }),
-        LinkExtension,
+        StarterKitExtension.configure({ heading: false, history: false }),
+        LinkExtension.configure({ defaultProtocol: "https" }),
         PlaceholderExtension.configure({ placeholder }),
       ],
       content: initialValue,
@@ -59,6 +61,9 @@ const PostEditor: FC<PostEditorProps> = ({
     [initialValue, placeholder],
   );
 
+  // == Link editor
+  const vaulPortalTarget = useVaulPortalTarget();
+
   return (
     <RichTextEditor
       {...{ editor }}
@@ -76,6 +81,42 @@ const PostEditor: FC<PostEditorProps> = ({
       data-vaul-no-drag
       {...otherProps}
     >
+      {editor && (
+        <BubbleMenu
+          {...{ editor }}
+          tippyOptions={{ appendTo: vaulPortalTarget, zIndex: 180 }}
+        >
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.Bold />
+            <RichTextEditor.Italic />
+            <RichTextEditor.Link
+              popoverProps={{
+                withArrow: false,
+                position: "top",
+                offset: -26,
+                portalProps: {
+                  target: vaulPortalTarget,
+                },
+                styles: {
+                  dropdown: {
+                    padding: 0,
+                    border: "none",
+                  },
+                },
+              }}
+              styles={{
+                linkEditorSave: {
+                  textTransform: "lowercase",
+                },
+                linkEditorExternalControl: {
+                  border: "none",
+                },
+              }}
+            />
+            {!!editor.getAttributes("link").href && <RichTextEditor.Unlink />}
+          </RichTextEditor.ControlsGroup>
+        </BubbleMenu>
+      )}
       <RichTextEditor.Content />
     </RichTextEditor>
   );

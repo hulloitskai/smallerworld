@@ -44,6 +44,7 @@ bin/setup
 - [x] onboarding redo (invite 3 friends, etc.)
 - [x] arrow still isn't that obvious for enable push notifs
   - don't allow scrolling until enabled?
+- [x] inline rich text editor toolbar
 - [ ] why does add-to-homescreen instructions image #2 never load properly?
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] remove old supabase auth code

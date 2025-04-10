@@ -32,7 +32,6 @@
     "@react-email/components": "^0.0.35",
     "@sentry/browser": "^9.10.1",
     "@sentry/react": "^8.30.0",
-    "@tiptap/extension-link": "^2.11.5",
     "@tiptap/extension-placeholder": "^2.11.5",
     "@tiptap/pm": "^2.11.5",
     "@tiptap/react": "^2.11.5",
