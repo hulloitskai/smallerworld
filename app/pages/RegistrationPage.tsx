@@ -21,6 +21,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
   const timeZone = useTimeZone();
 
   // == Form
+  const [shouldDeriveHandle, setShouldDeriveHandle] = useState(true);
   const { values, getInputProps, submitting, submit, setFieldValue } = useForm({
     action: routes.registration.create,
     descriptor: "complete signup",
@@ -60,7 +61,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
     },
   });
   useEffect(() => {
-    if (values.name) {
+    if (values.name && shouldDeriveHandle) {
       const handle = values.name
         .toLocaleLowerCase()
         .replace(/[^a-z0-9_]/g, "_");
@@ -113,6 +114,12 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                     return "@" + value;
                   }
                   return value;
+                }}
+                onAccept={value => {
+                  setFieldValue("prefixed_handle", value);
+                }}
+                onInput={({ currentTarget }) => {
+                  setShouldDeriveHandle(!currentTarget.value);
                 }}
                 label="your handle"
                 description="numbers, letters, and underscores only"
