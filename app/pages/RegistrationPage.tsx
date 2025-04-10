@@ -65,7 +65,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       const handle = values.name
         .toLocaleLowerCase()
         .replace(/[^a-z0-9_]/g, "_");
-      setFieldValue("prefixed_handle", `@${handle}`);
+      setFieldValue("prefixed_handle", "@" + handle);
     }
   }, [values.name]); // eslint-disable-line react-hooks/exhaustive-deps
 

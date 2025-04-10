@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_04_054201) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_10_075123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_054201) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "encouragements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "friend_id", null: false
+    t.string "emoji", null: false
+    t.text "message", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.index ["created_at"], name: "index_encouragements_on_created_at"
+    t.index ["friend_id"], name: "index_encouragements_on_friend_id"
   end
 
   create_table "friends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -276,6 +285,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_04_054201) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "encouragements", "friends"
   add_foreign_key "friends", "join_requests"
   add_foreign_key "friends", "users"
   add_foreign_key "join_requests", "users"

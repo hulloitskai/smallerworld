@@ -25,6 +25,9 @@ module GeneratedPathHelpersModule
   def edit_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def encouragements_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def file_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

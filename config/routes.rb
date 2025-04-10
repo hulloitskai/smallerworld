@@ -132,6 +132,9 @@ Rails.application.routes.draw do
             export: true
   resources :post_reactions, only: :destroy, export: true
 
+  # == Encouragements
+  resources :encouragements, only: :create, export: true
+
   # == Pages
   root "landing#show", export: true
   get "/src" => redirect(

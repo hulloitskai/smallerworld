@@ -1,4 +1,5 @@
 import {
+  type EncouragementNotificationPayload,
   type FriendNotificationPayload,
   type JoinRequestNotificationPayload,
   type Notification,
@@ -66,6 +67,15 @@ export const renderNotification = (
         body: `${friend.name} installed your world on their phone :)`,
       };
     }
+    case "Encouragement": {
+      const { encouragement } =
+        notification.payload as EncouragementNotificationPayload;
+      const { emoji, message, friend } = encouragement;
+      return {
+        title: `${friend.name} wants to hear from u!`,
+        body: [emoji, message].join(" "),
+      };
+    }
     // default:
     //   throw new Error(`Unknown notification type: ${notification.type}`);
   }
@@ -110,6 +120,8 @@ export const notificationActionUrl = (notification: Notification): string => {
         },
       });
     }
+    case "Encouragement":
+      return routes.world.show.path();
     // default:
     //   throw new Error(`Unknown notification type: ${notification.type}`);
   }

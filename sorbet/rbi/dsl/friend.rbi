@@ -354,6 +354,20 @@ class Friend
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def encouragement_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def encouragement_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :encouragements`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Encouragement::PrivateCollectionProxy) }
+    def encouragements; end
+
+    sig { params(value: T::Enumerable[::Encouragement]).void }
+    def encouragements=(value); end
+
     sig { returns(T.nilable(::JoinRequest)) }
     def join_request; end
 

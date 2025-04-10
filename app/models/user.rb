@@ -45,6 +45,7 @@ class User < ApplicationRecord
            inverse_of: :author,
            foreign_key: :author_id
   has_many :join_requests, dependent: :destroy
+  has_many :encouragements, dependent: :destroy
 
   # == Attachments
   has_one_attached :page_icon

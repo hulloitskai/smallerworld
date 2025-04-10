@@ -25,6 +25,9 @@ module GeneratedUrlHelpersModule
   def edit_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def encouragements_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def file_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
