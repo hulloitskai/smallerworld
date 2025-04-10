@@ -34,3 +34,12 @@
     }
   }
 }
+
+.dateInput {
+  flex-grow: 1;
+  max-width: 190px;
+
+  :global(.mantine-DateInput-input) {
+    text-transform: lowercase;
+  }
+}

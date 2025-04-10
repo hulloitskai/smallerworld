@@ -45,6 +45,7 @@ bin/setup
 - [x] arrow still isn't that obvious for enable push notifs
   - don't allow scrolling until enabled?
 - [x] inline rich text editor toolbar
+- [x] fix iOS text selection on post form
 - [ ] why does add-to-homescreen instructions image #2 never load properly?
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] remove old supabase auth code

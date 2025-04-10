@@ -316,6 +316,7 @@ const PostForm: FC<PostFormProps> = props => {
           <Group gap="xs" align="start" justify="end" mt="xs">
             {postType === "invitation" && (
               <DateInput
+                className={classes.dateInput}
                 placeholder="keep pinned until"
                 leftSection={<CalendarIcon />}
                 minDate={todayDate}
@@ -328,15 +329,6 @@ const PostForm: FC<PostFormProps> = props => {
                     target: vaulPortalTarget,
                   },
                   position: "bottom",
-                }}
-                styles={{
-                  root: {
-                    flexGrow: 1,
-                    maxWidth: 190,
-                  },
-                  input: {
-                    textTransform: "lowercase",
-                  },
                 }}
                 onChange={date => {
                   const value = date

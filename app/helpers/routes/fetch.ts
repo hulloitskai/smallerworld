@@ -5,8 +5,6 @@ import {
   type RequestOptions,
   type ResponseError,
 } from "@js-from-routes/client";
-import { omit } from "lodash-es";
-import { toast } from "sonner";
 
 import { isCSRFVerificationError, toastInvalidCSRFToken } from "~/helpers/csrf";
 
