@@ -42,9 +42,16 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           </Group>
         </Alert>
       )}
-      <Title className={classes.opener} ta="center">
-        a <Emph>direct connection</Emph> to your personal support network
-      </Title>
+      <Stack align="center" gap="md">
+        <Title className={classes.opener}>
+          a <Emph>direct connection</Emph> to your personal support network
+        </Title>
+        <Text className={classes.subtitle}>
+          (a way to let your inner circle know about what&apos;s{" "}
+          <span style={{ color: "var(--mantine-color-text)" }}>*actually*</span>{" "}
+          going on in your life)
+        </Text>
+      </Stack>
       <Box pos="relative">
         <Box
           component="video"

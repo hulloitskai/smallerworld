@@ -1,4 +1,3 @@
-// import { init as initSentry } from "@sentry/browser";
 import { pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";

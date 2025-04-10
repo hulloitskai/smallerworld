@@ -10,8 +10,18 @@
 
 .opener {
   color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  font-size: 38px;
   font-weight: 900;
   line-height: 1.2;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  max-width: 340px;
+  font-weight: 500;
+  color: var(--mantine-color-dimmed);
+  margin-inline: auto;
 }
 
 .emphasis {
