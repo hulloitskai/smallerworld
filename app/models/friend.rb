@@ -96,19 +96,27 @@ class Friend < ApplicationRecord
   # == Methods
   sig { returns(T.nilable(Encouragement)) }
   def latest_visible_encouragement
-    latest_user_post_timestamp = user_posts
-      .reverse_chronological
-      .select(:created_at)
-      .limit(1)
-    encouragements
-      .where("created_at > ?", 12.hours.ago)
-      .where("created_at > (?)", latest_user_post_timestamp)
-      .reverse_chronological
-      .first
+    transaction do
+      visible_encouragements = encouragements
+        .where("created_at > ?", 12.hours.ago)
+      if (created_at = latest_user_post_created_at)
+        visible_encouragements = visible_encouragements
+          .where("created_at > ?", created_at)
+      end
+      visible_encouragements.reverse_chronological.first
+    end
   end
 
   sig { void }
   def create_notification!
     notifications.create!(recipient: user!)
+  end
+
+  private
+
+  # == Helpers
+  sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
+  def latest_user_post_created_at
+    user_posts.reverse_chronological.pick(:created_at)
   end
 end

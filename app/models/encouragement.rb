@@ -42,6 +42,7 @@ class Encouragement < ApplicationRecord
   # == Validations
   validates :emoji, emoji: true
   validates :message, presence: true, length: { maximum: 240 }
+  validate :validate_no_other_encouragement_in_last_12_hours
 
   # == Callbacks
   after_create :create_notification!
@@ -61,5 +62,25 @@ class Encouragement < ApplicationRecord
   sig { void }
   def create_notification!
     notifications.create!(recipient: user!)
+  end
+
+  private
+
+  # == Validators
+  sig { void }
+  def validate_no_other_encouragement_in_last_12_hours
+    other_encouragements = friend!
+      .encouragements
+      .where("created_at > ?", 12.hours.ago)
+    if (id = self[:id])
+      other_encouragements = other_encouragements.where.not(id:)
+    end
+    if other_encouragements.exists?
+      errors.add(
+        :base,
+        :invalid,
+        message: "already created for this friend in the last 12 hours",
+      )
+    end
   end
 end

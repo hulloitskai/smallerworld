@@ -82,13 +82,16 @@ class User < ApplicationRecord
 
   sig { returns(Encouragement::PrivateAssociationRelation) }
   def encouragements_since_last_post
-    latest_post_timestamp = posts
-      .reverse_chronological
-      .select(:created_at)
-      .limit(1)
-    encouragements
-      .where("encouragements.created_at > (?)", latest_post_timestamp)
-      .chronological
+    transaction do
+      encouragements = self.encouragements
+      if (created_at = latest_post_created_at)
+        encouragements = encouragements.where(
+          "encouragements.created_at > ?",
+          created_at,
+        )
+      end
+      encouragements.chronological
+    end
   end
 
   # sig { returns(Friend::PrivateRelation) }
@@ -122,6 +125,12 @@ class User < ApplicationRecord
   end
 
   private
+
+  # == Helpers
+  sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
+  def latest_post_created_at
+    posts.reverse_chronological.pick(:created_at)
+  end
 
   # == Validators
   sig { void }
