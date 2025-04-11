@@ -31,6 +31,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
       }),
     },
     descriptor: "load posts",
+    keepPreviousData: true,
   });
   const pinnedPosts = data?.posts ?? [];
 
