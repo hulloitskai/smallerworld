@@ -32,12 +32,10 @@ export const handleServiceWorkerNavigation = (): void => {
     if (typeof data !== "object" || !("action" in data)) {
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { action } = data;
     switch (action) {
       case "navigate": {
         console.info("Received navigation request from service worker", data);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { url } = data;
         if (typeof url !== "string" || url !== location.href) {
           return;

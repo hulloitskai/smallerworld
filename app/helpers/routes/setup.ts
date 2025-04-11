@@ -16,7 +16,6 @@ export const setupRoutes = (): void => {
     }
   };
   Config.fetch = (args: FetchOptions): Promise<Response> => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { url, data, responseAs, ...options } = args;
     let body: BodyInit | undefined;
     if (data !== undefined) {
@@ -62,10 +61,8 @@ export const setupRoutes = (): void => {
     );
     error.response = response;
     try {
-      /* eslint-disable @typescript-eslint/no-unsafe-assignment */
       const body = await Config.unwrapResponse(response, responseAs);
       error.body = responseAs === "json" ? Config.deserializeData(body) : body;
-      /* eslint-enable @typescript-eslint/no-unsafe-assignment */
     } catch (error) {
       console.error("Failed to unwrap response error", error);
     }

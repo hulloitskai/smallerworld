@@ -7,7 +7,6 @@ export { setupInertia } from "./setup";
 
 export const handleNonInertiaDocumentResponse = (): VoidFunction => {
   return router.on("invalid", event => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { status, headers, data, request } = event.detail.response;
     if (
       status >= 200 &&

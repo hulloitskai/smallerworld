@@ -22,9 +22,9 @@ export const fetchRoute = async <Data>(
 ): Promise<Data> => {
   const { descriptor, failSilently, ...routeOptions } = options;
   const handleError = (responseError: ResponseError) => {
-    const { body } = responseError; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
-    if (body !== null && typeof body === "object" && "error" in body) {
-      const { error } = body; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    const { body } = responseError;
+    if (isErrorBody(body)) {
+      const { error } = body;
       console.error(`Failed to ${descriptor}`, error);
       if (isCSRFVerificationError(error)) {
         toastInvalidCSRFToken();
@@ -34,7 +34,6 @@ export const fetchRoute = async <Data>(
             typeof error === "string" ? error : "an unknown error occurred.",
         });
       }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       throw new Error(error);
     } else {
       console.error(`Failed to ${descriptor}`, responseError);
@@ -53,3 +52,6 @@ export const fetchRoute = async <Data>(
   }
   return route<Data>(routeOptions).catch(handleError);
 };
+
+const isErrorBody = (body: any): body is { error: string } =>
+  typeof get(body, "error") === "string";

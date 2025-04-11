@@ -49,7 +49,6 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
             ))
           )
         ) : (
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           [...new Array(3)].map((_, i) => <Skeleton key={i} h={96} />)
         )}
       </Stack>

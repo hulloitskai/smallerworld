@@ -212,24 +212,4 @@ self.addEventListener("notificationclick", event => {
   );
 });
 
-// TODO: Configure Sentry for service worker?
-// self.addEventListener("message", ({ data }) => {
-//   if (typeof data !== "object" || !("action" in data)) {
-//     return;
-//   }
-//   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-//   const { action } = data;
-//   switch (action) {
-//     case "init_sentry": {
-//       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-//       const { dsn } = data;
-//       if (typeof dsn !== "string") {
-//         return;
-//       }
-//       initSentry({ dsn });
-//       break;
-//     }
-//   }
-// });
-
 console.info("Service worker installed with scope", self.registration.scope);

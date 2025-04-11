@@ -39,7 +39,7 @@ export const useRouteSWR = <
     failSilently,
     descriptor,
     params,
-    data, // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    data,
     deserializeData,
     fetchOptions,
     serializeData,
@@ -68,7 +68,6 @@ export const useRouteSWR = <
       fetchRoute(url, {
         failSilently,
         descriptor,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data,
         deserializeData,
         fetchOptions,
@@ -111,7 +110,7 @@ export const useRouteMutation = <
     failSilently,
     descriptor,
     params,
-    data, // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    data,
     deserializeData,
     fetchOptions,
     serializeData,
@@ -132,7 +131,6 @@ export const useRouteMutation = <
       fetchRoute(url, {
         failSilently,
         descriptor,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data: arg ?? data,
         deserializeData,
         fetchOptions,
