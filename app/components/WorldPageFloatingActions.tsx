@@ -1,4 +1,4 @@
-import { Affix, Indicator } from "@mantine/core";
+import { Affix, HoverCard, Indicator, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import DraftIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
@@ -13,7 +13,7 @@ import {
 } from "~/helpers/posts";
 import { useNewPostDraft } from "~/helpers/posts/form";
 import { useWebPush } from "~/helpers/webPush";
-import { type Post, type PostType } from "~/types";
+import { type Encouragement, type Post, type PostType } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
@@ -27,16 +27,30 @@ export interface WorldPageFloatingActionsProps {}
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
-  const [postType, setPostType] = useState<PostType | null>(null);
-  const previousPostType = usePrevious(postType);
   const { modals } = useModals();
 
-  // == Load pinned posts
-  const { data } = useRouteSWR<{ posts: Post[] }>(routes.posts.pinned, {
-    descriptor: "load pinned posts",
+  // == Post type
+  const [postType, setPostType] = useState<PostType | null>(null);
+  const previousPostType = usePrevious(postType);
+
+  // == Load encouragements
+  const { data: encouragementsData } = useRouteSWR<{
+    encouragements: Encouragement[];
+  }>(routes.encouragements.index, {
+    descriptor: "load encouragements",
     keepPreviousData: true,
   });
-  const pinnedPosts = data?.posts ?? [];
+  const encouragements = encouragementsData?.encouragements ?? [];
+
+  // == Load pinned posts
+  const { data: pinnedPostsData } = useRouteSWR<{ posts: Post[] }>(
+    routes.posts.pinned,
+    {
+      descriptor: "load pinned posts",
+      keepPreviousData: true,
+    },
+  );
+  const pinnedPosts = pinnedPostsData?.posts ?? [];
 
   // == Pinned posts drawer modal
   const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
@@ -60,7 +74,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
         >
           {style => (
             <Group
-              align="center"
+              align="end"
               justify="center"
               gap={8}
               style={[style, { pointerEvents: "none" }]}
@@ -71,59 +85,102 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                 enterDelay={100}
               >
                 {style => (
-                  <Menu
-                    width={220}
-                    shadow="sm"
-                    classNames={{
-                      dropdown: classes.menuDropdown,
-                      itemLabel: classes.menuItemLabel,
-                      itemSection: classes.menuItemSection,
-                    }}
-                  >
-                    <Menu.Target>
-                      <Indicator
-                        className={classes.newPostDraftIndicator}
-                        color="white"
-                        label={<DraftIcon />}
-                        size={16}
-                        offset={4}
-                        disabled={!newPostDraft}
-                        {...{ style }}
-                      >
-                        <Button
-                          variant="filled"
-                          radius="xl"
-                          className={classes.menuButton}
-                          leftSection={<Box component={NewIcon} fz="lg" />}
+                  <Stack gap={6} w="min-content" {...{ style }}>
+                    <Group gap={6} wrap="wrap" style={{ alignSelf: "center" }}>
+                      {encouragements.map(encouragement => (
+                        <HoverCard
+                          key={encouragement.id}
+                          position="top"
+                          shadow="sm"
                         >
-                          share with your friends
-                        </Button>
-                      </Indicator>
-                    </Menu.Target>
-                    <Menu.Dropdown style={{ pointerEvents: "auto" }}>
-                      {POST_TYPES.map(type => (
-                        <Menu.Item
-                          key={type}
-                          leftSection={
-                            <Box component={POST_TYPE_TO_ICON[type]} fz="md" />
-                          }
-                          {...(type === newPostDraft?.postType && {
-                            rightSection: (
-                              <Box
-                                component={DraftCircleIcon}
-                                className={classes.menuItemDraftIcon}
-                              />
-                            ),
-                          })}
-                          onClick={() => {
-                            setPostType(type);
-                          }}
-                        >
-                          new {POST_TYPE_TO_LABEL[type]}
-                        </Menu.Item>
+                          <HoverCard.Target>
+                            <ActionIcon
+                              className={classes.encouragementButton}
+                              variant="outline"
+                              size="sm"
+                            >
+                              {encouragement.emoji}
+                            </ActionIcon>
+                          </HoverCard.Target>
+                          <HoverCard.Dropdown px="xs" py={8} maw={240}>
+                            <Stack gap={2}>
+                              <Text size="sm">
+                                &ldquo;{encouragement.message}&rdquo;
+                              </Text>
+                              <Text
+                                size="xs"
+                                c="dimmed"
+                                style={{ alignSelf: "end" }}
+                              >
+                                —{" "}
+                                {[
+                                  encouragement.friend.emoji,
+                                  encouragement.friend.name,
+                                ]
+                                  .filter(Boolean)
+                                  .join(" ")}
+                              </Text>
+                            </Stack>
+                          </HoverCard.Dropdown>
+                        </HoverCard>
                       ))}
-                    </Menu.Dropdown>
-                  </Menu>
+                    </Group>
+                    <Menu
+                      width={220}
+                      shadow="sm"
+                      classNames={{
+                        dropdown: classes.menuDropdown,
+                        itemLabel: classes.menuItemLabel,
+                        itemSection: classes.menuItemSection,
+                      }}
+                    >
+                      <Menu.Target>
+                        <Indicator
+                          className={classes.newPostDraftIndicator}
+                          color="white"
+                          label={<DraftIcon />}
+                          size={16}
+                          offset={4}
+                          disabled={!newPostDraft}
+                        >
+                          <Button
+                            variant="filled"
+                            radius="xl"
+                            className={classes.menuButton}
+                            leftSection={<Box component={NewIcon} fz="lg" />}
+                          >
+                            share with your friends
+                          </Button>
+                        </Indicator>
+                      </Menu.Target>
+                      <Menu.Dropdown style={{ pointerEvents: "auto" }}>
+                        {POST_TYPES.map(type => (
+                          <Menu.Item
+                            key={type}
+                            leftSection={
+                              <Box
+                                component={POST_TYPE_TO_ICON[type]}
+                                fz="md"
+                              />
+                            }
+                            {...(type === newPostDraft?.postType && {
+                              rightSection: (
+                                <Box
+                                  component={DraftCircleIcon}
+                                  className={classes.menuItemDraftIcon}
+                                />
+                              ),
+                            })}
+                            onClick={() => {
+                              setPostType(type);
+                            }}
+                          >
+                            new {POST_TYPE_TO_LABEL[type]}
+                          </Menu.Item>
+                        ))}
+                      </Menu.Dropdown>
+                    </Menu>
+                  </Stack>
                 )}
               </Transition>
               <Transition

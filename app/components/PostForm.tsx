@@ -143,6 +143,7 @@ const PostForm: FC<PostFormProps> = props => {
       }
       void mutatePosts();
       void mutateRoute(routes.posts.pinned);
+      void mutateRoute(routes.encouragements.index);
       if ("onPostCreated" in props) {
         props.onPostCreated?.(post);
       } else if ("onPostUpdated" in props) {
@@ -182,6 +183,12 @@ const PostForm: FC<PostFormProps> = props => {
     if (newPostDraft?.postType === postType) {
       const { values } = newPostDraft;
       setValues(values);
+      setTimeout(() => {
+        const editor = editorRef.current;
+        if (editor) {
+          setBodyTextEmpty(editor.getText().trim() === "");
+        }
+      }, 10);
       return () => {
         reset();
       };

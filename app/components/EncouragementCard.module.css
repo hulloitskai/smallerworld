@@ -1,0 +1,32 @@
+.card {
+  --blur-radius: light-dark(rem(8px), rem(12px));
+  background-color: light-dark(
+    alpha(var(--mantine-color-white), 0.7),
+    alpha(var(--mantine-color-black), 0.2)
+  );
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    backdrop-filter: blur(var(--blur-radius));
+    -webkit-backdrop-filter: blur(var(--blur-radius));
+  }
+
+  &[data-with-border] {
+    border-style: dashed;
+  }
+}
+
+.presetButton {
+  border-style: dashed;
+
+  @mixin where-light {
+    border-color: var(--mantine-color-primary-4);
+  }
+
+  :global(.mantine-ActionIcon-icon) {
+    font-size: var(--mantine-font-size-lg);
+  }
+}

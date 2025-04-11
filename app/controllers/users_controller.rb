@@ -9,7 +9,6 @@ class UsersController < ApplicationController
   def show
     handle = T.let(params.fetch(:handle), String)
     user = User.friendly.find(handle)
-    reply_phone_number = user.phone_number if current_friend
     page_icon_blob = user.page_icon_blob!
     favicon_variant =
       page_icon_blob.variant(resize_to_fill: [48, 48], format: "png")
@@ -17,13 +16,20 @@ class UsersController < ApplicationController
       page_icon_blob.variant(resize_to_fill: [96, 96], format: "png")
     apple_touch_icon_variant =
       page_icon_blob.variant(resize_to_fill: [180, 180], format: "png")
+    if (friend = current_friend)
+      reply_phone_number = user.phone_number
+      last_sent_encouragement = friend.latest_visible_encouragement
+    end
     render(inertia: "UserPage", props: {
       user: UserSerializer.one(user),
-      "replyPhoneNumber" => reply_phone_number,
       "faviconSrc" => rails_representation_path(favicon_variant),
       "faviconImageSrc" => rails_representation_path(favicon_image_variant),
       "appleTouchIconSrc" =>
         rails_representation_path(apple_touch_icon_variant),
+      "replyPhoneNumber" => reply_phone_number,
+      "lastSentEncouragement" => EncouragementSerializer.one_if(
+        last_sent_encouragement,
+      ),
     })
   end
 

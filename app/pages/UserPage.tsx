@@ -22,21 +22,17 @@ import {
   useReregisterWithDeviceIdentifiers,
   useWebPush,
 } from "~/helpers/webPush";
-import {
-  type Friend,
-  type FriendNotificationSettings,
-  type User,
-} from "~/types";
+import { type Encouragement, type Friend, type User } from "~/types";
 
 import classes from "./UserPage.module.css";
 
 export interface UserPageProps extends SharedPageProps {
   user: User;
-  friendNotificationSettings: FriendNotificationSettings | null;
-  replyPhoneNumber: string | null;
   faviconSrc: string;
   faviconImageSrc: string;
   appleTouchIconSrc: string;
+  replyPhoneNumber: string | null;
+  lastSentEncouragement: Encouragement | null;
 }
 
 const ICON_SIZE = 96;
@@ -56,11 +52,11 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
     if (visibility === "visible" && isStandalone) {
       void router.reload({
         only: [
-          "csrf",
           "user",
           "faviconSrc",
           "faviconImageSrc",
           "appleTouchIconSrc",
+          "lastSentEncouragement",
         ],
         async: true,
       });
@@ -191,7 +187,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           </Popover>
         </Box>
         <Box pos="relative">
-          <UserPageFeed {...{ user, replyPhoneNumber }} />
+          <UserPageFeed />
           {isStandalone && registration === null && (
             <RemoveScroll>
               <Overlay backgroundOpacity={0} blur={3}>

@@ -54,6 +54,8 @@ class Friend < ApplicationRecord
 
   # == Associations
   belongs_to :user
+  has_many :user_posts, through: :user, source: :posts
+
   belongs_to :join_request, optional: true
   has_many :post_reactions, dependent: :destroy
   has_many :post_reply_receipts, dependent: :destroy
@@ -92,6 +94,19 @@ class Friend < ApplicationRecord
   end
 
   # == Methods
+  sig { returns(T.nilable(Encouragement)) }
+  def latest_visible_encouragement
+    latest_user_post_timestamp = user_posts
+      .reverse_chronological
+      .select(:created_at)
+      .limit(1)
+    encouragements
+      .where("created_at > ?", 12.hours.ago)
+      .where("created_at > (?)", latest_user_post_timestamp)
+      .reverse_chronological
+      .first
+  end
+
   sig { void }
   def create_notification!
     notifications.create!(recipient: user!)

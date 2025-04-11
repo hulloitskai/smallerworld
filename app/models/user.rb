@@ -40,12 +40,12 @@ class User < ApplicationRecord
   # == Associations
   has_many :sessions, dependent: :destroy
   has_many :friends, dependent: :destroy
+  has_many :encouragements, through: :friends, dependent: :destroy
   has_many :posts,
            dependent: :destroy,
            inverse_of: :author,
            foreign_key: :author_id
   has_many :join_requests, dependent: :destroy
-  has_many :encouragements, dependent: :destroy
 
   # == Attachments
   has_one_attached :page_icon
@@ -78,6 +78,17 @@ class User < ApplicationRecord
   sig { returns(T::Boolean) }
   def admin?
     Admin.phone_numbers.include?(phone_number)
+  end
+
+  sig { returns(Encouragement::PrivateAssociationRelation) }
+  def encouragements_since_last_post
+    latest_post_timestamp = posts
+      .reverse_chronological
+      .select(:created_at)
+      .limit(1)
+    encouragements
+      .where("encouragements.created_at > (?)", latest_post_timestamp)
+      .chronological
   end
 
   # sig { returns(Friend::PrivateRelation) }

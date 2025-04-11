@@ -80,6 +80,7 @@ export const useLookupPushRegistration = ({
               endpoint: subscription.endpoint,
             },
           },
+          keepPreviousData: true,
           failSilently: true,
           onSuccess: ({ registration }) => {
             if (registration) {

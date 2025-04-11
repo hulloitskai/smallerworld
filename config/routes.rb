@@ -133,7 +133,7 @@ Rails.application.routes.draw do
   resources :post_reactions, only: :destroy, export: true
 
   # == Encouragements
-  resources :encouragements, only: :create, export: true
+  resources :encouragements, only: %i[index create], export: true
 
   # == Pages
   root "landing#show", export: true

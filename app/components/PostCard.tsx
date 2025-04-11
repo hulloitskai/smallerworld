@@ -56,7 +56,10 @@ const PostCard: FC<PostCardProps> = ({
       className={cn("PostCard", classes.card)}
       withBorder
       shadow="sm"
-      mod={{ focus, "post-visibility": post.visibility }}
+      mod={{
+        focus,
+        "post-visibility": post.visibility,
+      }}
       {...otherProps}
     >
       <Card.Section inheritPadding pt="xs" pb={10}>

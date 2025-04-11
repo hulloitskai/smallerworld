@@ -62,6 +62,8 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
       descriptor: "delete post",
       onSuccess: () => {
         void mutatePosts();
+        void mutateRoute(routes.posts.pinned);
+        void mutateRoute(routes.encouragements.index);
       },
     },
   );

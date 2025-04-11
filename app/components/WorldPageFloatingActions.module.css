@@ -80,3 +80,18 @@
     box-shadow: var(--mantine-shadow-sm);
   }
 }
+
+.encouragementButton {
+  font-size: var(--mantine-font-size-sm);
+  pointer-events: auto;
+  background-color: alpha(var(--mantine-color-white), light-dark(0.5, 0.8));
+  cursor: default;
+
+  @mixin where-light {
+    border-color: var(--mantine-color-primary-4);
+  }
+
+  @mixin hover {
+    background-color: var(--mantine-color-primary-light-hover);
+  }
+}

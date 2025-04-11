@@ -10,14 +10,14 @@ import PostCard from "./PostCard";
 
 export interface WorldPageFeedProps extends BoxProps {}
 
-const WorldPageFeed: FC<WorldPageFeedProps> = () => {
+const WorldPageFeed: FC<WorldPageFeedProps> = props => {
   const { post_id } = useQueryParams();
 
   // == Load posts
   const { posts, setSize, hasMorePosts, isValidating } = usePosts();
 
   return (
-    <Stack>
+    <Stack {...props}>
       {posts ? (
         isEmpty(posts) ? (
           <Card withBorder>
