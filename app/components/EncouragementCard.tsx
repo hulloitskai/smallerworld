@@ -18,9 +18,11 @@ interface EncouragementPreset {
 }
 
 const PRESETS: EncouragementPreset[] = [
-  { emoji: "❤️", message: "what's on your heart today?" },
+  { emoji: "❤️", message: "what's been on your heart?" },
+  { emoji: "💭", message: "thinking abt you!!" },
   { emoji: "✨", message: "what's been inspiring you lately?" },
   { emoji: "🍵", message: "i know u have tea to spill" },
+  { emoji: "✈️", message: "how's your trip going?" },
 ];
 
 const EncouragementCard: FC<EncouragementCardProps> = ({
@@ -31,7 +33,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
 }) => (
   <Card className={classes.card} withBorder>
     {lastSentEncouragement ? (
-      <Stack gap={2} align="center" ta="center">
+      <Stack gap={4} align="center" ta="center">
         <Text ff="heading">
           you sent {user.name} a {lastSentEncouragement.emoji}!
         </Text>
@@ -145,7 +147,11 @@ const EncouragementForm: FC<EncouragementFormProps> = ({
             maxRows={240}
             maxLength={MAX_MESSAGE_LENGTH}
             radius={10}
+            autoFocus
             style={{ flexGrow: 1 }}
+            onFocus={({ currentTarget }) => {
+              currentTarget.selectionStart = currentTarget.value.length;
+            }}
           />
           <Text size="xs" c="dimmed" style={{ alignSelf: "end" }}>
             {values.message.length} / {MAX_MESSAGE_LENGTH}
