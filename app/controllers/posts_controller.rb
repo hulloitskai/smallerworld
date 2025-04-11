@@ -10,7 +10,9 @@ class PostsController < ApplicationController
   # GET /posts
   def index
     user = authenticate_user!
-    posts = user.posts.includes(:image_blob).order(created_at: :desc, id: :asc)
+    posts = authorized_scope(user.posts)
+      .includes(:image_blob)
+      .order(created_at: :desc, id: :asc)
     pagy, paginated_posts = pagy_keyset(posts, limit: 5)
     render(json: {
       posts: PostSerializer.many(paginated_posts),
@@ -23,9 +25,7 @@ class PostsController < ApplicationController
   # GET /posts/pinned
   def pinned
     user = authenticate_user!
-    posts = user
-      .posts
-      .currently_pinned
+    posts = authorized_scope(user.posts.currently_pinned)
       .includes(:image_blob)
       .order(pinned_until: :asc, created_at: :asc)
     render(json: { posts: PostSerializer.many(posts) })
