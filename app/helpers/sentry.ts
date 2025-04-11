@@ -30,6 +30,7 @@ export const setupSentry = () => {
         httpClientIntegration(),
       ],
       ignoreErrors: [
+        /^Error loading edge\.fullstory\.com\/s\/fs/,
         /^ResizeObserver loop completed with undelivered notifications\.$/,
         /^Authentication required$/,
       ],
