@@ -44,7 +44,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
       )}
       <Stack align="center" gap="md">
         <Title className={classes.opener}>
-          a <Emph>direct connection</Emph> to your personal support network
+          a <Emph>direct connection</Emph> to your inner circle
         </Title>
         <Text className={classes.subtitle}>
           (a way to let your inner circle know about what&apos;s{" "}
