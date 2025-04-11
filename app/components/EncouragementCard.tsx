@@ -77,7 +77,7 @@ const EncouragementPopover: FC<EncouragementPopoverProps> = ({
 }) => {
   const [opened, setOpened] = useState(false);
   return (
-    <Popover width={300} {...{ opened }} onChange={setOpened}>
+    <Popover width={300} shadow="md" {...{ opened }} onChange={setOpened}>
       <Popover.Target>
         <ActionIcon
           className={classes.presetButton}
