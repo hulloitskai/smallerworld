@@ -35,11 +35,11 @@ class SessionsController < ApplicationController
       end
       verification_request.mark_as_verified!
     else
-      special_occassion_verification_code = Rails.application.credentials
+      special_occasion_verification_code = Rails.application.credentials
         .authentication
-        &.special_occassion_verification_code
+        &.special_occasion_verification_code
       user = User.find_by_phone_number(phone_number)
-      if verification_code == special_occassion_verification_code && user
+      if verification_code == special_occasion_verification_code && user
         start_new_session_for!(user)
         render(json: {
           "redirectUrl" => after_authentication_url,
