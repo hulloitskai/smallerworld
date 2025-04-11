@@ -7,6 +7,7 @@ import {
   replayCanvasIntegration,
   replayIntegration,
 } from "@sentry/react";
+import { AxiosError } from "axios";
 
 import { getMeta } from "~/helpers/meta";
 
@@ -29,35 +30,36 @@ export const setupSentry = () => {
         httpClientIntegration(),
       ],
       ignoreErrors: [
-        "ResizeObserver loop completed with undelivered notifications.",
-        "HTTP Client Error with status code: 502",
-        "HTTP Client Error with status code: 503",
-        "Authentication required",
-        "Shutdown called.",
-        "Capture disabled. Turn on debug mode for more information.",
-        /^Error loading edge\.fullstory\.com/,
+        /^ResizeObserver loop completed with undelivered notifications\.$/,
+        /^Authentication required$/,
       ],
-      beforeSend(event) {
-        if (event.exception?.values) {
-          const shouldSend = event.exception.values.every(({ type, value }) => {
-            if (!value) {
-              return false;
-            }
-            if (
-              type === "TypeError" &&
-              (value == "Load failed" ||
-                isFetchFailedMessage(value) ||
-                isScriptLoadFailedMessage(value) ||
-                isModuleImportFailedMessage(value))
-            ) {
-              return false;
-            }
-            if (type === "AxiosError" && value === "Network Error") {
-              return false;
-            }
-            return true;
-          });
-          if (!shouldSend) {
+      denyUrls: [
+        /^https:\/\/edge\.fullstory\.com\//,
+        /^https:\/\/cdn\.fullstory\.com\//,
+        /^https:\/\/www\.clarity\.ms\/s\//,
+      ],
+      beforeSend: (event, { originalException }) => {
+        if (originalException instanceof AxiosError) {
+          if (originalException.message === "Network Error") {
+            return null;
+          }
+        } else if (originalException instanceof TypeError) {
+          const { message } = originalException;
+          if (
+            message === "Load failed" ||
+            isFetchFailedMessage(message) ||
+            isScriptLoadFailedMessage(message) ||
+            isModuleImportFailedMessage(message)
+          ) {
+            return null;
+          }
+        } else if (
+          originalException instanceof Error &&
+          "response" in originalException &&
+          originalException.response instanceof Response
+        ) {
+          const { response } = originalException;
+          if (response.status >= 500 && response.status < 600) {
             return null;
           }
         }
