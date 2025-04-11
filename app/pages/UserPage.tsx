@@ -62,6 +62,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
           "faviconImageSrc",
           "appleTouchIconSrc",
         ],
+        async: true,
       });
     }
   }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps

@@ -30,6 +30,7 @@ const StandaloneSessionProvider: FC<StandaloneSessionProviderProps> = ({
       } else {
         router.reload({
           only: ["csrf"],
+          async: true,
           onBefore: () => {
             setSession(undefined);
           },

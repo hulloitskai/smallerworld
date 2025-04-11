@@ -30,6 +30,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     {
       descriptor: "load post stats",
       params: inViewport ? { id: post.id } : null,
+      keepPreviousData: true,
       refreshInterval: 5000,
       isVisible: () => inViewport,
     },
@@ -42,6 +43,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     {
       params: inViewport ? { post_id: post.id } : null,
       descriptor: "load reactions",
+      keepPreviousData: true,
       refreshInterval: 5000,
       isVisible: () => inViewport,
     },
