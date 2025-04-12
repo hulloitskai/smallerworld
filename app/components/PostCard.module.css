@@ -64,13 +64,13 @@
   padding: 8px 12px;
   border-radius: var(--mantine-radius-xl);
 
-  @mixin where-dark {
+  @mixin dark {
     --alert-color: var(--mantine-color-dark-1) !important;
     --alert-bd: rem(1px) solid var(--mantine-color-dark-2) !important;
     --alert-bg: alpha(var(--mantine-color-black), 0.4) !important;
   }
 
-  @mixin where-light {
+  @mixin light {
     --alert-bg: alpha(var(--mantine-color-white), 0.4) !important;
     --alert-color: darken(var(--mantine-color-gray-6), 0.2) !important;
   }

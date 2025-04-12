@@ -3,7 +3,7 @@
   padding-block: var(--mantine-spacing-lg);
 
   :global(.mantine-Card-root) & {
-    @mixin where-dark {
+    @mixin dark {
       border-color: var(--mantine-color-dark-4);
     }
   }

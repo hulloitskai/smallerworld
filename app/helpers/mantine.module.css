@@ -23,11 +23,11 @@
     .input {
       font-size: var(--mantine-font-size-md);
 
-      @mixin where-dark {
+      @mixin dark {
         --input-bg: transparent;
       }
 
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
@@ -63,12 +63,12 @@
     }
 
     .card {
-      @mixin where-dark {
+      @mixin dark {
         background-color: var(--mantine-color-dark-8);
         border-color: var(--mantine-color-dark-6);
       }
 
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
         border-color: alpha(var(--mantine-color-white), 0.2);
@@ -85,11 +85,11 @@
     }
 
     .cardSection {
-      @mixin where-dark {
+      @mixin dark {
         border-color: var(--mantine-color-dark-6);
       }
 
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         &:not(:global(.mantine-Paper-root .cardSection)) {
           border-color: alpha(var(--mantine-color-white), 0.2);
         }
@@ -97,11 +97,11 @@
     }
 
     .dropdown {
-      @mixin where-dark {
+      @mixin dark {
         background-color: var(--mantine-color-dark-8);
       }
 
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
         backdrop-filter: blur(var(--blur-radius));
@@ -174,17 +174,17 @@
     }
 
     .divider {
-      @mixin where-dark {
+      @mixin dark {
         --divider-color: var(--mantine-color-dark-6);
       }
 
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         --divider-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
 
     .menuDivider {
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
@@ -218,12 +218,12 @@
     }
 
     .popoverDropdown {
-      @mixin where-dark {
+      @mixin dark {
         --popover-border-color: var(--mantine-color-dark-6);
         background-color: var(--mantine-color-dark-8);
       }
 
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         --blur-radius: rem(8px);
         background-color: alpha(var(--mantine-color-black), 0.4);
         backdrop-filter: blur(var(--blur-radius));
@@ -233,7 +233,7 @@
     }
 
     .richTextEditorContent {
-      @mixin where-light {
+      @mixin light {
         background-color: var(--mantine-color-white);
       }
     }

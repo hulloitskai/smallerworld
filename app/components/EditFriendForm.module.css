@@ -4,11 +4,11 @@
     var(--mantine-color-dark-4)
   );
 
-  @mixin where-dark {
+  @mixin dark {
     background-color: transparent;
   }
 
-  @mixin where-dark-user-theme {
+  @mixin dark-user-theme {
     border-color: alpha(var(--mantine-color-white), 0.2);
   }
 

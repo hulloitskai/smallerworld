@@ -9,7 +9,7 @@
 }
 
 .dropzone {
-  @mixin where-dark-user-theme {
+  @mixin dark-user-theme {
     --blur-radius: rem(8px);
     border-color: alpha(var(--mantine-color-white), 0.2);
     background-color: alpha(var(--mantine-color-black), 0.2);

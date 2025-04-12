@@ -35,7 +35,7 @@
   text-align: center;
   color: var(--mantine-color-dimmed);
 
-  @mixin where-dark-user-theme {
+  @mixin dark-user-theme {
     color: var(--mantine-color-dark-0);
   }
 }

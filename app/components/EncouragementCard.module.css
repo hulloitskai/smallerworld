@@ -22,7 +22,7 @@
 .presetButton {
   border-style: dashed;
 
-  @mixin where-light {
+  @mixin light {
     border-color: var(--mantine-color-primary-4);
   }
 

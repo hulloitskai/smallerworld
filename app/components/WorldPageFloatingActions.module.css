@@ -10,7 +10,7 @@
 }
 
 .menuDropdown {
-  @mixin where-dark-user-theme {
+  @mixin dark-user-theme {
     background-color: alpha(var(--mantine-color-black), 0.7);
   }
 }
@@ -87,7 +87,7 @@
   background-color: alpha(var(--mantine-color-white), light-dark(0.5, 0.8));
   cursor: default;
 
-  @mixin where-light {
+  @mixin light {
     border-color: var(--mantine-color-primary-4);
   }
 

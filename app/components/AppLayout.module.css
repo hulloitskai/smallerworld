@@ -1,5 +1,5 @@
 .shell {
-  @mixin where-dark {
+  @mixin dark {
     --app-shell-border-color: var(--mantine-color-dark-6);
   }
 }
@@ -48,7 +48,7 @@
 }
 
 .breadcrumbSeparator {
-  @mixin where-light {
+  @mixin light {
     color: var(--mantine-color-gray-5);
   }
 }

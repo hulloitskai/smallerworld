@@ -8,7 +8,7 @@
       0 0 5px var(--progress-section-color);
   }
 
-  @mixin where-dark-user-theme {
+  @mixin dark-user-theme {
     background-color: alpha(
       light-dark(var(--mantine-color-black), var(--mantine-color-white)),
       0.2
