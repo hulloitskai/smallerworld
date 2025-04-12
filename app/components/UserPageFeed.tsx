@@ -9,8 +9,13 @@ import PostCard from "./PostCard";
 export interface UserPageFeedProps extends BoxProps {}
 
 const UserPageFeed: FC<UserPageFeedProps> = props => {
-  const { currentFriend, user, replyPhoneNumber, lastSentEncouragement } =
-    usePageProps<UserPageProps>();
+  const {
+    currentFriend,
+    user,
+    replyPhoneNumber,
+    lastSentEncouragement,
+    encouragementsEnabled,
+  } = usePageProps<UserPageProps>();
   const { post_id } = useQueryParams();
 
   // == Load posts
@@ -29,6 +34,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
   return (
     <Stack {...props}>
       {currentFriend &&
+        encouragementsEnabled &&
         (!!lastSentEncouragement || longerThan24HoursSinceLastPost) && (
           <EncouragementCard
             {...{

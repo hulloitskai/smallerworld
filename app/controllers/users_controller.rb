@@ -4,6 +4,8 @@
 class UsersController < ApplicationController
   # before_action :authenticate_user!, only: :joined
 
+  ENCOURAGEMENTS_SHIPPED_ROUGHLY_AT = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
+
   # == Actions
   # GET /@:handle
   def show
@@ -20,6 +22,13 @@ class UsersController < ApplicationController
       reply_phone_number = user.phone_number
       last_sent_encouragement = friend.latest_visible_encouragement
     end
+    encouragements_enabled = if (
+      last_seen_at = friend&.user&.notifications_last_cleared_at
+    )
+      last_seen_at > ENCOURAGEMENTS_SHIPPED_ROUGHLY_AT
+    else
+      false
+    end
     render(inertia: "UserPage", props: {
       user: UserSerializer.one(user),
       "faviconSrc" => rails_representation_path(favicon_variant),
@@ -27,9 +36,9 @@ class UsersController < ApplicationController
       "appleTouchIconSrc" =>
         rails_representation_path(apple_touch_icon_variant),
       "replyPhoneNumber" => reply_phone_number,
-      "lastSentEncouragement" => EncouragementSerializer.one_if(
-        last_sent_encouragement,
-      ),
+      "lastSentEncouragement" => EncouragementSerializer
+        .one_if(last_sent_encouragement),
+      "encouragementsEnabled" => encouragements_enabled,
     })
   end
 

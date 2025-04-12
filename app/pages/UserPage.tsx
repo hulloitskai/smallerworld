@@ -33,6 +33,7 @@ export interface UserPageProps extends SharedPageProps {
   appleTouchIconSrc: string;
   replyPhoneNumber: string | null;
   lastSentEncouragement: Encouragement | null;
+  encouragementsEnabled: boolean;
 }
 
 const ICON_SIZE = 96;
