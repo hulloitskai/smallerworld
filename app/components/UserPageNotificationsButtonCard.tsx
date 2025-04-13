@@ -49,7 +49,7 @@ const UserPageNotificationsButtonCard: FC<
   return (
     <>
       {subscription === undefined ? (
-        <Button loading />
+        <Button loading>Placeholder button</Button>
       ) : subscription === null || registration === null ? (
         <Card withBorder w="100%">
           <Stack>
