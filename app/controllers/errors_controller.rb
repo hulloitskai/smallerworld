@@ -75,7 +75,7 @@ class ErrorsController < ApplicationController
       format.json do
         render(json: { error: error.to_s }, status:)
       end
-      format.text do
+      format.any do
         message = Rack::Utils::HTTP_STATUS_CODES[code]
         render(plain: message, status:)
       end
