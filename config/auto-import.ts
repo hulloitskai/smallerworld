@@ -35,6 +35,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "PublicIcon",
       "ChosenFamilyIcon",
       "JoinRequestsIcon",
+      "CancelIcon",
     ],
     "~/helpers/actioncable/subscription": ["useSubscription"],
     "~/helpers/authentication": ["useCurrentUser", "useCurrentFriend"],

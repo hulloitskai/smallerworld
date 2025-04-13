@@ -3,10 +3,9 @@ import { createContext, useContext } from "react";
 import { type PushRegistration } from "~/types";
 
 import { identifyVisitor } from "./fingerprinting";
-import { getOrRegisterServiceWorker } from "./serviceWorker";
 
 const getPushManager = (): Promise<PushManager> =>
-  getOrRegisterServiceWorker().then(({ pushManager }) => pushManager);
+  navigator.serviceWorker.ready.then(({ pushManager }) => pushManager);
 
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
   getPushManager().then(pushManager => pushManager?.getSubscription() ?? null);

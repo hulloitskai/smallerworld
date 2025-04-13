@@ -64,7 +64,7 @@
     <%= vite_client_tag %>
     <% if local_assigns.include?(:page) %>
       <%= vite_react_refresh_tag %>
-      <%= vite_javascript_tag "application.tsx", media: nil %>
+      <%= vite_javascript_tag "application.tsx" %>
     <% end %>
 
     <%# == Inertia %>

@@ -1,3 +1,5 @@
+/// <reference types="vite-plugin-pwa/client" />
+
 declare global {
   /**
    * The BeforeInstallPromptEvent is fired at the Window.onbeforeinstallprompt handler

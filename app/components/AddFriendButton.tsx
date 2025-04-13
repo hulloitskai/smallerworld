@@ -175,7 +175,7 @@ const ModalBody: FC<ModalBodyProps> = ({
           <Button
             type="submit"
             leftSection={<QRCodeIcon />}
-            size="md"
+            variant="filled"
             disabled={!values.name.trim() || !!friend}
             loading={submitting}
             className={classes.addButton}

@@ -12,6 +12,7 @@ import fullReloadPlugin from "vite-plugin-full-reload";
 import { ViteImageOptimizer as imageOptimizerPlugin } from "vite-plugin-image-optimizer";
 // @ts-expect-error Package does not provide types.
 import { isoImport as isomorphicImportPlugin } from "vite-plugin-iso-import";
+import { VitePWA as pwaPlugin } from "vite-plugin-pwa";
 import rubyPlugin from "vite-plugin-ruby";
 
 import { imports } from "./config/auto-import";
@@ -33,6 +34,22 @@ export default defineConfig(() => {
     imageOptimizerPlugin({ includePublic: false }),
     reactPlugin(),
     rubyPlugin(),
+    pwaPlugin({
+      registerType: "autoUpdate",
+      manifest: false,
+      scope: "/",
+      strategies: "injectManifest",
+      injectRegister: null,
+      injectManifest: {
+        swSrc: "app/entrypoints/sw.ts",
+      },
+      srcDir: "entrypoints",
+      filename: "sw.ts",
+      devOptions: {
+        enabled: true,
+        type: "module",
+      },
+    }),
     fullReloadPlugin(
       [
         "config/routes.rb",

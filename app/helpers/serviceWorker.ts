@@ -1,31 +1,57 @@
-import rawServiceWorkerUrl from "~/entrypoints/service-worker.ts?worker&url";
+import deprecatedServiceWorkerSrc from "~/entrypoints/sw-deprecated.ts?worker&url";
 
-const buildServiceWorkerUrl = (): string => {
+const buildDeprecatedServiceWorkerUrl = (): string => {
   const params = new URLSearchParams();
-  params.set("worker", rawServiceWorkerUrl);
-  return "/sw?" + params.toString();
+  params.set("worker_src", deprecatedServiceWorkerSrc);
+  return "/sw.js?" + params.toString();
 };
 
-export const serviceWorkerUrl = buildServiceWorkerUrl();
+const DEPRECATED_SERVICE_WORKER_URL = buildDeprecatedServiceWorkerUrl();
+const SERVICE_WORKER_URL = "/sw.js";
+const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour
 
-const REGISTRATION_OPTIONS: RegistrationOptions = {
-  type: "module",
-  scope: "/",
+export interface RegisterServiceWorkerOptions {
+  deprecated: boolean;
+}
+
+export const registerServiceWorker = ({
+  deprecated,
+}: RegisterServiceWorkerOptions) => {
+  const scriptUrl = deprecated
+    ? DEPRECATED_SERVICE_WORKER_URL
+    : SERVICE_WORKER_URL;
+  console.info("Registering service worker at:", scriptUrl);
+  void navigator.serviceWorker
+    .register(scriptUrl, {
+      type: import.meta.env.MODE === "production" ? "classic" : "module",
+    })
+    .then(
+      registration => {
+        setInterval(() => {
+          if (registration.installing || !navigator) {
+            return;
+          }
+          if ("connection" in navigator && !navigator.onLine) {
+            return;
+          }
+          void fetch(scriptUrl, {
+            cache: "no-store",
+            headers: {
+              cache: "no-store",
+              "cache-control": "no-cache",
+            },
+          }).then(response => {
+            if (response.status === 200) {
+              return registration.update();
+            }
+          });
+        }, UPDATE_INTERVAL);
+      },
+      error => {
+        console.error("Service worker registration error", error);
+      },
+    );
 };
-
-export const getOrRegisterServiceWorker =
-  (): Promise<ServiceWorkerRegistration> =>
-    navigator.serviceWorker
-      .getRegistration(serviceWorkerUrl)
-      .then(registration => {
-        if (!registration) {
-          return navigator.serviceWorker.register(
-            serviceWorkerUrl,
-            REGISTRATION_OPTIONS,
-          );
-        }
-        return registration;
-      });
 
 export const handleServiceWorkerNavigation = (): void => {
   const handleMessage = ({ data }: MessageEvent<any>): void => {
@@ -47,27 +73,3 @@ export const handleServiceWorkerNavigation = (): void => {
   };
   navigator.serviceWorker.addEventListener("message", handleMessage);
 };
-
-export const registerAndUpdateServiceWorker = (): Promise<void> =>
-  navigator.serviceWorker.register(serviceWorkerUrl, REGISTRATION_OPTIONS).then(
-    registration => registration.update(),
-    error => {
-      console.warn("Failed to register or update service worker", error);
-    },
-  );
-
-export const unregisterOldServiceWorkers = (): Promise<void> =>
-  navigator.serviceWorker.getRegistrations().then(async registrations => {
-    const currentScope = new URL("/", location.href).toString();
-    const oldRegistrations = registrations.filter(
-      registration => registration.scope !== currentScope,
-    );
-    if (isEmpty(oldRegistrations)) {
-      return;
-    }
-    const oldScopes = oldRegistrations.map(registration => registration.scope);
-    console.info("Unregistering old service workers with scopes:", oldScopes);
-    await Promise.all(
-      oldRegistrations.map(registration => registration.unregister()),
-    );
-  });

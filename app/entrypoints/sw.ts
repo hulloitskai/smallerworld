@@ -1,6 +1,8 @@
-import { pick } from "lodash-es";
+import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
+import { clientsClaim } from "workbox-core";
+import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
@@ -10,14 +12,17 @@ import {
 import routes, { setupRoutes } from "~/helpers/routes";
 import { type PushNotification } from "~/types";
 
+// == Setup
 declare const self: ServiceWorkerGlobalScope;
+void self.skipWaiting();
+clientsClaim();
+cleanupOutdatedCaches();
 
-interface NotificationData {
-  notification?: PushNotification;
-  pageIconUrl?: string;
-  test?: true;
-  badgeCount?: number;
+const manifest = self.__WB_MANIFEST;
+if (!isEmpty(manifest)) {
+  console.info("Precaching routes", manifest);
 }
+precacheAndRoute(manifest);
 
 // == Setup
 setupRoutes();
@@ -44,25 +49,6 @@ const pathname = (url: string): string => {
   return u.pathname;
 };
 
-const disableNavigationPreloads = async () => {
-  if (self.registration.navigationPreload) {
-    // Disable navigation preloads!
-    await self.registration.navigationPreload.disable();
-  }
-};
-
-// == Skip waiting after install
-self.addEventListener("install", event => {
-  event.waitUntil(self.skipWaiting());
-});
-
-// == Claim clients
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    Promise.all([self.clients.claim(), disableNavigationPreloads()]),
-  );
-});
-
 // == Device metadata server
 const DEVICE_ENDPOINT = "/device";
 
@@ -88,18 +74,16 @@ self.addEventListener("fetch", event => {
     );
     return;
   }
-
-  // // == Respond to preloads.
-  // event.waitUntil(
-  //   event.preloadResponse.then((response: Response) => {
-  //     if (response) {
-  //       event.respondWith(response);
-  //     }
-  //   }),
-  // );
 });
 
 // == Push handlers
+interface NotificationData {
+  notification?: PushNotification;
+  pageIconUrl?: string;
+  test?: true;
+  badgeCount?: number;
+}
+
 self.addEventListener("push", event => {
   invariant(event.data, "Missing push data");
   const data = event.data.json() as NotificationData;

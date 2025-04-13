@@ -19,11 +19,7 @@ import { preparePage } from "~/helpers/inertia/page/client";
 import { setupLuxon } from "~/helpers/luxon";
 import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";
-import {
-  handleServiceWorkerNavigation,
-  registerAndUpdateServiceWorker,
-  unregisterOldServiceWorkers,
-} from "~/helpers/serviceWorker";
+import { handleServiceWorkerNavigation } from "~/helpers/serviceWorker";
 
 import "./application.css";
 
@@ -39,8 +35,6 @@ setupFingerprint();
 
 // == Service worker
 if ("serviceWorker" in navigator) {
-  // TODO: remove this after April 15, 2025
-  void unregisterOldServiceWorkers().then(registerAndUpdateServiceWorker);
   void handleServiceWorkerNavigation();
 }
 

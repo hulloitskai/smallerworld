@@ -307,7 +307,6 @@ const PostForm: FC<PostFormProps> = props => {
                 />
               ) : (
                 <Button
-                  color="gray"
                   size="compact-sm"
                   style={{ alignSelf: "center" }}
                   leftSection={<ImageIcon />}
@@ -350,6 +349,7 @@ const PostForm: FC<PostFormProps> = props => {
             )}
             <Button
               type="submit"
+              variant="filled"
               leftSection={post ? <SaveIcon /> : <SendIcon />}
               disabled={bodyTextEmpty || !isDirty()}
               loading={submitting}
