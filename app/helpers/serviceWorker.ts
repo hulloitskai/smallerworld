@@ -17,6 +17,9 @@ export interface RegisterServiceWorkerOptions {
 export const registerServiceWorker = ({
   deprecated,
 }: RegisterServiceWorkerOptions) => {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
   const scriptUrl = deprecated
     ? DEPRECATED_SERVICE_WORKER_URL
     : SERVICE_WORKER_URL;
