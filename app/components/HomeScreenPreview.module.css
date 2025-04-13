@@ -24,7 +24,7 @@
   border-radius: calc(var(--hp-icon-size) / var(--hp-icon-radius-ratio));
 
   &[data-with-padding] {
-    padding: 6px;
+    padding: 8px;
   }
 }
 

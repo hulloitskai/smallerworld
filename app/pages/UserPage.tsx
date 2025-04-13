@@ -17,6 +17,11 @@ import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvi
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import {
+  canOpenUrlInMobileSafari,
+  openUrlInMobileSafari,
+  useBrowserDetection,
+} from "~/helpers/browsers";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import {
   useReregisterWithDeviceIdentifiers,
@@ -42,6 +47,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
   // TODO: Remove after April 15, 2025
   useReregisterWithDeviceIdentifiers();
 
+  const browserDetection = useBrowserDetection();
   const isStandalone = useIsStandalone();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -180,6 +186,16 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                   rel="noopener"
                   href={routes.session.new.path()}
                   leftSection={<OpenExternalIcon />}
+                  disabled={!browserDetection}
+                  onClick={event => {
+                    if (
+                      browserDetection &&
+                      canOpenUrlInMobileSafari(browserDetection)
+                    ) {
+                      event.preventDefault();
+                      openUrlInMobileSafari(event.currentTarget.href);
+                    }
+                  }}
                 >
                   create your world
                 </Button>
