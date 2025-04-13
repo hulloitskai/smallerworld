@@ -30,7 +30,11 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({
         <List.Item icon={<PhoneIcon />}>
           <CopyButton value={joinRequest.phone_number}>
             {({ copied, copy }) => (
-              <Tooltip label={copied ? "copied!" : "copy?"} position="right">
+              <Tooltip
+                label={copied ? "copied!" : "copy?"}
+                position="right"
+                {...(copied && { opened: true })}
+              >
                 <Anchor onClick={copy}>{joinRequest.phone_number}</Anchor>
               </Tooltip>
             )}
