@@ -144,12 +144,13 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                           disabled={!newPostDraft}
                         >
                           <Button
+                            size="md"
                             variant="filled"
                             radius="xl"
                             className={classes.menuButton}
                             leftSection={<Box component={NewIcon} fz="lg" />}
                           >
-                            share with your friends
+                            new post
                           </Button>
                         </Indicator>
                       </Menu.Target>
@@ -192,7 +193,8 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
                   <ActionIcon
                     className={classes.pinnedPostsButton}
                     variant="outline"
-                    size={36}
+                    size={42}
+                    radius="xl"
                     {...{ style }}
                     onClick={() => {
                       setPinnedPostsDrawerModalOpened(true);

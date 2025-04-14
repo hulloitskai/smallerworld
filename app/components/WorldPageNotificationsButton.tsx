@@ -20,13 +20,13 @@ const WorldPageNotificationsButton: FC = () => {
 
   return (
     <>
-      {registration === undefined || subscription === undefined ? (
-        <Skeleton radius="xl" style={{ width: "unset" }}>
+      {subscription === undefined || registration === undefined ? (
+        <Skeleton radius="xl" w="unset">
           <ActionIcon size="lg" variant="light">
             <NotificationIcon />
           </ActionIcon>
         </Skeleton>
-      ) : registration === null || subscription === null ? (
+      ) : subscription === null || registration === null ? (
         <Stack gap={4}>
           <Button
             variant="filled"

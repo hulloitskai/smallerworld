@@ -47,13 +47,10 @@ export const useWebPush = (options?: WebPushOptions): UseWebPushResult => {
 export const useWebPushSupported = (): boolean | undefined => {
   const [supported, setSupported] = useState<boolean | undefined>();
   useEffect(() => {
-    setSupported(webPushSupported());
+    setSupported("Notification" in window);
   }, []);
   return supported;
 };
-
-export const webPushSupported = (): boolean =>
-  typeof window !== "undefined" && "Notification" in window;
 
 export interface LookupPushRegistrationOptions {
   subscription: PushSubscription | undefined | null;

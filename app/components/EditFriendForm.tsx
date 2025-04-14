@@ -89,6 +89,7 @@ const EditFriendForm: FC<EditFriendFormProps> = ({
           />
         </Group>
         <Button
+          variant="filled"
           type="submit"
           loading={submitting}
           leftSection={<SaveIcon />}
