@@ -30,8 +30,8 @@ class ServiceWorkerProxy
         @proxy.call(rewritten_env)
       else
         files = Rack::Files.new(Rails.public_path.to_s, {
-          "Cache-Control" => "no-store must-revalidate",
-          "Max-Age" => "0",
+          "cache-control" => "no-store must-revalidate",
+          "max-age" => "0",
         })
         rewritten_env = if query_values["worker_src"].present?
           deprecated_rewrite_env(env)

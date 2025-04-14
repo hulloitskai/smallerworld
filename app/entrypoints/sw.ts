@@ -1,9 +1,9 @@
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
-import {
-  cleanupOutdatedCaches /*, precacheAndRoute */,
-} from "workbox-precaching";
+import { cleanupOutdatedCaches, PrecacheController } from "workbox-precaching";
+import { registerRoute } from "workbox-routing";
+import { StaleWhileRevalidate } from "workbox-strategies";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
@@ -16,21 +16,30 @@ import { type PushNotification } from "~/types";
 // == Setup
 declare const self: ServiceWorkerGlobalScope;
 setupRoutes();
+
+const manifest = self.__WB_MANIFEST;
+const precacheController = new PrecacheController();
+if (!isEmpty(manifest)) {
+  console.info("Precaching routes", manifest);
+  precacheController.addToCacheList(manifest);
+}
+registerRoute(
+  ({ request }) => ["style", "script"].includes(request.destination),
+  new StaleWhileRevalidate(),
+);
+cleanupOutdatedCaches();
+
+// == Lifecycle
 self.addEventListener("install", event => {
   console.info("Service worker installing");
   event.waitUntil(self.skipWaiting());
+  void precacheController.install(event);
 });
 self.addEventListener("activate", event => {
   console.info("Service worker activating (claiming clients)");
   event.waitUntil(self.clients.claim());
+  void precacheController.activate(event);
 });
-cleanupOutdatedCaches();
-
-const manifest = self.__WB_MANIFEST;
-if (!isEmpty(manifest)) {
-  console.info("Precaching routes", manifest);
-}
-// precacheAndRoute(manifest, { cleanURLs: false });
 
 // == Helpers
 const markAsDelivered = (notification: PushNotification): Promise<void> =>

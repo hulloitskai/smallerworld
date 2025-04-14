@@ -31,6 +31,19 @@ export const registerServiceWorker = ({
     .then(
       registration => {
         console.info("Service worker registered", pick(registration, "scope"));
+        // const { installing: newWorker, waiting: waitingWoker } = registration;
+        // if (newWorker) {
+        //   if (newWorker.state === "activated" && !waitingWoker) {
+        //     // Reload to use new service worker.
+        //     location.reload();
+        //   }
+        //   newWorker.addEventListener("statechange", () => {
+        //     if (newWorker.state === "activated" && !waitingWoker) {
+        //       // Reload to use new service worker.
+        //       location.reload();
+        //     }
+        //   });
+        // }
         setInterval(() => {
           if (registration.installing || !navigator) {
             return;
