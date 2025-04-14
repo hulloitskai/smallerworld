@@ -1,9 +1,7 @@
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
-import { cleanupOutdatedCaches, PrecacheController } from "workbox-precaching";
-import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
@@ -13,32 +11,25 @@ import {
 import routes, { setupRoutes } from "~/helpers/routes";
 import { type PushNotification } from "~/types";
 
-// == Setup
 declare const self: ServiceWorkerGlobalScope;
-setupRoutes();
-
 const manifest = self.__WB_MANIFEST;
-const precacheController = new PrecacheController();
+
+// == Setup
+setupRoutes();
 if (!isEmpty(manifest)) {
   console.info("Precaching routes", manifest);
-  precacheController.addToCacheList(manifest);
 }
-registerRoute(
-  ({ request }) => ["style", "script"].includes(request.destination),
-  new StaleWhileRevalidate(),
-);
+precacheAndRoute(manifest, { cleanURLs: false });
 cleanupOutdatedCaches();
 
 // == Lifecycle
 self.addEventListener("install", event => {
   console.info("Service worker installing");
   event.waitUntil(self.skipWaiting());
-  void precacheController.install(event);
 });
 self.addEventListener("activate", event => {
   console.info("Service worker activating (claiming clients)");
   event.waitUntil(self.clients.claim());
-  void precacheController.activate(event);
 });
 
 // == Helpers
