@@ -58,7 +58,9 @@ self.addEventListener("install", event => {
 
 // == Claim clients
 self.addEventListener("activate", event => {
-  event.waitUntil(disableNavigationPreloads());
+  event.waitUntil(
+    Promise.all([disableNavigationPreloads(), self.clients.claim()]),
+  );
 });
 
 // == Device metadata server
