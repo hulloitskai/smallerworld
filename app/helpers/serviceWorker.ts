@@ -31,8 +31,16 @@ export const registerServiceWorker = ({
     .then(
       registration => {
         console.info("Service worker registered", pick(registration, "scope"));
+        if (registration.active) {
+          registration.addEventListener("updatefound", () => {
+            console.info("Service worker update found");
+            void registration.update().then(() => {
+              console.info("Service worker updated");
+            });
+          });
+        }
         setInterval(() => {
-          if (registration.installing || !navigator) {
+          if (!registration.active) {
             return;
           }
           if ("connection" in navigator && !navigator.onLine) {
