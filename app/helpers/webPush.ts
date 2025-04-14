@@ -8,13 +8,12 @@ const getPushManager = (): Promise<PushManager> =>
   navigator.serviceWorker.ready.then(({ pushManager }) => pushManager);
 
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
-  getPushManager().then(pushManager => pushManager?.getSubscription() ?? null);
+  getPushManager().then(pushManager => pushManager.getSubscription());
 
 export interface UseWebPushResult {
   supported: boolean | undefined;
   subscription: PushSubscription | undefined | null;
   registration: PushRegistration | undefined | null;
-  subscribed: boolean;
   subscribe: () => Promise<void>;
   subscribing: boolean;
   subscribeError: Error | null;
@@ -268,18 +267,18 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
   const query = friendAccessToken
     ? { friend_token: friendAccessToken }
     : undefined;
-  return navigator.serviceWorker.ready.then(() =>
-    fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
-      descriptor: "load web push public key",
-      params: { query },
-    }).then(({ publicKey }) => publicKey),
-  );
+  return fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
+    descriptor: "load web push public key",
+    params: { query },
+  }).then(({ publicKey }) => publicKey);
 };
 
 const fetchDeviceId = (): Promise<string> =>
-  fetch("/device")
-    .then(response => response.json())
-    .then((data: { deviceId: string }) => get(data, "deviceId"));
+  navigator.serviceWorker.ready.then(() =>
+    fetch("/device")
+      .then(response => response.json())
+      .then((data: { deviceId: string }) => get(data, "deviceId")),
+  );
 
 export const useReregisterWithDeviceIdentifiers = (): void => {
   const { registration, subscribe } = useWebPush();

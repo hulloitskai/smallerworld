@@ -26,7 +26,6 @@ export const registerServiceWorker = ({
   console.info("Registering service worker at:", scriptUrl);
   void navigator.serviceWorker
     .register(scriptUrl, {
-      scope: "/",
       type: import.meta.env.MODE === "production" ? "classic" : "module",
     })
     .then(

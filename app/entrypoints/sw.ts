@@ -1,7 +1,6 @@
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
-import { clientsClaim } from "workbox-core";
 import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 
 import {
@@ -14,8 +13,15 @@ import { type PushNotification } from "~/types";
 
 // == Setup
 declare const self: ServiceWorkerGlobalScope;
-void self.skipWaiting();
-clientsClaim();
+setupRoutes();
+self.addEventListener("install", event => {
+  console.info("Service worker installing");
+  event.waitUntil(self.skipWaiting());
+});
+self.addEventListener("activate", event => {
+  console.info("Service worker activating (claiming clients)");
+  event.waitUntil(self.clients.claim());
+});
 cleanupOutdatedCaches();
 
 const manifest = self.__WB_MANIFEST;
@@ -23,9 +29,6 @@ if (!isEmpty(manifest)) {
   console.info("Precaching routes", manifest);
 }
 precacheAndRoute(manifest);
-
-// == Setup
-setupRoutes();
 
 // == Helpers
 const markAsDelivered = (notification: PushNotification): Promise<void> =>
@@ -51,11 +54,8 @@ const pathname = (url: string): string => {
 
 // == Device metadata server
 const DEVICE_ENDPOINT = "/device";
-
 self.addEventListener("fetch", event => {
   const { request } = event;
-
-  // == Device metadata server
   if (pathname(request.url) === DEVICE_ENDPOINT) {
     console.debug("Device metadata request intercepted", request.url);
     event.respondWith(

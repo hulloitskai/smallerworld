@@ -37,7 +37,6 @@ export default defineConfig(() => {
     pwaPlugin({
       registerType: "autoUpdate",
       manifest: false,
-      scope: "/",
       strategies: "injectManifest",
       injectRegister: null,
       injectManifest: {
