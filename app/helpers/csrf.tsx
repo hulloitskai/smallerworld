@@ -27,6 +27,7 @@ export const toastInvalidCSRFToken = (): void => {
       <Button
         size="compact-sm"
         leftSection={<ReloadIcon />}
+        style={{ flexShrink: 0 }}
         onClick={() => {
           router.reload({
             only: ["csrf"],

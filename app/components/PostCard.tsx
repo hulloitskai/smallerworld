@@ -234,6 +234,7 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
           buttonNext: () => null,
           buttonClose: () => (
             <CloseButton
+              key="close"
               className={classes.closeButton}
               variant="transparent"
               size="lg"
@@ -243,7 +244,7 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
             />
           ),
           buttonZoom: ({ zoomIn, zoomOut, zoom, maxZoom }) => (
-            <Group gap={0} className={classes.zoomButtons}>
+            <Group key="zoom" gap={0} className={classes.zoomButtons}>
               <ActionIcon
                 variant="transparent"
                 size="lg"

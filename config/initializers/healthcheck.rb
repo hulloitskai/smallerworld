@@ -31,6 +31,7 @@ Healthcheck.configure do |config|
     controller.render(json: {
       health: HealthcheckSerializer.render(checker),
       "bootedAt" => Rails.application.booted_at,
+      "assetsDigest" => ViteRuby.digest,
     })
   }
 end
