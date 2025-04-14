@@ -1,12 +1,3 @@
-import deprecatedServiceWorkerSrc from "~/entrypoints/sw-deprecated.ts?worker&url";
-
-const buildDeprecatedServiceWorkerUrl = (): string => {
-  const params = new URLSearchParams();
-  params.set("worker_src", deprecatedServiceWorkerSrc);
-  return "/sw.js?" + params.toString();
-};
-
-const DEPRECATED_SERVICE_WORKER_URL = buildDeprecatedServiceWorkerUrl();
 const SERVICE_WORKER_URL = "/sw.js";
 const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour
 
@@ -14,18 +5,13 @@ export interface RegisterServiceWorkerOptions {
   deprecated: boolean;
 }
 
-export const registerServiceWorker = ({
-  deprecated,
-}: RegisterServiceWorkerOptions) => {
+export const registerServiceWorker = () => {
   if (!("serviceWorker" in navigator)) {
     return;
   }
-  const scriptUrl = deprecated
-    ? DEPRECATED_SERVICE_WORKER_URL
-    : SERVICE_WORKER_URL;
-  console.info("Registering service worker at:", scriptUrl);
+  console.info("Registering service worker at:", SERVICE_WORKER_URL);
   void navigator.serviceWorker
-    .register(scriptUrl, {
+    .register(SERVICE_WORKER_URL, {
       type: import.meta.env.MODE === "production" ? "classic" : "module",
     })
     .then(
@@ -46,7 +32,7 @@ export const registerServiceWorker = ({
           if ("connection" in navigator && !navigator.onLine) {
             return;
           }
-          void fetch(scriptUrl, {
+          void fetch(SERVICE_WORKER_URL, {
             cache: "no-store",
             headers: {
               cache: "no-store",

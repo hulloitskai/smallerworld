@@ -19,7 +19,10 @@ import { preparePage } from "~/helpers/inertia/page/client";
 import { setupLuxon } from "~/helpers/luxon";
 import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";
-import { handleServiceWorkerNavigation } from "~/helpers/serviceWorker";
+import {
+  handleServiceWorkerNavigation,
+  registerServiceWorker,
+} from "~/helpers/serviceWorker";
 
 import "./application.css";
 
@@ -36,6 +39,7 @@ setupFingerprint();
 // == Service worker
 if ("serviceWorker" in navigator) {
   void handleServiceWorkerNavigation();
+  void registerServiceWorker();
 }
 
 // == Pages
