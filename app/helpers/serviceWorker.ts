@@ -26,10 +26,15 @@ export const registerServiceWorker = ({
   console.info("Registering service worker at:", scriptUrl);
   void navigator.serviceWorker
     .register(scriptUrl, {
+      scope: "/",
       type: import.meta.env.MODE === "production" ? "classic" : "module",
     })
     .then(
       registration => {
+        console.info(
+          "Service worker registered with scope:",
+          registration.scope,
+        );
         setInterval(() => {
           if (registration.installing || !navigator) {
             return;

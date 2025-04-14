@@ -226,40 +226,36 @@ export const useWebPushUnsubscribe = ({
   const currentFriend = useCurrentFriend();
   const [unsubscribing, setUnsubscribing] = useState(false);
   const [unsubscribeError, setUnsubscribeError] = useState<Error | null>(null);
-  const unsubscribe = useCallback((): Promise<void> => {
+  const unsubscribe = useCallback(async (): Promise<void> => {
     setUnsubscribing(true);
-    return getPushSubscription()
-      .then(
-        subscription => {
-          if (!subscription) {
-            return;
-          }
-          return fetchRoute(routes.pushSubscriptions.unsubscribe, {
-            descriptor: "unsubscribe from push notifications",
-            data: {
-              push_subscription: {
-                endpoint: subscription.endpoint,
-              },
-            },
-          })
-            .then(() => subscription.unsubscribe())
-            .then(() => {
-              void mutateRoute(routes.pushSubscriptions.lookup, {
-                query: currentFriend
-                  ? { friend_token: currentFriend.access_token }
-                  : undefined,
-              });
-              onUnsubscribed();
-            });
+    try {
+      const subscription = await getPushSubscription();
+      if (!subscription) {
+        return;
+      }
+      await fetchRoute(routes.pushSubscriptions.unsubscribe, {
+        descriptor: "unsubscribe from push notifications",
+        data: {
+          push_subscription: {
+            endpoint: subscription.endpoint,
+          },
         },
-        (error: Error) => {
-          setUnsubscribeError(error);
-          throw error;
-        },
-      )
-      .finally(() => {
-        setUnsubscribing(false);
       });
+      await subscription.unsubscribe();
+      void mutateRoute(routes.pushSubscriptions.lookup, {
+        query: currentFriend
+          ? { friend_token: currentFriend.access_token }
+          : undefined,
+      });
+      onUnsubscribed();
+    } catch (error) {
+      if (error instanceof Error) {
+        setUnsubscribeError(error);
+      }
+      throw error;
+    } finally {
+      setUnsubscribing(false);
+    }
   }, [onUnsubscribed, currentFriend?.access_token]); // eslint-disable-line react-hooks/exhaustive-deps
   return [unsubscribe, { unsubscribing, unsubscribeError }];
 };
@@ -275,10 +271,12 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
   const query = friendAccessToken
     ? { friend_token: friendAccessToken }
     : undefined;
-  return fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
-    descriptor: "load web push public key",
-    params: { query },
-  }).then(({ publicKey }) => publicKey);
+  return navigator.serviceWorker.ready.then(() =>
+    fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
+      descriptor: "load web push public key",
+      params: { query },
+    }).then(({ publicKey }) => publicKey),
+  );
 };
 
 const fetchDeviceId = (): Promise<string> =>
