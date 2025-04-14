@@ -2,6 +2,8 @@ import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
 import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
+import { registerRoute } from "workbox-routing";
+import { NetworkOnly } from "workbox-strategies";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
@@ -20,6 +22,10 @@ if (!isEmpty(manifest)) {
   console.info("Precaching routes", manifest);
 }
 precacheAndRoute(manifest, { cleanURLs: false });
+registerRoute(
+  ({ request }) => request.destination === "document",
+  new NetworkOnly(),
+);
 cleanupOutdatedCaches();
 
 // == Lifecycle
