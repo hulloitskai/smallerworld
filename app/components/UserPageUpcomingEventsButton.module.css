@@ -1,7 +1,7 @@
 .button {
   pointer-events: auto;
   padding-left: 8px;
-  padding-right: 12px;
+  padding-right: var(--mantine-spacing-sm);
   box-shadow: var(--mantine-shadow-lg);
 
   &[data-expanded] {

@@ -46,6 +46,8 @@ bin/setup
   - don't allow scrolling until enabled?
 - [x] inline rich text editor toolbar
 - [x] fix iOS text selection on post form
+- [ ] launch new workbox-based service worker
+- [ ] adding friend page to chrome standalone doesn't dismiss join modal
 - [ ] why does add-to-homescreen instructions image #2 never load properly?
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] remove old supabase auth code

@@ -30,10 +30,7 @@ export const registerServiceWorker = ({
     })
     .then(
       registration => {
-        console.info(
-          "Service worker registered with scope:",
-          registration.scope,
-        );
+        console.info("Service worker registered", pick(registration, "scope"));
         setInterval(() => {
           if (registration.installing || !navigator) {
             return;

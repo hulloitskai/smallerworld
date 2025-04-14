@@ -1,7 +1,9 @@
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
-import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
+import {
+  cleanupOutdatedCaches /*, precacheAndRoute */,
+} from "workbox-precaching";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
@@ -28,7 +30,7 @@ const manifest = self.__WB_MANIFEST;
 if (!isEmpty(manifest)) {
   console.info("Precaching routes", manifest);
 }
-precacheAndRoute(manifest);
+// precacheAndRoute(manifest, { cleanURLs: false });
 
 // == Helpers
 const markAsDelivered = (notification: PushNotification): Promise<void> =>
