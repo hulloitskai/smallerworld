@@ -1,6 +1,7 @@
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
+import { enable as enableNavigationPreload } from "workbox-navigation-preload";
 import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { NetworkOnly } from "workbox-strategies";
@@ -18,6 +19,7 @@ const manifest = self.__WB_MANIFEST;
 
 // == Setup
 setupRoutes();
+enableNavigationPreload();
 if (!isEmpty(manifest)) {
   console.info("Precaching routes", manifest);
 }
