@@ -1,7 +1,5 @@
 import { type BoxProps, Image, Indicator, Text } from "@mantine/core";
 
-import logoSrc from "~/assets/images/logo.png";
-
 import AppLayout from "~/components/AppLayout";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { type World } from "~/types";
@@ -31,12 +29,9 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
 
   return (
     <Stack gap="xl">
-      <Group gap={6} justify="center">
-        <Image src={logoSrc} w={36} />
-        <Title size="h2" className={classes.pageTitle}>
-          smaller universe
-        </Title>
-      </Group>
+      <Title size="h2" className={classes.pageTitle}>
+        💫 smaller universe
+      </Title>
       <Stack>
         <Group align="start" justify="center" wrap="wrap">
           {worlds ? (
@@ -82,7 +77,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
             ))
           )}
         </Group>
-        <Text size="xs" c="dimmed" ta="center">
+        <Text size="xs" c="dimmed" ta="center" mb="lg">
           (newly posted worlds shown first)
         </Text>
       </Stack>

@@ -62,6 +62,13 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   manifestUrl: manifestUrlProp,
   children,
   padding,
+  p,
+  pt,
+  pb,
+  pr,
+  pl,
+  py,
+  px,
   ...otherProps
 }: AppLayoutProps<PageProps>) => {
   useTrackVisit();
@@ -113,7 +120,10 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
       {...otherProps}
     >
       {isStandalone === false && <AppHeader {...{ logoHref }} />}
-      <AppShell.Main className={classes.main}>
+      <AppShell.Main
+        className={classes.main}
+        {...{ pt, pb, pr, pl, py, px, p }}
+      >
         {!isEmpty(breadcrumbs) && (
           <Breadcrumbs
             mx={10}

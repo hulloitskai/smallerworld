@@ -1,4 +1,6 @@
 .pageTitle {
+  text-align: center;
+
   @mixin dark {
     color: var(--mantine-color-white);
   }
