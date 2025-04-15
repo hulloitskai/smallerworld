@@ -1,5 +1,6 @@
 import {
   DARK_USER_THEMES,
+  IMAGE_USER_THEMES,
   USER_THEME_BACKGROUND_COLORS,
   USER_THEME_BACKGROUND_GRADIENTS,
   userThemeBackgroundImageSrc,
@@ -53,20 +54,20 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
           className={classes.backdrop}
           role="backdrop"
           style={{
-            backgroundImage: themeBackgroundImage(theme),
+            backgroundImage: themeBackgroundMedia(theme),
             backgroundColor: USER_THEME_BACKGROUND_COLORS[theme],
           }}
         >
-          {theme === "forest" ? (
-            <div className={classes.forestContainer}>
+          {IMAGE_USER_THEMES.includes(theme) ? (
+            <div className={classes.imageContainer}>
               <img
-                className={classes.forestImage}
-                src={userThemeBackgroundImageSrc("forest")}
+                className={classes.image}
+                src={userThemeBackgroundImageSrc(theme)}
               />
               <div
-                className={classes.forestBackdrop}
+                className={classes.imageBackdrop}
                 style={{
-                  backgroundImage: themeBackgroundImage(theme),
+                  backgroundImage: themeBackgroundMedia(theme),
                 }}
               />
             </div>
@@ -88,10 +89,9 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
 
 export default UserThemeProvider;
 
-const themeBackgroundImage = (theme: UserTheme) => {
-  const src =
-    theme === "forest"
-      ? userThemeBackgroundImageSrc(theme)
-      : userThemeBackgroundVideoSrc(theme);
+const themeBackgroundMedia = (theme: UserTheme) => {
+  const src = IMAGE_USER_THEMES.includes(theme)
+    ? userThemeBackgroundImageSrc(theme)
+    : userThemeBackgroundVideoSrc(theme);
   return `url(${src}), ${USER_THEME_BACKGROUND_GRADIENTS[theme]}`;
 };

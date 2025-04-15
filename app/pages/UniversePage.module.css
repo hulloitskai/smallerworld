@@ -1,3 +1,9 @@
+.title {
+  @mixin dark {
+    color: var(--mantine-color-white);
+  }
+}
+
 .worldPageIcon {
   width: var(--size);
   height: var(--size);
@@ -12,6 +18,10 @@
     transform: scale(1.05) translateZ(10px);
     box-shadow: var(--mantine-shadow-xl);
   }
+}
+
+.worldAnchor {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
 }
 
 .postCountIndicator {

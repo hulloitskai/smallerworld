@@ -22,7 +22,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
     extends MenuItemProps,
       Omit<InertiaLinkProps, "color" | "style"> {}
   const MenuLink: FC<MenuLinkProps> = props => (
-    <Menu.Item component={Link} preserveScroll {...props} />
+    <Menu.Item component={Link} {...props} />
   );
 
   return (
@@ -52,6 +52,9 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
         </Badge>
       </Menu.Target>
       <Menu.Dropdown>
+        <MenuLink href={routes.universe.show.path()} leftSection="💫">
+          smaller universe
+        </MenuLink>
         {currentUser ? (
           <>
             <MenuLink

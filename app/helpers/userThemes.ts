@@ -21,7 +21,10 @@ export const DARK_USER_THEMES: UserTheme[] = [
   "forest",
   "karaoke",
   "lavaRave",
+  "aquatica",
 ];
+
+export const IMAGE_USER_THEMES: UserTheme[] = ["forest", "aquatica"];
 
 export const userThemeBackgroundVideoSrc = (theme: UserTheme): string =>
   `https://assets.getpartiful.com/backgrounds/${theme}/web.mp4`;
@@ -44,6 +47,7 @@ export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   pool: "rgb(201, 231, 238)",
   forest: "rgb(24, 53, 30)",
   toile: "rgb(255, 255, 255)",
+  aquatica: "rgb(11, 32, 100)",
 };
 
 export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {
@@ -68,6 +72,8 @@ export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {
     "linear-gradient(0deg, rgb(2, 0, 36) 0%, rgb(16, 33, 21) 0%, rgb(61, 132, 73) 38%, rgb(32, 69, 43) 100%)",
   toile:
     "linear-gradient(90deg, rgb(211, 225, 254) 0%, rgb(255, 255, 255) 50%, rgb(211, 225, 254) 100%)",
+  aquatica:
+    "linear-gradient(to right bottom, rgb(3, 3, 13) 40%, 55.4731%, rgb(12, 42, 114) 65.9463%, 80%, rgb(60, 111, 192) 100%)",
 };
 
 export interface UserThemeContext {

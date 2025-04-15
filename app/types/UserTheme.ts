@@ -9,6 +9,7 @@ type UserTheme =
   | "darkSky"
   | "pool"
   | "forest"
+  | "aquatica"
   | "toile";
 
 export default UserTheme;

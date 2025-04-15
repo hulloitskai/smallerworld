@@ -13,6 +13,9 @@ export interface UniversePageProps extends SharedPageProps {}
 const ICON_SIZE = 80;
 
 const UniversePage: PageComponent<UniversePageProps> = () => {
+  useUserTheme("aquatica");
+
+  // == Load worlds
   const { data } = useRouteSWR<{ worlds: World[] }>(routes.universe.worlds, {
     descriptor: "load worlds",
   });
@@ -22,7 +25,9 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
     <Stack gap="xl">
       <Group gap={6} justify="center">
         <Image src={logoSrc} w={36} />
-        <Title size="h2">smaller universe</Title>
+        <Title size="h2" className={classes.title}>
+          smaller universe
+        </Title>
       </Group>
       <Stack>
         <Group align="start" justify="center" wrap="wrap">
@@ -36,6 +41,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
             ) : (
               worlds.map(world => (
                 <Anchor
+                  className={classes.worldAnchor}
                   key={world.id}
                   component={Link}
                   href={routes.users.show.path({ handle: world.handle })}
@@ -69,7 +75,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
 };
 
 UniversePage.layout = page => (
-  <AppLayout<UniversePageProps> title="universe">{page}</AppLayout>
+  <AppLayout<UniversePageProps> title="smaller universe">{page}</AppLayout>
 );
 
 export default UniversePage;
