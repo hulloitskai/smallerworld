@@ -1,4 +1,4 @@
-import { Image, Indicator, Text } from "@mantine/core";
+import { type BoxProps, Image, Indicator, Text } from "@mantine/core";
 
 import logoSrc from "~/assets/images/logo.png";
 
@@ -10,7 +10,7 @@ import classes from "./UniversePage.module.css";
 
 export interface UniversePageProps extends SharedPageProps {}
 
-const ICON_SIZE = 96;
+const ICON_SIZE = 80;
 
 const UniversePage: PageComponent<UniversePageProps> = () => {
   const { data } = useRouteSWR<{ worlds: World[] }>(routes.universe.worlds, {
@@ -22,59 +22,48 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
     <Stack gap="xl">
       <Group gap={6} justify="center">
         <Image src={logoSrc} w={36} />
-        <Title size="h2" ta="center">
-          cinematic universe
-        </Title>
+        <Title size="h2">smaller universe</Title>
       </Group>
-      <Group align="start" justify="center" wrap="wrap">
-        {worlds ? (
-          isEmpty(worlds) ? (
-            <EmptyCard
-              itemLabel="worlds"
-              w="100%"
-              maw="var(--container-size-xs)"
-            />
+      <Stack>
+        <Group align="start" justify="center" wrap="wrap">
+          {worlds ? (
+            isEmpty(worlds) ? (
+              <EmptyCard
+                itemLabel="worlds"
+                w="100%"
+                maw="var(--container-size-xs)"
+              />
+            ) : (
+              worlds.map(world => (
+                <Anchor
+                  key={world.id}
+                  component={Link}
+                  href={routes.users.show.path({ handle: world.handle })}
+                >
+                  <Stack align="center" gap={8} w="min-content">
+                    <WorldIcon {...{ world }} mx="sm" />
+                    <Text ff="heading" size="sm" fw={600} ta="center">
+                      {possessive(world.user_name)} world
+                    </Text>
+                  </Stack>
+                </Anchor>
+              ))
+            )
           ) : (
-            worlds.map(world => (
-              <Anchor
-                key={world.id}
-                component={Link}
-                href={routes.users.show.path({ handle: world.handle })}
-              >
-                <Stack align="center" gap={8} px="md" w="min-content">
-                  <Indicator
-                    className={classes.postCountIndicator}
-                    label={world.post_count}
-                    size={20}
-                    offset={4}
-                    disabled={!world.post_count}
-                  >
-                    <Image
-                      className={classes.worldPageIcon}
-                      src={world.page_icon.src}
-                      srcSet={world.page_icon.src_set}
-                      radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-                      style={{ "--size": rem(ICON_SIZE) }}
-                    />
-                  </Indicator>
-                  <Text ff="heading" size="sm" fw={600} ta="center">
-                    {possessive(world.user_name)} world
-                  </Text>
-                </Stack>
-              </Anchor>
+            [...new Array(6)].map((_, i) => (
+              <Skeleton
+                key={i}
+                w={ICON_SIZE}
+                h={ICON_SIZE}
+                radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+              />
             ))
-          )
-        ) : (
-          [...new Array(6)].map((_, i) => (
-            <Skeleton
-              key={i}
-              w={ICON_SIZE}
-              h={ICON_SIZE}
-              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-            />
-          ))
-        )}
-      </Group>
+          )}
+        </Group>
+        <Text size="xs" c="dimmed" ta="center">
+          (newly posted worlds shown first)
+        </Text>
+      </Stack>
     </Stack>
   );
 };
@@ -84,3 +73,43 @@ UniversePage.layout = page => (
 );
 
 export default UniversePage;
+
+interface WorldIconProps extends BoxProps {
+  world: World;
+}
+
+const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => (
+  <Box {...otherProps}>
+    <Indicator
+      className={classes.postCountIndicator}
+      label={world.post_count}
+      size={20}
+      offset={4}
+      disabled={!world.post_count}
+    >
+      <Tooltip
+        label={
+          <>
+            {!!world.last_post_created_at && (
+              <>
+                last posted on{" "}
+                <Time format={DateTime.DATETIME_MED} inherit>
+                  {world.last_post_created_at}
+                </Time>
+              </>
+            )}
+          </>
+        }
+        disabled={!world.last_post_created_at}
+      >
+        <Image
+          className={classes.worldPageIcon}
+          src={world.page_icon.src}
+          srcSet={world.page_icon.src_set}
+          radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+          style={{ "--size": rem(ICON_SIZE) }}
+        />
+      </Tooltip>
+    </Indicator>
+  </Box>
+);

@@ -9,7 +9,8 @@ class WorldSerializer < ApplicationSerializer
   identifier
   attributes :handle,
              name: :user_name,
-             post_count: { type: :number }
+             post_count: { type: :number },
+             last_post_created_at: { type: :string, nullable: true }
 
   # == Associations
   has_one :page_icon_blob, as: :page_icon, serializer: ImageSerializer

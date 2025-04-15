@@ -36,6 +36,10 @@
       min-height: 0px;
       align-items: start;
       padding-bottom: 6px;
+
+      @mixin smaller-than $mantine-breakpoint-xs {
+        padding-top: var(--safe-area-inset-top, 0px);
+      }
     }
 
     .modalInner {
@@ -46,8 +50,6 @@
     }
 
     .modalContent {
-      padding-top: var(--safe-area-inset-top, 0px);
-
       @mixin smaller-than $mantine-breakpoint-xs {
         --modal-content-flex: 0 0 100%;
         --modal-content-max-height: auto;
