@@ -8,7 +8,7 @@ import { NetworkOnly } from "workbox-strategies";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
-  notificationActionUrl,
+  notificationTargetUrl,
   renderNotification,
 } from "~/helpers/notifications";
 import routes, { setupRoutes } from "~/helpers/routes";
@@ -166,44 +166,86 @@ self.addEventListener("pushsubscriptionchange", event => {
 });
 
 self.addEventListener("notificationclick", event => {
-  console.debug("notification clicked", event);
+  console.debug("Notification clicked", event);
   event.notification.close(); // Android needs explicit close
+
   invariant(event.notification.data, "Missing notification data");
   const { notification } = event.notification.data as NotificationData;
   if (!notification) {
     return;
   }
-  const actionUrl = notificationActionUrl(notification);
-  const url = new URL(actionUrl, self.location.href).toString();
-  console.debug("directing user to", url);
+
+  const targetUrl = notificationTargetUrl(notification);
+  console.debug("Requesting navigation to", targetUrl);
+
+  // Open the target URL
   event.waitUntil(
-    // Open the target URL
-    self.clients
-      .matchAll({ type: "window", includeUncontrolled: true })
-      .then(clients => {
-        // Check if there is already a window/tab open with the target path
-        for (const client of clients) {
-          if (pathname(client.url) !== pathname(url)) {
-            continue;
-          }
-          // If so, focus it and go to the target URL
-          return client.focus().then(client => {
-            if (client.url !== url) {
-              // NOTE: This doesn't seem to work?
-              //
-              // See: https://stackoverflow.com/questions/68949151/how-to-solve-service-worker-navigate-this-service-worker-is-not-the-clients-ac
-              // return client.navigate(url);
-              //
-              // So instead, use postMessage to trigger client-side navigation
-              client.postMessage({ action: "navigate", url });
-            }
-            return client;
-          });
+    self.clients.matchAll({ type: "window" }).then(async clients => {
+      // Check if there is already a window/tab open with the target path
+      for (const client of clients) {
+        // Skip clients that don't support focus
+        if (!("focus" in client)) {
+          continue;
         }
-        // If not, then open the target URL in a new window/tab.
-        return self.clients.openWindow(url);
-      }),
+
+        // Skip clients that are on a different page
+        if (pathname(client.url) !== pathname(targetUrl)) {
+          continue;
+        }
+
+        // Focus client
+        if (!client.focused) {
+          await client.focus();
+        }
+
+        // Skip clients whose full URLs match
+        if (client.url === targetUrl) {
+          return client;
+        }
+
+        // Create a MessageChannel for two-way communication
+        const { port1, port2 } = new MessageChannel();
+
+        // Set up a promise that resolves when navigation succeeds or times out
+        let navigationSuccessful = false;
+        const navigationPromise = new Promise<boolean>(resolve => {
+          // Listen for confirmation from the client
+          port1.onmessage = ({ data }) => {
+            if (data && typeof data === "object") {
+              const { result } = data;
+              if (result === "success") {
+                navigationSuccessful = true;
+                resolve(true);
+              }
+            }
+          };
+
+          // Set a timeout for fallback
+          setTimeout(() => {
+            if (!navigationSuccessful) {
+              resolve(false);
+            }
+          }, 1000);
+        });
+
+        // Send client-side navigation request with MessagePort
+        client.postMessage({ action: "navigate", url: targetUrl }, [port2]);
+
+        // Wait for navigation to complete or timeout
+        const success = await navigationPromise;
+        if (!success) {
+          console.info(
+            "Client-side navigation timed out, falling back to client.navigate()",
+          );
+          await client.navigate(targetUrl);
+        }
+        return client;
+      }
+
+      // If not, then open the target URL in a new window/tab.
+      return self.clients.openWindow(targetUrl);
+    }),
   );
 });
 
-console.info("Service worker installed with scope", self.registration.scope);
+console.info("Service worker found with scope", self.registration.scope);

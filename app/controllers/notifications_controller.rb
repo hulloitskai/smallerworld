@@ -6,7 +6,7 @@ class NotificationsController < ApplicationController
   protect_from_forgery with: :null_session, only: :delivered
 
   # == Filters
-  before_action :require_authentication!, only: :cleared
+  # before_action :require_authentication!, only: :cleared
 
   # == Actions
   # POST /notifications/:id/delivered

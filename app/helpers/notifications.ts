@@ -81,7 +81,7 @@ export const renderNotification = (
   }
 };
 
-export const notificationActionUrl = (notification: Notification): string => {
+export const notificationTargetUrl = (notification: Notification): string => {
   switch (notification.type) {
     case "Post": {
       const { post, user_handle, friend_access_token } =

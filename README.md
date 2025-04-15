@@ -45,9 +45,10 @@ bin/setup
 - [x] arrow still isn't that obvious for enable push notifs
   - don't allow scrolling until enabled?
 - [x] inline rich text editor toolbar
-- [x] fix iOS text selection on post form
-- [ ] launch new workbox-based service worker
+- [x] launch new workbox-based service worker
+- [ ] fix iOS text selection in Vaul drawers
 - [ ] adding friend page to chrome standalone doesn't dismiss join modal
+- [ ] some android devices don't open app from notification
 - [ ] why does add-to-homescreen instructions image #2 never load properly?
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] remove old supabase auth code

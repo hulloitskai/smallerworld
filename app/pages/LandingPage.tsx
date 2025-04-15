@@ -68,7 +68,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           style={{ borderRadius: "var(--mantine-radius-default)" }}
         />
         {!revealVideo && (
-          <Overlay backgroundOpacity={0} blur={3}>
+          <Overlay backgroundOpacity={0} blur={3} radius="lg">
             <Center h="100%">
               <Button
                 variant="filled"
@@ -89,7 +89,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           </Overlay>
         )}
       </Box>
-      <Card withBorder>
+      <Card className={classes.howItWorksCard} withBorder>
         <Stack gap={8}>
           <Center
             p={8}

@@ -31,3 +31,9 @@
     var(--mantine-color-primary-4)
   );
 }
+
+.howItWorksCard {
+  @mixin larger-than $mantine-breakpoint-xs {
+    padding: var(--mantine-spacing-lg);
+  }
+}

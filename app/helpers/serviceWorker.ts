@@ -26,12 +26,17 @@ export const registerServiceWorker = () => {
           });
         }
         setInterval(() => {
+          // Skip if service worker is waiting or installing
           if (!registration.active) {
             return;
           }
+
+          // Skip if offline
           if ("connection" in navigator && !navigator.onLine) {
             return;
           }
+
+          // Check for update, if service worker URL is reachable
           void fetch(SERVICE_WORKER_URL, {
             cache: "no-store",
             headers: {
@@ -52,22 +57,27 @@ export const registerServiceWorker = () => {
 };
 
 export const handleServiceWorkerNavigation = (): void => {
-  const handleMessage = ({ data }: MessageEvent<any>): void => {
-    if (typeof data !== "object" || !("action" in data)) {
+  const handleMessage = ({ data, ports }: MessageEvent<any>): void => {
+    if (typeof data !== "object") {
       return;
     }
-    const { action } = data;
-    switch (action) {
-      case "navigate": {
-        console.info("Received navigation request from service worker", data);
-        const { url } = data;
-        if (typeof url !== "string" || url !== location.href) {
-          return;
-        }
-        router.visit(url);
-        break;
-      }
+    const { action, url } = data;
+    if (action !== "navigate" || typeof url !== "string") {
+      return;
     }
+    console.info("Received service worker navigation request to:", url);
+    if (url === location.href) {
+      console.info("Already on this page, skipping navigation");
+      return;
+    }
+    router.visit(url, {
+      onSuccess: () => {
+        console.info(`Navigation to '${url}' completed successfully`);
+        const [port] = ports;
+        port?.postMessage({ result: "success" });
+      },
+    });
   };
+
   navigator.serviceWorker.addEventListener("message", handleMessage);
 };
