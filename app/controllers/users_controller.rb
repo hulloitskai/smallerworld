@@ -4,27 +4,7 @@
 class UsersController < ApplicationController
   ENCOURAGEMENTS_SHIPPED_ROUGHLY_AT = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
 
-  # == Filters
-  before_action :authenticate_user!, only: :index
-
   # == Actions
-  # GET /universe
-  def index
-    authorize!
-    worlds = User
-      .joins(:posts)
-      .group("users.id")
-      .select(
-        "users.*",
-        "MAX(posts.created_at) as last_post_created_at",
-        "COUNT(posts.id) as post_count",
-      )
-      .order("last_post_created_at DESC NULLS LAST")
-    render(inertia: "UniversePage", props: {
-      worlds: WorldSerializer.many(worlds),
-    })
-  end
-
   # GET /@:handle
   def show
     handle = T.let(params.fetch(:handle), String)

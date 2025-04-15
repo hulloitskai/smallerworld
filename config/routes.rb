@@ -103,7 +103,6 @@ Rails.application.routes.draw do
   end
   get "/@:handle" => "users#show", as: :user, export: true
   get "/@:handle/join" => "users#join"
-  get "/universe" => "users#index", export: true
 
   # == Posts
   resources :posts, only: %i[index create update destroy], export: true do
@@ -135,6 +134,11 @@ Rails.application.routes.draw do
 
   # == Encouragements
   resources :encouragements, only: %i[index create], export: true
+
+  # == Universe
+  resource :universe, only: :show, export: { namespace: "universe" } do
+    get :worlds
+  end
 
   # == Pages
   root "landing#show", export: true

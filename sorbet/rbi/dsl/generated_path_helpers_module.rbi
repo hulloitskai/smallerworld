@@ -236,4 +236,7 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def world_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def worlds_universe_path(*args); end
 end
