@@ -21,7 +21,9 @@
 }
 
 .worldAnchor {
-  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  &:not([data-joined]) {
+    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  }
 }
 
 .postCountIndicator {

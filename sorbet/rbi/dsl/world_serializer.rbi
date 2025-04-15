@@ -6,6 +6,6 @@
 
 
 class WorldSerializer
-  sig { returns(User) }
-  def user; end
+  sig { returns(World) }
+  def world; end
 end

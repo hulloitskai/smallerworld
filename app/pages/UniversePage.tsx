@@ -16,10 +16,18 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
   useUserTheme("aquatica");
 
   // == Load worlds
-  const { data } = useRouteSWR<{ worlds: World[] }>(routes.universe.worlds, {
-    descriptor: "load worlds",
-  });
-  const { worlds } = data ?? {};
+  const { data } = useRouteSWR<{ joinedWorlds: World[]; otherWorlds: World[] }>(
+    routes.universe.worlds,
+    {
+      descriptor: "load worlds",
+    },
+  );
+  const worlds = useMemo(() => {
+    if (data) {
+      const { joinedWorlds, otherWorlds } = data;
+      return [...joinedWorlds, ...otherWorlds];
+    }
+  }, [data]);
 
   return (
     <Stack gap="xl">
@@ -42,9 +50,17 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
               worlds.map(world => (
                 <Anchor
                   className={classes.worldAnchor}
-                  key={world.id}
+                  key={world.user_id}
                   component={Link}
-                  href={routes.users.show.path({ handle: world.handle })}
+                  href={routes.users.show.path({
+                    handle: world.user_handle,
+                    query: {
+                      ...(!!world.associated_friend_access_token && {
+                        friend_token: world.associated_friend_access_token,
+                      }),
+                    },
+                  })}
+                  mod={{ joined: !!world.associated_friend_access_token }}
                 >
                   <Stack align="center" gap={8} w="min-content">
                     <WorldIcon {...{ world }} mx="sm" />
@@ -92,6 +108,9 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => (
       size={20}
       offset={4}
       disabled={!world.post_count}
+      {...(!world.associated_friend_access_token && {
+        color: "white",
+      })}
     >
       <Tooltip
         label={
