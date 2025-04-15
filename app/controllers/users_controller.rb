@@ -11,7 +11,15 @@ class UsersController < ApplicationController
   # GET /universe
   def index
     authorize!
-    worlds = User.all
+    worlds = User
+      .joins(:posts)
+      .group("users.id")
+      .select(
+        "users.*",
+        "MAX(posts.created_at) as last_post_created_at",
+        "COUNT(posts.id) as post_count",
+      )
+      .order("last_post_created_at DESC NULLS LAST")
     render(inertia: "UniversePage", props: {
       worlds: WorldSerializer.many(worlds),
     })

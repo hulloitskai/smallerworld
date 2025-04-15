@@ -1,4 +1,4 @@
-import { Image, Text } from "@mantine/core";
+import { Image, Indicator, Text } from "@mantine/core";
 
 import logoSrc from "~/assets/images/logo.png";
 
@@ -32,13 +32,21 @@ const UniversePage: PageComponent<UniversePageProps> = ({ worlds }) => {
             href={routes.users.show.path({ handle: world.handle })}
           >
             <Stack align="center" gap={8} px="md" w="min-content">
-              <Image
-                className={classes.worldPageIcon}
-                src={world.page_icon.src}
-                srcSet={world.page_icon.src_set}
-                radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-                style={{ "--size": rem(ICON_SIZE) }}
-              />
+              <Indicator
+                className={classes.postCountIndicator}
+                label={world.post_count}
+                size={20}
+                offset={4}
+                disabled={!world.post_count}
+              >
+                <Image
+                  className={classes.worldPageIcon}
+                  src={world.page_icon.src}
+                  srcSet={world.page_icon.src_set}
+                  radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+                  style={{ "--size": rem(ICON_SIZE) }}
+                />
+              </Indicator>
               <Text ff="heading" size="sm" fw={600} ta="center">
                 {possessive(world.user_name)} world
               </Text>

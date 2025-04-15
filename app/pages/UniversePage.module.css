@@ -13,3 +13,13 @@
     box-shadow: var(--mantine-shadow-xl);
   }
 }
+
+.postCountIndicator {
+  :global(.mantine-Indicator-indicator) {
+    font-weight: 600;
+    font-family: var(--mantine-font-family-headings);
+    min-height: var(--indicator-size);
+    padding-inline: 4px;
+    z-index: 99;
+  }
+}
