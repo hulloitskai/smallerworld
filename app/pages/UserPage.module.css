@@ -1,3 +1,12 @@
+.pageIcon {
+  width: var(--size);
+  height: var(--size);
+  align-self: center;
+  object-fit: cover;
+  flex: unset;
+  box-shadow: var(--mantine-shadow-lg);
+}
+
 .installModal {
   :global(.mantine-Modal-header) {
     min-height: rem(40);

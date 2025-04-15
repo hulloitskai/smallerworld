@@ -72,7 +72,7 @@ const createTheme = (
     colors: {
       rose: ROSE_COLORS,
       primary: ROSE_COLORS,
-      accent: DEFAULT_THEME.colors.teal,
+      accent: DEFAULT_THEME.colors.lime,
       resumeAccent: DEFAULT_THEME.colors.indigo,
     },
     primaryColor: "primary",

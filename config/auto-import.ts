@@ -53,6 +53,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/layouts": ["useIsMobileSize"],
     "~/helpers/userThemes": ["useUserTheme"],
     "~/helpers/vaul": ["createVaulModalPortalTarget", "useVaulPortalTarget"],
+    "~/helpers/admin": ["useIsAdmin"],
     "@fullstory/browser": ["FullStory", ["isInitialized", "isFsInitialized"]],
     "@inertiajs/react": ["Link", "router"],
     "@inertiajs/core": ["hrefToUrl"],

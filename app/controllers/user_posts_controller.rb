@@ -16,11 +16,9 @@ class UserPostsController < ApplicationController
       limit: 5,
     )
     paginated_posts = T.cast(paginated_posts, T::Array[Post])
-    unless current_friend
-      paginated_posts.map! do |post|
-        post.visibility == :public ? post : MaskedPost.new(post:)
-      end
-    end
+    paginated_posts.map! do |post|
+      allowed_to?(:show?, post) ? post : MaskedPost.new(post:)
+    end unless current_friend
     post_ids = paginated_posts.map(&:id)
     replied_post_ids = if (friend = current_friend)
       PostReplyReceipt

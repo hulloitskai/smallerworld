@@ -92,6 +92,7 @@ class Post < ApplicationRecord
   normalizes :title, with: ->(title) { title&.strip }
 
   # == Validations
+  validates :emoji, emoji: true, allow_nil: true
   validates :type, :body_html, presence: true
   validates :title, absence: true, unless: :title_visible?
   validates :quoted_post, presence: true, if: :follow_up?

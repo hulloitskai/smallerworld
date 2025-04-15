@@ -1,0 +1,15 @@
+.worldPageIcon {
+  width: var(--size);
+  height: var(--size);
+  object-fit: cover;
+  flex: unset;
+  box-shadow: var(--mantine-shadow-lg);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05) translateZ(10px);
+    box-shadow: var(--mantine-shadow-xl);
+  }
+}

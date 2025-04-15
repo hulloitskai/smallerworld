@@ -126,6 +126,7 @@ declare global {
   const useEnv: typeof import('~/helpers/meta')['useEnv']
   const useFieldsFilled: typeof import('~/helpers/form')['useFieldsFilled']
   const useForm: typeof import('~/helpers/form')['useForm']
+  const useIsAdmin: typeof import('~/helpers/admin')['useIsAdmin']
   const useIsMobileSize: typeof import('~/helpers/layouts')['useIsMobileSize']
   const useIsStandalone: typeof import('~/helpers/pwa')['useIsStandalone']
   const useMantineColorScheme: typeof import('@mantine/core')['useMantineColorScheme']

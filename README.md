@@ -46,9 +46,14 @@ bin/setup
   - don't allow scrolling until enabled?
 - [x] inline rich text editor toolbar
 - [x] launch new workbox-based service worker
+- [ ] allow you to change icon of your smaller world as friend before you save
+      it
+- [ ] smaller worldiverse feature
+- [-] some android devices don't open app from notification
+- [ ] make it easy to add friends from onboarding tutorial
+- [ ] show arrow to show where the create a post button lives (⬇️)
+- [ ] user-page-specific splash screens for Android / iOS
 - [ ] fix iOS text selection in Vaul drawers
 - [ ] adding friend page to chrome standalone doesn't dismiss join modal
-- [ ] some android devices don't open app from notification
-- [ ] why does add-to-homescreen instructions image #2 never load properly?
 - [ ] add android/ios chrome add-to-homescreen instructions
 - [ ] remove old supabase auth code

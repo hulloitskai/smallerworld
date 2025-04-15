@@ -35,6 +35,7 @@ class ApplicationController < ActionController::Base
       flash: flash.to_h,
       "currentUser" => UserSerializer.one_if(current_user),
       "currentFriend" => FriendSerializer.one_if(current_friend),
+      "isAdmin" => current_user&.admin?,
     }
   end
 

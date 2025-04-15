@@ -104,9 +104,10 @@ const PostForm: FC<PostFormProps> = props => {
           action: routes.posts.update,
           params: { id: post.id },
           descriptor: "update post",
-          transformValues: ({ title, image_upload, ...values }) => ({
+          transformValues: ({ emoji, title, image_upload, ...values }) => ({
             post: {
               ...values,
+              emoji: emoji || null,
               title: title || null,
               image: image_upload?.signedId ?? null,
             },
@@ -115,12 +116,13 @@ const PostForm: FC<PostFormProps> = props => {
       : {
           action: routes.posts.create,
           descriptor: "create post",
-          transformValues: ({ title, image_upload, ...values }) => {
+          transformValues: ({ emoji, title, image_upload, ...values }) => {
             invariant(postType, "Missing post type");
             return {
               post: {
                 ...values,
                 type: postType,
+                emoji: emoji || null,
                 title: POST_TYPES_WITH_TITLE.includes(postType)
                   ? title || null
                   : null,

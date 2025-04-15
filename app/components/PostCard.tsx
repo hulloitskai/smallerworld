@@ -34,21 +34,27 @@ export interface PostCardProps extends BoxProps {
 const PostCard: FC<PostCardProps> = ({
   post,
   actions,
-  blurContent,
+  blurContent: initialBlurContent,
   focus,
   ...otherProps
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (focus && cardRef.current) {
-      cardRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [focus]);
   const pinnedUntil = useMemo(() => {
     if (post.pinned_until) {
       return DateTime.fromISO(post.pinned_until);
     }
   }, [post.pinned_until]);
+  const isAdmin = useIsAdmin();
+
+  // == Auto-focus
+  useEffect(() => {
+    if (focus && cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [focus]);
+
+  // == Blur content
+  const [blurContent, setBlurContent] = useState(initialBlurContent);
 
   return (
     <Card
@@ -153,7 +159,7 @@ const PostCard: FC<PostCardProps> = ({
         </Stack>
         {blurContent && (
           <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
-            <Center h="100%">
+            <Stack align="center" justify="center" gap={6} h="100%">
               <Alert
                 variant="outline"
                 color="gray"
@@ -161,7 +167,20 @@ const PostCard: FC<PostCardProps> = ({
                 title="visible only to invited friends"
                 className={classes.restrictedAlert}
               />
-            </Center>
+              {isAdmin && (
+                <Anchor
+                  component="button"
+                  c="accent"
+                  size="xs"
+                  fw={600}
+                  onClick={() => {
+                    setBlurContent(false);
+                  }}
+                >
+                  view as admin
+                </Anchor>
+              )}
+            </Stack>
           </Overlay>
         )}
       </Card.Section>

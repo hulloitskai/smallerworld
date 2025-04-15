@@ -92,8 +92,6 @@ Rails.application.routes.draw do
   resource :friend_notification_settings, only: %i[show update], export: true
 
   # == Users
-  get "/@:handle" => "users#show", as: :user, export: true
-  get "/@:handle/join" => "users#join"
   resources :users, only: [], export: true do
     # collection do
     #   get :joined
@@ -103,6 +101,9 @@ Rails.application.routes.draw do
       post :request_invitation
     end
   end
+  get "/@:handle" => "users#show", as: :user, export: true
+  get "/@:handle/join" => "users#join"
+  get "/universe" => "users#index", export: true
 
   # == Posts
   resources :posts, only: %i[index create update destroy], export: true do

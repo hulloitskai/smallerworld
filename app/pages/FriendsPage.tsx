@@ -31,47 +31,45 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   );
 
   return (
-    <Stack gap="xl">
-      <Stack gap="lg">
-        <Stack gap={4} align="center">
-          <Box component={FriendsIcon} fz="xl" />
-          <Title size="h2" ta="center">
-            your friends
-          </Title>
-          <Button
-            component={Link}
-            leftSection={<BackIcon />}
-            radius="xl"
-            href={routes.world.show.path()}
-            mt={2}
-          >
-            back to your world
-          </Button>
-        </Stack>
-        <Stack gap="xs">
-          <AddFriendButton {...{ currentUser }} size="md" mih={54} />
-          {friends ? (
-            isEmpty(friends) ? (
-              <Card
-                withBorder
-                c="dimmed"
-                py="lg"
-                style={{ borderStyle: "dashed" }}
-              >
-                <Stack align="center" gap={4}>
-                  <FrownyFaceIcon />
-                  <Text inherit>you world is too small (add a friend!)</Text>
-                </Stack>
-              </Card>
-            ) : (
-              [...notifiableFriends, ...unnotifiableFriends].map(friend => (
-                <FriendCard key={friend.id} {...{ currentUser, friend }} />
-              ))
-            )
+    <Stack gap="lg">
+      <Stack gap={4} align="center">
+        <Box component={FriendsIcon} fz="xl" />
+        <Title size="h2" ta="center">
+          your friends
+        </Title>
+        <Button
+          component={Link}
+          leftSection={<BackIcon />}
+          radius="xl"
+          href={routes.world.show.path()}
+          mt={2}
+        >
+          back to your world
+        </Button>
+      </Stack>
+      <Stack gap="xs">
+        <AddFriendButton {...{ currentUser }} size="md" mih={54} />
+        {friends ? (
+          isEmpty(friends) ? (
+            <Card
+              withBorder
+              c="dimmed"
+              py="lg"
+              style={{ borderStyle: "dashed" }}
+            >
+              <Stack align="center" gap={4}>
+                <FrownyFaceIcon />
+                <Text inherit>you world is too small (add a friend!)</Text>
+              </Stack>
+            </Card>
           ) : (
-            [...new Array(3)].map((_, i) => <Skeleton key={i} h={96} />)
-          )}
-        </Stack>
+            [...notifiableFriends, ...unnotifiableFriends].map(friend => (
+              <FriendCard key={friend.id} {...{ currentUser, friend }} />
+            ))
+          )
+        ) : (
+          [...new Array(3)].map((_, i) => <Skeleton key={i} h={96} />)
+        )}
       </Stack>
     </Stack>
   );

@@ -7,8 +7,8 @@ class ErrorsController < ApplicationController
   def not_found
     render_error_page(
       status: :not_found,
-      title: "Page not found",
-      description: "The page you were looking for doesn't exist!",
+      title: "page not found",
+      description: "the page you were looking for doesn't exist!",
     )
   end
 
@@ -16,10 +16,10 @@ class ErrorsController < ApplicationController
   def internal_server_error
     render_error_page(
       status: :internal_server_error,
-      title: "Internal error",
+      title: "internal error",
       description:
-        "Sorry about this, but something went wrong while processing this " \
-        "request! Our team has been notified.",
+        "sorry about this, but something went wrong while processing this " \
+        "request! our team has been notified.",
       error: exception,
     )
   end
@@ -28,9 +28,9 @@ class ErrorsController < ApplicationController
   def unprocessable_entity
     render_error_page(
       status: :unprocessable_entity,
-      title: "Change rejected",
+      title: "change rejected",
       description:
-        "The change you wanted was rejected. Maybe you tried to change " \
+        "the change you wanted was rejected. maybe you tried to change " \
         "something you didn't have access to?",
       error: exception,
     )
@@ -40,9 +40,9 @@ class ErrorsController < ApplicationController
   def unauthorized
     render_error_page(
       status: :unauthorized,
-      title: "Unauthorized",
+      title: "unauthorized",
       description:
-        "You're not allowed to access this resource or perform this action.",
+        "you're not allowed to access this resource or perform this action.",
     )
   end
 

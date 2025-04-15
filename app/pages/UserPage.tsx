@@ -130,17 +130,11 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
         <Box pos="relative">
           <Stack gap="sm">
             <Image
+              className={classes.pageIcon}
               src={user.page_icon.src}
               srcSet={user.page_icon.src_set}
-              w={ICON_SIZE}
-              h={ICON_SIZE}
-              fit="cover"
               radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-              style={{
-                alignSelf: "center",
-                flex: "unset",
-                boxShadow: "var(--mantine-shadow-lg)",
-              }}
+              style={{ "--size": rem(ICON_SIZE) }}
             />
             <Stack gap={4}>
               <Title size="h2" lh="xs" ta="center">

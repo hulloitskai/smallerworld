@@ -13,4 +13,5 @@ export default interface SharedPageProps extends PageProps {
   };
   currentUser: User | null;
   currentFriend: Friend | null;
+  isAdmin: boolean;
 }
