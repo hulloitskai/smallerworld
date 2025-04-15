@@ -46,9 +46,10 @@ bin/setup
   - don't allow scrolling until enabled?
 - [x] inline rich text editor toolbar
 - [x] launch new workbox-based service worker
+- [x] smaller worldiverse feature
+- [x] open 'create your own world' in mobile Safari on iOS
 - [ ] allow you to change icon of your smaller world as friend before you save
       it
-- [ ] smaller worldiverse feature
 - [-] some android devices don't open app from notification
 - [ ] make it easy to add friends from onboarding tutorial
 - [ ] show arrow to show where the create a post button lives (⬇️)

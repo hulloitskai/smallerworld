@@ -187,7 +187,11 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                       canOpenUrlInMobileSafari(browserDetection)
                     ) {
                       event.preventDefault();
-                      openUrlInMobileSafari(event.currentTarget.href);
+                      const url = new URL(
+                        event.currentTarget.href,
+                        location.href,
+                      );
+                      openUrlInMobileSafari(url.toString());
                     }
                   }}
                 >
