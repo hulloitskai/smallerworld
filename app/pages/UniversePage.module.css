@@ -1,4 +1,4 @@
-.title {
+.pageTitle {
   @mixin dark {
     color: var(--mantine-color-white);
   }

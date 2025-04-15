@@ -25,7 +25,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
     <Stack gap="xl">
       <Group gap={6} justify="center">
         <Image src={logoSrc} w={36} />
-        <Title size="h2" className={classes.title}>
+        <Title size="h2" className={classes.pageTitle}>
           smaller universe
         </Title>
       </Group>

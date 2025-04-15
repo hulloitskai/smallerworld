@@ -1,3 +1,9 @@
+.pageTitle {
+  @mixin dark {
+    color: var(--mantine-color-white);
+  }
+}
+
 .pageIcon {
   width: var(--size);
   height: var(--size);

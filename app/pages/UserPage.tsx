@@ -137,7 +137,12 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
               style={{ "--size": rem(ICON_SIZE) }}
             />
             <Stack gap={4}>
-              <Title size="h2" lh="xs" ta="center">
+              <Title
+                size="h2"
+                lh="xs"
+                ta="center"
+                className={classes.pageTitle}
+              >
                 {possessive(user.name)} world
               </Title>
               {isStandalone ? (
