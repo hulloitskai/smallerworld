@@ -25,7 +25,7 @@ import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPrompt } from "~/helpers/pwa/install";
-import { useWebPush } from "~/helpers/webPush";
+import { useResetPushSubscriptionOnIOS, useWebPush } from "~/helpers/webPush";
 import { type FriendInfo, type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
@@ -45,6 +45,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
 }) => {
   const isStandalone = useIsStandalone();
   const { registration, subscription } = useWebPush();
+
+  // TODO: Remove after 2025-05-01
+  useResetPushSubscriptionOnIOS();
 
   // == User theme
   useUserTheme(currentUser.theme);

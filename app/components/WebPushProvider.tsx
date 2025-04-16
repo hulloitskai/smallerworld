@@ -39,7 +39,7 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
         setSubscription(null);
       },
     });
-  const loading = supported === null || subscribing || unsubscribing;
+  const loading = supported === undefined || subscribing || unsubscribing;
   return (
     <WebPushContext.Provider
       value={{

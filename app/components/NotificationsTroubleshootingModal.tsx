@@ -56,7 +56,9 @@ const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
       leftSection={<FixIcon />}
       loading={loading || mutating}
       onClick={() => {
-        void unsubscribe().then(subscribe).then(trigger);
+        void unsubscribe()
+          .then(subscribe)
+          .then(() => trigger());
       }}
       {...props}
     >

@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 
 import { type PushRegistration } from "~/types";
 
+import { isIos, useBrowserDetection } from "./browsers";
 import { identifyVisitor } from "./fingerprinting";
 
 const getPushManager = (): Promise<PushManager> =>
@@ -295,3 +296,32 @@ const fetchDeviceId = (): Promise<string> =>
       .then(response => response.json())
       .then((data: { deviceId: string }) => get(data, "deviceId")),
   );
+
+const RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER =
+  DateTime.fromObject({
+    year: 2025,
+    month: 4,
+    day: 16,
+    hour: 12,
+  });
+
+export const useResetPushSubscriptionOnIOS = (): void => {
+  const browserDetection = useBrowserDetection();
+  const isStandalone = useIsStandalone();
+  const { subscribe, unsubscribe, registration } = useWebPush();
+  useEffect(() => {
+    if (
+      browserDetection &&
+      isIos(browserDetection) &&
+      isStandalone &&
+      registration?.created_at
+    ) {
+      const registeredAt = DateTime.fromISO(registration.created_at);
+      if (
+        registeredAt < RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER
+      ) {
+        void unsubscribe().then(subscribe);
+      }
+    }
+  }, [!!browserDetection, !!isStandalone, registration?.created_at]); // eslint-disable-line react-hooks/exhaustive-deps
+};
