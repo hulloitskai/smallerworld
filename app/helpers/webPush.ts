@@ -95,10 +95,12 @@ export const useLookupPushRegistration = ({
 };
 
 export interface WebPushSubscribeOptions {
+  subscription: PushSubscription | null | undefined;
   onSubscribed: (subscription: PushSubscription) => void;
 }
 
 export const useWebPushSubscribe = ({
+  subscription,
   onSubscribed,
 }: WebPushSubscribeOptions): [
   () => Promise<void>,
@@ -107,7 +109,7 @@ export const useWebPushSubscribe = ({
   const currentFriend = useCurrentFriend();
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
-  const subscribe = useCallback((): Promise<void> => {
+  const subscribe = (): Promise<void> => {
     const subscribeAndRegister = async (): Promise<void> => {
       const [pushManager, publicKey, deviceId, visitorIdentity] =
         await Promise.all([
@@ -115,6 +117,7 @@ export const useWebPushSubscribe = ({
           fetchPublicKey(),
           fetchDeviceId(),
           identifyVisitor(),
+          subscription?.unsubscribe(),
         ]);
       try {
         const subscription = await pushManager.subscribe({
@@ -157,7 +160,7 @@ export const useWebPushSubscribe = ({
         }
       });
     }
-  }, [onSubscribed, currentFriend?.access_token]);
+  };
   return [subscribe, { subscribing, subscribeError }];
 };
 
@@ -229,7 +232,7 @@ export const useWebPushUnsubscribe = ({
   const currentFriend = useCurrentFriend();
   const [unsubscribing, setUnsubscribing] = useState(false);
   const [unsubscribeError, setUnsubscribeError] = useState<Error | null>(null);
-  const unsubscribe = useCallback(async (): Promise<void> => {
+  const unsubscribe = async (): Promise<void> => {
     if (!subscription) {
       throw new Error("No current subscription");
     }
@@ -258,7 +261,7 @@ export const useWebPushUnsubscribe = ({
     } finally {
       setUnsubscribing(false);
     }
-  }, [onUnsubscribed, currentFriend?.access_token]); // eslint-disable-line react-hooks/exhaustive-deps
+  };
   return [unsubscribe, { unsubscribing, unsubscribeError }];
 };
 

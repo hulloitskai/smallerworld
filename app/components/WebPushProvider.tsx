@@ -31,6 +31,7 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
   }, [supported]);
   const registration = useLookupPushRegistration({ subscription });
   const [subscribe, { subscribing, subscribeError }] = useWebPushSubscribe({
+    subscription,
     onSubscribed: setSubscription,
   });
   const [unsubscribe, { unsubscribing, unsubscribeError }] =
