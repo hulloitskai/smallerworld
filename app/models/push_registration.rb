@@ -6,14 +6,15 @@
 #
 # Table name: push_registrations
 #
-#  id                   :uuid             not null, primary key
-#  device_fingerprint   :string
-#  owner_type           :string           not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  device_id            :uuid
-#  owner_id             :uuid             not null
-#  push_subscription_id :uuid             not null
+#  id                            :uuid             not null, primary key
+#  device_fingerprint            :string           not null
+#  device_fingerprint_confidence :float(24)        not null
+#  owner_type                    :string           not null
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  device_id                     :uuid             not null
+#  owner_id                      :uuid             not null
+#  push_subscription_id          :uuid             not null
 #
 # Indexes
 #

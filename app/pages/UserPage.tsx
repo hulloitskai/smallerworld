@@ -23,10 +23,7 @@ import {
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import {
-  useReregisterWithDeviceIdentifiers,
-  useWebPush,
-} from "~/helpers/webPush";
+import { useWebPush } from "~/helpers/webPush";
 import { type Encouragement, type Friend, type User } from "~/types";
 
 import classes from "./UserPage.module.css";
@@ -44,9 +41,6 @@ export interface UserPageProps extends SharedPageProps {
 const ICON_SIZE = 96;
 
 const UserPage: PageComponent<UserPageProps> = ({ user }) => {
-  // TODO: Remove after April 15, 2025
-  useReregisterWithDeviceIdentifiers();
-
   const browserDetection = useBrowserDetection();
   const isStandalone = useIsStandalone();
   const currentUser = useCurrentUser();

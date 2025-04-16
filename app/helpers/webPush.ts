@@ -125,6 +125,7 @@ export const useWebPushSubscribe = ({
             subscription,
             deviceId,
             deviceFingerprint: visitorIdentity.visitorId,
+            deviceFingerprintConfidence: visitorIdentity.confidence.score,
             friendAccessToken: currentFriend?.access_token,
           });
           onSubscribed(subscription);
@@ -163,6 +164,7 @@ interface RegisterSubscriptionParams {
   subscription: PushSubscription;
   deviceId: string;
   deviceFingerprint: string;
+  deviceFingerprintConfidence: number;
   friendAccessToken?: string;
 }
 
@@ -170,6 +172,7 @@ const registerSubscription = ({
   subscription,
   deviceId,
   deviceFingerprint,
+  deviceFingerprintConfidence,
   friendAccessToken,
 }: RegisterSubscriptionParams): Promise<void> => {
   const { endpoint, keys } = pick(
@@ -197,6 +200,7 @@ const registerSubscription = ({
       push_registration: {
         device_id: deviceId,
         device_fingerprint: deviceFingerprint,
+        device_fingerprint_confidence: deviceFingerprintConfidence,
       },
     },
   }).then(() => {
@@ -279,15 +283,3 @@ const fetchDeviceId = (): Promise<string> =>
       .then(response => response.json())
       .then((data: { deviceId: string }) => get(data, "deviceId")),
   );
-
-export const useReregisterWithDeviceIdentifiers = (): void => {
-  const { registration, subscribe } = useWebPush();
-  useEffect(() => {
-    if (
-      registration &&
-      (!registration.device_id || !registration.device_fingerprint)
-    ) {
-      void subscribe();
-    }
-  }, [registration]); // eslint-disable-line react-hooks/exhaustive-deps
-};

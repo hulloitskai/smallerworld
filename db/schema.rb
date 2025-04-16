@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_10_075123) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_132605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -237,9 +237,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_10_075123) do
     t.uuid "owner_id", null: false
     t.uuid "push_subscription_id", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.uuid "device_id"
-    t.string "device_fingerprint"
+    t.uuid "device_id", null: false
+    t.string "device_fingerprint", null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.float "device_fingerprint_confidence", limit: 24, null: false
     t.index ["device_fingerprint"], name: "index_push_registrations_on_device_fingerprint"
     t.index ["device_id"], name: "index_push_registrations_on_device_id"
     t.index ["owner_type", "owner_id", "push_subscription_id"], name: "index_push_registrations_uniqueness", unique: true

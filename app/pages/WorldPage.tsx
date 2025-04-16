@@ -25,10 +25,7 @@ import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPrompt } from "~/helpers/pwa/install";
-import {
-  useReregisterWithDeviceIdentifiers,
-  useWebPush,
-} from "~/helpers/webPush";
+import { useWebPush } from "~/helpers/webPush";
 import { type FriendInfo, type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
@@ -49,9 +46,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   friends,
   pendingJoinRequests,
 }) => {
-  // TODO: Remove after April 15, 2025
-  useReregisterWithDeviceIdentifiers();
-
   const isStandalone = useIsStandalone();
   const { registration, subscription } = useWebPush();
 

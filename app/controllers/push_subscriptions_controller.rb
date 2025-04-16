@@ -30,6 +30,7 @@ class PushSubscriptionsController < ApplicationController
     registration_params = params.expect(push_registration: %i[
       device_id
       device_fingerprint
+      device_fingerprint_confidence
     ])
     endpoint = T.let(subscription_params.delete(:endpoint), String)
     subscription = PushSubscription.find_or_initialize_by(endpoint:)
