@@ -1,8 +1,6 @@
 import { type ButtonProps, CopyButton, Popover, Text } from "@mantine/core";
 import QRCode from "react-qr-code";
 
-import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
-import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
@@ -78,7 +76,7 @@ const ModalBody: FC<ModalBodyProps> = ({
   }, [fromJoinRequest, fromUser]);
 
   // == Join url
-  const [friendJoinUrl, setFriendJoinUrl] = useState<string>("");
+  const [friendJoinUrl, setFriendJoinUrl] = useState<string>();
 
   // == Form
   const initialValues = useMemo(

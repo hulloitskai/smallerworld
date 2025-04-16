@@ -27,6 +27,8 @@ declare global {
   const ClipboardIcon: typeof import('~/components/icons')['ClipboardIcon']
   const Container: typeof import('@mantine/core')['Container']
   const ContinueIcon: typeof import('~/components/icons')['ContinueIcon']
+  const CopiedIcon: typeof import('~/components/icons')['CopiedIcon']
+  const CopyIcon: typeof import('~/components/icons')['CopyIcon']
   const CreateIcon: typeof import('~/components/icons')['CreateIcon']
   const DateTime: typeof import('luxon')['DateTime']
   const DeleteIcon: typeof import('~/components/icons')['DeleteIcon']

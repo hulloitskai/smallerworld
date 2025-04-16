@@ -13,6 +13,7 @@ import {
 } from "~/helpers/posts";
 import { useNewPostDraft } from "~/helpers/posts/form";
 import { useWebPush } from "~/helpers/webPush";
+import { type WorldPageProps } from "~/pages/WorldPage";
 import { type Encouragement, type Post, type PostType } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
@@ -25,6 +26,7 @@ import classes from "./WorldPageFloatingActions.module.css";
 export interface WorldPageFloatingActionsProps {}
 
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
+  const { currentUser } = usePageProps<WorldPageProps>();
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
   const { modals } = useModals();
@@ -252,6 +254,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
               {...{ post }}
               actions={
                 <AuthorPostCardActions
+                  user={currentUser}
                   {...{ post }}
                   onFollowUpDrawerModalOpened={() => {
                     setPinnedPostsDrawerModalOpened(false);

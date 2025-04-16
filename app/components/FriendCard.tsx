@@ -1,8 +1,6 @@
 import { CopyButton, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
-import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
-import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
 import { type FriendView, type User } from "~/types";
@@ -20,7 +18,7 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
   const [menuOpened, setMenuOpened] = useState(false);
 
   // == Join url
-  const [joinUrl, setJoinUrl] = useState<string>("");
+  const [joinUrl, setJoinUrl] = useState<string>();
   useEffect(() => {
     const joinPath = routes.users.show.path({
       handle: currentUser.handle,
@@ -73,7 +71,7 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <CopyButton value={joinUrl}>
+              <CopyButton value={joinUrl ?? ""}>
                 {({ copied, copy }) => (
                   <Menu.Item
                     closeMenuOnClick={false}

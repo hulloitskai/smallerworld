@@ -3,6 +3,7 @@ import { Text } from "@mantine/core";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { usePosts } from "~/helpers/posts";
+import { type WorldPageProps } from "~/pages/WorldPage";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
@@ -11,6 +12,7 @@ import PostCard from "./PostCard";
 export interface WorldPageFeedProps extends BoxProps {}
 
 const WorldPageFeed: FC<WorldPageFeedProps> = props => {
+  const { currentUser } = usePageProps<WorldPageProps>();
   const { post_id } = useQueryParams();
 
   // == Load posts
@@ -51,7 +53,9 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
                 key={post.id}
                 {...{ post }}
                 focus={post_id === post.id}
-                actions={<AuthorPostCardActions {...{ post }} />}
+                actions={
+                  <AuthorPostCardActions user={currentUser} {...{ post }} />
+                }
               />
             ))}
             {hasMorePosts && (

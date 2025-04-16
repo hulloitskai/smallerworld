@@ -1,3 +1,4 @@
+import { CopyButton } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
@@ -6,7 +7,7 @@ import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Post, type PostReaction } from "~/types";
+import { type Post, type PostReaction, type User } from "~/types";
 
 import DrawerModal from "./DrawerModal";
 import PostForm from "./PostForm";
@@ -14,14 +15,17 @@ import PostForm from "./PostForm";
 import classes from "./AuthorPostCardActions.module.css";
 
 export interface AuthorPostCardActionsProps {
+  user: User;
   post: Post;
   onFollowUpDrawerModalOpened?: () => void;
 }
 
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
+  user,
   post,
   onFollowUpDrawerModalOpened,
 }) => {
+  const postUrl = usePostUrl(post, user);
   const { ref, inViewport } = useInViewport();
 
   // == Load post stats
@@ -164,6 +168,18 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             >
               follow-up
             </Menu.Item>
+            <CopyButton value={postUrl ?? ""}>
+              {({ copied, copy }) => (
+                <Menu.Item
+                  leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
+                  disabled={!postUrl}
+                  closeMenuOnClick={false}
+                  onClick={copy}
+                >
+                  {copied ? "link copied!" : "copy link"}
+                </Menu.Item>
+              )}
+            </CopyButton>
           </Menu.Dropdown>
         </Menu>
       </Group>
@@ -187,3 +203,18 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
 };
 
 export default AuthorPostCardActions;
+
+const usePostUrl = (post: Post, user: User): string | undefined => {
+  const [url, setUrl] = useState<string>();
+  useEffect(() => {
+    const path = routes.users.show.path({
+      handle: user.handle,
+      query: {
+        post_id: post.id,
+      },
+    });
+    const url = new URL(path, window.location.origin);
+    setUrl(url.toString());
+  }, [user.handle, post.id]);
+  return url;
+};

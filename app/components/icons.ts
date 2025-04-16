@@ -9,6 +9,8 @@ export { default as BackIcon } from "~icons/heroicons/arrow-uturn-left-20-solid"
 export { default as NotificationIcon } from "~icons/heroicons/bell-20-solid";
 export { default as SuccessIcon } from "~icons/heroicons/check-circle-20-solid";
 export { default as ClipboardIcon } from "~icons/heroicons/clipboard-20-solid";
+export { default as CopyIcon } from "~icons/heroicons/clipboard-document-20-solid";
+export { default as CopiedIcon } from "~icons/heroicons/clipboard-document-check-20-solid";
 export { default as SettingsIcon } from "~icons/heroicons/cog-6-tooth-20-solid";
 export { default as PhoneIcon } from "~icons/heroicons/device-phone-mobile-20-solid";
 export { default as CreateIcon } from "~icons/heroicons/document-plus-20-solid";

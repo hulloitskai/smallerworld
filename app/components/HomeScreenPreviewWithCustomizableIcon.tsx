@@ -43,8 +43,8 @@ const HomeScreenPreviewWithIconCustomization: FC<HomeScreenPreviewProps> = ({
 
 export default HomeScreenPreviewWithIconCustomization;
 
-const usePageUrlWithAlternativeManifestIcon = (): string => {
-  const [pageUrl, setPageUrl] = useState("");
+const usePageUrlWithAlternativeManifestIcon = (): string | undefined => {
+  const [pageUrl, setPageUrl] = useState<string>();
   useEffect(() => {
     const url = new URL(location.href);
     const iconType = url.searchParams.get("manifest_icon_type");
