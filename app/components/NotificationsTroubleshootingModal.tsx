@@ -1,4 +1,8 @@
-import { Text } from "@mantine/core";
+import { type ButtonProps, Text } from "@mantine/core";
+
+import FixIcon from "~icons/heroicons/wrench-screwdriver-20-solid";
+
+import { useWebPush } from "~/helpers/webPush";
 
 import ContactLink from "./ContactLink";
 
@@ -7,6 +11,8 @@ export const openNotificationsTroubleshootingModal = (): void => {
     title: <>not getting notifications?</>,
     children: (
       <Stack>
+        <Text>try this:</Text>
+        <ResetPushSubscriptionButton style={{ alignSelf: "center" }} />
         <Text>
           if you&apos;re on android, make sure that your{" "}
           <span style={{ fontWeight: 700 }}>Google Chrome</span> notifications
@@ -24,4 +30,37 @@ export const openNotificationsTroubleshootingModal = (): void => {
       </Stack>
     ),
   });
+};
+
+// eslint-disable-next-line react-refresh/only-export-components
+const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
+  const currentFriend = useCurrentFriend();
+  const { subscribe, loading, unsubscribe } = useWebPush();
+  const { trigger, mutating } = useRouteMutation<{}>(
+    routes.pushSubscriptions.test,
+    {
+      descriptor: "send test notification",
+      params: {
+        query: {
+          ...(currentFriend && {
+            friend_token: currentFriend.access_token,
+          }),
+        },
+      },
+    },
+  );
+
+  return (
+    <Button
+      variant="filled"
+      leftSection={<FixIcon />}
+      loading={loading || mutating}
+      onClick={() => {
+        void unsubscribe().then(subscribe).then(trigger);
+      }}
+      {...props}
+    >
+      reset push notifications
+    </Button>
+  );
 };

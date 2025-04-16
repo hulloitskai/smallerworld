@@ -68,6 +68,7 @@ interface StepBadgeProps extends BadgeProps {
   step: number;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 const StepBadge: FC<StepBadgeProps> = ({ step, children, ...otherProps }) => (
   <Badge
     className={classes.stepBadge}
