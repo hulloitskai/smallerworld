@@ -1,3 +1,5 @@
+import ShuffleIcon from "~icons/basil/shuffle-solid";
+
 import HomeScreenPreview, {
   type HomeScreenPreviewProps,
 } from "./HomeScreenPreview";
@@ -14,19 +16,27 @@ const HomeScreenPreviewWithIconCustomization: FC<HomeScreenPreviewProps> = ({
 }) => {
   // == Manifest icons
   const { manifest_icon_type } = useQueryParams();
-  const alternateIconLabel =
-    manifest_icon_type === "generic" ? possessive(pageName) : "generic";
   const alternatePageUrl = usePageUrlWithAlternativeManifestIcon();
 
   return (
-    <Stack gap={8} {...otherProps}>
+    <Stack gap="xs" {...otherProps}>
       <HomeScreenPreview
         pageIcon={manifest_icon_type === "generic" ? null : pageIcon}
         {...{ pageName, arrowLabel, radius }}
       />
-      <Anchor href={alternatePageUrl} size="xs" ta="center">
-        use {alternateIconLabel} icon
-      </Anchor>
+      <Button
+        component="a"
+        href={alternatePageUrl}
+        size="compact-sm"
+        leftSection={<Box component={ShuffleIcon} fz="lg" />}
+        style={{ alignSelf: "center" }}
+      >
+        use{" "}
+        {manifest_icon_type === "generic"
+          ? possessive(pageName)
+          : "alternative"}{" "}
+        icon
+      </Button>
     </Stack>
   );
 };

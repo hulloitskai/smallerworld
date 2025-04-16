@@ -1,4 +1,4 @@
-import { Image, type ModalProps } from "@mantine/core";
+import { type BadgeProps, Image, type ModalProps } from "@mantine/core";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
 import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
@@ -33,9 +33,7 @@ export const openInstallationInstructionsModal = ({
           tap 'Add to Home Screen'
         </StepWithImage>
         <Stack gap={8} align="center">
-          <Badge className={classes.stepBadge} size="lg" leftSection={<>3.</>}>
-            open from home screen
-          </Badge>
+          <StepBadge step={3}>open from home screen</StepBadge>
           <HomeScreenPreviewWithIconCustomization
             {...{ pageName, pageIcon }}
             arrowLabel="open me!"
@@ -59,11 +57,25 @@ const StepWithImage: FC<StepWithImageProps> = ({
   ...otherProps
 }) => {
   return (
-    <Stack align="center" gap={8} {...otherProps}>
-      <Badge className={classes.stepBadge} size="lg" leftSection={<>{step}.</>}>
-        {children}
-      </Badge>
+    <Stack align="center" gap={2} {...otherProps}>
+      <StepBadge step={step}>{children}</StepBadge>
       <Image className={classes.stepImage} src={imageSrc} />
     </Stack>
   );
 };
+
+interface StepBadgeProps extends BadgeProps {
+  step: number;
+}
+
+const StepBadge: FC<StepBadgeProps> = ({ step, children, ...otherProps }) => (
+  <Badge
+    className={classes.stepBadge}
+    variant="transparent"
+    size="lg"
+    leftSection={<>{step}.</>}
+    {...otherProps}
+  >
+    {children}
+  </Badge>
+);
