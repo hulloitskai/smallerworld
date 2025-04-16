@@ -104,16 +104,11 @@ class PushRegistration < ApplicationRecord
 
   sig { void }
   def create_friend_notification!
-    return if has_other_push_registrations?
-
-    owner = self.owner
-    if owner.is_a?(Friend)
-      owner.create_notification!
+    transaction do
+      owner = self.owner
+      if owner.is_a?(Friend) && !owner.push_registrations.where.not(id:).exists?
+        owner.create_notification!
+      end
     end
-  end
-
-  sig { returns(T::Boolean) }
-  def has_other_push_registrations?
-    owner.push_registrations.where.not(id:).exists?
   end
 end

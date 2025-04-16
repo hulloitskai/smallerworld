@@ -308,14 +308,18 @@ const RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER =
 export const useResetPushSubscriptionOnIOS = (): void => {
   const browserDetection = useBrowserDetection();
   const isStandalone = useIsStandalone();
-  const { subscribe, unsubscribe, registration } = useWebPush();
+  const resubscribedRef = useRef(false);
+  const { subscribe, unsubscribe, registration, loading } = useWebPush();
   useEffect(() => {
     if (
       browserDetection &&
       isIos(browserDetection) &&
       isStandalone &&
-      registration?.created_at
+      registration?.created_at &&
+      !loading &&
+      !resubscribedRef.current
     ) {
+      resubscribedRef.current = true;
       const registeredAt = DateTime.fromISO(registration.created_at);
       if (
         registeredAt < RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER
@@ -323,5 +327,5 @@ export const useResetPushSubscriptionOnIOS = (): void => {
         void unsubscribe().then(subscribe);
       }
     }
-  }, [!!browserDetection, !!isStandalone, registration?.created_at]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [!!browserDetection, !!isStandalone, registration?.created_at, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 };
