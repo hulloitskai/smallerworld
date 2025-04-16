@@ -30,9 +30,6 @@ import classes from "./UserPage.module.css";
 
 export interface UserPageProps extends SharedPageProps {
   user: User;
-  faviconSrc: string;
-  faviconImageSrc: string;
-  appleTouchIconSrc: string;
   replyPhoneNumber: string | null;
   lastSentEncouragement: Encouragement | null;
   invitationRequested: boolean;
@@ -53,10 +50,10 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
     if (visibility === "visible" && isStandalone) {
       void router.reload({
         only: [
+          "currentUser",
+          "currentFriend",
+          "faviconLinks",
           "user",
-          "faviconSrc",
-          "faviconImageSrc",
-          "appleTouchIconSrc",
           "lastSentEncouragement",
         ],
         async: true,
@@ -232,49 +229,27 @@ UserPage.layout = page => (
         ? `you're invited to ${user.name}'s world`
         : `${user.name}'s world`;
     }}
-    imageUrl={({ faviconImageSrc }) => faviconImageSrc}
-    manifestUrl={({ currentFriend, user }) =>
-      currentFriend
+    manifestUrl={({ currentFriend, user }, { url }) => {
+      const { manifest_icon_type } = queryParamsFromPath(url);
+      return currentFriend
         ? routes.users.manifest.path({
             id: user.id,
             query: {
               friend_token: currentFriend.access_token,
+              icon_type: manifest_icon_type,
             },
           })
-        : null
-    }
+        : null;
+    }}
     withContainer
     containerSize="xs"
     withGutter
   >
-    <IconsMeta />
     <UserPageDialogStateProvider>{page}</UserPageDialogStateProvider>
   </AppLayout>
 );
 
 export default UserPage;
-
-const IconsMeta: FC = () => {
-  const { faviconSrc, faviconImageSrc, appleTouchIconSrc } =
-    usePageProps<UserPageProps>();
-  return (
-    <Head>
-      <link head-key="favicon" rel="icon" href={faviconSrc} />
-      <link
-        head-key="favicon-image"
-        rel="icon"
-        type="image/png"
-        href={faviconImageSrc}
-        sizes="96x96"
-      />
-      <link
-        head-key="apple-touch-icon"
-        rel="apple-touch-icon"
-        href={appleTouchIconSrc}
-      />
-    </Head>
-  );
-};
 
 interface WelcomeBackToastProps {
   currentFriend: Friend;

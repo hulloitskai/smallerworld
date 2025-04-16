@@ -2,18 +2,17 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  include RendersUserFavicons
+  include GeneratesManifest
+
+  # == Filters
+  before_action :authenticate_friend!, only: :manifest
+
   # == Actions
-  # GET /@:handle
+  # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def show
     handle = T.let(params.fetch(:handle), String)
     user = User.friendly.find(handle)
-    page_icon_blob = user.page_icon_blob!
-    favicon_variant =
-      page_icon_blob.variant(resize_to_fill: [48, 48], format: "png")
-    favicon_image_variant =
-      page_icon_blob.variant(resize_to_fill: [96, 96], format: "png")
-    apple_touch_icon_variant =
-      page_icon_blob.variant(resize_to_fill: [180, 180], format: "png")
     if (current_user = self.current_user)
       invitation_requested = user
         .join_requests
@@ -23,17 +22,17 @@ class UsersController < ApplicationController
       reply_phone_number = user.phone_number
       last_sent_encouragement = friend.latest_visible_encouragement
     end
-    render(inertia: "UserPage", props: {
+    props = {
       user: UserSerializer.one(user),
-      "faviconSrc" => rails_representation_path(favicon_variant),
-      "faviconImageSrc" => rails_representation_path(favicon_image_variant),
-      "appleTouchIconSrc" =>
-        rails_representation_path(apple_touch_icon_variant),
       "replyPhoneNumber" => reply_phone_number,
       "lastSentEncouragement" => EncouragementSerializer
         .one_if(last_sent_encouragement),
       "invitationRequested" => invitation_requested,
-    })
+    }
+    unless params[:manifest_icon_type] == "generic"
+      props["faviconLinks"] = user_favicon_links(user)
+    end
+    render(inertia: "UserPage", props:)
   end
 
   # GET /@:handle/join
@@ -67,33 +66,25 @@ class UsersController < ApplicationController
   #   })
   # end
 
-  # GET /users/:id/manifest.webmanifest?friend_token=...
+  # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def manifest
-    current_friend = self.current_friend
-    user_id = T.let(params.fetch(:id), String)
-    user = User.find(user_id)
-    name = current_friend ? "#{user.name}'s world" : "smaller world"
-    short_name = current_friend ? user.name : "smaller world"
-    description = if current_friend
-      "life updates, personal invitations, poems, and more!"
-    else
-      "a smaller world for you and your friends :)"
-    end
-    start_url = if current_friend
-      user_path(user, friend_token: current_friend.access_token)
-    else
-      world_path
-    end
-    scope = current_friend ? user_path(user) : world_path
+    current_friend = authenticate_friend!
+    user = find_user
+    icons =
+      if params[:icon_type] == "generic"
+        generic_manifest_icons
+      else
+        user_manifest_icons(user)
+      end
     render(
       json: {
-        name:,
-        short_name:,
-        description:,
-        icons: manifest_icons(user),
+        name: "#{user.name}'s world",
+        short_name: user.name,
+        description: "life updates, personal invitations, poems, and more!",
+        icons:,
         display: "standalone",
-        start_url:,
-        scope:,
+        start_url: user_path(user, friend_token: current_friend.access_token),
+        scope: user_path(user),
       },
       content_type: "application/manifest+json",
     )
@@ -101,8 +92,7 @@ class UsersController < ApplicationController
 
   # POST /users/:id/request_invitation
   def request_invitation
-    user_id = T.let(params.fetch(:id), String)
-    user = User.find(user_id)
+    user = find_user
     join_request_params = params.expect(join_request: %i[name phone_number])
     phone_number = join_request_params.delete(:phone_number)
     join_request = user.join_requests.find_or_initialize_by(phone_number:)
@@ -126,47 +116,9 @@ class UsersController < ApplicationController
 
   private
 
-  sig { params(user: User).returns(T::Array[T.untyped]) }
-  def manifest_icons(user)
-    icon_blob = user.page_icon_blob!
-    width, height = blob_dimensions(icon_blob)
-    smallest_dimension = [width, height].min
-    if smallest_dimension >= 192
-      [192, 384, 512, 1024].filter_map do |size|
-        next if size > smallest_dimension
-
-        icon_variant = icon_blob.variant(
-          resize_to_fill: [size, size],
-          format: "png",
-        )
-        type = Mime::Type.lookup_by_extension(icon_variant.variation.format)
-        {
-          src: rails_representation_path(icon_variant),
-          sizes: "#{size}x#{size}",
-          type: type.to_s,
-          purpose: "any",
-        }
-      end
-    else
-      icon_variant = icon_blob.variant(
-        resize_to_fill: [192, 192],
-        format: "png",
-      )
-      type = Mime::Type.lookup_by_extension(icon_variant.variation.format)
-      [
-        {
-          src: rails_representation_path(icon_variant),
-          sizes: "192x192",
-          type: type.to_s,
-          purpose: "any",
-        },
-      ]
-    end
-  end
-
-  sig { params(blob: ActiveStorage::Blob).returns([Integer, Integer]) }
-  def blob_dimensions(blob)
-    blob.analyze unless blob.analyzed?
-    blob.metadata.fetch_values("width", "height")
+  # == Helpers
+  sig { returns(User) }
+  def find_user
+    User.friendly.find(params.fetch(:id))
   end
 end

@@ -51,6 +51,14 @@ const ModalBody: FC<ModalBodyProps> = ({
 
   // == Add to home screen
   const { install, installing } = useInstallPrompt();
+
+  // == Manifest icons
+  const { manifest_icon_type } = useQueryParams();
+  const alternativeManifestIconLabel =
+    manifest_icon_type === "generic" ? possessive(user.name) : "generic";
+  const pageUrlWithAlternativeManifestIcon =
+    usePageUrlWithAlternativeManifestIcon();
+
   return (
     <Stack gap="lg" align="center" pb="xs">
       <Stack gap={4}>
@@ -62,11 +70,16 @@ const ModalBody: FC<ModalBodyProps> = ({
           life&apos;s adventures :)
         </Text>
       </Stack>
-      <HomeScreenPreview
-        pageName={user.name}
-        pageIcon={user.page_icon}
-        arrowLabel="it's me!"
-      />
+      <Stack gap="xs">
+        <HomeScreenPreview
+          pageName={user.name}
+          pageIcon={manifest_icon_type === "generic" ? null : user.page_icon}
+          arrowLabel="it's me!"
+        />
+        <Anchor href={pageUrlWithAlternativeManifestIcon} size="xs" ta="center">
+          use {alternativeManifestIconLabel} icon
+        </Anchor>
+      </Stack>
       <Text ta="center" maw={300}>
         pin this page to your home screen so you can{" "}
         <span style={{ fontWeight: 600 }}>
@@ -108,4 +121,19 @@ const ModalBody: FC<ModalBodyProps> = ({
       </Stack>
     </Stack>
   );
+};
+
+const usePageUrlWithAlternativeManifestIcon = (): string => {
+  const [pageUrl, setPageUrl] = useState("");
+  useEffect(() => {
+    const url = new URL(location.href);
+    const iconType = url.searchParams.get("manifest_icon_type");
+    if (iconType === "generic") {
+      url.searchParams.delete("manifest_icon_type");
+    } else {
+      url.searchParams.set("manifest_icon_type", "generic");
+    }
+    setPageUrl(url.toString());
+  }, []);
+  return pageUrl;
 };

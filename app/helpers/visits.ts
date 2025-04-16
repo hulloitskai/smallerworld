@@ -25,15 +25,23 @@ export const useTrackVisit = (): void => {
       visibility === "visible"
     ) {
       const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
-      void trigger({
-        visit: {
-          clear_notifications: isStandalone,
-          time_zone_name: timeZone,
-        },
-      });
-      if ("clearAppBadge" in navigator) {
-        void navigator.clearAppBadge();
-      }
+      setTimeout(() => {
+        if (!matchMedia("(display-mode: standalone)").matches) {
+          return;
+        }
+        if (document.visibilityState === "hidden") {
+          return;
+        }
+        void trigger({
+          visit: {
+            clear_notifications: isStandalone,
+            time_zone_name: timeZone,
+          },
+        });
+        if ("clearAppBadge" in navigator) {
+          void navigator.clearAppBadge();
+        }
+      }, 1000);
     }
   }, [isStandalone, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
 };

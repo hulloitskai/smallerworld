@@ -31,10 +31,10 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
         setLoading(true);
         router.reload({
           only: [
+            "currentUser",
+            "currentFriend",
+            "faviconLinks",
             "user",
-            "faviconSrc",
-            "faviconImageSrc",
-            "appleTouchIcon",
             "lastSentEncouragement",
             "invitationRequested",
           ],

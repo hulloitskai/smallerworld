@@ -74,7 +74,9 @@ Rails.application.routes.draw do
   get "/start" => "start#redirect", export: { namespace: "start" }
 
   # == World
-  resource :world, only: %i[show edit update], export: { namespace: "world" }
+  resource :world, only: %i[show edit update], export: { namespace: "world" } do
+    get :manifest, constraints: { format: "" }
+  end
   get "/home" => redirect("/world")
 
   # == Join requests

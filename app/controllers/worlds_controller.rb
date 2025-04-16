@@ -2,20 +2,16 @@
 # frozen_string_literal: true
 
 class WorldsController < ApplicationController
+  include RendersUserFavicons
+  include GeneratesManifest
+
   # == Filters
   before_action :authenticate_user!
 
   # == Actions
-  # GET /world
+  # GET /world?intent=(installation_instructions|install)
   def show
     current_user = authenticate_user!
-    page_icon_blob = current_user.page_icon_blob!
-    favicon_variant =
-      page_icon_blob.variant(resize_to_fill: [48, 48], format: "png")
-    favicon_image_variant =
-      page_icon_blob.variant(resize_to_fill: [96, 96], format: "png")
-    apple_touch_icon_variant =
-      page_icon_blob.variant(resize_to_fill: [180, 180], format: "png")
     friends = current_user.friends
       .reverse_chronological
       .where.associated(:push_registrations)
@@ -30,10 +26,7 @@ class WorldsController < ApplicationController
     end
     pending_join_requests = current_user.join_requests.pending.count
     render(inertia: "WorldPage", props: {
-      "faviconSrc" => rails_representation_path(favicon_variant),
-      "faviconImageSrc" => rails_representation_path(favicon_image_variant),
-      "appleTouchIconSrc" =>
-        rails_representation_path(apple_touch_icon_variant),
+      "faviconLinks" => user_favicon_links(current_user),
       friends: FriendInfoSerializer.many(friends),
       "pendingJoinRequests" => pending_join_requests,
     })
@@ -46,18 +39,35 @@ class WorldsController < ApplicationController
 
   # PUT /world
   def update
-    user = authenticate_user!
+    current_user = authenticate_user!
     user_params = T.let(
       params.expect(user: %i[name page_icon theme]),
       ActionController::Parameters,
     )
-    if user.update(user_params)
-      render(json: { user: UserSerializer.one(user) })
+    if current_user.update(user_params)
+      render(json: { user: UserSerializer.one(current_user) })
     else
       render(
-        json: { errors: user.form_errors },
+        json: { errors: current_user.form_errors },
         status: :unprocessable_entity,
       )
     end
+  end
+
+  # GET /world/manifest.webmanifest
+  def manifest
+    current_user = authenticate_user!
+    render(
+      json: {
+        name: "smaller world",
+        short_name: "smaller world",
+        description: "a smaller world for you and your friends :)",
+        icons: user_manifest_icons(current_user),
+        display: "standalone",
+        start_url: world_path,
+        scope: world_path,
+      },
+      content_type: "application/manifest+json",
+    )
   end
 end

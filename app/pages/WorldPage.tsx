@@ -32,9 +32,6 @@ import classes from "./WorldPage.module.css";
 
 export interface WorldPageProps extends SharedPageProps {
   currentUser: User;
-  faviconSrc: string;
-  faviconImageSrc: string;
-  appleTouchIconSrc: string;
   friends: FriendInfo[];
   pendingJoinRequests: number;
 }
@@ -298,42 +295,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({
 WorldPage.layout = page => (
   <AppLayout<WorldPageProps>
     title="your world"
-    imageUrl={({ faviconImageSrc }) => faviconImageSrc}
-    manifestUrl={({ currentUser }) =>
-      routes.users.manifest.path({ id: currentUser.id })
-    }
+    manifestUrl={routes.world.manifest.path()}
     withContainer
     containerSize="xs"
     withGutter
   >
-    <IconsMeta />
     {page}
   </AppLayout>
 );
 
 export default WorldPage;
-
-const IconsMeta: FC = () => {
-  const { faviconSrc, faviconImageSrc, appleTouchIconSrc } =
-    usePageProps<WorldPageProps>();
-  return (
-    <Head>
-      <link head-key="favicon" rel="icon" href={faviconSrc} />
-      <link
-        head-key="favicon-image"
-        rel="icon"
-        type="image/png"
-        href={faviconImageSrc}
-        sizes="96x96"
-      />
-      <link
-        head-key="apple-touch-icon"
-        rel="apple-touch-icon"
-        href={appleTouchIconSrc}
-      />
-    </Head>
-  );
-};
 
 interface CheckableListItemProps extends Omit<ListItemProps, "icon"> {
   checked: boolean | "partial";

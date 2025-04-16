@@ -9,8 +9,8 @@ class PostsController < ApplicationController
   # == Actions
   # GET /posts
   def index
-    user = authenticate_user!
-    posts = authorized_scope(user.posts)
+    current_user = authenticate_user!
+    posts = authorized_scope(current_user.posts)
       .includes(:image_blob)
       .order(created_at: :desc, id: :asc)
     pagy, paginated_posts = pagy_keyset(posts, limit: 5)
@@ -24,8 +24,8 @@ class PostsController < ApplicationController
 
   # GET /posts/pinned
   def pinned
-    user = authenticate_user!
-    posts = authorized_scope(user.posts.currently_pinned)
+    current_user = authenticate_user!
+    posts = authorized_scope(current_user.posts.currently_pinned)
       .includes(:image_blob)
       .order(pinned_until: :asc, created_at: :asc)
     render(json: { posts: PostSerializer.many(posts) })
@@ -90,8 +90,8 @@ class PostsController < ApplicationController
     post_id = T.let(params.fetch(:id), String)
     post = Post.find(post_id)
     authorize!(post)
-    friend = authenticate_friend!
-    post.reply_receipts.create!(friend:)
+    current_friend = authenticate_friend!
+    post.reply_receipts.create!(current_friend:)
     render(json: { "authorId" => post.author_id })
   end
 

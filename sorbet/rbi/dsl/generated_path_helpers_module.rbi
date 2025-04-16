@@ -58,6 +58,9 @@ module GeneratedPathHelpersModule
   def mailcatcher_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def manifest_world_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def mark_as_replied_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

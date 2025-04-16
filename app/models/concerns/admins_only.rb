@@ -22,7 +22,7 @@ module AdminsOnly
   # == Filter handlers
   sig { void }
   def authorize_action!
-    user = authenticate_user!
-    authorize!(user, to: :administrate?)
+    current_user = authenticate_user!
+    authorize!(current_user, to: :administrate?)
   end
 end
