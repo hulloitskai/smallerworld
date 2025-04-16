@@ -38,7 +38,7 @@
       padding-bottom: 6px;
 
       @mixin smaller-than $mantine-breakpoint-xs {
-        padding-top: max(rem(6px), var(--safe-area-inset-top, 0px));
+        padding-top: calc(rem(6px) + var(--safe-area-inset-top, 0px));
       }
 
       @mixin larger-than $mantine-breakpoint-xs {

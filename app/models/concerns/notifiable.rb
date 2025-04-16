@@ -46,4 +46,9 @@ module Notifiable
       received_notifications
     end
   end
+
+  sig { void }
+  def test_push_notifications
+    push_registrations.find_each(&:push_test_notification)
+  end
 end
