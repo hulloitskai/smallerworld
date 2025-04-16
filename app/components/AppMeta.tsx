@@ -65,7 +65,12 @@ const AppMeta: FC<AppMetaProps> = ({
         <meta head-key="description" name="description" content={description} />
       )}
       {!!manifestUrl && (
-        <link head-key="manifest" rel="manifest" href={manifestUrl} />
+        <link
+          head-key="manifest"
+          rel="manifest"
+          href={manifestUrl}
+          crossOrigin="use-credentials"
+        />
       )}
       <meta property="og:site_name" content={siteName} />
       <meta property="og:type" content={APP_META_SITE_TYPE} />

@@ -34,6 +34,9 @@ export const useVaulPortalTarget = (): HTMLElement | undefined => {
       target.dataset.portal = "true";
       portalRoot.appendChild(target);
       setTarget(target);
+      return () => {
+        portalRoot.removeChild(target);
+      };
     } else {
       setTarget(undefined);
     }

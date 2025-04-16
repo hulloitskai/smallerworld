@@ -9,6 +9,9 @@ import {
   useEditor,
 } from "@tiptap/react";
 import StarterKitExtension from "@tiptap/starter-kit";
+import { InPortal, OutPortal } from "react-reverse-portal";
+
+import { useHtmlPortalNode } from "~/helpers/react-reverse-portal";
 
 import classes from "./PostEditor.module.css";
 import "@mantine/tiptap/styles.layer.css";
@@ -67,6 +70,9 @@ const PostEditor: FC<PostEditorProps> = ({
     [initialValue, placeholder],
   );
 
+  // == Bubble controls
+  const bubbleMenuPortalNode = useHtmlPortalNode();
+
   // == Link editor
   const vaulPortalTarget = useVaulPortalTarget();
 
@@ -86,42 +92,50 @@ const PostEditor: FC<PostEditorProps> = ({
       data-vaul-no-drag
       {...otherProps}
     >
-      {editor && (
-        <BubbleMenu
-          {...{ editor }}
-          tippyOptions={{ appendTo: vaulPortalTarget, zIndex: 180 }}
-        >
-          <RichTextEditor.ControlsGroup>
-            <RichTextEditor.Bold />
-            <RichTextEditor.Italic />
-            <RichTextEditor.Strikethrough />
-            <RichTextEditor.Link
-              popoverProps={{
-                withArrow: false,
-                position: "top",
-                offset: -26,
-                portalProps: {
-                  target: vaulPortalTarget,
-                },
-                styles: {
-                  dropdown: {
-                    padding: 0,
+      {bubbleMenuPortalNode && editor && (
+        <>
+          <InPortal node={bubbleMenuPortalNode}>
+            <RichTextEditor.ControlsGroup style={{ pointerEvents: "auto" }}>
+              <RichTextEditor.Bold />
+              <RichTextEditor.Italic />
+              <RichTextEditor.Strikethrough />
+              <RichTextEditor.Link
+                popoverProps={{
+                  withArrow: false,
+                  position: "top",
+                  offset: -26,
+                  portalProps: {
+                    target: vaulPortalTarget,
+                  },
+                  styles: {
+                    dropdown: {
+                      padding: 0,
+                      border: "none",
+                    },
+                  },
+                }}
+                styles={{
+                  linkEditorSave: {
+                    textTransform: "lowercase",
+                  },
+                  linkEditorExternalControl: {
                     border: "none",
                   },
-                },
-              }}
-              styles={{
-                linkEditorSave: {
-                  textTransform: "lowercase",
-                },
-                linkEditorExternalControl: {
-                  border: "none",
-                },
-              }}
-            />
-            {!!editor.getAttributes("link").href && <RichTextEditor.Unlink />}
-          </RichTextEditor.ControlsGroup>
-        </BubbleMenu>
+                }}
+              />
+              {!!editor.getAttributes("link").href && <RichTextEditor.Unlink />}
+            </RichTextEditor.ControlsGroup>
+          </InPortal>
+          <BubbleMenu
+            tippyOptions={{
+              appendTo: ref =>
+                vaulPortalTarget ?? findPortalParent(ref) ?? document.body,
+            }}
+            {...{ editor }}
+          >
+            <OutPortal node={bubbleMenuPortalNode} />
+          </BubbleMenu>
+        </>
       )}
       <RichTextEditor.Content />
     </RichTextEditor>
@@ -129,3 +143,11 @@ const PostEditor: FC<PostEditorProps> = ({
 };
 
 export default PostEditor;
+
+const findPortalParent = (ref: Element): Element | null => {
+  let portalParent: Element | null = ref;
+  while (portalParent instanceof HTMLElement && !portalParent.dataset.portal) {
+    portalParent = portalParent.parentElement;
+  }
+  return portalParent;
+};
