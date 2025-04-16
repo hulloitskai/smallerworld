@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_16_132605) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_163432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -217,7 +217,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_16_132605) do
   create_table "posts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "body_html", null: false
     t.uuid "author_id", null: false
-    t.string "emoji", null: false
+    t.string "emoji"
     t.string "type", null: false
     t.string "title"
     t.datetime "created_at", null: false

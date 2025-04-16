@@ -8,7 +8,7 @@
 #
 #  id             :uuid             not null, primary key
 #  body_html      :text             not null
-#  emoji          :string           not null
+#  emoji          :string
 #  pinned_until   :datetime
 #  title          :string
 #  type           :string           not null
