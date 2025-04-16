@@ -9,19 +9,7 @@ const getPushManager = (): Promise<PushManager> =>
   navigator.serviceWorker.ready.then(({ pushManager }) => pushManager);
 
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
-  navigator.serviceWorker.ready
-    .then(({ pushManager }) => pushManager.getSubscription())
-    .then(subscription => {
-      if (
-        subscription &&
-        typeof subscription.expirationTime === "number" &&
-        subscription.expirationTime <= Date.now()
-      ) {
-        console.warn("Found expired push subscription", subscription);
-        return null;
-      }
-      return subscription;
-    });
+  getPushManager().then(pushManager => pushManager.getSubscription());
 
 export interface UseWebPushResult {
   supported: boolean | undefined;
@@ -227,10 +215,12 @@ const reportProblem = (message: string): void => {
 };
 
 export interface UseWebPushUnsubscribeOptions {
+  subscription: PushSubscription | null | undefined;
   onUnsubscribed: () => void;
 }
 
 export const useWebPushUnsubscribe = ({
+  subscription,
   onUnsubscribed,
 }: UseWebPushUnsubscribeOptions): [
   () => Promise<void>,
@@ -240,12 +230,11 @@ export const useWebPushUnsubscribe = ({
   const [unsubscribing, setUnsubscribing] = useState(false);
   const [unsubscribeError, setUnsubscribeError] = useState<Error | null>(null);
   const unsubscribe = useCallback(async (): Promise<void> => {
+    if (!subscription) {
+      throw new Error("No current subscription");
+    }
     setUnsubscribing(true);
     try {
-      const subscription = await getPushSubscription();
-      if (!subscription) {
-        return;
-      }
       await fetchRoute(routes.pushSubscriptions.unsubscribe, {
         descriptor: "unsubscribe from push notifications",
         data: {
@@ -309,13 +298,13 @@ export const useResetPushSubscriptionOnIOS = (): void => {
   const browserDetection = useBrowserDetection();
   const isStandalone = useIsStandalone();
   const resubscribedRef = useRef(false);
-  const { subscribe, unsubscribe, registration, loading } = useWebPush();
+  const { subscribe, registration, loading } = useWebPush();
   useEffect(() => {
     if (
       browserDetection &&
       isIos(browserDetection) &&
       isStandalone &&
-      registration?.created_at &&
+      registration &&
       !loading &&
       !resubscribedRef.current
     ) {
@@ -324,8 +313,10 @@ export const useResetPushSubscriptionOnIOS = (): void => {
       if (
         registeredAt < RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER
       ) {
-        void unsubscribe().then(subscribe);
+        void subscribe().then(() => {
+          console.info("Re-subscribed to push notifications");
+        });
       }
     }
-  }, [!!browserDetection, !!isStandalone, registration?.created_at, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [browserDetection, isStandalone, registration, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 };

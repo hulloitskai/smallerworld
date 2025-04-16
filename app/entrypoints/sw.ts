@@ -180,71 +180,73 @@ self.addEventListener("notificationclick", event => {
 
   // Open the target URL
   event.waitUntil(
-    self.clients.matchAll({ type: "window" }).then(async clients => {
-      // Check if there is already a window/tab open with the target path
-      for (const client of clients) {
-        // Skip clients that don't support focus
-        if (!("focus" in client)) {
-          continue;
-        }
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then(async clients => {
+        // Check if there is already a window/tab open with the target path
+        for (const client of clients) {
+          // Skip clients that don't support focus
+          if (!("focus" in client)) {
+            continue;
+          }
 
-        // Skip clients that are on a different page
-        if (pathname(client.url) !== pathname(targetUrl)) {
-          continue;
-        }
+          // Skip clients that are on a different page
+          if (pathname(client.url) !== pathname(targetUrl)) {
+            continue;
+          }
 
-        // Focus client
-        if (!client.focused) {
-          await client.focus();
-        }
+          // Focus client
+          if (!client.focused) {
+            await client.focus();
+          }
 
-        // Skip clients whose full URLs match
-        if (client.url === targetUrl) {
+          // Skip clients whose full URLs match
+          if (client.url === targetUrl) {
+            return client;
+          }
+
+          // Create a MessageChannel for two-way communication
+          const { port1, port2 } = new MessageChannel();
+
+          // Set up a promise that resolves when navigation succeeds or times out
+          let navigationSuccessful = false;
+          const navigationPromise = new Promise<boolean>(resolve => {
+            // Listen for confirmation from the client
+            port1.onmessage = ({ data }) => {
+              if (data && typeof data === "object") {
+                const { result } = data;
+                if (result === "success") {
+                  navigationSuccessful = true;
+                  resolve(true);
+                }
+              }
+            };
+
+            // Set a timeout for fallback
+            setTimeout(() => {
+              if (!navigationSuccessful) {
+                resolve(false);
+              }
+            }, 1000);
+          });
+
+          // Send client-side navigation request with MessagePort
+          client.postMessage({ action: "navigate", url: targetUrl }, [port2]);
+
+          // Wait for navigation to complete or timeout
+          const success = await navigationPromise;
+          if (!success) {
+            console.info(
+              "Client-side navigation timed out, falling back to client.navigate()",
+            );
+            await client.navigate(targetUrl);
+          }
           return client;
         }
 
-        // Create a MessageChannel for two-way communication
-        const { port1, port2 } = new MessageChannel();
-
-        // Set up a promise that resolves when navigation succeeds or times out
-        let navigationSuccessful = false;
-        const navigationPromise = new Promise<boolean>(resolve => {
-          // Listen for confirmation from the client
-          port1.onmessage = ({ data }) => {
-            if (data && typeof data === "object") {
-              const { result } = data;
-              if (result === "success") {
-                navigationSuccessful = true;
-                resolve(true);
-              }
-            }
-          };
-
-          // Set a timeout for fallback
-          setTimeout(() => {
-            if (!navigationSuccessful) {
-              resolve(false);
-            }
-          }, 1000);
-        });
-
-        // Send client-side navigation request with MessagePort
-        client.postMessage({ action: "navigate", url: targetUrl }, [port2]);
-
-        // Wait for navigation to complete or timeout
-        const success = await navigationPromise;
-        if (!success) {
-          console.info(
-            "Client-side navigation timed out, falling back to client.navigate()",
-          );
-          await client.navigate(targetUrl);
-        }
-        return client;
-      }
-
-      // If not, then open the target URL in a new window/tab.
-      return self.clients.openWindow(targetUrl);
-    }),
+        // If not, then open the target URL in a new window/tab.
+        return self.clients.openWindow(targetUrl);
+      }),
   );
 });
 

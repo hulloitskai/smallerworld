@@ -35,6 +35,7 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
   });
   const [unsubscribe, { unsubscribing, unsubscribeError }] =
     useWebPushUnsubscribe({
+      subscription,
       onUnsubscribed: () => {
         setSubscription(null);
       },
