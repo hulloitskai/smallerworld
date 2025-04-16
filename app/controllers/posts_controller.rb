@@ -33,8 +33,7 @@ class PostsController < ApplicationController
 
   # GET /posts/:id/stats
   def stats
-    post_id = T.let(params.fetch(:id), String)
-    post = Post.find(post_id)
+    post = find_post
     authorize!(post, to: :manage?)
     render(json: {
       "notifiedFriends" => post.notified_friends.count,
@@ -67,8 +66,7 @@ class PostsController < ApplicationController
 
   # PUT /posts/:id
   def update
-    post_id = params.fetch(:id)
-    post = Post.find(post_id)
+    post = find_post
     authorize!(post)
     post_params = params.expect(post: %i[
       title
@@ -87,19 +85,17 @@ class PostsController < ApplicationController
 
   # POST /posts/:id/mark_as_replied
   def mark_as_replied
-    post_id = T.let(params.fetch(:id), String)
-    post = Post.find(post_id)
-    authorize!(post)
     current_friend = authenticate_friend!
-    post.reply_receipts.create!(current_friend:)
+    post = find_post
+    authorize!(post)
+    post.reply_receipts.create!(friend: current_friend)
     render(json: { "authorId" => post.author_id })
   end
 
   # DELETE /posts/:id
   def destroy
-    current_user = authenticate_user!
-    post_id = params.fetch(:id)
-    post = current_user.posts.find(post_id)
+    post = find_post
+    authorize!(post)
     if post.destroy
       render(json: {})
     else
@@ -108,5 +104,13 @@ class PostsController < ApplicationController
         status: :unprocessable_entity,
       )
     end
+  end
+
+  private
+
+  sig { returns(Post) }
+  def find_post
+    post_id = T.let(params.fetch(:id), String)
+    Post.find(post_id)
   end
 end

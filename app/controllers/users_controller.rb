@@ -119,6 +119,7 @@ class UsersController < ApplicationController
   # == Helpers
   sig { returns(User) }
   def find_user
-    User.friendly.find(params.fetch(:id))
+    user_id = T.let(params.fetch(:id), String)
+    User.friendly.find(user_id)
   end
 end
