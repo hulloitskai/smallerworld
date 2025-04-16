@@ -14,6 +14,7 @@ export const USER_THEMES: UserTheme[] = [
   "pool",
   "forest",
   "toile",
+  "aquatica",
 ];
 
 export const DARK_USER_THEMES: UserTheme[] = [
