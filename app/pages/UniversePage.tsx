@@ -2,7 +2,7 @@ import { type BoxProps, Image, Indicator, Text } from "@mantine/core";
 
 import AppLayout from "~/components/AppLayout";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { type World } from "~/types";
+import { type User, type World } from "~/types";
 
 import classes from "./UniversePage.module.css";
 
@@ -11,6 +11,7 @@ export interface UniversePageProps extends SharedPageProps {}
 const ICON_SIZE = 80;
 
 const UniversePage: PageComponent<UniversePageProps> = () => {
+  const currentUser = useCurrentUser();
   useUserTheme("aquatica");
 
   // == Load worlds
@@ -50,12 +51,13 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
                   href={routes.users.show.path({
                     handle: world.user_handle,
                     query: {
-                      ...(!!world.associated_friend_access_token && {
-                        friend_token: world.associated_friend_access_token,
-                      }),
+                      ...(!(currentUser?.id == world.user_id) &&
+                        !!world.associated_friend_access_token && {
+                          friend_token: world.associated_friend_access_token,
+                        }),
                     },
                   })}
-                  mod={{ joined: !!world.associated_friend_access_token }}
+                  mod={{ joined: isJoinedWorld(world, currentUser) }}
                 >
                   <Stack align="center" gap={8} w="min-content">
                     <WorldIcon {...{ world }} mx="sm" />
@@ -95,41 +97,46 @@ interface WorldIconProps extends BoxProps {
   world: World;
 }
 
-const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => (
-  <Box {...otherProps}>
-    <Indicator
-      className={classes.postCountIndicator}
-      label={world.post_count}
-      size={20}
-      offset={4}
-      disabled={!world.post_count}
-      {...(!world.associated_friend_access_token && {
-        color: "white",
-      })}
-    >
-      <Tooltip
-        label={
-          <>
-            {!!world.last_post_created_at && (
-              <>
-                last posted on{" "}
-                <Time format={DateTime.DATETIME_MED} inherit>
-                  {world.last_post_created_at}
-                </Time>
-              </>
-            )}
-          </>
-        }
-        disabled={!world.last_post_created_at}
+const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
+  const currentUser = useCurrentUser();
+  const joinedWorld = isJoinedWorld(world, currentUser);
+  return (
+    <Box {...otherProps}>
+      <Indicator
+        className={classes.postCountIndicator}
+        label={world.post_count}
+        size={20}
+        offset={4}
+        disabled={!world.post_count}
+        {...(joinedWorld && { color: "white" })}
       >
-        <Image
-          className={classes.worldPageIcon}
-          src={world.page_icon.src}
-          srcSet={world.page_icon.src_set}
-          radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-          style={{ "--size": rem(ICON_SIZE) }}
-        />
-      </Tooltip>
-    </Indicator>
-  </Box>
-);
+        <Tooltip
+          label={
+            <>
+              {!!world.last_post_created_at && (
+                <>
+                  last posted on{" "}
+                  <Time format={DateTime.DATETIME_MED} inherit>
+                    {world.last_post_created_at}
+                  </Time>
+                </>
+              )}
+            </>
+          }
+          disabled={!world.last_post_created_at}
+        >
+          <Image
+            className={classes.worldPageIcon}
+            src={world.page_icon.src}
+            srcSet={world.page_icon.src_set}
+            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+            style={{ "--size": rem(ICON_SIZE) }}
+          />
+        </Tooltip>
+      </Indicator>
+    </Box>
+  );
+};
+
+const isJoinedWorld = (world: World, currentUser: User | null) =>
+  currentUser?.id === world.user_id || !!world.associated_friend_access_token;

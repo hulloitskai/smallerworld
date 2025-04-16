@@ -28,7 +28,7 @@ class UniversesController < ApplicationController
         last_post_created_at: user[:last_post_created_at],
         associated_friend:,
       )
-      if associated_friend
+      if user == current_user || associated_friend
         joined_worlds << world
       else
         other_worlds << world
