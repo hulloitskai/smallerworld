@@ -10,6 +10,9 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
   userId,
   ...otherProps
 }) => {
+  const [loading, setLoading] = useState(false);
+
+  // == Revalidate posts
   const {
     mutate: mutatePosts,
     isValidating,
@@ -22,14 +25,27 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
     <ActionIcon
       variant="light"
       size="lg"
-      loading={isValidating}
+      loading={loading || isValidating}
       onClick={() => {
-        const firstPost = first(posts);
-        void mutate((key: string) => {
-          if (typeof key === "string") {
-            return key.startsWith("/posts");
-          }
+        // Reload page data
+        setLoading(true);
+        router.reload({
+          only: [
+            "user",
+            "faviconSrc",
+            "faviconImageSrc",
+            "appleTouchIcon",
+            "lastSentEncouragement",
+            "invitationRequested",
+          ],
+          async: true,
+          onFinish: () => {
+            setLoading(false);
+          },
         });
+
+        // Revalidate posts and post stats, reactions, etc
+        const firstPost = first(posts);
         void mutatePosts().then(pages => {
           const latestFirstPage = first(pages);
           const latestFirstPost = first(latestFirstPage?.posts);
@@ -43,6 +59,7 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
             });
           }
         });
+        void mutatePostStatsAndReactions();
       }}
       {...otherProps}
     >
@@ -52,3 +69,11 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
 };
 
 export default UserPageRefreshButton;
+
+const mutatePostStatsAndReactions = async (): Promise<void> => {
+  await mutate((key: string) => {
+    if (typeof key === "string") {
+      return key.startsWith("/posts");
+    }
+  });
+};
