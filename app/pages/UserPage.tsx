@@ -38,12 +38,12 @@ export interface UserPageProps extends SharedPageProps {
   appleTouchIconSrc: string;
   replyPhoneNumber: string | null;
   lastSentEncouragement: Encouragement | null;
-  encouragementsEnabled: boolean;
+  invitationRequested: boolean;
 }
 
 const ICON_SIZE = 96;
 
-const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
+const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   // TODO: Remove after April 15, 2025
   useReregisterWithDeviceIdentifiers();
 
@@ -157,10 +157,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
                   )}
                 </>
               ) : isStandalone === false ? (
-                <UserPageUpcomingEventsButton
-                  {...{ user, replyPhoneNumber }}
-                  style={{ alignSelf: "center" }}
-                />
+                <UserPageUpcomingEventsButton style={{ alignSelf: "center" }} />
               ) : (
                 <Skeleton style={{ alignSelf: "center", width: "unset" }}>
                   <Button>some placeholder</Button>
@@ -219,16 +216,14 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyPhoneNumber }) => {
       </Stack>
       {isStandalone && (
         <>
-          <UserPageFloatingActions {...{ user, replyPhoneNumber }} />
+          <UserPageFloatingActions />
           {currentFriend && <WelcomeBackToast {...{ currentFriend }} />}
         </>
       )}
       {isStandalone === false && (
         <>
-          {currentFriend && (
-            <UserPageInstallAlert {...{ currentFriend, user }} />
-          )}
-          {!currentFriend && <UserPageRequestInvitationAlert {...{ user }} />}
+          {currentFriend && <UserPageInstallAlert {...{ currentFriend }} />}
+          {!currentFriend && <UserPageRequestInvitationAlert />}
         </>
       )}
     </>

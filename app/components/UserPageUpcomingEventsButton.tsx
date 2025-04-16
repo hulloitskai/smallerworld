@@ -1,25 +1,22 @@
 import { type BoxProps } from "@mantine/core";
 
 import { useUserPageDialogOpened } from "~/helpers/userPages";
+import { type UserPageProps } from "~/pages/UserPage";
 import { type PostView } from "~/types";
 
 import DrawerModal from "./DrawerModal";
-import FriendPostCardActions, {
-  type FriendPostCardActionsProps,
-} from "./FriendPostCardActions";
+import FriendPostCardActions from "./FriendPostCardActions";
 import PostCard from "./PostCard";
 
 import classes from "./UserPageUpcomingEventsButton.module.css";
 
-export interface UserPageUpcomingEventsButtonProps
-  extends BoxProps,
-    Pick<FriendPostCardActionsProps, "user" | "replyPhoneNumber"> {}
+export interface UserPageUpcomingEventsButtonProps extends BoxProps {}
 
 const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
-  user,
-  replyPhoneNumber,
+  style,
   ...otherProps
 }) => {
+  const { user, replyPhoneNumber } = usePageProps<UserPageProps>();
   const currentFriend = useCurrentFriend();
 
   // == Load pinned posts
@@ -45,7 +42,7 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
   return (
     <>
       <Transition transition="pop" mounted={!isEmpty(pinnedPosts)}>
-        {style => (
+        {transitionStyle => (
           <Button
             variant="filled"
             radius="xl"
@@ -56,7 +53,7 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
             onClick={() => {
               setDrawerModalOpened(true);
             }}
-            {...{ style }}
+            style={[style, transitionStyle]}
             {...otherProps}
           >
             upcoming events

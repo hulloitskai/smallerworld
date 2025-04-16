@@ -229,6 +229,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           (hasOneUserCreatedPost === false ||
             (!!friends && friends.length < 3)) && (
             <Alert
+              className={classes.onboardingAlert}
               variant="outline"
               title={
                 <Group gap={8}>
@@ -238,14 +239,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   </Text>
                 </Group>
               }
-              styles={{
-                icon: {
-                  marginRight: "var(--mantine-spacing-xs)",
-                },
-                body: {
-                  rowGap: rem(8),
-                },
-              }}
             >
               <List>
                 <CheckableListItem
@@ -287,16 +280,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   write your first post! ✍️
                 </CheckableListItem>
               </List>
-              {/* <Group justify="space-between">
-                <Text inherit ff="heading" fw={600}>
-                  invite a friend to join your world:
-                </Text>
-                <AddFriendButton
-                  {...{ currentUser }}
-                  variant="white"
-                  size="compact-sm"
-                />
-              </Group> */}
             </Alert>
           )}
         <Box pos="relative">

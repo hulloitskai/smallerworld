@@ -2,8 +2,6 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  ENCOURAGEMENTS_SHIPPED_ROUGHLY_AT = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
-
   # == Actions
   # GET /@:handle
   def show
@@ -16,16 +14,14 @@ class UsersController < ApplicationController
       page_icon_blob.variant(resize_to_fill: [96, 96], format: "png")
     apple_touch_icon_variant =
       page_icon_blob.variant(resize_to_fill: [180, 180], format: "png")
+    if (current_user = self.current_user)
+      invitation_requested = user
+        .join_requests
+        .exists?(phone_number: current_user.phone_number)
+    end
     if (friend = current_friend)
       reply_phone_number = user.phone_number
       last_sent_encouragement = friend.latest_visible_encouragement
-    end
-    encouragements_enabled = if (
-      last_seen_at = friend&.user&.notifications_last_cleared_at
-    )
-      last_seen_at > ENCOURAGEMENTS_SHIPPED_ROUGHLY_AT
-    else
-      false
     end
     render(inertia: "UserPage", props: {
       user: UserSerializer.one(user),
@@ -36,7 +32,7 @@ class UsersController < ApplicationController
       "replyPhoneNumber" => reply_phone_number,
       "lastSentEncouragement" => EncouragementSerializer
         .one_if(last_sent_encouragement),
-      "encouragementsEnabled" => encouragements_enabled,
+      "invitationRequested" => invitation_requested,
     })
   end
 

@@ -11,7 +11,8 @@ import {
   openUserPageInstallationInstructionsInMobileSafari,
   useUserPageDialogOpened,
 } from "~/helpers/userPages";
-import { type Friend, type User } from "~/types/generated";
+import { type UserPageProps } from "~/pages/UserPage";
+import { type Friend } from "~/types/generated";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
@@ -20,13 +21,12 @@ import classes from "./UserPageInstallAlert.module.css";
 
 export interface UserPageInstallAlertProps {
   currentFriend: Friend;
-  user: User;
 }
 
 const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
   currentFriend,
-  user,
 }) => {
+  const { user } = usePageProps<UserPageProps>();
   const { modals } = useModals();
   const pageDialogOpened = useUserPageDialogOpened();
 

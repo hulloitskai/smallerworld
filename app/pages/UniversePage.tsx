@@ -51,10 +51,9 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
                   href={routes.users.show.path({
                     handle: world.user_handle,
                     query: {
-                      ...(!(currentUser?.id == world.user_id) &&
-                        !!world.associated_friend_access_token && {
-                          friend_token: world.associated_friend_access_token,
-                        }),
+                      ...(!!world.associated_friend_access_token && {
+                        friend_token: world.associated_friend_access_token,
+                      }),
                     },
                   })}
                   mod={{ joined: isJoinedWorld(world, currentUser) }}
@@ -79,7 +78,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
             ))
           )}
         </Group>
-        <Text size="xs" c="dimmed" ta="center" mb="lg">
+        <Text size="xs" c="dimmed" ta="center" mb="xl">
           (newly posted worlds shown first)
         </Text>
       </Stack>
@@ -129,8 +128,9 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
             className={classes.worldPageIcon}
             src={world.page_icon.src}
             srcSet={world.page_icon.src_set}
+            w={ICON_SIZE}
+            h={ICON_SIZE}
             radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-            style={{ "--size": rem(ICON_SIZE) }}
           />
         </Tooltip>
       </Indicator>

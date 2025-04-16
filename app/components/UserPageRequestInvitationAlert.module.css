@@ -17,6 +17,7 @@
 
 .button {
   flex-shrink: 0;
+  margin-bottom: 1px;
 
   :global(.mantine-Button-section) {
     &[data-position="left"] {

@@ -1,23 +1,19 @@
 import { Affix } from "@mantine/core";
 
 import { useUserPageDialogOpened } from "~/helpers/userPages";
+import { type UserPageProps } from "~/pages/UserPage";
 import { type PostView } from "~/types";
 
 import DrawerModal from "./DrawerModal";
-import FriendPostCardActions, {
-  type FriendPostCardActionsProps,
-} from "./FriendPostCardActions";
+import FriendPostCardActions from "./FriendPostCardActions";
 import PostCard from "./PostCard";
 
 import classes from "./UserPageFloatingActions.module.css";
 
-export interface UserPageFloatingActionsProps
-  extends Pick<FriendPostCardActionsProps, "user" | "replyPhoneNumber"> {}
+export interface UserPageFloatingActionsProps {}
 
-const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = ({
-  user,
-  replyPhoneNumber,
-}) => {
+const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = () => {
+  const { user, replyPhoneNumber } = usePageProps<UserPageProps>();
   const currentFriend = useCurrentFriend();
 
   // == Load pinned posts

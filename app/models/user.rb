@@ -80,6 +80,22 @@ class User < ApplicationRecord
     Admin.phone_numbers.include?(phone_number)
   end
 
+  sig { returns(ActiveSupport::TimeWithZone) }
+  def last_active_at
+    notifications_last_cleared_at || created_at
+  end
+
+  sig { returns(T::Array[Symbol]) }
+  def active_features
+    Features::ALL_FEATURES.select do |feature|
+      if (active_since = Features::ACTIVE_SINCE[feature])
+        last_active_at >= active_since
+      else
+        true
+      end
+    end
+  end
+
   sig { returns(Encouragement::PrivateAssociationRelation) }
   def encouragements_since_last_post
     transaction do

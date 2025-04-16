@@ -62,8 +62,6 @@
     text-decoration: line-through;
 
     :global(.mantine-Checkbox-icon) {
-      /* --dot-size: 6px; */
-
       &::after {
         content: "";
         width: var(--dot-size);
@@ -71,17 +69,16 @@
         background-color: var(--mantine-color-white);
         border-radius: var(--mantine-radius-md);
       }
-
-      /* width: unset;
-      width: unset;
-
-      rect {
-        --checkbox-size: 6px;
-        rx: var(--mantine-radius-md);
-
-        width: var(--checkbox-size);
-        height: var(--checkbox-size);
-      } */
     }
+  }
+}
+
+.onboardingAlert {
+  :global(.mantine-Alert-icon) {
+    margin-right: var(--mantine-spacing-xs);
+  }
+
+  :global(.mantine-Alert-body) {
+    row-gap: var(--mantine-spacing-xs);
   }
 }

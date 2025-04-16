@@ -4,19 +4,17 @@ import { useModals } from "@mantine/modals";
 import RequestInvitationIcon from "~icons/heroicons/hand-raised-20-solid";
 
 import { useUserPageDialogOpened } from "~/helpers/userPages";
-import { type User } from "~/types";
+import { type UserPageProps } from "~/pages/UserPage";
 
 import RequestInvitationDrawerModal from "./RequestInvitationDrawerModal";
 
 import classes from "./UserPageRequestInvitationAlert.module.css";
 
-export interface UserPageRequestInvitationAlertProps {
-  user: User;
-}
-
+export interface UserPageRequestInvitationAlertProps {}
 export const UserPageRequestInvitationAlert: FC<
   UserPageRequestInvitationAlertProps
-> = ({ user }) => {
+> = () => {
+  const { user, invitationRequested } = usePageProps<UserPageProps>();
   const { modals } = useModals();
 
   // == Drawer modal
@@ -25,7 +23,7 @@ export const UserPageRequestInvitationAlert: FC<
   // == Auto-open modal
   const { intent } = useQueryParams();
   useEffect(() => {
-    if (intent === "join") {
+    if (intent === "join" && !invitationRequested) {
       setShowDrawerModal(true);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -55,16 +53,18 @@ export const UserPageRequestInvitationAlert: FC<
                   and more!
                 </Text>
                 <Button
+                  className={classes.button}
                   variant="white"
                   size="compact-sm"
                   leftSection={<RequestInvitationIcon />}
-                  className={classes.button}
-                  mb={1}
+                  disabled={invitationRequested}
                   onClick={() => {
                     setShowDrawerModal(true);
                   }}
                 >
-                  request invitation
+                  {invitationRequested
+                    ? "invitation requested"
+                    : "request invitation"}
                 </Button>
               </Stack>
             </Alert>
@@ -75,6 +75,9 @@ export const UserPageRequestInvitationAlert: FC<
         opened={showDrawerModal}
         onClose={() => {
           setShowDrawerModal(false);
+        }}
+        onJoinRequestCreated={() => {
+          router.reload({ only: ["invitationRequested"], async: true });
         }}
         {...{ user }}
       />
