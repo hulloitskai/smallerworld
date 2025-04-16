@@ -8,7 +8,19 @@ const getPushManager = (): Promise<PushManager> =>
   navigator.serviceWorker.ready.then(({ pushManager }) => pushManager);
 
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
-  getPushManager().then(pushManager => pushManager.getSubscription());
+  navigator.serviceWorker.ready
+    .then(({ pushManager }) => pushManager.getSubscription())
+    .then(subscription => {
+      if (
+        subscription &&
+        typeof subscription.expirationTime === "number" &&
+        subscription.expirationTime <= Date.now()
+      ) {
+        console.warn("Found expired push subscription", subscription);
+        return null;
+      }
+      return subscription;
+    });
 
 export interface UseWebPushResult {
   supported: boolean | undefined;
