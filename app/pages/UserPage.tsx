@@ -17,11 +17,7 @@ import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvi
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import {
-  canOpenUrlInMobileSafari,
-  openUrlInMobileSafari,
-  useBrowserDetection,
-} from "~/helpers/browsers";
+import { useContact } from "~/helpers/contact";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { useResetPushSubscriptionOnIOS, useWebPush } from "~/helpers/webPush";
 import { type Encouragement, type Friend, type User } from "~/types";
@@ -38,7 +34,6 @@ export interface UserPageProps extends SharedPageProps {
 const ICON_SIZE = 96;
 
 const UserPage: PageComponent<UserPageProps> = ({ user }) => {
-  const browserDetection = useBrowserDetection();
   const isStandalone = useIsStandalone();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -162,25 +157,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
               <Text ta="center" ff="heading" fw={600}>
                 wanna make your own smaller world?
               </Text>
-              <Button
-                component="a"
-                target="_blank"
-                rel="noopener"
-                href={routes.session.new.path()}
-                leftSection={<OpenExternalIcon />}
-                disabled={!browserDetection}
-                onClick={event => {
-                  if (
-                    browserDetection &&
-                    canOpenUrlInMobileSafari(browserDetection)
-                  ) {
-                    event.preventDefault();
-                    openUrlInMobileSafari(event.currentTarget.href);
-                  }
-                }}
-              >
-                create your world
-              </Button>
+              <CreateYourWorldButton />
             </Stack>
           </Popover.Dropdown>
         </Popover>
@@ -283,4 +260,22 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
     }
   }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
+};
+
+const CreateYourWorldButton: FC = () => {
+  const [contact] = useContact({
+    type: "sms",
+    body: "hey i think this smaller world thing is dope. i want to be a beta user! my name is: ",
+  });
+  return (
+    <Button
+      leftSection="😍"
+      styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
+      onClick={() => {
+        void contact();
+      }}
+    >
+      create your world
+    </Button>
+  );
 };
