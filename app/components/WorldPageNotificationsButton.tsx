@@ -22,11 +22,9 @@ const WorldPageNotificationsButton: FC = () => {
     <>
       {supported === false ? null : subscription === undefined ||
         registration === undefined ? (
-        <Skeleton radius="xl" w="unset">
-          <ActionIcon size="lg" variant="light">
-            <NotificationIcon />
-          </ActionIcon>
-        </Skeleton>
+        <ActionIcon size="lg" variant="light" loading>
+          <NotificationIcon />
+        </ActionIcon>
       ) : subscription === null || registration === null ? (
         <Stack gap={4}>
           <Button

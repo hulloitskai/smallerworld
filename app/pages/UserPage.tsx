@@ -91,123 +91,119 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const body = (
+    <Stack>
+      {currentUser?.id === user.id && !currentFriend && (
+        <Alert
+          mb="xl"
+          styles={{
+            root: { alignSelf: "stretch" },
+            body: { rowGap: rem(4) },
+          }}
+        >
+          <Group gap="xs" justify="space-between">
+            <Group align="start" gap={8}>
+              <Box component={PublicIcon} style={{ flexShrink: 0 }} mt={4} />
+              <Text ff="heading" fw={700}>
+                your public profile
+              </Text>
+            </Group>
+            <Button
+              component={Link}
+              href={routes.world.show.path()}
+              variant="white"
+              leftSection={<BackIcon />}
+              style={{ flexShrink: 0 }}
+            >
+              back to your world
+            </Button>
+          </Group>
+        </Alert>
+      )}
+      <Box pos="relative">
+        <Stack gap="sm">
+          <Image
+            className={classes.pageIcon}
+            src={user.page_icon.src}
+            srcSet={user.page_icon.src_set}
+            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+            style={{ "--size": rem(ICON_SIZE) }}
+          />
+          <Stack gap={4}>
+            <Title size="h2" lh="xs" ta="center" className={classes.pageTitle}>
+              {possessive(user.name)} world
+            </Title>
+            {isStandalone ? (
+              <>
+                {currentFriend && (
+                  <Group gap="xs" justify="center">
+                    <UserPageNotificationsButtonCard {...{ currentFriend }} />
+                    {registration && <UserPageRefreshButton userId={user.id} />}
+                  </Group>
+                )}
+              </>
+            ) : isStandalone === false ? (
+              <UserPageUpcomingEventsButton style={{ alignSelf: "center" }} />
+            ) : (
+              <Skeleton style={{ alignSelf: "center", width: "unset" }}>
+                <Button>some placeholder</Button>
+              </Skeleton>
+            )}
+          </Stack>
+        </Stack>
+        <Popover position="bottom-end" arrowOffset={16}>
+          <Popover.Target>
+            <ActionIcon pos="absolute" top={0} right={0} size="lg">
+              <Image src={logoSrc} h={26} w="unset" />
+            </ActionIcon>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Stack gap={8}>
+              <Text ta="center" ff="heading" fw={600}>
+                wanna make your own smaller world?
+              </Text>
+              <Button
+                component="a"
+                target="_blank"
+                rel="noopener"
+                href={routes.session.new.path()}
+                leftSection={<OpenExternalIcon />}
+                disabled={!browserDetection}
+                onClick={event => {
+                  if (
+                    browserDetection &&
+                    canOpenUrlInMobileSafari(browserDetection)
+                  ) {
+                    event.preventDefault();
+                    const url = new URL(
+                      event.currentTarget.href,
+                      location.href,
+                    );
+                    openUrlInMobileSafari(url.toString());
+                  }
+                }}
+              >
+                create your world
+              </Button>
+            </Stack>
+          </Popover.Dropdown>
+        </Popover>
+      </Box>
+      <Box pos="relative">
+        <UserPageFeed />
+        {isStandalone && registration === null && (
+          <Overlay backgroundOpacity={0} blur={3}>
+            <div className={classes.notificationsRequiredIndicatorArrow} />
+          </Overlay>
+        )}
+      </Box>
+    </Stack>
+  );
   return (
     <>
-      <Stack>
-        {currentUser?.id === user.id && !currentFriend && (
-          <Alert
-            mb="xl"
-            styles={{
-              root: { alignSelf: "stretch" },
-              body: { rowGap: rem(4) },
-            }}
-          >
-            <Group gap="xs" justify="space-between">
-              <Group align="start" gap={8}>
-                <Box component={PublicIcon} style={{ flexShrink: 0 }} mt={4} />
-                <Text ff="heading" fw={700}>
-                  your public profile
-                </Text>
-              </Group>
-              <Button
-                component={Link}
-                href={routes.world.show.path()}
-                variant="white"
-                leftSection={<BackIcon />}
-                style={{ flexShrink: 0 }}
-              >
-                back to your world
-              </Button>
-            </Group>
-          </Alert>
-        )}
-        <Box pos="relative">
-          <Stack gap="sm">
-            <Image
-              className={classes.pageIcon}
-              src={user.page_icon.src}
-              srcSet={user.page_icon.src_set}
-              radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-              style={{ "--size": rem(ICON_SIZE) }}
-            />
-            <Stack gap={4}>
-              <Title
-                size="h2"
-                lh="xs"
-                ta="center"
-                className={classes.pageTitle}
-              >
-                {possessive(user.name)} world
-              </Title>
-              {isStandalone ? (
-                <>
-                  {currentFriend && (
-                    <Group gap="xs" justify="center">
-                      <UserPageNotificationsButtonCard {...{ currentFriend }} />
-                      {registration && (
-                        <UserPageRefreshButton userId={user.id} />
-                      )}
-                    </Group>
-                  )}
-                </>
-              ) : isStandalone === false ? (
-                <UserPageUpcomingEventsButton style={{ alignSelf: "center" }} />
-              ) : (
-                <Skeleton style={{ alignSelf: "center", width: "unset" }}>
-                  <Button>some placeholder</Button>
-                </Skeleton>
-              )}
-            </Stack>
-          </Stack>
-          <Popover position="bottom-end" arrowOffset={16}>
-            <Popover.Target>
-              <ActionIcon pos="absolute" top={0} right={0} size="lg">
-                <Image src={logoSrc} h={26} w="unset" />
-              </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Stack gap={8}>
-                <Text ta="center" ff="heading" fw={600}>
-                  wanna make your own smaller world?
-                </Text>
-                <Button
-                  component="a"
-                  target="_blank"
-                  rel="noopener"
-                  href={routes.session.new.path()}
-                  leftSection={<OpenExternalIcon />}
-                  disabled={!browserDetection}
-                  onClick={event => {
-                    if (
-                      browserDetection &&
-                      canOpenUrlInMobileSafari(browserDetection)
-                    ) {
-                      event.preventDefault();
-                      const url = new URL(
-                        event.currentTarget.href,
-                        location.href,
-                      );
-                      openUrlInMobileSafari(url.toString());
-                    }
-                  }}
-                >
-                  create your world
-                </Button>
-              </Stack>
-            </Popover.Dropdown>
-          </Popover>
-        </Box>
-        <Box pos="relative">
-          <UserPageFeed />
-          {isStandalone && registration === null && (
-            <RemoveScroll>
-              <Overlay backgroundOpacity={0} blur={3}>
-                <div className={classes.notificationsRequiredIndicatorArrow} />
-              </Overlay>
-            </RemoveScroll>
-          )}
-        </Box>
-      </Stack>
+      <RemoveScroll enabled={isStandalone && !registration}>
+        {body}
+      </RemoveScroll>
       {isStandalone && (
         <>
           <UserPageFloatingActions />

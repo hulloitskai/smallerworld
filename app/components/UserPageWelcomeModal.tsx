@@ -77,6 +77,7 @@ const ModalBody: FC<ModalBodyProps> = ({
       </Text>
       <Stack gap={8} align="center">
         <Button
+          variant="filled"
           leftSection={<InstallIcon />}
           size="md"
           loading={installing}
