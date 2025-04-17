@@ -105,13 +105,12 @@ export const openUserPageInstallationInstructionsInMobileSafari = (
   user: User,
   currentFriend: Friend,
 ) => {
-  const path = routes.users.show.path({
+  const userPageUrl = routes.users.show.path({
     handle: user.handle,
     query: {
       friend_token: currentFriend.access_token,
       intent: "installation_instructions",
     },
   });
-  const url = hrefToUrl(path);
-  openUrlInMobileSafari(url.toString());
+  openUrlInMobileSafari(userPageUrl);
 };

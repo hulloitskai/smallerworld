@@ -175,11 +175,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                     canOpenUrlInMobileSafari(browserDetection)
                   ) {
                     event.preventDefault();
-                    const url = new URL(
-                      event.currentTarget.href,
-                      location.href,
-                    );
-                    openUrlInMobileSafari(url.toString());
+                    openUrlInMobileSafari(event.currentTarget.href);
                   }
                 }}
               >

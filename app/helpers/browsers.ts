@@ -30,9 +30,10 @@ export const canOpenUrlInMobileSafari = (result: IResult): boolean =>
 export const openUrlInMobileSafari = (url: string): void => {
   const parser = new UAParser();
   const result = parser.getResult();
+  const parsedUrl = hrefToUrl(url);
   if (result.browser.is("Instagram") && canUseShortcutsExploit(result)) {
-    location.href = `shortcuts://x-callback-url/run-shortcut?name=${uuid()}&x-error=${encodeURIComponent(url)}`;
-  } else if (url.startsWith("https://")) {
-    location.href = `x-safari-${url}`;
+    location.href = `shortcuts://x-callback-url/run-shortcut?name=${uuid()}&x-error=${encodeURIComponent(parsedUrl.toString())}`;
+  } else if (parsedUrl.protocol === "https:") {
+    location.href = `x-safari-${parsedUrl.toString()}`;
   }
 };
