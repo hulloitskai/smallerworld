@@ -35,7 +35,7 @@ export const openNotificationsTroubleshootingModal = (): void => {
 // eslint-disable-next-line react-refresh/only-export-components
 const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
   const currentFriend = useCurrentFriend();
-  const { subscribe, loading, unsubscribe } = useWebPush();
+  const { subscribe, loading } = useWebPush();
   const { trigger, mutating } = useRouteMutation<{}>(
     routes.pushSubscriptions.test,
     {
@@ -56,9 +56,7 @@ const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
       leftSection={<FixIcon />}
       loading={loading || mutating}
       onClick={() => {
-        void unsubscribe()
-          .then(subscribe)
-          .then(() => trigger());
+        void subscribe().then(() => trigger());
       }}
       {...props}
     >
