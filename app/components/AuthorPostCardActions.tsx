@@ -174,7 +174,9 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
                   leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
                   disabled={!postUrl}
                   closeMenuOnClick={false}
-                  onClick={copy}
+                  onClick={() => {
+                    copy();
+                  }}
                 >
                   {copied ? "link copied!" : "copy link"}
                 </Menu.Item>

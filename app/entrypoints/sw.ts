@@ -14,18 +14,47 @@ import {
 import routes, { setupRoutes } from "~/helpers/routes";
 import { type PushNotification } from "~/types";
 
+// == Type declarations
 declare const self: ServiceWorkerGlobalScope;
-const manifest = self.__WB_MANIFEST;
+
+// == Constants
+const MANIFEST = self.__WB_MANIFEST;
+const DEVICE_ENDPOINT = "/device";
+
+// == Fetch interception
+self.addEventListener("fetch", event => {
+  const { request } = event;
+  const url = new URL(request.url);
+  if (url.pathname === DEVICE_ENDPOINT) {
+    console.debug("Device metadata request intercepted", url.toString());
+    return event.respondWith(
+      caches.open(DEVICE_ENDPOINT).then(cache =>
+        cache.match(request).then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          const payload = { deviceId: uuid() };
+          const body = JSON.stringify(payload);
+          const headers: HeadersInit = { "Content-Type": "application/json" };
+          const response = new Response(body, { headers });
+          return cache.put(request, response.clone()).then(() => response);
+        }),
+      ),
+    );
+  } else if (request.destination === "" || request.destination === "document") {
+    return event.stopImmediatePropagation();
+  }
+});
 
 // == Setup
 setupRoutes();
 enableNavigationPreload();
-if (!isEmpty(manifest)) {
-  console.info("Precaching routes", manifest);
+if (!isEmpty(MANIFEST)) {
+  console.info("Precaching routes", MANIFEST);
 }
-precacheAndRoute(manifest, { cleanURLs: false });
+precacheAndRoute(MANIFEST, { cleanURLs: false });
 registerRoute(
-  ({ request }) => request.destination === "document",
+  ({ request }) => ["", "document"].includes(request.destination),
   new NetworkOnly(),
 );
 cleanupOutdatedCaches();
@@ -61,30 +90,6 @@ const pathname = (url: string): string => {
   const u = new URL(url, self.location.href);
   return u.pathname;
 };
-
-// == Device metadata server
-const DEVICE_ENDPOINT = "/device";
-self.addEventListener("fetch", event => {
-  const { request } = event;
-  if (pathname(request.url) === DEVICE_ENDPOINT) {
-    console.debug("Device metadata request intercepted", request.url);
-    event.respondWith(
-      caches.open(DEVICE_ENDPOINT).then(cache =>
-        cache.match(request).then(cachedResponse => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          const payload = { deviceId: uuid() };
-          const body = JSON.stringify(payload);
-          const headers: HeadersInit = { "Content-Type": "application/json" };
-          const response = new Response(body, { headers });
-          return cache.put(request, response.clone()).then(() => response);
-        }),
-      ),
-    );
-    return;
-  }
-});
 
 // == Push handlers
 interface NotificationData {

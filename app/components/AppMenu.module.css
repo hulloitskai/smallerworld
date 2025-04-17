@@ -9,8 +9,10 @@
   }
 
   @mixin dark-user-theme {
-    --blur-radius: rem(8px);
     background-color: alpha(var(--mantine-color-black), 0.4);
+
+    /* Blur backdrop */
+    --blur-radius: rem(8px);
     backdrop-filter: blur(var(--blur-radius));
     -webkit-backdrop-filter: blur(var(--blur-radius));
 

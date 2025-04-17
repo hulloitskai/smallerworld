@@ -86,7 +86,7 @@ module AuthenticatesUsers
   end
 
   sig { void }
-  def terminate_session
+  def terminate_session!
     Current.session&.destroy
     cookies.delete(:session_id)
   end

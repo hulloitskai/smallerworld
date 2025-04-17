@@ -300,6 +300,11 @@ const createTheme = (
           variant: "outline",
         },
       }),
+      Skeleton: Skeleton.extend({
+        classNames: {
+          root: classes.skeleton,
+        },
+      }),
     },
   });
 };

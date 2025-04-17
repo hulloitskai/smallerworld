@@ -1,246 +1,272 @@
-@layer mantine {
-  body {
-    .button {
-      [data-mantine-color-scheme="dark"]
-        .card
-        &:where(
-          :disabled:not([data-loading]),
-          [data-disabled]:not([data-loading])
-        ) {
+@layer mantine, components;
+
+@layer components {
+  .button {
+    &:where(
+        :disabled:not([data-loading]),
+        [data-disabled]:not([data-loading])
+      ) {
+      @mixin dark-user-theme {
+        color: var(--mantine-color-dark-4);
+        background-color: alpha(var(--mantine-color-black), 0.4);
+      }
+
+      [data-mantine-color-scheme="dark"]:not([data-user-theme]) .card & {
         background-color: var(--mantine-color-dark-7);
       }
     }
+  }
 
-    .buttonLabel {
-      font-family: var(--mantine-font-family-headings);
-      font-weight: var(--button-fw);
+  .buttonLabel {
+    font-family: var(--mantine-font-family-headings);
+    font-weight: var(--button-fw);
+  }
+
+  .focus {
+    outline-width: 1px;
+  }
+
+  .input {
+    font-size: var(--mantine-font-size-md);
+
+    @mixin dark {
+      --input-bg: transparent;
     }
 
-    .focus {
-      outline-width: 1px;
+    @mixin dark-user-theme {
+      border-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+
+  .modalHeader {
+    min-height: 0px;
+    align-items: start;
+    padding-bottom: 6px;
+
+    @mixin smaller-than $mantine-breakpoint-xs {
+      padding-top: calc(rem(6px) + var(--safe-area-inset-top, 0px));
     }
 
-    .input {
-      font-size: var(--mantine-font-size-md);
+    @mixin larger-than $mantine-breakpoint-xs {
+      padding-top: var(--mantine-spacing-sm);
+    }
+  }
 
-      @mixin dark {
-        --input-bg: transparent;
-      }
+  .modalInner {
+    @mixin smaller-than $mantine-breakpoint-xs {
+      --modal-inner-y-offset: 0px;
+      --modal-inner-x-offset: 0px;
+    }
+  }
 
-      @mixin dark-user-theme {
-        border-color: alpha(var(--mantine-color-white), 0.2);
-      }
+  .modalContent {
+    @mixin smaller-than $mantine-breakpoint-xs {
+      --modal-content-flex: 0 0 100%;
+      --modal-content-max-height: auto;
+      --modal-content-height: 100dvh;
+
+      border-radius: 0px;
+    }
+  }
+
+  .badgeLabel {
+    text-transform: none;
+    font-family: var(--mantine-font-family-headings);
+  }
+
+  .card {
+    @mixin dark {
+      background-color: var(--mantine-color-dark-8);
+      border-color: var(--mantine-color-dark-6);
     }
 
-    .modalHeader {
-      min-height: 0px;
-      align-items: start;
-      padding-bottom: 6px;
+    @mixin dark-user-theme {
+      background-color: alpha(var(--mantine-color-black), 0.4);
+      border-color: alpha(var(--mantine-color-white), 0.2);
 
-      @mixin smaller-than $mantine-breakpoint-xs {
-        padding-top: calc(rem(6px) + var(--safe-area-inset-top, 0px));
-      }
+      &::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        content: "";
 
-      @mixin larger-than $mantine-breakpoint-xs {
-        padding-top: var(--mantine-spacing-sm);
-      }
-    }
-
-    .modalInner {
-      @mixin smaller-than $mantine-breakpoint-xs {
-        --modal-inner-y-offset: 0px;
-        --modal-inner-x-offset: 0px;
-      }
-    }
-
-    .modalContent {
-      @mixin smaller-than $mantine-breakpoint-xs {
-        --modal-content-flex: 0 0 100%;
-        --modal-content-max-height: auto;
-        --modal-content-height: 100dvh;
-
-        border-radius: 0px;
-      }
-    }
-
-    .badgeLabel {
-      text-transform: none;
-      font-family: var(--mantine-font-family-headings);
-    }
-
-    .card {
-      @mixin dark {
-        background-color: var(--mantine-color-dark-8);
-        border-color: var(--mantine-color-dark-6);
-      }
-
-      @mixin dark-user-theme {
+        /* Blur backdrop */
         --blur-radius: rem(8px);
-        background-color: alpha(var(--mantine-color-black), 0.4);
-        border-color: alpha(var(--mantine-color-white), 0.2);
+        backdrop-filter: blur(var(--blur-radius));
+        -webkit-backdrop-filter: blur(var(--blur-radius));
+      }
+    }
+
+    .card & {
+      @mixin dark-user-theme {
+        background-color: transparent;
 
         &::before {
-          position: absolute;
-          inset: 0;
-          z-index: -1;
-          content: "";
-          backdrop-filter: blur(var(--blur-radius));
-          -webkit-backdrop-filter: blur(var(--blur-radius));
+          content: none;
         }
       }
     }
+  }
 
-    .cardSection {
-      @mixin dark {
-        border-color: var(--mantine-color-dark-6);
-      }
-
-      @mixin dark-user-theme {
-        &:not(:global(.mantine-Paper-root .cardSection)) {
-          border-color: alpha(var(--mantine-color-white), 0.2);
-        }
-      }
+  .cardSection {
+    @mixin dark {
+      border-color: var(--mantine-color-dark-6);
     }
 
-    .dropdown {
-      @mixin dark {
-        background-color: var(--mantine-color-dark-8);
-      }
-
-      @mixin dark-user-theme {
-        --blur-radius: rem(8px);
-        background-color: alpha(var(--mantine-color-black), 0.4);
-        backdrop-filter: blur(var(--blur-radius));
-        -webkit-backdrop-filter: blur(var(--blur-radius));
+    @mixin dark-user-theme {
+      &:not(:global(.mantine-Paper-root .cardSection)) {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
+  }
 
-    .navLink {
-      font-family: var(--mantine-font-family-headings);
-      font-weight: 500;
+  .dropdown {
+    @mixin dark {
+      background-color: var(--mantine-color-dark-8);
+    }
+
+    @mixin dark-user-theme {
+      background-color: alpha(var(--mantine-color-black), 0.4);
+      border-color: alpha(var(--mantine-color-white), 0.2);
+
+      /* Blur backdrop */
+      --blur-radius: rem(8px);
+      backdrop-filter: blur(var(--blur-radius));
+      -webkit-backdrop-filter: blur(var(--blur-radius));
+    }
+  }
+
+  .navLink {
+    font-family: var(--mantine-font-family-headings);
+    font-weight: 500;
+    background-color: transparent;
+
+    @mixin hover {
       background-color: transparent;
-
-      @mixin hover {
-        background-color: transparent;
-      }
     }
+  }
 
-    .alertBody {
-      row-gap: 0px;
-    }
+  .alertBody {
+    row-gap: 0px;
+  }
 
-    .alertTitle {
-      font-family: var(--mantine-font-family-headings);
-    }
+  .alertTitle {
+    font-family: var(--mantine-font-family-headings);
+  }
 
-    .text {
-      &:not([data-inherit]):not([data-inline]) {
-        line-height: var(--mantine-line-height);
-      }
-    }
-
-    .title {
+  .text {
+    &:not([data-inherit]):not([data-inline]) {
       line-height: var(--mantine-line-height);
     }
+  }
 
-    .drawerHeader {
-      padding-bottom: 6px;
-    }
+  .title {
+    line-height: var(--mantine-line-height);
+  }
 
-    .typographyStylesProvider {
-      word-break: break-word;
-      line-height: var(--mantine-line-height-xs);
+  .drawerHeader {
+    padding-bottom: 6px;
+  }
 
-      a {
-        font-weight: 500;
-      }
+  .typographyStylesProvider {
+    word-break: break-word;
+    line-height: var(--mantine-line-height-xs);
 
-      p {
-        &:empty {
-          height: 8px;
-        }
-      }
-
-      :where(p) {
-        &:not(:last-child) {
-          margin-bottom: var(--mantine-spacing-xs);
-        }
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-
-      :where(ul, ol):not([data-type="taskList"]) {
-        margin-block: var(--mantine-spacing-xs);
-        :where(li) {
-          margin-bottom: 4px;
-        }
-      }
-    }
-
-    .divider {
-      @mixin dark {
-        --divider-color: var(--mantine-color-dark-6);
-      }
-
-      @mixin dark-user-theme {
-        --divider-color: alpha(var(--mantine-color-white), 0.2);
-      }
-    }
-
-    .menuDivider {
-      @mixin dark-user-theme {
-        border-color: alpha(var(--mantine-color-white), 0.2);
-      }
-    }
-
-    .dividerLabel {
-      font-family: var(--mantine-font-family-headings);
+    a {
       font-weight: 500;
     }
 
-    .menuItem {
-      &:not(:disabled) {
-        @mixin hover {
-          background-color: var(--mantine-primary-color-light);
-        }
+    p {
+      &:empty {
+        height: 8px;
       }
     }
 
-    .menuItemSection {
-      color: var(--mantine-color-primary-text);
-      width: 16px;
-      height: 16px;
-    }
-
-    .menuItemLabel {
-      color: light-dark(
-        var(--mantine-color-gray-7),
-        var(--mantine-color-dark-1)
-      );
-      font-weight: 500;
-      font-family: var(--mantine-font-family-headings);
-    }
-
-    .popoverDropdown {
-      @mixin dark {
-        --popover-border-color: var(--mantine-color-dark-6);
-        background-color: var(--mantine-color-dark-8);
+    :where(p) {
+      &:not(:last-child) {
+        margin-bottom: var(--mantine-spacing-xs);
       }
-
-      @mixin dark-user-theme {
-        --blur-radius: rem(8px);
-        background-color: alpha(var(--mantine-color-black), 0.4);
-        backdrop-filter: blur(var(--blur-radius));
-        -webkit-backdrop-filter: blur(var(--blur-radius));
-        --popover-border-color: alpha(var(--mantine-color-white), 0.2);
+      &:last-child {
+        margin-bottom: 0;
       }
     }
 
-    .richTextEditorContent {
-      @mixin light {
-        background-color: var(--mantine-color-white);
+    :where(ul, ol):not([data-type="taskList"]) {
+      margin-block: var(--mantine-spacing-xs);
+      :where(li) {
+        margin-bottom: 4px;
+      }
+    }
+  }
+
+  .divider {
+    @mixin dark {
+      --divider-color: var(--mantine-color-dark-6);
+    }
+
+    @mixin dark-user-theme {
+      --divider-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+
+  .menuDivider {
+    @mixin dark-user-theme {
+      border-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+
+  .dividerLabel {
+    font-family: var(--mantine-font-family-headings);
+    font-weight: 500;
+  }
+
+  .menuItem {
+    &:not(:disabled) {
+      @mixin hover {
+        background-color: var(--mantine-primary-color-light);
+      }
+    }
+  }
+
+  .menuItemSection {
+    color: var(--mantine-color-primary-text);
+    width: 16px;
+    height: 16px;
+  }
+
+  .menuItemLabel {
+    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+    font-weight: 500;
+    font-family: var(--mantine-font-family-headings);
+  }
+
+  .popoverDropdown {
+    @mixin dark {
+      --popover-border-color: var(--mantine-color-dark-6);
+      background-color: var(--mantine-color-dark-8);
+    }
+
+    @mixin dark-user-theme {
+      --popover-border-color: alpha(var(--mantine-color-white), 0.2);
+      background-color: alpha(var(--mantine-color-black), 0.4);
+
+      /* Blur backdrop */
+      --blur-radius: rem(8px);
+      backdrop-filter: blur(var(--blur-radius));
+      -webkit-backdrop-filter: blur(var(--blur-radius));
+    }
+  }
+
+  .richTextEditorContent {
+    @mixin light {
+      background-color: var(--mantine-color-white);
+    }
+  }
+
+  .skeleton {
+    &:where([data-visible])::after {
+      @mixin where-dark-user-theme {
+        background-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
   }

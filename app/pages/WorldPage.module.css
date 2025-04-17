@@ -74,6 +74,13 @@
 }
 
 .onboardingAlert {
+  @mixin dark-user-theme {
+    /* Blur backdrop */
+    --blur-radius: rem(8px);
+    backdrop-filter: blur(var(--blur-radius));
+    -webkit-backdrop-filter: blur(var(--blur-radius));
+  }
+
   :global(.mantine-Alert-icon) {
     margin-right: var(--mantine-spacing-xs);
   }

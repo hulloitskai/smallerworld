@@ -4,7 +4,6 @@
   }
 
   &[data-post-visibility="only_me"] {
-    --blur-radius: light-dark(rem(8px), rem(12px));
     background-color: light-dark(
       alpha(var(--mantine-color-white), 0.2),
       alpha(var(--mantine-color-black), 0.1)
@@ -15,6 +14,9 @@
       inset: 0;
       z-index: -1;
       content: "";
+
+      /* Blur backdrop */
+      --blur-radius: light-dark(rem(8px), rem(12px));
       backdrop-filter: blur(var(--blur-radius));
       -webkit-backdrop-filter: blur(var(--blur-radius));
     }

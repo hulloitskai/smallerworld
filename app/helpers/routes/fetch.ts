@@ -47,8 +47,10 @@ export const fetchRoute = async <Data>(
   };
   if (typeof route === "string") {
     const { method, ...requestOptions } = omit(routeOptions, "params");
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return request(method ?? "get", route, requestOptions).catch(handleError);
+    return request(method ?? "get", route, requestOptions).then(
+      data => data as Data,
+      handleError,
+    );
   }
   return route<Data>(routeOptions).catch(handleError);
 };

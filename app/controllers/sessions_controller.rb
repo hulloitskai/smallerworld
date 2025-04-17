@@ -57,7 +57,7 @@ class SessionsController < ApplicationController
 
   # POST /logout
   def destroy
-    terminate_session
+    terminate_session!
     render(json: {})
   end
 end

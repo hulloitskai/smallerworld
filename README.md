@@ -48,7 +48,7 @@ bin/setup
 - [x] launch new workbox-based service worker
 - [x] smaller worldiverse feature
 - [x] open 'create your own world' in mobile Safari on iOS
-- [ ] allow you to change icon of your smaller world as friend before you save
+- [x] allow you to change icon of your smaller world as friend before you save
       it
 - [-] some android devices don't open app from notification
 - [ ] make it easy to add friends from onboarding tutorial

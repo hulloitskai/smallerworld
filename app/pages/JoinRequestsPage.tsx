@@ -59,9 +59,7 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
 JoinRequestsPage.layout = page => (
   <AppLayout<JoinRequestsPageProps>
     title="your join requests"
-    manifestUrl={({ currentUser }) =>
-      routes.users.manifest.path({ id: currentUser.id })
-    }
+    manifestUrl={routes.world.manifest.path()}
     withContainer
     containerSize="xs"
     withGutter

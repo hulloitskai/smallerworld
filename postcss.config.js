@@ -8,6 +8,11 @@ export default {
             "@mixin-content": {},
           },
         },
+        "where-dark-user-theme": {
+          ":where([data-mantine-color-scheme='dark'][data-user-theme]) &": {
+            "@mixin-content": {},
+          },
+        },
       },
     },
     "postcss-simple-vars": {

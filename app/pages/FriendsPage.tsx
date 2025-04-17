@@ -59,7 +59,9 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
             >
               <Stack align="center" gap={4}>
                 <FrownyFaceIcon />
-                <Text inherit>you world is too small (add a friend!)</Text>
+                <Text size="sm" fw={500}>
+                  you world is too small (add a friend!)
+                </Text>
               </Stack>
             </Card>
           ) : (
@@ -78,9 +80,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
 FriendsPage.layout = page => (
   <AppLayout<FriendsPageProps>
     title="your friends"
-    manifestUrl={({ currentUser }) =>
-      routes.users.manifest.path({ id: currentUser.id })
-    }
+    manifestUrl={routes.world.manifest.path()}
     withContainer
     containerSize="xs"
     withGutter
