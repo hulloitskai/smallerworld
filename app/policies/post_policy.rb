@@ -10,7 +10,7 @@ class PostPolicy < ApplicationPolicy
     elsif (friend = self.friend)
       friend.user! == post.author!
     else
-      false
+      post.visibility == :public
     end
   end
 
