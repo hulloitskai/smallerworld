@@ -31,18 +31,6 @@ const UserPageNotificationsButtonCard: FC<
     supported,
     loading,
   } = useWebPush();
-  const [showWaitNotice, setShowWaitNotice] = useState(false);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (subscription === undefined || registration === undefined) {
-        setShowWaitNotice(true);
-      }
-    }, 1400);
-    return () => {
-      clearTimeout(timeout);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // == Load notification settings
   const { notificationSettings } = useFriendNotificationSettings(
@@ -62,14 +50,7 @@ const UserPageNotificationsButtonCard: FC<
     <>
       {supported === false ? null : subscription === undefined ||
         registration === undefined ? (
-        <Stack gap={8}>
-          <Button loading>Placeholder button</Button>
-          {showWaitNotice && (
-            <Text size="xs" c="dimmed" ta="center">
-              this may take a few seconds...
-            </Text>
-          )}
-        </Stack>
+        <Button loading>Placeholder button</Button>
       ) : subscription === null || registration === null ? (
         <Card withBorder w="100%">
           <Stack>

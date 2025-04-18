@@ -1,10 +1,6 @@
 const SERVICE_WORKER_URL = "/sw.js";
 const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour
 
-export interface RegisterServiceWorkerOptions {
-  deprecated: boolean;
-}
-
 export const registerServiceWorker = () => {
   if (!("serviceWorker" in navigator)) {
     return;
@@ -26,13 +22,12 @@ export const registerServiceWorker = () => {
           });
         }
         setInterval(() => {
-          // Skip if service worker is waiting or installing
-          if (!registration.active) {
-            return;
-          }
-
-          // Skip if offline
-          if ("connection" in navigator && !navigator.onLine) {
+          // Skip if service worker is waiting or installing, or if offline
+          if (
+            !registration.active ||
+            !("connection" in navigator) ||
+            !navigator.onLine
+          ) {
             return;
           }
 
@@ -80,4 +75,34 @@ export const handleServiceWorkerNavigation = (): void => {
   };
 
   navigator.serviceWorker.addEventListener("message", handleMessage);
+};
+
+const useServiceWorker = (): ServiceWorker | null | undefined => {
+  const [serviceWorker, setServiceWorker] = useState<ServiceWorker | null>();
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) {
+      setServiceWorker(null);
+      return;
+    }
+    const { controller, ready } = navigator.serviceWorker;
+    if (controller) {
+      setServiceWorker(controller);
+      return;
+    }
+    void ready.then(registration => {
+      setServiceWorker(registration.active);
+      if (registration.installing) {
+        registration.installing.addEventListener("statechange", () => {
+          setServiceWorker(registration.active);
+        });
+      }
+    });
+  }, []);
+  return serviceWorker;
+};
+
+export const useWaitingForServiceWorkerReady = (): boolean => {
+  const isStandalone = useIsStandalone();
+  const serviceWorker = useServiceWorker();
+  return isStandalone ? !serviceWorker : false;
 };

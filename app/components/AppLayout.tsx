@@ -3,7 +3,11 @@ import {
   type AppShellProps,
   Breadcrumbs,
   type ContainerProps,
+  Loader,
   type MantineSize,
+  Overlay,
+  RemoveScroll,
+  Text,
 } from "@mantine/core";
 
 import {
@@ -11,6 +15,7 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
+import { useWaitingForServiceWorkerReady } from "~/helpers/serviceWorker";
 import { useTrackVisit } from "~/helpers/visits";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
@@ -110,6 +115,9 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
     children
   );
 
+  // == Service worker
+  const waitingForServiceWorkerReady = useWaitingForServiceWorkerReady();
+
   const shell = (
     <AppShell
       withBorder={LAYOUT_WITH_BORDER}
@@ -157,7 +165,29 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   return (
     <PageLayout>
       <AppMeta {...{ title, description, imageUrl, noIndex, manifestUrl }} />
-      <UserThemeProvider>{shell}</UserThemeProvider>
+      <UserThemeProvider>
+        <RemoveScroll enabled={waitingForServiceWorkerReady}>
+          {shell}
+          {waitingForServiceWorkerReady && (
+            <Overlay
+              className={classes.waitingForServiceWorkerReadyOverlay}
+              blur={3}
+              pos="fixed"
+            >
+              <Loader size="md" />
+              <Stack gap={6} ta="center" maw={240}>
+                <Text ff="heading" size="sm">
+                  completing installation—this may take up to 30 seconds...
+                </Text>
+                <Text size="xs" c="dimmed">
+                  thank u for your patience 😭
+                  <br />i appreciate u :')
+                </Text>
+              </Stack>
+            </Overlay>
+          )}
+        </RemoveScroll>
+      </UserThemeProvider>
     </PageLayout>
   );
 };
