@@ -76,6 +76,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
       )}
       <VaulDrawer.Root
         shouldScaleBackground
+        disablePreventScroll
         repositionInputs={false}
         open={isMobileSize === true && opened}
         onClose={() => {
