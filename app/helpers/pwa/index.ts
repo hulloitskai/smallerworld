@@ -6,7 +6,7 @@ export const useIsStandalone = (): boolean | undefined => {
     if (typeof isStandalone !== "undefined") {
       return;
     }
-    if (hasNonLocalReferrer()) {
+    if (referrerIsOutOfScope()) {
       setIsStandalone(false);
       return;
     }
@@ -23,19 +23,19 @@ export const useIsStandalone = (): boolean | undefined => {
   return isStandalone;
 };
 
-const hasNonLocalReferrer = (): boolean => {
+const referrerIsOutOfScope = (): boolean => {
+  const manifestLink = document.querySelector<HTMLLinkElement>(
+    "link[rel='manifest']",
+  );
+  if (!manifestLink) {
+    return false;
+  }
+  const manifestScope = manifestScopeFromHref(manifestLink.href);
   const { referrer } = document;
-  const normalizedReferrer = referrer === "null" ? "" : normalizedUrl(referrer);
-  const normalizedLocation = normalizedUrl(location.href);
-  return normalizedReferrer !== normalizedLocation;
+  return !!referrer && !referrer.startsWith(manifestScope);
 };
 
-const normalizedUrl = (urlString: string): string => {
-  const url = new URL(urlString);
-  url.searchParams.forEach((value, key) => {
-    if (key !== "friend_token") {
-      url.searchParams.delete(key);
-    }
-  });
-  return url.toString();
+const manifestScopeFromHref = (href: string): string => {
+  const lastSlashIndex = href.lastIndexOf("/");
+  return href.slice(0, lastSlashIndex);
 };

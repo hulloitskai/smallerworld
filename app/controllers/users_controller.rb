@@ -41,6 +41,29 @@ class UsersController < ApplicationController
     redirect_to(user_path(handle, intent: "join"))
   end
 
+  # GET /@:handle/manifest.webmanifest?friend_token=...&icon_type=(generic|user)
+  def manifest
+    current_friend = authenticate_friend!
+    user = find_user
+    icons =
+      if params[:icon_type] == "generic"
+        generic_manifest_icons
+      else
+        user_manifest_icons(user)
+      end
+    render(
+      json: {
+        name: "#{user.name}'s world",
+        short_name: user.name,
+        description: "life updates, personal invitations, poems, and more!",
+        icons:,
+        display: "standalone",
+        start_url: user_path(user, friend_token: current_friend.access_token),
+      },
+      content_type: "application/manifest+json",
+    )
+  end
+
   # # GET /users/joined
   # def joined
   #   current_user = authenticate_user!
@@ -65,30 +88,6 @@ class UsersController < ApplicationController
   #     "users" => JoinedUserSerializer.many(joined_users),
   #   })
   # end
-
-  # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
-  def manifest
-    current_friend = authenticate_friend!
-    user = find_user
-    icons =
-      if params[:icon_type] == "generic"
-        generic_manifest_icons
-      else
-        user_manifest_icons(user)
-      end
-    render(
-      json: {
-        name: "#{user.name}'s world",
-        short_name: user.name,
-        description: "life updates, personal invitations, poems, and more!",
-        icons:,
-        display: "standalone",
-        start_url: user_path(user, friend_token: current_friend.access_token),
-        scope: user_path(user),
-      },
-      content_type: "application/manifest+json",
-    )
-  end
 
   # POST /users/:id/request_invitation
   def request_invitation

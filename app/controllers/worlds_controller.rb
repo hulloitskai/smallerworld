@@ -65,7 +65,6 @@ class WorldsController < ApplicationController
         icons: user_manifest_icons(current_user),
         display: "standalone",
         start_url: world_path,
-        scope: world_path,
       },
       content_type: "application/manifest+json",
     )

@@ -75,7 +75,7 @@ Rails.application.routes.draw do
 
   # == World
   resource :world, only: %i[show edit update], export: { namespace: "world" } do
-    get :manifest, constraints: { format: "" }
+    get "manifest.webmanifest" => :manifest, constraints: { format: "" }
   end
   get "/home" => redirect("/world")
 
@@ -99,12 +99,14 @@ Rails.application.routes.draw do
     #   get :joined
     # end
     member do
-      get "manifest.webmanifest" => :manifest, constraints: { format: "" }
       post :request_invitation
     end
   end
   get "/@:handle" => "users#show", as: :user, export: true
   get "/@:handle/join" => "users#join"
+  get "/@:handle/manifest.webmanifest" => "users#manifest",
+      constraints: { format: "" },
+      export: true
 
   # == Posts
   resources :posts, only: %i[index create update destroy], export: true do
