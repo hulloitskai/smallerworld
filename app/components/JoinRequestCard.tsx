@@ -32,6 +32,7 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({
             {({ copied, copy }) => (
               <Tooltip
                 label={copied ? "copied!" : "copy?"}
+                events={{ hover: true, focus: true, touch: true }}
                 position="right"
                 {...(copied && { opened: true })}
               >

@@ -112,6 +112,7 @@ const PostCard: FC<PostCardProps> = ({
           {post.visibility === "public" && (
             <Tooltip
               label="this post is publicly visible"
+              events={{ hover: true, focus: true, touch: true }}
               position="top-end"
               arrowOffset={16}
             >
@@ -128,6 +129,7 @@ const PostCard: FC<PostCardProps> = ({
           {post.visibility === "only_me" && (
             <Tooltip
               label="this post is visible only to you"
+              events={{ hover: true, focus: true, touch: true }}
               position="top-end"
               arrowOffset={16}
             >

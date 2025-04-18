@@ -37,7 +37,12 @@ const JoinedUserCard: FC<JoinedUserCardProps> = ({
         <List.Item icon={<PhoneIcon />}>
           <CopyButton value={user.phone_number}>
             {({ copied, copy }) => (
-              <Tooltip label={copied ? "copied!" : "copy?"} position="right">
+              <Tooltip
+                label={copied ? "copied!" : "copy?"}
+                events={{ hover: true, focus: true, touch: true }}
+                position="right"
+                {...(copied && { opened: true })}
+              >
                 <Anchor onClick={copy}>{user.phone_number}</Anchor>
               </Tooltip>
             )}

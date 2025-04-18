@@ -249,6 +249,7 @@ const PostForm: FC<PostFormProps> = props => {
                     label={
                       <>visible to {POST_VISIBILITY_TO_LABEL[visibility]}</>
                     }
+                    events={{ hover: true, focus: true, touch: true }}
                     position="right"
                     withArrow
                   >

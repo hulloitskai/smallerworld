@@ -122,6 +122,7 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
               )}
             </>
           }
+          events={{ hover: true, focus: true, touch: true }}
           disabled={!world.last_post_created_at}
         >
           <Image
