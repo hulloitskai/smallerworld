@@ -6,11 +6,7 @@ export const useIsStandalone = (): boolean | undefined => {
     if (typeof isStandalone !== "undefined") {
       return;
     }
-    const { referrer } = document;
-    const isLocalReferral = referrer
-      ? referrer.startsWith(location.origin)
-      : false;
-    if (isLocalReferral) {
+    if (hasNonLocalReferrer()) {
       setIsStandalone(false);
       return;
     }
@@ -25,4 +21,21 @@ export const useIsStandalone = (): boolean | undefined => {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return isStandalone;
+};
+
+const hasNonLocalReferrer = (): boolean => {
+  const { referrer } = document;
+  const normalizedReferrer = referrer === "null" ? "" : normalizedUrl(referrer);
+  const normalizedLocation = normalizedUrl(location.href);
+  return normalizedReferrer !== normalizedLocation;
+};
+
+const normalizedUrl = (urlString: string): string => {
+  const url = new URL(urlString);
+  url.searchParams.forEach((value, key) => {
+    if (key !== "friend_token") {
+      url.searchParams.delete(key);
+    }
+  });
+  return url.toString();
 };
