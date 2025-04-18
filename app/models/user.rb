@@ -86,7 +86,7 @@ class User < ApplicationRecord
   end
 
   sig { returns(T::Array[Symbol]) }
-  def active_features
+  def supported_features
     Features::ALL_FEATURES.select do |feature|
       if (active_since = Features::ACTIVE_SINCE[feature])
         last_active_at >= active_since

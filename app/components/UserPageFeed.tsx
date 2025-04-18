@@ -29,7 +29,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
   return (
     <Stack {...props}>
       {currentFriend &&
-        user.active_features.includes("encouragements") &&
+        user.supported_features.includes("encouragements") &&
         (!!lastSentEncouragement || longerThan24HoursSinceLastPost) && (
           <EncouragementCard
             {...{

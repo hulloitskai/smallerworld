@@ -8,7 +8,7 @@ class UserSerializer < ApplicationSerializer
              :name,
              :handle,
              theme: { type: "UserTheme", nullable: true },
-             active_features: { type: "Feature[]" }
+             supported_features: { type: "Feature[]" }
 
   # == Associations
   has_one :page_icon_blob, as: :page_icon, serializer: ImageSerializer
