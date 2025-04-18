@@ -89,11 +89,11 @@ const useServiceWorker = (): ServiceWorker | null | undefined => {
       setServiceWorker(controller);
       return;
     }
-    void ready.then(registration => {
-      setServiceWorker(registration.active);
-      if (registration.installing) {
-        registration.installing.addEventListener("statechange", () => {
-          setServiceWorker(registration.active);
+    void ready.then(({ active, installing }) => {
+      setServiceWorker(active);
+      if (installing) {
+        installing.addEventListener("statechange", function () {
+          setServiceWorker(this);
         });
       }
     });

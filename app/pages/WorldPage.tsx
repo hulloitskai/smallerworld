@@ -331,7 +331,9 @@ const CheckableListItem: FC<CheckableListItemProps> = ({
           checked={checked === true}
           {...(checked === "partial" && {
             indeterminate: true,
-            icon: EllipsisHorizontalIcon,
+            icon: props => (
+              <EllipsisHorizontalIcon {...omit(props, "indeterminate")} />
+            ),
           })}
           radius="sm"
           readOnly

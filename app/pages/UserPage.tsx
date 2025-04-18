@@ -17,7 +17,6 @@ import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvi
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
-import { useContact } from "~/helpers/contact";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { useResetPushSubscriptionOnIOS, useWebPush } from "~/helpers/webPush";
 import { type Encouragement, type Friend, type User } from "~/types";
@@ -146,7 +145,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             )}
           </Stack>
         </Stack>
-        <Popover position="bottom-end" arrowOffset={16}>
+        <Popover position="bottom-end" arrowOffset={16} width={220}>
           <Popover.Target>
             <ActionIcon pos="absolute" top={0} right={0} size="lg">
               <Image src={logoSrc} h={26} w="unset" />
@@ -157,7 +156,19 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
               <Text ta="center" ff="heading" fw={600}>
                 wanna make your own smaller world?
               </Text>
-              <CreateYourWorldButton />
+              <Button
+                component="a"
+                target="_blank"
+                href={routes.session.new.path()}
+                leftSection="😍"
+                styles={{
+                  section: {
+                    fontSize: "var(--mantine-font-size-lg)",
+                  },
+                }}
+              >
+                create your world
+              </Button>
             </Stack>
           </Popover.Dropdown>
         </Popover>
@@ -260,22 +271,4 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
     }
   }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
-};
-
-const CreateYourWorldButton: FC = () => {
-  const [contact] = useContact({
-    type: "sms",
-    body: "hey i think this smaller world thing is dope. i want to be a beta user! my name is: ",
-  });
-  return (
-    <Button
-      leftSection="😍"
-      styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
-      onClick={() => {
-        void contact();
-      }}
-    >
-      create your world
-    </Button>
-  );
 };
