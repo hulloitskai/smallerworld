@@ -11,8 +11,7 @@ class UsersController < ApplicationController
   # == Actions
   # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def show
-    handle = T.let(params.fetch(:handle), String)
-    user = User.friendly.find(handle)
+    user = find_user
     if (current_user = self.current_user)
       invitation_requested = user
         .join_requests
@@ -118,7 +117,8 @@ class UsersController < ApplicationController
   # == Helpers
   sig { returns(User) }
   def find_user
-    user_id = T.let(params.fetch(:id), String)
-    User.friendly.find(user_id)
+    id = params[:id] || params[:handle] or
+      raise "Missing id or handle"
+    User.friendly.find(id)
   end
 end
