@@ -49,6 +49,7 @@ jobs:
           else
             echo "No previous working image found, scaling to 1"
             flyctl scale count 1 --yes
+          fi
       - name: Create Sentry release
         uses: getsentry/action-release@v3
         env:
