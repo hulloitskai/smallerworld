@@ -11,6 +11,7 @@ class UniversesController < ApplicationController
   # GET /universe/worlds
   def worlds
     users = User
+      .pushable
       .left_outer_joins(:posts)
       .group("users.id")
       .select(

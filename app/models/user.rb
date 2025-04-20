@@ -71,6 +71,9 @@ class User < ApplicationRecord
   validates :handle, length: { minimum: 4 }
   validate :validate_time_zone_name
 
+  # == Scopes
+  scope :pushable, -> { where.associated(:push_registrations).distinct }
+
   # == Callbacks
   after_create :create_welcome_post!
 
