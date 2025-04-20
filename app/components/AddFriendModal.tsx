@@ -205,7 +205,12 @@ const ModalBody: FC<ModalBodyProps> = ({
               {!!joinerInfo?.phone_number && !!friendJoinUrl && (
                 <Popover shadow="md">
                   <Popover.Target>
-                    <Button component="a" leftSection={<PhoneIcon />} mx="xs">
+                    <Button
+                      component="a"
+                      variant="filled"
+                      leftSection={<PhoneIcon />}
+                      mx="xs"
+                    >
                       send via sms
                     </Button>
                   </Popover.Target>
@@ -247,6 +252,7 @@ const ModalBody: FC<ModalBodyProps> = ({
               <CopyButton value={friendJoinUrl}>
                 {({ copy, copied }) => (
                   <Button
+                    variant="filled"
                     leftSection={
                       copied ? (
                         <Box component={CopiedIcon} />
