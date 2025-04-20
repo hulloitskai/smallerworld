@@ -282,12 +282,17 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
   }).then(({ publicKey }) => publicKey);
 };
 
-const fetchDeviceId = (): Promise<string> =>
-  navigator.serviceWorker.ready.then(() =>
-    fetch("/device")
-      .then(response => response.json())
-      .then((data: { deviceId: string }) => get(data, "deviceId")),
-  );
+const fetchDeviceId = async (): Promise<string> => {
+  await navigator.serviceWorker.ready;
+  const response = await fetch("/device");
+  if (response.status !== 200) {
+    throw new Error(
+      `Failed to fetch device id (status code ${response.status})`,
+    );
+  }
+  const data: { deviceId: string } = await response.json();
+  return data.deviceId;
+};
 
 const RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER =
   DateTime.fromObject({
