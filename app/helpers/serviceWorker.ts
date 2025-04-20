@@ -66,10 +66,12 @@ export const handleServiceWorkerNavigation = (): void => {
       return;
     }
     router.visit(url, {
-      onSuccess: () => {
-        console.info(`Navigation to '${url}' completed successfully`);
+      onBefore: () => {
         const [port] = ports;
         port?.postMessage({ result: "success" });
+      },
+      onSuccess: () => {
+        console.info(`Requested navigation to '${url}' successful`);
       },
     });
   };
