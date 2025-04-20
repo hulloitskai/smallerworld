@@ -159,6 +159,7 @@ const EncouragementForm: FC<EncouragementFormProps> = ({
         </Stack>
         <Button
           type="submit"
+          variant="filled"
           leftSection={<SendIcon />}
           rightSection={emoji}
           loading={submitting}

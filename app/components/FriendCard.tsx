@@ -48,13 +48,13 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
   return (
     <Card withBorder>
       <Group gap={6} justify="space-between" className={classes.group}>
-        <Group gap={8}>
+        <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
           <Box fz="xl">{friend.emoji}</Box>
           <Text ff="heading" fw={600}>
             {friend.name}
           </Text>
         </Group>
-        <Group gap={2}>
+        <Group gap={2} style={{ flexShrink: 0 }}>
           {friend.notifiable && (
             <Badge
               color="gray"

@@ -89,11 +89,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
 
   // == Posts
   const { posts } = usePosts();
-  const postCount = posts?.length;
-  useDidUpdate(() => {
-    // Auto-scroll to top when posts are loaded or new post created
-    scrollTo({ top: 0, behavior: "smooth" });
-  }, [postCount]); // eslint-disable-line react-hooks/exhaustive-deps
   const hasOneUserCreatedPost = useMemo<boolean | undefined>(() => {
     if (posts) {
       const accountCreatedAt = DateTime.fromISO(currentUser.created_at);
