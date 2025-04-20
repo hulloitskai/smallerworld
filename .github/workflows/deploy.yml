@@ -26,11 +26,29 @@ jobs:
           fetch-depth: 0
       - name: Set up Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Get last working image
+        id: last_image
+        run: |
+          # Get the last successful release image
+          LAST_IMAGE=$(flyctl releases --json | jq -r '.[] | select(.Status == "complete") | .ImageRef' | head -n 1)
+          if [ -z "$LAST_IMAGE" ]; then
+            echo "No successful releases found"
+            echo "image=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "Found last working image: $LAST_IMAGE"
+          echo "image=$LAST_IMAGE" >> $GITHUB_OUTPUT
       - name: Deploy
         run: flyctl deploy --remote-only --ha=false --memory=768
-      - name: Revert deployment on failure
+      - name: Revert to last working image on failure
         if: failure() || cancelled()
-        run: flyctl scale count 1 --yes
+        run: |
+          if [ -n "${{ steps.last_image.outputs.image }}" ]; then
+            echo "Reverting to last known working image: ${{ steps.last_image.outputs.image }}"
+            flyctl deploy --image "${{ steps.last_image.outputs.image }}" --remote-only --ha=false --memory=768
+          else
+            echo "No previous working image found, scaling to 1"
+            flyctl scale count 1 --yes
       - name: Create Sentry release
         uses: getsentry/action-release@v3
         env:
