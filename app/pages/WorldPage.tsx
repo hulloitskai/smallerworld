@@ -294,7 +294,11 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       <RemoveScroll enabled={isStandalone && !registration}>
         {body}
       </RemoveScroll>
-      <WorldPageFloatingActions />
+      <WorldPageFloatingActions
+        onPostCreated={() => {
+          scrollTo({ top: 0, behavior: "smooth" });
+        }}
+      />
     </>
   );
 };

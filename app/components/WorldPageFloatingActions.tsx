@@ -23,9 +23,13 @@ import PostForm from "./PostForm";
 
 import classes from "./WorldPageFloatingActions.module.css";
 
-export interface WorldPageFloatingActionsProps {}
+export interface WorldPageFloatingActionsProps {
+  onPostCreated?: () => void;
+}
 
-const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
+const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
+  onPostCreated,
+}) => {
   const { currentUser } = usePageProps<WorldPageProps>();
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
@@ -237,6 +241,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = () => {
           postType={postType ?? previousPostType ?? null}
           onPostCreated={() => {
             setPostType(null);
+            onPostCreated?.();
           }}
         />
       </DrawerModal>
