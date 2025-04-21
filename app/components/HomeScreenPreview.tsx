@@ -11,7 +11,7 @@ import classes from "./HomeScreenPreview.module.css";
 
 export interface HomeScreenPreviewProps extends BoxProps {
   pageName: string;
-  pageIcon: { src: string; src_set?: string } | null;
+  pageIcon: { src: string; srcset?: string } | null;
   arrowLabel: ReactNode;
   radius?: MantineRadius;
 }
@@ -38,7 +38,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
         <Image src={homeScreenSrc} className={classes.homeScreen} />
         <Image
           src={pageIcon?.src ?? "/web-app-manifest-512x512.png"}
-          srcSet={pageIcon?.src_set}
+          srcSet={pageIcon?.srcset}
           className={classes.appIcon}
         />
         <Text className={classes.appLabel}>{pageName || "(your name)"}</Text>

@@ -128,7 +128,7 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
           <Image
             className={classes.worldPageIcon}
             src={world.page_icon.src}
-            srcSet={world.page_icon.src_set}
+            srcSet={world.page_icon.srcset}
             w={ICON_SIZE}
             h={ICON_SIZE}
             radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}

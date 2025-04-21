@@ -119,7 +119,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
           <Image
             className={classes.pageIcon}
             src={user.page_icon.src}
-            srcSet={user.page_icon.src_set}
+            srcSet={user.page_icon.srcset}
             radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
             style={{ "--size": rem(ICON_SIZE) }}
           />

@@ -106,7 +106,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         <Stack gap="sm">
           <Image
             src={currentUser.page_icon.src}
-            srcSet={currentUser.page_icon.src_set}
+            srcSet={currentUser.page_icon.srcset}
             w={ICON_SIZE}
             h={ICON_SIZE}
             fit="cover"
