@@ -24,28 +24,13 @@ module Notifiable
 
     # == Scopes
     scope :unnotifiable, -> {
-      T.bind(self, T.all(T.class_of(ActiveRecord::Base), ClassMethods))
       where.missing(:push_registrations)
     }
 
     scope :notifiable, -> {
-      T.bind(self, T.all(T.class_of(ActiveRecord::Base), ClassMethods))
+      unnotifiable = T.let(public_send(:unnotifiable), ActiveRecord::Relation) # rubocop:disable Style/SendWithLiteralMethodName
       where.not(id: unnotifiable.select(:id))
     }
-  end
-
-  class_methods do
-    extend T::Sig
-    extend T::Helpers
-
-    abstract!
-
-    # == Class interface
-    sig { abstract.params(args: T.untyped, blk: T.untyped).returns(T.untyped) }
-    def unnotifiable(*args, &blk); end
-
-    sig { abstract.params(args: T.untyped, blk: T.untyped).returns(T.untyped) }
-    def notifiable(*args, &blk); end
   end
 
   # == Interface
