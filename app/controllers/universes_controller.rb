@@ -19,7 +19,7 @@ class UniversesController < ApplicationController
         "MAX(posts.created_at) as last_post_created_at",
         "COUNT(posts.id) as post_count",
       )
-      .order("last_post_created_at DESC NULLS FIRST")
+      .order("last_post_created_at DESC NULLS LAST")
     joined_worlds, other_worlds = [], []
     users.each do |user|
       associated_friend = associated_friends_by_user_id[user.id]
