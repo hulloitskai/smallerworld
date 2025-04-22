@@ -88,6 +88,8 @@ Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
 Style/WordArray:
   EnforcedStyle: percent
+Style/SendWithLiteralMethodName:
+  Enabled: false
 
 Sorbet/FalseSigil:
   Enabled: false

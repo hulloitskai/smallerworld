@@ -28,7 +28,7 @@ module Notifiable
     }
 
     scope :notifiable, -> {
-      unnotifiable = T.let(public_send(:unnotifiable), ActiveRecord::Relation) # rubocop:disable Style/SendWithLiteralMethodName
+      unnotifiable = T.let(public_send(:unnotifiable), ActiveRecord::Relation)
       where.not(id: unnotifiable.select(:id))
     }
   end

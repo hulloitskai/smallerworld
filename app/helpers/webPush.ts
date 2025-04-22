@@ -5,8 +5,10 @@ import { type PushRegistration } from "~/types";
 import { isIos, useBrowserDetection } from "./browsers";
 import { identifyVisitor } from "./fingerprinting";
 
-const getPushManager = (): Promise<PushManager> =>
-  navigator.serviceWorker.ready.then(({ pushManager }) => pushManager);
+const getPushManager = async (): Promise<PushManager> => {
+  const { pushManager } = await navigator.serviceWorker.ready;
+  return pushManager;
+};
 
 export const getPushSubscription = (): Promise<PushSubscription | null> =>
   getPushManager().then(pushManager => pushManager.getSubscription());
