@@ -124,7 +124,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
                 >
                   <Checkbox
                     {...getInputProps("hide_stats", { type: "checkbox" })}
-                    label="hide reaction counts and reach counts"
+                    label="perception anxiety mode (hides reaction counts and # of friends notified)"
                     radius="md"
                   />
                 </InputWrapper>

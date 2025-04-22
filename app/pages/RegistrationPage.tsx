@@ -1,4 +1,4 @@
-import { InputBase, Text } from "@mantine/core";
+import { InputBase, InputWrapper, Text } from "@mantine/core";
 import { hasLength } from "@mantine/form";
 import { IMaskInput } from "react-imask";
 
@@ -30,6 +30,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       prefixed_handle: "",
       page_icon_upload: null as Upload | null,
       theme: "" as UserTheme | "",
+      hide_stats: false,
     },
     transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => {
       invariant(timeZone, "Missing time zone");
@@ -152,6 +153,21 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 onPreviewChange={setPageIconPreview}
               />
               <UserThemeRadioGroup {...getInputProps("theme")} />
+              <InputWrapper
+                label="advanced settings"
+                styles={{
+                  label: {
+                    marginTop: "var(--mantine-spacing-xs)",
+                    marginBottom: rem(4),
+                  },
+                }}
+              >
+                <Checkbox
+                  {...getInputProps("hide_stats", { type: "checkbox" })}
+                  label="perception anxiety mode (hides reaction counts and # of friends notified)"
+                  radius="md"
+                />
+              </InputWrapper>
             </Stack>
             <Button
               type="submit"
