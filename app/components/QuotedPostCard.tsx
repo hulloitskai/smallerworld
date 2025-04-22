@@ -1,6 +1,7 @@
 import {
   AspectRatio,
   type BoxProps,
+  type CardProps,
   Image,
   Text,
   TypographyStylesProvider,
@@ -13,7 +14,7 @@ import { type Image as ImageType, type QuotedPost } from "~/types";
 import classes from "./QuotedPostCard.module.css";
 import "yet-another-react-lightbox/styles.css";
 
-export interface QuotedPostCardProps extends BoxProps {
+export interface QuotedPostCardProps extends CardProps {
   post: QuotedPost;
 }
 

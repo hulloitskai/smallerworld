@@ -1,6 +1,5 @@
 .card {
   box-shadow: none;
-  border-radius: var(--mantine-radius-md);
 
   &[data-focus] {
     border-color: var(--mantine-color-primary-outline);

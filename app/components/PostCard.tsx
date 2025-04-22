@@ -161,7 +161,7 @@ const PostCard: FC<PostCardProps> = ({
           </TypographyStylesProvider>
           {post.image && <PostImage image={post.image} />}
           {post.quoted_post && (
-            <QuotedPostCard post={post.quoted_post} mt={8} />
+            <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
           )}
         </Stack>
         {blurContent && (
