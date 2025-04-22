@@ -9,9 +9,6 @@
     "wrap-ansi": "7.0.0",
     "strip-ansi": "6.0.1"
   },
-  "scripts": {
-    "postinstall": "patch-package"
-  },
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^4.6.1",
     "@fontsource-variable/bricolage-grotesque": "^5.2.5",
@@ -99,7 +96,6 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.12",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "patch-package": "^8.0.0",
     "postcss": "^8.4.32",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
