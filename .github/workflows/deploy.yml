@@ -75,7 +75,7 @@ jobs:
         run: bin/rails assets:precompile
         env:
           RAILS_ENV: production
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          SECRET_KEY_BASE_DUMMY: "1"
       - name: Create Sentry release
         uses: getsentry/action-release@v3
         env:
