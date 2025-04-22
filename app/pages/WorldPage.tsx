@@ -35,6 +35,7 @@ export interface WorldPageProps extends SharedPageProps {
   currentUser: User;
   friends: FriendInfo[];
   pendingJoinRequests: number;
+  hideStats: boolean;
 }
 
 const ICON_SIZE = 96;

@@ -1,7 +1,5 @@
-import { Text } from "@mantine/core";
+import { InputWrapper, Text } from "@mantine/core";
 import { hasLength } from "@mantine/form";
-
-import ProfileIcon from "~icons/heroicons/user-circle-20-solid";
 
 import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
@@ -12,11 +10,15 @@ import { type Image, type Upload, type User } from "~/types";
 
 export interface EditWorldPageProps extends SharedPageProps {
   currentUser: User;
+  hideStats: boolean;
 }
 
 const ICON_IMAGE_INPUT_SIZE = 110;
 
-const EditWorldPage: PageComponent<EditWorldPageProps> = ({ currentUser }) => {
+const EditWorldPage: PageComponent<EditWorldPageProps> = ({
+  currentUser,
+  hideStats,
+}) => {
   // == Form
   const initialValues = useMemo(
     () => ({
@@ -25,8 +27,9 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({ currentUser }) => {
         signedId: currentUser.page_icon.signed_id,
       } as Upload | null,
       theme: currentUser.theme ?? ("" as const),
+      hide_stats: hideStats,
     }),
-    [currentUser],
+    [currentUser, hideStats],
   );
   const { values, getInputProps, submitting, submit, isDirty } = useForm({
     action: routes.world.update,
@@ -110,10 +113,25 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({ currentUser }) => {
                   onPreviewChange={setPageIconPreview}
                 />
                 <UserThemeRadioGroup {...getInputProps("theme")} />
+                <InputWrapper
+                  label="advanced settings"
+                  styles={{
+                    label: {
+                      marginTop: "var(--mantine-spacing-xs)",
+                      marginBottom: rem(4),
+                    },
+                  }}
+                >
+                  <Checkbox
+                    {...getInputProps("hide_stats", { type: "checkbox" })}
+                    label="hide reaction counts and reach counts"
+                    radius="md"
+                  />
+                </InputWrapper>
               </Stack>
               <Button
                 type="submit"
-                leftSection={<ProfileIcon />}
+                leftSection={<SaveIcon />}
                 loading={submitting}
                 disabled={
                   !isDirty() || !values.name || !values.page_icon_upload

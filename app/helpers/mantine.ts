@@ -8,6 +8,7 @@ import {
   Drawer,
   HoverCard,
   InputBase,
+  InputWrapper,
   JsonInput,
   Loader,
   type MantineColorsTuple,
@@ -183,6 +184,7 @@ const createTheme = (
       JsonInput: JsonInput.extend({
         classNames: {
           input: classes.input,
+          label: classes.inputLabel,
         },
       }),
       Menu: Menu.extend({
@@ -205,6 +207,7 @@ const createTheme = (
       NumberInput: NumberInput.extend({
         classNames: {
           input: classes.input,
+          label: classes.inputLabel,
         },
       }),
       Overlay: Overlay.extend({
@@ -220,11 +223,13 @@ const createTheme = (
       TextInput: TextInput.extend({
         classNames: {
           input: classes.input,
+          label: classes.inputLabel,
         },
       }),
       Textarea: Textarea.extend({
         classNames: {
           input: classes.input,
+          label: classes.inputLabel,
         },
       }),
       ThemeIcon: ThemeIcon.extend({
@@ -243,6 +248,7 @@ const createTheme = (
         },
         classNames: {
           input: classes.input,
+          label: classes.inputLabel,
         },
       }),
       Popover: Popover.extend({
@@ -263,6 +269,7 @@ const createTheme = (
       InputBase: InputBase.extend({
         classNames: {
           input: classes.input,
+          label: classes.inputLabel,
         },
       }),
       PinInput: PinInput.extend({
@@ -287,6 +294,7 @@ const createTheme = (
         },
         classNames: {
           input: classes.input,
+          label: classes.inputLabel,
         },
       }),
       RichTextEditor: RichTextEditor.extend({
@@ -303,6 +311,11 @@ const createTheme = (
       Skeleton: Skeleton.extend({
         classNames: {
           root: classes.skeleton,
+        },
+      }),
+      InputWrapper: InputWrapper.extend({
+        classNames: {
+          label: classes.inputLabel,
         },
       }),
     },

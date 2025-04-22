@@ -38,6 +38,10 @@
     }
   }
 
+  .inputLabel {
+    font-family: var(--mantine-font-family-headings);
+  }
+
   .modalHeader {
     min-height: 0px;
     align-items: start;

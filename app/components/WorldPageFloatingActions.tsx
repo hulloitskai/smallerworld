@@ -30,7 +30,7 @@ export interface WorldPageFloatingActionsProps {
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   onPostCreated,
 }) => {
-  const { currentUser } = usePageProps<WorldPageProps>();
+  const { currentUser, hideStats } = usePageProps<WorldPageProps>();
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
   const { modals } = useModals();
@@ -260,7 +260,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
               actions={
                 <AuthorPostCardActions
                   user={currentUser}
-                  {...{ post }}
+                  {...{ post, hideStats }}
                   onFollowUpDrawerModalOpened={() => {
                     setPinnedPostsDrawerModalOpened(false);
                   }}

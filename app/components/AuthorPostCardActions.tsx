@@ -17,12 +17,14 @@ import classes from "./AuthorPostCardActions.module.css";
 export interface AuthorPostCardActionsProps {
   user: User;
   post: Post;
+  hideStats: boolean;
   onFollowUpDrawerModalOpened?: () => void;
 }
 
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   user,
   post,
+  hideStats,
   onFollowUpDrawerModalOpened,
 }) => {
   const postUrl = usePostUrl(post, user);
@@ -33,7 +35,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     routes.posts.stats,
     {
       descriptor: "load post stats",
-      params: inViewport ? { id: post.id } : null,
+      params: !hideStats && inViewport ? { id: post.id } : null,
       keepPreviousData: true,
       refreshInterval: 5000,
       isVisible: () => inViewport,
@@ -88,17 +90,28 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
           </Badge>
         )}
         <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
-          {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
-            <Badge
-              key={emoji}
-              variant="transparent"
-              color="gray"
-              leftSection={emoji}
-              className={classes.reactionBadge}
-            >
-              {reactions.length}
-            </Badge>
-          ))}
+          {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>
+            hideStats ? (
+              <Badge
+                key={emoji}
+                variant="transparent"
+                color="gray"
+                className={classes.reactionBadgeWithoutCounts}
+              >
+                {emoji}
+              </Badge>
+            ) : (
+              <Badge
+                key={emoji}
+                variant="transparent"
+                color="gray"
+                leftSection={emoji}
+                className={classes.reactionBadge}
+              >
+                {reactions.length}
+              </Badge>
+            ),
+          )}
         </Group>
         <Menu width={165}>
           <Menu.Target>

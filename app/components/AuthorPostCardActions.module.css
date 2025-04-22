@@ -30,3 +30,11 @@
     font-size: var(--mantine-font-size-sm);
   }
 }
+
+.reactionBadgeWithoutCounts {
+  padding-inline: 1px;
+
+  :global(.mantine-Badge-label) {
+    font-size: var(--mantine-font-size-sm);
+  }
+}

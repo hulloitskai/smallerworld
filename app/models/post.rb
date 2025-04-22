@@ -52,12 +52,12 @@ class Post < ApplicationRecord
 
   sig { returns(T.nilable(String)) }
   def title_snippet
-    title&.truncate(34)
+    title&.truncate(40)
   end
 
   sig { returns(String) }
   def body_snippet
-    body_text.truncate(80)
+    body_text.truncate(120)
   end
 
   sig { returns(String) }
@@ -68,7 +68,7 @@ class Post < ApplicationRecord
 
   sig { returns(String) }
   def reply_snippet
-    "> " + body_text.truncate(80).split("\n").join("\n> ") + "\n\n"
+    "> " + body_text.truncate(120).split("\n").join("\n> ") + "\n\n"
   end
 
   # == Associations

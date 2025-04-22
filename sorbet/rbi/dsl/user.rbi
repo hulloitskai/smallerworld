@@ -744,6 +744,51 @@ class User
     sig { void }
     def handle_will_change!; end
 
+    sig { returns(T::Boolean) }
+    def hide_stats; end
+
+    sig { params(value: T::Boolean).returns(T::Boolean) }
+    def hide_stats=(value); end
+
+    sig { returns(T::Boolean) }
+    def hide_stats?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_stats_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def hide_stats_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def hide_stats_came_from_user?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def hide_stats_change; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def hide_stats_change_to_be_saved; end
+
+    sig { params(from: T::Boolean, to: T::Boolean).returns(T::Boolean) }
+    def hide_stats_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_stats_in_database; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def hide_stats_previous_change; end
+
+    sig { params(from: T::Boolean, to: T::Boolean).returns(T::Boolean) }
+    def hide_stats_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_stats_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_stats_was; end
+
+    sig { void }
+    def hide_stats_will_change!; end
+
     sig { returns(::String) }
     def id; end
 
@@ -986,6 +1031,9 @@ class User
     def restore_handle!; end
 
     sig { void }
+    def restore_hide_stats!; end
+
+    sig { void }
     def restore_id!; end
 
     sig { void }
@@ -1020,6 +1068,12 @@ class User
 
     sig { returns(T::Boolean) }
     def saved_change_to_handle?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def saved_change_to_hide_stats; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_hide_stats?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_id; end
@@ -1209,6 +1263,9 @@ class User
 
     sig { returns(T::Boolean) }
     def will_save_change_to_handle?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_hide_stats?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_id?; end

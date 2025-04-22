@@ -8,6 +8,7 @@
 #
 #  id                            :uuid             not null, primary key
 #  handle                        :string           not null
+#  hide_stats                    :boolean          not null
 #  name                          :string           not null
 #  notifications_last_cleared_at :datetime
 #  phone_number                  :string           not null

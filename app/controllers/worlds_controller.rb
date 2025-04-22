@@ -29,19 +29,23 @@ class WorldsController < ApplicationController
       "faviconLinks" => user_favicon_links(current_user),
       friends: FriendInfoSerializer.many(friends),
       "pendingJoinRequests" => pending_join_requests,
+      "hideStats" => current_user.hide_stats,
     })
   end
 
   # GET /world/edit
   def edit
-    render(inertia: "EditWorldPage")
+    current_user = authenticate_user!
+    render(inertia: "EditWorldPage", props: {
+      "hideStats" => current_user.hide_stats,
+    })
   end
 
   # PUT /world
   def update
     current_user = authenticate_user!
     user_params = T.let(
-      params.expect(user: %i[name page_icon theme]),
+      params.expect(user: %i[name page_icon theme hide_stats]),
       ActionController::Parameters,
     )
     if current_user.update(user_params)

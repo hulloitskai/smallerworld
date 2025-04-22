@@ -26,7 +26,13 @@ class RegistrationsController < ApplicationController
       raise "Phone number not verified"
     end
 
-    user_params = params.expect(user: %i[name handle page_icon time_zone_name])
+    user_params = params.expect(user: %i[
+      name
+      handle
+      page_icon
+      time_zone_name
+      hide_stats
+    ])
     user = User.new(**user_params, phone_number: verified_phone_number)
     if user.save
       session.delete(:registration_token)
