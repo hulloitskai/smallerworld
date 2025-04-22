@@ -22,6 +22,7 @@ import { setupSentry } from "~/helpers/sentry";
 import {
   handleServiceWorkerNavigation,
   registerServiceWorker,
+  unregisterOutdatedServiceWorkers,
 } from "~/helpers/serviceWorker";
 
 import "./application.css";
@@ -38,7 +39,8 @@ setupFingerprint();
 
 // == Service worker
 if ("serviceWorker" in navigator) {
-  void handleServiceWorkerNavigation();
+  handleServiceWorkerNavigation();
+  void unregisterOutdatedServiceWorkers();
   void registerServiceWorker();
 }
 

@@ -1,55 +1,74 @@
 const SERVICE_WORKER_URL = "/sw.js";
 const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour
 
-export const registerServiceWorker = () => {
+export const registerServiceWorker = async (): Promise<void> => {
   if (!("serviceWorker" in navigator)) {
     return;
   }
   console.info("Registering service worker at:", SERVICE_WORKER_URL);
-  void navigator.serviceWorker
-    .register(SERVICE_WORKER_URL, {
-      type: import.meta.env.MODE === "production" ? "classic" : "module",
-    })
-    .then(
-      registration => {
-        console.info("Service worker registered", pick(registration, "scope"));
-        if (registration.active) {
-          registration.addEventListener("updatefound", () => {
-            console.info("Service worker update found");
-            void registration.update().then(() => {
-              console.info("Service worker updated");
-            });
-          });
-        }
-        setInterval(() => {
-          // Skip if service worker is waiting or installing, or if offline
-          if (
-            !registration.active ||
-            !("connection" in navigator) ||
-            !navigator.onLine
-          ) {
-            return;
-          }
-
-          // Check for update, if service worker URL is reachable
-          void fetch(SERVICE_WORKER_URL, {
-            cache: "no-store",
-            headers: {
-              cache: "no-store",
-              "cache-control": "no-cache",
-            },
-          }).then(response => {
-            if (response.status === 200) {
-              return registration.update();
-            }
-          });
-        }, UPDATE_INTERVAL);
-      },
-      error => {
-        console.error("Service worker registration error", error);
+  try {
+    const registration = await navigator.serviceWorker.register(
+      SERVICE_WORKER_URL,
+      {
+        type: import.meta.env.MODE === "production" ? "classic" : "module",
       },
     );
+    console.info("Service worker registered", pick(registration, "scope"));
+
+    // Listen for updatefound event
+    registration.addEventListener("updatefound", () => {
+      console.info("Service worker update found");
+      void registration.update().then(() => {
+        console.info("Service worker updated");
+      });
+    });
+
+    // Poll for service worker updates
+    setInterval(() => {
+      // Skip if service worker is waiting or installing, or if offline
+      if (
+        !registration.active ||
+        !("connection" in navigator) ||
+        !navigator.onLine
+      ) {
+        return;
+      }
+
+      // Check for update, if service worker URL is reachable
+      void fetch(SERVICE_WORKER_URL, {
+        cache: "no-store",
+        headers: {
+          cache: "no-store",
+          "cache-control": "no-cache",
+        },
+      }).then(response => {
+        if (response.status === 200) {
+          return registration.update();
+        }
+      });
+    }, UPDATE_INTERVAL);
+  } catch (error) {
+    console.error("Service worker registration error", error);
+  }
 };
+
+export const unregisterOutdatedServiceWorkers = async (): Promise<void> => {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  const oldRegistrations = registrations.filter(
+    ({ active }) =>
+      active &&
+      normalizeUrl(active.scriptURL) !== normalizeUrl(SERVICE_WORKER_URL),
+  );
+  await Promise.all(
+    oldRegistrations.map(registration => registration.unregister()),
+  );
+};
+
+const normalizeUrl = (url: string): string =>
+  new URL(url, location.origin).toString();
 
 export const handleServiceWorkerNavigation = (): void => {
   const handleMessage = ({ data, ports }: MessageEvent<any>): void => {
@@ -65,6 +84,7 @@ export const handleServiceWorkerNavigation = (): void => {
       console.info("Already on this page, skipping navigation");
       return;
     }
+
     router.visit(url, {
       onBefore: () => {
         const [port] = ports;

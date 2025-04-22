@@ -87,8 +87,8 @@ const markAsDelivered = (notification: PushNotification): Promise<void> =>
     });
 
 const pathname = (url: string): string => {
-  const u = new URL(url, self.location.href);
-  return u.pathname;
+  const { pathname } = new URL(url, self.location.origin);
+  return pathname;
 };
 
 // == Push handlers
