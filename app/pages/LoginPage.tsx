@@ -144,6 +144,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               mask="(000) 000-0000"
               type="tel"
               label="your phone #"
+              name="phone_number_without_country_code"
               placeholder="(___) ___ ____"
               autoComplete="mobile tel-national"
               onAccept={value => {

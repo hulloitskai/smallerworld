@@ -3,6 +3,8 @@
   --affix-bottom: max(var(--affix-inset), var(--safe-area-inset-bottom, 0px));
   --affix-left: var(--affix-inset);
   --affix-right: var(--affix-inset);
+
+  pointer-events: none;
 }
 
 .space {

@@ -151,7 +151,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                     )
                   }
                 >
-                  your friends
+                  {!isEmpty(friends) ? "your friends" : "invite a friend!"}
                 </Button>
               )}
               {isStandalone && <WorldPageNotificationsButton />}

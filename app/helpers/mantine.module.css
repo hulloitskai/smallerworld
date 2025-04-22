@@ -7,7 +7,7 @@
         [data-disabled]:not([data-loading])
       ) {
       @mixin dark-user-theme {
-        color: var(--mantine-color-dark-4);
+        color: var(--mantine-color-dark-2);
         background-color: alpha(var(--mantine-color-black), 0.4);
       }
 
