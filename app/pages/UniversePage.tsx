@@ -106,7 +106,6 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
         label={world.post_count}
         size={20}
         offset={4}
-        disabled={!world.post_count}
         {...(!joinedWorld && { color: "white" })}
       >
         <Tooltip
