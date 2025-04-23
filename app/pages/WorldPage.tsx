@@ -130,7 +130,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   radius="xl"
                   display="block"
                   leftSection={
-                    friends && !isEmpty(friends) ? (
+                    !isEmpty(friends) ? (
                       <Avatar.Group className={classes.avatarGroup}>
                         {friends.map(({ id, emoji }) => (
                           <Avatar key={id} size="sm">
@@ -150,6 +150,12 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                       <FriendsIcon />
                     )
                   }
+                  onClick={event => {
+                    if (isEmpty(friends)) {
+                      event.preventDefault();
+                      openAddFriendModal({ currentUser });
+                    }
+                  }}
                 >
                   {!isEmpty(friends) ? "your friends" : "invite a friend!"}
                 </Button>
@@ -237,38 +243,30 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                       : "partial"
                 }
               >
-                <Anchor
-                  component="button"
-                  fw={500}
-                  onClick={() => {
-                    openAddFriendModal({ currentUser });
+                invite{" "}
+                <span
+                  style={{
+                    ...(!isEmpty(friends) &&
+                      friends.length < 3 && {
+                        opacity: 0.5,
+                        textDecoration: "line-through",
+                      }),
                   }}
                 >
-                  invite{" "}
-                  <span
-                    style={{
-                      ...(!isEmpty(friends) &&
-                        friends.length < 3 && {
-                          opacity: 0.5,
-                          textDecoration: "line-through",
-                        }),
-                    }}
-                  >
-                    3 friends
-                  </span>{" "}
-                  <span
-                    style={{
-                      fontWeight: 500,
-                      ...(isEmpty(friends) &&
-                        friends.length < 3 && {
-                          display: "none",
-                        }),
-                    }}
-                  >
-                    {3 - friends.length} more{" "}
-                    {inflect("friend", 3 - friends.length)}{" "}
-                  </span>
-                </Anchor>{" "}
+                  3 friends
+                </span>{" "}
+                <span
+                  style={{
+                    fontWeight: 500,
+                    ...(isEmpty(friends) &&
+                      friends.length < 3 && {
+                        display: "none",
+                      }),
+                  }}
+                >
+                  {3 - friends.length} more{" "}
+                  {inflect("friend", 3 - friends.length)}{" "}
+                </span>
                 to join your world 👯
               </CheckableListItem>
               <CheckableListItem checked={!!hasOneUserCreatedPost}>
