@@ -23,39 +23,47 @@ export const registerServiceWorker = async (): Promise<void> => {
     return;
   }
   console.info("Registering service worker at:", SERVICE_WORKER_URL);
+
+  let registration: ServiceWorkerRegistration | undefined = undefined;
   try {
     const type: WorkerType =
       import.meta.env.MODE === "production" ? "classic" : "module";
-    const registration = await navigator.serviceWorker.register(
-      SERVICE_WORKER_URL,
-      { type },
-    );
-    console.info("Service worker registered", pick(registration, "scope"));
-
-    // Listen for update
-    registration.addEventListener("updatefound", () => {
-      console.info("Service worker update found");
-      void updateServiceWorkerIfScriptIsReachable(registration);
+    registration = await navigator.serviceWorker.register(SERVICE_WORKER_URL, {
+      type,
     });
-
-    // Poll for service worker updates
-    setInterval(() => {
-      if (!registration.active) {
-        console.info(
-          "No active registration; skipping service worker update check",
-        );
-        return;
-      }
-      if (!("connection" in navigator) || !navigator.onLine) {
-        console.info("Offline; skipping service worker update check");
-        return;
-      }
-      console.info("Checking for service worker updates");
-      void updateServiceWorkerIfScriptIsReachable(registration);
-    }, UPDATE_INTERVAL);
+    console.info("Service worker registered", pick(registration, "scope"));
   } catch (error) {
-    console.error("Service worker registration error", error);
+    if (error instanceof Error && error.message === "Rejected") {
+      console.info("Service worker registration rejected");
+    } else {
+      console.error("Service worker registration error", error);
+    }
   }
+  if (!registration) {
+    return;
+  }
+
+  // Listen for update
+  registration.addEventListener("updatefound", () => {
+    console.info("Service worker update found");
+    void updateServiceWorkerIfScriptIsReachable(registration);
+  });
+
+  // Poll for service worker updates
+  setInterval(() => {
+    if (!registration.active) {
+      console.info(
+        "No active registration; skipping service worker update check",
+      );
+      return;
+    }
+    if (!("connection" in navigator) || !navigator.onLine) {
+      console.info("Offline; skipping service worker update check");
+      return;
+    }
+    console.info("Checking for service worker updates");
+    void updateServiceWorkerIfScriptIsReachable(registration);
+  }, UPDATE_INTERVAL);
 };
 
 export const unregisterOutdatedServiceWorkers = async (): Promise<void> => {
