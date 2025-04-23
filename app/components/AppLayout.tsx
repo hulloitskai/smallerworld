@@ -176,10 +176,16 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
             >
               <Loader size="md" />
               <Stack gap={6} ta="center" maw={240}>
-                <Text ff="heading" size="sm">
+                <Text
+                  className={classes.waitingForServiceWorkerReadyLabel}
+                  size="sm"
+                >
                   completing installation—this may take up to 30 seconds...
                 </Text>
-                <Text size="xs" c="dimmed">
+                <Text
+                  className={classes.waitingForServiceWorkerReadySubtext}
+                  size="xs"
+                >
                   thank u for your patience 😭
                   <br />i appreciate u :')
                 </Text>

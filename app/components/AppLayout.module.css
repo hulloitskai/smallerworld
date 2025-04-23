@@ -61,3 +61,15 @@
   gap: var(--mantine-spacing-lg);
   padding-bottom: var(--mantine-spacing-xl);
 }
+
+.waitingForServiceWorkerReadyLabel {
+  font-family: var(--mantine-color-font-family-headings);
+
+  @mixin light {
+    color: var(--mantine-color-white);
+  }
+}
+
+.waitingForServiceWorkerReadySubtext {
+  color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dimmed));
+}
