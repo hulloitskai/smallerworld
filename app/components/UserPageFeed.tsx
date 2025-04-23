@@ -18,7 +18,10 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
     user.id,
   );
   const longerThan24HoursSinceLastPost = useMemo(() => {
-    const lastPost = first(posts);
+    if (!posts) {
+      return;
+    }
+    const [lastPost] = posts;
     if (!lastPost) {
       return true;
     }
