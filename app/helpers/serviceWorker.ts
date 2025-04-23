@@ -46,6 +46,10 @@ export const registerServiceWorker = async (): Promise<void> => {
   // Listen for update
   registration.addEventListener("updatefound", () => {
     console.info("Service worker update found");
+    if (!registration.active) {
+      console.info("No active registration; skipping service worker update");
+      return;
+    }
     void updateServiceWorkerIfScriptIsReachable(registration);
   });
 
