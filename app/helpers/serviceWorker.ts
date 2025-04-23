@@ -1,51 +1,57 @@
 const SERVICE_WORKER_URL = "/sw.js";
 const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour
 
+const updateServiceWorkerIfScriptIsReachable = async (
+  registration: ServiceWorkerRegistration,
+): Promise<void> => {
+  const { status } = await fetch(SERVICE_WORKER_URL, {
+    cache: "no-store",
+    headers: {
+      cache: "no-store",
+      "cache-control": "no-cache",
+    },
+  });
+  if (status === 200) {
+    console.info("Updating service worker...");
+    await registration.update();
+    console.info("Service worker updated");
+  }
+};
+
 export const registerServiceWorker = async (): Promise<void> => {
   if (!("serviceWorker" in navigator)) {
     return;
   }
   console.info("Registering service worker at:", SERVICE_WORKER_URL);
   try {
+    const type: WorkerType =
+      import.meta.env.MODE === "production" ? "classic" : "module";
     const registration = await navigator.serviceWorker.register(
       SERVICE_WORKER_URL,
-      {
-        type: import.meta.env.MODE === "production" ? "classic" : "module",
-      },
+      { type },
     );
     console.info("Service worker registered", pick(registration, "scope"));
 
-    // Listen for updatefound event
+    // Listen for update
     registration.addEventListener("updatefound", () => {
       console.info("Service worker update found");
-      void registration.update().then(() => {
-        console.info("Service worker updated");
-      });
+      void updateServiceWorkerIfScriptIsReachable(registration);
     });
 
     // Poll for service worker updates
     setInterval(() => {
-      // Skip if service worker is waiting or installing, or if offline
-      if (
-        !registration.active ||
-        !("connection" in navigator) ||
-        !navigator.onLine
-      ) {
+      if (!registration.active) {
+        console.info(
+          "No active registration; skipping service worker update check",
+        );
         return;
       }
-
-      // Check for update, if service worker URL is reachable
-      void fetch(SERVICE_WORKER_URL, {
-        cache: "no-store",
-        headers: {
-          cache: "no-store",
-          "cache-control": "no-cache",
-        },
-      }).then(response => {
-        if (response.status === 200) {
-          return registration.update();
-        }
-      });
+      if (!("connection" in navigator) || !navigator.onLine) {
+        console.info("Offline; skipping service worker update check");
+        return;
+      }
+      console.info("Checking for service worker updates");
+      void updateServiceWorkerIfScriptIsReachable(registration);
     }, UPDATE_INTERVAL);
   } catch (error) {
     console.error("Service worker registration error", error);
