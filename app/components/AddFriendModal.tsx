@@ -172,6 +172,27 @@ const ModalBody: FC<ModalBodyProps> = ({
           </Button>
         </Stack>
       </form>
+      {!friend && (
+        <>
+          <Divider opacity={0.5} mt={6} />
+          <Box ta="center" mb="xs">
+            <Title order={3} size="h6">
+              how does this work?
+            </Title>
+            <Stack gap={4} maw={320} mx="auto" style={{ textWrap: "pretty" }}>
+              <Text size="xs" c="dimmed">
+                a unique invite link will be created for your friend. when they
+                open it, they&apos;ll be prompted to add your page to their home
+                screen! (no account required)
+              </Text>
+              <Text size="xs" c="dimmed">
+                the name and emoji you set will be used to identify your friend
+                when they react to your posts :)
+              </Text>
+            </Stack>
+          </Box>
+        </>
+      )}
       {friend && !!friendJoinUrl && (
         <>
           <Divider />
