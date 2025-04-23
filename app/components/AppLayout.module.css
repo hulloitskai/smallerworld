@@ -62,7 +62,7 @@
   padding-bottom: var(--mantine-spacing-xl);
 }
 
-.waitingForServiceWorkerReadyLabel {
+.waitingForServiceWorkerReadyText {
   font-family: var(--mantine-color-font-family-headings);
 
   @mixin light {

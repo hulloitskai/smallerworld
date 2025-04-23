@@ -1,4 +1,4 @@
-const SingleDayFontMeta: FC = () => (
+const SingleDayFontHead: FC = () => (
   <Head>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
@@ -13,4 +13,4 @@ const SingleDayFontMeta: FC = () => (
   </Head>
 );
 
-export default SingleDayFontMeta;
+export default SingleDayFontHead;

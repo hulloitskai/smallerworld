@@ -17,6 +17,7 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import openAddFriendModal from "~/components/AddFriendModal";
 import AppLayout from "~/components/AppLayout";
+import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPageInstallationInstructionsModal";
@@ -278,12 +279,20 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       <Box pos="relative">
         <WorldPageFeed />
         {isStandalone && registration === null && (
-          <Overlay backgroundOpacity={0} blur={3}>
-            <Image
-              src={swirlyUpArrowSrc}
-              className={classes.notificationsRequiredIndicatorArrow}
-            />
-          </Overlay>
+          <>
+            <SingleDayFontHead />
+            <Overlay backgroundOpacity={0} blur={3}>
+              <Group justify="center" align="end" gap="xs">
+                <Text className={classes.notificationsRequiredIndicatorText}>
+                  pretty&nbsp;please? 👉&#8288;👈
+                </Text>
+                <Image
+                  src={swirlyUpArrowSrc}
+                  className={classes.notificationsRequiredIndicatorArrow}
+                />
+              </Group>
+            </Overlay>
+          </>
         )}
       </Box>
     </Stack>

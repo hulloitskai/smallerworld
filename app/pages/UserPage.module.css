@@ -24,14 +24,21 @@
 }
 
 .notificationsRequiredIndicatorArrow {
-  margin-inline: auto;
-  width: 230px;
-  height: 90px;
-  background: var(--mantine-color-primary-text);
-  mask-image: url(~/assets/images/swirly-up-arrow.png);
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  mask-position: center;
+  width: 100px;
+
+  @mixin light {
+    filter: invert(1);
+  }
+}
+
+.notificationsRequiredIndicatorText {
+  font-family: "Single Day", Manrope, cursive;
+  font-size: 24px;
+  line-height: 1.1;
+  max-width: 140px;
+  text-align: right;
+  position: relative;
+  top: 8px;
 }
 
 .welcomeBackToast[data-sonner-toast] {

@@ -177,7 +177,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
               <Loader size="md" />
               <Stack gap={6} ta="center" maw={240}>
                 <Text
-                  className={classes.waitingForServiceWorkerReadyLabel}
+                  className={classes.waitingForServiceWorkerReadyText}
                   size="sm"
                 >
                   completing installation—this may take up to 30 seconds...

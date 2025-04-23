@@ -5,7 +5,7 @@ import homeScreenSrc from "~/assets/images/home-screen.png";
 
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 
-import SingleDayFontMeta from "./SingleDayFontMeta";
+import SingleDayFontHead from "./SingleDayFontHead";
 
 import classes from "./HomeScreenPreview.module.css";
 
@@ -25,7 +25,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
 }) => {
   return (
     <>
-      <SingleDayFontMeta />
+      <SingleDayFontHead />
       <Box
         className={cn("HomescreenPreview", classes.container)}
         pos="relative"
