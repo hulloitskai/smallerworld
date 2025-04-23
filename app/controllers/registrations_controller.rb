@@ -22,7 +22,7 @@ class RegistrationsController < ApplicationController
       .find_by_registration_token!(registration_token)
     verified_phone_number = verification_request.verified_phone_number
     unless verified_phone_number
-      session.delete(:registration_token)
+      self.registration_token = nil
       raise "Phone number not verified"
     end
 

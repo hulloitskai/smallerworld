@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
           "redirectUrl" => after_authentication_url,
         })
       else
-        session[:registration_token] =
+        self.registration_token =
           verification_request.generate_registration_token
         render(json: {
           "redirectUrl" => new_registration_path,

@@ -96,6 +96,15 @@ module AuthenticatesUsers
     session[:registration_token]
   end
 
+  sig { params(token: T.nilable(String)).returns(T.nilable(String)) }
+  def registration_token=(token)
+    if token.present?
+      session[:registration_token] = token
+    else
+      session.delete(:registration_token)
+    end
+  end
+
   sig { returns(T::Boolean) }
   def valid_registration_token?
     registration_token = session[:registration_token] or return false
