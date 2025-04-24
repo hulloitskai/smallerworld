@@ -1,3 +1,7 @@
+.container {
+  position: relative;
+}
+
 .card {
   &[data-focus] {
     border-color: var(--mantine-color-primary-outline);
@@ -141,6 +145,32 @@
           color: var(--mantine-color-primary-outline);
         }
       }
+    }
+  }
+}
+
+.reactionsGroup {
+  position: absolute;
+  left: var(--mantine-spacing-xs);
+  top: -10px;
+  right: var(--mantine-spacing-xs);
+}
+
+.reaction {
+  font-size: var(--mantine-font-size-md);
+  animation: pop 6s infinite;
+  transform: var(--reaction-rotation) scale(1);
+
+  /* See: https://meta.discourse.org/t/blurry-emojis-on-chrome/224080 */
+  -webkit-filter: blur(0px);
+
+  @keyframes pop {
+    0%,
+    10% {
+      transform: var(--reaction-rotation) scale(1); /* Start and end at 100% */
+    }
+    5% {
+      transform: var(--reaction-rotation) scale(1.1); /* Scale up to 110% at the midpoint */
     }
   }
 }

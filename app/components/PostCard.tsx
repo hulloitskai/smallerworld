@@ -8,6 +8,7 @@ import {
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
+import { useInViewport, useMergedRef } from "@mantine/hooks";
 import { type ReactNode } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
@@ -17,7 +18,7 @@ import ZoomOutIcon from "~icons/heroicons/magnifying-glass-minus-20-solid";
 import ZoomInIcon from "~icons/heroicons/magnifying-glass-plus-20-solid";
 
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Image as ImageType, type Post } from "~/types";
+import { type Image as ImageType, type Post, type PostReaction } from "~/types";
 
 import QuotedPostCard from "./QuotedPostCard";
 
@@ -31,11 +32,14 @@ export interface PostCardProps extends BoxProps {
   focus?: boolean;
 }
 
+const REACTION_ROTATION_RANGE_DEGREES = 30;
+
 const PostCard: FC<PostCardProps> = ({
   post,
   actions,
   blurContent: initialBlurContent,
   focus,
+  className,
   ...otherProps
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -48,158 +52,199 @@ const PostCard: FC<PostCardProps> = ({
 
   // == Auto-focus
   useEffect(() => {
-    if (focus && cardRef.current) {
-      cardRef.current.scrollIntoView({ behavior: "smooth" });
+    const card = cardRef.current;
+    if (focus && card) {
+      card.scrollIntoView({ behavior: "smooth" });
     }
   }, [focus]);
 
   // == Blur content
   const [blurContent, setBlurContent] = useState(initialBlurContent);
 
+  // == Load reactions
+  const { ref: viewportRef, inViewport } = useInViewport<HTMLDivElement>();
+  const { data: reactionsData } = useRouteSWR<{ reactions: PostReaction[] }>(
+    routes.postReactions.index,
+    {
+      params: inViewport ? { post_id: post.id } : null,
+      descriptor: "load reactions",
+      keepPreviousData: true,
+      refreshInterval: 5000,
+      isVisible: () => inViewport,
+    },
+  );
+  const { reactions } = reactionsData ?? {};
+
+  // == Refs
+  const mergedCardRef = useMergedRef(cardRef, viewportRef);
+
   return (
-    <Card
-      ref={cardRef}
-      className={cn("PostCard", classes.card)}
-      withBorder
-      shadow="sm"
-      mod={{
-        focus,
-        "post-visibility": post.visibility,
-      }}
+    <Box
+      className={cn("PostCard", classes.container, className)}
       {...otherProps}
     >
-      <Card.Section inheritPadding pt="xs" pb={10}>
-        <Group gap={8} align="center">
-          {!!post.emoji && (
-            <Text size="lg" inline display="block">
-              {post.emoji}
-            </Text>
-          )}
-          <Group gap={6} style={{ flexGrow: 1 }}>
-            {!post.emoji && (
-              <Box
-                component={POST_TYPE_TO_ICON[post.type]}
-                fz={10.5}
-                c="dimmed"
-                display="block"
-              />
+      <Card
+        ref={mergedCardRef}
+        className={classes.card}
+        withBorder
+        shadow="sm"
+        mod={{ focus, "post-visibility": post.visibility }}
+      >
+        <Card.Section inheritPadding pt="xs" pb={10}>
+          <Group gap={8} align="center">
+            {!!post.emoji && (
+              <Text size="lg" inline display="block">
+                {post.emoji}
+              </Text>
             )}
-            <Text size="xs" ff="heading" fw={600} c="dimmed">
-              {POST_TYPE_TO_LABEL[post.type]}
-            </Text>
-          </Group>
-          {pinnedUntil ? (
-            <Box className={classes.timestamp} mod={{ pinned: true }}>
-              {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
-              <Time format={DateTime.DATE_MED} inline inherit>
-                {pinnedUntil}
-              </Time>
-            </Box>
-          ) : (
-            <Time
-              format={dateTime => {
-                if (dateTime.hasSame(DateTime.now(), "day")) {
-                  return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
-                }
-                return dateTime.toLocaleString(DateTime.DATETIME_MED);
-              }}
-              inline
-              className={classes.timestamp}
-            >
-              {post.created_at}
-            </Time>
-          )}
-          {post.visibility === "public" && (
-            <Tooltip
-              label="this post is publicly visible"
-              events={{ hover: true, focus: true, touch: true }}
-              position="top-end"
-              arrowOffset={16}
-            >
-              <Box>
+            <Group gap={6} style={{ flexGrow: 1 }}>
+              {!post.emoji && (
                 <Box
-                  component={PublicIcon}
+                  component={POST_TYPE_TO_ICON[post.type]}
                   fz={10.5}
-                  c="primary"
+                  c="dimmed"
                   display="block"
                 />
-              </Box>
-            </Tooltip>
-          )}
-          {post.visibility === "only_me" && (
-            <Tooltip
-              label="this post is visible only to you"
-              events={{ hover: true, focus: true, touch: true }}
-              position="top-end"
-              arrowOffset={16}
-            >
-              <Box>
-                <Box
-                  component={LockIcon}
-                  fz={10.5}
-                  c="primary"
-                  display="block"
-                />
-              </Box>
-            </Tooltip>
-          )}
-        </Group>
-      </Card.Section>
-      <Card.Section
-        className={classes.contentSection}
-        inheritPadding
-        mod={{ "blur-content": blurContent }}
-      >
-        <Stack gap={6}>
-          {!!post.title && (
-            <Title order={3} size="h4">
-              {post.title}
-            </Title>
-          )}
-          <TypographyStylesProvider>
-            <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-          </TypographyStylesProvider>
-          {post.image && <PostImage image={post.image} />}
-          {post.quoted_post && (
-            <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
-          )}
-        </Stack>
-        {blurContent && (
-          <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
-            <Stack align="center" justify="center" gap={6} h="100%">
-              <Alert
-                variant="outline"
-                color="gray"
-                icon={<LockIcon />}
-                title="visible only to invited friends"
-                className={classes.restrictedAlert}
-              />
-              {isAdmin && (
-                <Anchor
-                  component="button"
-                  c="accent"
-                  size="xs"
-                  fw={600}
-                  onClick={() => {
-                    setBlurContent(false);
-                  }}
-                >
-                  view as admin
-                </Anchor>
               )}
-            </Stack>
-          </Overlay>
-        )}
-      </Card.Section>
-      <Card.Section
-        inheritPadding
-        pt="xs"
-        py="sm"
-        className={classes.footerSection}
-      >
-        {actions}
-      </Card.Section>
-    </Card>
+              <Text size="xs" ff="heading" fw={600} c="dimmed">
+                {POST_TYPE_TO_LABEL[post.type]}
+              </Text>
+            </Group>
+            {pinnedUntil ? (
+              <Box className={classes.timestamp} mod={{ pinned: true }}>
+                {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
+                <Time format={DateTime.DATE_MED} inline inherit>
+                  {pinnedUntil}
+                </Time>
+              </Box>
+            ) : (
+              <Time
+                format={dateTime => {
+                  if (dateTime.hasSame(DateTime.now(), "day")) {
+                    return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
+                  }
+                  return dateTime.toLocaleString(DateTime.DATETIME_MED);
+                }}
+                inline
+                className={classes.timestamp}
+              >
+                {post.created_at}
+              </Time>
+            )}
+            {post.visibility === "public" && (
+              <Tooltip
+                label="this post is publicly visible"
+                events={{ hover: true, focus: true, touch: true }}
+                position="top-end"
+                arrowOffset={16}
+              >
+                <Box>
+                  <Box
+                    component={PublicIcon}
+                    fz={10.5}
+                    c="primary"
+                    display="block"
+                  />
+                </Box>
+              </Tooltip>
+            )}
+            {post.visibility === "only_me" && (
+              <Tooltip
+                label="this post is visible only to you"
+                events={{ hover: true, focus: true, touch: true }}
+                position="top-end"
+                arrowOffset={16}
+              >
+                <Box>
+                  <Box
+                    component={LockIcon}
+                    fz={10.5}
+                    c="primary"
+                    display="block"
+                  />
+                </Box>
+              </Tooltip>
+            )}
+          </Group>
+        </Card.Section>
+        <Card.Section
+          className={classes.contentSection}
+          inheritPadding
+          mod={{ "blur-content": blurContent }}
+        >
+          <Stack gap={6}>
+            {!!post.title && (
+              <Title order={3} size="h4">
+                {post.title}
+              </Title>
+            )}
+            <TypographyStylesProvider>
+              <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
+            </TypographyStylesProvider>
+            {post.image && <PostImage image={post.image} />}
+            {post.quoted_post && (
+              <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
+            )}
+          </Stack>
+          {blurContent && (
+            <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
+              <Stack align="center" justify="center" gap={6} h="100%">
+                <Alert
+                  variant="outline"
+                  color="gray"
+                  icon={<LockIcon />}
+                  title="visible only to invited friends"
+                  className={classes.restrictedAlert}
+                />
+                {isAdmin && (
+                  <Anchor
+                    component="button"
+                    c="accent"
+                    size="xs"
+                    fw={600}
+                    onClick={() => {
+                      setBlurContent(false);
+                    }}
+                  >
+                    view as admin
+                  </Anchor>
+                )}
+              </Stack>
+            </Overlay>
+          )}
+        </Card.Section>
+        <Card.Section
+          inheritPadding
+          pt="xs"
+          py="sm"
+          className={classes.footerSection}
+        >
+          {actions}
+        </Card.Section>
+      </Card>
+      {!!reactions && !isEmpty(reactions) && (
+        <Group className={classes.reactionsGroup} gap={4}>
+          {reactions.map(reaction => {
+            const rotationDegrees =
+              (uuidToNumberBitwise(reaction.id) %
+                (REACTION_ROTATION_RANGE_DEGREES * 2)) -
+              REACTION_ROTATION_RANGE_DEGREES;
+            return (
+              <Box
+                key={reaction.id}
+                className={classes.reaction}
+                style={{
+                  "--reaction-rotation": `rotate(${rotationDegrees}deg)`,
+                  animationDelay: `${uuidToNumberBitwise(reaction.id) % 6000}ms`,
+                }}
+              >
+                {reaction.emoji}
+              </Box>
+            );
+          })}
+        </Group>
+      )}
+    </Box>
   );
 };
 
@@ -294,4 +339,15 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
       />
     </Box>
   );
+};
+
+const uuidToNumberBitwise = (uuid: string): number => {
+  const hexString = uuid.replace(/-/g, "");
+  let number = 0;
+  for (const char of hexString) {
+    const hexDigit = parseInt(char, 16);
+    number = (number << 4) | hexDigit; // shift and add the 4 bits
+    number = number & 0xffffffff; // keep it within a 32-bit range
+  }
+  return Math.abs(number);
 };

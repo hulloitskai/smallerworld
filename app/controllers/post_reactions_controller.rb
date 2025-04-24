@@ -11,6 +11,7 @@ class PostReactionsController < ApplicationController
     post_id = T.let(params.fetch(:post_id), String)
     post = Post.find(post_id)
     reactions = authorized_scope(post.reactions)
+    reactions = reactions.chronological
     render(json: { reactions: PostReactionSerializer.many(reactions) })
   end
 

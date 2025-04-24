@@ -47,10 +47,6 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
     },
   );
   const { reactions } = data ?? {};
-  const reactionsByEmoji = useMemo(
-    () => groupBy(reactions, "emoji"),
-    [reactions],
-  );
 
   // == Reply via msg
   const [messagingPlatformSelectorOpened, setMessagingPlatformSelectorOpened] =
@@ -71,23 +67,11 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   }, [replyPhoneNumber, post.reply_snippet, preferredMessagingPlatform]);
 
   return (
-    <Group {...{ ref }} align="start" gap={2}>
-      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
-        {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
-          <ReactionButton
-            key={emoji}
-            postId={post.id}
-            {...{ emoji, reactions }}
-          />
-        ))}
-      </Group>
+    <Group {...{ ref }} align="end" justify="space-between" gap={2}>
       <NewReactionButton
         postId={post.id}
         hasExistingReactions={!isEmpty(reactions)}
       />
-      <Text inline fz="lg" className={postCardClasses.divider}>
-        /
-      </Text>
       <Popover
         width={265}
         shadow="md"
