@@ -50,6 +50,7 @@ class UsersController < ApplicationController
       else
         user_manifest_icons(user)
       end
+    subdomain_options = Rails.env.production? ? { subdomain: user.handle } : {}
     render(
       json: {
         name: "#{user.name}'s world",
@@ -57,7 +58,11 @@ class UsersController < ApplicationController
         description: "life updates, personal invitations, poems, and more!",
         icons:,
         display: "standalone",
-        start_url: user_path(user, friend_token: current_friend.access_token),
+        start_url: user_url(
+          user,
+          friend_token: current_friend.access_token,
+          **subdomain_options,
+        ),
       },
       content_type: "application/manifest+json",
     )
