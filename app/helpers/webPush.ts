@@ -97,12 +97,12 @@ export const useLookupPushRegistration = ({
 };
 
 export interface WebPushSubscribeOptions {
-  subscription: PushSubscription | null | undefined;
+  currentSubscription: PushSubscription | null | undefined;
   onSubscribed: (subscription: PushSubscription) => void;
 }
 
 export const useWebPushSubscribe = ({
-  subscription,
+  currentSubscription,
   onSubscribed,
 }: WebPushSubscribeOptions): [
   () => Promise<void>,
@@ -113,54 +113,49 @@ export const useWebPushSubscribe = ({
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
   const subscribe = (): Promise<void> => {
     const subscribeAndRegister = async (): Promise<void> => {
-      const [pushManager, publicKey, deviceId, visitorIdentity] =
-        await Promise.all([
-          getPushManager(),
-          fetchPublicKey(),
-          fetchDeviceId(),
-          identifyVisitor(),
-          subscription?.unsubscribe(),
-        ]);
       try {
+        const [pushManager, publicKey, deviceId, visitorIdentity] =
+          await Promise.all([
+            getPushManager(),
+            fetchPublicKey(),
+            fetchDeviceId(),
+            identifyVisitor(),
+            currentSubscription?.unsubscribe(),
+          ]);
         const subscription = await pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: createApplicationServerKey(publicKey),
         });
-        try {
-          await registerSubscription({
-            subscription,
-            deviceId,
-            deviceFingerprint: visitorIdentity.visitorId,
-            deviceFingerprintConfidence: visitorIdentity.confidence.score,
-            friendAccessToken: currentFriend?.access_token,
-          });
-          onSubscribed(subscription);
-        } catch (error) {
-          if (error instanceof Error) {
-            setSubscribeError(error);
-            reportProblem(error.message);
-          }
-        }
+        await registerSubscription({
+          subscription,
+          deviceId,
+          deviceFingerprint: visitorIdentity.visitorId,
+          deviceFingerprintConfidence: visitorIdentity.confidence.score,
+          friendAccessToken: currentFriend?.access_token,
+        });
+        onSubscribed(subscription);
       } catch (error) {
         if (error instanceof Error) {
           setSubscribeError(error);
           reportProblem(error.message);
         }
-      } finally {
-        setSubscribing(false);
       }
     };
     setSubscribing(true);
     if (Notification.permission === "granted") {
-      return subscribeAndRegister();
-    } else {
-      return Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          return subscribeAndRegister();
-        } else {
-          setSubscribing(false);
-        }
+      return subscribeAndRegister().finally(() => {
+        setSubscribing(false);
       });
+    } else {
+      return Notification.requestPermission()
+        .then(async permission => {
+          if (permission === "granted") {
+            await subscribeAndRegister();
+          }
+        })
+        .finally(() => {
+          setSubscribing(false);
+        });
     }
   };
   return [subscribe, { subscribing, subscribeError }];
