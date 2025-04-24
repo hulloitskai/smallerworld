@@ -20,10 +20,7 @@ class PostReactionsController < ApplicationController
     post_id = T.let(params.fetch(:post_id), String)
     post = Post.find(post_id)
     reaction_params = params.expect(reaction: [:emoji])
-    reaction = post.reactions.build(
-      friend: current_friend,
-      **reaction_params,
-    )
+    reaction = post.reactions.build(friend: current_friend, **reaction_params)
     if reaction.save
       render(
         json: { reaction: PostReactionSerializer.one(reaction) },
