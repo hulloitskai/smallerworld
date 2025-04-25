@@ -6,7 +6,6 @@ import logoSrc from "~/assets/images/logo.png";
 import demoVideoSrc from "~/assets/videos/demo.mp4";
 
 import AppLayout from "~/components/AppLayout";
-import { useContact } from "~/helpers/contact";
 
 import classes from "./LandingPage.module.css";
 
@@ -118,7 +117,16 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           </List>
         </Stack>
       </Card>
-      <IWantThisButton />
+      <Button
+        component={Link}
+        href={routes.world.show.path()}
+        leftSection="😍"
+        size="lg"
+        radius="xl"
+        styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
+      >
+        wtf? i want this!
+      </Button>
     </Stack>
   );
 };
@@ -130,26 +138,6 @@ LandingPage.layout = page => (
 );
 
 export default LandingPage;
-
-const IWantThisButton: FC = () => {
-  const [contact] = useContact({
-    type: "sms",
-    body: "hey i think this smaller world thing is dope. i want to be a beta user! my name is: ",
-  });
-  return (
-    <Button
-      leftSection="😍"
-      size="lg"
-      radius="xl"
-      styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
-      onClick={() => {
-        void contact();
-      }}
-    >
-      wtf? i want this!
-    </Button>
-  );
-};
 
 const Emph: FC<PropsWithChildren> = ({ children }) => (
   <span className={classes.emphasis}>{children}</span>
