@@ -60,14 +60,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
           />
         ) : (
           <Box>
-            <ScrollArea
-              viewportProps={{
-                style: {
-                  paddingTop: rem(6),
-                  paddingBottom: "var(--mantine-spacing-sm)",
-                },
-              }}
-            >
+            <ScrollArea className={classes.scrollArea}>
               <Group align="start" justify="center">
                 {worlds
                   ? worlds.map(world => (
@@ -137,7 +130,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
       {isStandalone === false && <UniversePageInstallAlert />}
       {isStandalone && registration === null && (
         <>
-          <Overlay backgroundOpacity={0} blur={3}>
+          <Overlay backgroundOpacity={0} blur={3} pos="fixed">
             <SingleDayFontHead />
             <Stack align="center" justify="center" pos="absolute" inset={0}>
               <UniversePageNotificationsButton />

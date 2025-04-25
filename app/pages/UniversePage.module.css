@@ -65,3 +65,15 @@
     color: var(--mantine-color-white);
   }
 }
+
+.scrollArea {
+  :global(.mantine-ScrollArea-viewport) {
+    padding-top: rem(6);
+    padding-bottom: var(--mantine-spacing-sm);
+    padding-inline: rem(8);
+
+    @larger-than $mantine-breakpoint-xs {
+      padding-inline: var(--mantine-spacing-md);
+    }
+  }
+}
