@@ -17,7 +17,6 @@ class PushSubscriptionsController < ApplicationController
 
   # POST /push_subscriptions
   def create
-    authorize!(with: PushSubscriptionPolicy)
     owner = current_friend || current_user
     subscription_params = params.expect(push_subscription: %i[
       endpoint
