@@ -292,12 +292,10 @@ const fetchDeviceId = async (): Promise<string> => {
 };
 
 const RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER =
-  DateTime.fromObject({
-    year: 2025,
-    month: 4,
-    day: 16,
-    hour: 12,
-  });
+  DateTime.fromObject(
+    { year: 2025, month: 4, day: 24, hour: 20 },
+    { zone: "America/Toronto" },
+  );
 
 export const useResetPushSubscriptionOnIOS = (): void => {
   const browserDetection = useBrowserDetection();
