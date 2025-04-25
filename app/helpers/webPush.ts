@@ -1,3 +1,4 @@
+import { type GetResult } from "@fingerprintjs/fingerprintjs";
 import { createContext, useContext } from "react";
 
 import { type PushRegistration } from "~/types";
@@ -113,33 +114,42 @@ export const useWebPushSubscribe = ({
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
   const subscribe = (): Promise<void> => {
     const subscribeAndRegister = async (): Promise<void> => {
+      let deviceId: string | undefined;
+      let visitorIdentity: GetResult | undefined;
+      let subscription: PushSubscription | undefined;
       try {
-        const [pushManager, publicKey, deviceId, visitorIdentity] =
-          await Promise.all([
+        let pushManager: PushManager | undefined;
+        let publicKey: string | undefined;
+        [pushManager, publicKey, deviceId, visitorIdentity] = await Promise.all(
+          [
             getPushManager(),
             fetchPublicKey(),
             fetchDeviceId(),
             identifyVisitor(),
             currentSubscription?.unsubscribe(),
-          ]);
-        const subscription = await pushManager.subscribe({
+          ],
+        );
+        subscription = await pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: createApplicationServerKey(publicKey),
         });
-        await registerSubscription({
-          subscription,
-          deviceId,
-          deviceFingerprint: visitorIdentity.visitorId,
-          deviceFingerprintConfidence: visitorIdentity.confidence.score,
-          friendAccessToken: currentFriend?.access_token,
-        });
-        onSubscribed(subscription);
       } catch (error) {
         if (error instanceof Error) {
           setSubscribeError(error);
           reportProblem(error.message);
         }
       }
+      if (!(deviceId && visitorIdentity && subscription)) {
+        return;
+      }
+      await registerSubscription({
+        subscription,
+        deviceId,
+        deviceFingerprint: visitorIdentity.visitorId,
+        deviceFingerprintConfidence: visitorIdentity.confidence.score,
+        friendAccessToken: currentFriend?.access_token,
+      });
+      onSubscribed(subscription);
     };
     setSubscribing(true);
     if (Notification.permission === "granted") {
