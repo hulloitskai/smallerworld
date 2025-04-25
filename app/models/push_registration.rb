@@ -9,11 +9,11 @@
 #  id                            :uuid             not null, primary key
 #  device_fingerprint            :string           not null
 #  device_fingerprint_confidence :float(24)        not null
-#  owner_type                    :string           not null
+#  owner_type                    :string
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #  device_id                     :uuid             not null
-#  owner_id                      :uuid             not null
+#  owner_id                      :uuid
 #  push_subscription_id          :uuid             not null
 #
 # Indexes
@@ -31,7 +31,7 @@
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PushRegistration < ApplicationRecord
   # == Associations
-  belongs_to :owner, polymorphic: true
+  belongs_to :owner, polymorphic: true, optional: true
   belongs_to :push_subscription, inverse_of: :registrations
 
   sig { returns(PushSubscription) }

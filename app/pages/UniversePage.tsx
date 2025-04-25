@@ -1,7 +1,22 @@
-import { type BoxProps, Image, Indicator, Text } from "@mantine/core";
+import {
+  type BoxProps,
+  Image,
+  Indicator,
+  Overlay,
+  RemoveScroll,
+  ScrollArea,
+  Text,
+} from "@mantine/core";
+
+import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
+import SingleDayFontHead from "~/components/SingleDayFontHead";
+import UniversePageFeed from "~/components/UniversePageFeed";
+import UniversePageInstallAlert from "~/components/UniversePageInstallAlert";
+import UniversePageNotificationsButton from "~/components/UniversePageNotificationsButton";
 import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { useWebPush } from "~/helpers/webPush";
 import { type User, type World } from "~/types";
 
 import classes from "./UniversePage.module.css";
@@ -11,7 +26,9 @@ export interface UniversePageProps extends SharedPageProps {}
 const ICON_SIZE = 80;
 
 const UniversePage: PageComponent<UniversePageProps> = () => {
+  const isStandalone = useIsStandalone();
   const currentUser = useCurrentUser();
+  const { registration } = useWebPush();
   useUserTheme("aquatica");
 
   // == Load worlds
@@ -28,66 +45,127 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
     }
   }, [data]);
 
-  return (
-    <Stack gap="xl">
-      <Title size="h2" className={classes.pageTitle}>
-        💫 smaller universe
-      </Title>
-      <Stack>
-        <Group align="start" justify="center" wrap="wrap">
-          {worlds ? (
-            isEmpty(worlds) ? (
-              <EmptyCard
-                itemLabel="worlds"
-                w="100%"
-                maw="var(--container-size-xs)"
-              />
-            ) : (
-              worlds.map(world => (
-                <Anchor
-                  className={classes.worldAnchor}
-                  key={world.user_id}
-                  component={Link}
-                  href={routes.users.show.path({
-                    handle: world.user_handle,
-                    query: {
-                      ...(!!world.associated_friend_access_token && {
-                        friend_token: world.associated_friend_access_token,
-                      }),
-                    },
-                  })}
-                  mod={{ joined: isJoinedWorld(world, currentUser) }}
-                >
-                  <Stack align="center" gap={8} w="min-content">
-                    <WorldIcon {...{ world }} mx="sm" />
-                    <Text ff="heading" size="sm" fw={600} ta="center">
-                      {possessive(world.user_name)} world
-                    </Text>
-                  </Stack>
-                </Anchor>
-              ))
-            )
-          ) : (
-            [...new Array(6)].map((_, i) => (
-              <Skeleton
-                key={i}
-                w={ICON_SIZE}
-                h={ICON_SIZE}
-                radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-              />
-            ))
-          )}
-        </Group>
-        <Text size="xs" c="dimmed" ta="center" mb="xl">
-          (newly posted worlds shown first)
-        </Text>
+  const body = (
+    <Stack gap="xl" py="md">
+      <Stack gap="lg">
+        <Title size="h2" className={classes.pageTitle} mx="md">
+          💫 smaller universe
+        </Title>
+        {worlds && isEmpty(worlds) ? (
+          <EmptyCard
+            itemLabel="worlds"
+            w="100%"
+            maw="var(--container-size-xs)"
+            mx="md"
+          />
+        ) : (
+          <Box>
+            <ScrollArea
+              viewportProps={{
+                style: {
+                  paddingTop: rem(6),
+                  paddingBottom: "var(--mantine-spacing-sm)",
+                },
+              }}
+            >
+              <Group align="start" justify="center">
+                {worlds
+                  ? worlds.map(world => (
+                      <Anchor
+                        className={classes.worldAnchor}
+                        key={world.user_id}
+                        component={Link}
+                        href={routes.users.show.path({
+                          handle: world.user_handle,
+                          query: {
+                            ...(!!world.associated_friend_access_token && {
+                              friend_token:
+                                world.associated_friend_access_token,
+                            }),
+                          },
+                        })}
+                        mod={{ joined: isJoinedWorld(world, currentUser) }}
+                      >
+                        <Stack align="center" gap={8} w="min-content">
+                          <WorldIcon {...{ world }} mx="sm" />
+                          <Text ff="heading" size="sm" fw={600} ta="center">
+                            {possessive(world.user_name)} world
+                          </Text>
+                        </Stack>
+                      </Anchor>
+                    ))
+                  : [...new Array(6)].map((_, i) => (
+                      <Skeleton
+                        key={i}
+                        w={ICON_SIZE}
+                        h={ICON_SIZE}
+                        radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+                      />
+                    ))}
+              </Group>
+            </ScrollArea>
+            {!!worlds && (
+              <Text size="xs" c="dimmed" ta="center">
+                (newly posted worlds shown first)
+              </Text>
+            )}
+          </Box>
+        )}
       </Stack>
+      <Container size="xs" w="100%">
+        <Divider
+          label={
+            <>
+              <span className={classes.dividerText}>
+                smaller happenings around the universe
+              </span>{" "}
+              ⤵️
+            </>
+          }
+        />
+      </Container>
+      <Container size="xs" w="100%">
+        <UniversePageFeed />
+      </Container>
     </Stack>
+  );
+  return (
+    <>
+      <RemoveScroll enabled={isStandalone && !registration}>
+        {body}
+      </RemoveScroll>
+      {isStandalone === false && <UniversePageInstallAlert />}
+      {isStandalone && registration === null && (
+        <>
+          <Overlay backgroundOpacity={0} blur={3}>
+            <SingleDayFontHead />
+            <Stack align="center" justify="center" pos="absolute" inset={0}>
+              <UniversePageNotificationsButton />
+              <Group justify="center" align="end" gap="xs">
+                <Text className={classes.notificationsRequiredIndicatorText}>
+                  pretty&nbsp;please? 👉&#8288;👈
+                </Text>
+                <Image
+                  src={swirlyUpArrowSrc}
+                  className={classes.notificationsRequiredIndicatorArrow}
+                />
+              </Group>
+            </Stack>
+          </Overlay>
+        </>
+      )}
+    </>
   );
 };
 
 UniversePage.layout = page => (
-  <AppLayout<UniversePageProps> title="smaller universe">{page}</AppLayout>
+  <AppLayout<UniversePageProps>
+    title="smaller universe"
+    manifestUrl={routes.universe.manifest.path()}
+    padding={0}
+  >
+    {page}
+  </AppLayout>
 );
 
 export default UniversePage;

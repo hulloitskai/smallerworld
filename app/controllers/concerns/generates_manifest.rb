@@ -9,7 +9,7 @@ module GeneratesManifest
   requires_ancestor { ActionController::Base }
 
   # == Constants
-  GENERIC_MANIFEST_ICON_PREFIX = "web-app-manifest"
+  BRAND_MANIFEST_ICON_PREFIX = "web-app-manifest"
 
   private
 
@@ -53,10 +53,10 @@ module GeneratesManifest
   end
 
   sig { returns(T::Array[T.untyped]) }
-  def generic_manifest_icons
+  def brand_manifest_icons
     [192, 512].map do |size|
       {
-        src: "/#{GENERIC_MANIFEST_ICON_PREFIX}-#{size}x#{size}.png",
+        src: "/#{BRAND_MANIFEST_ICON_PREFIX}-#{size}x#{size}.png",
         sizes: "#{size}x#{size}",
         type: "image/png",
         purpose: "any",

@@ -35,3 +35,33 @@
     z-index: 99;
   }
 }
+
+.dividerText {
+  margin-right: 6px;
+
+  @mixin dark {
+    color: alpha(var(--mantine-color-white), 0.8);
+  }
+}
+
+.notificationsRequiredIndicatorArrow {
+  width: 80px;
+
+  @mixin light {
+    filter: invert(1);
+  }
+}
+
+.notificationsRequiredIndicatorText {
+  font-family: "Single Day", Manrope, cursive;
+  font-size: 24px;
+  line-height: 1.1;
+  max-width: 120px;
+  text-align: right;
+  position: relative;
+  top: 8px;
+
+  @mixin dark {
+    color: var(--mantine-color-white);
+  }
+}

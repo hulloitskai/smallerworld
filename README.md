@@ -51,6 +51,7 @@ bin/setup
 - [x] allow you to change icon of your smaller world as friend before you save
       it
 - [-] some android devices don't open app from notification
+- [ ] emoji picker search sucks
 - [ ] suggestion to open world on mobile with qr code
 - [ ] make it easy to add friends from onboarding tutorial
 - [ ] show arrow to show where the create a post button lives (⬇️)

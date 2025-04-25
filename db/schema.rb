@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_22_194540) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_25_194604) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -233,8 +233,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_22_194540) do
   end
 
   create_table "push_registrations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "owner_type", null: false
-    t.uuid "owner_id", null: false
+    t.string "owner_type"
+    t.uuid "owner_id"
     t.uuid "push_subscription_id", null: false
     t.datetime "created_at", precision: nil, null: false
     t.uuid "device_id", null: false

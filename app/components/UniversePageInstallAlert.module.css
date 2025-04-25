@@ -1,0 +1,27 @@
+.affix {
+  --affix-inset: var(--mantine-spacing-md);
+  --affix-left: var(--affix-inset);
+  --affix-right: var(--affix-inset);
+  --affix-bottom: calc(var(--affix-inset) + var(--safe-area-inset-bottom, 0px));
+}
+
+.alert {
+  box-shadow: var(--mantine-shadow-md);
+  max-width: var(--modal-size-md);
+  margin-inline: auto;
+
+  :global(.mantine-Alert-icon) {
+    margin-right: 8px;
+  }
+}
+
+.button {
+  flex-shrink: 0;
+  margin-bottom: 1px;
+
+  :global(.mantine-Button-section) {
+    &[data-position="left"] {
+      margin-right: rem(6);
+    }
+  }
+}

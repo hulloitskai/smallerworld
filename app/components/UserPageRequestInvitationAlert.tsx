@@ -11,6 +11,7 @@ import RequestInvitationDrawerModal from "./RequestInvitationDrawerModal";
 import classes from "./UserPageRequestInvitationAlert.module.css";
 
 export interface UserPageRequestInvitationAlertProps {}
+
 export const UserPageRequestInvitationAlert: FC<
   UserPageRequestInvitationAlertProps
 > = () => {

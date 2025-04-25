@@ -1,8 +1,6 @@
 import bricolageGrotesqueSrc from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import manropeWoff2Src from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
-import { useDocumentVisibility } from "@mantine/hooks";
 
-const APP_META_SITE_TYPE = "website";
 const APP_META_SITE_NAME = "smaller world";
 const APP_META_SITE_DESCRIPTION = "a smaller world for you and your friends :)";
 const APP_META_SITE_IMAGE = "/banner.png";
@@ -25,8 +23,6 @@ const AppMeta: FC<AppMetaProps> = ({
   title: titleProp,
   manifestUrl,
 }) => {
-  const isStandalone = useIsStandalone();
-  const pageVisibility = useDocumentVisibility();
   const pageTitle = useMemo<string>(() => {
     const components = Array.isArray(titleProp) ? titleProp : [titleProp];
     return components
@@ -42,21 +38,10 @@ const AppMeta: FC<AppMetaProps> = ({
     [pageTitle, siteName],
   );
   const tabTitle = useMemo<string>(() => {
-    let title = pageTitle;
-    if (
-      pageVisibility === "hidden" &&
-      !title &&
-      siteName === APP_META_SITE_NAME
-    ) {
-      title = "🥺 come back";
-    }
-    if (isStandalone) {
-      return title;
-    }
-    return [title, siteName]
+    return [pageTitle, siteName]
       .filter(component => !!component)
       .join(` ${APP_META_TITLE_SEPARATOR} `);
-  }, [pageTitle, pageVisibility, siteName, isStandalone]);
+  }, [pageTitle, siteName]);
 
   return (
     <Head>
@@ -73,7 +58,7 @@ const AppMeta: FC<AppMetaProps> = ({
         />
       )}
       <meta property="og:site_name" content={siteName} />
-      <meta property="og:type" content={APP_META_SITE_TYPE} />
+      <meta property="og:type" content="website" />
       {!!pageTitle && <meta property="og:title" content={pageTitle} />}
       {!!description && (
         <meta property="og:description" content={description} />

@@ -93,6 +93,17 @@ Rails.application.routes.draw do
   # == Friend notification settings
   resource :friend_notification_settings, only: %i[show update], export: true
 
+  # == Posts
+  resources :posts, only: %i[index create update destroy], export: true do
+    collection do
+      get :pinned
+    end
+    member do
+      get :stats
+      post :mark_as_replied
+    end
+  end
+
   # == Users
   resources :users, only: [], export: true do
     # collection do
@@ -107,17 +118,6 @@ Rails.application.routes.draw do
   get "/@:handle/manifest.webmanifest" => "users#manifest",
       constraints: { format: "" },
       export: true
-
-  # == Posts
-  resources :posts, only: %i[index create update destroy], export: true do
-    collection do
-      get :pinned
-    end
-    member do
-      get :stats
-      post :mark_as_replied
-    end
-  end
   resources(
     :user_posts,
     path: "/users/:user_id/posts",
@@ -142,7 +142,9 @@ Rails.application.routes.draw do
   # == Universe
   resource :universe, only: :show, export: { namespace: "universe" } do
     get :worlds
+    get "manifest.webmanifest" => :manifest, constraints: { format: "" }
   end
+  resources :universe_posts, path: "/universe/posts", only: :index, export: true
 
   # == Pages
   root "landing#show", export: true

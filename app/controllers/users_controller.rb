@@ -46,7 +46,7 @@ class UsersController < ApplicationController
     user = find_user
     icons =
       if params[:icon_type] == "generic"
-        generic_manifest_icons
+        brand_manifest_icons
       else
         user_manifest_icons(user)
       end

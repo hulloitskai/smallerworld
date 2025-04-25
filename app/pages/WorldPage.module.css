@@ -42,6 +42,10 @@
   text-align: right;
   position: relative;
   top: 8px;
+
+  @mixin dark {
+    color: var(--mantine-color-white);
+  }
 }
 
 .menuButton {

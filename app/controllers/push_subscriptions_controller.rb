@@ -2,9 +2,6 @@
 # frozen_string_literal: true
 
 class PushSubscriptionsController < ApplicationController
-  # == Filters
-  before_action :require_authentication!, only: :create
-
   # == Actions
   # POST /push_subscriptions/lookup
   def lookup

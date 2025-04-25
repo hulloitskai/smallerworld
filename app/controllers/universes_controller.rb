@@ -2,6 +2,8 @@
 # frozen_string_literal: true
 
 class UniversesController < ApplicationController
+  include GeneratesManifest
+
   # == Actions
   # GET /universe
   def show
@@ -39,6 +41,22 @@ class UniversesController < ApplicationController
       "joinedWorlds" => WorldSerializer.many(joined_worlds),
       "otherWorlds" => WorldSerializer.many(other_worlds),
     })
+  end
+
+  # GET /universe/manifest.webmanifest
+  def manifest
+    render(
+      json: {
+        name: "smaller universe",
+        short_name: "smaller universe",
+        description: "happenings from all over the smaller universe!",
+        icons: brand_manifest_icons,
+        display: "standalone",
+        start_url: universe_path,
+        scope: universe_path,
+      },
+      content_type: "application/manifest+json",
+    )
   end
 
   private
