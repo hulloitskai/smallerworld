@@ -47,24 +47,6 @@ class PushRegistration < ApplicationRecord
   after_create :create_friend_notification!
 
   # == Methods
-  sig { returns(T.all(ActiveRecord::Base, Notifiable)) }
-  def owner
-    super
-  end
-
-  sig do
-    type_parameters(:U)
-      .params(value: T.all(
-        T.type_parameter(:U),
-        ActiveRecord::Base,
-        Notifiable,
-      ))
-      .returns(T.type_parameter(:U))
-  end
-  def owner=(value)
-    super
-  end
-
   sig { params(notification: Notification).void }
   def push(notification)
     badge_count = notification.recipient

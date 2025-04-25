@@ -44,6 +44,12 @@
   }
 }
 
+.dividerEmoji {
+  @mixin dark-user-theme {
+    color: var(--mantine-color-white);
+  }
+}
+
 .notificationsRequiredIndicatorArrow {
   width: 80px;
 

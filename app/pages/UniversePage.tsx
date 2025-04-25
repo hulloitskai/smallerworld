@@ -112,7 +112,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
               <span className={classes.dividerText}>
                 smaller happenings around the universe
               </span>{" "}
-              ⤵️
+              <span className={classes.dividerEmoji}>⤵️</span>
             </>
           }
         />
