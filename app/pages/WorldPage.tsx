@@ -23,10 +23,10 @@ import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPageInstallationInstructionsModal";
 import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
-import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPrompt } from "~/helpers/pwa/install";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useResetPushSubscriptionOnIOS, useWebPush } from "~/helpers/webPush";
 import { type FriendInfo, type User } from "~/types";
 
@@ -112,7 +112,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             w={ICON_SIZE}
             h={ICON_SIZE}
             fit="cover"
-            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+            radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
             style={{
               alignSelf: "center",
               flex: "unset",

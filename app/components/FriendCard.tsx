@@ -3,7 +3,7 @@ import { openConfirmModal } from "@mantine/modals";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
-import { type FriendView, type User } from "~/types";
+import { type User, type WorldFriend } from "~/types";
 
 import EditFriendForm from "./EditFriendForm";
 
@@ -11,7 +11,7 @@ import classes from "./FriendCard.module.css";
 
 export interface FriendCardProps {
   currentUser: User;
-  friend: FriendView;
+  friend: WorldFriend;
 }
 
 const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {

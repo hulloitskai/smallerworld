@@ -8,8 +8,9 @@ import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
-import { APPLE_ICON_RADIUS_RATIO, CANONICAL_DOMAIN } from "~/helpers/app";
+import { CANONICAL_DOMAIN } from "~/helpers/app";
 import { useTimeZone } from "~/helpers/time";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type Image, type Upload, type UserTheme } from "~/types";
 
 export interface RegistrationPageProps extends SharedPageProps {}
@@ -147,7 +148,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 center
                 h={ICON_IMAGE_INPUT_SIZE}
                 w={ICON_IMAGE_INPUT_SIZE}
-                radius={ICON_IMAGE_INPUT_SIZE / APPLE_ICON_RADIUS_RATIO}
+                radius={ICON_IMAGE_INPUT_SIZE / USER_ICON_RADIUS_RATIO}
                 required
                 withAsterisk={false}
                 onPreviewChange={setPageIconPreview}

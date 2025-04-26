@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import homeScreenSrc from "~/assets/images/home-screen.png";
 
-import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 
 import SingleDayFontHead from "./SingleDayFontHead";
 
@@ -31,7 +31,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
         pos="relative"
         style={{
           "--hp-radius": getRadius(radius),
-          "--hp-icon-radius-ratio": APPLE_ICON_RADIUS_RATIO,
+          "--hp-icon-radius-ratio": USER_ICON_RADIUS_RATIO,
         }}
         {...otherProps}
       >

@@ -35,13 +35,13 @@ class UserPostsController < ApplicationController
         [reply_receipt.post_id, repliers]
       end
       .to_h
-    post_views = paginated_posts.map do |post|
+    user_posts = paginated_posts.map do |post|
       replied = replied_post_ids&.include?(post.id)
       repliers = repliers_by_post_id.fetch(post.id, 0)
-      PostView.new(post:, replied:, repliers:)
+      UserPost.new(post:, replied:, repliers:)
     end
     render(json: {
-      posts: PostViewSerializer.many(post_views),
+      posts: UserPostSerializer.many(user_posts),
       pagination: {
         next: pagy.next,
       },
@@ -80,11 +80,11 @@ class UserPostsController < ApplicationController
         [reply_receipt.post_id, repliers]
       end
       .to_h
-    post_views = posts.map do |post|
+    user_posts = posts.map do |post|
       replied = replied_post_ids&.include?(post.id)
       repliers = repliers_by_post_id.fetch(post.id, 0)
-      PostView.new(post:, replied:, repliers:)
+      UserPost.new(post:, replied:, repliers:)
     end
-    render(json: { posts: PostViewSerializer.many(post_views) })
+    render(json: { posts: UserPostSerializer.many(user_posts) })
   end
 end

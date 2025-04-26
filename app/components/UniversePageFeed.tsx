@@ -1,10 +1,17 @@
+import { Image } from "@mantine/core";
+
 import { useUniversePosts } from "~/helpers/universe";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 import PublicPostCardActions from "./PublicPostCardActions";
 
+import classes from "./UniversePageFeed.module.css";
+
 export interface UniversePageFeedProps extends BoxProps {}
+
+const AUTHOR_ICON_SIZE = 26;
 
 const UniversePageFeed: FC<UniversePageFeedProps> = props => {
   const { post_id } = useQueryParams();
@@ -26,12 +33,32 @@ const UniversePageFeed: FC<UniversePageFeedProps> = props => {
         ) : (
           <>
             {posts.map(post => (
-              <PostCard
-                key={post.id}
-                {...{ post }}
-                focus={post_id === post.id}
-                actions={<PublicPostCardActions postId={post.id} />}
-              />
+              <Stack key={post.id} gap={6}>
+                <PostCard
+                  {...{ post }}
+                  focus={post_id === post.id}
+                  actions={<PublicPostCardActions postId={post.id} />}
+                />
+                <Button
+                  className={classes.authorButton}
+                  component={Link}
+                  href={routes.users.show.path({ handle: post.author.handle })}
+                  size="sm"
+                  variant="subtle"
+                  leftSection={
+                    <Image
+                      className={classes.authorImage}
+                      src={post.author.page_icon.src}
+                      srcSet={post.author.page_icon.srcset}
+                      w={AUTHOR_ICON_SIZE}
+                      h={AUTHOR_ICON_SIZE}
+                      radius={AUTHOR_ICON_SIZE / USER_ICON_RADIUS_RATIO}
+                    />
+                  }
+                >
+                  {possessive(post.author.name)} world
+                </Button>
+              </Stack>
             ))}
             {hasMorePosts && (
               <LoadMoreButton

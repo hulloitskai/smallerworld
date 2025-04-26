@@ -5,8 +5,6 @@
 }
 
 .pageIcon {
-  width: var(--size);
-  height: var(--size);
   align-self: center;
   object-fit: cover;
   flex: unset;

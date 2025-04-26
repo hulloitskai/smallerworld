@@ -2,7 +2,7 @@ import { Affix } from "@mantine/core";
 
 import { useUserPageDialogOpened } from "~/helpers/userPages";
 import { type UserPageProps } from "~/pages/UserPage";
-import { type PostView } from "~/types";
+import { type UserPost } from "~/types";
 
 import DrawerModal from "./DrawerModal";
 import FriendPostCardActions from "./FriendPostCardActions";
@@ -17,7 +17,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = () => {
   const currentFriend = useCurrentFriend();
 
   // == Load pinned posts
-  const { data } = useRouteSWR<{ posts: PostView[] }>(routes.userPosts.pinned, {
+  const { data } = useRouteSWR<{ posts: UserPost[] }>(routes.userPosts.pinned, {
     params: {
       user_id: user.id,
       ...(currentFriend && {

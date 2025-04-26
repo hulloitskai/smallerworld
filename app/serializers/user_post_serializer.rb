@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class PostViewSerializer < PostSerializer
+class UserPostSerializer < PostSerializer
   # == Configuration
   object_as :post
 

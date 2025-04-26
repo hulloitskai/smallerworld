@@ -15,7 +15,7 @@ import SingleDayFontHead from "~/components/SingleDayFontHead";
 import UniversePageFeed from "~/components/UniversePageFeed";
 import UniversePageInstallAlert from "~/components/UniversePageInstallAlert";
 import UniversePageNotificationsButton from "~/components/UniversePageNotificationsButton";
-import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
 import { type User, type World } from "~/types";
 
@@ -92,7 +92,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
                         key={i}
                         w={ICON_SIZE}
                         h={ICON_SIZE}
-                        radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+                        radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
                       />
                     ))}
               </Group>
@@ -201,7 +201,7 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
             srcSet={world.page_icon.srcset}
             w={ICON_SIZE}
             h={ICON_SIZE}
-            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
+            radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
           />
         </Tooltip>
       </Indicator>

@@ -18,8 +18,8 @@ import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
-import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useResetPushSubscriptionOnIOS, useWebPush } from "~/helpers/webPush";
 import { type Encouragement, type Friend, type User } from "~/types";
 
@@ -122,8 +122,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             className={classes.pageIcon}
             src={user.page_icon.src}
             srcSet={user.page_icon.srcset}
-            radius={ICON_SIZE / APPLE_ICON_RADIUS_RATIO}
-            style={{ "--size": rem(ICON_SIZE) }}
+            w={ICON_SIZE}
+            h={ICON_SIZE}
+            radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
           />
           <Stack gap={4}>
             <Title size="h2" lh="xs" ta="center" className={classes.pageTitle}>

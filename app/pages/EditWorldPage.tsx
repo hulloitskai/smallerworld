@@ -5,7 +5,7 @@ import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomeScreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
-import { APPLE_ICON_RADIUS_RATIO } from "~/helpers/app";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type Image, type Upload, type User } from "~/types";
 
 export interface EditWorldPageProps extends SharedPageProps {
@@ -107,7 +107,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
                   center
                   h={ICON_IMAGE_INPUT_SIZE}
                   w={ICON_IMAGE_INPUT_SIZE}
-                  radius={ICON_IMAGE_INPUT_SIZE / APPLE_ICON_RADIUS_RATIO}
+                  radius={ICON_IMAGE_INPUT_SIZE / USER_ICON_RADIUS_RATIO}
                   required
                   withAsterisk={false}
                   onPreviewChange={setPageIconPreview}

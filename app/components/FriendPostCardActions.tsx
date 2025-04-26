@@ -13,7 +13,7 @@ import {
   usePreferredMessagingPlatform,
 } from "~/helpers/messaging";
 import { mutateUserPagePosts } from "~/helpers/userPages";
-import { type PostReaction, type PostView, type User } from "~/types";
+import { type PostReaction, type User, type UserPost } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
@@ -22,7 +22,7 @@ import postCardClasses from "./PostCard.module.css";
 
 export interface FriendPostCardActionsProps {
   user: User;
-  post: PostView;
+  post: UserPost;
   replyPhoneNumber: string | null;
 }
 

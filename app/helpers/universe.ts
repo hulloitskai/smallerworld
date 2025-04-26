@@ -6,15 +6,21 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
+import { type UniversePost } from "~/types";
+
 import { openUrlInMobileSafari } from "./browsers";
-import { type PostsData } from "./posts";
+
+export interface UniversePostsData {
+  posts: UniversePost[];
+  pagination: { next: string | null };
+}
 
 export interface UniversePostsOptions
-  extends SWRInfiniteConfiguration<PostsData> {
+  extends SWRInfiniteConfiguration<UniversePostsData> {
   limit?: number;
 }
 
-const universePostsGetKey = (): SWRInfiniteKeyLoader<PostsData> => {
+const universePostsGetKey = (): SWRInfiniteKeyLoader<UniversePostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = {};
     if (previousPageData) {
@@ -31,7 +37,7 @@ const universePostsGetKey = (): SWRInfiniteKeyLoader<PostsData> => {
 export const useUniversePosts = (options?: UniversePostsOptions) => {
   const { online } = useNetwork();
   const { ...swrConfiguration } = options ?? {};
-  const { data, ...swrResponse } = useSWRInfinite<PostsData>(
+  const { data, ...swrResponse } = useSWRInfinite<UniversePostsData>(
     universePostsGetKey(),
     (path: string) => fetchRoute(path, { descriptor: "load posts" }),
     {

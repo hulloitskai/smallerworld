@@ -7,15 +7,21 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
-import { type Friend, type User } from "~/types";
+import { type Friend, type User, type UserPost } from "~/types";
 
 import { openUrlInMobileSafari } from "./browsers";
-import { type PostsData } from "./posts";
+
+export const USER_ICON_RADIUS_RATIO = 4.5;
+
+export interface UserPagePostsData {
+  posts: UserPost[];
+  pagination: { next: string | null };
+}
 
 const userPagePostsGetKey = (
   userId: string,
   friendAccessToken?: string,
-): SWRInfiniteKeyLoader<PostsData> => {
+): SWRInfiniteKeyLoader<UserPagePostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = {
       friend_token: friendAccessToken,
@@ -32,7 +38,7 @@ const userPagePostsGetKey = (
 };
 
 export interface UserPagePostsOptions
-  extends SWRInfiniteConfiguration<PostsData> {}
+  extends SWRInfiniteConfiguration<UserPagePostsData> {}
 
 export const useUserPagePosts = (
   userId: string,
@@ -41,7 +47,7 @@ export const useUserPagePosts = (
   const currentFriend = useCurrentFriend();
   const { online } = useNetwork();
   const { ...swrConfiguration } = options ?? {};
-  const { data, ...swrResponse } = useSWRInfinite<PostsData>(
+  const { data, ...swrResponse } = useSWRInfinite<UserPagePostsData>(
     userPagePostsGetKey(userId, currentFriend?.access_token),
     (path: string) =>
       fetchRoute(path, {
