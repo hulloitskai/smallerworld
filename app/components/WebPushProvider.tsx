@@ -16,17 +16,15 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
     if (!supported) {
       return;
     }
-    setTimeout(() => {
-      void getPushSubscription().then(setSubscription, error => {
-        setSubscription(null);
-        console.error("Failed to get current push subscription", error);
-        if (error instanceof Error) {
-          toast.error("failed to get current push subscription", {
-            description: error.message,
-          });
-        }
-      });
-    }, 2000);
+    void getPushSubscription().then(setSubscription, error => {
+      setSubscription(null);
+      console.error("Failed to get current push subscription", error);
+      if (error instanceof Error) {
+        toast.error("failed to get current push subscription", {
+          description: error.message,
+        });
+      }
+    });
   }, [supported]);
   const registration = useLookupPushRegistration({ subscription });
   const [subscribe, { subscribing, subscribeError }] = useWebPushSubscribe({
@@ -94,9 +92,11 @@ const useLookupPushRegistration = ({
     ...(subscription
       ? {
           params: {
-            query: currentFriend
-              ? { friend_token: currentFriend.access_token }
-              : undefined,
+            query: {
+              ...(currentFriend && {
+                friend_token: currentFriend.access_token,
+              }),
+            },
           },
           data: {
             push_subscription: {
@@ -118,7 +118,7 @@ const useLookupPushRegistration = ({
     revalidateOnFocus: false,
   });
   const { registration } = data ?? {};
-  return subscription === null ? subscription : registration;
+  return subscription === null ? null : registration;
 };
 
 interface WebPushSubscribeOptions {
