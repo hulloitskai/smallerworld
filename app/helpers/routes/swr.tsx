@@ -1,6 +1,5 @@
 import { type PathHelper, type RequestOptions } from "@js-from-routes/client";
-import { useIsFirstRender, useNetwork, useShallowEffect } from "@mantine/hooks";
-import { useState } from "react";
+import { useNetwork } from "@mantine/hooks";
 import useSWR, {
   type Key,
   mutate,
@@ -59,7 +58,7 @@ export const useRouteSWR = <
     delete swrConfiguration.isPaused;
   }
 
-  const key = useRouteKey(route, params);
+  const key = computeRouteKey(route, params);
   const { online } = useNetwork();
   const standaloneSession = useStandaloneSession();
   const { isLoading, isValidating, ...swrResponse } = useSWR<Data, Error>(
@@ -119,7 +118,7 @@ export const useRouteMutation = <
     ...swrConfiguration
   } = options;
 
-  const key = useRouteKey(route, params);
+  const key = computeRouteKey(route, params);
   const { isMutating: mutating, ...swr } = useSWRMutation<
     Data,
     Error,
@@ -151,20 +150,6 @@ export const computeRouteKey = (
   route: PathHelper,
   params: RequestOptions["params"] | null,
 ): string | null => (params === null ? null : route.path(params));
-
-const useRouteKey = (
-  route: PathHelper,
-  params: RequestOptions["params"] | null,
-): string | null => {
-  const [key, setKey] = useState(() => computeRouteKey(route, params));
-  const isFirstRender = useIsFirstRender();
-  useShallowEffect(() => {
-    if (!isFirstRender) {
-      setKey(computeRouteKey(route, params));
-    }
-  }, [route, params]); // eslint-disable-line react-hooks/exhaustive-deps
-  return key;
-};
 
 export const mutateRoute = <Data, T = Data>(
   route: PathHelper,

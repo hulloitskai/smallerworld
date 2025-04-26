@@ -114,7 +114,9 @@ const useLookupPushRegistration = ({
           failSilently: true,
           onSuccess: ({ registration }) => {
             if (registration) {
-              console.info("Loaded push registration", registration);
+              console.info("Found push registration", registration);
+            } else {
+              console.info("No push registration found");
             }
           },
         }
