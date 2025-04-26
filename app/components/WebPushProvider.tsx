@@ -16,15 +16,22 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
     if (!supported) {
       return;
     }
-    void getPushSubscription().then(setSubscription, error => {
-      setSubscription(null);
-      console.error("Failed to get current push subscription", error);
-      if (error instanceof Error) {
-        toast.error("failed to get current push subscription", {
-          description: error.message,
-        });
-      }
-    });
+    console.info("Loading current push subscription...");
+    void getPushSubscription().then(
+      subscription => {
+        setSubscription(subscription);
+        console.info("Loaded current push subscription", subscription);
+      },
+      error => {
+        setSubscription(null);
+        console.error("Failed to load current push subscription", error);
+        if (error instanceof Error) {
+          toast.error("failed to load current push subscription", {
+            description: error.message,
+          });
+        }
+      },
+    );
   }, [supported]);
   const registration = useLookupPushRegistration({ subscription });
   const [subscribe, { subscribing, subscribeError }] = useWebPushSubscribe({
