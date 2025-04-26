@@ -120,6 +120,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
               size="compact-xs"
               leftSection={<ActionsIcon />}
               loading={deleting}
+              style={{ flexShrink: 0 }}
             >
               actions
             </Button>

@@ -9,6 +9,7 @@
 }
 
 .notifiedBadge {
+  flex-shrink: 0;
   color: var(--mantine-color-dimmed);
 
   :global(.mantine-Badge-section) {

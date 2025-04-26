@@ -125,6 +125,20 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             w={ICON_SIZE}
             h={ICON_SIZE}
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
+            {...(currentFriend && {
+              onClick: () => {
+                const path = routes.users.show.path({
+                  handle: user.handle,
+                  query: {
+                    friend_token: currentFriend.access_token,
+                  },
+                });
+                const url = new URL(path, location.origin);
+                void navigator.clipboard.writeText(url.toString()).then(() => {
+                  toast.success("page url copied");
+                });
+              },
+            })}
           />
           <Stack gap={4}>
             <Title size="h2" lh="xs" ta="center" className={classes.pageTitle}>
