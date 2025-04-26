@@ -11,11 +11,11 @@
 #  delivery_token  :string           not null
 #  noticeable_type :string           not null
 #  pushed_at       :datetime
-#  recipient_type  :string           not null
+#  recipient_type  :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  noticeable_id   :uuid             not null
-#  recipient_id    :uuid             not null
+#  recipient_id    :uuid
 #
 # Indexes
 #
@@ -41,25 +41,10 @@ class Notification < ApplicationRecord
 
   # == Associations
   belongs_to :noticeable, polymorphic: true
-  belongs_to :recipient, polymorphic: true, inverse_of: :received_notifications
-
-  sig { returns(T.any(Friend, User)) }
-  def recipient
-    super
-  end
-
-  sig do
-    type_parameters(:U)
-      .params(value: T.all(
-        T.type_parameter(:U),
-        ActiveRecord::Base,
-        Notifiable,
-      ))
-      .returns(T.type_parameter(:U))
-  end
-  def recipient=(value)
-    super
-  end
+  belongs_to :recipient,
+             polymorphic: true,
+             optional: true,
+             inverse_of: :received_notifications
 
   sig { returns(Noticeable) }
   def noticeable!
@@ -73,6 +58,7 @@ class Notification < ApplicationRecord
   # == Scopes
   scope :to_friends, -> { where(recipient_type: "Friend") }
   scope :to_users, -> { where(recipient_type: "User") }
+  scope :to_anonymous, -> { where(recipient_type: nil) }
   scope :delivered, -> { where.not(delivered_at: nil) }
 
   # == Methods

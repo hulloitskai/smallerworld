@@ -145,11 +145,12 @@ class Post < ApplicationRecord
     return if visibility == :only_me
 
     subscribed_type = quoted_post&.type || type
-    transaction do
-      friends_to_notify = audience.subscribed_to(subscribed_type)
-      friends_to_notify.select(:id).find_each do |friend|
-        notifications.create!(recipient: friend, push_delay: 1.minute)
-      end
+    friends_to_notify = audience.subscribed_to(subscribed_type)
+    friends_to_notify.select(:id).find_each do |friend|
+      notifications.create!(recipient: friend, push_delay: 1.minute)
+    end
+    if visibility == :public
+      notifications.create!(recipient: nil, push_delay: 1.minute)
     end
   end
 

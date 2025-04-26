@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_25_194604) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_26_004407) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -177,8 +177,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_25_194604) do
     t.string "delivery_token", null: false
     t.string "noticeable_type", null: false
     t.uuid "noticeable_id", null: false
-    t.string "recipient_type", null: false
-    t.uuid "recipient_id", null: false
+    t.string "recipient_type"
+    t.uuid "recipient_id"
     t.datetime "pushed_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
