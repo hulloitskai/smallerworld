@@ -78,9 +78,7 @@ const SendTestNotificationMenuItem: FC<SendTestNotificationMenuItemProps> = ({
 }) => {
   const { trigger, mutating, data } = useRouteMutation<{}>(
     routes.pushSubscriptions.test,
-    {
-      descriptor: "send test notification",
-    },
+    { descriptor: "send test notification" },
   );
 
   return (

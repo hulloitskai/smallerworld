@@ -130,14 +130,14 @@ const useWebPushSubscribe = ({
   currentSubscription,
   onSubscribed,
 }: WebPushSubscribeOptions): [
-  () => Promise<void>,
+  () => Promise<PushSubscription>,
   { subscribing: boolean; subscribeError: Error | null },
 ] => {
   const currentFriend = useCurrentFriend();
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
-  const subscribe = (): Promise<void> => {
-    const subscribeAndRegister = async (): Promise<void> => {
+  const subscribe = (): Promise<PushSubscription> => {
+    const subscribeAndRegister = async (): Promise<PushSubscription> => {
       let deviceId: string | undefined;
       let visitorIdentity: GetResult | undefined;
       let subscription: PushSubscription | undefined;
@@ -162,9 +162,7 @@ const useWebPushSubscribe = ({
           setSubscribeError(error);
           reportProblem(error.message);
         }
-      }
-      if (!(deviceId && visitorIdentity && subscription)) {
-        return;
+        throw error;
       }
       await registerSubscription({
         subscription,
@@ -174,6 +172,7 @@ const useWebPushSubscribe = ({
         friendAccessToken: currentFriend?.access_token,
       });
       onSubscribed(subscription);
+      return subscription;
     };
     setSubscribing(true);
     if (Notification.permission === "granted") {
@@ -183,9 +182,10 @@ const useWebPushSubscribe = ({
     } else {
       return Notification.requestPermission()
         .then(async permission => {
-          if (permission === "granted") {
-            await subscribeAndRegister();
+          if (permission !== "granted") {
+            throw new Error("Push notification permission not granted");
           }
+          return subscribeAndRegister();
         })
         .finally(() => {
           setSubscribing(false);

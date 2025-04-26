@@ -56,7 +56,13 @@ const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
       leftSection={<FixIcon />}
       loading={loading || mutating}
       onClick={() => {
-        void subscribe().then(() => trigger());
+        void subscribe().then(subscription =>
+          trigger({
+            push_subscription: {
+              endpoint: subscription.endpoint,
+            },
+          }),
+        );
       }}
       {...props}
     >

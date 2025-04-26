@@ -8,7 +8,7 @@ export interface UseWebPushResult {
   supported: boolean | undefined;
   subscription: PushSubscription | undefined | null;
   registration: PushRegistration | undefined | null;
-  subscribe: () => Promise<void>;
+  subscribe: () => Promise<PushSubscription>;
   subscribing: boolean;
   subscribeError: Error | null;
   unsubscribe: () => Promise<void>;
@@ -20,7 +20,7 @@ export interface UseWebPushResult {
 export const WebPushContext = createContext<UseWebPushResult | null>(null);
 
 export interface WebPushOptions {
-  onSubscribed?: () => void;
+  onSubscribed?: (subscription: PushSubscription) => void;
 }
 
 export const useWebPush = (options?: WebPushOptions): UseWebPushResult => {
@@ -31,8 +31,9 @@ export const useWebPush = (options?: WebPushOptions): UseWebPushResult => {
   return {
     ...context,
     subscribe: () =>
-      context.subscribe().then(() => {
-        options?.onSubscribed?.();
+      context.subscribe().then(subscription => {
+        options?.onSubscribed?.(subscription);
+        return subscription;
       }),
   };
 };
