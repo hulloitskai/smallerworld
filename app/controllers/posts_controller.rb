@@ -56,7 +56,11 @@ class PostsController < ApplicationController
       ]),
       ActionController::Parameters,
     )
-    post = current_user.posts.build(post_params)
+    paused_friend_ids = current_user.friends.paused.pluck(:id)
+    post = current_user.posts.build(
+      hidden_from_ids: paused_friend_ids,
+      **post_params,
+    )
     if post.save
       render(json: { post: PostSerializer.one(post) }, status: :created)
     else
@@ -110,7 +114,8 @@ class PostsController < ApplicationController
 
   sig { returns(Post) }
   def find_post
-    post_id = T.let(params.fetch(:id), String)
+    post_id = params[:id] or
+      raise ActionController::ParameterMissing, "Missing post ID"
     Post.find(post_id)
   end
 end

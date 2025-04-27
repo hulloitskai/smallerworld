@@ -84,9 +84,10 @@ Rails.application.routes.draw do
 
   # == Friends
   resources :friends, only: %i[create update destroy], export: true do
-    # member do
-    #   post :pause
-    # end
+    member do
+      post :pause
+      post :unpause
+    end
   end
   get "/world/friends" => "friends#index", export: true
 

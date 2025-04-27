@@ -37,6 +37,7 @@ export interface WorldPageProps extends SharedPageProps {
   friends: FriendInfo[];
   pendingJoinRequests: number;
   hideStats: boolean;
+  pausedFriends: number;
 }
 
 const ICON_SIZE = 96;
@@ -45,6 +46,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   currentUser,
   friends,
   pendingJoinRequests,
+  pausedFriends,
 }) => {
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
@@ -303,6 +305,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         {body}
       </RemoveScroll>
       <WorldPageFloatingActions
+        {...{ pausedFriends }}
         onPostCreated={() => {
           scrollTo({ top: 0, behavior: "smooth" });
         }}

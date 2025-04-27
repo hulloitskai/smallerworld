@@ -6,5 +6,6 @@ class WorldFriendSerializer < FriendSerializer
   object_as :friend
 
   # == Attributes
-  attributes notifiable: { type: :boolean }
+  attributes notifiable: { type: :boolean },
+             paused?: { as: :paused, type: :boolean }
 end

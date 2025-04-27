@@ -119,7 +119,7 @@ class UsersController < ApplicationController
   sig { returns(User) }
   def find_user
     id = params[:id] || params[:handle] or
-      raise "Missing id or handle"
+      raise ActionController::ParameterMissing, "Missing id or handle"
     User.friendly.find(id)
   end
 end

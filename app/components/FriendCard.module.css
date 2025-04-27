@@ -6,7 +6,7 @@
   }
 }
 
-.notifiableBadge {
+.badge {
   :global(.mantine-Badge-label) {
     text-transform: none;
   }

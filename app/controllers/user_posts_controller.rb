@@ -8,8 +8,9 @@ class UserPostsController < ApplicationController
     user_id = T.let(params.fetch(:user_id), String)
     user = User.find(user_id)
     posts = user.posts.includes(:image_blob)
-    unless (friend = current_friend) && friend.chosen_family?
-      posts = posts.visible_to_friends
+    if (friend = current_friend)
+      posts = posts.not_hidden_from(friend.id)
+      posts = posts.visible_to_friends unless friend.chosen_family?
     end
     pagy, paginated_posts = pagy_keyset(
       posts.order(created_at: :desc, id: :asc),

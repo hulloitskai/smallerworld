@@ -12,7 +12,8 @@ import PostCard from "./PostCard";
 export interface WorldPageFeedProps extends BoxProps {}
 
 const WorldPageFeed: FC<WorldPageFeedProps> = props => {
-  const { currentUser, hideStats } = usePageProps<WorldPageProps>();
+  const { currentUser, hideStats, pausedFriends } =
+    usePageProps<WorldPageProps>();
   const { post_id } = useQueryParams();
 
   // == Load posts
@@ -56,7 +57,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
                 actions={
                   <AuthorPostCardActions
                     user={currentUser}
-                    {...{ post, hideStats }}
+                    {...{ post, hideStats, pausedFriends }}
                   />
                 }
               />

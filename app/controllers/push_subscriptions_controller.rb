@@ -5,7 +5,9 @@ class PushSubscriptionsController < ApplicationController
   # == Actions
   # POST /push_subscriptions/lookup
   def lookup
-    endpoint = T.let(params.dig(:push_subscription, :endpoint), String)
+    endpoint = params.dig(:push_subscription, :endpoint) or
+      raise ActionController::ParameterMissing,
+            "Missing push subscription endpoint"
     owner = current_friend || current_user
     registration = PushRegistration.joins(:push_subscription)
       .where(push_subscriptions: { endpoint: })
@@ -28,7 +30,9 @@ class PushSubscriptionsController < ApplicationController
       device_fingerprint
       device_fingerprint_confidence
     ])
-    endpoint = T.let(subscription_params.delete(:endpoint), String)
+    endpoint = subscription_params.delete(:endpoint) or
+      raise ActionController::ParameterMissing,
+            "Missingpush subscription endpoint"
     subscription = PushSubscription.find_or_initialize_by(endpoint:)
     subscription.attributes = subscription_params
     registration = subscription.registrations.find_or_initialize_by(owner:)
@@ -40,14 +44,16 @@ class PushSubscriptionsController < ApplicationController
 
   # PUT /push_subscriptions/unsubscribe
   def unsubscribe
-    endpoint = T.let(params.dig(:push_subscription, :endpoint), String)
-    PushSubscription.destroy_by(endpoint:)
+    subscription = find_subscription
+    subscription.destroy!
     render(json: {})
   end
 
   # POST /push_subscriptions/change
   def change
-    endpoint = T.let(params.dig(:old_subscription, :endpoint), String)
+    endpoint = params.dig(:old_subscription, :endpoint) or
+      raise ActionController::ParameterMissing,
+            "Missing old subscription endpoint"
     new_subscription_params = params.expect(new_subscription: %i[
       endpoint
       p256dh_key
@@ -60,8 +66,7 @@ class PushSubscriptionsController < ApplicationController
 
   # POST /push_subscriptions/test
   def test
-    endpoint = T.let(params.dig(:push_subscription, :endpoint), String)
-    subscription = PushSubscription.find_by!(endpoint:)
+    subscription = find_subscription
     owner = current_friend || current_user
     registration = subscription.registrations.find_by!(owner:)
     registration.push_test_notification
@@ -79,6 +84,13 @@ class PushSubscriptionsController < ApplicationController
   private
 
   # == Helpers
+  sig { returns(PushSubscription) }
+  def find_subscription
+    endpoint = params[:endpoint] or
+      raise ActionController::ParameterMissing, "Missing endpoint"
+    PushSubscription.find_by!(endpoint:)
+  end
+
   # See: https://fly.io/ruby-dispatch/push-to-subscribe/#user-interface
   sig { params(public_key: String).returns(String) }
   def encode_public_key(public_key)

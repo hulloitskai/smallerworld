@@ -73,6 +73,9 @@ module GeneratedUrlHelpersModule
   def new_session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def pause_friend_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def phone_verification_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -212,6 +215,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def universe_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def unpause_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unsubscribe_push_subscriptions_url(*args); end

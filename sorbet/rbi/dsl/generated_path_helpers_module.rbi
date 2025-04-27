@@ -73,6 +73,9 @@ module GeneratedPathHelpersModule
   def new_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def pause_friend_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def phone_verification_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -212,6 +215,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def universe_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def unpause_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unsubscribe_push_subscriptions_path(*args); end

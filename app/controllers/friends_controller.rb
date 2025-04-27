@@ -53,8 +53,7 @@ class FriendsController < ApplicationController
 
   # PUT /friends/:id
   def update
-    friend_id = T.let(params.fetch(:id), String)
-    friend = Friend.find(friend_id)
+    friend = find_friend
     authorize!(friend)
     friend_params = params.expect(friend: %i[emoji name])
     if friend.update(friend_params)
@@ -69,11 +68,23 @@ class FriendsController < ApplicationController
 
   # POST /friends/:id/pause
   def pause
-    friend_id = T.let(params.fetch(:id), String)
-    friend = Friend.find(friend_id)
+    friend = find_friend
     authorize!(friend)
-    friend.paused_since = Time.current
-    if friend.save
+    if friend.update(paused_since: Time.current)
+      render(json: { friend: FriendSerializer.one(friend) })
+    else
+      render(
+        json: { errors: friend.form_errors },
+        status: :unprocessable_entity,
+      )
+    end
+  end
+
+  # POST /friends/:id/unpause
+  def unpause
+    friend = find_friend
+    authorize!(friend)
+    if friend.update(paused_since: nil)
       render(json: { friend: FriendSerializer.one(friend) })
     else
       render(
@@ -90,5 +101,15 @@ class FriendsController < ApplicationController
     authorize!(friend)
     friend.destroy!
     render(json: {})
+  end
+
+  private
+
+  # == Helpers
+  sig { returns(Friend) }
+  def find_friend
+    friend_id = params[:id] or
+      raise ActionController::ParameterMissing, "Missing friend ID"
+    Friend.find(friend_id)
   end
 end

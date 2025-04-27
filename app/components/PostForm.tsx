@@ -23,7 +23,7 @@ import QuotedPostCard from "./QuotedPostCard";
 import classes from "./PostForm.module.css";
 import "@mantine/dates/styles.layer.css";
 
-export type PostFormProps =
+export type PostFormProps = { pausedFriends: number } & (
   | {
       post: Post;
       onPostUpdated?: (post: Post) => void;
@@ -32,7 +32,8 @@ export type PostFormProps =
       postType: PostType | null;
       quotedPost?: Post;
       onPostCreated?: (post: Post) => void;
-    };
+    }
+);
 
 const POST_TITLE_PLACEHOLDERS: Partial<Record<PostType, string>> = {
   journal_entry: "what a day!",
@@ -51,11 +52,17 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   follow_up: "um, actually...",
 };
 
-const PostForm: FC<PostFormProps> = props => {
-  const postType = "postType" in props ? props.postType : props.post.type;
-  const post = "post" in props ? props.post : null;
+const PostForm: FC<PostFormProps> = ({
+  pausedFriends: pausedFriendsCount,
+  ...otherProps
+}) => {
+  const postType =
+    "postType" in otherProps ? otherProps.postType : otherProps.post.type;
+  const post = "post" in otherProps ? otherProps.post : null;
   const quotedPost =
-    "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
+    "quotedPost" in otherProps
+      ? otherProps.quotedPost
+      : (post?.quoted_post ?? undefined);
 
   const titlePlaceholder = postType
     ? POST_TITLE_PLACEHOLDERS[postType]
@@ -138,7 +145,7 @@ const PostForm: FC<PostFormProps> = props => {
         }),
     initialValues,
     onSuccess: ({ post }, { reset }) => {
-      if (!("post" in props)) {
+      if (!("post" in otherProps)) {
         reset();
         editorRef.current?.commands.clearContent();
         clearNewPostDraft();
@@ -146,10 +153,10 @@ const PostForm: FC<PostFormProps> = props => {
       void mutatePosts();
       void mutateRoute(routes.posts.pinned);
       void mutateRoute(routes.encouragements.index);
-      if ("onPostCreated" in props) {
-        props.onPostCreated?.(post);
-      } else if ("onPostUpdated" in props) {
-        props.onPostUpdated?.(post);
+      if ("onPostCreated" in otherProps) {
+        otherProps.onPostCreated?.(post);
+      } else if ("onPostUpdated" in otherProps) {
+        otherProps.onPostUpdated?.(post);
       }
     },
   });
@@ -298,6 +305,33 @@ const PostForm: FC<PostFormProps> = props => {
               }}
             />
           </Input.Wrapper>
+          {postType === "invitation" && (
+            <DateInput
+              className={classes.dateInput}
+              placeholder="keep pinned until"
+              leftSection={<CalendarIcon />}
+              minDate={todayDate}
+              value={pinnedUntil}
+              error={errors.pinned_until}
+              required
+              withAsterisk={false}
+              popoverProps={{
+                portalProps: {
+                  target: vaulPortalTarget,
+                },
+                position: "bottom",
+              }}
+              onChange={date => {
+                const value = date
+                  ? DateTime.fromJSDate(date)
+                      .set({ hour: 23, minute: 59, second: 59 })
+                      .toISO()
+                  : "";
+                setFieldValue("pinned_until", value);
+              }}
+              data-vaul-no-drag
+            />
+          )}
           {quotedPost ? (
             <QuotedPostCard post={quotedPost} />
           ) : (
@@ -323,32 +357,10 @@ const PostForm: FC<PostFormProps> = props => {
             </>
           )}
           <Group gap="xs" align="start" justify="end" mt="xs">
-            {postType === "invitation" && (
-              <DateInput
-                className={classes.dateInput}
-                placeholder="keep pinned until"
-                leftSection={<CalendarIcon />}
-                minDate={todayDate}
-                value={pinnedUntil}
-                error={errors.pinned_until}
-                required
-                withAsterisk={false}
-                popoverProps={{
-                  portalProps: {
-                    target: vaulPortalTarget,
-                  },
-                  position: "bottom",
-                }}
-                onChange={date => {
-                  const value = date
-                    ? DateTime.fromJSDate(date)
-                        .set({ hour: 23, minute: 59, second: 59 })
-                        .toISO()
-                    : "";
-                  setFieldValue("pinned_until", value);
-                }}
-                data-vaul-no-drag
-              />
+            {pausedFriendsCount > 0 && (
+              <Text size="xs" c="dimmed">
+                hidden from {pausedFriendsCount} friends
+              </Text>
             )}
             <Button
               type="submit"

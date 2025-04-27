@@ -6,25 +6,27 @@
 #
 # Table name: posts
 #
-#  id             :uuid             not null, primary key
-#  body_html      :text             not null
-#  emoji          :string
-#  pinned_until   :datetime
-#  title          :string
-#  type           :string           not null
-#  visibility     :string           not null
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  author_id      :uuid             not null
-#  quoted_post_id :uuid
+#  id              :uuid             not null, primary key
+#  body_html       :text             not null
+#  emoji           :string
+#  hidden_from_ids :uuid             default([]), not null, is an Array
+#  pinned_until    :datetime
+#  title           :string
+#  type            :string           not null
+#  visibility      :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  author_id       :uuid             not null
+#  quoted_post_id  :uuid
 #
 # Indexes
 #
-#  index_posts_on_author_id       (author_id)
-#  index_posts_on_pinned_until    (pinned_until)
-#  index_posts_on_quoted_post_id  (quoted_post_id)
-#  index_posts_on_type            (type)
-#  index_posts_on_visibility      (visibility)
+#  index_posts_on_author_id        (author_id)
+#  index_posts_on_hidden_from_ids  (hidden_from_ids)
+#  index_posts_on_pinned_until     (pinned_until)
+#  index_posts_on_quoted_post_id   (quoted_post_id)
+#  index_posts_on_type             (type)
+#  index_posts_on_visibility       (visibility)
 #
 # Foreign Keys
 #
@@ -73,6 +75,8 @@ class Post < ApplicationRecord
 
   # == Associations
   belongs_to :author, class_name: "User"
+  has_many :author_friends, through: :author, source: :friends
+
   belongs_to :quoted_post, class_name: "Post", optional: true
   has_many :reactions, class_name: "PostReaction", dependent: :destroy
   has_many :reply_receipts, class_name: "PostReplyReceipt", dependent: :destroy
@@ -110,6 +114,9 @@ class Post < ApplicationRecord
     where(visibility: %i[public friends chosen_family])
   }
   scope :currently_pinned, -> { where("pinned_until > NOW()") }
+  scope :not_hidden_from, ->(friend_id) {
+    where("NOT (? = ANY(hidden_from_ids))", friend_id)
+  }
 
   # == Noticeable
   sig do
@@ -130,22 +137,22 @@ class Post < ApplicationRecord
   end
 
   # == Methods
-  sig { returns(Friend::PrivateRelation) }
-  def audience
-    friends = Friend.where(user_id: author_id)
+  sig { returns(Friend::PrivateAssociationRelation) }
+  def friends_to_notify
+    subscribed_type = quoted_post&.type || type
+    friends = author_friends
+      .subscribed_to(subscribed_type)
+      .where.not(id: hidden_from_ids)
     if visibility == :chosen_family
-      friends.chosen_family
-    else
-      friends
+      friends = friends.chosen_family
     end
+    friends
   end
 
   sig { void }
   def create_notifications!
     return if visibility == :only_me
 
-    subscribed_type = quoted_post&.type || type
-    friends_to_notify = audience.subscribed_to(subscribed_type)
     friends_to_notify.select(:id).find_each do |friend|
       notifications.create!(recipient: friend, push_delay: 1.minute)
     end
@@ -168,6 +175,11 @@ class Post < ApplicationRecord
   sig { returns(PostReplyReceipt::PrivateAssociationRelation) }
   def repliers
     reply_receipts.select(:friend_id).distinct
+  end
+
+  sig { returns(User::PrivateRelation) }
+  def hidden_from
+    User.where(id: hidden_from_ids)
   end
 
   private

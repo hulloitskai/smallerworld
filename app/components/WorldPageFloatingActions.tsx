@@ -19,15 +19,17 @@ import { type Encouragement, type Post, type PostType } from "~/types";
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
 import PostCard from "./PostCard";
-import PostForm from "./PostForm";
+import PostForm, { type PostFormProps } from "./PostForm";
 
 import classes from "./WorldPageFloatingActions.module.css";
 
-export interface WorldPageFloatingActionsProps {
+export interface WorldPageFloatingActionsProps
+  extends Pick<PostFormProps, "pausedFriends"> {
   onPostCreated?: () => void;
 }
 
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
+  pausedFriends,
   onPostCreated,
 }) => {
   const { currentUser, hideStats } = usePageProps<WorldPageProps>();
@@ -238,6 +240,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
         }}
       >
         <PostForm
+          {...{ pausedFriends }}
           postType={postType ?? previousPostType ?? null}
           onPostCreated={() => {
             setPostType(null);
@@ -260,7 +263,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
               actions={
                 <AuthorPostCardActions
                   user={currentUser}
-                  {...{ post, hideStats }}
+                  {...{ post, hideStats, pausedFriends }}
                   onFollowUpDrawerModalOpened={() => {
                     setPinnedPostsDrawerModalOpened(false);
                   }}

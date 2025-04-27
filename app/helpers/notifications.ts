@@ -61,9 +61,9 @@ export const renderNotification = (
     }
     case "Friend": {
       const { friend } = notification.payload as FriendNotificationPayload;
-      const name = [friend.emoji, friend.name].filter(Boolean).join(" ");
+      const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
       return {
-        title: `${name} joined your world!`,
+        title: `${prettyName} joined your world!`,
         body: `${friend.name} installed your world on their phone :)`,
       };
     }

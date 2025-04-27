@@ -1,7 +1,9 @@
-import { CopyButton, Text } from "@mantine/core";
+import { CopyButton, Loader, MenuItem, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
+import PauseIcon from "~icons/heroicons/pause-20-solid";
+import ResumeIcon from "~icons/heroicons/play-20-solid";
 
 import { type User, type WorldFriend } from "~/types";
 
@@ -15,6 +17,7 @@ export interface FriendCardProps {
 }
 
 const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
+  const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
   const [menuOpened, setMenuOpened] = useState(false);
 
   // == Join url
@@ -40,7 +43,6 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
       onSuccess: () => {
         toast.success("friend removed");
         void mutateRoute(routes.friends.index);
-        // void mutateRoute(routes.users.joined);
       },
     },
   );
@@ -55,14 +57,27 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
           </Text>
         </Group>
         <Group gap={2} style={{ flexShrink: 0 }}>
-          {friend.notifiable && (
+          {friend.notifiable && !friend.paused && (
             <Badge
+              className={classes.badge}
               color="gray"
               leftSection={<NotificationIcon />}
-              className={classes.notifiableBadge}
             >
               notifiable
             </Badge>
+          )}
+          {friend.paused && (
+            <Tooltip
+              label={<>{prettyName} will not see new posts you create</>}
+            >
+              <Badge
+                className={classes.badge}
+                color="red"
+                leftSection={<PauseIcon />}
+              >
+                paused
+              </Badge>
+            </Tooltip>
           )}
           <Menu width={170} opened={menuOpened} onChange={setMenuOpened}>
             <Menu.Target>
@@ -127,6 +142,21 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
               >
                 remove friend
               </Menu.Item>
+              {friend.paused ? (
+                <UnpauseFriendItem
+                  friend={friend}
+                  onFriendUnpaused={() => {
+                    setMenuOpened(false);
+                  }}
+                />
+              ) : (
+                <PauseFriendItem
+                  friend={friend}
+                  onFriendPaused={() => {
+                    setMenuOpened(false);
+                  }}
+                />
+              )}
             </Menu.Dropdown>
           </Menu>
         </Group>
@@ -137,3 +167,75 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
 };
 
 export default FriendCard;
+
+interface PauseFriendItemProps {
+  friend: WorldFriend;
+  onFriendPaused: () => void;
+}
+
+const PauseFriendItem: FC<PauseFriendItemProps> = ({
+  friend,
+  onFriendPaused,
+}) => {
+  const { trigger, mutating } = useRouteMutation(routes.friends.pause, {
+    params: {
+      id: friend.id,
+    },
+    descriptor: "pause friend",
+    onSuccess: () => {
+      void mutateRoute(routes.friends.index);
+      const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
+      toast.success(`${prettyName} was paused`, {
+        description: `they will not see new posts you create until you unpause them`,
+      });
+      onFriendPaused();
+    },
+  });
+
+  return (
+    <MenuItem
+      leftSection={mutating ? <Loader /> : <PauseIcon />}
+      closeMenuOnClick={false}
+      onClick={() => {
+        void trigger();
+      }}
+    >
+      pause friend
+    </MenuItem>
+  );
+};
+
+interface UnpauseFriendItemProps {
+  friend: WorldFriend;
+  onFriendUnpaused: () => void;
+}
+
+const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
+  friend,
+  onFriendUnpaused,
+}) => {
+  const { trigger, mutating } = useRouteMutation(routes.friends.unpause, {
+    params: { id: friend.id },
+    descriptor: "unpause friend",
+    onSuccess: () => {
+      void mutateRoute(routes.friends.index);
+      const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
+      toast.success(`${prettyName} was unpaused`, {
+        description: `they will see new posts you create`,
+      });
+      onFriendUnpaused();
+    },
+  });
+
+  return (
+    <MenuItem
+      leftSection={mutating ? <Loader /> : <ResumeIcon />}
+      closeMenuOnClick={false}
+      onClick={() => {
+        void trigger();
+      }}
+    >
+      unpause friend
+    </MenuItem>
+  );
+};

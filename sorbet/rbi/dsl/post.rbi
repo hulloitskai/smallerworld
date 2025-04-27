@@ -356,6 +356,20 @@ class Post
     sig { returns(T::Boolean) }
     def author_changed?; end
 
+    sig { returns(T::Array[T.untyped]) }
+    def author_friend_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def author_friend_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :author_friends, through: :author`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Friend::PrivateCollectionProxy) }
+    def author_friends; end
+
+    sig { params(value: T::Enumerable[::Friend]).void }
+    def author_friends=(value); end
+
     sig { returns(T::Boolean) }
     def author_previously_changed?; end
 
@@ -564,6 +578,9 @@ class Post
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def none(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def not_hidden_from(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def null_relation?(*args, &blk); end
@@ -833,6 +850,51 @@ class Post
     sig { void }
     def emoji_will_change!; end
 
+    sig { returns(T::Array[::String]) }
+    def hidden_from_ids; end
+
+    sig { params(value: T::Array[::String]).returns(T::Array[::String]) }
+    def hidden_from_ids=(value); end
+
+    sig { returns(T::Boolean) }
+    def hidden_from_ids?; end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def hidden_from_ids_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def hidden_from_ids_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def hidden_from_ids_came_from_user?; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def hidden_from_ids_change; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def hidden_from_ids_change_to_be_saved; end
+
+    sig { params(from: T::Array[::String], to: T::Array[::String]).returns(T::Boolean) }
+    def hidden_from_ids_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def hidden_from_ids_in_database; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def hidden_from_ids_previous_change; end
+
+    sig { params(from: T::Array[::String], to: T::Array[::String]).returns(T::Boolean) }
+    def hidden_from_ids_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def hidden_from_ids_previously_was; end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def hidden_from_ids_was; end
+
+    sig { void }
+    def hidden_from_ids_will_change!; end
+
     sig { returns(::String) }
     def id; end
 
@@ -1036,6 +1098,9 @@ class Post
     def restore_emoji!; end
 
     sig { void }
+    def restore_hidden_from_ids!; end
+
+    sig { void }
     def restore_id!; end
 
     sig { void }
@@ -1082,6 +1147,12 @@ class Post
 
     sig { returns(T::Boolean) }
     def saved_change_to_emoji?; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def saved_change_to_hidden_from_ids; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_hidden_from_ids?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_id; end
@@ -1324,6 +1395,9 @@ class Post
     def will_save_change_to_emoji?; end
 
     sig { returns(T::Boolean) }
+    def will_save_change_to_hidden_from_ids?; end
+
+    sig { returns(T::Boolean) }
     def will_save_change_to_id?; end
 
     sig { returns(T::Boolean) }
@@ -1426,6 +1500,9 @@ class Post
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def none(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def not_hidden_from(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def null_relation?(*args, &blk); end
