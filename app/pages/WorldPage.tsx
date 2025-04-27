@@ -27,7 +27,7 @@ import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { usePosts } from "~/helpers/posts";
 import { useInstallPrompt } from "~/helpers/pwa/install";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { useResetPushSubscriptionOnIOS, useWebPush } from "~/helpers/webPush";
+import { useWebPush } from "~/helpers/webPush";
 import { type FriendInfo, type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
@@ -50,9 +50,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
 }) => {
   const isStandalone = useIsStandalone();
   const { registration } = useWebPush();
-
-  // TODO: Remove after 2025-05-01
-  useResetPushSubscriptionOnIOS();
 
   // == User theme
   useUserTheme(currentUser.theme);

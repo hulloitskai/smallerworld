@@ -20,7 +20,7 @@ import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsBut
 import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { useResetPushSubscriptionOnIOS, useWebPush } from "~/helpers/webPush";
+import { useWebPush } from "~/helpers/webPush";
 import { type Encouragement, type Friend, type User } from "~/types";
 
 import classes from "./UserPage.module.css";
@@ -39,9 +39,6 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
   const { registration } = useWebPush();
-
-  // TODO: Remove after 2025-05-01
-  useResetPushSubscriptionOnIOS();
 
   // == Reload user on visibility change
   const visibility = useDocumentVisibility();

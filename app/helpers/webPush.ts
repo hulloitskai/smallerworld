@@ -2,8 +2,6 @@ import { createContext, useContext } from "react";
 
 import { type PushRegistration } from "~/types";
 
-import { isIos, useBrowserDetection } from "./browsers";
-
 export interface UseWebPushResult {
   supported: boolean | undefined;
   subscription: PushSubscription | undefined | null;
@@ -36,37 +34,4 @@ export const useWebPush = (options?: WebPushOptions): UseWebPushResult => {
         return subscription;
       }),
   };
-};
-
-const RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER =
-  DateTime.fromObject(
-    { year: 2025, month: 4, day: 24, hour: 20 },
-    { zone: "America/Toronto" },
-  );
-
-export const useResetPushSubscriptionOnIOS = (): void => {
-  const browserDetection = useBrowserDetection();
-  const isStandalone = useIsStandalone();
-  const resubscribedRef = useRef(false);
-  const { subscribe, registration, loading } = useWebPush();
-  useEffect(() => {
-    if (
-      browserDetection &&
-      isIos(browserDetection) &&
-      isStandalone &&
-      registration &&
-      !loading &&
-      !resubscribedRef.current
-    ) {
-      resubscribedRef.current = true;
-      const registeredAt = DateTime.fromISO(registration.created_at);
-      if (
-        registeredAt < RESET_PUSH_SUBSCRIPTION_ON_IOS_UNLESS_REGISTERED_AFTER
-      ) {
-        void subscribe().then(() => {
-          console.info("Re-subscribed to push notifications");
-        });
-      }
-    }
-  }, [browserDetection, isStandalone, registration, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 };
