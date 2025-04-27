@@ -8,10 +8,10 @@ export interface WebPushProviderProps extends PropsWithChildren {}
 
 const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
   const supported = useWebPushSupported();
-  const [subscriptionIfSupported, setSubscription] = useState<
+  const [subscription, setSubscription] = useState<
     PushSubscription | undefined | null
   >();
-  const subscription = supported === null ? null : subscriptionIfSupported;
+  const subscriptionIfSupported = supported === null ? null : subscription;
   useDidUpdate(() => {
     if (!supported) {
       return;
@@ -33,14 +33,16 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
       },
     );
   }, [supported]);
-  const registration = useLookupPushRegistration({ subscription });
+  const registration = useLookupPushRegistration({
+    subscription: subscriptionIfSupported,
+  });
   const [subscribe, { subscribing, subscribeError }] = useWebPushSubscribe({
-    currentSubscription: subscription,
+    currentSubscription: subscriptionIfSupported,
     onSubscribed: setSubscription,
   });
   const [unsubscribe, { unsubscribing, unsubscribeError }] =
     useWebPushUnsubscribe({
-      subscription,
+      subscription: subscriptionIfSupported,
       onUnsubscribed: () => {
         setSubscription(null);
       },
@@ -50,7 +52,7 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
     <WebPushContext.Provider
       value={{
         supported,
-        subscription,
+        subscription: subscriptionIfSupported,
         registration,
         subscribe,
         subscribing,
