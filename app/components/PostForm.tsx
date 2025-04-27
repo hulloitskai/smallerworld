@@ -356,10 +356,11 @@ const PostForm: FC<PostFormProps> = ({
               )}
             </>
           )}
-          <Group gap="xs" align="start" justify="end" mt="xs">
+          <Group justify="end" mt="xs">
             {pausedFriendsCount > 0 && (
               <Text size="xs" c="dimmed">
-                hidden from {pausedFriendsCount} friends
+                hidden from {pausedFriendsCount}{" "}
+                {inflect("friend", pausedFriendsCount)}
               </Text>
             )}
             <Button

@@ -186,7 +186,7 @@ const DurationUntilCanSendAnotherEncouragement: FC<
   }, [encouragement.created_at]);
   return (
     <>
-      {remainingHours} {inflect("hours", remainingHours)}
+      {remainingHours} {inflect("hour", remainingHours)}
     </>
   );
 };
