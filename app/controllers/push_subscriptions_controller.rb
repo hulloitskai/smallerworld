@@ -86,8 +86,9 @@ class PushSubscriptionsController < ApplicationController
   # == Helpers
   sig { returns(PushSubscription) }
   def find_subscription
-    endpoint = params[:endpoint] or
-      raise ActionController::ParameterMissing, "Missing endpoint"
+    endpoint = params.dig(:push_subscription, :endpoint) or
+      raise ActionController::ParameterMissing,
+            "Missing push subscription endpoint"
     PushSubscription.find_by!(endpoint:)
   end
 
