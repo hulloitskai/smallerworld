@@ -82,6 +82,7 @@ const PostEditor: FC<PostEditorProps> = ({
       classNames={{
         root: classes.editor,
         content: classes.content,
+        controlsGroup: classes.controlsGroup,
       }}
       style={{
         ...(radius && { "--editor-radius": getRadius(radius) }),

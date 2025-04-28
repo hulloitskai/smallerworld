@@ -13,7 +13,7 @@ import {
   POST_VISIBILITY_TO_LABEL,
 } from "~/helpers/posts";
 import { type PostFormValues, useNewPostDraft } from "~/helpers/posts/form";
-import { type Post, type PostType } from "~/types";
+import { type Post, type PostType, type WorldPost } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 import ImageInput from "./ImageInput";
@@ -25,13 +25,13 @@ import "@mantine/dates/styles.layer.css";
 
 export type PostFormProps = { pausedFriends: number } & (
   | {
-      post: Post;
-      onPostUpdated?: (post: Post) => void;
+      post: WorldPost;
+      onPostUpdated?: (post: WorldPost) => void;
     }
   | {
       postType: PostType | null;
       quotedPost?: Post;
-      onPostCreated?: (post: Post) => void;
+      onPostCreated?: (post: WorldPost) => void;
     }
 );
 
@@ -52,10 +52,7 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   follow_up: "um, actually...",
 };
 
-const PostForm: FC<PostFormProps> = ({
-  pausedFriends: pausedFriendsCount,
-  ...otherProps
-}) => {
+const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
   const postType =
     "postType" in otherProps ? otherProps.postType : otherProps.post.type;
   const post = "post" in otherProps ? otherProps.post : null;
@@ -102,7 +99,7 @@ const PostForm: FC<PostFormProps> = ({
     isDirty,
     errors,
   } = useForm<
-    { post: Post },
+    { post: WorldPost },
     PostFormValues,
     (values: PostFormValues) => { post: Record<string, any> }
   >({
@@ -209,6 +206,7 @@ const PostForm: FC<PostFormProps> = ({
     }
   }, [values]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const hiddenFromCount = post ? post.hidden_from_count : pausedFriends;
   const [showImageInput, setShowImageInput] = useState(false);
   return (
     <form onSubmit={submit}>
@@ -357,10 +355,10 @@ const PostForm: FC<PostFormProps> = ({
             </>
           )}
           <Group justify="end" mt="xs">
-            {pausedFriendsCount > 0 && (
+            {hiddenFromCount > 0 && (
               <Text size="xs" c="dimmed">
-                hidden from {pausedFriendsCount}{" "}
-                {inflect("friend", pausedFriendsCount)}
+                hidden from {hiddenFromCount}{" "}
+                {inflect("friend", hiddenFromCount)}
               </Text>
             )}
             <Button

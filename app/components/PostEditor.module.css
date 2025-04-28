@@ -12,3 +12,7 @@
   padding-inline: var(--mantine-spacing-sm);
   padding-block: var(--mantine-spacing-xs);
 }
+
+.controlsGroup {
+  background-color: transparent;
+}

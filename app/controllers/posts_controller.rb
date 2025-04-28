@@ -15,7 +15,7 @@ class PostsController < ApplicationController
       .order(created_at: :desc, id: :asc)
     pagy, paginated_posts = pagy_keyset(posts, limit: 5)
     render(json: {
-      posts: PostSerializer.many(paginated_posts),
+      posts: WorldPostSerializer.many(paginated_posts),
       pagination: {
         next: pagy.next,
       },
@@ -28,7 +28,9 @@ class PostsController < ApplicationController
     posts = authorized_scope(current_user.posts.currently_pinned)
       .includes(:image_blob)
       .order(pinned_until: :asc, created_at: :asc)
-    render(json: { posts: PostSerializer.many(posts) })
+    render(json: {
+      posts: WorldPostSerializer.many(posts),
+    })
   end
 
   # GET /posts/:id/stats
@@ -62,7 +64,7 @@ class PostsController < ApplicationController
       **post_params,
     )
     if post.save
-      render(json: { post: PostSerializer.one(post) }, status: :created)
+      render(json: { post: WorldPostSerializer.one(post) }, status: :created)
     else
       render(json: { errors: post.form_errors }, status: :unprocessable_entity)
     end
@@ -81,7 +83,7 @@ class PostsController < ApplicationController
       pinned_until
     ])
     if post.update(post_params)
-      render(json: { post: PostSerializer.one(post) })
+      render(json: { post: WorldPostSerializer.one(post) })
     else
       render(json: { errors: post.form_errors }, status: :unprocessable_entity)
     end

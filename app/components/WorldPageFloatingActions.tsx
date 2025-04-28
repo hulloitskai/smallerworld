@@ -14,7 +14,7 @@ import {
 import { useNewPostDraft } from "~/helpers/posts/form";
 import { useWebPush } from "~/helpers/webPush";
 import { type WorldPageProps } from "~/pages/WorldPage";
-import { type Encouragement, type Post, type PostType } from "~/types";
+import { type Encouragement, type PostType, type WorldPost } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
@@ -51,7 +51,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   const encouragements = encouragementsData?.encouragements ?? [];
 
   // == Load pinned posts
-  const { data: pinnedPostsData } = useRouteSWR<{ posts: Post[] }>(
+  const { data: pinnedPostsData } = useRouteSWR<{ posts: WorldPost[] }>(
     routes.posts.pinned,
     {
       descriptor: "load pinned posts",

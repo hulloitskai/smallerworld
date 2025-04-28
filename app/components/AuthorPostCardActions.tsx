@@ -7,7 +7,12 @@ import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Post, type PostReaction, type User } from "~/types";
+import {
+  type Post,
+  type PostReaction,
+  type User,
+  type WorldPost,
+} from "~/types";
 
 import DrawerModal from "./DrawerModal";
 import PostForm, { type PostFormProps } from "./PostForm";
@@ -17,7 +22,7 @@ import classes from "./AuthorPostCardActions.module.css";
 export interface AuthorPostCardActionsProps
   extends Pick<PostFormProps, "pausedFriends"> {
   user: User;
-  post: Post;
+  post: WorldPost;
   hideStats: boolean;
   onFollowUpDrawerModalOpened?: () => void;
 }
