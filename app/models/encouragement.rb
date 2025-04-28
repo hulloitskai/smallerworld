@@ -50,7 +50,7 @@ class Encouragement < ApplicationRecord
   # == Noticeable
   sig do
     override
-      .params(recipient: T.all(ActiveRecord::Base, Notifiable))
+      .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
       .returns(T::Hash[String, T.untyped])
   end
   def notification_payload(recipient)
