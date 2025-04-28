@@ -45,6 +45,7 @@ interface ModalBodyProps {
   currentUser: User;
   fromJoinRequest?: JoinRequest;
   fromUser?: JoinedUser;
+  onFriendCreated?: () => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -52,6 +53,7 @@ const ModalBody: FC<ModalBodyProps> = ({
   currentUser,
   fromJoinRequest,
   fromUser,
+  onFriendCreated,
 }) => {
   const [revealBackToHomeButton, setRevealBackToHomeButton] = useState(false);
 
@@ -108,7 +110,7 @@ const ModalBody: FC<ModalBodyProps> = ({
       setFriendJoinUrl(joinUrl.toString());
       void mutateRoute(routes.friends.index);
       void mutateRoute(routes.joinRequests.index);
-      // void mutateRoute(routes.users.joined);
+      onFriendCreated?.();
       setTimeout(() => {
         setRevealBackToHomeButton(true);
       }, 3000);

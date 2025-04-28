@@ -34,7 +34,7 @@ import classes from "./WorldPage.module.css";
 
 export interface WorldPageProps extends SharedPageProps {
   currentUser: User;
-  friends: FriendInfo[];
+  latestFriends: FriendInfo[];
   pendingJoinRequests: number;
   hideStats: boolean;
   pausedFriends: number;
@@ -44,7 +44,7 @@ const ICON_SIZE = 96;
 
 const WorldPage: PageComponent<WorldPageProps> = ({
   currentUser,
-  friends,
+  latestFriends,
   pendingJoinRequests,
   pausedFriends,
 }) => {
@@ -130,9 +130,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   radius="xl"
                   display="block"
                   leftSection={
-                    !isEmpty(friends) ? (
+                    !isEmpty(latestFriends) ? (
                       <Avatar.Group className={classes.avatarGroup}>
-                        {friends.map(({ id, emoji }) => (
+                        {latestFriends.map(({ id, emoji }) => (
                           <Avatar key={id} size="sm">
                             {emoji ? (
                               <Text fz="md">{emoji}</Text>
@@ -151,13 +151,23 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                     )
                   }
                   onClick={event => {
-                    if (isEmpty(friends)) {
+                    if (isEmpty(latestFriends)) {
                       event.preventDefault();
-                      openAddFriendModal({ currentUser });
+                      openAddFriendModal({
+                        currentUser,
+                        onFriendCreated: () => {
+                          router.reload({
+                            only: ["latestFriends"],
+                            async: true,
+                          });
+                        },
+                      });
                     }
                   }}
                 >
-                  {!isEmpty(friends) ? "your friends" : "invite a friend!"}
+                  {!isEmpty(latestFriends)
+                    ? "your friends"
+                    : "invite a friend!"}
                 </Button>
               )}
               {isStandalone && <WorldPageNotificationsButton />}
@@ -220,7 +230,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       </Box>
       {(!isStandalone || !!registration) &&
         (hasOneUserCreatedPost === false ||
-          (!!friends && friends.length < 3)) && (
+          (!!latestFriends && latestFriends.length < 3)) && (
           <Alert
             className={classes.onboardingAlert}
             variant="outline"
@@ -236,9 +246,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             <List>
               <CheckableListItem
                 checked={
-                  friends.length >= 3
+                  latestFriends.length >= 3
                     ? true
-                    : isEmpty(friends)
+                    : isEmpty(latestFriends)
                       ? false
                       : "partial"
                 }
@@ -246,8 +256,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 invite{" "}
                 <span
                   style={{
-                    ...(!isEmpty(friends) &&
-                      friends.length < 3 && {
+                    ...(!isEmpty(latestFriends) &&
+                      latestFriends.length < 3 && {
                         opacity: 0.5,
                         textDecoration: "line-through",
                       }),
@@ -258,14 +268,14 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 <span
                   style={{
                     fontWeight: 500,
-                    ...(isEmpty(friends) &&
-                      friends.length < 3 && {
+                    ...(isEmpty(latestFriends) &&
+                      latestFriends.length < 3 && {
                         display: "none",
                       }),
                   }}
                 >
-                  {3 - friends.length} more{" "}
-                  {inflect("friend", 3 - friends.length)}{" "}
+                  {3 - latestFriends.length} more{" "}
+                  {inflect("friend", 3 - latestFriends.length)}{" "}
                 </span>
                 to join your world 👯
               </CheckableListItem>

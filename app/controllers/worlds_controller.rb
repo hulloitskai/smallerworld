@@ -12,23 +12,23 @@ class WorldsController < ApplicationController
   # GET /world?intent=(installation_instructions|install)
   def show
     current_user = authenticate_user!
-    friends = current_user.friends
+    latest_friends = current_user.friends
       .reverse_chronological
       .where.associated(:push_registrations)
       .distinct
       .first(3)
-    if friends.size < 3
-      friends += current_user.friends
+    if latest_friends.size < 3
+      latest_friends += current_user.friends
         .reverse_chronological
         .where.missing(:push_registrations)
         .distinct
-        .first(3 - friends.size)
+        .first(3 - latest_friends.size)
     end
     pending_join_requests = current_user.join_requests.pending.count
     paused_friends = current_user.friends.paused.count
     render(inertia: "WorldPage", props: {
       "faviconLinks" => user_favicon_links(current_user),
-      friends: FriendInfoSerializer.many(friends),
+      "latestFriends" => FriendInfoSerializer.many(latest_friends),
       "pendingJoinRequests" => pending_join_requests,
       "pausedFriends" => paused_friends,
       "hideStats" => current_user.hide_stats,
