@@ -153,6 +153,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                         href: replyUri,
                         onClick: () => {
                           setPreferredMessagingPlatform(platform);
+                          setMessagingPlatformSelectorOpened(false);
                           markAsReplied(post.id, currentFriend.access_token);
                         },
                       })}
