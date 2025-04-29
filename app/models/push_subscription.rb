@@ -33,7 +33,10 @@ class PushSubscription < ApplicationRecord
       endpoint:,
       p256dh: p256dh_key,
       auth: auth_key,
-      vapid: vapid_credentials,
+      vapid: {
+        **vapid_credentials,
+        subject: Contact.plain_mailto_uri.to_s,
+      },
       message:,
     )
     with_log_tags do

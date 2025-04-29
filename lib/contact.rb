@@ -12,9 +12,25 @@ module Contact
     credentials.email_address!
   end
 
+  sig { returns(Addressable::URI) }
+  def self.mailto_uri
+    Addressable::URI.parse("mailto:" + email_address)
+  end
+
+  sig { returns(Addressable::URI) }
+  def self.plain_mailto_uri
+    addr = Mail::Address.new(email_address)
+    Addressable::URI.parse("mailto:" + addr.address)
+  end
+
   sig { returns(String) }
   def self.phone_number
     credentials.phone_number!
+  end
+
+  sig { returns(Addressable::URI) }
+  def self.sms_uri
+    Addressable::URI.parse("sms:" + phone_number)
   end
 
   # == Helpers

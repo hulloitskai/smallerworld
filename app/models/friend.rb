@@ -94,6 +94,11 @@ class Friend < ApplicationRecord
   end
 
   # == Methods
+  sig { returns(ActiveSupport::TimeWithZone) }
+  def last_active_at
+    notifications_last_cleared_at || created_at
+  end
+
   sig { returns(T.nilable(Encouragement)) }
   def latest_visible_encouragement
     transaction do
