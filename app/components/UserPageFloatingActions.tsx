@@ -13,7 +13,7 @@ import classes from "./UserPageFloatingActions.module.css";
 export interface UserPageFloatingActionsProps {}
 
 const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = () => {
-  const { user, replyPhoneNumber } = usePageProps<UserPageProps>();
+  const { user, replyToNumber } = usePageProps<UserPageProps>();
   const currentFriend = useCurrentFriend();
 
   // == Load pinned posts
@@ -84,7 +84,7 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = () => {
               key={post.id}
               {...{ post }}
               actions={
-                <FriendPostCardActions {...{ user, post, replyPhoneNumber }} />
+                <FriendPostCardActions {...{ user, post, replyToNumber }} />
               }
             />
           ))}

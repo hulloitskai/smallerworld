@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_27_012827) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_29_192624) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -282,6 +282,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_27_012827) do
     t.string "theme"
     t.string "time_zone_name", null: false
     t.boolean "hide_stats", null: false
+    t.string "reply_to_number"
     t.index ["handle"], name: "index_users_on_handle", unique: true
     t.index ["notifications_last_cleared_at"], name: "index_users_on_notifications_last_cleared_at"
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true

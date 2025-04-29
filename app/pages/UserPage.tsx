@@ -27,7 +27,7 @@ import classes from "./UserPage.module.css";
 
 export interface UserPageProps extends SharedPageProps {
   user: User;
-  replyPhoneNumber: string | null;
+  replyToNumber: string | null;
   lastSentEncouragement: Encouragement | null;
   invitationRequested: boolean;
 }

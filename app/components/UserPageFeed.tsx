@@ -9,7 +9,7 @@ import PostCard from "./PostCard";
 export interface UserPageFeedProps extends BoxProps {}
 
 const UserPageFeed: FC<UserPageFeedProps> = props => {
-  const { currentFriend, user, replyPhoneNumber, lastSentEncouragement } =
+  const { currentFriend, user, replyToNumber, lastSentEncouragement } =
     usePageProps<UserPageProps>();
   const { post_id } = useQueryParams();
 
@@ -66,9 +66,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                 blurContent={!currentFriend && post.visibility !== "public"}
                 focus={post_id === post.id}
                 actions={
-                  <FriendPostCardActions
-                    {...{ user, post, replyPhoneNumber }}
-                  />
+                  <FriendPostCardActions {...{ user, post, replyToNumber }} />
                 }
               />
             ))}

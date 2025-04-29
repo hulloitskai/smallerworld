@@ -12,6 +12,7 @@
 #  name                          :string           not null
 #  notifications_last_cleared_at :datetime
 #  phone_number                  :string           not null
+#  reply_to_number               :string
 #  theme                         :string
 #  time_zone_name                :string           not null
 #  created_at                    :datetime         not null
@@ -59,7 +60,7 @@ class User < ApplicationRecord
 
   # == Normalizations
   normalizes :name, with: ->(name) { name.strip }
-  normalizes_phone_number :phone_number
+  normalizes_phone_number :phone_number, :reply_to_number
 
   # == Validations
   validates :name,

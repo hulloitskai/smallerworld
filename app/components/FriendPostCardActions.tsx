@@ -23,13 +23,13 @@ import postCardClasses from "./PostCard.module.css";
 export interface FriendPostCardActionsProps {
   user: User;
   post: UserPost;
-  replyPhoneNumber: string | null;
+  replyToNumber: string | null;
 }
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   user,
   post,
-  replyPhoneNumber,
+  replyToNumber,
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
   const currentFriend = useCurrentFriend();
@@ -61,14 +61,14 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   const [preferredMessagingPlatform, setPreferredMessagingPlatform] =
     usePreferredMessagingPlatform(user.id);
   const replyUri = useMemo(() => {
-    if (replyPhoneNumber && preferredMessagingPlatform) {
+    if (replyToNumber && preferredMessagingPlatform) {
       let body = post.reply_snippet;
       if (preferredMessagingPlatform === "whatsapp") {
         body = formatReplySnippetForWhatsApp(body);
       }
-      return messageUri(replyPhoneNumber, body, preferredMessagingPlatform);
+      return messageUri(replyToNumber, body, preferredMessagingPlatform);
     }
-  }, [replyPhoneNumber, post.reply_snippet, preferredMessagingPlatform]);
+  }, [replyToNumber, post.reply_snippet, preferredMessagingPlatform]);
 
   return (
     <Group {...{ ref }} align="start" gap={2}>
@@ -149,7 +149,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                     variant="light"
                     size="lg"
                     {...(currentFriend &&
-                      !!replyPhoneNumber && {
+                      !!replyToNumber && {
                         href: replyUri,
                         onClick: () => {
                           setPreferredMessagingPlatform(platform);

@@ -18,12 +18,12 @@ class UsersController < ApplicationController
         .exists?(phone_number: current_user.phone_number)
     end
     if (friend = current_friend)
-      reply_phone_number = user.phone_number
+      reply_to_number = user.reply_to_number || user.phone_number
       last_sent_encouragement = friend.latest_visible_encouragement
     end
     props = {
       user: UserSerializer.one(user),
-      "replyPhoneNumber" => reply_phone_number,
+      "replyToNumber" => reply_to_number,
       "lastSentEncouragement" => EncouragementSerializer
         .one_if(last_sent_encouragement),
       "invitationRequested" => invitation_requested,
