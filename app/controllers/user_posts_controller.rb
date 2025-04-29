@@ -9,7 +9,7 @@ class UserPostsController < ApplicationController
     user = User.find(user_id)
     posts = user.posts.includes(:image_blob)
     if (friend = current_friend)
-      posts = posts.not_hidden_from(friend.id)
+      posts = posts.not_hidden_from(friend)
       posts = posts.visible_to_friends unless friend.chosen_family?
     end
     pagy, paginated_posts = pagy_keyset(

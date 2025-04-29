@@ -114,8 +114,9 @@ class Post < ApplicationRecord
     where(visibility: %i[public friends chosen_family])
   }
   scope :currently_pinned, -> { where("pinned_until > NOW()") }
-  scope :not_hidden_from, ->(friend_id) {
-    where("NOT (? = ANY(hidden_from_ids))", friend_id)
+  scope :not_hidden_from, ->(friend) {
+    friend = T.let(friend, T.any(Friend, String))
+    where("NOT (? = ANY(hidden_from_ids))", friend)
   }
   scope :user_created, -> {
     joins(:author)
@@ -181,9 +182,9 @@ class Post < ApplicationRecord
     reply_receipts.select(:friend_id).distinct
   end
 
-  sig { returns(User::PrivateRelation) }
+  sig { returns(Friend::PrivateRelation) }
   def hidden_from
-    User.where(id: hidden_from_ids)
+    Friend.where(id: hidden_from_ids)
   end
 
   private

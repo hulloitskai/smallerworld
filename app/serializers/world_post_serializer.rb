@@ -8,6 +8,6 @@ class WorldPostSerializer < PostSerializer
   # == Attributes
   attributes :updated_at
   attribute :hidden_from_count, type: :number do
-    post.hidden_from.size
+    post.hidden_from.count
   end
 end
