@@ -117,6 +117,10 @@ class Post < ApplicationRecord
   scope :not_hidden_from, ->(friend_id) {
     where("NOT (? = ANY(hidden_from_ids))", friend_id)
   }
+  scope :user_created, -> {
+    joins(:author)
+      .where("posts.updated_at > (users.created_at + INTERVAL '1 second')")
+  }
 
   # == Noticeable
   sig do

@@ -95,8 +95,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       const accountCreatedAt = DateTime.fromISO(currentUser.created_at);
       const cutoff = accountCreatedAt.plus({ seconds: 1 });
       return posts.some(post => {
-        const postCreatedAt = DateTime.fromISO(post.created_at);
-        return postCreatedAt > cutoff;
+        const updatedAt = DateTime.fromISO(post.updated_at);
+        return updatedAt > cutoff;
       });
     }
   }, [posts]); // eslint-disable-line react-hooks/exhaustive-deps
