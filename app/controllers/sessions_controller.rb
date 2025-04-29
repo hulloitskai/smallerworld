@@ -35,23 +35,12 @@ class SessionsController < ApplicationController
       end
       verification_request.mark_as_verified!
     else
-      special_occasion_verification_code = Rails.application.credentials
-        .authentication
-        &.special_occasion_verification_code
-      user = User.find_by_phone_number(phone_number)
-      if verification_code == special_occasion_verification_code && user
-        start_new_session_for!(user)
-        render(json: {
-          "redirectUrl" => after_authentication_url,
-        })
-      else
-        render(
-          json: {
-            errors: { verification_code: "Invalid verification code" },
-          },
-          status: :unprocessable_entity,
-        )
-      end
+      render(
+        json: {
+          errors: { verification_code: "Invalid verification code" },
+        },
+        status: :unprocessable_entity,
+      )
     end
   end
 

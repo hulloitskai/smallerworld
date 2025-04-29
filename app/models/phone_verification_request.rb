@@ -98,7 +98,17 @@ class PhoneVerificationRequest < ApplicationRecord
   def self.find_valid(phone_number:, verification_code:)
     phone_number = normalize_value_for(:phone_number, phone_number)
     verification_code.strip!
-    valid.find_by(phone_number:, verification_code:)
+    if verification_code == special_occasion_verification_code
+      valid.reverse_chronological.find_by(phone_number:)
+    else
+      valid.find_by(phone_number:, verification_code:)
+    end
+  end
+
+  sig { returns(T.nilable(String)) }
+  private_class_method def self.special_occasion_verification_code
+    Rails.application.credentials.authentication
+      &.special_occasion_verification_code
   end
 
   sig { params(token: String).returns(PhoneVerificationRequest) }
