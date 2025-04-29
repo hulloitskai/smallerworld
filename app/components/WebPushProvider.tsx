@@ -203,11 +203,6 @@ const useWebPushSubscribe = ({
         });
     }
   };
-  useEffect(() => {
-    if (currentSubscription === null && Notification.permission === "granted") {
-      void subscribe();
-    }
-  }, [currentSubscription]); // eslint-disable-line react-hooks/exhaustive-deps
   return [subscribe, { subscribing, subscribeError }];
 };
 
