@@ -24,7 +24,7 @@ class FriendsController < ApplicationController
           WorldFriend.new(friend:, notifiable:)
         end
         render(json: {
-          friends: WorldFriendSerializer.many(world_friends),
+          friends: FriendSerializer.many(world_friends),
         })
       end
     end

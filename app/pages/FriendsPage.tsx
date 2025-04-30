@@ -7,7 +7,7 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import FriendCard from "~/components/FriendCard";
-import { type User, type WorldFriend } from "~/types";
+import { type Friend, type User } from "~/types";
 
 export interface FriendsPageProps extends SharedPageProps {
   currentUser: User;
@@ -18,7 +18,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   useUserTheme(currentUser.theme);
 
   // == Load friends
-  const { data: friendsData } = useRouteSWR<{ friends: WorldFriend[] }>(
+  const { data: friendsData } = useRouteSWR<{ friends: Friend[] }>(
     routes.friends.index,
     {
       descriptor: "load friends",

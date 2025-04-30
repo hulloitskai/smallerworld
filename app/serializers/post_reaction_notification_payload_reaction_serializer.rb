@@ -10,6 +10,6 @@ class PostReactionNotificationPayloadReactionSerializer < ApplicationSerializer
   attributes :emoji
 
   # == Associations
-  has_one :post, serializer: PostReactionNotificationPayloadPostSerializer
-  has_one :friend, serializer: PostReactionNotificationPayloadFriendSerializer
+  has_one :post, serializer: NotificationPostSerializer
+  has_one :friend, serializer: NotificationFriendSerializer
 end

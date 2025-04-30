@@ -5,7 +5,7 @@ import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import PauseIcon from "~icons/heroicons/pause-20-solid";
 import ResumeIcon from "~icons/heroicons/play-20-solid";
 
-import { type User, type WorldFriend } from "~/types";
+import { type Friend, type User } from "~/types";
 
 import EditFriendForm from "./EditFriendForm";
 
@@ -13,7 +13,7 @@ import classes from "./FriendCard.module.css";
 
 export interface FriendCardProps {
   currentUser: User;
-  friend: WorldFriend;
+  friend: Friend;
 }
 
 const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
@@ -169,7 +169,7 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
 export default FriendCard;
 
 interface PauseFriendItemProps {
-  friend: WorldFriend;
+  friend: Friend;
   onFriendPaused: () => void;
 }
 
@@ -206,7 +206,7 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
 };
 
 interface UnpauseFriendItemProps {
-  friend: WorldFriend;
+  friend: Friend;
   onFriendUnpaused: () => void;
 }
 

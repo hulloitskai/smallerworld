@@ -6,5 +6,7 @@ class FriendSerializer < ApplicationSerializer
   identifier
   attributes :name,
              :emoji,
-             :access_token
+             :access_token,
+             notifiable: { type: :boolean },
+             paused?: { as: :paused, type: :boolean }
 end

@@ -1,11 +1,11 @@
 # typed: true
 # frozen_string_literal: true
 
-class WorldFriendSerializer < FriendSerializer
+class WorldFriendSerializer < ApplicationSerializer
   # == Configuration
   object_as :friend
 
   # == Attributes
-  attributes notifiable: { type: :boolean },
-             paused?: { as: :paused, type: :boolean }
+  identifier
+  attributes :emoji
 end

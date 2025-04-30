@@ -28,7 +28,7 @@ class WorldsController < ApplicationController
     paused_friends = current_user.friends.paused.count
     render(inertia: "WorldPage", props: {
       "faviconLinks" => user_favicon_links(current_user),
-      "latestFriends" => FriendInfoSerializer.many(latest_friends),
+      "latestFriends" => WorldFriendSerializer.many(latest_friends),
       "pendingJoinRequests" => pending_join_requests,
       "pausedFriends" => paused_friends,
       "hideStats" => current_user.hide_stats,

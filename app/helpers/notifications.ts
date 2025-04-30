@@ -36,7 +36,7 @@ export const renderNotification = (
       return {
         title,
         body,
-        image: post.image_src ?? post.quoted_post_image_src ?? undefined,
+        image: post.image_src ?? undefined,
       };
     }
     case "UniversePost": {
@@ -52,7 +52,7 @@ export const renderNotification = (
       return {
         title,
         body,
-        image: post.image_src ?? post.quoted_post_image_src ?? undefined,
+        image: post.image_src ?? undefined,
       };
     }
     case "PostReaction": {

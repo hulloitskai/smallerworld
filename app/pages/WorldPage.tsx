@@ -28,13 +28,13 @@ import { usePosts } from "~/helpers/posts";
 import { useInstallPrompt } from "~/helpers/pwa/install";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type FriendInfo, type User } from "~/types";
+import { type User, type WorldFriend } from "~/types";
 
 import classes from "./WorldPage.module.css";
 
 export interface WorldPageProps extends SharedPageProps {
   currentUser: User;
-  latestFriends: FriendInfo[];
+  latestFriends: WorldFriend[];
   pendingJoinRequests: number;
   hideStats: boolean;
   pausedFriends: number;
