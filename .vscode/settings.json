@@ -5,7 +5,8 @@
     "Procfile.test": "procfile",
     "Procfile.ci-test": "procfile",
     "Gemfile.lock": "plaintext",
-    ".inputrc": "plaintext"
+    ".inputrc": "plaintext",
+    "test/fixtures/active_storage/blobs.yml": "erb"
   },
 
   // == ESLint

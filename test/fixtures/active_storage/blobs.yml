@@ -1,0 +1,1 @@
+cat_blob: <%= ActiveStorage::FixtureSet.blob filename: "cat.jpeg", service_name: "test_fixtures" %>

@@ -13,6 +13,7 @@ sorbet/rbi/dsl/
 sorbet/rbi/gems/
 sorbet/rbi/annotations/
 storage/
+test/fixtures/active_storage/blobs.yml
 tmp/
 typings/auto-import.d.ts
 vendor/

@@ -1,0 +1,9 @@
+testy:
+  handle: testy
+  name: Testy McTestface
+  hide_stats: false
+  phone_number: "+14168554759"
+  time_zone_name: "America/Toronto"
+  theme: "darkSky"
+  created_at: "<%= 1.day.ago %>"
+  updated_at: "<%= 1.day.ago %>"

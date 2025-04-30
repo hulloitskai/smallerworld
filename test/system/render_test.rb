@@ -8,8 +8,15 @@ class RenderTest < ApplicationSystemTestCase
   # driven_by :rack_test
 
   # == Tests
-  test "rendering root path" do
+  test "renders landing page" do
     visit(root_path)
+    assert_selector("#app")
+    assert_not_empty(find_by_id("app").find_all("*"))
+  end
+
+  test "renders user page" do
+    testy = user(:testy)
+    visit(user_path(testy))
     assert_selector("#app")
     assert_not_empty(find_by_id("app").find_all("*"))
   end
