@@ -183,7 +183,8 @@ group :development, :test do
   gem "brakeman", require: false
 
   # Auto-detect and warn about N+1 queries
-  gem "bullet"
+  gem "prosopite"
+  gem "pg_query"
 
   # Generate Typescript path helpers
   gem "js_from_routes", "~> 4.0"

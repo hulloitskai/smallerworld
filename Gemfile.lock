@@ -142,9 +142,6 @@ GEM
       racc
     break (0.40.0)
     builder (3.3.0)
-    bullet (8.0.0)
-      activesupport (>= 3.0.0)
-      uniform_notifier (~> 1.11)
     bundler-audit (0.9.2)
       bundler (>= 1.2.0, < 3)
       thor (~> 1.0)
@@ -218,6 +215,15 @@ GEM
       fugit (>= 1.11.0)
       railties (>= 6.1.0)
       thor (>= 1.0.0)
+    google-protobuf (4.30.2-aarch64-linux)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.30.2-arm64-darwin)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.30.2-x86_64-linux)
+      bigdecimal
+      rake (>= 13)
     html2text (0.4.0)
       nokogiri (>= 1.0, < 2.0)
     htmlentities (4.3.4)
@@ -306,6 +312,8 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
+    pg_query (6.1.0)
+      google-protobuf (>= 3.25.3)
     pg_search (2.3.7)
       activerecord (>= 6.1)
       activesupport (>= 6.1)
@@ -325,6 +333,7 @@ GEM
       premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
     prism (1.4.0)
+    prosopite (2.1.0)
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -514,7 +523,6 @@ GEM
     unicode-emoji (3.8.0)
       unicode-version (~> 1.0)
     unicode-version (1.4.0)
-    uniform_notifier (1.16.0)
     uri (1.0.3)
     useragent (0.16.11)
     validate_url (1.0.15)
@@ -571,7 +579,6 @@ DEPENDENCIES
   bootsnap
   brakeman
   break
-  bullet
   bundler-audit (~> 0.9.2)
   can_has_validations (~> 1.8)
   capybara
@@ -603,9 +610,11 @@ DEPENDENCIES
   oj_serializers (~> 2.0)
   pagy (~> 9.2)
   pg (~> 1.5)
+  pg_query
   pg_search (~> 2.3)
   phonelib (~> 0.6.55)
   premailer-rails (~> 1.12)
+  prosopite
   pry
   pry-rails
   pry-rescue

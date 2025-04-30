@@ -26,7 +26,6 @@ module SmallerWorld
     require "better_errors_ext"
     require "vite_ruby_ext"
     require "inertia_rails_ext"
-    require "bullet_ext"
     require "premailer_ext"
     require "friendly_id_ext"
     require "email_validator_ext"
