@@ -51,10 +51,14 @@ bin/setup
 - [x] allow you to change icon of your smaller world as friend before you save
       it
 - [-] some android devices don't open app from notification
+- [ ] make it easy for new users to request to join peppercoat's world
+  - demo vibes on landing page?
+- [ ] features + feedback area of smaller world (click on the door to enter
+      the shared area)
+- [ ] closeable prompt to open your world on mobile with qr code when on desktop
 - [ ] android takes some time for beforeinstallprompt event to fire, i need to
       account for this
 - [ ] emoji picker search sucks
-- [ ] suggestion to open world on mobile with qr code
 - [ ] make it easy to add friends from onboarding tutorial
 - [ ] show arrow to show where the create a post button lives (⬇️)
 - [ ] user-page-specific splash screens for Android / iOS
