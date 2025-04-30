@@ -17,6 +17,7 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import openAddFriendModal from "~/components/AddFriendModal";
 import AppLayout from "~/components/AppLayout";
+import ContactLink from "~/components/ContactLink";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
@@ -224,6 +225,23 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               })}
             >
               view join requests
+            </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item
+              component="div"
+              disabled
+              className={classes.menuContactItem}
+            >
+              <ContactLink
+                type="sms"
+                body="so about this smaller world thing... "
+                size="xs"
+                inline
+                w="100%"
+                ta="center"
+              >
+                got questions or feedback?
+              </ContactLink>
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

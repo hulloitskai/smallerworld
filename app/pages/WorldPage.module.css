@@ -1,3 +1,13 @@
+.menuContactItem {
+  padding-block: 4px;
+  cursor: default;
+  opacity: 1;
+
+  @mixin hover {
+    background-color: transparent;
+  }
+}
+
 .avatarGroup {
   :global(.mantine-Avatar-root) {
     box-shadow: var(--mantine-shadow-xs);

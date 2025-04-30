@@ -7,6 +7,7 @@ import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
+import ContactLink from "~/components/ContactLink";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import UserPageDialogStateProvider from "~/components/UserPageDialogStateProvider";
 import UserPageFeed from "~/components/UserPageFeed";
@@ -166,23 +167,34 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             </ActionIcon>
           </Popover.Target>
           <Popover.Dropdown>
-            <Stack gap={8}>
-              <Text ta="center" ff="heading" fw={600}>
-                wanna make your own smaller world?
-              </Text>
-              <Button
-                component="a"
-                target="_blank"
-                href={routes.session.new.path()}
-                leftSection="😍"
-                styles={{
-                  section: {
-                    fontSize: "var(--mantine-font-size-lg)",
-                  },
-                }}
+            <Stack gap="xs">
+              <Stack gap={8}>
+                <Text ta="center" ff="heading" fw={600}>
+                  wanna make your own smaller world?
+                </Text>
+                <Button
+                  component="a"
+                  target="_blank"
+                  href={routes.session.new.path()}
+                  leftSection="😍"
+                  styles={{
+                    section: {
+                      fontSize: "var(--mantine-font-size-lg)",
+                    },
+                  }}
+                >
+                  create your world
+                </Button>
+              </Stack>
+              <Divider mt={4} />
+              <ContactLink
+                type="sms"
+                body="so about this smaller world thing... "
+                size="xs"
+                inline
               >
-                create your world
-              </Button>
+                got questions or feedback?
+              </ContactLink>
             </Stack>
           </Popover.Dropdown>
         </Popover>
