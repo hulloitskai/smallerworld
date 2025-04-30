@@ -5,18 +5,21 @@ import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import PauseIcon from "~icons/heroicons/pause-20-solid";
 import ResumeIcon from "~icons/heroicons/play-20-solid";
 
-import { type Friend, type User } from "~/types";
+import { type Friend, type NotifiableFriend, type User } from "~/types";
 
 import EditFriendForm from "./EditFriendForm";
 
-import classes from "./FriendCard.module.css";
+import classes from "./NotifiableFriendCard.module.css";
 
-export interface FriendCardProps {
+export interface NotifiableFriendCardProps {
   currentUser: User;
-  friend: Friend;
+  friend: NotifiableFriend;
 }
 
-const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
+const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
+  currentUser,
+  friend,
+}) => {
   const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
   const [menuOpened, setMenuOpened] = useState(false);
 
@@ -166,7 +169,7 @@ const FriendCard: FC<FriendCardProps> = ({ currentUser, friend }) => {
   );
 };
 
-export default FriendCard;
+export default NotifiableFriendCard;
 
 interface PauseFriendItemProps {
   friend: Friend;
