@@ -3,6 +3,7 @@ type NotificationType =
   | "JoinRequest"
   | "Friend"
   | "Post"
-  | "Encouragement";
+  | "Encouragement"
+  | "UniversePost";
 
 export default NotificationType;

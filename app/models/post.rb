@@ -130,15 +130,19 @@ class Post < ApplicationRecord
       .returns(T::Hash[String, T.untyped])
   end
   def notification_payload(recipient)
-    unless recipient.is_a?(Friend)
-      raise ArgumentError, "Post notification should be received by a Friend"
+    case recipient
+    when Friend
+      payload = PostNotificationPayload.new(
+        post: self,
+        friend_access_token: recipient.access_token,
+      )
+      PostNotificationPayloadSerializer.one(payload)
+    when nil
+      payload = UniversePostNotificationPayload.new(post: self)
+      UniversePostNotificationPayloadSerializer.one(payload)
+    else
+      raise ArgumentError, "Invalid recipient: #{recipient.inspect}"
     end
-
-    payload = PostNotificationPayload.new(
-      post: self,
-      friend_access_token: recipient.access_token,
-    )
-    PostNotificationPayloadSerializer.one(payload)
   end
 
   # == Methods

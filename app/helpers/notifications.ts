@@ -5,6 +5,7 @@ import {
   type Notification,
   type PostNotificationPayload,
   type PostReactionNotificationPayload,
+  type UniversePostNotificationPayload,
 } from "~/types";
 
 import { POST_TYPE_TO_LABEL } from "./posts/formatting";
@@ -24,6 +25,22 @@ export const renderNotification = (
   switch (notification.type) {
     case "Post": {
       const { post } = notification.payload as PostNotificationPayload;
+      let title = `new ${POST_TYPE_TO_LABEL[post.type]}`;
+      if (post.emoji) {
+        title = `${post.emoji} ${title}`;
+      }
+      let body = post.body_snippet;
+      if (post.title_snippet) {
+        body = `${post.title_snippet}: ${body}`;
+      }
+      return {
+        title,
+        body,
+        image: post.image_src ?? post.quoted_post_image_src ?? undefined,
+      };
+    }
+    case "UniversePost": {
+      const { post } = notification.payload as UniversePostNotificationPayload;
       let title = `new ${POST_TYPE_TO_LABEL[post.type]}`;
       if (post.emoji) {
         title = `${post.emoji} ${title}`;
@@ -90,6 +107,14 @@ export const notificationTargetUrl = (notification: Notification): string => {
         handle: user_handle,
         query: {
           friend_token: friend_access_token,
+          post_id: post.id,
+        },
+      });
+    }
+    case "UniversePost": {
+      const { post } = notification.payload as UniversePostNotificationPayload;
+      return routes.universe.show.path({
+        query: {
           post_id: post.id,
         },
       });
