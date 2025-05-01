@@ -100,46 +100,46 @@ interface NotificationData {
 }
 
 self.addEventListener("push", event => {
-  invariant(event.data, "Missing push data");
-  const data = event.data.json() as NotificationData;
-  console.info("Push event", data);
+  invariant(event.data, "Missing push event data");
+
+  const data: NotificationData = event.data.json();
+  console.debug("Received push event", data);
   const { notification, pageIconUrl, badgeCount } = data;
-  const actions: Promise<void>[] = [];
 
-  // Set app badge if no window is currently visible.
-  if (badgeCount && navigator.setAppBadge) {
-    console.debug("Setting app badge", badgeCount);
-    actions.push(
-      self.clients
-        .matchAll({ type: "window", includeUncontrolled: true })
-        .then(async clients => {
-          if (clients.every(client => client.visibilityState === "hidden")) {
-            await navigator.setAppBadge(badgeCount);
-          }
-        }),
-    );
-  }
-
+  let showNotification: Promise<void>;
   if (notification) {
     const { title, icon, ...options } = renderNotification(notification);
-    actions.push(
-      self.registration
-        .showNotification(title, {
-          ...options,
-          icon: icon ?? pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
-          data,
-        })
-        .then(() => markAsDelivered(notification)),
-    );
+    showNotification = self.registration
+      .showNotification(title, {
+        ...options,
+        icon: icon ?? pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
+        data,
+      })
+      .then(() => markAsDelivered(notification));
   } else {
-    actions.push(
-      self.registration.showNotification("test notification", {
-        body: "this is a test notification. if you are seeing this, then your push notifications are working!",
-        icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
-      }),
-    );
+    showNotification = self.registration.showNotification("test notification", {
+      body: "this is a test notification. if you are seeing this, then your push notifications are working!",
+      icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
+    });
   }
-  event.waitUntil(Promise.all(actions));
+
+  event.waitUntil(
+    showNotification.then(async () => {
+      // Set app badge if no window is currently visible.
+      if (!navigator.setAppBadge || !badgeCount) {
+        return;
+      }
+      const clients = await self.clients.matchAll({
+        type: "window",
+        includeUncontrolled: true,
+      });
+      if (clients.some(client => client.visibilityState === "hidden")) {
+        return;
+      }
+      console.info("Setting app badge", badgeCount);
+      await navigator.setAppBadge(badgeCount);
+    }),
+  );
 });
 
 self.addEventListener("pushsubscriptionchange", event => {
@@ -169,11 +169,11 @@ self.addEventListener("pushsubscriptionchange", event => {
 });
 
 self.addEventListener("notificationclick", event => {
-  console.debug("Notification clicked", event);
+  const data: NotificationData = event.notification.data;
+  console.debug("Notification clicked", data);
   event.notification.close(); // Android needs explicit close
 
-  invariant(event.notification.data, "Missing notification data");
-  const { notification } = event.notification.data as NotificationData;
+  const { notification }: NotificationData = event.notification.data;
   if (!notification) {
     return;
   }
