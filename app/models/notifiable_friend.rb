@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class WorldFriend < T::Struct
+class NotifiableFriend < T::Struct
   # == Properties
   const :friend, Friend
   delegate_missing_to :friend

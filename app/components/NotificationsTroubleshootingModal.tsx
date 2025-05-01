@@ -2,7 +2,7 @@ import { type ButtonProps, Text } from "@mantine/core";
 
 import FixIcon from "~icons/heroicons/wrench-screwdriver-20-solid";
 
-import { useWebPush } from "~/helpers/webPush";
+import { useSendTestNotification, useWebPush } from "~/helpers/webPush";
 
 import ContactLink from "./ContactLink";
 
@@ -34,35 +34,16 @@ export const openNotificationsTroubleshootingModal = (): void => {
 
 // eslint-disable-next-line react-refresh/only-export-components
 const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
-  const currentFriend = useCurrentFriend();
   const { subscribe, loading } = useWebPush();
-  const { trigger, mutating } = useRouteMutation<{}>(
-    routes.pushSubscriptions.test,
-    {
-      descriptor: "send test notification",
-      params: {
-        query: {
-          ...(currentFriend && {
-            friend_token: currentFriend.access_token,
-          }),
-        },
-      },
-    },
-  );
-
+  const { send: sendTestNotification, sending: sendingTestNotification } =
+    useSendTestNotification();
   return (
     <Button
       variant="filled"
       leftSection={<FixIcon />}
-      loading={loading || mutating}
+      loading={loading || sendingTestNotification}
       onClick={() => {
-        void subscribe().then(subscription =>
-          trigger({
-            subscription: {
-              endpoint: subscription.endpoint,
-            },
-          }),
-        );
+        void subscribe().then(sendTestNotification);
       }}
       {...props}
     >

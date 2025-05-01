@@ -5,7 +5,7 @@ import {
   useFriendNotificationSettingsForm,
 } from "~/helpers/friendNotificationSettings";
 import { POST_TYPES } from "~/helpers/posts";
-import { useWebPush } from "~/helpers/webPush";
+import { useSendTestNotification, useWebPush } from "~/helpers/webPush";
 import { type Friend, type FriendNotificationSettings } from "~/types";
 
 import FriendNotificationSettingsForm, {
@@ -139,55 +139,36 @@ const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
       )}
       <Divider mt="md" mx="calc(-1 * var(--mantine-spacing-md))" />
       <Center py={8}>
-        <SendTestNotificationButton
-          {...{ currentFriend, subscription, onClose }}
-        />
+        <SendTestNotificationButton {...{ subscription, onClose }} />
       </Center>
     </Stack>
   );
 };
 
 interface SendTestNotificationButtonProps {
-  currentFriend: Friend;
   subscription: PushSubscription;
   onClose: () => void;
 }
 
 const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
-  currentFriend,
   subscription,
   onClose,
 }) => {
-  const { trigger, mutating, data } = useRouteMutation<{}>(
-    routes.pushSubscriptions.test,
-    {
-      descriptor: "send test notification",
-      params: {
-        query: {
-          friend_token: currentFriend.access_token,
-        },
-      },
-    },
-  );
-
+  const { send, sent, sending } = useSendTestNotification();
   return (
     <Stack gap={2}>
       <Button
-        loading={mutating}
+        loading={sending}
         variant="subtle"
         size="compact-sm"
         leftSection={<NotificationIcon />}
         onClick={() => {
-          void trigger({
-            subscription: {
-              endpoint: subscription.endpoint,
-            },
-          });
+          void send(subscription);
         }}
       >
         send test notification
       </Button>
-      {data && (
+      {sent && (
         <Anchor
           component="button"
           size="xs"

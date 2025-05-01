@@ -1,6 +1,6 @@
 import { Loader, Text } from "@mantine/core";
 
-import { useWebPush } from "~/helpers/webPush";
+import { useSendTestNotification, useWebPush } from "~/helpers/webPush";
 
 import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
@@ -76,27 +76,19 @@ const SendTestNotificationMenuItem: FC<SendTestNotificationMenuItemProps> = ({
   subscription,
   onClose,
 }) => {
-  const { trigger, mutating, data } = useRouteMutation<{}>(
-    routes.pushSubscriptions.test,
-    { descriptor: "send test notification" },
-  );
-
+  const { send, sent, sending } = useSendTestNotification();
   return (
     <>
       <Menu.Item
         closeMenuOnClick={false}
-        leftSection={mutating ? <Loader size="xs" /> : <NotificationIcon />}
+        leftSection={sending ? <Loader size="xs" /> : <NotificationIcon />}
         onClick={() => {
-          void trigger({
-            subscription: {
-              endpoint: subscription.endpoint,
-            },
-          });
+          void send(subscription);
         }}
       >
         send test notification
       </Menu.Item>
-      {data && (
+      {sent && (
         <Menu.Item
           component="div"
           disabled

@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext } from "react";
 
 import { type PushRegistration } from "~/types";
 
@@ -33,5 +33,43 @@ export const useWebPush = (options?: WebPushOptions): UseWebPushResult => {
         options?.onSubscribed?.(subscription);
         return subscription;
       }),
+  };
+};
+
+export interface SendTestNotificationReturn {
+  send: (subscription: PushSubscription) => Promise<void>;
+  sent: boolean;
+  sending: boolean;
+}
+
+export const useSendTestNotification = (): SendTestNotificationReturn => {
+  const currentFriend = useCurrentFriend();
+  const { trigger, mutating } = useRouteMutation(
+    routes.pushSubscriptions.test,
+    {
+      descriptor: "send test notification",
+      params: {
+        query: {
+          ...(currentFriend && {
+            friend_token: currentFriend.access_token,
+          }),
+        },
+      },
+    },
+  );
+  const send = useCallback(
+    async (subscription: PushSubscription) => {
+      await trigger({
+        subscription: {
+          endpoint: subscription.endpoint,
+        },
+      });
+    },
+    [trigger],
+  );
+  return {
+    send,
+    sent: false,
+    sending: mutating,
   };
 };
