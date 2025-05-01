@@ -47,8 +47,10 @@ class PushSubscriptionsController < ApplicationController
 
   # PUT /push_subscriptions/unsubscribe
   def unsubscribe
+    owner = current_owner
     subscription = find_subscription
-    subscription.destroy!
+    subscription.registrations.destroy_by(owner:)
+    subscription.destroy! if subscription.registrations.none?
     render(json: {})
   end
 

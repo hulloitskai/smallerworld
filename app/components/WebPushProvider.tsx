@@ -283,6 +283,13 @@ const useWebPushUnsubscribe = ({
     try {
       await fetchRoute(routes.pushSubscriptions.unsubscribe, {
         descriptor: "unsubscribe from push notifications",
+        params: {
+          query: {
+            ...(currentFriend && {
+              friend_token: currentFriend.access_token,
+            }),
+          },
+        },
         data: {
           subscription: {
             endpoint: subscription.endpoint,
