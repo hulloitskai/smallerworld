@@ -1,7 +1,10 @@
 import { type GetResult } from "@fingerprintjs/fingerprintjs";
 
 import { identifyVisitor } from "~/helpers/fingerprinting";
-import { WebPushContext } from "~/helpers/webPush";
+import {
+  WebPushContext,
+  type WebPushSubscribeOptions,
+} from "~/helpers/webPush";
 import { type PushRegistration } from "~/types";
 
 export interface WebPushProviderProps extends PropsWithChildren {}
@@ -130,7 +133,7 @@ const useLookupPushRegistration = ({
   return subscription === null ? null : registration;
 };
 
-interface WebPushSubscribeOptions {
+interface WebPushSubscribeParams {
   currentSubscription: PushSubscription | null | undefined;
   onSubscribed: (subscription: PushSubscription) => void;
 }
@@ -138,14 +141,17 @@ interface WebPushSubscribeOptions {
 const useWebPushSubscribe = ({
   currentSubscription,
   onSubscribed,
-}: WebPushSubscribeOptions): [
-  () => Promise<PushSubscription>,
+}: WebPushSubscribeParams): [
+  (options?: WebPushSubscribeOptions) => Promise<PushSubscription>,
   { subscribing: boolean; subscribeError: Error | null },
 ] => {
   const currentFriend = useCurrentFriend();
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState<Error | null>(null);
-  const subscribe = (): Promise<PushSubscription> => {
+  const subscribe = (
+    options?: WebPushSubscribeOptions,
+  ): Promise<PushSubscription> => {
+    const { forceNewSubscription = false } = options ?? {};
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
       let deviceId: string | undefined;
       let visitorIdentity: GetResult | undefined;
@@ -161,7 +167,7 @@ const useWebPushSubscribe = ({
             identifyVisitor(),
           ],
         );
-        if (!subscription) {
+        if (!subscription || forceNewSubscription) {
           subscription = await pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: createApplicationServerKey(publicKey),
@@ -261,7 +267,7 @@ const reportProblem = (message: string): void => {
   console.error("Web push error", message);
 };
 
-export interface UseWebPushUnsubscribeOptions {
+export interface WebPushUnsubscribeParams {
   subscription: PushSubscription | null | undefined;
   onUnsubscribed: () => void;
 }
@@ -269,7 +275,7 @@ export interface UseWebPushUnsubscribeOptions {
 const useWebPushUnsubscribe = ({
   subscription,
   onUnsubscribed,
-}: UseWebPushUnsubscribeOptions): [
+}: WebPushUnsubscribeParams): [
   () => Promise<void>,
   { unsubscribing: boolean; unsubscribeError: Error | null },
 ] => {

@@ -43,7 +43,9 @@ const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
       leftSection={<FixIcon />}
       loading={loading || sendingTestNotification}
       onClick={() => {
-        void subscribe().then(sendTestNotification);
+        void subscribe({ forceNewSubscription: true }).then(
+          sendTestNotification,
+        );
       }}
       {...props}
     >

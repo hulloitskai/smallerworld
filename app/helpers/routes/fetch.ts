@@ -22,17 +22,20 @@ export const fetchRoute = async <Data>(
 ): Promise<Data> => {
   const { descriptor, failSilently, ...routeOptions } = options;
   const handleError = (responseError: ResponseError) => {
-    const { body } = responseError;
+    const { body, response } = responseError;
     if (isErrorBody(body)) {
       const { error } = body;
       console.error(`Failed to ${descriptor}`, error);
       if (isCSRFVerificationError(error)) {
         toastInvalidCSRFToken();
       } else if (!failSilently) {
-        toast.error(`failed to ${descriptor}`, {
-          description:
-            typeof error === "string" ? error : "an unknown error occurred.",
-        });
+        const message =
+          response?.status === 503
+            ? "server is unresponsive; retrying..."
+            : typeof error === "string"
+              ? error
+              : "an unknown error occurred.";
+        toast.error(`failed to ${descriptor}`, { description: message });
       }
       throw new Error(error);
     } else {
@@ -48,11 +51,11 @@ export const fetchRoute = async <Data>(
   if (typeof route === "string") {
     const { method, ...requestOptions } = omit(routeOptions, "params");
     return request(method ?? "get", route, requestOptions).then(
-      data => data as Data,
+      undefined,
       handleError,
     );
   }
-  return route<Data>(routeOptions).catch(handleError);
+  return route<Data>(routeOptions).then(undefined, handleError);
 };
 
 const isErrorBody = (body: any): body is { error: string } =>
