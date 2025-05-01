@@ -149,7 +149,7 @@ const useWebPushSubscribe = ({
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
       let deviceId: string | undefined;
       let visitorIdentity: GetResult | undefined;
-      let subscription: PushSubscription | undefined;
+      let subscription = currentSubscription;
       try {
         let pushManager: PushManager | undefined;
         let publicKey: string | undefined;
@@ -159,13 +159,14 @@ const useWebPushSubscribe = ({
             fetchPublicKey(),
             fetchDeviceId(),
             identifyVisitor(),
-            currentSubscription?.unsubscribe(),
           ],
         );
-        subscription = await pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: createApplicationServerKey(publicKey),
-        });
+        if (!subscription) {
+          subscription = await pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: createApplicationServerKey(publicKey),
+          });
+        }
       } catch (error) {
         if (error instanceof Error) {
           setSubscribeError(error);
