@@ -70,7 +70,7 @@ class User < ApplicationRecord
             :time_zone_name,
             presence: true
   validates :name, length: { maximum: 30 }
-  validates :handle, length: { minimum: 4 }
+  validates :handle, length: { minimum: 2 }
   validate :validate_time_zone_name
 
   # == Callbacks
@@ -127,6 +127,7 @@ class User < ApplicationRecord
   sig { returns(Post) }
   def create_welcome_post!
     posts.create!(
+      created_at:,
       type: "journal_entry",
       visibility: :public,
       emoji: "🌎",

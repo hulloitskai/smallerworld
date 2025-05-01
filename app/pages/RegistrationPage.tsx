@@ -53,8 +53,8 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       name: hasLength({ max: 30 }, "Must be less than 30 characters"),
       prefixed_handle: (value: string) => {
         const handle = value.substring(1);
-        if (handle.length < 4) {
-          return "Must be at least 4 characters";
+        if (handle.length < 2) {
+          return "Must be at least 2 characters";
         }
       },
     },
