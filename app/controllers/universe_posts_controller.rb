@@ -5,7 +5,7 @@ class UniversePostsController < ApplicationController
   # == Actions
   # GET /universe/posts
   def index
-    posts = Post.user_created.visible_to_public
+    posts = Post.where(id: Post.user_created.select(:id)).visible_to_public
     posts = posts.includes(:image_blob)
     pagy, paginated_posts = pagy_keyset(
       posts.order(created_at: :desc, id: :asc),
