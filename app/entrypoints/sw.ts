@@ -102,9 +102,7 @@ interface NotificationData {
 self.addEventListener("push", event => {
   invariant(event.data, "Missing push data");
   const data = event.data.json() as NotificationData;
-  if (import.meta.env.RAILS_ENV === "development") {
-    console.debug("Push event", data);
-  }
+  console.info("Push event", data);
   const { notification, pageIconUrl, badgeCount } = data;
   const actions: Promise<void>[] = [];
 
