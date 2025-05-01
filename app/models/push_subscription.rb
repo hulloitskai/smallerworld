@@ -27,8 +27,8 @@ class PushSubscription < ApplicationRecord
   validates :registrations, presence: true
 
   # == Methods
-  sig { params(message: String).void }
-  def push_message(message)
+  sig { params(message: String, urgency: T.nilable(Symbol)).void }
+  def push_message(message, urgency: nil)
     response = WebPush.payload_send(
       endpoint:,
       p256dh: p256dh_key,
@@ -38,6 +38,7 @@ class PushSubscription < ApplicationRecord
         subject: Contact.plain_mailto_uri.to_s,
       },
       message:,
+      urgency:,
     )
     with_log_tags do
       logger.info("Sent web push: #{response.inspect}")
@@ -61,9 +62,14 @@ class PushSubscription < ApplicationRecord
     end
   end
 
-  sig { params(payload: T::Hash[T.any(Symbol, String), T.untyped]).void }
-  def push_payload(payload)
-    push_message(payload.to_json)
+  sig do
+    params(
+      payload: T::Hash[T.any(Symbol, String), T.untyped],
+      urgency: T.nilable(Symbol),
+    ).void
+  end
+  def push_payload(payload, urgency: nil)
+    push_message(payload.to_json, urgency:)
   end
 
   private
