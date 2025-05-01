@@ -44,7 +44,7 @@ export interface SendTestNotificationReturn {
 
 export const useSendTestNotification = (): SendTestNotificationReturn => {
   const currentFriend = useCurrentFriend();
-  const { trigger, mutating } = useRouteMutation(
+  const { trigger, mutating, data } = useRouteMutation(
     routes.pushSubscriptions.test,
     {
       descriptor: "send test notification",
@@ -69,7 +69,7 @@ export const useSendTestNotification = (): SendTestNotificationReturn => {
   );
   return {
     send,
-    sent: false,
+    sent: !!data,
     sending: mutating,
   };
 };
