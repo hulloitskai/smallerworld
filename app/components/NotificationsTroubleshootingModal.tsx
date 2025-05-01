@@ -58,7 +58,7 @@ const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
       onClick={() => {
         void subscribe().then(subscription =>
           trigger({
-            push_subscription: {
+            subscription: {
               endpoint: subscription.endpoint,
             },
           }),

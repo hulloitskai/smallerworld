@@ -88,7 +88,7 @@ const SendTestNotificationMenuItem: FC<SendTestNotificationMenuItemProps> = ({
         leftSection={mutating ? <Loader size="xs" /> : <NotificationIcon />}
         onClick={() => {
           void trigger({
-            push_subscription: {
+            subscription: {
               endpoint: subscription.endpoint,
             },
           });

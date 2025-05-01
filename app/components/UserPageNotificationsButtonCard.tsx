@@ -179,7 +179,7 @@ const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
         leftSection={<NotificationIcon />}
         onClick={() => {
           void trigger({
-            push_subscription: {
+            subscription: {
               endpoint: subscription.endpoint,
             },
           });

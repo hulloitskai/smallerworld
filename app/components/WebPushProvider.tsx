@@ -108,9 +108,7 @@ const useLookupPushRegistration = ({
             },
           },
           data: {
-            push_subscription: {
-              endpoint: subscription.endpoint,
-            },
+            subscription: pick(subscription, "endpoint"),
           },
           keepPreviousData: true,
           failSilently: true,
@@ -234,22 +232,25 @@ const registerSubscription = ({
     throw new Error("missing p256dh key");
   }
   const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
-  return fetchRoute<void>(routes.pushSubscriptions.create, {
-    descriptor: "subscribe to push notifications",
-    params: { query },
-    data: {
-      push_subscription: {
-        endpoint,
-        auth_key: keys.auth,
-        p256dh_key: keys.p256dh,
-      },
-      push_registration: {
-        device_id: deviceId,
-        device_fingerprint: deviceFingerprint,
-        device_fingerprint_confidence: deviceFingerprintConfidence,
+  return fetchRoute<{ registration: PushRegistration }>(
+    routes.pushSubscriptions.create,
+    {
+      descriptor: "subscribe to push notifications",
+      params: { query },
+      data: {
+        subscription: {
+          endpoint,
+          auth_key: keys.auth,
+          p256dh_key: keys.p256dh,
+        },
+        registration: {
+          device_id: deviceId,
+          device_fingerprint: deviceFingerprint,
+          device_fingerprint_confidence: deviceFingerprintConfidence,
+        },
       },
     },
-  }).then(() => {
+  ).then(() => {
     void mutateRoute(routes.pushSubscriptions.lookup, { query });
   });
 };
@@ -283,7 +284,7 @@ const useWebPushUnsubscribe = ({
       await fetchRoute(routes.pushSubscriptions.unsubscribe, {
         descriptor: "unsubscribe from push notifications",
         data: {
-          push_subscription: {
+          subscription: {
             endpoint: subscription.endpoint,
           },
         },

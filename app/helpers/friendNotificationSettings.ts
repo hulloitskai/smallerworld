@@ -62,7 +62,7 @@ export const useFriendNotificationSettingsForm = ({
     [notificationSettings.subscribed_post_types],
   );
   const form = useForm<
-    {},
+    { notificationSettings: FriendNotificationSettings },
     FriendNotificationSettingsFormValues,
     (
       values: FriendNotificationSettingsFormValues,
