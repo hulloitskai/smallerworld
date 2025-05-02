@@ -17,7 +17,7 @@ module RemovesBlank
     # == Helpers
     sig { params(attributes: T.any(Symbol, String)).void }
     def removes_blank(*attributes)
-      normalizes(*T.unsafe(attributes), with: ->(value) { value.presence })
+      T.unsafe(self).normalizes(*attributes, with: ->(value) { value.presence })
     end
   end
 end

@@ -29,7 +29,8 @@ class PushSubscription < ApplicationRecord
   # == Methods
   sig { params(message: String, urgency: T.nilable(Symbol)).void }
   def push_message(message, urgency: nil)
-    response = WebPush.payload_send(
+    options = { urgency: }.compact
+    response = T.unsafe(WebPush).payload_send(
       endpoint:,
       p256dh: p256dh_key,
       auth: auth_key,
@@ -38,7 +39,7 @@ class PushSubscription < ApplicationRecord
         subject: Contact.plain_mailto_uri.to_s,
       },
       message:,
-      urgency:,
+      **options,
     )
     with_log_tags do
       logger.info("Sent web push: #{response.inspect}")

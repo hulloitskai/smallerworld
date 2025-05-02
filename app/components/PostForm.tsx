@@ -337,7 +337,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
               {showImageInput || values.image_upload ? (
                 <ImageInput
                   {...getInputProps("image_upload")}
-                  previewFit="contain"
+                  previewProps={{ fit: "contain" }}
                   h={140}
                 />
               ) : (

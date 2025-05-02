@@ -138,7 +138,7 @@ class Module
     allow_nil: T.unsafe(nil),
     private: T.unsafe(nil)
   )
-    delegate(*T.unsafe(methods), to:, prefix:, allow_nil:)
+    T.unsafe(self).delegate(*methods, to:, prefix:, allow_nil:)
   end
 end
 

@@ -60,6 +60,7 @@ class Notification < ApplicationRecord
   scope :to_users, -> { where(recipient_type: "User") }
   scope :to_anonymous, -> { where(recipient_type: nil) }
   scope :delivered, -> { where.not(delivered_at: nil) }
+  scope :undelivered, -> { where(delivered_at: nil) }
 
   # == Methods
   sig { returns(T::Hash[String, T.untyped]) }

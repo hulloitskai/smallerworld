@@ -246,8 +246,8 @@ UserPage.layout = page => (
     title={({ user, currentFriend }, { url }) => {
       const { intent } = queryParamsFromPath(url);
       return currentFriend && intent === "join"
-        ? `you're invited to ${user.name}'s world`
-        : `${user.name}'s world`;
+        ? `you're invited to ${possessive(user.name)} world`
+        : `${possessive(user.name)} world`;
     }}
     manifestUrl={({ currentFriend, user }, { url }) => {
       const { manifest_icon_type } = queryParamsFromPath(url);

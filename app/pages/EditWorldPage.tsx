@@ -110,6 +110,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
                   radius={ICON_IMAGE_INPUT_SIZE / USER_ICON_RADIUS_RATIO}
                   required
                   withAsterisk={false}
+                  previewProps={{ bg: "white" }}
                   onPreviewChange={setPageIconPreview}
                 />
                 <UserThemeRadioGroup {...getInputProps("theme")} />

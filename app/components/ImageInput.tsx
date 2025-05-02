@@ -7,7 +7,7 @@ import { Image, Input, Text } from "@mantine/core";
 import { type DropzoneProps } from "@mantine/dropzone";
 import { Dropzone } from "@mantine/dropzone";
 import { useUncontrolled } from "@mantine/hooks";
-import { type CSSProperties, useId } from "react";
+import { useId } from "react";
 
 import PhotoIcon from "~icons/heroicons/photo-20-solid";
 
@@ -30,7 +30,7 @@ export interface ImageInputProps
     Pick<DropzoneProps, "disabled"> {
   value?: Upload | null;
   defaultValue?: Upload | null;
-  previewFit?: CSSProperties["objectFit"];
+  previewProps?: ImageProps;
   onChange?: (value: Upload | null) => void;
   onPreviewChange?: (image: ImageType | null) => void;
   radius?: ImageProps["radius"];
@@ -40,7 +40,7 @@ export interface ImageInputProps
 const ImageInput: FC<ImageInputProps> = ({
   center,
   defaultValue,
-  previewFit,
+  previewProps,
   disabled,
   h = 140,
   label,
@@ -87,6 +87,11 @@ const ImageInput: FC<ImageInputProps> = ({
   const loading: boolean = uploading || (!!value && !image);
 
   const inputId = useId();
+  const {
+    className: previewClassName,
+    style: previewStyle,
+    ...otherPreviewProps
+  } = previewProps ?? {};
   return (
     <Input.Wrapper
       labelProps={{ htmlFor: inputId, ...labelProps }}
@@ -102,11 +107,11 @@ const ImageInput: FC<ImageInputProps> = ({
       >
         <Box {...{ w, h }} p={4} pos="relative">
           <Image
-            className={classes.previewImage}
+            className={cn(classes.previewImage, previewClassName)}
             src={image?.src}
             srcSet={image?.srcset}
-            fit={previewFit}
-            style={{ "--dropzone-radius": getRadius(radius) }}
+            style={[{ "--dropzone-radius": getRadius(radius) }, previewStyle]}
+            {...otherPreviewProps}
           />
           <Dropzone
             className={classes.dropzone}

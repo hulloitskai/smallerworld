@@ -15,7 +15,7 @@ module NormalizesPhoneNumber
     sig { params(names: Symbol).void }
     def normalizes_phone_number(*names)
       T.bind(self, T.class_of(ActiveRecord::Base))
-      normalizes(*T.unsafe(names), with: ->(number) {
+      T.unsafe(self).normalizes(*names, with: ->(number) {
         phone = Phonelib.parse(number)
         phone.to_s
       })
