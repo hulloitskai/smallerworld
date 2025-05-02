@@ -1,5 +1,6 @@
 import { type GetResult } from "@fingerprintjs/fingerprintjs";
 
+import { detectBrowser, isIos } from "~/helpers/browsers";
 import { identifyVisitor } from "~/helpers/fingerprinting";
 import {
   WebPushContext,
@@ -153,12 +154,13 @@ const useWebPushSubscribe = ({
   ): Promise<PushSubscription> => {
     const { forceNewSubscription = false } = options ?? {};
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
-      let deviceId: string | undefined;
-      let visitorIdentity: GetResult | undefined;
+      const browserDetection = detectBrowser();
+      let deviceId: string;
+      let visitorIdentity: GetResult;
       let subscription = currentSubscription;
       try {
-        let pushManager: PushManager | undefined;
-        let publicKey: string | undefined;
+        let pushManager: PushManager;
+        let publicKey: string;
         [pushManager, publicKey, deviceId, visitorIdentity] = await Promise.all(
           [
             getPushManager(),
@@ -167,6 +169,9 @@ const useWebPushSubscribe = ({
             identifyVisitor(),
           ],
         );
+        if (forceNewSubscription && subscription && isIos(browserDetection)) {
+          await subscription.unsubscribe();
+        }
         if (!subscription || forceNewSubscription) {
           subscription = await pushManager.subscribe({
             userVisibleOnly: true,
@@ -288,7 +293,9 @@ const useWebPushUnsubscribe = ({
     }
     setUnsubscribing(true);
     try {
-      await fetchRoute(routes.pushSubscriptions.unsubscribe, {
+      const { shouldRemoveSubscription } = await fetchRoute<{
+        shouldRemoveSubscription: boolean;
+      }>(routes.pushSubscriptions.unsubscribe, {
         descriptor: "unsubscribe from push notifications",
         params: {
           query: {
@@ -303,7 +310,9 @@ const useWebPushUnsubscribe = ({
           },
         },
       });
-      await subscription.unsubscribe();
+      if (shouldRemoveSubscription) {
+        await subscription.unsubscribe();
+      }
       void mutateRoute(routes.pushSubscriptions.lookup, {
         query: currentFriend
           ? { friend_token: currentFriend.access_token }

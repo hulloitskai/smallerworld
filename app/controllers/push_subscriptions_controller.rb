@@ -50,8 +50,13 @@ class PushSubscriptionsController < ApplicationController
     owner = current_owner
     subscription = find_subscription
     subscription.registrations.destroy_by(owner:)
-    subscription.destroy! if subscription.registrations.none?
-    render(json: {})
+    should_remove_subscription = if subscription.registrations.none?
+      subscription.destroy!
+      true
+    else
+      false
+    end
+    render(json: { "shouldRemoveSubscription" => should_remove_subscription })
   end
 
   # POST /push_subscriptions/change

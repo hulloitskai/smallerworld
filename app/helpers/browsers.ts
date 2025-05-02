@@ -3,10 +3,14 @@ import { type IResult, UAParser } from "ua-parser-js";
 export const useBrowserDetection = (): IResult | undefined => {
   const [result, setResult] = useState<IResult | undefined>();
   useEffect(() => {
-    const parser = new UAParser();
-    setResult(parser.getResult());
+    setResult(detectBrowser());
   }, []);
   return result;
+};
+
+export const detectBrowser = (): IResult => {
+  const parser = new UAParser();
+  return parser.getResult();
 };
 
 export const isIos = (result: IResult): boolean => result.os.is("iOS");

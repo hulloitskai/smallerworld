@@ -60,9 +60,7 @@ class PostReaction < ApplicationRecord
       .returns(T::Hash[String, T.untyped])
   end
   def notification_payload(recipient)
-    payload = PostReactionNotificationPayload.new(
-      reaction: self,
-    )
+    payload = PostReactionNotificationPayload.new(reaction: self)
     PostReactionNotificationPayloadSerializer.one(payload)
   end
 
@@ -79,7 +77,7 @@ class PostReaction < ApplicationRecord
   def friend_already_reacted_to_post?
     reactions = post!.reactions
     if (id = self[:id])
-      reactions = reactions.where.not(id: id)
+      reactions = reactions.where.not(id:)
     end
     reactions.exists?(friend: friend!)
   end
