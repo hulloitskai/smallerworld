@@ -40,7 +40,7 @@ const FullStoryTracking: FC = () => {
         void FullStory("setIdentityAsync", { anonymous: true });
       }
     }
-  }, [currentUser, currentFriend]);
+  }, [currentFriend, currentUser]);
 
   // == Page tracking
   useEffect(() => {
