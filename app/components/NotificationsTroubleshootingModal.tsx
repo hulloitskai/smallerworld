@@ -35,21 +35,31 @@ export const openNotificationsTroubleshootingModal = (): void => {
 // eslint-disable-next-line react-refresh/only-export-components
 const ResetPushSubscriptionButton: FC<ButtonProps> = props => {
   const { subscribe, loading } = useWebPush();
-  const { send: sendTestNotification, sending: sendingTestNotification } =
-    useSendTestNotification();
+  const {
+    send: sendTestNotification,
+    sending: sendingTestNotification,
+    sent: testNotificationSent,
+  } = useSendTestNotification();
   return (
-    <Button
-      variant="filled"
-      leftSection={<FixIcon />}
-      loading={loading || sendingTestNotification}
-      onClick={() => {
-        void subscribe({ forceNewSubscription: true }).then(
-          sendTestNotification,
-        );
-      }}
-      {...props}
-    >
-      reset push notifications
-    </Button>
+    <Stack gap={6}>
+      <Button
+        variant="filled"
+        leftSection={<FixIcon />}
+        loading={loading || sendingTestNotification}
+        onClick={() => {
+          void subscribe({ forceNewSubscription: true }).then(
+            sendTestNotification,
+          );
+        }}
+        {...props}
+      >
+        reset push notifications
+      </Button>
+      {testNotificationSent && (
+        <Text size="xs" ta="center" c="dimmed">
+          test notification sent!
+        </Text>
+      )}
+    </Stack>
   );
 };
