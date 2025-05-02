@@ -86,8 +86,8 @@ const getPushManager = async (): Promise<PushManager> => {
   return pushManager;
 };
 
-const getPushSubscription = (): Promise<PushSubscription | null> =>
-  getPushManager().then(pushManager => pushManager.getSubscription());
+const getPushSubscription = (): Promise<PushSubscription | null | undefined> =>
+  getPushManager().then(pushManager => pushManager?.getSubscription() ?? null);
 
 interface LookupPushRegistrationOptions {
   subscription: PushSubscription | undefined | null;
