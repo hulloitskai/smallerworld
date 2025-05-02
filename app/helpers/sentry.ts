@@ -54,14 +54,19 @@ export const setupSentry = () => {
           ) {
             return null;
           }
-        } else if (
-          originalException instanceof Error &&
-          "response" in originalException &&
-          originalException.response instanceof Response
-        ) {
-          const { response } = originalException;
-          if (response.status >= 500 && response.status < 600) {
-            return null;
+        } else if (originalException instanceof Error) {
+          if (
+            "response" in originalException &&
+            originalException.response instanceof Response
+          ) {
+            const { response } = originalException;
+            if (response.status >= 500 && response.status < 600) {
+              return null;
+            }
+          } else {
+            if (originalException.name === "AbortError") {
+              return null;
+            }
           }
         }
         return event;
