@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import parseSrcset from "@prettier/parse-srcset";
 import { type ReactNode } from "react";
-import Lightbox from "yet-another-react-lightbox";
+import Lightbox, { type SlideImage } from "yet-another-react-lightbox";
 import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
@@ -18,7 +18,7 @@ import ZoomOutIcon from "~icons/heroicons/magnifying-glass-minus-20-solid";
 import ZoomInIcon from "~icons/heroicons/magnifying-glass-plus-20-solid";
 
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Image as ImageType, type Post } from "~/types";
+import { type Dimensions, type Image as ImageType, type Post } from "~/types";
 
 import QuotedPostCard from "./QuotedPostCard";
 
@@ -212,11 +212,6 @@ interface PostImageProps extends BoxProps {
 
 const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
   const [lightboxOpened, setLightboxOpened] = useState(false);
-  const largestSrcFromSrcset = useMemo<string>(() => {
-    const candidates = parseSrcset(image.srcset);
-    const largestCandidate = last(candidates);
-    return largestCandidate ? largestCandidate.source.value : image.src;
-  }, [image.srcset, image.src]);
   const children = (
     <Image
       className={classes.image}
@@ -248,10 +243,9 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
         }}
         slides={[
           {
-            src: largestSrcFromSrcset,
+            src: image.src,
             ...(image.dimensions && {
-              width: image.dimensions.width,
-              height: image.dimensions.height,
+              ...slideImageOptionsFromDimensions(image, image.dimensions),
             }),
           },
         ]}
@@ -300,4 +294,30 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
       />
     </Box>
   );
+};
+
+const slideImageOptionsFromDimensions = (
+  image: ImageType,
+  dimensions: Dimensions,
+): Omit<SlideImage, "src"> => {
+  const heightRatio = dimensions.height / dimensions.width;
+  return {
+    width: dimensions.width,
+    height: dimensions.height,
+    srcSet: parseSrcset(image.srcset).map(({ source, width }) => {
+      if (!width) {
+        return {
+          src: source.value,
+          width: NaN,
+          height: NaN,
+        };
+      }
+      const height = width.value * heightRatio;
+      return {
+        src: source.value,
+        width: width.value,
+        height,
+      };
+    }),
+  };
 };
