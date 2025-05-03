@@ -8,6 +8,7 @@ import {
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
+import parseSrcset from "@prettier/parse-srcset";
 import { type ReactNode } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
@@ -211,6 +212,11 @@ interface PostImageProps extends BoxProps {
 
 const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
   const [lightboxOpened, setLightboxOpened] = useState(false);
+  const largestSrcFromSrcset = useMemo<string>(() => {
+    const candidates = parseSrcset(image.srcset);
+    const largestCandidate = last(candidates);
+    return largestCandidate ? largestCandidate.source.value : image.src;
+  }, [image.srcset, image.src]);
   const children = (
     <Image
       className={classes.image}
@@ -242,7 +248,7 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
         }}
         slides={[
           {
-            src: image.src,
+            src: largestSrcFromSrcset,
             ...(image.dimensions && {
               width: image.dimensions.width,
               height: image.dimensions.height,
