@@ -204,7 +204,9 @@ const useWebPushSubscribe = ({
       return Notification.requestPermission()
         .then(async permission => {
           if (permission !== "granted") {
-            throw new Error("Push notification permission not granted");
+            const error = new Error("Push notification permission not granted");
+            setSubscribeError(error);
+            throw error;
           }
           return subscribeAndRegister();
         })

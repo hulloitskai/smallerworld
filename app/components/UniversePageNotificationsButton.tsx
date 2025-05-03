@@ -11,6 +11,7 @@ const UniversePageNotificationsButton: FC = () => {
     subscribing,
     supported,
     loading,
+    subscribeError,
   } = useWebPush();
 
   return (
@@ -34,6 +35,11 @@ const UniversePageNotificationsButton: FC = () => {
           {!supported && (
             <Text size="xs" c="dimmed" ta="center">
               push notifications not supported on this device :(
+            </Text>
+          )}
+          {subscribeError && (
+            <Text size="xs" c="red" ta="center">
+              {subscribeError.message}
             </Text>
           )}
         </Stack>

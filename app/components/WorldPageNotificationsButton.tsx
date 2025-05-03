@@ -14,6 +14,7 @@ const WorldPageNotificationsButton: FC = () => {
     registration,
     subscribe,
     subscribing,
+    subscribeError,
     supported,
     loading,
   } = useWebPush();
@@ -41,6 +42,11 @@ const WorldPageNotificationsButton: FC = () => {
           {!supported && (
             <Text size="xs" c="dimmed" ta="center">
               push notifications not supported on this device :(
+            </Text>
+          )}
+          {subscribeError && (
+            <Text size="xs" c="red" ta="center">
+              {subscribeError.message}
             </Text>
           )}
         </Stack>
