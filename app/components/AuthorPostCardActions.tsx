@@ -7,6 +7,7 @@ import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
+import { POST_VIEWS_LAUNCHED_AT } from "~/helpers/postViews";
 import {
   type Post,
   type PostReaction,
@@ -35,6 +36,10 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   onFollowUpDrawerModalOpened,
 }) => {
   const postUrl = usePostUrl(post, user);
+  const postCreatedAt = useMemo(
+    () => DateTime.fromISO(post.created_at),
+    [post.created_at],
+  );
   const { ref, inViewport } = useInViewport();
 
   // == Load post stats
@@ -90,7 +95,9 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
           <Tooltip
             className={classes.seenTooltip}
             label={<>seen by {statsData.viewers}</>}
-            disabled={!statsData.viewers}
+            disabled={
+              postCreatedAt < POST_VIEWS_LAUNCHED_AT || !statsData.viewers
+            }
             events={{ hover: true, focus: true, touch: true }}
           >
             <Badge
