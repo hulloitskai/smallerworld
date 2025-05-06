@@ -12,12 +12,12 @@ const StandaloneSessionProvider: FC<StandaloneSessionProviderProps> = ({
   children,
 }) => {
   const isStandalone = useIsStandalone();
+  const pageProps = usePageProps();
   const [session, setSession] = useState<
     StandaloneSession | null | undefined
   >();
   const visibility = useDocumentVisibility();
   const isInitialLoad = useRef(true);
-  const pageProps = usePageProps();
   useEffect(() => {
     if (isStandalone === undefined) {
       setSession(undefined);

@@ -64,7 +64,9 @@ export const setupInertia = (): void => {
       event.detail.exception,
     );
   });
-  router.on("before", () => {
-    closeAllModals();
+  router.on("before", ({ detail: { visit } }) => {
+    if (!visit.preserveState) {
+      closeAllModals();
+    }
   });
 };
