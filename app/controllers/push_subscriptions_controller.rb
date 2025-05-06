@@ -104,7 +104,12 @@ class PushSubscriptionsController < ApplicationController
 
   sig { returns(T.nilable(T.any(Friend, User))) }
   def current_owner
-    current_friend || current_user
+    referrer = Addressable::URI.parse(request.referer)
+    if referrer.path == universe_path
+      nil
+    else
+      current_friend || current_user
+    end
   end
 
   # See: https://fly.io/ruby-dispatch/push-to-subscribe/#user-interface
