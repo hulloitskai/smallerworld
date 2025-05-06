@@ -38,17 +38,16 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   const { ref, inViewport } = useInViewport();
 
   // == Load post stats
-  const { data: statsData } = useRouteSWR<{ notifiedFriends: number }>(
-    routes.posts.stats,
-    {
-      descriptor: "load post stats",
-      params: !hideStats && inViewport ? { id: post.id } : null,
-      keepPreviousData: true,
-      refreshInterval: 5000,
-      isVisible: () => inViewport,
-    },
-  );
-  const { notifiedFriends } = statsData ?? {};
+  const { data: statsData } = useRouteSWR<{
+    notifiedFriends: number;
+    viewers: number;
+  }>(routes.posts.stats, {
+    descriptor: "load post stats",
+    params: !hideStats && inViewport ? { id: post.id } : null,
+    keepPreviousData: true,
+    refreshInterval: 5000,
+    isVisible: () => inViewport,
+  });
 
   // == Load reactions
   const { data: reactionsData } = useRouteSWR<{ reactions: PostReaction[] }>(
@@ -87,14 +86,21 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   return (
     <>
       <Group {...{ ref }} align="start" justify="space-between" gap={2}>
-        {!!notifiedFriends && (
-          <Badge
-            variant="transparent"
-            leftSection={<NotificationIcon />}
-            className={classes.notifiedBadge}
+        {!!statsData?.notifiedFriends && (
+          <Tooltip
+            className={classes.seenTooltip}
+            label={<>seen by {statsData.viewers}</>}
+            disabled={!statsData.viewers}
+            events={{ hover: true, focus: true, touch: true }}
           >
-            {notifiedFriends} notified
-          </Badge>
+            <Badge
+              variant="transparent"
+              leftSection={<NotificationIcon />}
+              className={classes.notifiedBadge}
+            >
+              {statsData.notifiedFriends} notified
+            </Badge>
+          </Tooltip>
         )}
         <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
           {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>

@@ -8,6 +8,12 @@
   }
 }
 
+.seenTooltip {
+  font-family: var(--mantine-font-family-heading);
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 600;
+}
+
 .notifiedBadge {
   flex-shrink: 0;
   color: var(--mantine-color-dimmed);

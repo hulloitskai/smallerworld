@@ -1,7 +1,7 @@
 import { Text } from "@mantine/core";
 import { type DateTimeFormatOptions } from "luxon";
 import { DateTime } from "luxon";
-import { type ElementType } from "react";
+import { type CSSProperties, type ElementType } from "react";
 
 import classes from "./Time.module.css";
 
@@ -11,6 +11,7 @@ export interface TimeProps
   format: DateTimeFormatOptions | ((time: DateTime) => string) | string;
   children: DateTime | string;
   component?: ElementType;
+  block?: boolean;
   refreshInterval?: number;
 }
 
@@ -18,6 +19,7 @@ const Time: FC<TimeProps> = ({
   children,
   component = "span",
   refreshInterval,
+  block,
   format,
   lh,
   m,
@@ -76,7 +78,7 @@ const Time: FC<TimeProps> = ({
       <Text
         component="time"
         span
-        display="inline-grid"
+        display={block ? "block" : "inline-grid"}
         lh={loading ? 1 : lh}
         {...otherProps}
       >

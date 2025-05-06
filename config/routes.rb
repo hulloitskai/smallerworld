@@ -101,6 +101,7 @@ Rails.application.routes.draw do
     end
     member do
       get :stats
+      post :mark_as_seen
       post :mark_as_replied
     end
   end

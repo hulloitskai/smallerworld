@@ -80,6 +80,7 @@ class Post < ApplicationRecord
   belongs_to :quoted_post, class_name: "Post", optional: true
   has_many :reactions, class_name: "PostReaction", dependent: :destroy
   has_many :reply_receipts, class_name: "PostReplyReceipt", dependent: :destroy
+  has_many :views, class_name: "PostView", dependent: :destroy
 
   sig { returns(User) }
   def author!
@@ -179,6 +180,11 @@ class Post < ApplicationRecord
   def notified_friends
     delivered_notifications = notifications.delivered.to_friends
     Friend.where(id: delivered_notifications.select(:recipient_id)).distinct
+  end
+
+  sig { returns(Friend::PrivateRelation) }
+  def viewers
+    Friend.where(id: views.select(:friend_id)).distinct
   end
 
   sig { returns(PostReplyReceipt::PrivateAssociationRelation) }

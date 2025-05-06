@@ -498,6 +498,20 @@ class Post
 
     sig { void }
     def reset_quoted_post; end
+
+    sig { returns(T::Array[T.untyped]) }
+    def view_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def view_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :views`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostView::PrivateCollectionProxy) }
+    def views; end
+
+    sig { params(value: T::Enumerable[::PostView]).void }
+    def views=(value); end
   end
 
   module GeneratedAssociationRelationMethods

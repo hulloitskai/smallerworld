@@ -1,5 +1,9 @@
-import { useUserPagePosts } from "~/helpers/userPages";
+import { useInViewport } from "@mantine/hooks";
+import { type PropsWithChildren } from "react";
+
+import { mutateUserPagePosts, useUserPagePosts } from "~/helpers/userPages";
 import { type UserPageProps } from "~/pages/UserPage";
+import { type UserPost } from "~/types";
 
 import EncouragementCard from "./EncouragementCard";
 import FriendPostCardActions from "./FriendPostCardActions";
@@ -60,15 +64,16 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
         ) : (
           <>
             {posts.map(post => (
-              <PostCard
-                key={post.id}
-                {...{ post }}
-                blurContent={!currentFriend && post.visibility !== "public"}
-                focus={post_id === post.id}
-                actions={
-                  <FriendPostCardActions {...{ user, post, replyToNumber }} />
-                }
-              />
+              <TrackUserPostSeen key={post.id} {...{ post }}>
+                <PostCard
+                  {...{ post }}
+                  blurContent={!currentFriend && post.visibility !== "public"}
+                  focus={post_id === post.id}
+                  actions={
+                    <FriendPostCardActions {...{ user, post, replyToNumber }} />
+                  }
+                />
+              </TrackUserPostSeen>
             ))}
             {hasMorePosts && (
               <LoadMoreButton
@@ -89,3 +94,34 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
 };
 
 export default UserPageFeed;
+
+interface TrackUserPostSeenProps extends PropsWithChildren {
+  post: UserPost;
+}
+
+const TrackUserPostSeen: FC<TrackUserPostSeenProps> = ({ post, children }) => {
+  const { currentFriend } = usePageProps<UserPageProps>();
+  const { ref, inViewport } = useInViewport<HTMLDivElement>();
+  useEffect(() => {
+    if (currentFriend && !post.seen && inViewport) {
+      const timeout = setTimeout(() => {
+        void fetchRoute<{ authorId: string }>(routes.posts.markAsSeen, {
+          params: {
+            id: post.id,
+            query: {
+              friend_token: currentFriend.access_token,
+            },
+          },
+          descriptor: "mark post as seen",
+          failSilently: true,
+        }).then(({ authorId }) => {
+          mutateUserPagePosts(authorId, currentFriend.access_token);
+        });
+      }, 1000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [inViewport]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <div {...{ ref }}>{children}</div>;
+};

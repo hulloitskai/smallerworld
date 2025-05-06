@@ -7,5 +7,6 @@ class UserPostSerializer < PostSerializer
 
   # == Attributes
   attributes replied: { type: :boolean, nullable: true },
+             seen: { type: :boolean, nullable: true },
              repliers: { type: :number }
 end

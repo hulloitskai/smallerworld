@@ -21,6 +21,13 @@ class UserPostsController < ApplicationController
       allowed_to?(:show?, post) ? post : MaskedPost.new(post:)
     end unless current_friend
     post_ids = paginated_posts.map(&:id)
+    views_by_post_id = if (friend = current_friend)
+      PostView
+        .where(post_id: post_ids, friend:)
+        .group(:post_id)
+        .pluck(:post_id)
+        .to_set
+    end
     replied_post_ids = if (friend = current_friend)
       PostReplyReceipt
         .where(post_id: post_ids, friend:)
@@ -37,9 +44,10 @@ class UserPostsController < ApplicationController
       end
       .to_h
     user_posts = paginated_posts.map do |post|
+      seen = views_by_post_id&.include?(post.id)
       replied = replied_post_ids&.include?(post.id)
       repliers = repliers_by_post_id.fetch(post.id, 0)
-      UserPost.new(post:, replied:, repliers:)
+      UserPost.new(post:, seen:, replied:, repliers:)
     end
     render(json: {
       posts: UserPostSerializer.many(user_posts),

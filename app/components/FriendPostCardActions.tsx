@@ -70,6 +70,26 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
     }
   }, [replyToNumber, post.reply_snippet, preferredMessagingPlatform]);
 
+  // == Mark as replied
+  const { trigger: markAsReplied, mutating: markingAsReplied } =
+    useRouteMutation<{ authorId: string }>(routes.posts.markAsReplied, {
+      params: {
+        id: post.id,
+        query: {
+          ...(currentFriend && {
+            friend_token: currentFriend.access_token,
+          }),
+        },
+      },
+      descriptor: "mark post as replied",
+      failSilently: true,
+      ...(currentFriend && {
+        onSuccess: ({ authorId }) => {
+          mutateUserPagePosts(authorId, currentFriend.access_token);
+        },
+      }),
+    });
+
   return (
     <Group {...{ ref }} align="start" gap={2}>
       <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
@@ -103,6 +123,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             rel="noopener noreferrer nofollow"
             variant="subtle"
             size="compact-xs"
+            loading={markingAsReplied}
             leftSection={
               <Box pos="relative">
                 <ReplyIcon />
@@ -124,7 +145,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                   "you must be invited to this page to reply via sms",
                 );
               } else if (replyUri) {
-                markAsReplied(post.id, currentFriend.access_token);
+                void markAsReplied();
               } else {
                 setMessagingPlatformSelectorOpened(true);
               }
@@ -154,7 +175,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                         onClick: () => {
                           setPreferredMessagingPlatform(platform);
                           setMessagingPlatformSelectorOpened(false);
-                          markAsReplied(post.id, currentFriend.access_token);
+                          void markAsReplied();
                         },
                       })}
                   >
@@ -328,17 +349,4 @@ const ReactionButton: FC<ReactionButtonProps> = ({
 
 const formatReplySnippetForWhatsApp = (replySnippet: string) => {
   return replySnippet.replace(/\n> \n/g, "\n") + "\u2800";
-};
-
-const markAsReplied = (postId: string, friendAccessToken: string) => {
-  void fetchRoute<{ authorId: string }>(routes.posts.markAsReplied, {
-    params: {
-      id: postId,
-      query: {
-        friend_token: friendAccessToken,
-      },
-    },
-    descriptor: "mark post as replied",
-    failSilently: true,
-  }).then(({ authorId }) => mutateUserPagePosts(authorId, friendAccessToken));
 };

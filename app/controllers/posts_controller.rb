@@ -3,8 +3,8 @@
 
 class PostsController < ApplicationController
   # == Filters
-  before_action :authenticate_user!, except: :mark_as_replied
-  before_action :authenticate_friend!, only: :mark_as_replied
+  before_action :authenticate_user!, except: %i[mark_as_seen mark_as_replied]
+  before_action :authenticate_friend!, only: %i[mark_as_seen mark_as_replied]
 
   # == Actions
   # GET /posts
@@ -39,6 +39,7 @@ class PostsController < ApplicationController
     authorize!(post, to: :manage?)
     render(json: {
       "notifiedFriends" => post.notified_friends.count,
+      "viewers" => post.viewers.count,
     })
   end
 
@@ -87,6 +88,15 @@ class PostsController < ApplicationController
     else
       render(json: { errors: post.form_errors }, status: :unprocessable_entity)
     end
+  end
+
+  # POST /posts/:id/mark_as_seen
+  def mark_as_seen
+    current_friend = authenticate_friend!
+    post = find_post
+    authorize!(post)
+    post.views.find_or_create_by!(friend: current_friend)
+    render(json: { "authorId" => post.author_id })
   end
 
   # POST /posts/:id/mark_as_replied

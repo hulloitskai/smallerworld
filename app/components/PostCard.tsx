@@ -105,6 +105,7 @@ const PostCard: FC<PostCardProps> = ({
                 return dateTime.toLocaleString(DateTime.DATETIME_MED);
               }}
               inline
+              block
               className={classes.timestamp}
             >
               {post.created_at}
@@ -304,20 +305,22 @@ const slideImageOptionsFromDimensions = (
   return {
     width: dimensions.width,
     height: dimensions.height,
-    srcSet: parseSrcset(image.srcset).map(({ source, width }) => {
-      if (!width) {
-        return {
-          src: source.value,
-          width: NaN,
-          height: NaN,
-        };
-      }
-      const height = width.value * heightRatio;
-      return {
-        src: source.value,
-        width: width.value,
-        height,
-      };
-    }),
+    srcSet: image.srcset
+      ? parseSrcset(image.srcset).map(({ source, width }) => {
+          if (!width) {
+            return {
+              src: source.value,
+              width: NaN,
+              height: NaN,
+            };
+          }
+          const height = width.value * heightRatio;
+          return {
+            src: source.value,
+            width: width.value,
+            height,
+          };
+        })
+      : undefined,
   };
 };
