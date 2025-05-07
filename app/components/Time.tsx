@@ -1,7 +1,7 @@
 import { Text } from "@mantine/core";
 import { type DateTimeFormatOptions } from "luxon";
 import { DateTime } from "luxon";
-import { type CSSProperties, type ElementType } from "react";
+import { type ElementType } from "react";
 
 import classes from "./Time.module.css";
 

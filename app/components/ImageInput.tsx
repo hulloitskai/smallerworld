@@ -109,7 +109,7 @@ const ImageInput: FC<ImageInputProps> = ({
           <Image
             className={cn(classes.previewImage, previewClassName)}
             src={image?.src}
-            srcSet={image?.srcset}
+            srcSet={image?.srcset ?? undefined}
             style={[{ "--dropzone-radius": getRadius(radius) }, previewStyle]}
             {...otherPreviewProps}
           />

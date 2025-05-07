@@ -49,7 +49,7 @@ const UniversePageFeed: FC<UniversePageFeedProps> = props => {
                     <Image
                       className={classes.authorImage}
                       src={post.author.page_icon.src}
-                      srcSet={post.author.page_icon.srcset}
+                      srcSet={post.author.page_icon.srcset ?? undefined}
                       w={AUTHOR_ICON_SIZE}
                       h={AUTHOR_ICON_SIZE}
                       radius={AUTHOR_ICON_SIZE / USER_ICON_RADIUS_RATIO}
