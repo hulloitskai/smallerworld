@@ -19,6 +19,7 @@ export interface QuotedPostCardProps extends CardProps {
 }
 
 const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
+  const [coverImage] = post.images ?? [];
   const cardRef = useRef<HTMLDivElement>(null);
   const pinnedUntil = useMemo(() => {
     if (post.pinned_until) {
@@ -81,7 +82,7 @@ const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
           <TypographyStylesProvider>
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
           </TypographyStylesProvider>
-          {post.image && <PostImage image={post.image} />}
+          {coverImage && <PostImage image={coverImage} />}
         </Stack>
       </Card.Section>
     </Card>

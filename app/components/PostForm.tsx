@@ -76,13 +76,14 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
-    const { title, body_html, emoji, image, visibility, pinned_until } =
+    const { title, body_html, emoji, images, visibility, pinned_until } =
       post ?? {};
+    const [coverImage] = images ?? [];
     return {
       title: title ?? "",
       body_html: body_html ?? "",
       emoji: emoji ?? "",
-      image_upload: image ? { signedId: image.signed_id } : null,
+      image_upload: coverImage ? { signedId: coverImage.signed_id } : null,
       visibility: visibility ?? "friends",
       pinned_until: pinned_until ?? "",
     };
@@ -113,7 +114,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
               ...values,
               emoji: emoji || null,
               title: title || null,
-              image: image_upload?.signedId ?? null,
+              images: image_upload ? [image_upload.signedId] : null,
             },
           }),
         }
@@ -130,7 +131,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
                 title: POST_TYPES_WITH_TITLE.includes(postType)
                   ? title || null
                   : null,
-                image: image_upload?.signedId ?? null,
+                images: image_upload ? [image_upload.signedId] : null,
                 quoted_post_id: quotedPost?.id ?? null,
               },
             };

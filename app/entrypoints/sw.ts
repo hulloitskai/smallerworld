@@ -1,3 +1,10 @@
+import {
+  type BrowserOptions,
+  captureConsoleIntegration,
+  captureException,
+  httpClientIntegration,
+  init as initSentry,
+} from "@sentry/browser";
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
@@ -12,6 +19,7 @@ import {
   renderNotification,
 } from "~/helpers/notifications";
 import routes, { setupRoutes } from "~/helpers/routes";
+import { beforeSend, DENY_URLS } from "~/helpers/sentry/filtering";
 import { type PushNotification } from "~/types";
 
 // == Type declarations
@@ -21,10 +29,32 @@ declare const self: ServiceWorkerGlobalScope;
 const MANIFEST = self.__WB_MANIFEST;
 const DEVICE_ENDPOINT = "/device";
 
+// == Lifecycle
+let shuttingDown = false;
+
+// == Helpers
+const awaitTimeout = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
 // == Fetch interception
 self.addEventListener("fetch", event => {
+  // Don't perform fetches when shutting down
+  if (shuttingDown) {
+    event.stopImmediatePropagation();
+    return false;
+  }
+
+  // Parse request
   const { request } = event;
   const url = new URL(request.url);
+
+  // Ignore EventStream requests
+  if (request.headers.get("Accept") === "text/event-stream") {
+    event.stopImmediatePropagation();
+    return false;
+  }
+
+  // Handle device metadata requests
   if (url.pathname === DEVICE_ENDPOINT) {
     console.debug("Device metadata request intercepted", url.toString());
     return event.respondWith(
@@ -41,8 +71,6 @@ self.addEventListener("fetch", event => {
         }),
       ),
     );
-  } else if (request.destination === "" || request.destination === "document") {
-    return event.stopImmediatePropagation();
   }
 });
 
@@ -61,12 +89,37 @@ cleanupOutdatedCaches();
 
 // == Lifecycle
 self.addEventListener("install", event => {
-  console.info("Service worker installing");
-  event.waitUntil(self.skipWaiting());
+  console.info("Service worker installed");
+  event.waitUntil(
+    Promise.race([
+      self.skipWaiting().then(
+        () => {
+          console.info("Service worker skipped waiting");
+        },
+        error => {
+          console.error("Service worker skipped waiting failed", error);
+        },
+      ),
+      awaitTimeout(1000).then(() => {
+        console.warn("Service worker skip waiting timed out");
+      }),
+    ]),
+  );
 });
+
 self.addEventListener("activate", event => {
-  console.info("Service worker activating (claiming clients)");
-  event.waitUntil(self.clients.claim());
+  console.info("Service worker activating (claiming clients)...");
+  event.waitUntil(
+    self.clients.claim().then(
+      () => {
+        console.info("Service worker activated");
+      },
+      error => {
+        console.error("Claiming clients failed", error);
+        throw error; // Re-throw to fail activation
+      },
+    ),
+  );
 });
 
 // == Helpers
@@ -137,7 +190,11 @@ self.addEventListener("push", event => {
         return;
       }
       console.info("Setting app badge", badgeCount);
-      await navigator.setAppBadge(badgeCount);
+      try {
+        await navigator.setAppBadge(badgeCount);
+      } catch (error) {
+        console.error("Failed to set app badge", error);
+      }
     }),
   );
 });
@@ -251,6 +308,87 @@ self.addEventListener("notificationclick", event => {
         return self.clients.openWindow(targetUrl);
       }),
   );
+});
+
+self.addEventListener("message", event => {
+  const { data, ports } = event;
+  const [responsePort] = ports;
+  invariant(
+    typeof data === "object" && "action" in data,
+    "Invalid message data",
+  );
+  const { action } = data;
+  switch (action) {
+    case "initSentry": {
+      const { dsn, environment, tracesSampleRate, profilesSampleRate } = data;
+      invariant(typeof dsn === "string", "Invalid Sentry DSN");
+      invariant(typeof environment === "string", "Invalid Sentry environment");
+      invariant(
+        typeof tracesSampleRate === "number",
+        "Invalid Sentry traces sample rate",
+      );
+      invariant(
+        typeof profilesSampleRate === "number",
+        "Invalid Sentry profiles sample rate",
+      );
+      try {
+        const config: BrowserOptions = {
+          dsn,
+          environment,
+          tracesSampleRate,
+          profilesSampleRate,
+          sendDefaultPii: true,
+        };
+        initSentry({
+          ...config,
+          integrations: [
+            captureConsoleIntegration({ levels: ["error", "assert"] }),
+            httpClientIntegration(),
+          ],
+          denyUrls: DENY_URLS,
+          beforeSend,
+        });
+        console.info("Initialized Sentry", config);
+        responsePort?.postMessage({ config });
+      } catch (error) {
+        console.error("Failed to initialize Sentry", error);
+        if (error instanceof Error) {
+          responsePort?.postMessage({ error: error.message });
+        }
+      }
+      break;
+    }
+    case "skipWaiting": {
+      console.info("Received skip waiting request");
+      event.waitUntil(
+        self.skipWaiting().then(
+          () => {
+            responsePort?.postMessage({ success: true });
+            console.info("Skipped waiting");
+          },
+          error => {
+            responsePort?.postMessage({ error });
+            console.error("Failed to skip waiting", error);
+          },
+        ),
+      );
+      break;
+    }
+    case "shutdown": {
+      console.info("Received shutdown request");
+      shuttingDown = true;
+      responsePort?.postMessage({ success: true });
+      break;
+    }
+  }
+});
+
+self.addEventListener("error", ({ error }) => {
+  captureException(error);
+});
+
+self.addEventListener("unhandledrejection", ({ reason }) => {
+  captureException(reason);
 });
 
 console.info("Service worker found with scope", self.registration.scope);

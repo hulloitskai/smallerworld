@@ -11,7 +11,7 @@ class PostsController < ApplicationController
   def index
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
-      .includes(:image_blob)
+      .includes(:images_blobs)
       .order(created_at: :desc, id: :asc)
     pagy, paginated_posts = pagy_keyset(posts, limit: 5)
     render(json: {
@@ -26,7 +26,7 @@ class PostsController < ApplicationController
   def pinned
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts.currently_pinned)
-      .includes(:image_blob)
+      .includes(:images_blobs)
       .order(pinned_until: :asc, created_at: :asc)
     render(json: {
       posts: WorldPostSerializer.many(posts),
@@ -47,15 +47,15 @@ class PostsController < ApplicationController
   def create
     current_user = authenticate_user!
     post_params = T.let(
-      params.expect(post: %i[
-        type
-        title
-        body_html
-        emoji
-        image
-        visibility
-        pinned_until
-        quoted_post_id
+      params.expect(post: [
+        :type,
+        :title,
+        :body_html,
+        :emoji,
+        :visibility,
+        :pinned_until,
+        :quoted_post_id,
+        images: [],
       ]),
       ActionController::Parameters,
     )
@@ -75,13 +75,13 @@ class PostsController < ApplicationController
   def update
     post = find_post
     authorize!(post)
-    post_params = params.expect(post: %i[
-      title
-      body_html
-      emoji
-      image
-      visibility
-      pinned_until
+    post_params = params.expect(post: [
+      :title,
+      :body_html,
+      :emoji,
+      :visibility,
+      :pinned_until,
+      images: [],
     ])
     if post.update(post_params)
       render(json: { post: WorldPostSerializer.one(post) })

@@ -116,6 +116,7 @@ const useLookupPushRegistration = ({
           },
           keepPreviousData: true,
           failSilently: true,
+          revalidateIfStale: false,
           onSuccess: ({ registration }) => {
             if (registration) {
               console.info("Found push registration", registration);
@@ -352,12 +353,25 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
 
 const fetchDeviceId = async (): Promise<string> => {
   await navigator.serviceWorker.ready;
-  const response = await fetch("/device");
-  if (response.status !== 200) {
-    throw new Error(
-      `Failed to fetch device id (status code ${response.status})`,
+  const maxAttempts = 3;
+  let attempts = 0;
+  while (attempts < maxAttempts) {
+    attempts += 1;
+    const response = await fetch("/device");
+    if (response.status === 200) {
+      const data: { deviceId: string } = await response.json();
+      return data.deviceId;
+    }
+
+    console.error(
+      `Failed to fetch device id (status code ${response.status}), attempt ${attempts}/${maxAttempts}`,
     );
+    if (attempts < maxAttempts) {
+      await awaitTimeout(1000);
+    }
   }
-  const data: { deviceId: string } = await response.json();
-  return data.deviceId;
+  throw new Error(`Failed to fetch device ID after ${maxAttempts} attempts`);
 };
+
+const awaitTimeout = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));

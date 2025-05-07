@@ -12,9 +12,8 @@ const updateServiceWorkerIfScriptIsReachable = async (
     },
   });
   if (status === 200) {
-    console.info("Updating service worker...");
-    await registration.update();
-    console.info("Service worker updated");
+    console.info("Checking for service worker updates...");
+    void registration.update();
   }
 };
 
@@ -45,29 +44,57 @@ export const registerServiceWorker = async (): Promise<void> => {
 
   // Listen for update
   registration.addEventListener("updatefound", () => {
-    console.info("Service worker update found");
-    if (!registration.active) {
-      console.info("No active registration; skipping service worker update");
+    const { active, installing } = registration;
+    if (!active || !installing) {
       return;
     }
-    void updateServiceWorkerIfScriptIsReachable(registration);
+    console.info("Service worker updating...");
+    installing.addEventListener("statechange", () => {
+      switch (installing.state) {
+        case "installed": {
+          console.info("New service worker installed");
+          if (active.state === "activated") {
+            console.info(
+              "Old service worker still active; sending shutdown signal",
+            );
+            void Promise.race([
+              shutdownServiceWorker(active),
+              awaitTimeout(5000),
+            ]).then(() => {
+              if (installing.state !== "installed") {
+                return;
+              }
+              console.info("Skipping waiting on new service worker");
+              return skipWaitingServiceWorker(installing);
+            });
+          }
+          break;
+        }
+        case "activated": {
+          console.info("New service worker activated");
+          break;
+        }
+        case "redundant": {
+          console.error("Service worker update failed");
+          break;
+        }
+      }
+    });
   });
 
   // Poll for service worker updates
   setInterval(() => {
-    if (!registration.active) {
-      console.info(
-        "No active registration; skipping service worker update check",
-      );
+    if (registration.installing) {
+      console.info("Service worker installing; skipping update check");
       return;
     }
     if (!("connection" in navigator) || !navigator.onLine) {
       console.info("Offline; skipping service worker update check");
       return;
     }
-    console.info("Checking for service worker updates");
     void updateServiceWorkerIfScriptIsReachable(registration);
   }, UPDATE_INTERVAL);
+  void updateServiceWorkerIfScriptIsReachable(registration);
 };
 
 export const unregisterOutdatedServiceWorkers = async (): Promise<void> => {
@@ -90,13 +117,17 @@ const normalizeUrl = (url: string): string =>
 
 export const handleServiceWorkerNavigation = (): void => {
   const handleMessage = ({ data, ports }: MessageEvent<any>): void => {
-    if (typeof data !== "object") {
+    const [responsePort] = ports;
+    invariant(
+      typeof data === "object" && "action" in data,
+      "Invalid message data",
+    );
+    const { action } = data;
+    if (action !== "navigate") {
       return;
     }
-    const { action, url } = data;
-    if (action !== "navigate" || typeof url !== "string") {
-      return;
-    }
+    const { url } = data;
+    invariant(typeof url === "string", "Invalid navigation URL");
     console.info("Received service worker navigation request to:", url);
     if (url === location.href) {
       console.info("Already on this page, skipping navigation");
@@ -105,8 +136,7 @@ export const handleServiceWorkerNavigation = (): void => {
 
     router.visit(url, {
       onBefore: () => {
-        const [port] = ports;
-        port?.postMessage({ result: "success" });
+        responsePort?.postMessage({ result: "success" });
       },
       onSuccess: () => {
         console.info(`Requested navigation to '${url}' successful`);
@@ -146,3 +176,42 @@ export const useWaitingForServiceWorkerReady = (): boolean => {
   const serviceWorker = useServiceWorker();
   return isStandalone ? !serviceWorker : false;
 };
+
+const shutdownServiceWorker = (sw: ServiceWorker): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const { port1, port2 } = new MessageChannel();
+    port1.onmessage = ({ data }) => {
+      invariant(typeof data === "object", "Invalid message data");
+      const { success } = data;
+      if (success) {
+        resolve();
+        console.info("Old service worker shutdown started");
+      } else {
+        const message = "Failed to shutdown old service worker";
+        console.error(message);
+        reject(new Error(message));
+      }
+    };
+    sw.postMessage({ action: "shutdown" }, [port2]);
+  });
+
+const skipWaitingServiceWorker = (sw: ServiceWorker): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const { port1, port2 } = new MessageChannel();
+    port1.onmessage = ({ data }) => {
+      invariant(typeof data === "object", "Invalid message data");
+      const { success, error } = data;
+      if (success) {
+        console.info("New service worker skipped waiting");
+        resolve();
+      } else if (error) {
+        const message = "Failed to skip waiting on new service worker";
+        console.error(message, error);
+        reject(new Error(message));
+      }
+    };
+    sw.postMessage({ action: "skipWaiting" }, [port2]);
+  });
+
+const awaitTimeout = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));

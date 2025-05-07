@@ -35,7 +35,7 @@ export interface PostCardProps extends BoxProps {
 const PostCard: FC<PostCardProps> = ({
   post,
   actions,
-  blurContent: initialBlurContent,
+  blurContent,
   focus,
   ...otherProps
 }) => {
@@ -45,7 +45,7 @@ const PostCard: FC<PostCardProps> = ({
       return DateTime.fromISO(post.pinned_until);
     }
   }, [post.pinned_until]);
-  const isAdmin = useIsAdmin();
+  const [coverImage] = post.images;
 
   // == Auto-focus
   useEffect(() => {
@@ -53,9 +53,6 @@ const PostCard: FC<PostCardProps> = ({
       cardRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [focus]);
-
-  // == Blur content
-  const [blurContent, setBlurContent] = useState(initialBlurContent);
 
   return (
     <Card
@@ -161,7 +158,7 @@ const PostCard: FC<PostCardProps> = ({
           <TypographyStylesProvider>
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
           </TypographyStylesProvider>
-          {post.image && <PostImage image={post.image} />}
+          {coverImage && <PostImage image={coverImage} />}
           {post.quoted_post && (
             <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
           )}
@@ -176,19 +173,6 @@ const PostCard: FC<PostCardProps> = ({
                 title="visible only to invited friends"
                 className={classes.restrictedAlert}
               />
-              {isAdmin && (
-                <Anchor
-                  component="button"
-                  c="accent"
-                  size="xs"
-                  fw={600}
-                  onClick={() => {
-                    setBlurContent(false);
-                  }}
-                >
-                  view as admin
-                </Anchor>
-              )}
             </Stack>
           </Overlay>
         )}

@@ -7,7 +7,7 @@ class UserPostsController < ApplicationController
   def index
     user_id = T.let(params.fetch(:user_id), String)
     user = User.find(user_id)
-    posts = user.posts.includes(:image_blob)
+    posts = user.posts.includes(:images_blobs)
     if (friend = current_friend)
       posts = posts.not_hidden_from(friend)
       posts = posts.visible_to_friends unless friend.chosen_family?
@@ -17,9 +17,11 @@ class UserPostsController < ApplicationController
       limit: 5,
     )
     paginated_posts = T.cast(paginated_posts, T::Array[Post])
-    paginated_posts.map! do |post|
-      allowed_to?(:show?, post) ? post : MaskedPost.new(post:)
-    end unless current_friend
+    unless current_friend
+      paginated_posts.map! do |post|
+        post.visibility == :public ? post : MaskedPost.new(post:)
+      end
+    end
     post_ids = paginated_posts.map(&:id)
     views_by_post_id = if (friend = current_friend)
       PostView
@@ -63,7 +65,7 @@ class UserPostsController < ApplicationController
     user = User.find(user_id)
     posts = user.posts
       .currently_pinned
-      .includes(:image_blob)
+      .includes(:images_blobs)
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end

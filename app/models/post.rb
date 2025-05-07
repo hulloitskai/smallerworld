@@ -91,7 +91,7 @@ class Post < ApplicationRecord
   def quoted_post? = quoted_post_id?
 
   # == Attachments
-  has_one_attached :image
+  has_many_attached :images
 
   # == Normalizations
   normalizes :title, with: ->(title) { title&.strip }
@@ -102,7 +102,7 @@ class Post < ApplicationRecord
   validates :title, absence: true, unless: :title_visible?
   validates :quoted_post, presence: true, if: :follow_up?
   validates :quoted_post, absence: true, unless: :follow_up?
-  validates :image_blob, absence: true, if: :follow_up?
+  validates :images_blobs, absence: true, if: :follow_up?
   validate :validate_no_nested_quoting, if: :quoted_post?
 
   # == Callbacks
@@ -147,6 +147,11 @@ class Post < ApplicationRecord
   end
 
   # == Methods
+  sig { returns(T.nilable(ActiveStorage::Blob)) }
+  def cover_image_blob
+    images_blobs.first
+  end
+
   sig { returns(Friend::PrivateAssociationRelation) }
   def friends_to_notify
     subscribed_type = quoted_post&.type || type

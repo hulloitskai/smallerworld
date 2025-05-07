@@ -11,11 +11,11 @@ class Post
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
-  sig { returns(ActiveStorage::Attached::One) }
-  def image; end
+  sig { returns(ActiveStorage::Attached::Many) }
+  def images; end
 
   sig { params(attachable: T.untyped).returns(T.untyped) }
-  def image=(attachable); end
+  def images=(attachable); end
 
   sig { returns(Enumerize::Value) }
   def type; end
@@ -376,12 +376,6 @@ class Post
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_author(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
-    def build_image_attachment(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
-    def build_image_blob(*args, &blk); end
-
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def build_quoted_post(*args, &blk); end
 
@@ -391,35 +385,39 @@ class Post
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_author!(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
-    def create_image_attachment(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
-    def create_image_attachment!(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
-    def create_image_blob(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
-    def create_image_blob!(*args, &blk); end
-
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_quoted_post(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_quoted_post!(*args, &blk); end
 
-    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
-    def image_attachment; end
+    sig { returns(T::Array[T.untyped]) }
+    def images_attachment_ids; end
 
-    sig { params(value: T.nilable(::ActiveStorage::Attachment)).void }
-    def image_attachment=(value); end
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def images_attachment_ids=(ids); end
 
-    sig { returns(T.nilable(::ActiveStorage::Blob)) }
-    def image_blob; end
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :images_attachments`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActiveStorage::Attachment::PrivateCollectionProxy) }
+    def images_attachments; end
 
-    sig { params(value: T.nilable(::ActiveStorage::Blob)).void }
-    def image_blob=(value); end
+    sig { params(value: T::Enumerable[::ActiveStorage::Attachment]).void }
+    def images_attachments=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def images_blob_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def images_blob_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :images_blobs, through: :images_attachments`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::ActiveStorage::Blob::PrivateCollectionProxy) }
+    def images_blobs; end
+
+    sig { params(value: T::Enumerable[::ActiveStorage::Blob]).void }
+    def images_blobs=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def notification_ids; end
@@ -464,12 +462,6 @@ class Post
     sig { returns(T.nilable(::User)) }
     def reload_author; end
 
-    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
-    def reload_image_attachment; end
-
-    sig { returns(T.nilable(::ActiveStorage::Blob)) }
-    def reload_image_blob; end
-
     sig { returns(T.nilable(::Post)) }
     def reload_quoted_post; end
 
@@ -489,12 +481,6 @@ class Post
 
     sig { void }
     def reset_author; end
-
-    sig { void }
-    def reset_image_attachment; end
-
-    sig { void }
-    def reset_image_blob; end
 
     sig { void }
     def reset_quoted_post; end
@@ -677,7 +663,7 @@ class Post
     def with(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def with_attached_image(*args, &blk); end
+    def with_attached_images(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_recursive(*args, &blk); end
@@ -1602,7 +1588,7 @@ class Post
     def with(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def with_attached_image(*args, &blk); end
+    def with_attached_images(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_recursive(*args, &blk); end
