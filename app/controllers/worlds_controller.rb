@@ -46,11 +46,8 @@ class WorldsController < ApplicationController
   # PUT /world
   def update
     current_user = authenticate_user!
-    user_params = T.let(
-      params.expect(user: %i[name page_icon theme hide_stats]),
-      ActionController::Parameters,
-    )
-    if current_user.update(user_params)
+    user_params = params.expect(user: %i[name page_icon theme hide_stats])
+    if current_user.update(**user_params)
       render(json: { user: UserSerializer.one(current_user) })
     else
       render(

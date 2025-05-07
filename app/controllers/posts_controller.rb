@@ -46,19 +46,16 @@ class PostsController < ApplicationController
   # POST /posts
   def create
     current_user = authenticate_user!
-    post_params = T.let(
-      params.expect(post: [
-        :type,
-        :title,
-        :body_html,
-        :emoji,
-        :visibility,
-        :pinned_until,
-        :quoted_post_id,
-        images: [],
-      ]),
-      ActionController::Parameters,
-    )
+    post_params = params.expect(post: [
+      :type,
+      :title,
+      :body_html,
+      :emoji,
+      :visibility,
+      :pinned_until,
+      :quoted_post_id,
+      images: [],
+    ])
     paused_friend_ids = current_user.friends.paused.pluck(:id)
     post = current_user.posts.build(
       hidden_from_ids: paused_friend_ids,

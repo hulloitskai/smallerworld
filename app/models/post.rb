@@ -52,6 +52,13 @@ class Post < ApplicationRecord
     Html2Text.new(content).convert
   end
 
+  sig { params(text: T.untyped).void }
+  def body_text=(text)
+    self[:body_html] = if text.is_a?(String)
+      BodyFormatter.text_to_html(text)
+    end
+  end
+
   sig { returns(T.nilable(String)) }
   def title_snippet
     title&.truncate(40)
@@ -205,6 +212,17 @@ class Post < ApplicationRecord
   private
 
   # == Helpers
+  class BodyFormatter
+    extend T::Sig
+    include Singleton
+    include ActionView::Helpers::TextHelper
+
+    sig { params(text: String).returns(String) }
+    def self.text_to_html(text)
+      instance.simple_format(text)
+    end
+  end
+
   sig { overridable.params(content: Nokogiri::HTML5::DocumentFragment).void }
   def reshape_content_for_text_rendering(content)
     content.css("li").each do |li|

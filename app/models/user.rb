@@ -7,6 +7,7 @@
 # Table name: users
 #
 #  id                            :uuid             not null, primary key
+#  api_token                     :string
 #  handle                        :string           not null
 #  hide_stats                    :boolean          not null
 #  name                          :string           not null
@@ -20,6 +21,7 @@
 #
 # Indexes
 #
+#  index_users_on_api_token                      (api_token) UNIQUE
 #  index_users_on_handle                         (handle) UNIQUE
 #  index_users_on_notifications_last_cleared_at  (notifications_last_cleared_at)
 #  index_users_on_phone_number                   (phone_number) UNIQUE
@@ -33,7 +35,6 @@ class User < ApplicationRecord
   # == FriendlyId
   friendly_id :handle, slug_column: :handle
 
-  # == Attributes
   sig { returns(ActiveSupport::TimeZone) }
   def time_zone
     ActiveSupport::TimeZone.new(time_zone_name)
@@ -80,6 +81,13 @@ class User < ApplicationRecord
   sig { returns(T::Boolean) }
   def admin?
     Admin.phone_numbers.include?(phone_number)
+  end
+
+  sig { returns(String) }
+  def generate_api_token!
+    api_token = self.class.generate_unique_secure_token
+    update!(api_token:)
+    api_token
   end
 
   sig { returns(ActiveSupport::TimeWithZone) }
