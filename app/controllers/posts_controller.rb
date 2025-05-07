@@ -11,7 +11,7 @@ class PostsController < ApplicationController
   def index
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
-      .includes(:images_blobs)
+      .includes(images_attachments: :blob)
       .order(created_at: :desc, id: :asc)
     pagy, paginated_posts = pagy_keyset(posts, limit: 5)
     render(json: {
@@ -26,7 +26,7 @@ class PostsController < ApplicationController
   def pinned
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts.currently_pinned)
-      .includes(:images_blobs)
+      .includes(:images_attachments)
       .order(pinned_until: :asc, created_at: :asc)
     render(json: {
       posts: WorldPostSerializer.many(posts),

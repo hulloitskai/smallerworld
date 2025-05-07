@@ -15,12 +15,6 @@ class PostSerializer < ApplicationSerializer
              reply_snippet: { type: :string }
 
   # == Associations
-  has_many(
-    :images_blobs,
-    as: :images,
-    serializer: ImageSerializer,
-  ) do
-    post.images_blobs.order(created_at: :asc)
-  end
+  has_many :images_blobs, as: :images, serializer: ImageSerializer
   has_one :quoted_post, serializer: QuotedPostSerializer, nullable: true
 end
