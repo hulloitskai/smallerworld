@@ -7,7 +7,7 @@ class UserPostsController < ApplicationController
   def index
     user_id = T.let(params.fetch(:user_id), String)
     user = User.find(user_id)
-    posts = user.posts.includes(:images_blobs)
+    posts = user.posts.includes(images_attachments: :blob)
     if (friend = current_friend)
       posts = posts.not_hidden_from(friend)
       posts = posts.visible_to_friends unless friend.chosen_family?
@@ -65,7 +65,7 @@ class UserPostsController < ApplicationController
     user = User.find(user_id)
     posts = user.posts
       .currently_pinned
-      .includes(:images_blobs)
+      .includes(images_attachments: :blob)
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end
