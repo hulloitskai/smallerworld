@@ -5,6 +5,7 @@ import {
   Image,
   Loader,
   Overlay,
+  SimpleGrid,
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
@@ -20,6 +21,7 @@ import ZoomInIcon from "~icons/heroicons/magnifying-glass-plus-20-solid";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type Dimensions, type Image as ImageType, type Post } from "~/types";
 
+import ImageStack from "./ImageStack";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostCard.module.css";
@@ -45,7 +47,6 @@ const PostCard: FC<PostCardProps> = ({
       return DateTime.fromISO(post.pinned_until);
     }
   }, [post.pinned_until]);
-  const [coverImage] = post.images;
 
   // == Auto-focus
   useEffect(() => {
@@ -158,7 +159,13 @@ const PostCard: FC<PostCardProps> = ({
           <TypographyStylesProvider>
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
           </TypographyStylesProvider>
-          {coverImage && <PostImage image={coverImage} />}
+          {!isEmpty(post.images) && (
+            <SimpleGrid cols={post.images.length > 1 ? 2 : 1} spacing="xs">
+              {post.images.map(image => (
+                <PostImage key={image.id} {...{ image }} />
+              ))}
+            </SimpleGrid>
+          )}
           {post.quoted_post && (
             <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
           )}
