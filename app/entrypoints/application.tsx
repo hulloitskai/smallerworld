@@ -29,6 +29,7 @@ import {
 import "./application.css";
 
 // == Setup
+setupFingerprint();
 setupInertia();
 setupRoutes();
 setupLuxon();
@@ -37,7 +38,6 @@ setupSentry();
 setupFullStory();
 setupAmplitude();
 setupClarity();
-setupFingerprint();
 
 // == Service worker
 if ("serviceWorker" in navigator) {

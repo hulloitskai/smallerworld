@@ -6,7 +6,7 @@ export const setupFingerprint = (): void => {
   fingerprintPromise = load();
 };
 
-export const identifyVisitor = async (): Promise<GetResult> => {
+export const identifyDevice = async (): Promise<GetResult> => {
   if (!fingerprintPromise) {
     fingerprintPromise = load();
   }

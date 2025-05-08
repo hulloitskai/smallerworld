@@ -1,7 +1,7 @@
 import { type GetResult } from "@fingerprintjs/fingerprintjs";
 
 import { detectBrowser, isIos } from "~/helpers/browsers";
-import { identifyVisitor } from "~/helpers/fingerprinting";
+import { identifyDevice } from "~/helpers/fingerprinting";
 import {
   WebPushContext,
   type WebPushSubscribeOptions,
@@ -167,7 +167,7 @@ const useWebPushSubscribe = ({
             getPushManager(),
             fetchPublicKey(),
             fetchDeviceId(),
-            identifyVisitor(),
+            identifyDevice(),
           ],
         );
         if (forceNewSubscription && subscription && isIos(browserDetection)) {
