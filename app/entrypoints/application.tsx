@@ -7,6 +7,7 @@ import { createRoot, hydrateRoot } from "react-dom/client";
 
 import AppWrapper from "~/components/AppWrapper";
 import { setupActiveStorage } from "~/helpers/activestorage";
+import { setupAmplitude } from "~/helpers/amplitude";
 import { setupClarity } from "~/helpers/clarity";
 import { setupFingerprint } from "~/helpers/fingerprinting";
 import { setupFullStory } from "~/helpers/fullstory";
@@ -34,6 +35,7 @@ setupLuxon();
 setupActiveStorage();
 setupSentry();
 setupFullStory();
+setupAmplitude();
 setupClarity();
 setupFingerprint();
 

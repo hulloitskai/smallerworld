@@ -36,6 +36,7 @@ module SmallerWorld
     require "admin"
     require "fullstory"
     require "clarity"
+    require "amplitude"
     require "mapbox"
     require "contact"
     require "supabase"

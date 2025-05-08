@@ -1,5 +1,6 @@
 import { ModalsProvider } from "@mantine/modals";
 
+import AmplitudeTracking from "./AmplitudeTracking";
 import AppFlash from "./AppFlash";
 import ClarityTracking from "./ClarityTracking";
 import FullStoryTracking from "./FullStoryTracking";
@@ -24,6 +25,7 @@ const PageLayout: FC<PropsWithChildren> = ({ children }) => (
     <SentryTracking />
     <FullStoryTracking />
     <ClarityTracking />
+    <AmplitudeTracking />
     <MiniProfilerPageTracking />
   </StandaloneSessionProvider>
 );

@@ -10,6 +10,7 @@
     "strip-ansi": "6.0.1"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^2.17.3",
     "@fingerprintjs/fingerprintjs": "^4.6.1",
     "@fontsource-variable/bricolage-grotesque": "^5.2.5",
     "@fontsource-variable/manrope": "^5.0.20",

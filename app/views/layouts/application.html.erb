@@ -55,6 +55,11 @@
       <meta name="fullstory-org-id" content="<%= settings.org_id %>">
     <% end %>
 
+    <%# == Amplitude %>
+    <% if (settings = Amplitude.settings) %>
+      <meta name="amplitude-api-key" content="<%= settings.api_key %>">
+    <% end %>
+
     <%# == Clarity %>
     <% if (settings = Clarity.settings) %>
       <meta name="clarity-project-id" content="<%= settings.project_id %>">
