@@ -41,7 +41,7 @@ self.addEventListener("fetch", event => {
   // Don't perform fetches when shutting down
   if (shuttingDown) {
     event.stopImmediatePropagation();
-    return false;
+    return;
   }
 
   // Parse request
@@ -51,7 +51,7 @@ self.addEventListener("fetch", event => {
   // Ignore EventStream requests
   if (request.headers.get("Accept") === "text/event-stream") {
     event.stopImmediatePropagation();
-    return false;
+    return;
   }
 
   // Handle device metadata requests
