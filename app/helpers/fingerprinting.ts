@@ -1,16 +1,16 @@
 import { type Agent, type GetResult, load } from "@fingerprintjs/fingerprintjs";
 
-let fingerprintPromise: Promise<Agent> | null = null;
+let loadFingerprintAgent: Promise<Agent> | null = null;
 
-export const setupFingerprint = (): void => {
-  fingerprintPromise = load();
+export const setupFingerprintAgent = (): void => {
+  loadFingerprintAgent = load();
 };
 
 export const identifyDevice = async (): Promise<GetResult> => {
-  if (!fingerprintPromise) {
-    fingerprintPromise = load();
+  if (!loadFingerprintAgent) {
+    loadFingerprintAgent = load();
   }
-  const agent = await fingerprintPromise;
+  const agent = await loadFingerprintAgent;
   const visitor = await agent.get();
   console.info("Identified visitor using fingerprintjs", visitor);
   return visitor;
