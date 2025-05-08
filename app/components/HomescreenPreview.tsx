@@ -1,22 +1,22 @@
 import { getRadius, Image, type MantineRadius, Text } from "@mantine/core";
 import { type ReactNode } from "react";
 
-import homeScreenSrc from "~/assets/images/home-screen.png";
+import backgroundSrc from "~/assets/images/homescreen-preview-background.png";
 
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 
 import SingleDayFontHead from "./SingleDayFontHead";
 
-import classes from "./HomeScreenPreview.module.css";
+import classes from "./HomescreenPreview.module.css";
 
-export interface HomeScreenPreviewProps extends BoxProps {
+export interface HomescreenPreviewProps extends BoxProps {
   pageName: string;
   pageIcon: { src: string; srcset?: string | null } | null;
   arrowLabel: ReactNode;
   radius?: MantineRadius;
 }
 
-const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
+const HomescreenPreview: FC<HomescreenPreviewProps> = ({
   pageName,
   pageIcon,
   arrowLabel,
@@ -35,7 +35,7 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
         }}
         {...otherProps}
       >
-        <Image src={homeScreenSrc} className={classes.homeScreen} />
+        <Image src={backgroundSrc} className={classes.homeScreen} />
         <Image
           src={pageIcon?.src ?? "/web-app-manifest-512x512.png"}
           srcSet={pageIcon?.srcset ?? undefined}
@@ -48,4 +48,4 @@ const HomeScreenPreview: FC<HomeScreenPreviewProps> = ({
   );
 };
 
-export default HomeScreenPreview;
+export default HomescreenPreview;

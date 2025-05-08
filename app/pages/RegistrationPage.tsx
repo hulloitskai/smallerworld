@@ -5,7 +5,7 @@ import { IMaskInput } from "react-imask";
 import ProfileIcon from "~icons/heroicons/user-circle-20-solid";
 
 import AppLayout from "~/components/AppLayout";
-import HomeScreenPreview from "~/components/HomeScreenPreview";
+import HomeScreenPreview from "~/components/HomescreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { CANONICAL_DOMAIN } from "~/helpers/app";

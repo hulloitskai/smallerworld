@@ -11,7 +11,7 @@ import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/us
 import { type Friend, type User } from "~/types";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
-import HomeScreenPreviewWithIconCustomization from "./HomeScreenPreviewWithCustomizableIcon";
+import HomeScreenPreviewWithIconCustomization from "./HomescreenPreviewWithCustomizableIcon";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
 export interface UserPageWelcomeModalProps

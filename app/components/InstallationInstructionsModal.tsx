@@ -3,15 +3,15 @@ import { type BadgeProps, Image, type ModalProps } from "@mantine/core";
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
 import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
 
-import HomeScreenPreviewWithIconCustomization, {
-  type HomeScreenPreviewWithCustomizationIconProps,
-} from "./HomeScreenPreviewWithCustomizableIcon";
+import HomescreenPreviewWithIconCustomization, {
+  type HomescreenPreviewWithCustomizationIconProps,
+} from "./HomescreenPreviewWithCustomizableIcon";
 
 import classes from "./InstallationInstructionsModal.module.css";
 
 export interface InstallationInstructionsModalProps
   extends Pick<ModalProps, "title">,
-    Pick<HomeScreenPreviewWithCustomizationIconProps, "pageName" | "pageIcon">,
+    Pick<HomescreenPreviewWithCustomizationIconProps, "pageName" | "pageIcon">,
     PropsWithChildren {}
 
 export const openInstallationInstructionsModal = ({
@@ -34,7 +34,7 @@ export const openInstallationInstructionsModal = ({
         </StepWithImage>
         <Stack gap={8} align="center">
           <StepBadge step={3}>open from home screen</StepBadge>
-          <HomeScreenPreviewWithIconCustomization
+          <HomescreenPreviewWithIconCustomization
             {...{ pageName, pageIcon }}
             arrowLabel="open me!"
           />

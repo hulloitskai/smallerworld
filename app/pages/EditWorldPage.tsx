@@ -2,7 +2,7 @@ import { InputWrapper, Text } from "@mantine/core";
 import { hasLength } from "@mantine/form";
 
 import AppLayout from "~/components/AppLayout";
-import HomeScreenPreview from "~/components/HomeScreenPreview";
+import HomeScreenPreview from "~/components/HomescreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";

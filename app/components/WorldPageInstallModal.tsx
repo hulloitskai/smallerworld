@@ -11,7 +11,7 @@ import { useInstallPrompt } from "~/helpers/pwa/install";
 import { type User } from "~/types";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
-import HomeScreenPreview from "./HomeScreenPreview";
+import HomeScreenPreview from "./HomescreenPreview";
 import { openWorldPageInstallationInstructionsModal } from "./WorldPageInstallationInstructionsModal";
 
 export interface WorldPageInstallModalProps

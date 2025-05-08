@@ -2,10 +2,13 @@ import { Image, Overlay, Text } from "@mantine/core";
 
 import PlayIcon from "~icons/heroicons/play-20-solid";
 
+import homescreenRowSrc from "~/assets/images/homescreen-row.jpeg";
 import logoSrc from "~/assets/images/logo.png";
+import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 import demoVideoSrc from "~/assets/videos/demo.mp4";
 
 import AppLayout from "~/components/AppLayout";
+import SingleDayFontHead from "~/components/SingleDayFontHead";
 
 import classes from "./LandingPage.module.css";
 
@@ -19,7 +22,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
   const [revealVideo, setRevealVideo] = useState(false);
 
   return (
-    <Stack align="center" gap="xl">
+    <Stack align="center" gap={44}>
       {currentUser && (
         <Alert
           styles={{ root: { alignSelf: "stretch" }, body: { rowGap: rem(4) } }}
@@ -41,14 +44,20 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           </Group>
         </Alert>
       )}
-      <Stack align="center" gap="md">
+      <Image
+        src={homescreenRowSrc}
+        w="100%"
+        maw={360}
+        style={{ borderRadius: "var(--mantine-radius-default)" }}
+      />
+      <Stack align="center">
         <Title className={classes.opener}>
-          a <Emph>direct connection</Emph> to your inner circle
+          a <Emph>personal app</Emph> you share with friends
         </Title>
         <Text className={classes.subtitle}>
-          (a way to let your inner circle know about what&apos;s{" "}
+          a way for close friends to know about what&apos;s{" "}
           <span style={{ color: "var(--mantine-color-text)" }}>*actually*</span>{" "}
-          going on in your life)
+          going on in your life
         </Text>
       </Stack>
       <Box pos="relative">
@@ -87,6 +96,13 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
             </Center>
           </Overlay>
         )}
+        <Box pos="absolute" top={0} right={-150}>
+          <SingleDayFontHead />
+          <Stack gap={0} style={{ transform: "rotate(8deg)" }}>
+            <Text className={classes.seeDemoText}>check it out :)</Text>
+            <Image src={swirlyUpArrowSrc} className={classes.seeDemoArrow} />
+          </Stack>
+        </Box>
       </Box>
       <Card className={classes.howItWorksCard} withBorder>
         <Stack gap={8}>

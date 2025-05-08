@@ -1,13 +1,13 @@
 import ShuffleIcon from "~icons/basil/shuffle-solid";
 
-import HomeScreenPreview, {
-  type HomeScreenPreviewProps,
-} from "./HomeScreenPreview";
+import HomescreenPreview, {
+  type HomescreenPreviewProps,
+} from "./HomescreenPreview";
 
-export interface HomeScreenPreviewWithCustomizationIconProps
-  extends HomeScreenPreviewProps {}
+export interface HomescreenPreviewWithCustomizationIconProps
+  extends HomescreenPreviewProps {}
 
-const HomeScreenPreviewWithIconCustomization: FC<HomeScreenPreviewProps> = ({
+const HomescreenPreviewWithIconCustomization: FC<HomescreenPreviewProps> = ({
   pageName,
   pageIcon,
   arrowLabel,
@@ -20,7 +20,7 @@ const HomeScreenPreviewWithIconCustomization: FC<HomeScreenPreviewProps> = ({
 
   return (
     <Stack gap="xs" {...otherProps}>
-      <HomeScreenPreview
+      <HomescreenPreview
         pageIcon={manifest_icon_type === "generic" ? null : pageIcon}
         {...{ pageName, arrowLabel, radius }}
       />
@@ -41,7 +41,7 @@ const HomeScreenPreviewWithIconCustomization: FC<HomeScreenPreviewProps> = ({
   );
 };
 
-export default HomeScreenPreviewWithIconCustomization;
+export default HomescreenPreviewWithIconCustomization;
 
 const usePageUrlWithAlternativeManifestIcon = (): string | undefined => {
   const [pageUrl, setPageUrl] = useState<string>();
