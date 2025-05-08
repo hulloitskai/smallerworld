@@ -29,13 +29,7 @@ export const toastInvalidCSRFToken = (): void => {
         leftSection={<ReloadIcon />}
         style={{ flexShrink: 0 }}
         onClick={() => {
-          router.reload({
-            only: ["csrf"],
-            onSuccess: () => {
-              toast.dismiss(INVALID_CSRF_TOKEN_TOAST_ID);
-              void resetSWRCache();
-            },
-          });
+          location.reload();
         }}
       >
         reload
