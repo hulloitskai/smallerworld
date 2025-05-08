@@ -149,9 +149,8 @@ Rails.application.routes.draw do
   resources :universe_posts, path: "/universe/posts", only: :index, export: true
 
   # == Api
-  scope :api, controller: :api do
-    post :post
-  end
+  resources :api_posts, path: "/api/posts", only: :create
+  post "/api/post" => "api_posts#create"
 
   # == Pages
   root "landing#show", export: true
