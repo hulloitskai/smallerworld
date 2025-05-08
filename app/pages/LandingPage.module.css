@@ -1,14 +1,4 @@
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  :global(.mantine-List-itemWrapper) {
-    margin-right: 22px;
-  }
-}
-
-.opener {
+.title {
   color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
   font-size: 38px;
   font-weight: 900;
@@ -26,20 +16,14 @@
   font-size: var(--mantine-font-size-xl);
 }
 
-.emphasis {
+.emph {
   color: light-dark(
     var(--mantine-color-primary-7),
     var(--mantine-color-primary-4)
   );
 }
 
-.howItWorksCard {
-  @mixin larger-than $mantine-breakpoint-xs {
-    padding: var(--mantine-spacing-lg);
-  }
-}
-
-.seeDemoArrow {
+.checkItOutArrow {
   width: 80px;
   margin-top: 14px;
   transform: rotate(90deg) scaleY(-1);
@@ -49,12 +33,28 @@
   }
 }
 
-.seeDemoText {
+.checkItOutText {
   font-family: "Single Day", Manrope, cursive;
   font-size: 24px;
   line-height: 1.1;
 
   @mixin dark {
     color: var(--mantine-color-white);
+  }
+}
+
+.howItWorksCard {
+  @mixin larger-than $mantine-breakpoint-xs {
+    padding: var(--mantine-spacing-lg);
+  }
+}
+
+.howItWorksList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  :global(.mantine-List-itemWrapper) {
+    margin-right: 22px;
   }
 }

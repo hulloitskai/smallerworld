@@ -51,8 +51,9 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         style={{ borderRadius: "var(--mantine-radius-default)" }}
       />
       <Stack align="center">
-        <Title className={classes.opener}>
-          a <Emph>personal app</Emph> you share with friends
+        <Title className={classes.title}>
+          pov: <span className={classes.emph}>you are an app</span> on your
+          friend&apos;s phone
         </Title>
         <Text className={classes.subtitle}>
           a way for close friends to know about what&apos;s{" "}
@@ -99,8 +100,8 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         <Box pos="absolute" top={0} right={-150}>
           <SingleDayFontHead />
           <Stack gap={0} style={{ transform: "rotate(8deg)" }}>
-            <Text className={classes.seeDemoText}>check it out :)</Text>
-            <Image src={swirlyUpArrowSrc} className={classes.seeDemoArrow} />
+            <Text className={classes.checkItOutText}>check it out :)</Text>
+            <Image src={swirlyUpArrowSrc} className={classes.checkItOutArrow} />
           </Stack>
         </Box>
       </Box>
@@ -116,7 +117,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           <Title order={2} size="h3" ta="center">
             how it works
           </Title>
-          <List type="ordered" className={classes.list}>
+          <List type="ordered" className={classes.howItWorksList}>
             <List.Item>set up your page and custom home screen icon</List.Item>
             <List.Item>
               invite only your real friends (or people you want to be closer to)
@@ -154,7 +155,3 @@ LandingPage.layout = page => (
 );
 
 export default LandingPage;
-
-const Emph: FC<PropsWithChildren> = ({ children }) => (
-  <span className={classes.emphasis}>{children}</span>
-);
