@@ -1,7 +1,7 @@
-import { add, init } from "@amplitude/analytics-browser";
+import { /*add,*/ init } from "@amplitude/analytics-browser";
 import { type BrowserOptions } from "@amplitude/analytics-core";
-import { sessionReplayPlugin } from "@amplitude/plugin-session-replay-browser";
 
+// import { sessionReplayPlugin } from "@amplitude/plugin-session-replay-browser";
 import { getMeta } from "~/helpers/meta";
 
 import { identifyDevice } from "./fingerprinting";
@@ -15,14 +15,16 @@ export const setupAmplitude = () => {
         autocapture: true,
       };
 
-      // Configure session replay
-      const sessionReplayTracking = sessionReplayPlugin({
-        deviceId: visitorId,
-        performanceConfig: {
-          enabled: true,
-        },
-      });
-      add(sessionReplayTracking);
+      // // Configure session replay
+      // const sessionReplayTracking = sessionReplayPlugin({
+      //   deviceId: visitorId,
+      //   forceSessionTracking: true,
+      //   sampleRate: 0.5,
+      //   performanceConfig: {
+      //     enabled: true,
+      //   },
+      // });
+      // add(sessionReplayTracking);
 
       // Initialize Amplitude
       init(apiKey, options);
