@@ -47,15 +47,19 @@ class Post < ApplicationRecord
 
   sig { returns(String) }
   def body_text
-    content = Nokogiri::HTML5.fragment(body_html)
-    reshape_content_for_text_rendering(content)
-    Html2Text.new(content).convert
+    if (body_html = self[:body_html]) && body_html.is_a?(String)
+      fragment = Nokogiri::HTML5.fragment(body_html)
+      reshape_body_fragment_for_text_rendering(fragment)
+      Html2Text.new(fragment).convert
+    else
+      ""
+    end
   end
 
-  sig { params(text: T.untyped).void }
+  T::Sig::WithoutRuntime.sig { params(text: String).void }
   def body_text=(text)
     self[:body_html] = if text.is_a?(String)
-      BodyFormatter.text_to_html(text)
+      format_body_html(text)
     end
   end
 
@@ -113,7 +117,7 @@ class Post < ApplicationRecord
   validate :validate_no_nested_quoting, if: :quoted_post?
 
   # == Callbacks
-  after_create :create_notifications_later
+  after_create :create_notifications_later, if: :user_created?
 
   # == Scopes
   scope :visible_to_public, -> { where(visibility: :public) }
@@ -154,6 +158,11 @@ class Post < ApplicationRecord
   end
 
   # == Methods
+  sig { returns(T::Boolean) }
+  def user_created?
+    updated_at > (author!.created_at + 1.second)
+  end
+
   sig { returns(T.nilable(ActiveStorage::Blob)) }
   def cover_image_blob
     images_blobs.first
@@ -223,9 +232,14 @@ class Post < ApplicationRecord
     end
   end
 
-  sig { overridable.params(content: Nokogiri::HTML5::DocumentFragment).void }
-  def reshape_content_for_text_rendering(content)
-    content.css("li").each do |li|
+  sig { params(text: String).returns(String) }
+  def format_body_html(text)
+    BodyFormatter.text_to_html(text)
+  end
+
+  sig { overridable.params(fragment: Nokogiri::HTML5::DocumentFragment).void }
+  def reshape_body_fragment_for_text_rendering(fragment)
+    fragment.css("li").each do |li|
       child = li.first_element_child
       child.replace(child.children) if child.name == "p"
     end

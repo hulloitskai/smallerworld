@@ -65,17 +65,19 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         <Box
           component="video"
           ref={videoRef}
-          src={demoVideoSrc}
           muted
           loop
           playsInline
           controls={false}
           autoPlay
+          preload="auto"
           disablePictureInPicture
           disableRemotePlayback
           maw={275}
           style={{ borderRadius: "var(--mantine-radius-default)" }}
-        />
+        >
+          <source src={demoVideoSrc} type="video/mp4" />
+        </Box>
         {!revealVideo && (
           <Overlay backgroundOpacity={0} blur={3} radius="lg">
             <Center h="100%">
