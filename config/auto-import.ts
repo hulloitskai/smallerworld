@@ -4,7 +4,14 @@ import { type ImportsMap, type PresetName } from "unplugin-auto-import/types";
 export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
   // == Exports
   {
-    "~/components": ["AnchorContainer", "EmptyCard", "Head", "Time", "TimeAgo"],
+    "~/components": [
+      "AnchorContainer",
+      "EmptyCard",
+      "Head",
+      "Time",
+      "TimeAgo",
+      "PWAScopedLink",
+    ],
     "~/components/icons": [
       "AddIcon",
       "RemoveIcon",
@@ -45,7 +52,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/inertia/routing": ["useQueryParams"],
     "~/helpers/json": ["formatJSON"],
     "~/helpers/meta": ["env", "getMeta", "requireMeta", "useEnv"],
-    "~/helpers/pwa": ["useIsStandalone"],
+    "~/helpers/pwa": ["usePWA"],
     "~/helpers/routes": [["default", "routes"]],
     "~/helpers/routes/fetch": ["fetchRoute"],
     "~/helpers/routes/swr": ["useRouteSWR", "useRouteMutation", "mutateRoute"],

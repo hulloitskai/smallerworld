@@ -1,7 +1,5 @@
 import ReloadIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 
-import { resetSWRCache } from "./routes/swr";
-
 export const useCSRFToken = (): string => {
   const { csrf } = usePageProps();
   return csrf.token;

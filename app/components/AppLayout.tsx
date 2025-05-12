@@ -1,6 +1,6 @@
 import {
-  AppShell,
-  type AppShellProps,
+  AppShell as MantineAppShell,
+  type AppShellProps as MantineAppShellProps,
   Breadcrumbs,
   type ContainerProps,
   Loader,
@@ -15,7 +15,7 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
-import { useWaitingForServiceWorkerReady } from "~/helpers/serviceWorker";
+import { useActiveServiceWorker } from "~/helpers/serviceWorker";
 import { useTrackVisit } from "~/helpers/visits";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
@@ -31,7 +31,7 @@ export interface AppLayoutProps<PageProps extends SharedPageProps>
       AppMetaProps,
       "title" | "description" | "imageUrl" | "manifestUrl"
     >,
-    Omit<AppShellProps, "title"> {
+    Omit<AppShellProps, "breadcrumbs" | "logoHref"> {
   title?: DynamicProp<PageProps, AppMetaProps["title"]>;
   description?: DynamicProp<PageProps, AppMetaProps["description"]>;
   breadcrumbs?: DynamicProp<PageProps, (AppBreadcrumb | null | false)[]>;
@@ -58,27 +58,10 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   imageUrl: imageUrlProp,
   noIndex,
   breadcrumbs: breadcrumbsProp,
-  withContainer,
-  containerSize,
-  containerProps,
-  withGutter,
-  gutterSize,
   logoHref: logoHrefProp,
   manifestUrl: manifestUrlProp,
-  children,
-  padding,
-  p,
-  pt,
-  pb,
-  pr,
-  pl,
-  py,
-  px,
-  ...otherProps
+  ...appShellProps
 }: AppLayoutProps<PageProps>) => {
-  useTrackVisit();
-  const isStandalone = useIsStandalone();
-
   // == Meta
   const title = useResolveDynamicProp(titleProp);
   const description = useResolveDynamicProp(descriptionProp);
@@ -96,79 +79,16 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   // == Header
   const logoHref = useResolveDynamicProp(logoHrefProp);
 
-  // == Content
-  const { style: containerStyle, ...otherContainerProps } =
-    containerProps ?? {};
-  const content = withContainer ? (
-    <PageContainer
-      size={containerSize ?? containerProps?.size}
-      {...{ withGutter, gutterSize }}
-      style={[
-        { flexGrow: 1, display: "flex", flexDirection: "column" },
-        containerStyle,
-      ]}
-      {...otherContainerProps}
-    >
-      {children}
-    </PageContainer>
-  ) : (
-    children
-  );
-
   // == Service worker
-  const waitingForServiceWorkerReady = useWaitingForServiceWorkerReady();
+  const serviceWorker = useActiveServiceWorker();
 
-  const shell = (
-    <AppShell
-      withBorder={LAYOUT_WITH_BORDER}
-      {...(isStandalone === false && { header: { height: 46 } })}
-      padding={padding ?? (withContainer ? undefined : "md")}
-      classNames={{ root: classes.shell, header: classes.header }}
-      data-vaul-drawer-wrapper
-      {...otherProps}
-    >
-      {isStandalone === false && <AppHeader {...{ logoHref }} />}
-      <AppShell.Main
-        className={classes.main}
-        {...{ pt, pb, pr, pl, py, px, p }}
-      >
-        {!isEmpty(breadcrumbs) && (
-          <Breadcrumbs
-            mx={10}
-            mt={6}
-            classNames={{
-              separator: classes.breadcrumbSeparator,
-            }}
-            styles={{
-              root: {
-                flexWrap: "wrap",
-                rowGap: rem(4),
-              },
-              separator: {
-                marginLeft: 6,
-                marginRight: 6,
-              },
-            }}
-          >
-            {breadcrumbs.map(({ title, href }, index) => (
-              <Anchor component={Link} href={href} key={index} size="sm">
-                {title}
-              </Anchor>
-            ))}
-          </Breadcrumbs>
-        )}
-        {content}
-      </AppShell.Main>
-      <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
-    </AppShell>
-  );
   return (
     <PageLayout>
       <AppMeta {...{ title, description, imageUrl, noIndex, manifestUrl }} />
       <UserThemeProvider>
-        <RemoveScroll enabled={waitingForServiceWorkerReady}>
-          {shell}
-          {waitingForServiceWorkerReady && (
+        <RemoveScroll enabled={serviceWorker === undefined}>
+          <AppShell {...{ breadcrumbs, logoHref }} {...appShellProps} />
+          {serviceWorker === undefined && (
             <Overlay
               className={classes.waitingForServiceWorkerReadyOverlay}
               blur={3}
@@ -199,3 +119,106 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 };
 
 export default AppLayout;
+
+interface AppShellProps extends Omit<MantineAppShellProps, "title"> {
+  breadcrumbs: AppBreadcrumb[];
+  withContainer?: boolean;
+  containerSize?: MantineSize | (string & {}) | number;
+  containerProps?: ContainerProps;
+  withGutter?: boolean;
+  gutterSize?: MantineSize | (string & {}) | number;
+  logoHref?: AppHeaderProps["logoHref"];
+}
+
+const AppShell: FC<AppShellProps> = ({
+  children,
+  breadcrumbs,
+  withContainer,
+  containerSize,
+  containerProps,
+  withGutter,
+  gutterSize,
+  logoHref,
+  padding,
+  pt,
+  pb,
+  pr,
+  pl,
+  py,
+  px,
+  p,
+  ...otherProps
+}) => {
+  const { isStandalone, outOfPWAScope } = usePWA();
+
+  // == Track visit
+  useTrackVisit();
+
+  // == Container and main
+  const { style: containerStyle, ...otherContainerProps } =
+    containerProps ?? {};
+  const main = withContainer ? (
+    <PageContainer
+      size={containerSize ?? containerProps?.size}
+      {...{ withGutter, gutterSize }}
+      style={[
+        { flexGrow: 1, display: "flex", flexDirection: "column" },
+        containerStyle,
+      ]}
+      {...otherContainerProps}
+    >
+      {children}
+    </PageContainer>
+  ) : (
+    children
+  );
+
+  return (
+    <MantineAppShell
+      withBorder={LAYOUT_WITH_BORDER}
+      {...((isStandalone === false || outOfPWAScope) && {
+        header: { height: 46 },
+      })}
+      padding={padding ?? (withContainer ? undefined : "md")}
+      classNames={{ root: classes.shell, header: classes.header }}
+      data-vaul-drawer-wrapper
+      {...otherProps}
+    >
+      {(isStandalone === false || outOfPWAScope) && (
+        <AppHeader {...{ logoHref }} />
+      )}
+      <MantineAppShell.Main
+        className={classes.main}
+        {...{ pt, pb, pr, pl, py, px, p }}
+      >
+        {!isEmpty(breadcrumbs) && (
+          <Breadcrumbs
+            mx={10}
+            mt={6}
+            classNames={{
+              separator: classes.breadcrumbSeparator,
+            }}
+            styles={{
+              root: {
+                flexWrap: "wrap",
+                rowGap: rem(4),
+              },
+              separator: {
+                marginLeft: 6,
+                marginRight: 6,
+              },
+            }}
+          >
+            {breadcrumbs.map(({ title, href }, index) => (
+              <Anchor component={Link} href={href} key={index} size="sm">
+                {title}
+              </Anchor>
+            ))}
+          </Breadcrumbs>
+        )}
+        {main}
+      </MantineAppShell.Main>
+      <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
+    </MantineAppShell>
+  );
+};

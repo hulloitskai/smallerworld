@@ -49,7 +49,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   pendingJoinRequests,
   pausedFriends,
 }) => {
-  const isStandalone = useIsStandalone();
+  const { isStandalone } = usePWA();
   const { registration } = useWebPush();
 
   // == User theme

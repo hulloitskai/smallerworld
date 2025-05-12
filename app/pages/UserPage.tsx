@@ -36,7 +36,7 @@ export interface UserPageProps extends SharedPageProps {
 const ICON_SIZE = 96;
 
 const UserPage: PageComponent<UserPageProps> = ({ user }) => {
-  const isStandalone = useIsStandalone();
+  const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
   const { registration } = useWebPush();
@@ -44,7 +44,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   // == Reload user on visibility change
   const visibility = useDocumentVisibility();
   useDidUpdate(() => {
-    if (visibility === "visible" && isStandalone) {
+    if (visibility === "visible" && isStandalone && !outOfPWAScope) {
       void router.reload({
         only: [
           "currentUser",
@@ -142,7 +142,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             <Title size="h2" lh="xs" ta="center" className={classes.pageTitle}>
               {possessive(user.name)} world
             </Title>
-            {isStandalone ? (
+            {isStandalone && !outOfPWAScope ? (
               <>
                 {currentFriend && (
                   <Group gap="xs" justify="center">
@@ -151,7 +151,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                   </Group>
                 )}
               </>
-            ) : isStandalone === false ? (
+            ) : isStandalone === false || outOfPWAScope ? (
               <UserPageUpcomingEventsButton style={{ alignSelf: "center" }} />
             ) : (
               <Skeleton style={{ alignSelf: "center", width: "unset" }}>
@@ -173,7 +173,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                   wanna make your own smaller world?
                 </Text>
                 <Button
-                  component="a"
+                  component={PWAScopedLink}
                   target="_blank"
                   href={routes.session.new.path()}
                   leftSection="😍"
@@ -201,7 +201,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
       </Box>
       <Box pos="relative">
         <UserPageFeed />
-        {isStandalone && registration === null && (
+        {isStandalone && !outOfPWAScope && registration === null && (
           <>
             <SingleDayFontHead />
             <Overlay backgroundOpacity={0} blur={3}>
@@ -222,16 +222,16 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   );
   return (
     <>
-      <RemoveScroll enabled={isStandalone && !registration}>
+      <RemoveScroll enabled={isStandalone && !outOfPWAScope && !registration}>
         {body}
       </RemoveScroll>
-      {isStandalone && (
+      {isStandalone && !outOfPWAScope && (
         <>
           <UserPageFloatingActions />
           {currentFriend && <WelcomeBackToast {...{ currentFriend }} />}
         </>
       )}
-      {isStandalone === false && (
+      {(isStandalone === false || outOfPWAScope) && (
         <>
           {currentFriend && <UserPageInstallAlert {...{ currentFriend }} />}
           {!currentFriend && <UserPageRequestInvitationAlert />}
@@ -265,6 +265,7 @@ UserPage.layout = page => (
     containerSize="xs"
     withGutter
   >
+    <PWAScopeHead />
     <UserPageDialogStateProvider>{page}</UserPageDialogStateProvider>
   </AppLayout>
 );
@@ -308,4 +309,16 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
     }
   }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
   return null;
+};
+
+const PWAScopeHead: FC = () => {
+  const { user } = usePageProps<UserPageProps>();
+  return (
+    <Head>
+      <meta
+        name="pwa-scope"
+        content={routes.users.show.path({ handle: user.handle })}
+      />
+    </Head>
+  );
 };

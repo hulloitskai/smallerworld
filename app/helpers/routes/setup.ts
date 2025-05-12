@@ -8,12 +8,10 @@ import { identity } from "lodash-es";
 
 export const setupRoutes = (): void => {
   Config.getCSRFToken = (): string | undefined => {
-    if (typeof document !== "undefined") {
-      const el = document.querySelector<HTMLMetaElement>(
-        "meta[name=csrf-token]",
-      );
-      return el?.content;
-    }
+    const meta = document.querySelector<HTMLMetaElement>(
+      "meta[name='csrf-token']",
+    );
+    return meta?.content;
   };
   Config.fetch = (args: FetchOptions): Promise<Response> => {
     const { url, data, responseAs, ...options } = args;

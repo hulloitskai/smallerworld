@@ -26,7 +26,7 @@ export interface UniversePageProps extends SharedPageProps {}
 const ICON_SIZE = 80;
 
 const UniversePage: PageComponent<UniversePageProps> = () => {
-  const isStandalone = useIsStandalone();
+  const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const { registration } = useWebPush();
   useUserTheme("aquatica");
@@ -67,7 +67,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
                       <Anchor
                         className={classes.worldAnchor}
                         key={world.user_id}
-                        component={Link}
+                        component={PWAScopedLink}
                         href={routes.users.show.path({
                           handle: world.user_handle,
                           query: {
@@ -124,11 +124,11 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
   );
   return (
     <>
-      <RemoveScroll enabled={isStandalone && !registration}>
+      <RemoveScroll enabled={isStandalone && !outOfPWAScope && !registration}>
         {body}
       </RemoveScroll>
       {isStandalone === false && <UniversePageInstallAlert />}
-      {isStandalone && registration === null && (
+      {isStandalone && !outOfPWAScope && registration === null && (
         <>
           <Overlay backgroundOpacity={0} blur={3} pos="fixed">
             <SingleDayFontHead />

@@ -52,6 +52,8 @@ bin/setup
       it
 - [x] make it easy to add friends from onboarding tutorial
 - [x] show arrow to show where the create a post button lives (⬇️)
+- [x] prevent isStandalone from triggering from smaller universe when clicking
+      on a friend
 - [-] some android devices don't open app from notification
 - [ ] macleod reply with telegram shows "user does not exist"???
 - [ ] better cta for user page welcome modal

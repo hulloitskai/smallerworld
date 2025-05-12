@@ -33,7 +33,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   onPostCreated,
 }) => {
   const { currentUser, hideStats } = usePageProps<WorldPageProps>();
-  const isStandalone = useIsStandalone();
+  const { isStandalone } = usePWA();
   const { registration } = useWebPush();
   const { modals } = useModals();
 

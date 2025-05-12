@@ -364,7 +364,7 @@ const fetchDeviceId = async (): Promise<string> => {
     }
 
     console.error(
-      `Failed to fetch device id (status code ${response.status}), attempt ${attempts}/${maxAttempts}`,
+      `Failed to fetch device ID (status code ${response.status}), attempt ${attempts}/${maxAttempts}`,
     );
     if (attempts < maxAttempts) {
       await awaitTimeout(1000);

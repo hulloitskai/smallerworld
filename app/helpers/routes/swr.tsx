@@ -12,8 +12,6 @@ import useSWRMutation, {
   type SWRMutationResponse,
 } from "swr/mutation";
 
-import { useStandaloneSession } from "~/helpers/pwa/session";
-
 import { type FetchRouteOptions } from "./fetch";
 
 export interface RouteSWRResponse<Data>
@@ -60,9 +58,9 @@ export const useRouteSWR = <
 
   const key = computeRouteKey(route, params);
   const { online } = useNetwork();
-  const standaloneSession = useStandaloneSession();
+  const { isStandalone, outOfPWAScope, freshCSRF } = usePWA();
   const { isLoading, isValidating, ...swrResponse } = useSWR<Data, Error>(
-    standaloneSession === undefined ? null : key,
+    !!freshCSRF || isStandalone === false || outOfPWAScope ? key : null,
     async (url: string): Promise<Data> =>
       fetchRoute(url, {
         failSilently,

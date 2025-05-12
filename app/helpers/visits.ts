@@ -1,7 +1,7 @@
 import { useDocumentVisibility } from "@mantine/hooks";
 
 export const useTrackVisit = (): void => {
-  const isStandalone = useIsStandalone();
+  const { isStandalone, outOfPWAScope } = usePWA();
   const visibility = useDocumentVisibility();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -29,22 +29,20 @@ export const useTrackVisit = (): void => {
       return;
     }
     const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
-    setTimeout(() => {
-      if (!matchMedia("(display-mode: standalone)").matches) {
-        return;
-      }
-      if (document.visibilityState === "hidden") {
-        return;
-      }
+    const timeout = setTimeout(() => {
+      const clearNotifications = isStandalone && !outOfPWAScope;
       void trigger({
         visit: {
-          clear_notifications: isStandalone,
+          clear_notifications: clearNotifications,
           time_zone_name: timeZone,
         },
       });
-      if ("clearAppBadge" in navigator) {
+      if (clearNotifications && "clearAppBadge" in navigator) {
         void navigator.clearAppBadge();
       }
     }, 1000);
-  }, [isStandalone, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [isStandalone, outOfPWAScope, visibility]); // eslint-disable-line react-hooks/exhaustive-deps
 };

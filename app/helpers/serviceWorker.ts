@@ -147,7 +147,7 @@ export const handleServiceWorkerNavigation = (): void => {
   navigator.serviceWorker.addEventListener("message", handleMessage);
 };
 
-const useServiceWorker = (): ServiceWorker | null | undefined => {
+export const useActiveServiceWorker = (): ServiceWorker | null | undefined => {
   const [serviceWorker, setServiceWorker] = useState<ServiceWorker | null>();
   useEffect(() => {
     if (!("serviceWorker" in navigator)) {
@@ -162,19 +162,13 @@ const useServiceWorker = (): ServiceWorker | null | undefined => {
     void ready.then(({ active, installing }) => {
       setServiceWorker(active);
       if (installing) {
-        installing.addEventListener("statechange", function () {
-          setServiceWorker(this);
+        installing.addEventListener("statechange", () => {
+          setServiceWorker(installing);
         });
       }
     });
   }, []);
   return serviceWorker;
-};
-
-export const useWaitingForServiceWorkerReady = (): boolean => {
-  const isStandalone = useIsStandalone();
-  const serviceWorker = useServiceWorker();
-  return isStandalone ? !serviceWorker : false;
 };
 
 const shutdownServiceWorker = (sw: ServiceWorker): Promise<void> =>

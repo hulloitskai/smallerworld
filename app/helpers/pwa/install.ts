@@ -33,18 +33,24 @@ export const useInstallPrompt = (): InstallPromptResult => {
   const install = useMemo<(() => Promise<void>) | null | undefined>(() => {
     if (installPromptEvent) {
       return () => {
+        console.info("Installing PWA");
         setInstalling(true);
         return installPromptEvent
           .prompt()
-          .catch(error => {
-            console.error("Failed to install to home screen", error);
-            if (error instanceof Error) {
-              setError(error);
-              toast.error("failed to install to home screen", {
-                description: error.message,
-              });
-            }
-          })
+          .then(
+            () => {
+              console.info("PWA installed");
+            },
+            error => {
+              console.error("Failed to install to home screen", error);
+              if (error instanceof Error) {
+                setError(error);
+                toast.error("failed to install to home screen", {
+                  description: error.message,
+                });
+              }
+            },
+          )
           .finally(() => {
             setInstalling(false);
           });
