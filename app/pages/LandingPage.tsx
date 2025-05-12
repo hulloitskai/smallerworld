@@ -22,7 +22,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
   const [revealVideo, setRevealVideo] = useState(false);
 
   return (
-    <Stack align="center" gap={44}>
+    <Stack align="center" gap={44} pb="xl">
       {currentUser && (
         <Alert
           styles={{ root: { alignSelf: "stretch" }, body: { rowGap: rem(4) } }}

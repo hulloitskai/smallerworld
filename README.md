@@ -50,7 +50,17 @@ bin/setup
 - [x] open 'create your own world' in mobile Safari on iOS
 - [x] allow you to change icon of your smaller world as friend before you save
       it
+- [x] make it easy to add friends from onboarding tutorial
+- [x] show arrow to show where the create a post button lives (⬇️)
 - [-] some android devices don't open app from notification
+- [ ] macleod reply with telegram shows "user does not exist"???
+- [ ] better cta for user page welcome modal
+- [ ] add ?ref=smallerworld on outbound links
+- [ ] resolve "reply count" countroversey
+  - how to incentivize people to reply more? without introducing social gaming
+    elements?
+- [ ] privacy policy + tos
+- [ ] reactions v2
 - [ ] make it easy for new users to request to join peppercoat's world
   - demo vibes on landing page?
 - [ ] features + feedback area of smaller world (click on the door to enter
@@ -59,8 +69,6 @@ bin/setup
 - [ ] android takes some time for beforeinstallprompt event to fire, i need to
       account for this
 - [ ] emoji picker search sucks
-- [ ] make it easy to add friends from onboarding tutorial
-- [ ] show arrow to show where the create a post button lives (⬇️)
 - [ ] user-page-specific splash screens for Android / iOS
 - [ ] fix iOS text selection in Vaul drawers
 - [ ] adding friend page to chrome standalone doesn't dismiss join modal
