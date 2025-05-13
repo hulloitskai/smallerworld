@@ -17,6 +17,7 @@ import {
 } from "~/helpers/appLayout";
 import { useActiveServiceWorker } from "~/helpers/serviceWorker";
 import { useTrackVisit } from "~/helpers/visits";
+import { useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence } from "~/helpers/webPush";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
 import AppMeta, { type AppMetaProps } from "./AppMeta";
@@ -151,8 +152,9 @@ const AppShell: FC<AppShellProps> = ({
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
 
-  // == Track visit
+  // == Track visit and reregister push subscriptions
   useTrackVisit();
+  useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence();
 
   // == Container and main
   const { style: containerStyle, ...otherContainerProps } =

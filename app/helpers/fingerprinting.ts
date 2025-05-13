@@ -15,7 +15,7 @@ export const fingerprintDevice = async (): Promise<FingerprintingResult> => {
   return window
     .opjs({
       API_KEY: apiKey,
-      // ENDPOINT: "https://fp.smallerworld.club/fingerprint",
+      // ENDPOINT: "https://op.smallerworld.club/fingerprint",
     })
     .then(
       ({ clusterUUID, uniquenessScore }) => ({

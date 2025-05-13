@@ -4,5 +4,8 @@
 class PushRegistrationSerializer < ApplicationSerializer
   # == Attributes
   identifier
-  attributes :created_at, :device_id, :device_fingerprint
+  attributes :created_at,
+             :device_id,
+             :device_fingerprint,
+             device_fingerprint_confidence: { type: :number }
 end

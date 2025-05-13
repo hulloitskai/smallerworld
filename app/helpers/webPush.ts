@@ -77,3 +77,19 @@ export const useSendTestNotification = (): SendTestNotificationReturn => {
     sending: mutating,
   };
 };
+
+// TODO: Remove on May 29, 2025
+export const useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence =
+  (): void => {
+    const { registration, loading, subscribe } = useWebPush();
+    const resubscribedRef = useRef(false);
+    useEffect(() => {
+      if (!registration || loading || resubscribedRef.current) {
+        return;
+      }
+      if (registration.device_fingerprint_confidence <= 0.5) {
+        resubscribedRef.current = true;
+        void subscribe();
+      }
+    }, [registration, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+  };
