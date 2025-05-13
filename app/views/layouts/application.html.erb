@@ -88,13 +88,16 @@
     <%# == PWA %>
     <script>
       // Check timestamp deviation
-      let timestamp = parseInt(document.querySelector('meta[name="timestamp"]').getAttribute('content'));
-      let currentTimestamp = Math.floor(Date.now() / 1000);
-      let deviationSeconds = Math.abs(currentTimestamp - timestamp);
-      if (deviationSeconds > 10) {
-        console.warn(`Timestamp deviation detected: ${deviationSeconds} seconds. Reloading page...`);
-        window.location.reload();
+      function reloadIfStale() {
+        let timestamp = parseInt(document.querySelector('meta[name="timestamp"]').getAttribute('content'));
+        let currentTimestamp = Math.floor(Date.now() / 1000);
+        let deviationSeconds = Math.abs(currentTimestamp - timestamp);
+        if (deviationSeconds > 10) {
+          console.warn(`Timestamp deviation detected: ${deviationSeconds} seconds. Reloading page...`);
+          window.location.reload();
+        }
       }
+      reloadIfStale();
 
       // Capture beforeinstallprompt event
       window.addEventListener("beforeinstallprompt", event => {
