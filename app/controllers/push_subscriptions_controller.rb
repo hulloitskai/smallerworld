@@ -29,6 +29,7 @@ class PushSubscriptionsController < ApplicationController
       device_id
       device_fingerprint
       device_fingerprint_confidence
+      telemetry_id
     ])
     endpoint = subscription_params.delete(:endpoint) or
       raise ActionController::ParameterMissing,

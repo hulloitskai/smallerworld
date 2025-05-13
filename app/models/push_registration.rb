@@ -30,6 +30,9 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PushRegistration < ApplicationRecord
+  # == Attributes
+  attr_accessor :telemetry_id
+
   # == Associations
   belongs_to :owner, polymorphic: true, optional: true
   belongs_to :push_subscription, inverse_of: :registrations
@@ -44,6 +47,7 @@ class PushRegistration < ApplicationRecord
   validates :push_subscription, uniqueness: { scope: :owner }
 
   # == Callbacks
+  after_initialize :set_device_fingerprint_from_telemetry_id
   after_create :create_friend_notification!
 
   # == Methods
@@ -69,7 +73,7 @@ class PushRegistration < ApplicationRecord
 
   private
 
-  # == Heleprs
+  # == Helpers
   sig { returns(T.nilable(String)) }
   def page_icon_url
     owner = self.owner
@@ -92,6 +96,18 @@ class PushRegistration < ApplicationRecord
       if owner.is_a?(Friend) && !owner.push_registrations.where.not(id:).exists?
         owner.create_notification!
       end
+    end
+  end
+
+  # == Callback handlers
+  sig { void }
+  def set_device_fingerprint_from_telemetry_id
+    telemetry_id = self.telemetry_id or return
+    if (fingerprint = Stytch
+      .telemetry_client
+      .lookup_device_fingerprint(telemetry_id:))
+      self.device_fingerprint = fingerprint
+      self.device_fingerprint_confidence = 1.0
     end
   end
 end

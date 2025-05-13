@@ -77,6 +77,12 @@
 
     <%#== PWA %>
     <meta name="timestamp" content="<%= Time.current.to_i %>">
+
+    <%# == Stytch %>
+    <% if (settings = Stytch.settings) %>
+      <meta name="stytch-public-token" content="<%= settings.public_token %>">
+      <script src="https://elements.stytch.com/telemetry.js"></script>
+    <% end %>
   </head>
 
   <body>

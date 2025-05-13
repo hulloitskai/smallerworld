@@ -158,16 +158,19 @@ const useWebPushSubscribe = ({
       const browserDetection = detectBrowser();
       let deviceId: string;
       let deviceIdentity: GetResult;
+      let telemetryId: string;
       let subscription = currentSubscription;
       try {
         let pushManager: PushManager;
         let publicKey: string;
-        [pushManager, publicKey, deviceId, deviceIdentity] = await Promise.all([
+        [pushManager, publicKey, deviceId, deviceIdentity, telemetryId] =
+          await Promise.all([
             getPushManager(),
             fetchPublicKey(),
             fetchDeviceId(),
             identifyDevice(),
-        ]);
+            fetchTelemetryId(),
+          ]);
         if (forceNewSubscription && subscription && isIos(browserDetection)) {
           await subscription.unsubscribe();
         }
@@ -184,11 +187,17 @@ const useWebPushSubscribe = ({
         }
         throw error;
       }
+      console.info("Identified device", {
+        deviceId,
+        deviceIdentity,
+        telemetryId,
+      });
       await registerSubscription({
         subscription,
         deviceId,
         deviceFingerprint: deviceIdentity.visitorId,
         deviceFingerprintConfidence: deviceIdentity.confidence.score,
+        telemetryId,
         friendAccessToken: currentFriend?.access_token,
       });
       onSubscribed(subscription);
@@ -222,6 +231,7 @@ interface RegisterSubscriptionParams {
   deviceId: string;
   deviceFingerprint: string;
   deviceFingerprintConfidence: number;
+  telemetryId: string;
   friendAccessToken?: string;
 }
 
@@ -230,6 +240,7 @@ const registerSubscription = ({
   deviceId,
   deviceFingerprint,
   deviceFingerprintConfidence,
+  telemetryId,
   friendAccessToken,
 }: RegisterSubscriptionParams): Promise<void> => {
   const { endpoint, keys } = pick(
@@ -260,6 +271,7 @@ const registerSubscription = ({
           device_id: deviceId,
           device_fingerprint: deviceFingerprint,
           device_fingerprint_confidence: deviceFingerprintConfidence,
+          telemetry_id: telemetryId,
         },
       },
     },
@@ -373,3 +385,8 @@ const fetchDeviceId = async (): Promise<string> => {
 
 const awaitTimeout = (ms: number): Promise<void> =>
   new Promise(resolve => setTimeout(resolve, ms));
+
+const fetchTelemetryId = async (): Promise<string> => {
+  const publicToken = requireMeta("stytch-public-token");
+  return window.GetTelemetryID({ publicToken });
+};
