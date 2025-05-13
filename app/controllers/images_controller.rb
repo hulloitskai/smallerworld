@@ -5,17 +5,19 @@ class ImagesController < ApplicationController
   # == Actions
   # GET /images/:signed_id
   def show
-    blob = maybe_find_blob
-    render(json: { image: ImageSerializer.one_if(blob) })
+    image = maybe_find_image
+    render(json: { image: ImageSerializer.one_if(image) })
   end
 
   private
 
   # == Helpers
-  sig { returns(T.nilable(ActiveStorage::Blob)) }
-  def maybe_find_blob
+  sig { returns(T.nilable(ImageModel)) }
+  def maybe_find_image
     signed_id = params[:signed_id] or
       raise ActionController::ParameterMissing, "Missing signed ID"
-    ActiveStorage::Blob.find_signed(signed_id)
+    if (blob = ActiveStorage::Blob.find_signed(signed_id))
+      blob.becomes(ImageModel)
+    end
   end
 end

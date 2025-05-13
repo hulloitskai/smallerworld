@@ -168,6 +168,11 @@ class Post < ApplicationRecord
     images_blobs.first
   end
 
+  sig { returns(T::Array[ImageModel]) }
+  def images_models
+    images_blobs.map { |blob| blob.becomes(ImageModel) }
+  end
+
   sig { returns(Friend::PrivateAssociationRelation) }
   def friends_to_notify
     subscribed_type = quoted_post&.type || type

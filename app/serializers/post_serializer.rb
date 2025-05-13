@@ -15,6 +15,6 @@ class PostSerializer < ApplicationSerializer
              reply_snippet: { type: :string }
 
   # == Associations
-  has_many :images_blobs, as: :images, serializer: ImageSerializer
+  has_many :images_models, as: :images, serializer: ImageSerializer
   has_one :quoted_post, serializer: QuotedPostSerializer, nullable: true
 end

@@ -11,5 +11,5 @@ class WorldSerializer < ApplicationSerializer
              associated_friend_access_token: { type: :string, nullable: true }
 
   # == Associations
-  has_one :page_icon_blob, as: :page_icon, serializer: ImageSerializer
+  has_one :page_icon_model, as: :page_icon, serializer: ImageSerializer
 end

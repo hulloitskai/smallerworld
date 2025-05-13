@@ -59,6 +59,11 @@ class User < ApplicationRecord
       raise ActiveRecord::RecordNotFound, "Missing page icon blob"
   end
 
+  sig { returns(ImageModel) }
+  def page_icon_model
+    page_icon_blob!.becomes(ImageModel)
+  end
+
   # == Normalizations
   normalizes :name, with: ->(name) { name.strip }
   normalizes_phone_number :phone_number, :reply_to_number

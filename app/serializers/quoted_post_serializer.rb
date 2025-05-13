@@ -15,5 +15,5 @@ class QuotedPostSerializer < ApplicationSerializer
              type: { type: "PostType" }
 
   # == Associations
-  has_many :images_blobs, as: :images, serializer: ImageSerializer
+  has_many :images_models, as: :images, serializer: ImageSerializer
 end

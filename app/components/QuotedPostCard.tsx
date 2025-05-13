@@ -128,10 +128,7 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
         slides={[
           {
             src: image.src,
-            ...(image.dimensions && {
-              width: image.dimensions.width,
-              height: image.dimensions.height,
-            }),
+            ...image.dimensions,
           },
         ]}
         carousel={{ finite: true }}

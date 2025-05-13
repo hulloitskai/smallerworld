@@ -6,6 +6,6 @@
 
 
 class ImageSerializer
-  sig { returns(ActiveStorage::Blob) }
-  def blob; end
+  sig { returns(ImageModel) }
+  def image; end
 end

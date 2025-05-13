@@ -1,29 +1,19 @@
 # typed: true
 # frozen_string_literal: true
 
-class MaskedPost < T::Struct
+class MaskedPost < Post
   extend T::Sig
 
-  # == Properties
-  const :post, Post
-  delegate_missing_to :post
-
-  # == Initialize
-  sig { params(post: Post).void }
-  def initialize(post:)
-    super
-    Faker::Config.random = Random.new(post.created_at.to_i)
-  end
-
   # == Attributes
+  sig { override.returns(T.nilable(String)) }
   def title
-    if (title = post.title)
-      mask_sentence(title)
-    end
+    title = super or return
+    mask_sentence(title)
   end
 
+  sig { override.returns(String) }
   def body_html
-    doc = Nokogiri::HTML5.fragment(post.body_html)
+    doc = Nokogiri::HTML5.fragment(super)
     doc.traverse do |node|
       # Mask text nodes
       if node.text?
@@ -38,8 +28,19 @@ class MaskedPost < T::Struct
     doc.to_html
   end
 
+  sig { override.returns(String) }
   def reply_snippet = ""
-  def image_blob = nil
+
+  sig { override.returns(T.nilable(MaskedPost)) }
+  def quoted_post
+    post = super or return
+    post.becomes(MaskedPost)
+  end
+
+  sig { override.returns(T::Array[MaskedImageModel]) }
+  def images_models
+    images_blobs.map { |blob| blob.becomes(MaskedImageModel) }
+  end
 
   private
 

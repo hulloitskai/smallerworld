@@ -1,5 +1,4 @@
 import {
-  AspectRatio,
   type BoxProps,
   CloseButton,
   Image,
@@ -31,6 +30,9 @@ export interface PostCardProps extends BoxProps {
   blurContent?: boolean;
   focus?: boolean;
 }
+
+const IMAGE_MAX_WIDTH = 240;
+const IMAGE_MAX_HEIGHT = 440;
 
 const PostCard: FC<PostCardProps> = ({
   post,
@@ -204,20 +206,14 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
       srcSet={image.srcset ?? undefined}
       fit="contain"
       radius="md"
+      {...(image.dimensions && boundedImageDimensions(image.dimensions))}
       onClick={() => {
         setLightboxOpened(true);
       }}
     />
   );
   return (
-    <Box
-      className={classes.imageContainer}
-      {...(image.dimensions && {
-        component: AspectRatio,
-        ratio: image.dimensions.width / image.dimensions.height,
-      })}
-      {...otherProps}
-    >
+    <Box className={classes.imageContainer} {...otherProps}>
       {children}
       <Lightbox
         className={classes.imageLightbox}
@@ -279,6 +275,22 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
       />
     </Box>
   );
+};
+
+const boundedImageDimensions = ({ width, height }: Dimensions): Dimensions => {
+  if (width > IMAGE_MAX_WIDTH) {
+    return {
+      width: IMAGE_MAX_WIDTH,
+      height: height * (IMAGE_MAX_WIDTH / width),
+    };
+  }
+  if (height > IMAGE_MAX_HEIGHT) {
+    return {
+      width: width * (IMAGE_MAX_HEIGHT / height),
+      height: IMAGE_MAX_HEIGHT,
+    };
+  }
+  return { width, height };
 };
 
 const slideImageOptionsFromDimensions = (
