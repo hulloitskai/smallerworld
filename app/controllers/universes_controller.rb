@@ -72,8 +72,10 @@ class UniversesController < ApplicationController
             PushRegistration.where(
               device_id: user.push_registrations.select(:device_id),
             ).or(PushRegistration.where(
-              device_fingerprint:
-                user.push_registrations.select(:device_fingerprint),
+              device_fingerprint: user
+                .push_registrations
+                .select(:device_fingerprint),
+              device_fingerprint_confidence: 0.3..,
             )),
           )
           .select(:owner_id)
