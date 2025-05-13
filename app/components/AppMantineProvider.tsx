@@ -1,4 +1,5 @@
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { DatesProvider } from "@mantine/dates";
 
 import { useTheme } from "~/helpers/mantine";
 
@@ -14,7 +15,9 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
           env: "test",
         })}
       >
-        {children}
+        <DatesProvider settings={{ locale: "en", firstDayOfWeek: 0 }}>
+          {children}
+        </DatesProvider>
       </MantineProvider>
     </>
   );

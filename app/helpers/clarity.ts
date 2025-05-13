@@ -2,7 +2,7 @@ import Clarity from "@microsoft/clarity";
 
 import { getMeta } from "~/helpers/meta";
 
-export const setupClarity = () => {
+export const setupClarity = (): void => {
   const projectId = getMeta("clarity-project-id");
   if (projectId) {
     Clarity.init(projectId);

@@ -9,6 +9,7 @@ import AppWrapper from "~/components/AppWrapper";
 import { setupActiveStorage } from "~/helpers/activestorage";
 import { setupAmplitude } from "~/helpers/amplitude";
 import { setupClarity } from "~/helpers/clarity";
+import { setupDayjs } from "~/helpers/dayjs";
 import { setupFullStory } from "~/helpers/fullstory";
 import {
   type PageComponent,
@@ -31,6 +32,7 @@ import "./application.css";
 setupInertia();
 setupRoutes();
 setupLuxon();
+setupDayjs();
 setupActiveStorage();
 setupSentry();
 setupFullStory();

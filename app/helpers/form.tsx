@@ -9,10 +9,10 @@ import {
   type UseFormInput,
   type UseFormReturnType,
 } from "@mantine/form";
+import { type LooseKeys } from "@mantine/form/lib/paths.types";
 import {
   type _TransformValues,
   type FormErrors,
-  type LooseKeys,
 } from "@mantine/form/lib/types";
 import { useShallowEffect } from "@mantine/hooks";
 import { type FormEvent, startTransition } from "react";

@@ -6,7 +6,7 @@ declare module "luxon" {
   }
 }
 
-export const setupLuxon = () => {
+export const setupLuxon = (): void => {
   Settings.defaultLocale = "en-US";
   Settings.throwOnInvalid = true;
 };

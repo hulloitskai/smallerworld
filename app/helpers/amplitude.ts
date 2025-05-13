@@ -6,7 +6,7 @@ import { getMeta } from "~/helpers/meta";
 
 import { fingerprintDevice } from "./fingerprinting";
 
-export const setupAmplitude = () => {
+export const setupAmplitude = (): void => {
   const apiKey = getMeta("amplitude-api-key");
   if (apiKey) {
     const options: BrowserOptions = { autocapture: true };

@@ -5,6 +5,7 @@ import { renderToString } from "react-dom/server";
 
 import AppWrapper from "~/components/AppWrapper";
 import EmailWrapper from "~/components/EmailWrapper";
+import { setupDayjs } from "~/helpers/dayjs";
 import {
   type PageComponent,
   PageType,
@@ -16,6 +17,7 @@ import { setupLuxon } from "~/helpers/luxon";
 
 // == Setup
 setupLuxon();
+setupDayjs();
 
 // == Pages
 const pageImports: Record<string, PageComponent> = import.meta.glob(

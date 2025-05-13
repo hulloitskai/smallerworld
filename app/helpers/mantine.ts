@@ -289,9 +289,6 @@ const createTheme = (
         },
       }),
       DateInput: DateInput.extend({
-        defaultProps: {
-          firstDayOfWeek: 0,
-        },
         classNames: {
           input: classes.input,
           label: classes.inputLabel,
@@ -301,6 +298,7 @@ const createTheme = (
         classNames: {
           root: classes.input,
           content: classes.richTextEditorContent,
+          control: classes.richTextEditorControl,
         },
       }),
       Chip: Chip.extend({

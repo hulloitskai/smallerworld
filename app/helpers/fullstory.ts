@@ -3,7 +3,7 @@ import { init } from "@fullstory/browser";
 
 import { getMeta } from "~/helpers/meta";
 
-export const setupFullStory = () => {
+export const setupFullStory = (): void => {
   const orgId = getMeta("fullstory-org-id");
   if (orgId) {
     const options: SnippetOptions = {

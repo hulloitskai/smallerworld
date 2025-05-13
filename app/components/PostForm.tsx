@@ -109,19 +109,34 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           action: routes.posts.update,
           params: { id: post.id },
           descriptor: "update post",
-          transformValues: ({ emoji, title, image_upload, ...values }) => ({
+          transformValues: ({
+            emoji,
+            title,
+            image_upload,
+            pinned_until,
+            ...values
+          }) => ({
             post: {
               ...values,
               emoji: emoji || null,
               title: title || null,
               images: image_upload ? [image_upload.signedId] : null,
+              pinned_until: pinned_until
+                ? transformPinnedUntil(pinned_until)
+                : null,
             },
           }),
         }
       : {
           action: routes.posts.create,
           descriptor: "create post",
-          transformValues: ({ emoji, title, image_upload, ...values }) => {
+          transformValues: ({
+            emoji,
+            title,
+            image_upload,
+            pinned_until,
+            ...values
+          }) => {
             invariant(postType, "Missing post type");
             return {
               post: {
@@ -132,6 +147,9 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
                   ? title || null
                   : null,
                 images: image_upload ? [image_upload.signedId] : null,
+                pinned_until: pinned_until
+                  ? transformPinnedUntil(pinned_until)
+                  : null,
                 quoted_post_id: quotedPost?.id ?? null,
               },
             };
@@ -173,11 +191,6 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
   // == Pinned until
   const vaulPortalTarget = useVaulPortalTarget();
   const todayDate = useMemo(() => DateTime.now().toJSDate(), []);
-  const pinnedUntil = useMemo(() => {
-    if (values.pinned_until) {
-      return DateTime.fromISO(values.pinned_until).toJSDate();
-    }
-  }, [values.pinned_until]);
 
   // == Body text empty state
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
@@ -306,11 +319,11 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           </Input.Wrapper>
           {postType === "invitation" && (
             <DateInput
+              {...getInputProps("pinned_until")}
               className={classes.dateInput}
               placeholder="keep pinned until"
               leftSection={<CalendarIcon />}
               minDate={todayDate}
-              value={pinnedUntil}
               error={errors.pinned_until}
               required
               withAsterisk={false}
@@ -319,14 +332,6 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
                   target: vaulPortalTarget,
                 },
                 position: "bottom",
-              }}
-              onChange={date => {
-                const value = date
-                  ? DateTime.fromJSDate(date)
-                      .set({ hour: 23, minute: 59, second: 59 })
-                      .toISO()
-                  : "";
-                setFieldValue("pinned_until", value);
               }}
               data-vaul-no-drag
             />
@@ -380,3 +385,8 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
 };
 
 export default PostForm;
+
+const transformPinnedUntil = (dateString: string): string =>
+  DateTime.fromJSDate(new Date(dateString))
+    .set({ hour: 23, minute: 59, second: 59 })
+    .toISO();
