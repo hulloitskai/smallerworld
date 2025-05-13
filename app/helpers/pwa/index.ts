@@ -51,14 +51,10 @@ export const useOutOfPWAScope = (): boolean => {
   }, [url]);
 };
 
-export const getPwaScope = (): string | null => {
-  const { pwa_scope: searchScope } = queryParamsFromPath(location.href);
-  if (searchScope) {
-    return searchScope;
-  }
-  const metaScope = getMeta("pwa-scope");
-  if (metaScope) {
-    return metaScope;
+export const getPWAScope = (): string | null => {
+  const scope = getMeta("pwa-scope");
+  if (scope) {
+    return scope;
   }
   const manifestLink = document.querySelector<HTMLLinkElement>(
     "link[rel='manifest']",

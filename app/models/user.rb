@@ -76,7 +76,9 @@ class User < ApplicationRecord
             :time_zone_name,
             presence: true
   validates :name, length: { maximum: 30 }
-  validates :handle, length: { minimum: 2 }
+  validates :handle,
+            length: { minimum: 2 },
+            exclusion: { in: %i[kai], message: "is reserved" }
   validate :validate_time_zone_name
 
   # == Callbacks

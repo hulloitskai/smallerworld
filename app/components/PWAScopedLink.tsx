@@ -1,6 +1,7 @@
 import { type InertiaLinkProps } from "@inertiajs/react";
 
-import { getPwaScope } from "~/helpers/pwa";
+import { queryParamsFromPath } from "~/helpers/inertia/routing";
+import { getPWAScope } from "~/helpers/pwa";
 
 export interface PWAScopedLinkProps extends Omit<InertiaLinkProps, "href"> {
   href: string;
@@ -8,17 +9,27 @@ export interface PWAScopedLinkProps extends Omit<InertiaLinkProps, "href"> {
 
 const PWAScopedLink = forwardRef<HTMLAnchorElement, PWAScopedLinkProps>(
   ({ href, ...otherProps }, ref) => {
+    const { isStandalone } = usePWA();
     const [scopedHref, setScopedHref] = useState<string>();
     useEffect(() => {
-      const scope = getPwaScope();
-      if (scope) {
-        const url = new URL(href, location.origin);
-        url.searchParams.set("pwa_scope", scope);
-        setScopedHref(url.toString());
+      const { pwa_scope: previousScope } = queryParamsFromPath(location.href);
+      if (previousScope) {
+        setScopedHref(addScopeToHref(href, previousScope));
+      } else if (isStandalone) {
+        const currentScope = getPWAScope();
+        if (currentScope) {
+          setScopedHref(addScopeToHref(href, currentScope));
+        }
       }
-    }, [href]);
+    }, [href, isStandalone]);
     return <Link {...{ ref }} href={scopedHref ?? href} {...otherProps} />;
   },
 );
 
 export default PWAScopedLink;
+
+const addScopeToHref = (href: string, scope: string) => {
+  const url = new URL(href, location.origin);
+  url.searchParams.set("pwa_scope", scope);
+  return url.toString();
+};
