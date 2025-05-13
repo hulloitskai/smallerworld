@@ -117,7 +117,8 @@ const useLookupPushRegistration = ({
           },
           keepPreviousData: true,
           failSilently: true,
-          revalidateIfStale: false,
+          revalidateOnFocus: false,
+          revalidateOnReconnect: false,
           onSuccess: ({ registration }) => {
             if (registration) {
               console.info("Found push registration", registration);
