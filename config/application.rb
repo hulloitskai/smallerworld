@@ -37,7 +37,6 @@ module SmallerWorld
     require "fullstory"
     require "clarity"
     require "amplitude"
-    require "mapbox"
     require "contact"
     require "supabase"
     require "service_worker_proxy"

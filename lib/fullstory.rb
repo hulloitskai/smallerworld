@@ -13,8 +13,16 @@ module Fullstory
   # == Methods
   sig { returns(T.nilable(Settings)) }
   def self.settings
-    if (fullstory = Rails.application.credentials.fullstory)
-      Settings.new(org_id: fullstory.org_id!)
+    return @_settings if defined?(@_settings)
+
+    @_settings = if (credentials = self.credentials)
+      Settings.new(org_id: credentials.org_id!)
     end
+  end
+
+  # == Helpers
+  sig { returns(T.untyped) }
+  def self.credentials
+    Rails.application.credentials.fullstory
   end
 end

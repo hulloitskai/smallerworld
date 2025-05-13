@@ -14,11 +14,13 @@ module Supabase
   # == Methods
   sig { returns(Settings) }
   def self.settings
-    supabase = Rails.application.credentials.supabase!
-    Settings.new(
-      project_id: supabase.project_id!,
-      public_key: supabase.public_key!,
-    )
+    @_settings ||= scoped do
+      credentials = credentials!
+      Settings.new(
+        project_id: credentials.project_id!,
+        public_key: credentials.public_key!,
+      )
+    end
   end
 
   sig { returns(String) }
@@ -33,5 +35,11 @@ module Supabase
       conn.request(:json)
       conn.response(:json)
     end
+  end
+
+  # == Helpers
+  sig { returns(T.untyped) }
+  def self.credentials!
+    Rails.application.credentials.supabase!
   end
 end

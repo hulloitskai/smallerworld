@@ -14,8 +14,16 @@ module Clarity
   # == Methods
   sig { returns(T.nilable(Settings)) }
   def self.settings
-    if (clarity = Rails.application.credentials.clarity)
-      Settings.new(project_id: clarity.project_id!)
+    return @_settings if defined?(@_settings)
+
+    @_settings = if (credentials = self.credentials)
+      Settings.new(project_id: credentials.project_id!)
     end
+  end
+
+  # == Helpers
+  sig { returns(T.untyped) }
+  def self.credentials
+    Rails.application.credentials.clarity
   end
 end

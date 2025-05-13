@@ -11,7 +11,5 @@ export const identifyDevice = async (): Promise<GetResult> => {
     loadFingerprintAgent = load();
   }
   const agent = await loadFingerprintAgent;
-  const visitor = await agent.get();
-  console.info("Identified visitor using fingerprintjs", visitor);
-  return visitor;
+  return agent.get();
 };

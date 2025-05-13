@@ -157,19 +157,17 @@ const useWebPushSubscribe = ({
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
       const browserDetection = detectBrowser();
       let deviceId: string;
-      let visitorIdentity: GetResult;
+      let deviceIdentity: GetResult;
       let subscription = currentSubscription;
       try {
         let pushManager: PushManager;
         let publicKey: string;
-        [pushManager, publicKey, deviceId, visitorIdentity] = await Promise.all(
-          [
+        [pushManager, publicKey, deviceId, deviceIdentity] = await Promise.all([
             getPushManager(),
             fetchPublicKey(),
             fetchDeviceId(),
             identifyDevice(),
-          ],
-        );
+        ]);
         if (forceNewSubscription && subscription && isIos(browserDetection)) {
           await subscription.unsubscribe();
         }
@@ -189,8 +187,8 @@ const useWebPushSubscribe = ({
       await registerSubscription({
         subscription,
         deviceId,
-        deviceFingerprint: visitorIdentity.visitorId,
-        deviceFingerprintConfidence: visitorIdentity.confidence.score,
+        deviceFingerprint: deviceIdentity.visitorId,
+        deviceFingerprintConfidence: deviceIdentity.confidence.score,
         friendAccessToken: currentFriend?.access_token,
       });
       onSubscribed(subscription);

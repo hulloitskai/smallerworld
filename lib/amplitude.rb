@@ -13,8 +13,16 @@ module Amplitude
   # == Methods
   sig { returns(T.nilable(Settings)) }
   def self.settings
-    if (amplitude = Rails.application.credentials.amplitude)
-      Settings.new(api_key: amplitude.api_key!)
+    return @_settings if defined?(@_settings)
+
+    @_settings = if (credentials = self.credentials)
+      Settings.new(api_key: credentials.api_key!)
     end
+  end
+
+  # == Helpers
+  sig { returns(T.untyped) }
+  def self.credentials
+    Rails.application.credentials.amplitude
   end
 end
