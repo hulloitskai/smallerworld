@@ -40,6 +40,7 @@ module SmallerWorld
     require "contact"
     require "supabase"
     require "service_worker_proxy"
+    require "overpowered"
 
     # == Configuration
     # Initialize configuration defaults for originally generated Rails version.

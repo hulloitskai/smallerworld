@@ -9,7 +9,6 @@ import AppWrapper from "~/components/AppWrapper";
 import { setupActiveStorage } from "~/helpers/activestorage";
 import { setupAmplitude } from "~/helpers/amplitude";
 import { setupClarity } from "~/helpers/clarity";
-import { setupFingerprintAgent } from "~/helpers/fingerprinting";
 import { setupFullStory } from "~/helpers/fullstory";
 import {
   type PageComponent,
@@ -29,7 +28,6 @@ import {
 import "./application.css";
 
 // == Setup
-setupFingerprintAgent();
 setupInertia();
 setupRoutes();
 setupLuxon();

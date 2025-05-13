@@ -1,15 +1,39 @@
-import { type Agent, type GetResult, load } from "@fingerprintjs/fingerprintjs";
+import {
+  type Agent as FingerprintJsAgent,
+  load as loadFingerprintJs,
+} from "@fingerprintjs/fingerprintjs";
 
-let loadFingerprintAgent: Promise<Agent> | null = null;
+export interface FingerprintingResult {
+  fingerprint: string;
+  confidenceScore: number;
+}
 
-export const setupFingerprintAgent = (): void => {
-  loadFingerprintAgent = load();
-};
+let fingerprintJsAgent: Promise<FingerprintJsAgent> | null = null;
 
-export const identifyDevice = async (): Promise<GetResult> => {
-  if (!loadFingerprintAgent) {
-    loadFingerprintAgent = load();
-  }
-  const agent = await loadFingerprintAgent;
-  return agent.get();
+export const fingerprintDevice = async (): Promise<FingerprintingResult> => {
+  const apiKey = requireMeta("overpowered-api-key");
+  return window
+    .opjs({
+      API_KEY: apiKey,
+      // ENDPOINT: "https://fp.smallerworld.club/fingerprint",
+    })
+    .then(
+      ({ clusterUUID, uniquenessScore }) => ({
+        fingerprint: clusterUUID,
+        confidenceScore: uniquenessScore / 5,
+      }),
+      error => {
+        console.error("Failed to fingerprint device using Overpowered", error);
+        console.info("Falling back to FingerprintJS");
+        if (!fingerprintJsAgent) {
+          fingerprintJsAgent = loadFingerprintJs();
+        }
+        return fingerprintJsAgent
+          .then(agent => agent.get())
+          .then(({ visitorId, confidence }) => ({
+            fingerprint: visitorId,
+            confidenceScore: confidence.score,
+          }));
+      },
+    );
 };

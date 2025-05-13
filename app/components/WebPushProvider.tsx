@@ -1,7 +1,8 @@
-import { type GetResult } from "@fingerprintjs/fingerprintjs";
-
 import { detectBrowser, isIos } from "~/helpers/browsers";
-import { identifyDevice } from "~/helpers/fingerprinting";
+import {
+  fingerprintDevice,
+  type FingerprintingResult,
+} from "~/helpers/fingerprinting";
 import {
   WebPushContext,
   type WebPushSubscribeOptions,
@@ -157,17 +158,18 @@ const useWebPushSubscribe = ({
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
       const browserDetection = detectBrowser();
       let deviceId: string;
-      let deviceIdentity: GetResult;
+      let fingerprintingResult: FingerprintingResult;
       let subscription = currentSubscription;
       try {
         let pushManager: PushManager;
         let publicKey: string;
-        [pushManager, publicKey, deviceId, deviceIdentity] = await Promise.all([
+        [pushManager, publicKey, deviceId, fingerprintingResult] =
+          await Promise.all([
             getPushManager(),
             fetchPublicKey(),
             fetchDeviceId(),
-            identifyDevice(),
-        ]);
+            fingerprintDevice(),
+          ]);
         if (forceNewSubscription && subscription && isIos(browserDetection)) {
           await subscription.unsubscribe();
         }
@@ -184,11 +186,15 @@ const useWebPushSubscribe = ({
         }
         throw error;
       }
+      console.info("Identified device for push registartion", {
+        deviceId,
+        fingerprintingResult,
+      });
       await registerSubscription({
         subscription,
         deviceId,
-        deviceFingerprint: deviceIdentity.visitorId,
-        deviceFingerprintConfidence: deviceIdentity.confidence.score,
+        deviceFingerprint: fingerprintingResult.fingerprint,
+        deviceFingerprintConfidence: fingerprintingResult.confidenceScore,
         friendAccessToken: currentFriend?.access_token,
       });
       onSubscribed(subscription);

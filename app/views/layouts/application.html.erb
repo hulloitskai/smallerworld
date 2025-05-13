@@ -77,6 +77,11 @@
 
     <%#== PWA %>
     <meta name="timestamp" content="<%= Time.current.to_i %>">
+
+    <%# == Overpowered %>
+    <meta name="overpowered-api-key" content="<%= Overpowered.settings.api_key %>">
+    <script src="https://cdn.overpoweredjs.com/loader/opjs"></script>
+    <%# <script src="https://fp.smallerworld.club/opjs.min.js"></script> %>
   </head>
 
   <body>
