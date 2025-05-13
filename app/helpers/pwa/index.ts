@@ -4,6 +4,7 @@ import { queryParamsFromPath } from "../inertia/routing";
 
 export interface PWAState {
   freshCSRF: { param: string; token: string } | null;
+  activeServiceWorker: ServiceWorker | null | undefined;
   isStandalone: boolean | undefined;
   outOfPWAScope: boolean;
 }

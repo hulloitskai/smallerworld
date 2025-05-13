@@ -53,16 +53,12 @@
   }
 }
 
-.waitingForServiceWorkerReadyOverlay {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+.pwaLoadingOverlay {
   gap: var(--mantine-spacing-lg);
   padding-bottom: var(--mantine-spacing-xl);
 }
 
-.waitingForServiceWorkerReadyText {
+.pwaLoadingOverlayText {
   font-family: var(--mantine-color-font-family-headings);
 
   @mixin light {
@@ -70,6 +66,6 @@
   }
 }
 
-.waitingForServiceWorkerReadySubtext {
+.pwaLoadingOverlaySubtext {
   color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dimmed));
 }

@@ -1,6 +1,6 @@
 import {
-  AppShell as MantineAppShell,
-  type AppShellProps as MantineAppShellProps,
+  AppShell,
+  type AppShellProps,
   Breadcrumbs,
   type ContainerProps,
   Loader,
@@ -15,7 +15,6 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
-import { useActiveServiceWorker } from "~/helpers/serviceWorker";
 import { useTrackVisit } from "~/helpers/visits";
 import { useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence } from "~/helpers/webPush";
 
@@ -32,7 +31,7 @@ export interface AppLayoutProps<PageProps extends SharedPageProps>
       AppMetaProps,
       "title" | "description" | "imageUrl" | "manifestUrl"
     >,
-    Omit<AppShellProps, "breadcrumbs" | "logoHref"> {
+    Omit<AppInnerProps, "breadcrumbs" | "logoHref"> {
   title?: DynamicProp<PageProps, AppMetaProps["title"]>;
   description?: DynamicProp<PageProps, AppMetaProps["description"]>;
   breadcrumbs?: DynamicProp<PageProps, (AppBreadcrumb | null | false)[]>;
@@ -80,40 +79,14 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   // == Header
   const logoHref = useResolveDynamicProp(logoHrefProp);
 
-  // == Service worker
-  const serviceWorker = useActiveServiceWorker();
-
   return (
     <PageLayout>
       <AppMeta {...{ title, description, imageUrl, noIndex, manifestUrl }} />
       <UserThemeProvider>
-        <RemoveScroll enabled={serviceWorker === undefined}>
-          <AppShell {...{ breadcrumbs, logoHref }} {...appShellProps} />
-          {serviceWorker === undefined && (
-            <Overlay
-              className={classes.waitingForServiceWorkerReadyOverlay}
-              blur={3}
-              pos="fixed"
-            >
-              <Loader size="md" />
-              <Stack gap={6} ta="center" maw={240}>
-                <Text
-                  className={classes.waitingForServiceWorkerReadyText}
-                  size="sm"
-                >
-                  completing installation—this may take up to 30 seconds...
-                </Text>
-                <Text
-                  className={classes.waitingForServiceWorkerReadySubtext}
-                  size="xs"
-                >
-                  thank u for your patience 😭
-                  <br />i appreciate u :')
-                </Text>
-              </Stack>
-            </Overlay>
-          )}
-        </RemoveScroll>
+        <PWALoadingRemoveScroll>
+          <AppInner {...{ breadcrumbs, logoHref }} {...appShellProps} />
+          <PWALoadingOverlay />
+        </PWALoadingRemoveScroll>
       </UserThemeProvider>
     </PageLayout>
   );
@@ -121,7 +94,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 
 export default AppLayout;
 
-interface AppShellProps extends Omit<MantineAppShellProps, "title"> {
+interface AppInnerProps extends Omit<AppShellProps, "title"> {
   breadcrumbs: AppBreadcrumb[];
   withContainer?: boolean;
   containerSize?: MantineSize | (string & {}) | number;
@@ -131,7 +104,7 @@ interface AppShellProps extends Omit<MantineAppShellProps, "title"> {
   logoHref?: AppHeaderProps["logoHref"];
 }
 
-const AppShell: FC<AppShellProps> = ({
+const AppInner: FC<AppInnerProps> = ({
   children,
   breadcrumbs,
   withContainer,
@@ -176,7 +149,7 @@ const AppShell: FC<AppShellProps> = ({
   );
 
   return (
-    <MantineAppShell
+    <AppShell
       withBorder={LAYOUT_WITH_BORDER}
       {...((isStandalone === false || outOfPWAScope) && {
         header: { height: 46 },
@@ -189,7 +162,7 @@ const AppShell: FC<AppShellProps> = ({
       {(isStandalone === false || outOfPWAScope) && (
         <AppHeader {...{ logoHref }} />
       )}
-      <MantineAppShell.Main
+      <AppShell.Main
         className={classes.main}
         {...{ pt, pb, pr, pl, py, px, p }}
       >
@@ -219,8 +192,48 @@ const AppShell: FC<AppShellProps> = ({
           </Breadcrumbs>
         )}
         {main}
-      </MantineAppShell.Main>
+      </AppShell.Main>
       <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
-    </MantineAppShell>
+    </AppShell>
+  );
+};
+
+interface PWALoadingRemoveScrollProps extends PropsWithChildren {}
+
+const PWALoadingRemoveScroll: FC<PWALoadingRemoveScrollProps> = ({
+  children,
+}) => {
+  const { isStandalone, activeServiceWorker } = usePWA();
+  return (
+    <RemoveScroll enabled={isStandalone && activeServiceWorker === undefined}>
+      {children}
+    </RemoveScroll>
+  );
+};
+
+const PWALoadingOverlay: FC = () => {
+  const { isStandalone, activeServiceWorker } = usePWA();
+  return (
+    <>
+      {isStandalone && activeServiceWorker === undefined && (
+        <Overlay
+          className={classes.pwaLoadingOverlay}
+          blur={3}
+          center
+          pos="fixed"
+        >
+          <Loader size="md" />
+          <Stack gap={6} ta="center" maw={240}>
+            <Text className={classes.pwaLoadingOverlayText} size="sm">
+              completing installation—this may take up to 30 seconds...
+            </Text>
+            <Text className={classes.pwaLoadingOverlaySubtext} size="xs">
+              thank u for your patience 😭
+              <br />i appreciate u :')
+            </Text>
+          </Stack>
+        </Overlay>
+      )}
+    </>
   );
 };

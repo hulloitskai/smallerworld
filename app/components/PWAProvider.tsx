@@ -2,6 +2,7 @@ import { useDocumentVisibility } from "@mantine/hooks";
 
 import { PWAContext, useIsStandalone, useOutOfPWAScope } from "~/helpers/pwa";
 import { resetSWRCache } from "~/helpers/routes/swr";
+import { useActiveServiceWorker } from "~/helpers/serviceWorker";
 
 export interface PWAProviderProps extends PropsWithChildren {}
 
@@ -14,6 +15,7 @@ const PWAProvider: FC<PWAProviderProps> = ({ children }) => {
     token: string;
   } | null>(() => pageProps.csrf);
   const visibility = useDocumentVisibility();
+  const activeServiceWorker = useActiveServiceWorker();
   useDidUpdate(() => {
     if (visibility === "hidden") {
       setFreshCSRF(null);
@@ -38,6 +40,7 @@ const PWAProvider: FC<PWAProviderProps> = ({ children }) => {
         freshCSRF,
         isStandalone,
         outOfPWAScope,
+        activeServiceWorker,
       }}
     >
       {children}
