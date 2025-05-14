@@ -239,17 +239,12 @@ const registerSubscription = ({
   deviceFingerprintConfidence,
   friendAccessToken,
 }: RegisterSubscriptionParams): Promise<void> => {
-  const { endpoint, keys } = pick(
-    subscription.toJSON(),
-    "endpoint",
-    "keys.auth",
-    "keys.p256dh",
-  );
+  const { keys } = pick(subscription.toJSON(), "keys.auth", "keys.p256dh");
   if (!keys?.auth) {
-    throw new Error("missing auth key");
+    throw new Error("Missing push subscription auth key");
   }
   if (!keys?.p256dh) {
-    throw new Error("missing p256dh key");
+    throw new Error("Missing push subscription p256dh key");
   }
   const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
   return fetchRoute<{ registration: PushRegistration }>(
@@ -259,7 +254,7 @@ const registerSubscription = ({
       params: { query },
       data: {
         subscription: {
-          endpoint,
+          endpoint: subscription.endpoint,
           auth_key: keys.auth,
           p256dh_key: keys.p256dh,
         },

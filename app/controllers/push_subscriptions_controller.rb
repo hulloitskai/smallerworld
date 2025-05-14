@@ -49,12 +49,14 @@ class PushSubscriptionsController < ApplicationController
   def unsubscribe
     owner = current_owner
     subscription = find_subscription
-    subscription.registrations.destroy_by(owner:)
-    should_remove_subscription = if subscription.registrations.none?
-      subscription.destroy!
-      true
-    else
-      false
+    should_remove_subscription = subscription.transaction do
+      subscription.registrations.destroy_by(owner:)
+      if subscription.registrations.none?
+        subscription.destroy!
+        true
+      else
+        false
+      end
     end
     render(json: { "shouldRemoveSubscription" => should_remove_subscription })
   end
@@ -105,9 +107,7 @@ class PushSubscriptionsController < ApplicationController
   sig { returns(T.nilable(T.any(Friend, User))) }
   def current_owner
     referrer = Addressable::URI.parse(request.referer)
-    if referrer.path == universe_path
-      nil
-    else
+    if referrer.path != universe_path
       current_friend || current_user
     end
   end

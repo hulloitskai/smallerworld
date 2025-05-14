@@ -199,10 +199,37 @@ self.addEventListener("push", event => {
   );
 });
 
+interface PushSubscriptionAttributes {
+  endpoint: string;
+  auth_key: string;
+  p256dh_key: string;
+}
+
+const pushSubscriptionAttributes = (
+  subscription: PushSubscription,
+): PushSubscriptionAttributes => {
+  const { keys } = pick(
+    subscription.toJSON(),
+    "endpoint",
+    "keys.auth",
+    "keys.p256dh",
+  );
+  if (!keys?.auth) {
+    throw new Error("Missing push subscription auth key");
+  }
+  if (!keys?.p256dh) {
+    throw new Error("Missing push subscription p256dh key");
+  }
+  return {
+    endpoint: subscription.endpoint,
+    auth_key: keys.auth,
+    p256dh_key: keys.p256dh,
+  };
+};
+
 self.addEventListener("pushsubscriptionchange", event => {
   const changeEvent = event as PushSubscriptionChangeEvent;
   const { newSubscription, oldSubscription } = changeEvent;
-  const newSubscriptionJSON = newSubscription?.toJSON();
   changeEvent.waitUntil(
     routes.pushSubscriptions
       .change({
@@ -210,12 +237,8 @@ self.addEventListener("pushsubscriptionchange", event => {
           old_subscription: oldSubscription
             ? { endpoint: oldSubscription.endpoint }
             : null,
-          new_subscription: newSubscriptionJSON
-            ? {
-                endpoint: newSubscriptionJSON.endpoint,
-                p256dh_key: newSubscriptionJSON.keys?.p256dh,
-                auth_key: newSubscriptionJSON.keys?.auth,
-              }
+          new_subscription: newSubscription
+            ? pushSubscriptionAttributes(newSubscription)
             : null,
         },
       })
