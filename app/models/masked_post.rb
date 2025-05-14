@@ -47,7 +47,16 @@ class MaskedPost < Post
   # == Helpers
   sig { params(sentence: String).returns(String) }
   def mask_sentence(sentence)
+    seed_faker_once
     counted = WordsCounted.count(sentence)
     Faker::Lorem.sentence(word_count: counted.token_count)
+  end
+
+  sig { void }
+  def seed_faker_once
+    return if @_faker_seeded
+
+    Faker::Config.random = Random.new(created_at.to_i)
+    @_faker_seeded = true
   end
 end
