@@ -24,18 +24,3 @@ export const useJoinUrl = (user: User, friend: Friend): string | undefined => {
   }, [user, friend]);
   return joinUrl;
 };
-
-export const shareOrCopyJoinUrl = (user: User, friend: Friend) => {
-  const joinUrl = buildJoinUrl(user, friend);
-  const shareData: ShareData = {
-    title: formatJoinMessage(joinUrl),
-    url: joinUrl,
-  };
-  if (navigator.canShare(shareData)) {
-    void navigator.share(shareData);
-  } else {
-    void navigator.clipboard.writeText(joinUrl).then(() => {
-      toast.success("invite link copied!");
-    });
-  }
-};

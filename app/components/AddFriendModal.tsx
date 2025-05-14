@@ -1,15 +1,11 @@
-import { Popover, Text } from "@mantine/core";
+import { CopyButton, Popover, Text } from "@mantine/core";
 import { type ModalSettings } from "@mantine/modals/lib/context";
-import QRCode from "react-qr-code";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
+import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import {
-  formatJoinMessage,
-  shareOrCopyJoinUrl,
-  useJoinUrl,
-} from "~/helpers/join";
+import { formatJoinMessage, useJoinUrl } from "~/helpers/join";
 import {
   messageUri,
   MESSAGING_PLATFORM_TO_ICON,
@@ -24,6 +20,7 @@ import {
 } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
+import PlainQRCode from "./PlainQRCode";
 
 import classes from "./AddFriendModal.module.css";
 
@@ -247,16 +244,9 @@ const ModalBody: FC<ModalBodyProps> = ({
                 <>
                   <JoinQRCode {...{ currentUser, friend }} />
                   <Divider label="or" w="100%" maw={120} mx="auto" />
-                  <Button
-                    variant="filled"
-                    leftSection={<SendIcon />}
-                    mx="xs"
-                    onClick={() => {
-                      shareOrCopyJoinUrl(currentUser, friend);
-                    }}
-                  >
-                    send invite link
-                  </Button>
+                  <Center>
+                    <SendInviteLinkButton {...{ currentUser, friend }} />
+                  </Center>
                 </>
               )}
             </Stack>
@@ -287,13 +277,7 @@ interface JoinQRCodeProps {
 // eslint-disable-next-line react-refresh/only-export-components
 const JoinQRCode: FC<JoinQRCodeProps> = ({ currentUser, friend }) => {
   const joinUrl = useJoinUrl(currentUser, friend);
-  return (
-    <>
-      {joinUrl && (
-        <QRCode value={joinUrl} size={160} className={classes.qrCode} />
-      )}
-    </>
-  );
+  return <>{joinUrl && <PlainQRCode value={joinUrl} />}</>;
 };
 
 interface InviteViaSMSDropdownBodyProps {
@@ -344,5 +328,64 @@ const InviteViaSMSDropdownBody: FC<InviteViaSMSDropdownBodyProps> = ({
         ))}
       </Group>
     </Stack>
+  );
+};
+
+interface SendInviteLinkButtonProps {
+  currentUser: User;
+  friend: Friend;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
+  currentUser,
+  friend,
+}) => {
+  const joinUrl = useJoinUrl(currentUser, friend);
+  const joinShareData = useMemo(() => {
+    if (joinUrl) {
+      const data: ShareData = {
+        title: formatJoinMessage(joinUrl),
+        url: joinUrl,
+      };
+      if (navigator.canShare(data)) {
+        return data;
+      }
+    }
+  }, [joinUrl]);
+  return (
+    <Menu width={140}>
+      <Menu.Target>
+        <Button variant="filled" leftSection={<SendIcon />} disabled={!joinUrl}>
+          send invite link
+        </Button>
+      </Menu.Target>
+      {!!joinUrl && (
+        <Menu.Dropdown>
+          <CopyButton value={joinUrl}>
+            {({ copied, copy }) => (
+              <Menu.Item
+                leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
+                closeMenuOnClick={false}
+                onClick={copy}
+              >
+                {copied ? "link copied!" : "copy link"}
+              </Menu.Item>
+            )}
+          </CopyButton>
+          {joinShareData && (
+            <Menu.Item
+              leftSection={<ShareIcon />}
+              closeMenuOnClick={false}
+              onClick={() => {
+                void navigator.share(joinShareData);
+              }}
+            >
+              share via...
+            </Menu.Item>
+          )}
+        </Menu.Dropdown>
+      )}
+    </Menu>
   );
 };

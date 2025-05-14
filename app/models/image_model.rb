@@ -5,12 +5,14 @@ class ImageModel < ActiveStorage::Blob
   extend T::Sig
 
   # == Constants
-  SIZES = [320, 720, 1400]
+  MAX_SIZE = 2400
+  SIZES = [320, 720, 1400, MAX_SIZE]
 
   # == Methods
   sig { returns(String) }
   def src
-    representation_path(self)
+    variant = self.variant(resize_to_limit: [MAX_SIZE, MAX_SIZE])
+    representation_path(variant)
   end
 
   sig { returns(T.nilable(String)) }
@@ -18,8 +20,8 @@ class ImageModel < ActiveStorage::Blob
     return if content_type&.start_with?("image/gif")
 
     sources = SIZES.map do |size|
-      representation = representation(resize_to_limit: [size, size])
-      "#{representation_path(representation)} #{size}w"
+      variant = self.variant(resize_to_limit: [size, size])
+      "#{representation_path(variant)} #{size}w"
     end
     sources.join(", ")
   end

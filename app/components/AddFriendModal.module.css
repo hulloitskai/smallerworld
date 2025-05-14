@@ -8,11 +8,6 @@
   }
 }
 
-.qrCode {
-  margin-inline: auto;
-  border: 5px solid var(--mantine-color-white);
-}
-
 .emojiButton {
   border-color: light-dark(
     var(--mantine-color-gray-4),

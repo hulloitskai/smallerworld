@@ -93,6 +93,11 @@
 
 .image {
   cursor: pointer;
+  width: unset;
+
+  &[data-blur] {
+    filter: blur(6px);
+  }
 }
 
 .imageLightbox {

@@ -1,14 +1,17 @@
-import { Loader, MenuItem, Text } from "@mantine/core";
+import { CopyButton, Loader, MenuItem, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import PauseIcon from "~icons/heroicons/pause-20-solid";
 import ResumeIcon from "~icons/heroicons/play-20-solid";
+import QrCodeIcon from "~icons/heroicons/qr-code-20-solid";
+import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import { shareOrCopyJoinUrl } from "~/helpers/join";
+import { formatJoinMessage, useJoinUrl } from "~/helpers/join";
 import { type Friend, type NotifiableFriend, type User } from "~/types";
 
 import EditFriendForm from "./EditFriendForm";
+import PlainQRCode from "./PlainQRCode";
 
 import classes from "./NotifiableFriendCard.module.css";
 
@@ -69,22 +72,21 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
               </Badge>
             </Tooltip>
           )}
-          <Menu width={170} opened={menuOpened} onChange={setMenuOpened}>
+          <Menu
+            width={180}
+            position="bottom-end"
+            arrowOffset={16}
+            trigger="click-hover"
+            opened={menuOpened}
+            onChange={setMenuOpened}
+          >
             <Menu.Target>
               <ActionIcon variant="subtle" size="compact-xs">
                 <MenuIcon />
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item
-                closeMenuOnClick={false}
-                leftSection={<SendIcon />}
-                onClick={() => {
-                  shareOrCopyJoinUrl(currentUser, friend);
-                }}
-              >
-                send invite link
-              </Menu.Item>
+              <SendJoinLinkMenuItem {...{ currentUser, friend }} />
               <Menu.Item
                 leftSection={<EditIcon />}
                 onClick={() => {
@@ -224,5 +226,82 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
     >
       unpause friend
     </MenuItem>
+  );
+};
+
+interface SendJoinLinkMenuItemProps {
+  currentUser: User;
+  friend: Friend;
+}
+
+const SendJoinLinkMenuItem: FC<SendJoinLinkMenuItemProps> = ({
+  currentUser,
+  friend,
+}) => {
+  const joinUrl = useJoinUrl(currentUser, friend);
+  const joinShareData = useMemo(() => {
+    if (joinUrl) {
+      const data: ShareData = {
+        title: formatJoinMessage(joinUrl),
+        url: joinUrl,
+      };
+      if (navigator.canShare(data)) {
+        return data;
+      }
+    }
+  }, [joinUrl]);
+  return (
+    <Menu.Sub arrowOffset={12} closeDelay={100}>
+      <Menu.Sub.Target>
+        <Menu.Sub.Item leftSection={<SendIcon />} disabled={!joinUrl}>
+          send invite link
+        </Menu.Sub.Item>
+      </Menu.Sub.Target>
+      {!!joinUrl && (
+        <Menu.Sub.Dropdown>
+          <CopyButton value={joinUrl}>
+            {({ copied, copy }) => (
+              <Menu.Item
+                leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
+                closeMenuOnClick={false}
+                onClick={copy}
+              >
+                {copied ? "link copied!" : "copy link"}
+              </Menu.Item>
+            )}
+          </CopyButton>
+          <Menu.Item
+            leftSection={<QrCodeIcon />}
+            onClick={() => {
+              openModal({
+                title: "invite friend via QR code",
+                children: (
+                  <Stack align="center" justify="center" pb="md">
+                    <Text size="sm" c="dimmed" display="block">
+                      get your friend to scan this QR code, so they can add your
+                      page to their home screen :)
+                    </Text>
+                    <PlainQRCode value={joinUrl} />
+                  </Stack>
+                ),
+              });
+            }}
+          >
+            show QR code
+          </Menu.Item>
+          {joinShareData && (
+            <Menu.Item
+              leftSection={<ShareIcon />}
+              closeMenuOnClick={false}
+              onClick={() => {
+                void navigator.share(joinShareData);
+              }}
+            >
+              share via...
+            </Menu.Item>
+          )}
+        </Menu.Sub.Dropdown>
+      )}
+    </Menu.Sub>
   );
 };

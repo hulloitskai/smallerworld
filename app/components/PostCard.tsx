@@ -160,7 +160,9 @@ const PostCard: FC<PostCardProps> = ({
           <TypographyStylesProvider>
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
           </TypographyStylesProvider>
-          {coverImage && <PostImage image={coverImage} />}
+          {coverImage && (
+            <PostImage image={coverImage} blur={!post.reply_snippet} />
+          )}
           {post.quoted_post && (
             <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
           )}
@@ -195,9 +197,10 @@ export default PostCard;
 
 interface PostImageProps extends BoxProps {
   image: ImageType;
+  blur: boolean;
 }
 
-const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
+const PostImage: FC<PostImageProps> = ({ image, blur, ...otherProps }) => {
   const [lightboxOpened, setLightboxOpened] = useState(false);
   const children = (
     <Image
@@ -207,6 +210,7 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
       fit="contain"
       radius="md"
       {...(image.dimensions && boundedImageDimensions(image.dimensions))}
+      mod={{ blur }}
       onClick={() => {
         setLightboxOpened(true);
       }}
