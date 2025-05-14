@@ -320,7 +320,14 @@ const createTheme = (
   });
 };
 
-export const useTheme = (): MantineThemeOverride => {
+export const useCreateTheme = (): MantineThemeOverride => {
   const safeViewportRect = useSafeViewportRect();
   return useMemo(() => createTheme(safeViewportRect), [safeViewportRect]);
+};
+
+export const useAutoClearColorScheme = () => {
+  const { clearColorScheme } = useMantineColorScheme();
+  useEffect(() => {
+    clearColorScheme();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 };

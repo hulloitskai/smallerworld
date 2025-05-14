@@ -39,6 +39,7 @@ const FriendNotificationSettingsForm: FC<
           {style => (
             <Button
               type="submit"
+              variant="filled"
               size="compact-sm"
               leftSection={<SaveIcon />}
               loading={submitting}

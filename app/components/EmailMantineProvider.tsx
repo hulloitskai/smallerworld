@@ -1,9 +1,9 @@
 import { MantineProvider } from "@mantine/core";
 
-import { useTheme } from "~/helpers/mantine";
+import { useCreateTheme } from "~/helpers/mantine";
 
 const EmailMantineProvider: FC<PropsWithChildren> = ({ children }) => {
-  const theme = useTheme();
+  const theme = useCreateTheme();
   return (
     <MantineProvider
       {...{ theme }}

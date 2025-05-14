@@ -78,7 +78,6 @@ export const useSendTestNotification = (): SendTestNotificationReturn => {
   };
 };
 
-// TODO: Remove on May 29, 2025
 export const useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence =
   (): void => {
     const { registration, loading, subscribe } = useWebPush();

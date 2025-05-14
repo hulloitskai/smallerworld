@@ -1,5 +1,3 @@
-import { useComputedColorScheme } from "@mantine/core";
-
 import {
   DARK_USER_THEMES,
   IMAGE_USER_THEMES,
@@ -19,7 +17,6 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<UserTheme | null>(null);
 
   // == Apply theme on document body
-  const computedColorScheme = useComputedColorScheme();
   useEffect(() => {
     if (!theme) {
       return;
@@ -39,25 +36,15 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
     return () => {
       document.documentElement.removeAttribute("data-user-theme");
       document.body.style.removeProperty("--mantine-color-body");
+      const darkMode =
+        "matchMedia" in window &&
+        matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.setAttribute(
         "data-mantine-color-scheme",
-        computedColorScheme,
+        darkMode ? "dark" : "light",
       );
     };
-  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // == Set color scheme
-  // const { setColorScheme, clearColorScheme } = useMantineColorScheme();
-  // useEffect(() => {
-  //   if (!theme) {
-  //     return;
-  //   }
-  //   const isDark = DARK_USER_THEMES.includes(theme);
-  //   setColorScheme(isDark ? "dark" : "light");
-  //   return () => {
-  //     clearColorScheme();
-  //   };
-  // }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [theme]);
 
   return (
     <UserThemeContext.Provider

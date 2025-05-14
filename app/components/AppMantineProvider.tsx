@@ -1,10 +1,10 @@
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 
-import { useTheme } from "~/helpers/mantine";
+import { useCreateTheme } from "~/helpers/mantine";
 
 const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
-  const theme = useTheme();
+  const theme = useCreateTheme();
   return (
     <>
       <ColorSchemeScript defaultColorScheme="auto" />

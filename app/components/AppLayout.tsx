@@ -15,6 +15,7 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
+import { useAutoClearColorScheme } from "~/helpers/mantine";
 import { useTrackVisit } from "~/helpers/visits";
 import { useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence } from "~/helpers/webPush";
 
@@ -80,15 +81,17 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   const logoHref = useResolveDynamicProp(logoHrefProp);
 
   return (
-    <PageLayout>
+    <>
       <AppMeta {...{ title, description, imageUrl, noIndex, manifestUrl }} />
-      <UserThemeProvider>
-        <PWALoadingRemoveScroll>
-          <AppInner {...{ breadcrumbs, logoHref }} {...appShellProps} />
-          <PWALoadingOverlay />
-        </PWALoadingRemoveScroll>
-      </UserThemeProvider>
-    </PageLayout>
+      <PageLayout>
+        <UserThemeProvider>
+          <PWALoadingRemoveScroll>
+            <AppInner {...{ breadcrumbs, logoHref }} {...appShellProps} />
+            <PWALoadingOverlay />
+          </PWALoadingRemoveScroll>
+        </UserThemeProvider>
+      </PageLayout>
+    </>
   );
 };
 
@@ -127,7 +130,8 @@ const AppInner: FC<AppInnerProps> = ({
 
   // == Track visit and reregister push subscriptions
   useTrackVisit();
-  useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence();
+  useAutoClearColorScheme(); // TODO: Remove after May 29, 2025
+  useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence(); // TODO: Remove after May 29, 2025
 
   // == Container and main
   const { style: containerStyle, ...otherContainerProps } =
