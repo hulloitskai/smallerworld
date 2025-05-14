@@ -85,7 +85,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
       emoji: emoji ?? "",
       image_upload: coverImage ? { signedId: coverImage.signed_id } : null,
       visibility: visibility ?? "friends",
-      pinned_until: pinned_until ?? "",
+      pinned_until: pinned_until ?? null,
     };
   }, [post]);
   const {

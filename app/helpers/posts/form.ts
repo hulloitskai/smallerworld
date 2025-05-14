@@ -8,7 +8,7 @@ export interface PostFormValues {
   emoji: string;
   image_upload: Upload | null;
   visibility: PostVisibility;
-  pinned_until: string;
+  pinned_until: string | null;
 }
 
 export interface NewPostDraft {
