@@ -1,10 +1,11 @@
-import { CopyButton, Loader, MenuItem, Text } from "@mantine/core";
+import { Loader, MenuItem, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import PauseIcon from "~icons/heroicons/pause-20-solid";
 import ResumeIcon from "~icons/heroicons/play-20-solid";
 
+import { shareOrCopyJoinUrl } from "~/helpers/join";
 import { type Friend, type NotifiableFriend, type User } from "~/types";
 
 import EditFriendForm from "./EditFriendForm";
@@ -22,20 +23,6 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
 }) => {
   const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
   const [menuOpened, setMenuOpened] = useState(false);
-
-  // == Join url
-  const [joinUrl, setJoinUrl] = useState<string>();
-  useEffect(() => {
-    const joinPath = routes.users.show.path({
-      handle: currentUser.handle,
-      query: {
-        friend_token: friend.access_token,
-        intent: "join",
-      },
-    });
-    const joinUrl = hrefToUrl(joinPath);
-    setJoinUrl(joinUrl.toString());
-  }, [currentUser.handle, friend.access_token]);
 
   // == Remove friend
   const { trigger: deleteFriend, mutating: deletingFriend } = useRouteMutation(
@@ -89,18 +76,15 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <CopyButton value={joinUrl ?? ""}>
-                {({ copied, copy }) => (
-                  <Menu.Item
-                    closeMenuOnClick={false}
-                    leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                    disabled={!joinUrl}
-                    onClick={copy}
-                  >
-                    {copied ? "link copied!" : "copy invite link"}
-                  </Menu.Item>
-                )}
-              </CopyButton>
+              <Menu.Item
+                closeMenuOnClick={false}
+                leftSection={<SendIcon />}
+                onClick={() => {
+                  shareOrCopyJoinUrl(currentUser, friend);
+                }}
+              >
+                send invite link
+              </Menu.Item>
               <Menu.Item
                 leftSection={<EditIcon />}
                 onClick={() => {

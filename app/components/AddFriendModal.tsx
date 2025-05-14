@@ -1,10 +1,15 @@
-import { CopyButton, Popover, Text } from "@mantine/core";
+import { Popover, Text } from "@mantine/core";
 import { type ModalSettings } from "@mantine/modals/lib/context";
 import QRCode from "react-qr-code";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 
+import {
+  formatJoinMessage,
+  shareOrCopyJoinUrl,
+  useJoinUrl,
+} from "~/helpers/join";
 import {
   messageUri,
   MESSAGING_PLATFORM_TO_ICON,
@@ -67,11 +72,22 @@ const ModalBody: FC<ModalBodyProps> = ({
     }
   }, [fromJoinRequest, fromUser]);
 
-  // == Join url
-  const [friendJoinUrl, setFriendJoinUrl] = useState<string>();
-
   // == Form
-  const initialValues = useMemo(
+  interface FormData {
+    friend: Friend;
+  }
+  interface FormValues {
+    emoji: string;
+    name: string;
+  }
+  interface FormSubmission {
+    friend: {
+      emoji: string | null;
+      name: string;
+      phone_number: string | null;
+    };
+  }
+  const initialValues = useMemo<FormValues>(
     () => ({
       emoji: "",
       name: joinerInfo?.name ?? "",
@@ -87,7 +103,7 @@ const ModalBody: FC<ModalBodyProps> = ({
     setInitialValues,
     reset,
     data,
-  } = useForm({
+  } = useForm<FormData, FormValues, (values: FormValues) => FormSubmission>({
     action: routes.friends.create,
     descriptor: "invite friend",
     initialValues,
@@ -98,16 +114,7 @@ const ModalBody: FC<ModalBodyProps> = ({
         phone_number: joinerInfo?.phone_number ?? null,
       },
     }),
-    onSuccess: ({ friend }: { friend: Friend }) => {
-      const joinPath = routes.users.show.path({
-        handle: currentUser.handle,
-        query: {
-          friend_token: friend.access_token,
-          intent: "join",
-        },
-      });
-      const joinUrl = hrefToUrl(joinPath);
-      setFriendJoinUrl(joinUrl.toString());
+    onSuccess: () => {
       void mutateRoute(routes.friends.index);
       void mutateRoute(routes.joinRequests.index);
       onFriendCreated?.();
@@ -195,7 +202,7 @@ const ModalBody: FC<ModalBodyProps> = ({
           </Box>
         </>
       )}
-      {friend && !!friendJoinUrl && (
+      {friend && (
         <>
           <Divider />
           <Stack gap="lg" align="center">
@@ -218,14 +225,7 @@ const ModalBody: FC<ModalBodyProps> = ({
               </Text>
             </Box>
             <Stack gap="xs" align="center">
-              {!joinerInfo && (
-                <QRCode
-                  value={friendJoinUrl}
-                  size={160}
-                  className={classes.qrCode}
-                />
-              )}
-              {!!joinerInfo?.phone_number && !!friendJoinUrl && (
+              {joinerInfo ? (
                 <Popover shadow="md">
                   <Popover.Target>
                     <Button
@@ -238,58 +238,27 @@ const ModalBody: FC<ModalBodyProps> = ({
                     </Button>
                   </Popover.Target>
                   <Popover.Dropdown>
-                    <Stack gap="xs">
-                      <Text ta="center" ff="heading" fw={500}>
-                        send via:
-                      </Text>
-                      <Group justify="center" gap="sm">
-                        {MESSAGING_PLATFORMS.map(platform => (
-                          <Stack key={platform} gap={2} align="center" miw={60}>
-                            <ActionIcon
-                              component="a"
-                              target="_blank"
-                              rel="noopener noreferrer nofollow"
-                              variant="light"
-                              size="lg"
-                              href={messageUri(
-                                joinerInfo.phone_number,
-                                formatJoinMessage(friendJoinUrl),
-                                platform,
-                              )}
-                            >
-                              <Box
-                                component={MESSAGING_PLATFORM_TO_ICON[platform]}
-                              />
-                            </ActionIcon>
-                            <Text size="xs" fw={500} ff="heading" c="dimmed">
-                              {MESSAGING_PLATFORM_TO_LABEL[platform]}
-                            </Text>
-                          </Stack>
-                        ))}
-                      </Group>
-                    </Stack>
+                    <InviteViaSMSDropdownBody
+                      {...{ currentUser, friend, joinerInfo }}
+                    />
                   </Popover.Dropdown>
                 </Popover>
-              )}
-              <Divider label="or" w="100%" maw={120} mx="auto" />
-              <CopyButton value={friendJoinUrl}>
-                {({ copy, copied }) => (
+              ) : (
+                <>
+                  <JoinQRCode {...{ currentUser, friend }} />
+                  <Divider label="or" w="100%" maw={120} mx="auto" />
                   <Button
                     variant="filled"
-                    leftSection={
-                      copied ? (
-                        <Box component={CopiedIcon} />
-                      ) : (
-                        <Box component={CopyIcon} />
-                      )
-                    }
-                    onClick={copy}
+                    leftSection={<SendIcon />}
                     mx="xs"
+                    onClick={() => {
+                      shareOrCopyJoinUrl(currentUser, friend);
+                    }}
                   >
-                    {copied ? "copied!" : "copy invite link"}
+                    send invite link
                   </Button>
-                )}
-              </CopyButton>
+                </>
+              )}
             </Stack>
             <Transition transition="fade-up" mounted={revealBackToHomeButton}>
               {style => (
@@ -310,5 +279,70 @@ const ModalBody: FC<ModalBodyProps> = ({
   );
 };
 
-const formatJoinMessage = (joinUrl: string) =>
-  `here's my smaller world invite link for you: ${joinUrl}`;
+interface JoinQRCodeProps {
+  currentUser: User;
+  friend: Friend;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+const JoinQRCode: FC<JoinQRCodeProps> = ({ currentUser, friend }) => {
+  const joinUrl = useJoinUrl(currentUser, friend);
+  return (
+    <>
+      {joinUrl && (
+        <QRCode value={joinUrl} size={160} className={classes.qrCode} />
+      )}
+    </>
+  );
+};
+
+interface InviteViaSMSDropdownBodyProps {
+  currentUser: User;
+  friend: Friend;
+  joinerInfo: { name: string; phone_number: string };
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+const InviteViaSMSDropdownBody: FC<InviteViaSMSDropdownBodyProps> = ({
+  currentUser,
+  friend,
+  joinerInfo,
+}) => {
+  const joinUrl = useJoinUrl(currentUser, friend);
+  return (
+    <Stack gap="xs">
+      <Text ta="center" ff="heading" fw={500}>
+        send via:
+      </Text>
+      <Group justify="center" gap="sm">
+        {MESSAGING_PLATFORMS.map(platform => (
+          <Stack key={platform} gap={2} align="center" miw={60}>
+            <ActionIcon
+              component="a"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              variant="light"
+              size="lg"
+              {...(joinUrl
+                ? {
+                    href: messageUri(
+                      joinerInfo.phone_number,
+                      formatJoinMessage(joinUrl),
+                      platform,
+                    ),
+                  }
+                : {
+                    disabled: true,
+                  })}
+            >
+              <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
+            </ActionIcon>
+            <Text size="xs" fw={500} ff="heading" c="dimmed">
+              {MESSAGING_PLATFORM_TO_LABEL[platform]}
+            </Text>
+          </Stack>
+        ))}
+      </Group>
+    </Stack>
+  );
+};

@@ -36,8 +36,8 @@ class UsersController < ApplicationController
 
   # GET /@:handle/join
   def join
-    handle = T.let(params.fetch(:handle), String)
-    redirect_to(user_path(handle, intent: "join"))
+    user = find_user
+    redirect_to(user_path(user, intent: "join"))
   end
 
   # GET /@:handle/manifest.webmanifest?friend_token=...&icon_type=(generic|user)
@@ -118,8 +118,12 @@ class UsersController < ApplicationController
   # == Helpers
   sig { returns(User) }
   def find_user
-    id = params[:id] || params[:handle] or
-      raise ActionController::ParameterMissing, "Missing id or handle"
-    User.friendly.find(id)
+    if (id = params[:id])
+      User.find(id)
+    elsif (handle = params[:handle])
+      User.find_by!(handle:)
+    else
+      raise ActionController::ParameterMissing, "Missing ID or handle"
+    end
   end
 end
