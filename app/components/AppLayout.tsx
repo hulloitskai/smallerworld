@@ -171,17 +171,8 @@ const AppInner: FC<AppInnerProps> = ({
             mx={10}
             mt={6}
             classNames={{
+              root: classes.breadcrumb,
               separator: classes.breadcrumbSeparator,
-            }}
-            styles={{
-              root: {
-                flexWrap: "wrap",
-                rowGap: rem(4),
-              },
-              separator: {
-                marginLeft: 6,
-                marginRight: 6,
-              },
             }}
           >
             {breadcrumbs.map(({ title, href }, index) => (

@@ -47,13 +47,22 @@
   }
 }
 
+.breadcrumb {
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
 .breadcrumbSeparator {
+  margin-left: 6px;
+  margin-right: 6px;
+
   @mixin light {
     color: var(--mantine-color-gray-5);
   }
 }
 
 .pwaLoadingOverlay {
+  flex-direction: column;
   gap: var(--mantine-spacing-lg);
   padding-bottom: var(--mantine-spacing-xl);
 }
