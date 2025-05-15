@@ -61,41 +61,39 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
         ) : (
           <Box>
             <ScrollArea className={classes.scrollArea}>
-              <Group align="start" justify="center">
-                {worlds
-                  ? worlds.map(world => (
-                      <Anchor
-                        className={classes.worldAnchor}
-                        key={world.user_id}
-                        component={PWAScopedLink}
-                        href={routes.users.show.path({
-                          handle: world.user_handle,
-                          query: {
-                            ...(!!world.associated_friend_access_token && {
-                              friend_token:
-                                world.associated_friend_access_token,
-                            }),
-                          },
-                        })}
-                        mod={{ joined: isJoinedWorld(world, currentUser) }}
-                      >
-                        <Stack align="center" gap={8} w="min-content">
-                          <WorldIcon {...{ world }} mx="sm" />
-                          <Text ff="heading" size="sm" fw={600} ta="center">
-                            {possessive(world.user_name)} world
-                          </Text>
-                        </Stack>
-                      </Anchor>
-                    ))
-                  : [...new Array(6)].map((_, i) => (
-                      <Skeleton
-                        key={i}
-                        w={ICON_SIZE}
-                        h={ICON_SIZE}
-                        radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
-                      />
-                    ))}
-              </Group>
+              {worlds
+                ? worlds.map(world => (
+                    <Anchor
+                      className={classes.worldAnchor}
+                      key={world.user_id}
+                      component={PWAScopedLink}
+                      href={routes.users.show.path({
+                        handle: world.user_handle,
+                        query: {
+                          ...(!!world.associated_friend_access_token && {
+                            friend_token: world.associated_friend_access_token,
+                          }),
+                        },
+                      })}
+                      mod={{ joined: isJoinedWorld(world, currentUser) }}
+                    >
+                      <Stack align="center" gap={8} w="min-content">
+                        <WorldIcon {...{ world }} mx="sm" />
+                        <Text ff="heading" size="sm" fw={600} ta="center">
+                          {possessive(world.user_name)} world
+                        </Text>
+                      </Stack>
+                    </Anchor>
+                  ))
+                : [...new Array(6)].map((_, i) => (
+                    <Skeleton
+                      className={classes.worldSkeleton}
+                      key={i}
+                      w={ICON_SIZE}
+                      h={ICON_SIZE}
+                      radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
+                    />
+                  ))}
             </ScrollArea>
             {!!worlds && (
               <Text size="xs" c="dimmed" ta="center">

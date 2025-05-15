@@ -21,9 +21,16 @@
 }
 
 .worldAnchor {
+  flex-shrink: 0;
+
   &:not([data-joined]) {
     color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
   }
+}
+
+.worldSkeleton {
+  flex-shrink: 0;
+  margin-inline: 8px;
 }
 
 .postCountIndicator {
@@ -74,12 +81,20 @@
 
 .scrollArea {
   :global(.mantine-ScrollArea-viewport) {
-    padding-top: rem(6);
+    padding-top: 6px;
     padding-bottom: var(--mantine-spacing-sm);
-    padding-inline: rem(8);
+    padding-inline: 8px;
 
     @larger-than $mantine-breakpoint-xs {
       padding-inline: var(--mantine-spacing-md);
     }
+  }
+
+  :global(.mantine-ScrollArea-content) {
+    display: flex;
+    column-gap: var(--mantine-spacing-xs);
+    align-items: flex-start;
+    justify-content: center;
+    width: fit-content;
   }
 }
