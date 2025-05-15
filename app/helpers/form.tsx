@@ -32,13 +32,8 @@ export const showFormErrorsAlert = <
   >,
   title: string,
 ): void => {
-  let firstErrorMessage = first(Object.values(form.errors));
-  if (typeof firstErrorMessage === "string") {
-    firstErrorMessage = sentencify(firstErrorMessage);
-  }
-  toast.error(title, {
-    description: firstErrorMessage ?? "An unknown error occurred.",
-  });
+  const description = formatFormErrorDescription(form.errors);
+  toast.error(title, { description });
   const firstErrorPath = first(Object.keys(form.errors));
   if (firstErrorPath) {
     const input = form.getInputNode(firstErrorPath);
@@ -51,19 +46,18 @@ export const showFormErrorsAlert = <
   }
 };
 
-export const setFormErrorsAndShowAlert = <
-  Values,
-  TransformValues extends _TransformValues<Values>,
->(
-  form: Pick<
-    UseFormReturnType<Values, TransformValues>,
-    "errors" | "setErrors" | "getInputNode"
-  >,
-  errors: Errors,
-  title: string,
-): void => {
-  form.setErrors(errors);
-  showFormErrorsAlert({ ...form, errors }, title);
+const formatFormErrorDescription = (errors: FormErrors): string => {
+  const firstErrorEntry = first(Object.entries(errors));
+  if (firstErrorEntry) {
+    const [field, message] = firstErrorEntry;
+    if (typeof message === "string") {
+      if (field === "base") {
+        return sentencify(message);
+      }
+      return [humanize(field, true), sentencify(message)].join(" ");
+    }
+  }
+  return "an unknown error occurred.";
 };
 
 const calculateHeaderHeight = (): number => {

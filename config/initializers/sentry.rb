@@ -10,6 +10,7 @@ if (credentials = Rails.application.credentials.sentry)
       http_logger
     ]
     config.send_default_pii = true
+    config.enabled_patches << :faraday
     config.enabled_environments = %w[production]
     config.excluded_exceptions += %w[
       ActiveSupport::MessageVerifier::InvalidSignature

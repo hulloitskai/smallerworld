@@ -31,6 +31,7 @@ class User < ApplicationRecord
   extend FriendlyId
   include NormalizesPhoneNumber
   include Notifiable
+  include ImageHelpers
 
   # == FriendlyId
   friendly_id :handle, slug_column: :handle
@@ -52,6 +53,14 @@ class User < ApplicationRecord
 
   # == Attachments
   has_one_attached :page_icon
+
+  sig { returns(T::Boolean) }
+  def page_icon? = page_icon.attached?
+
+  sig { returns(T::Boolean) }
+  def page_icon_changed?
+    attachment_changes["page_icon"].present?
+  end
 
   sig { returns(ActiveStorage::Blob) }
   def page_icon_blob!
@@ -80,6 +89,7 @@ class User < ApplicationRecord
             length: { minimum: 2 },
             exclusion: { in: %i[kai], message: "is reserved" }
   validate :validate_time_zone_name
+  validate :validate_opaque_page_icon, if: %i[page_icon? page_icon_changed?]
 
   # == Callbacks
   after_create :create_welcome_post!
@@ -171,6 +181,13 @@ class User < ApplicationRecord
   def validate_time_zone_name
     unless ActiveSupport::TimeZone.new(time_zone_name)
       errors.add(:time_zone_name, :invalid, message: "invalid time zone")
+    end
+  end
+
+  sig { void }
+  def validate_opaque_page_icon
+    if (blob = page_icon.public_send(:blob)) && !image_blob_is_opaque?(blob)
+      errors.add(:page_icon, :invalid, message: "must be opaque")
     end
   end
 end

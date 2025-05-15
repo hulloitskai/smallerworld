@@ -121,7 +121,7 @@ class ApplicationController < ActionController::Base
 
   sig { params(error: RuntimeError).void }
   def handle_runtime_error(error)
-    report_exception(error)
+    Rails.error.report(error)
     respond_to do |format|
       format.html do
         status = 500
@@ -160,14 +160,8 @@ class ApplicationController < ActionController::Base
 
   sig { params(exception: Exception).void }
   def report_and_render_json_exception(exception)
-    report_exception(exception)
-    render_json_exception(exception)
-  end
-
-  sig { params(exception: Exception).void }
-  def report_exception(exception)
     Rails.error.report(exception)
-    Sentry.capture_exception(exception)
+    render_json_exception(exception)
   end
 
   # == Rescue handlers

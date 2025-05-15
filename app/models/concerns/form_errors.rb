@@ -18,7 +18,7 @@ module FormErrors
     errors = {}
     self.errors.attribute_names.each do |name|
       messages = self.errors.messages_for(name)
-      errors[name.to_s] = messages.first!.upcase_first
+      errors[name.to_s] = messages.first!
     end
     errors
   end
