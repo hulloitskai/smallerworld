@@ -75,6 +75,18 @@
     <%# == Inertia %>
     <%== inertia_assets local_assigns.fetch(:page), type: :page, media: nil %>
 
+    <%# == Mantine %>
+    <script data-mantine-script>
+      try {
+        var defaultColorScheme = "auto";
+        var localStorageKey = "mantine-color-scheme-value";
+        var _colorScheme = window.localStorage.getItem(localStorageKey);
+        var colorScheme = _colorScheme === "light" || _colorScheme === "dark" || _colorScheme === "auto" ? _colorScheme : defaultColorScheme;
+        var computedColorScheme = colorScheme !== "auto" ? colorScheme : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.setAttribute("data-mantine-color-scheme", computedColorScheme);
+      } catch (e) {}
+    </script>
+
     <%#== PWA %>
     <meta name="timestamp" content="<%= Time.current.to_i %>">
 
