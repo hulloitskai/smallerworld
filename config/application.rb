@@ -46,11 +46,6 @@ module SmallerWorld
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults(8.0)
 
-    # == Autoloading
-    # Only autoload workers once.
-    Rails.autoloaders.main.ignore "app/workers"
-    config.autoload_once_paths << "app/workers"
-
     # == Generators
     config.generators do |g|
       # Generate Active Record model and migration with UUID primary keys.

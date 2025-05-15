@@ -12,6 +12,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # == Setup
   sig { void }
   def setup
+    Capybara.default_max_wait_time = 15
     wait_for_inertia_ssr
     super
   end
