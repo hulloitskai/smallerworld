@@ -223,6 +223,20 @@ class Post < ApplicationRecord
     Friend.where(id: hidden_from_ids)
   end
 
+  sig { returns(Integer) }
+  def push_missing_notifications_to_unseen_friends
+    redelivered_notifications_count = 0
+    notifications
+      .undelivered
+      .where(owner_type: "Friend")
+      .where.not(owner_id: views.select(:friend_id))
+      .find_each do |notification|
+        notification.push
+        redelivered_notifications_count += 1
+      end
+    redelivered_notifications_count
+  end
+
   private
 
   # == Helpers
