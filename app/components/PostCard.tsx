@@ -50,11 +50,20 @@ const PostCard: FC<PostCardProps> = ({
   const [coverImage] = post.images;
 
   // == Auto-focus
+  const { isStandalone, outOfPWAScope, activeServiceWorker } = usePWA();
+  const autoFocusedRef = useRef(false);
   useEffect(() => {
-    if (focus && cardRef.current) {
-      cardRef.current.scrollIntoView({ behavior: "smooth" });
+    const card = cardRef.current;
+    if (
+      focus &&
+      card &&
+      (outOfPWAScope || (isStandalone && activeServiceWorker)) &&
+      !autoFocusedRef.current
+    ) {
+      card.scrollIntoView({ behavior: "smooth" });
+      autoFocusedRef.current = true;
     }
-  }, [focus]);
+  }, [focus, isStandalone, outOfPWAScope, activeServiceWorker]);
 
   return (
     <Card
