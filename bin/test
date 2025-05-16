@@ -11,7 +11,7 @@ if [ -z "$CI" ]; then
 fi
 
 # Configure Overmind and Rails test command
-export OVERMIND_ENV=test RAILS_ENV=test NODE_ENV=production INERTIA_PORT=13715
+export OVERMIND_ENV=test RAILS_ENV=test NODE_ENV=production RAILS_PORT=3001 INERTIA_PORT=13715
 if [ -z "$@" ]; then
   export RAILS_TEST_CMD=test:all
 else

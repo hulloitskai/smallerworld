@@ -10,7 +10,7 @@
 Rails.application.default_url_options = {
   protocol: "http",
   host: "localhost",
-  port: ENV.fetch("RAILS_PORT") { 3000 }.to_i,
+  port: ENV.fetch("RAILS_PORT") { 3001 }.to_i,
 }
 
 # == Configuration
@@ -52,7 +52,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  # config.action_mailer.default_url_options = { host: "example.com" }
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr

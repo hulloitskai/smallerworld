@@ -17,10 +17,8 @@ import {
 import { useShallowEffect } from "@mantine/hooks";
 import { type FormEvent, startTransition } from "react";
 import scrollIntoView from "scroll-into-view";
-import { toast } from "sonner";
 
 import { isCSRFVerificationError, toastInvalidCSRFToken } from "./csrf";
-import { sentencify } from "./inflect";
 
 export const showFormErrorsAlert = <
   Values,
@@ -32,8 +30,7 @@ export const showFormErrorsAlert = <
   >,
   title: string,
 ): void => {
-  const description = formatFormErrorDescription(form.errors);
-  toast.error(title, { description });
+  toast.error(title, { description: form.errors.base });
   const firstErrorPath = first(Object.keys(form.errors));
   if (firstErrorPath) {
     const input = form.getInputNode(firstErrorPath);
@@ -44,20 +41,6 @@ export const showFormErrorsAlert = <
       });
     }
   }
-};
-
-const formatFormErrorDescription = (errors: FormErrors): string => {
-  const firstErrorEntry = first(Object.entries(errors));
-  if (firstErrorEntry) {
-    const [field, message] = firstErrorEntry;
-    if (typeof message === "string") {
-      if (field === "base") {
-        return sentencify(message);
-      }
-      return [humanize(field, true), sentencify(message)].join(" ");
-    }
-  }
-  return "an unknown error occurred.";
 };
 
 const calculateHeaderHeight = (): number => {
@@ -218,9 +201,7 @@ export const useForm = <
                   toastInvalidCSRFToken();
                 } else if (!failSilently) {
                   toast.error(`failed to ${descriptor}`, {
-                    description: sentencify(
-                      error.message || "an unknown error occurred",
-                    ),
+                    description: error.message || "an unknown error occurred",
                   });
                 }
                 onFailure?.(error, form);
@@ -241,9 +222,8 @@ export const useForm = <
               console.error("Unknown error response", responseError);
               if (!failSilently) {
                 toast.error(`failed to ${descriptor}`, {
-                  description: sentencify(
+                  description:
                     responseError.message || "an unknown error occurred",
-                  ),
                 });
               }
               onFailure?.(responseError, form);
