@@ -38,16 +38,14 @@ const EmojiPopover: FC<EmojiPopoverProps> = ({
     >
       <Popover.Target>{children({ opened, open })}</Popover.Target>
       <Popover.Dropdown>
-        <RemoveScroll enabled={opened}>
-          <EmojiPicker
-            className={classes.picker}
-            {...pickerProps}
-            onEmojiClick={(...args) => {
-              onEmojiClick(...args);
-              setOpened(false);
-            }}
-          />
-        </RemoveScroll>
+        <EmojiPicker
+          className={classes.picker}
+          {...pickerProps}
+          onEmojiClick={(...args) => {
+            onEmojiClick(...args);
+            setOpened(false);
+          }}
+        />
       </Popover.Dropdown>
     </Popover>
   );

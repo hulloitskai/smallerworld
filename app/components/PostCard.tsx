@@ -106,6 +106,7 @@ const PostCard: FC<PostCardProps> = ({
             </Box>
           ) : (
             <Time
+              className={classes.timestamp}
               format={dateTime => {
                 if (dateTime.hasSame(DateTime.now(), "day")) {
                   return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
@@ -114,7 +115,6 @@ const PostCard: FC<PostCardProps> = ({
               }}
               inline
               block
-              className={classes.timestamp}
             >
               {post.created_at}
             </Time>
