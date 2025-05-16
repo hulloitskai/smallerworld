@@ -59,7 +59,7 @@ class User < ApplicationRecord
 
   sig { returns(T::Boolean) }
   def page_icon_changed?
-    attachment_changes["page_icon"].present?
+    attachment_changes.include?("page_icon")
   end
 
   sig { returns(ActiveStorage::Blob) }

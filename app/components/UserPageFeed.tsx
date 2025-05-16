@@ -105,7 +105,7 @@ const TrackUserPostSeen: FC<TrackUserPostSeenProps> = ({ post, children }) => {
   useEffect(() => {
     if (currentFriend && !post.seen && inViewport) {
       const timeout = setTimeout(() => {
-        void fetchRoute<{ authorId: string }>(routes.posts.markAsSeen, {
+        void fetchRoute<{ authorId: string }>(routes.posts.markSeen, {
           params: {
             id: post.id,
             query: {

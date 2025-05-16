@@ -3,31 +3,33 @@
 
 class NotificationsController < ApplicationController
   # == CSRF
-  protect_from_forgery with: :null_session, only: :delivered
-
-  # == Filters
-  # before_action :require_authentication!, only: :cleared
+  protect_from_forgery with: :null_session, only: %i[mark_delivered delivered]
 
   # == Actions
-  # POST /notifications/:id/delivered
-  def delivered
-    notification = find_notification
-    if (token = delivery_token)
-      raise "Bad delivery token" unless notification.delivery_token == token
-    else
-      authenticate_user!
-      authorize!(notification, to: :manage?)
+  # POST /notifications/mark_delivered?delivery_token=...
+  def mark_delivered
+    delivery_token = params[:delivery_token] or
+      raise ActionController::ParameterMissing, "Missing delivery token"
+    if (notification = Notification.find_by_delivery_token(delivery_token))
+      notification.mark_as_delivered!
     end
-    notification.mark_as_delivered!
     render(json: {})
   end
 
-  # # POST /notifications/cleared
-  # def cleared
-  #   subject = require_authentication!
-  #   subject.update!(notifications_last_cleared_at: Time.current)
-  #   render(json: {})
-  # end
+  # TODO: Deprecated, remove after May 24, 2025
+  #
+  # POST /notifications/:id/delivered
+  def delivered
+    delivery_token = params.dig(:notification, :delivery_token) or
+      raise ActionController::ParameterMissing, "Missing delivery token"
+    notification = find_notification
+    unless notification.delivery_token == delivery_token
+      raise "Bad delivery token"
+    end
+
+    notification.mark_as_delivered! unless notification.delivered?
+    render(json: {})
+  end
 
   private
 
@@ -35,10 +37,5 @@ class NotificationsController < ApplicationController
   sig { returns(Notification) }
   def find_notification
     Notification.find(params.fetch(:id))
-  end
-
-  sig { returns(T.nilable(String)) }
-  def delivery_token
-    params.dig(:notification, :delivery_token)
   end
 end

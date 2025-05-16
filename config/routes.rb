@@ -44,8 +44,11 @@ Rails.application.routes.draw do
 
   # == Notifications
   resources :notifications, only: [], export: true do
+    collection do
+      post :mark_delivered
+    end
     member do
-      post :delivered
+      post :delivered, export: false
     end
   end
 
@@ -101,8 +104,8 @@ Rails.application.routes.draw do
     end
     member do
       get :stats
-      post :mark_as_seen
-      post :mark_as_replied
+      post :mark_seen
+      post :mark_replied
     end
   end
 

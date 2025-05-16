@@ -25,9 +25,6 @@ module GeneratedPathHelpersModule
   def contact_url_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def delivered_notification_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def edit_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -64,10 +61,13 @@ module GeneratedPathHelpersModule
   def mailcatcher_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def mark_as_replied_post_path(*args); end
+  def mark_delivery_notifications_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def mark_as_seen_post_path(*args); end
+  def mark_replied_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def mark_seen_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_path(*args); end

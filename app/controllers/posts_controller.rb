@@ -3,8 +3,8 @@
 
 class PostsController < ApplicationController
   # == Filters
-  before_action :authenticate_user!, except: %i[mark_as_seen mark_as_replied]
-  before_action :authenticate_friend!, only: %i[mark_as_seen mark_as_replied]
+  before_action :authenticate_user!, except: %i[mark_seen mark_replied]
+  before_action :authenticate_friend!, only: %i[mark_seen mark_replied]
 
   # == Actions
   # GET /posts
@@ -87,8 +87,8 @@ class PostsController < ApplicationController
     end
   end
 
-  # POST /posts/:id/mark_as_seen
-  def mark_as_seen
+  # POST /posts/:id/mark_seen
+  def mark_seen
     current_friend = authenticate_friend!
     post = find_post
     authorize!(post)
@@ -96,8 +96,8 @@ class PostsController < ApplicationController
     render(json: { "authorId" => post.author_id })
   end
 
-  # POST /posts/:id/mark_as_replied
-  def mark_as_replied
+  # POST /posts/:id/mark_replied
+  def mark_replied
     current_friend = authenticate_friend!
     post = find_post
     authorize!(post)

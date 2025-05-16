@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_07_162133) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_16_144305) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -174,7 +174,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_07_162133) do
 
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "delivered_at", precision: nil
-    t.string "delivery_token", null: false
+    t.string "delivery_token"
     t.string "noticeable_type", null: false
     t.uuid "noticeable_id", null: false
     t.string "recipient_type"

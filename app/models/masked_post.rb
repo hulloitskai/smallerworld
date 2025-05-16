@@ -1,6 +1,39 @@
 # typed: true
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength, Lint/RedundantCopDisableDirective
+# == Schema Information
+#
+# Table name: posts
+#
+#  id              :uuid             not null, primary key
+#  body_html       :text             not null
+#  emoji           :string
+#  hidden_from_ids :uuid             default([]), not null, is an Array
+#  pinned_until    :datetime
+#  title           :string
+#  type            :string           not null
+#  visibility      :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  author_id       :uuid             not null
+#  quoted_post_id  :uuid
+#
+# Indexes
+#
+#  index_posts_on_author_id        (author_id)
+#  index_posts_on_hidden_from_ids  (hidden_from_ids)
+#  index_posts_on_pinned_until     (pinned_until)
+#  index_posts_on_quoted_post_id   (quoted_post_id)
+#  index_posts_on_type             (type)
+#  index_posts_on_visibility       (visibility)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (author_id => users.id)
+#  fk_rails_...  (quoted_post_id => posts.id)
+#
+# rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class MaskedPost < Post
   extend T::Sig
 

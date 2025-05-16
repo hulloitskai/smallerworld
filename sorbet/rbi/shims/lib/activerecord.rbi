@@ -417,4 +417,22 @@ module ActiveRecord
       def transaction(**options, &block); end
     end
   end
+
+  module TokenFor
+    sig { params(purpose: Symbol).returns(String) }
+    def generate_token_for(purpose); end
+
+    module ClassMethods
+      has_attached_class!
+
+      sig do
+        params(
+          purpose: Symbol,
+          expires_in: T.nilable(T.any(Integer, ActiveSupport::Duration)),
+          block: T.nilable(T.proc.bind(T.attached_class).returns(T.untyped)),
+        ).void
+      end
+      def generates_token_for(purpose, expires_in: T.unsafe(nil), &block); end
+    end
+  end
 end

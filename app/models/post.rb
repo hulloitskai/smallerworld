@@ -37,6 +37,13 @@
 class Post < ApplicationRecord
   include Noticeable
 
+  # == Constants
+  NOTIFICATION_PUSH_DELAY = T.let(
+    Rails.env.production? ? 1.minute : 5.seconds,
+    ActiveSupport::Duration,
+  )
+
+  # == Configuration
   self.inheritance_column = nil
 
   # == Attributes
@@ -190,10 +197,13 @@ class Post < ApplicationRecord
     return if visibility == :only_me
 
     friends_to_notify.select(:id).find_each do |friend|
-      notifications.create!(recipient: friend, push_delay: 1.minute)
+      notifications.create!(
+        recipient: friend,
+        push_delay: NOTIFICATION_PUSH_DELAY,
+      )
     end
     if visibility == :public
-      notifications.create!(recipient: nil, push_delay: 1.minute)
+      notifications.create!(recipient: nil, push_delay: NOTIFICATION_PUSH_DELAY)
     end
   end
 

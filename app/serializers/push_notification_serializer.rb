@@ -6,5 +6,7 @@ class PushNotificationSerializer < NotificationSerializer
   object_as :notification
 
   # == Attributes
-  attributes :delivery_token
+  attribute :delivery_token, type: :string, nullable: true do
+    notification.delivery_token || notification.generate_delivery_token
+  end
 end

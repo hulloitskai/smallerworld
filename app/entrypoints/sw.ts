@@ -123,21 +123,27 @@ self.addEventListener("activate", event => {
 });
 
 // == Helpers
-const markAsDelivered = (notification: PushNotification): Promise<void> =>
+const markDelivered = (
+  notification: PushNotification,
+  deliveryToken: string,
+): Promise<void> =>
   routes.notifications
-    .delivered<{}>({
-      params: { id: notification.id },
-      data: { notification: pick(notification, "delivery_token") },
+    .markDelivered<{}>({
+      query: {
+        delivery_token: deliveryToken,
+      },
     })
-    .then(() => {
-      console.info(`Marked notification '${notification.id}' as delivered`);
-    })
-    .catch(error => {
-      console.error(
-        `Failed to mark notification '${notification.id}' as delivered`,
-        error,
-      );
-    });
+    .then(
+      () => {
+        console.info(`Marked notification '${notification.id}' as delivered`);
+      },
+      error => {
+        console.error(
+          `Failed to mark notification '${notification.id}' as delivered`,
+          error,
+        );
+      },
+    );
 
 const pathname = (url: string): string => {
   const { pathname } = new URL(url, self.location.origin);
@@ -159,44 +165,46 @@ self.addEventListener("push", event => {
   console.debug("Received push event", data);
   const { notification, pageIconUrl, badgeCount } = data;
 
-  let showNotification: Promise<void>;
+  const actions: Promise<void>[] = [];
   if (notification) {
     const { title, icon, ...options } = renderNotification(notification);
-    showNotification = self.registration
-      .showNotification(title, {
+    actions.push(
+      self.registration.showNotification(title, {
         ...options,
         icon: icon ?? pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
         data,
-      })
-      .then(() => markAsDelivered(notification));
+      }),
+    );
+    if (notification.delivery_token) {
+      actions.push(markDelivered(notification, notification.delivery_token));
+    }
   } else {
-    showNotification = self.registration.showNotification("test notification", {
-      body: "this is a test notification. if you are seeing this, then your push notifications are working!",
-      icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
-    });
+    actions.push(
+      self.registration.showNotification("test notification", {
+        body: "this is a test notification. if you are seeing this, then your push notifications are working!",
+        icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
+      }),
+    );
+  }
+  if (navigator.setAppBadge && badgeCount) {
+    actions.push(
+      self.clients
+        .matchAll({ type: "window", includeUncontrolled: true })
+        .then(clients => {
+          if (clients.some(client => client.visibilityState === "hidden")) {
+            return;
+          }
+          console.info("Setting app badge", badgeCount);
+          try {
+            return navigator.setAppBadge(badgeCount);
+          } catch (error) {
+            console.error("Failed to set app badge", error);
+          }
+        }),
+    );
   }
 
-  event.waitUntil(
-    showNotification.then(async () => {
-      // Set app badge if no window is currently visible.
-      if (!navigator.setAppBadge || !badgeCount) {
-        return;
-      }
-      const clients = await self.clients.matchAll({
-        type: "window",
-        includeUncontrolled: true,
-      });
-      if (clients.some(client => client.visibilityState === "hidden")) {
-        return;
-      }
-      console.info("Setting app badge", badgeCount);
-      try {
-        await navigator.setAppBadge(badgeCount);
-      } catch (error) {
-        console.error("Failed to set app badge", error);
-      }
-    }),
-  );
+  event.waitUntil(Promise.all(actions));
 });
 
 interface PushSubscriptionAttributes {

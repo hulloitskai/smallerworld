@@ -19,12 +19,12 @@ class PostPolicy < ApplicationPolicy
     post.author! == user!
   end
 
-  def mark_as_seen?
+  def mark_seen?
     post = T.cast(record, Post)
     post.author! == friend!.user!
   end
 
-  def mark_as_replied?
+  def mark_replied?
     post = T.cast(record, Post)
     post.author! == friend!.user!
   end

@@ -8,6 +8,10 @@ import { identity } from "lodash-es";
 
 export const setupRoutes = (): void => {
   Config.getCSRFToken = (): string | undefined => {
+    // In service worker, document is not available.
+    if (typeof document === "undefined") {
+      return;
+    }
     const meta = document.querySelector<HTMLMetaElement>(
       "meta[name='csrf-token']",
     );

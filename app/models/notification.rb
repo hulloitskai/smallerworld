@@ -8,7 +8,7 @@
 #
 #  id              :uuid             not null, primary key
 #  delivered_at    :datetime
-#  delivery_token  :string           not null
+#  delivery_token  :string
 #  noticeable_type :string           not null
 #  pushed_at       :datetime
 #  recipient_type  :string
@@ -26,8 +26,6 @@
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Notification < ApplicationRecord
   # == Attributes
-  has_secure_token :delivery_token
-
   sig { returns(T.nilable(ActiveSupport::Duration)) }
   attr_accessor :push_delay
 
@@ -62,6 +60,21 @@ class Notification < ApplicationRecord
   scope :delivered, -> { where.not(delivered_at: nil) }
   scope :undelivered, -> { where(delivered_at: nil) }
 
+  # == Delivery token
+  generates_token_for :delivery do
+    delivered?
+  end
+
+  sig { returns(T.nilable(String)) }
+  def generate_delivery_token
+    generate_token_for(:delivery) unless delivered?
+  end
+
+  sig { params(token: String).returns(T.nilable(Notification)) }
+  def self.find_by_delivery_token(token)
+    find_by_token_for(:delivery, token)
+  end
+
   # == Methods
   sig { returns(T::Hash[String, T.untyped]) }
   def payload
@@ -92,6 +105,6 @@ class Notification < ApplicationRecord
 
   sig { void }
   def mark_as_delivered!
-    update!(delivered_at: Time.current) unless delivered?
+    update!(delivered_at: Time.current)
   end
 end

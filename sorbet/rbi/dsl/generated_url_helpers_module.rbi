@@ -25,9 +25,6 @@ module GeneratedUrlHelpersModule
   def contact_url_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def delivered_notification_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def edit_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -64,10 +61,13 @@ module GeneratedUrlHelpersModule
   def mailcatcher_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def mark_as_replied_post_url(*args); end
+  def mark_delivery_notifications_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def mark_as_seen_post_url(*args); end
+  def mark_replied_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def mark_seen_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_url(*args); end
