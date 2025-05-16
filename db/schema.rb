@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_16_144305) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_16_161355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -174,7 +174,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_144305) do
 
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "delivered_at", precision: nil
-    t.string "delivery_token"
+    t.string "deprecated_delivery_token"
     t.string "noticeable_type", null: false
     t.uuid "noticeable_id", null: false
     t.string "recipient_type"
@@ -182,7 +182,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_144305) do
     t.datetime "pushed_at", precision: nil
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["delivery_token"], name: "index_notifications_on_delivery_token", unique: true
+    t.index ["deprecated_delivery_token"], name: "index_notifications_on_deprecated_delivery_token", unique: true
     t.index ["noticeable_type", "noticeable_id"], name: "index_notifications_on_noticeable"
     t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
   end

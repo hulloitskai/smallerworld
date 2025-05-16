@@ -6,22 +6,22 @@
 #
 # Table name: notifications
 #
-#  id              :uuid             not null, primary key
-#  delivered_at    :datetime
-#  delivery_token  :string
-#  noticeable_type :string           not null
-#  pushed_at       :datetime
-#  recipient_type  :string
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  noticeable_id   :uuid             not null
-#  recipient_id    :uuid
+#  id                        :uuid             not null, primary key
+#  delivered_at              :datetime
+#  deprecated_delivery_token :string
+#  noticeable_type           :string           not null
+#  pushed_at                 :datetime
+#  recipient_type            :string
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  noticeable_id             :uuid             not null
+#  recipient_id              :uuid
 #
 # Indexes
 #
-#  index_notifications_on_delivery_token  (delivery_token) UNIQUE
-#  index_notifications_on_noticeable      (noticeable_type,noticeable_id)
-#  index_notifications_on_recipient       (recipient_type,recipient_id)
+#  index_notifications_on_deprecated_delivery_token  (deprecated_delivery_token) UNIQUE
+#  index_notifications_on_noticeable                 (noticeable_type,noticeable_id)
+#  index_notifications_on_recipient                  (recipient_type,recipient_id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Notification < ApplicationRecord
@@ -73,6 +73,11 @@ class Notification < ApplicationRecord
   sig { params(token: String).returns(T.nilable(Notification)) }
   def self.find_by_delivery_token(token)
     find_by_token_for(:delivery, token)
+  end
+
+  sig { returns(T.nilable(String)) }
+  def delivery_token
+    deprecated_delivery_token || generate_delivery_token
   end
 
   # == Methods

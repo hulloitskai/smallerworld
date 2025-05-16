@@ -25,6 +25,9 @@ module GeneratedUrlHelpersModule
   def contact_url_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def delivered_notification_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -61,7 +64,7 @@ module GeneratedUrlHelpersModule
   def mailcatcher_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def mark_delivery_notifications_url(*args); end
+  def mark_delivered_notifications_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def mark_replied_post_url(*args); end
