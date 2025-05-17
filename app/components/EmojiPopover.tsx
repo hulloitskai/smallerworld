@@ -1,4 +1,4 @@
-import { Popover, type PopoverProps, RemoveScroll } from "@mantine/core";
+import { Popover, type PopoverProps } from "@mantine/core";
 
 import EmojiPicker, { type EmojiPickerProps } from "./EmojiPicker";
 
@@ -30,7 +30,11 @@ const EmojiPopover: FC<EmojiPopoverProps> = ({
     <Popover
       trapFocus
       shadow="lg"
-      portalProps={{ target: vaulPortalTarget, ...portalProps }}
+      portalProps={{
+        target: vaulPortalTarget,
+        reuseTargetNode: false,
+        ...portalProps,
+      }}
       classNames={{ dropdown: classes.dropdown }}
       {...{ opened }}
       onChange={setOpened}
