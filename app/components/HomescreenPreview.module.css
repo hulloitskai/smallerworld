@@ -6,8 +6,8 @@
   overflow: hidden;
 }
 
-.homeScreen {
-  height: 90px;
+.background {
+  height: 131.5px;
   width: unset;
   object-fit: cover;
   object-position: left center;
@@ -16,8 +16,8 @@
 .appIcon {
   background-color: var(--mantine-color-white);
   position: absolute;
-  top: 16px;
-  left: calc(23px + var(--hp-x-offset));
+  top: 53px;
+  left: calc(24px + var(--hp-x-offset));
   width: var(--hp-icon-size);
   height: var(--hp-icon-size);
   object-fit: cover;
@@ -28,8 +28,8 @@
   --label-margin: 4px;
 
   position: absolute;
-  top: 67px;
-  left: calc(23px + var(--hp-x-offset));
+  top: 104px;
+  left: calc(24px + var(--hp-x-offset));
   text-align: center;
   font-size: 8.5px;
   width: calc(var(--hp-icon-size) + var(--label-margin) * 2);
@@ -42,7 +42,7 @@
 
 .yourPageLabel {
   position: absolute;
-  top: 28px;
+  top: 56px;
   left: 196px;
   font-size: 20px;
   font-weight: 900;

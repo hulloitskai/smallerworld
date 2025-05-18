@@ -1,7 +1,7 @@
 import { getRadius, Image, type MantineRadius, Text } from "@mantine/core";
 import { type ReactNode } from "react";
 
-import backgroundSrc from "~/assets/images/homescreen-preview-background.png";
+import backgroundSrc from "~/assets/images/homescreen-preview-background.jpg";
 
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 
@@ -35,11 +35,11 @@ const HomescreenPreview: FC<HomescreenPreviewProps> = ({
         }}
         {...otherProps}
       >
-        <Image src={backgroundSrc} className={classes.homeScreen} />
+        <Image src={backgroundSrc} className={classes.background} />
         <Image
-          src={pageIcon?.src ?? "/web-app-manifest-512x512.png"}
-          srcSet={pageIcon?.srcset ?? undefined}
           className={classes.appIcon}
+          src={pageIcon?.src ?? "/web-app-manifest-512x512.png"}
+          {...(pageIcon?.srcset && { srcSet: pageIcon.srcset })}
         />
         <Text className={classes.appLabel}>{pageName || "(your name)"}</Text>
         <Text className={classes.yourPageLabel}>{arrowLabel}</Text>

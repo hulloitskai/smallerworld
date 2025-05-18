@@ -59,8 +59,9 @@ const ModalBody: FC<ModalBodyProps> = ({
           hi, {friendNameWithEmoji}!
         </Title>
         <Text ta="center" maw={300}>
-          i made this page to make it easy for you to get involved in my
-          life&apos;s adventures :)
+          i made an app that tells you what&apos;s{" "}
+          <span style={{ fontWeight: 600 }}>*actually*</span> going on in my
+          life :)
         </Text>
       </Stack>
       <HomeScreenPreviewWithIconCustomization
@@ -69,7 +70,7 @@ const ModalBody: FC<ModalBodyProps> = ({
         arrowLabel="it's me!"
       />
       <Text ta="center" maw={300}>
-        pin this page to your home screen so you can{" "}
+        please install it on your home screen so you can{" "}
         <span style={{ fontWeight: 600 }}>
           get notified about life updates, personal invitations, poems, and
           more!
@@ -104,7 +105,11 @@ const ModalBody: FC<ModalBodyProps> = ({
             }
           }}
         >
-          pin to home screen
+          {install ? (
+            <>install {possessive(user.name)} world</>
+          ) : (
+            "show installation instructions"
+          )}
         </Button>
         <BrowserNotSupportedText />
       </Stack>

@@ -49,7 +49,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   pendingJoinRequests,
   pausedFriends,
 }) => {
-  const { isStandalone } = usePWA();
+  const { isStandalone, outOfPWAScope } = usePWA();
   const { registration } = useWebPush();
 
   // == User theme
@@ -72,7 +72,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       openWorldPageInstallationInstructionsModal({ currentUser });
     } else if (
       intent === "install" ||
-      (!isStandalone &&
+      ((!isStandalone || outOfPWAScope) &&
         !!browserDetection &&
         (!!install || !isDesktop(browserDetection)))
     ) {
@@ -124,7 +124,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               {possessive(currentUser.name)} world
             </Title>
             <Group gap={8} justify="center">
-              {(!isStandalone || registration !== null) && (
+              {(!isStandalone || outOfPWAScope || registration !== null) && (
                 <Button
                   component={Link}
                   href={routes.friends.index.path()}
@@ -171,7 +171,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                     : "invite a friend!"}
                 </Button>
               )}
-              {isStandalone && <WorldPageNotificationsButton />}
+              {isStandalone && !outOfPWAScope && (
+                <WorldPageNotificationsButton />
+              )}
             </Group>
           </Stack>
         </Stack>
@@ -246,7 +248,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           </Menu.Dropdown>
         </Menu>
       </Box>
-      {(!isStandalone || !!registration) &&
+      {(!isStandalone || outOfPWAScope || !!registration) &&
         (hasOneUserCreatedPost === false ||
           (!!latestFriends && latestFriends.length < 3)) && (
           <Alert
@@ -305,7 +307,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         )}
       <Box pos="relative">
         <WorldPageFeed />
-        {isStandalone && registration === null && (
+        {isStandalone && !outOfPWAScope && registration === null && (
           <>
             <SingleDayFontHead />
             <Overlay backgroundOpacity={0} blur={3}>
@@ -326,7 +328,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   );
   return (
     <>
-      <RemoveScroll enabled={isStandalone && !registration}>
+      <RemoveScroll enabled={isStandalone && !outOfPWAScope && !registration}>
         {body}
       </RemoveScroll>
       <WorldPageFloatingActions
