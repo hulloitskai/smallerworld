@@ -1,7 +1,4 @@
-import { Popover, type PopoverProps, RemoveScroll } from "@mantine/core";
-import { InPortal, OutPortal } from "react-reverse-portal";
-
-import { useHtmlPortalNode } from "~/helpers/react-reverse-portal";
+import { Popover, type PopoverProps } from "@mantine/core";
 
 import EmojiPicker, { type EmojiPickerProps } from "./EmojiPicker";
 
@@ -27,43 +24,34 @@ const EmojiPopover: FC<EmojiPopoverProps> = ({
   ...otherProps
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
-  const htmlPortalNode = useHtmlPortalNode();
   const [opened, setOpened] = useState(false);
   const open = useCallback(() => setOpened(true), []);
   return (
-    <>
-      {htmlPortalNode && (
-        <InPortal node={htmlPortalNode}>
-          <EmojiPicker
-            className={classes.picker}
-            {...pickerProps}
-            onEmojiClick={(...args) => {
-              onEmojiClick(...args);
-              setOpened(false);
-            }}
-          />
-        </InPortal>
-      )}
-      <Popover
-        trapFocus
-        shadow="lg"
-        portalProps={{
-          target: vaulPortalTarget,
-          ...portalProps,
-        }}
-        classNames={{ dropdown: classes.dropdown }}
-        {...{ opened }}
-        onChange={setOpened}
-        {...otherProps}
-      >
-        <Popover.Target>{children({ opened, open })}</Popover.Target>
-        <Popover.Dropdown>
-          <RemoveScroll enabled={opened}>
-            {htmlPortalNode && <OutPortal node={htmlPortalNode} />}
-          </RemoveScroll>
-        </Popover.Dropdown>
-      </Popover>
-    </>
+    <Popover
+      trapFocus
+      shadow="lg"
+      middlewares={{ flip: false }}
+      portalProps={{
+        target: vaulPortalTarget,
+        ...portalProps,
+      }}
+      classNames={{ dropdown: classes.dropdown }}
+      {...{ opened }}
+      onChange={setOpened}
+      {...otherProps}
+    >
+      <Popover.Target>{children({ opened, open })}</Popover.Target>
+      <Popover.Dropdown>
+        <EmojiPicker
+          className={classes.picker}
+          {...pickerProps}
+          onEmojiClick={(...args) => {
+            onEmojiClick(...args);
+            setOpened(false);
+          }}
+        />
+      </Popover.Dropdown>
+    </Popover>
   );
 };
 
