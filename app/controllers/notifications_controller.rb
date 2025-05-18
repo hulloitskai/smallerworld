@@ -22,12 +22,18 @@ class NotificationsController < ApplicationController
   def delivered
     delivery_token = params.dig(:notification, :delivery_token) or
       raise ActionController::ParameterMissing, "Missing delivery token"
-    notification = find_notification
-    unless notification.delivery_token == delivery_token
-      raise "Bad delivery token"
+    notification = if delivery_token.length == ActiveRecord::SecureToken::MINIMUM_TOKEN_LENGTH # rubocop:disable Layout/LineLength
+      find_notification.tap do |notification|
+        if notification.delivery_token != delivery_token
+          raise "Bad delivery token"
+        end
+      end
+    else
+      Notification.find_by_delivery_token(delivery_token)
     end
-
-    notification.mark_as_delivered! unless notification.delivered?
+    if notification && !notification.delivered?
+      notification.mark_as_delivered!
+    end
     render(json: {})
   end
 
