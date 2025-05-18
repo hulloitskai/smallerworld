@@ -2,9 +2,10 @@
 # frozen_string_literal: true
 
 require "sorbet-runtime"
+require "rails"
 
 module Rails
-  # Add predicates to determine if Rails is running a console or a server.
+  # NOTE: Add predicates to determine if Rails is running a console or a server.
   module RuntimeContextHelpers
     extend T::Sig
     extend T::Helpers
@@ -28,4 +29,18 @@ module Rails
     end
   end
   extend RuntimeContextHelpers
+end
+
+module ActionController
+  class ParameterMissing
+    # NOTE: Correct error message capitalization.
+    module CorrectMessageCapitalization
+      def initialize(param, keys = nil)
+        @param = param
+        @keys = keys
+        super("Param is missing or the value is empty or invalid: #{param}")
+      end
+    end
+    include CorrectMessageCapitalization
+  end
 end

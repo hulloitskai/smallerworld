@@ -4,20 +4,36 @@
 return unless Rails.env.development?
 
 require "types_from_serializers"
-require "oj_serializers_ext"
+require "oj_serializers"
+
+class OjSerializers::Serializer
+  # NOTE: Add :nullable to known attribute options.
+  module AddNullableAttributeOption
+    extend ActiveSupport::Concern
+
+    included do
+      known_attribute_options = const_get(:KNOWN_ATTRIBUTE_OPTIONS) # rubocop:disable Sorbet/ConstantsFromStrings
+      remove_const(:KNOWN_ATTRIBUTE_OPTIONS)
+      const_set(:KNOWN_ATTRIBUTE_OPTIONS, [*known_attribute_options, :nullable].to_set)
+    end
+  end
+  include AddNullableAttributeOption
+end
 
 module TypesFromSerializers
   class << self
-    # Patch the `generate` method to use a custom environment variable for
-    # forcing generation.
-    module RenameForceGenerationEnvironmentVariable
+    # NOTE: Use TYPES_FROM_SERIALIZERS_FORCE instead of SERIALIZER_TYPES_FORCE
+    #
+    # See: https://github.com/ElMassimo/types_from_serializers/blob/b47ac0f88d7254e43d922d02546d07a6ed829fb1/types_from_serializers/lib/types_from_serializers/generator.rb#L275C30-L275C52
+    module RenameForceGenerationEnvVar
       def generate(force: ENV["TYPES_FROM_SERIALIZERS_FORCE"])
         super
       end
     end
-    prepend RenameForceGenerationEnvironmentVariable
+    prepend RenameForceGenerationEnvVar
   end
 
+  # NOTE: Add :nullable option to property type inference.
   module SerializerRefinements
     refine Class do # rubocop:disable Sorbet/Refinement
       def ts_properties
@@ -53,6 +69,7 @@ module TypesFromSerializers
   end
 
   module DSL::ClassMethods
+    # NOTE: Track object name for Sorbet DSL generation.
     module TrackObjectName
       extend T::Sig
       extend T::Helpers
@@ -80,8 +97,8 @@ module TypesFromSerializers
     prepend TrackObjectName
   end
 
+  # NOTE: Add :nullable option to property type inference.
   remove_const(:Property)
-
   Property = Struct.new(
     :name,
     :type,
@@ -97,8 +114,6 @@ module TypesFromSerializers
       to_h.inspect
     end
 
-    # Internal: Infers the property's type by checking a corresponding SQL
-    # column, or falling back to a TypeScript interface if provided.
     def infer_type_from(columns_hash, defined_enums, ts_interface)
       if type
         type

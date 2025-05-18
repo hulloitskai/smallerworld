@@ -105,8 +105,6 @@ class FriendsController < ApplicationController
   # == Helpers
   sig { returns(Friend) }
   def find_friend
-    friend_id = params[:id] or
-      raise ActionController::ParameterMissing, "Missing friend ID"
-    Friend.find(friend_id)
+    Friend.find(params.fetch(:id))
   end
 end

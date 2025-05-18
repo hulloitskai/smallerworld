@@ -3,6 +3,7 @@
 
 module InertiaRails
   class Middleware
+    # NOTE: Ignore XSRF header (rely on X-CSRF-Token instead).
     class InertiaRailsRequest
       module IgnoreXSRFHeader
         def copy_xsrf_to_csrf!; end

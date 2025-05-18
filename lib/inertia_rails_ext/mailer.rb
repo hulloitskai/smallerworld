@@ -6,6 +6,7 @@ require "inertia_rails"
 require_relative "asset_helper"
 
 module InertiaRails
+  # Adds support for rendering Inertia components in emails
   module Mailer
     class Renderer < ::InertiaRails::Renderer
       def render = render_ssr

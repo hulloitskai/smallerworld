@@ -5,8 +5,8 @@ return unless Rails.env.development?
 
 module JsFromRoutes
   class << self
-    # Patch the `generate!` method to clean the output folder before generating
-    # new routes.
+    # NOTE: Patch the `generate!` method to clean the output folder before
+    # generating new routes if JS_FROM_ROUTES_FORCE is set.
     module CleanOutputFolderBeforeGenerate
       extend T::Sig
       extend T::Helpers

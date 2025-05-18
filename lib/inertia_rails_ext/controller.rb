@@ -5,6 +5,7 @@ require "inertia_rails"
 require_relative "asset_helper"
 
 module InertiaRails
+  # NOTE: Include asset helper in controller
   module Controller
     extend ActiveSupport::Concern
     extend T::Sig

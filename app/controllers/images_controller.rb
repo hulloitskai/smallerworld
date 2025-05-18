@@ -14,9 +14,7 @@ class ImagesController < ApplicationController
   # == Helpers
   sig { returns(T.nilable(ImageModel)) }
   def maybe_find_image
-    signed_id = params[:signed_id] or
-      raise ActionController::ParameterMissing, "Missing signed ID"
-    if (blob = ActiveStorage::Blob.find_signed(signed_id))
+    if (blob = ActiveStorage::Blob.find_signed(params.fetch(:signed_id)))
       blob.becomes(ImageModel)
     end
   end

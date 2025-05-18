@@ -10,6 +10,8 @@ module InertiaRails
     requires_ancestor { ActionView::Base }
 
     # == Methods
+
+    # Includes page assets
     sig do
       params(
         page: T::Hash[Symbol, T.untyped],

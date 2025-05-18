@@ -10,7 +10,7 @@ require "css_parser_ext"
 require "core_ext"
 
 module Premailer::Adapter::Nokogiri
-  # Add support for CSS variables.
+  # NOTE: Add support for CSS variables.
   module CSSVariableSupport
     extend T::Sig
     extend T::Helpers
@@ -30,7 +30,6 @@ module Premailer::Adapter::Nokogiri
     end
 
     # == Methods
-    # Merge CSS into the HTML document.
     sig { returns(String) }
     def to_inline_css
       unmergeable_rules = CssParser::Parser.new

@@ -7,6 +7,7 @@ require_relative "mailer"
 
 module InertiaRails
   class Engine
+    # NOTE: Initialize mailer
     module InitializeMailer
       extend ActiveSupport::Concern
       extend T::Helpers

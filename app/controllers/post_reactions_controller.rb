@@ -45,15 +45,11 @@ class PostReactionsController < ApplicationController
   # == Helpers
   sig { returns(Post) }
   def find_post
-    post_id = params[:post_id] or
-      raise ActionController::ParameterMissing, "Missing post ID"
-    Post.find(post_id)
+    Post.find(params.fetch(:post_id))
   end
 
   sig { returns(PostReaction) }
   def find_reaction
-    reaction_id = params[:id] or
-      raise ActionController::ParameterMissing, "Missing reaction ID"
-    PostReaction.find(reaction_id)
+    PostReaction.find(params.fetch(:id))
   end
 end

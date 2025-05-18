@@ -4,7 +4,7 @@
 require "friendly_id"
 
 module FriendlyId::Slugged
-  # Custom slug normalization.
+  # NOTE: Custom slug normalization.
   module CustomNormalization
     extend T::Sig
     extend T::Helpers
@@ -13,7 +13,7 @@ module FriendlyId::Slugged
     requires_ancestor { FriendlyId::Slugged }
 
     # == Methods
-    # Apply additional normalization.
+
     sig { params(value: T.untyped).returns(String) }
     def normalize_friendly_id(value)
       value = super
@@ -24,7 +24,7 @@ module FriendlyId::Slugged
   end
   prepend CustomNormalization
 
-  # On conflict, use Nanoid to generate slug tails.
+  # NOTE: On conflict, use Nanoid to generate slug tails.
   module ResolveConflictWithNanoid
     extend T::Sig
     extend T::Helpers

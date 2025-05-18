@@ -5,7 +5,7 @@ require "css_parser"
 
 module CssParser
   class << self
-    # Don't mutate original rule sets when merging.
+    # NOTE: Don't mutate original rule sets when merging.
     module MergeWithoutMutatingRuleSets
       extend T::Sig
 

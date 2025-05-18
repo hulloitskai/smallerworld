@@ -4,7 +4,7 @@
 module PgSearch
   module Model
     module ClassMethods
-      # Track scope names in order to generate RBI typings for them.
+      # NOTE: Track scope names in order to generate RBI typings for them.
       module TrackScopeNames
         extend T::Sig
 

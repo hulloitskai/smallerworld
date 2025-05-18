@@ -118,12 +118,12 @@ class UsersController < ApplicationController
   # == Helpers
   sig { returns(User) }
   def find_user
-    if (id = params[:id])
-      User.find(id)
-    elsif (handle = params[:handle])
-      User.find_by!(handle:)
+    if params.include?(:id)
+      User.find(params.fetch(:id))
+    elsif params.include?(:handle)
+      User.find_by!(handle: params.fetch(:handle))
     else
-      raise ActionController::ParameterMissing, "Missing ID or handle"
+      raise "route has no :id or :handle"
     end
   end
 end
