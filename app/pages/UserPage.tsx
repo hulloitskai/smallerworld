@@ -14,11 +14,11 @@ import UserPageFeed from "~/components/UserPageFeed";
 import UserPageFloatingActions from "~/components/UserPageFloatingActions";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
+import { openUserPageJoinModal } from "~/components/UserPageJoinModal";
 import UserPageNotificationsButtonCard from "~/components/UserPageNotificationsButtonCard";
 import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
-import { openUserPageWelcomeModal } from "~/components/UserPageWelcomeModal";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
@@ -69,7 +69,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
       return;
     }
     if (intent === "join") {
-      openUserPageWelcomeModal({
+      openUserPageJoinModal({
         user,
         currentFriend,
         onInstalled: () => {

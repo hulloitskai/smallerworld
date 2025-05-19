@@ -19,6 +19,7 @@ module SmallerWorld
     # == Extensions
     require "core_ext"
     require "rails_ext"
+    require "oj_serializers_ext"
     require "types_from_serializers_ext"
     require "js_from_routes_ext"
     require "pg_search_ext"

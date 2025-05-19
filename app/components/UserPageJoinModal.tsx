@@ -14,12 +14,10 @@ import BrowserNotSupportedText from "./BrowserNotSupportedText";
 import HomeScreenPreviewWithIconCustomization from "./HomescreenPreviewWithCustomizableIcon";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
-export interface UserPageWelcomeModalProps
+export interface UserPageJoinModalProps
   extends Omit<ModalBodyProps, "modalId"> {}
 
-export const openUserPageWelcomeModal = (
-  props: UserPageWelcomeModalProps,
-): void => {
+export const openUserPageJoinModal = (props: UserPageJoinModalProps): void => {
   const modalId = uuid();
   openModal({
     modalId,
@@ -70,7 +68,7 @@ const ModalBody: FC<ModalBodyProps> = ({
         arrowLabel="it's me!"
       />
       <Text ta="center" maw={300}>
-        please install it on your home screen so you can{" "}
+        you can install it, and
         <span style={{ fontWeight: 600 }}>
           get notified about life updates, personal invitations, poems, and
           more!
