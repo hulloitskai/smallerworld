@@ -323,7 +323,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
               className={classes.dateInput}
               placeholder="keep pinned until"
               leftSection={<CalendarIcon />}
-              minDate={todayDate}
+              {...(!post && { minDate: todayDate })}
               error={errors.pinned_until}
               required
               withAsterisk={false}
