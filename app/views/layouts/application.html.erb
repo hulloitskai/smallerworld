@@ -92,8 +92,8 @@
 
     <%# == Overpowered %>
     <meta name="overpowered-api-key" content="<%= Overpowered.settings.api_key %>">
-    <script src="https://cdn.overpoweredjs.com/loader/opjs"></script>
-    <%# <script src="https://op.smallerworld.club/opjs.min.js"></script> %>
+    <meta name="overpowered-endpoint" content="<%= Overpowered.settings.fingerprint_url %>">
+    <script src="<%= Overpowered.settings.script_url %>"></script>
   </head>
 
   <body>
