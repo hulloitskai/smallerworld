@@ -221,6 +221,23 @@
     }
   }
 
+  .menuDropdown {
+    @mixin dark {
+      background-color: var(--mantine-color-dark-8);
+    }
+
+    @mixin dark-user-theme {
+      background-color: var(--mantine-color-body);
+      border-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+
+  .menuArrow {
+    @mixin dark-user-theme {
+      border-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+
   .dividerLabel {
     font-family: var(--mantine-font-family-headings);
     font-weight: 500;
@@ -246,7 +263,7 @@
     font-family: var(--mantine-font-family-headings);
   }
 
-  .popoverDropdown {
+  .popoverDropdown:not(.menuDropdown) {
     @mixin dark {
       --popover-border-color: var(--mantine-color-dark-6);
       background-color: var(--mantine-color-dark-8);

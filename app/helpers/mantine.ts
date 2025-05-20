@@ -192,7 +192,8 @@ const createTheme = (
           withArrow: true,
         },
         classNames: {
-          dropdown: classes.dropdown,
+          dropdown: classes.menuDropdown,
+          arrow: classes.menuArrow,
           item: classes.menuItem,
           itemSection: classes.menuItemSection,
           itemLabel: classes.menuItemLabel,
