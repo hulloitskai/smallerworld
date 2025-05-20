@@ -115,6 +115,9 @@ const ModalBody: FC<ModalBodyProps> = ({
                 <HomescreenPreviewWithIconCustomization
                   {...{ pageName, pageIcon }}
                   arrowLabel="open me!"
+                  alternativeManifestIconPageUrlQuery={{
+                    intent: "installation_instructions",
+                  }}
                 />
               </Stack>
             </Stack>

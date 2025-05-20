@@ -61,6 +61,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
         pageName={user.name}
         pageIcon={user.page_icon}
         arrowLabel="it's me!"
+        alternativeManifestIconPageUrlQuery={{ intent: "join" }}
       />
       <Text ta="center" maw={300}>
         you can install it, and{" "}

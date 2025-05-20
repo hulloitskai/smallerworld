@@ -5,18 +5,25 @@ import HomescreenPreview, {
 } from "./HomescreenPreview";
 
 export interface HomescreenPreviewWithCustomizationIconProps
-  extends HomescreenPreviewProps {}
+  extends HomescreenPreviewProps {
+  alternativeManifestIconPageUrlQuery?: Record<string, string>;
+}
 
-const HomescreenPreviewWithIconCustomization: FC<HomescreenPreviewProps> = ({
+const HomescreenPreviewWithIconCustomization: FC<
+  HomescreenPreviewWithCustomizationIconProps
+> = ({
   pageName,
   pageIcon,
   arrowLabel,
   radius,
+  alternativeManifestIconPageUrlQuery,
   ...otherProps
 }) => {
   // == Manifest icons
   const { manifest_icon_type } = useQueryParams();
-  const alternatePageUrl = usePageUrlWithAlternativeManifestIcon();
+  const alternatePageUrl = usePageUrlWithAlternativeManifestIcon(
+    alternativeManifestIconPageUrlQuery,
+  );
 
   return (
     <Stack gap="xs" {...otherProps}>
@@ -43,11 +50,18 @@ const HomescreenPreviewWithIconCustomization: FC<HomescreenPreviewProps> = ({
 
 export default HomescreenPreviewWithIconCustomization;
 
-const usePageUrlWithAlternativeManifestIcon = (): string | undefined => {
+const usePageUrlWithAlternativeManifestIcon = (
+  query?: Record<string, string>,
+): string | undefined => {
   const { url: pageUrl } = usePage();
   const [alternateUrl, setAlternateUrl] = useState<string>();
   useEffect(() => {
     const url = new URL(pageUrl, location.origin);
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        url.searchParams.set(key, value);
+      });
+    }
     const iconType = url.searchParams.get("manifest_icon_type");
     if (iconType === "generic") {
       url.searchParams.delete("manifest_icon_type");
@@ -55,6 +69,6 @@ const usePageUrlWithAlternativeManifestIcon = (): string | undefined => {
       url.searchParams.set("manifest_icon_type", "generic");
     }
     setAlternateUrl(url.toString());
-  }, [pageUrl]);
+  }, [pageUrl]); // eslint-disable-line react-hooks/exhaustive-deps
   return alternateUrl;
 };
