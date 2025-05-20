@@ -18,9 +18,11 @@ export const fingerprintDevice = async (): Promise<FingerprintingResult> => {
       // ENDPOINT: "https://op.smallerworld.club/fingerprint",
     })
     .then(
-      ({ clusterUUID, uniquenessScore }) => ({
+      ({ clusterUUID, uniquenessScore, botScore }) => ({
         fingerprint: clusterUUID,
-        confidenceScore: uniquenessScore / 5,
+        confidenceScore: Number.isFinite(uniquenessScore)
+          ? uniquenessScore / 5
+          : (6 - botScore) / 5,
       }),
       error => {
         console.error("Failed to fingerprint device using Overpowered", error);
