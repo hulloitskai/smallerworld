@@ -5,8 +5,12 @@ class SessionsController < ApplicationController
   # == Actions
   # GET /login
   def new
+    pwa_scope = params[:pwa_scope]
     if signed_in?
-      redirect_to(world_path, notice: "You are already signed in :)")
+      redirect_to(
+        world_path(pwa_scope:),
+        notice: "You are already signed in :)",
+      )
     else
       render(inertia: "LoginPage")
     end

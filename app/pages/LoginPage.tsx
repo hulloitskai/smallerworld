@@ -4,11 +4,13 @@ import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
 
 import AppLayout from "~/components/AppLayout";
+import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { type PhoneVerificationRequest } from "~/types";
 
 export interface LoginPageProps extends SharedPageProps {}
 
 const LoginPage: PageComponent<LoginPageProps> = () => {
+  const { url: pageUrl } = usePage();
   const [showVerificationCodeInput, setShowVerificationCodeInput] =
     useState(false);
 
@@ -79,7 +81,12 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
     onSuccess: data => {
       if (showVerificationCodeInput) {
         invariant("redirectUrl" in data, "Missing redirect URL after sign in");
-        router.visit(data.redirectUrl);
+        const { pwa_scope: pwaScope } = queryParamsFromPath(pageUrl);
+        const redirectUrl = new URL(data.redirectUrl, location.origin);
+        if (pwaScope) {
+          redirectUrl.searchParams.set("pwa_scope", pwaScope);
+        }
+        router.visit(redirectUrl.toString());
       } else {
         if ("verificationRequest" in data && data.verificationRequest) {
           const { verification_code, verification_code_message } =
