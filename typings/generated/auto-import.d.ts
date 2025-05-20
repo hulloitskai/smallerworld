@@ -43,6 +43,7 @@ declare global {
   const Group: typeof import('@mantine/core')['Group']
   const Head: typeof import('~/components')['Head']
   const InstallIcon: typeof import('~/components/icons')['InstallIcon']
+  const InstructionsIcon: typeof import('~/components/icons')['InstructionsIcon']
   const JoinRequestsIcon: typeof import('~/components/icons')['JoinRequestsIcon']
   const Link: typeof import('@inertiajs/react')['Link']
   const List: typeof import('@mantine/core')['List']

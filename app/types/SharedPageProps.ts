@@ -1,12 +1,9 @@
 import { type PageProps } from "@inertiajs/core";
 
-import { type Friend, type User } from ".";
+import { type Friend, type PageCSRF, type User } from ".";
 
 export default interface SharedPageProps extends PageProps {
-  csrf: {
-    param: string;
-    token: string;
-  };
+  csrf: PageCSRF;
   flash: {
     notice?: string;
     alert?: string;

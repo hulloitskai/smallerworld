@@ -3,10 +3,10 @@ import { useModals } from "@mantine/modals";
 
 import {
   canOpenUrlInMobileSafari,
+  isDesktop,
   isMobileStandaloneBrowser,
   useBrowserDetection,
 } from "~/helpers/browsers";
-import { useInstallPrompt } from "~/helpers/pwa/install";
 import { openUniverseInstallationInstructionsInMobileSafari } from "~/helpers/universe";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
@@ -23,7 +23,7 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
   const browserDetection = useBrowserDetection();
 
   // == Install to home screen
-  const { install, installing } = useInstallPrompt();
+  const { install, installing } = usePWA();
 
   return (
     <Affix className={classes.affix} position={{}} zIndex={180}>
@@ -32,50 +32,55 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
           <Alert
             variant="filled"
             icon={<NotificationIcon />}
-            title="stay connected to smaller world happenings :)"
+            title="install me on your phone!"
             className={classes.alert}
             {...{ style }}
           >
             <Stack gap={8} align="start">
               <Text inherit>
-                life updates, personal invitations, poems, and more!
+                stay connected to smaller world happenings—life updates,
+                personal invitations, poems, and more!
               </Text>
               <Group gap="xs">
                 <Button<"a" | "button">
+                  className={classes.button}
                   variant="white"
                   size="compact-sm"
-                  leftSection={<InstallIcon />}
-                  className={classes.button}
+                  {...(browserDetection && {
+                    leftSection:
+                      install && !isDesktop(browserDetection) ? (
+                        <InstallIcon />
+                      ) : (
+                        <InstructionsIcon />
+                      ),
+                  })}
                   loading={installing}
-                  disabled={
-                    !browserDetection ||
-                    (!install &&
-                      !isMobileStandaloneBrowser(browserDetection) &&
-                      !canOpenUrlInMobileSafari(browserDetection))
-                  }
+                  disabled={!browserDetection}
                   onClick={() => {
-                    if (install) {
+                    invariant(browserDetection);
+                    if (install && !isDesktop(browserDetection)) {
                       void install();
                     } else if (
-                      !!browserDetection &&
-                      isMobileStandaloneBrowser(browserDetection)
+                      !isMobileStandaloneBrowser(browserDetection) &&
+                      canOpenUrlInMobileSafari(browserDetection)
                     ) {
+                      openUniverseInstallationInstructionsInMobileSafari();
+                    } else {
                       openInstallationInstructionsModal({
-                        title: (
-                          <>
-                            add the smaller universe to your
-                            home&nbsp;screen&nbsp;:)
-                          </>
-                        ),
+                        title: "install smaller universe 📲",
                         pageName: "smaller universe",
                         pageIcon: null,
                       });
-                    } else {
-                      openUniverseInstallationInstructionsInMobileSafari();
                     }
                   }}
                 >
-                  pin this page
+                  {install &&
+                  browserDetection &&
+                  !isDesktop(browserDetection) ? (
+                    <>install smaller universe</>
+                  ) : (
+                    "show me how"
+                  )}
                 </Button>
                 <BrowserNotSupportedText />
               </Group>

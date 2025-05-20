@@ -1,8 +1,21 @@
-import { type BadgeProps, Image, type ModalProps } from "@mantine/core";
+import { type BadgeProps, Image, type ModalProps, Text } from "@mantine/core";
+import { randomId } from "@mantine/hooks";
+import { closeModal } from "@mantine/modals";
+
+import QRIcon from "~icons/heroicons/qr-code-20-solid";
 
 import addToHomeScreenStepSrc from "~/assets/images/add-to-home-screen-step.jpeg";
-import openShareMenuStepSrc from "~/assets/images/open-share-menu-step.jpeg";
+import openShareMenuChromeStepSrc from "~/assets/images/open-share-menu-chrome-step.png";
+import openShareMenuSafariStepSrc from "~/assets/images/open-share-menu-safari-step.jpeg";
 
+import {
+  isDesktop,
+  isMobileChrome,
+  useBrowserDetection,
+} from "~/helpers/browsers";
+import { type User } from "~/types";
+
+import CurrentUrlQRCode from "./CurrentUrlQRCode";
 import HomescreenPreviewWithIconCustomization, {
   type HomescreenPreviewWithCustomizationIconProps,
 } from "./HomescreenPreviewWithCustomizableIcon";
@@ -11,37 +24,105 @@ import classes from "./InstallationInstructionsModal.module.css";
 
 export interface InstallationInstructionsModalProps
   extends Pick<ModalProps, "title">,
-    Pick<HomescreenPreviewWithCustomizationIconProps, "pageName" | "pageIcon">,
-    PropsWithChildren {}
+    Omit<ModalBodyProps, "modalId"> {}
 
 export const openInstallationInstructionsModal = ({
   title,
-  pageName,
-  pageIcon,
-  children,
+  ...otherProps
 }: InstallationInstructionsModalProps): void => {
+  const modalId = randomId();
   openModal({
+    modalId,
     title,
     className: classes.modal,
-    children: (
-      <Stack py="xs">
-        {children}
-        <StepWithImage step={1} imageSrc={openShareMenuStepSrc}>
-          open the share menu
-        </StepWithImage>
-        <StepWithImage step={2} imageSrc={addToHomeScreenStepSrc}>
-          tap 'Add to Home Screen'
-        </StepWithImage>
-        <Stack gap={8} align="center">
-          <StepBadge step={3}>open from home screen</StepBadge>
-          <HomescreenPreviewWithIconCustomization
-            {...{ pageName, pageIcon }}
-            arrowLabel="open me!"
-          />
-        </Stack>
-      </Stack>
-    ),
+    children: <ModalBody {...{ modalId }} {...otherProps} />,
   });
+};
+
+interface ModalBodyProps
+  extends Pick<
+    HomescreenPreviewWithCustomizationIconProps,
+    "pageName" | "pageIcon"
+  > {
+  modalId: string;
+  user?: User;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+const ModalBody: FC<ModalBodyProps> = ({
+  pageName,
+  pageIcon,
+  modalId,
+  user,
+}) => {
+  const browserDetection = useBrowserDetection();
+  const { install, installing } = usePWA();
+  return (
+    <>
+      {browserDetection && (
+        <>
+          {isDesktop(browserDetection) ? (
+            <Stack align="center" py="xs">
+              <Text ta="center" fw={500}>
+                smaller world is designed for phones!
+              </Text>
+              <CurrentUrlQRCode
+                query={{ intent: "installation_instructions" }}
+              />
+              <Badge variant="transparent" leftSection={<QRIcon />}>
+                scan the QR code with your phone to continue
+              </Badge>
+            </Stack>
+          ) : install ? (
+            <Stack align="center" py="xs" gap="xs">
+              <Text>you&apos;re almost there!</Text>
+              <Button
+                variant="filled"
+                size="md"
+                leftSection={<InstallIcon />}
+                loading={installing}
+                onClick={() =>
+                  void install().then(() => {
+                    closeModal(modalId);
+                    const url = new URL(location.href);
+                    if (url.searchParams.has("intent")) {
+                      url.searchParams.delete("intent");
+                      router.replace({ url: url.toString() });
+                    }
+                  })
+                }
+              >
+                install {user ? <>{possessive(user.name)} world</> : pageName}
+              </Button>
+            </Stack>
+          ) : (
+            <Stack py="xs">
+              <StepWithImage
+                step={1}
+                imageSrc={
+                  isMobileChrome(browserDetection)
+                    ? openShareMenuChromeStepSrc
+                    : openShareMenuSafariStepSrc
+                }
+              >
+                open the share menu
+              </StepWithImage>
+              <StepWithImage step={2} imageSrc={addToHomeScreenStepSrc}>
+                tap 'Add to Home Screen'
+              </StepWithImage>
+              <Stack gap={8} align="center">
+                <StepBadge step={3}>open from home screen</StepBadge>
+                <HomescreenPreviewWithIconCustomization
+                  {...{ pageName, pageIcon }}
+                  arrowLabel="open me!"
+                />
+              </Stack>
+            </Stack>
+          )}
+        </>
+      )}
+    </>
+  );
 };
 
 interface StepWithImageProps extends PropsWithChildren<BoxProps> {

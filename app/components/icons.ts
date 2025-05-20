@@ -24,6 +24,7 @@ export { default as RemoveIcon } from "~icons/heroicons/minus-circle-20-solid";
 export { default as SendIcon } from "~icons/heroicons/paper-airplane-20-solid";
 export { default as EditIcon } from "~icons/heroicons/pencil-20-solid";
 export { default as AddIcon } from "~icons/heroicons/plus-circle-20-solid";
+export { default as InstructionsIcon } from "~icons/heroicons/question-mark-circle-20-solid";
 export { default as DeleteIcon } from "~icons/heroicons/trash-20-solid";
 export { default as UserIcon } from "~icons/heroicons/user-20-solid";
 export { default as FriendsIcon } from "~icons/heroicons/users-20-solid";

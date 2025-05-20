@@ -44,16 +44,17 @@ const HomescreenPreviewWithIconCustomization: FC<HomescreenPreviewProps> = ({
 export default HomescreenPreviewWithIconCustomization;
 
 const usePageUrlWithAlternativeManifestIcon = (): string | undefined => {
-  const [pageUrl, setPageUrl] = useState<string>();
+  const { url: pageUrl } = usePage();
+  const [alternateUrl, setAlternateUrl] = useState<string>();
   useEffect(() => {
-    const url = new URL(location.href);
+    const url = new URL(pageUrl, location.origin);
     const iconType = url.searchParams.get("manifest_icon_type");
     if (iconType === "generic") {
       url.searchParams.delete("manifest_icon_type");
     } else {
       url.searchParams.set("manifest_icon_type", "generic");
     }
-    setPageUrl(url.toString());
-  }, []);
-  return pageUrl;
+    setAlternateUrl(url.toString());
+  }, [pageUrl]);
+  return alternateUrl;
 };

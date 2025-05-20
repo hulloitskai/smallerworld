@@ -1,4 +1,5 @@
 import { Text } from "@mantine/core";
+import { randomId } from "@mantine/hooks";
 import { closeModal } from "@mantine/modals";
 
 import {
@@ -7,7 +8,6 @@ import {
   openUrlInMobileSafari,
   useBrowserDetection,
 } from "~/helpers/browsers";
-import { useInstallPrompt } from "~/helpers/pwa/install";
 import { type User } from "~/types";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
@@ -20,7 +20,7 @@ export interface WorldPageInstallModalProps
 export const openWorldPageInstallModal = (
   props: WorldPageInstallModalProps,
 ): void => {
-  const modalId = uuid();
+  const modalId = randomId();
   openModal({
     modalId,
     title: <>you&apos;ve created your own smaller&nbsp;world!</>,
@@ -31,20 +31,16 @@ export const openWorldPageInstallModal = (
 interface ModalBodyProps {
   modalId: string;
   currentUser: User;
-  onInstalled: () => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-const ModalBody: FC<ModalBodyProps> = ({
-  modalId,
-  currentUser,
-  onInstalled,
-}) => {
+const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
   // == Browser detection
   const browserDetection = useBrowserDetection();
 
-  // == Add to home screen
-  const { install, installing } = useInstallPrompt();
+  // == PWA installation
+  const { install, installing } = usePWA();
+
   return (
     <Stack gap="lg" align="center" pb="xs">
       <HomeScreenPreview
@@ -68,7 +64,12 @@ const ModalBody: FC<ModalBodyProps> = ({
           }
           onClick={() => {
             if (install) {
-              void install().then(onInstalled);
+              void install().then(() => {
+                closeModal(modalId);
+                const url = new URL(location.href);
+                url.searchParams.delete("intent");
+                router.replace({ url: url.toString() });
+              });
             } else if (
               !!browserDetection &&
               isMobileStandaloneBrowser(browserDetection)

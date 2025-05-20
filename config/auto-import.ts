@@ -45,6 +45,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "CancelIcon",
       "CopyIcon",
       "CopiedIcon",
+      "InstructionsIcon",
     ],
     "~/helpers/actioncable/subscription": ["useSubscription"],
     "~/helpers/authentication": ["useCurrentUser", "useCurrentFriend"],
@@ -142,7 +143,6 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     ],
     sonner: ["toast"],
     "tiny-invariant": [["default", "invariant"]],
-    uuid: [["v4", "uuid"]],
   },
 
   // == Types

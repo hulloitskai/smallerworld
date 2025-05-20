@@ -13,6 +13,10 @@
   :global(.mantine-Alert-icon) {
     margin-right: 8px;
   }
+
+  :global(.mantine-Alert-title) {
+    font-weight: 600 !important;
+  }
 }
 
 .button {

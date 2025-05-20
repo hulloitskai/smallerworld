@@ -45,7 +45,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const visibility = useDocumentVisibility();
   useDidUpdate(() => {
     if (visibility === "visible" && isStandalone && !outOfPWAScope) {
-      void router.reload({
+      router.reload({
         only: [
           "currentUser",
           "currentFriend",
@@ -69,17 +69,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
       return;
     }
     if (intent === "join") {
-      openUserPageJoinModal({
-        user,
-        currentFriend,
-        onInstalled: () => {
-          const url = new URL(location.href);
-          const { searchParams } = url;
-          searchParams.delete("intent");
-          url.search = searchParams.toString();
-          void router.replace({ url: url.toString() });
-        },
-      });
+      openUserPageJoinModal({ user, currentFriend });
     } else if (intent === "installation_instructions") {
       openUserPageInstallationInstructionsModal({ user });
     }
@@ -297,6 +287,7 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
         .join(" ");
       const timeout = setTimeout(() => {
         toast(`welcome back, ${friendName}`, {
+          ...(!currentFriend.emoji && { icon: "❤️" }),
           className: classes.welcomeBackToast,
           closeButton: false,
           duration: 2400,

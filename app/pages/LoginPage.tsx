@@ -1,4 +1,5 @@
 import { Input, InputBase, PinInput, Text } from "@mantine/core";
+import { randomId } from "@mantine/hooks";
 import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
 
@@ -83,7 +84,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
         if ("verificationRequest" in data && data.verificationRequest) {
           const { verification_code, verification_code_message } =
             data.verificationRequest;
-          const toastId = uuid();
+          const toastId = randomId();
           toast.success(
             "simulating verification code delivery in development",
             {

@@ -10,8 +10,9 @@ export const openUserPageInstallationInstructionsModal = ({
   user,
 }: UserPageInstallationInstructionsModalProps): void => {
   openInstallationInstructionsModal({
-    title: "join my smaller world :)",
+    title: <>install {possessive(user.name)} world 📲</>,
     pageName: user.name,
     pageIcon: user.page_icon,
+    user,
   });
 };

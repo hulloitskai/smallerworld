@@ -10,6 +10,7 @@ import useSWRInfinite, {
 import { type Friend, type User, type UserPost } from "~/types";
 
 import { openUrlInMobileSafari } from "./browsers";
+import { queryParamsFromPath } from "./inertia/routing";
 
 export const USER_ICON_RADIUS_RATIO = 4.5;
 
@@ -111,12 +112,17 @@ export const openUserPageInstallationInstructionsInMobileSafari = (
   user: User,
   currentFriend: Friend,
 ) => {
-  const userPageUrl = routes.users.show.path({
+  const instructionsQuery: Record<string, string> = {
+    friend_token: currentFriend.access_token,
+    intent: "installation_instructions",
+  };
+  const { manifest_icon_type } = queryParamsFromPath(location.href);
+  if (manifest_icon_type) {
+    instructionsQuery.manifest_icon_type = manifest_icon_type;
+  }
+  const instructionsUrl = routes.users.show.path({
     handle: user.handle,
-    query: {
-      friend_token: currentFriend.access_token,
-      intent: "installation_instructions",
-    },
+    query: instructionsQuery,
   });
-  openUrlInMobileSafari(userPageUrl);
+  openUrlInMobileSafari(instructionsUrl);
 };

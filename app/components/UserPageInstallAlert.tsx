@@ -3,10 +3,10 @@ import { useModals } from "@mantine/modals";
 
 import {
   canOpenUrlInMobileSafari,
+  isDesktop,
   isMobileStandaloneBrowser,
   useBrowserDetection,
 } from "~/helpers/browsers";
-import { useInstallPrompt } from "~/helpers/pwa/install";
 import {
   openUserPageInstallationInstructionsInMobileSafari,
   useUserPageDialogOpened,
@@ -34,7 +34,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
   const browserDetection = useBrowserDetection();
 
   // == Install to home screen
-  const { install, installing } = useInstallPrompt();
+  const { install, installing } = usePWA();
 
   return (
     <Affix className={classes.affix} position={{}} zIndex={180}>
@@ -47,44 +47,56 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
           <Alert
             variant="filled"
             icon={<NotificationIcon />}
-            title="join my smaller world :)"
+            title="install me on your phone!"
             className={classes.alert}
             {...{ style }}
           >
             <Stack gap={8} align="start">
               <Text inherit>
-                life updates, personal invitations, poems, and more!
+                get notified about life updates, personal invitations, poems,
+                and more :)
               </Text>
               <Group gap="xs">
                 <Button<"a" | "button">
+                  className={classes.button}
                   variant="white"
                   size="compact-sm"
-                  leftSection={<InstallIcon />}
-                  className={classes.button}
+                  {...(browserDetection && {
+                    leftSection:
+                      install && !isDesktop(browserDetection) ? (
+                        <InstallIcon />
+                      ) : (
+                        <InstructionsIcon />
+                      ),
+                  })}
                   loading={installing}
-                  disabled={
-                    !browserDetection ||
-                    (!install &&
-                      !isMobileStandaloneBrowser(browserDetection) &&
-                      !canOpenUrlInMobileSafari(browserDetection))
-                  }
+                  disabled={!browserDetection}
                   onClick={() => {
-                    if (install) {
+                    invariant(browserDetection);
+                    if (install && !isDesktop(browserDetection)) {
                       void install();
                     } else if (
-                      !!browserDetection &&
-                      isMobileStandaloneBrowser(browserDetection)
+                      !isMobileStandaloneBrowser(browserDetection) &&
+                      canOpenUrlInMobileSafari(browserDetection)
                     ) {
-                      openUserPageInstallationInstructionsModal({ user });
-                    } else {
                       openUserPageInstallationInstructionsInMobileSafari(
                         user,
                         currentFriend,
                       );
+                    } else {
+                      openUserPageInstallationInstructionsModal({
+                        user,
+                      });
                     }
                   }}
                 >
-                  pin this page
+                  {install &&
+                  browserDetection &&
+                  !isDesktop(browserDetection) ? (
+                    <>install {possessive(user.name)} world</>
+                  ) : (
+                    "show me how"
+                  )}
                 </Button>
                 <BrowserNotSupportedText />
               </Group>

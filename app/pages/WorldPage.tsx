@@ -26,7 +26,6 @@ import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { usePosts } from "~/helpers/posts";
-import { useInstallPrompt } from "~/helpers/pwa/install";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
 import { type User, type WorldFriend } from "~/types";
@@ -58,8 +57,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   // == Browser detection
   const browserDetection = useBrowserDetection();
 
-  // == Add to home screen
-  const { install } = useInstallPrompt();
+  // == PWA installation
+  const { install } = usePWA();
 
   // == Auto-open install modal on mobile
   const { intent } = useQueryParams();
@@ -76,16 +75,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         !!browserDetection &&
         (!!install || !isDesktop(browserDetection)))
     ) {
-      openWorldPageInstallModal({
-        currentUser,
-        onInstalled: () => {
-          const url = new URL(location.href);
-          const { searchParams } = url;
-          searchParams.delete("intent");
-          url.search = searchParams.toString();
-          void router.replace({ url: url.toString() });
-        },
-      });
+      openWorldPageInstallModal({ currentUser });
     }
   }, [isStandalone, browserDetection, install]); // eslint-disable-line react-hooks/exhaustive-deps
 

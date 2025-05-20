@@ -1,12 +1,13 @@
 import { Text } from "@mantine/core";
+import { randomId } from "@mantine/hooks";
 import { closeModal } from "@mantine/modals";
 
 import {
   canOpenUrlInMobileSafari,
+  isDesktop,
   isMobileStandaloneBrowser,
   useBrowserDetection,
 } from "~/helpers/browsers";
-import { useInstallPrompt } from "~/helpers/pwa/install";
 import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/userPages";
 import { type Friend, type User } from "~/types";
 
@@ -15,10 +16,10 @@ import HomeScreenPreviewWithIconCustomization from "./HomescreenPreviewWithCusto
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
 export interface UserPageJoinModalProps
-  extends Omit<ModalBodyProps, "modalId"> {}
+  extends Omit<ModalBodyProps, "modalId" | "onInstalled"> {}
 
 export const openUserPageJoinModal = (props: UserPageJoinModalProps): void => {
-  const modalId = uuid();
+  const modalId = randomId();
   openModal({
     modalId,
     children: <ModalBody {...{ modalId }} {...props} />,
@@ -29,16 +30,10 @@ interface ModalBodyProps {
   modalId: string;
   currentFriend: Friend;
   user: User;
-  onInstalled: () => void;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-const ModalBody: FC<ModalBodyProps> = ({
-  modalId,
-  currentFriend,
-  user,
-  onInstalled,
-}) => {
+const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
   const friendNameWithEmoji = useMemo(
     () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
     [currentFriend],
@@ -47,8 +42,8 @@ const ModalBody: FC<ModalBodyProps> = ({
   // == Browser detection
   const browserDetection = useBrowserDetection();
 
-  // == Add to home screen
-  const { install, installing } = useInstallPrompt();
+  // == PWA installation
+  const { install, installing } = usePWA();
 
   return (
     <Stack gap="lg" align="center" pb="xs">
@@ -68,7 +63,7 @@ const ModalBody: FC<ModalBodyProps> = ({
         arrowLabel="it's me!"
       />
       <Text ta="center" maw={300}>
-        you can install it, and
+        you can install it, and{" "}
         <span style={{ fontWeight: 600 }}>
           get notified about life updates, personal invitations, poems, and
           more!
@@ -77,36 +72,46 @@ const ModalBody: FC<ModalBodyProps> = ({
       <Stack gap={8} align="center">
         <Button
           variant="filled"
-          leftSection={<InstallIcon />}
           size="md"
+          {...(browserDetection && {
+            leftSection:
+              install && !isDesktop(browserDetection) ? (
+                <InstallIcon />
+              ) : (
+                <InstructionsIcon />
+              ),
+          })}
           loading={installing}
-          disabled={
-            !browserDetection ||
-            (!install &&
-              !isMobileStandaloneBrowser(browserDetection) &&
-              !canOpenUrlInMobileSafari(browserDetection))
-          }
+          disabled={!browserDetection}
           onClick={() => {
-            if (install) {
-              void install().then(onInstalled);
+            invariant(browserDetection);
+            if (install && !isDesktop(browserDetection)) {
+              void install().then(() => {
+                closeModal(modalId);
+                const url = new URL(location.href);
+                if (url.searchParams.has("intent")) {
+                  url.searchParams.delete("intent");
+                  router.replace({ url: url.toString() });
+                }
+              });
             } else if (
-              !!browserDetection &&
-              isMobileStandaloneBrowser(browserDetection)
+              !isMobileStandaloneBrowser(browserDetection) &&
+              canOpenUrlInMobileSafari(browserDetection)
             ) {
-              openUserPageInstallationInstructionsModal({ user });
-              closeModal(modalId);
-            } else {
               openUserPageInstallationInstructionsInMobileSafari(
                 user,
                 currentFriend,
               );
+            } else {
+              openUserPageInstallationInstructionsModal({ user });
+              closeModal(modalId);
             }
           }}
         >
-          {install ? (
+          {install && browserDetection && !isDesktop(browserDetection) ? (
             <>install {possessive(user.name)} world</>
           ) : (
-            "show installation instructions"
+            "show me how"
           )}
         </Button>
         <BrowserNotSupportedText />

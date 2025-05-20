@@ -44,7 +44,13 @@ export const UserPageRequestInvitationAlert: FC<
             <Alert
               variant="filled"
               icon={<NotificationIcon />}
-              title="stay in the loop!"
+              title={
+                <>
+                  hear about what&apos;s *
+                  <span style={{ fontWeight: 900 }}>actually</span>* going on in
+                  my life :)
+                </>
+              }
               className={classes.alert}
               {...{ style }}
             >
