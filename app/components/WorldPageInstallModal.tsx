@@ -4,6 +4,7 @@ import { closeModal } from "@mantine/modals";
 
 import {
   canOpenUrlInMobileSafari,
+  isDesktop,
   isMobileStandaloneBrowser,
   openUrlInMobileSafari,
   useBrowserDetection,
@@ -39,7 +40,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
   const browserDetection = useBrowserDetection();
 
   // == PWA installation
-  const { install, installing } = usePWA();
+  const { install, installing, isStandalone, outOfPWAScope } = usePWA();
 
   return (
     <Stack gap="lg" align="center" pb="xs">
@@ -74,10 +75,16 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
               !!browserDetection &&
               isMobileStandaloneBrowser(browserDetection)
             ) {
-              openWorldPageInstallationInstructionsModal({
-                currentUser,
-              });
-              closeModal(modalId);
+              if (isStandalone && outOfPWAScope) {
+                location.href = routes.world.show.path({
+                  query: {
+                    intent: "installation_instructions",
+                  },
+                });
+              } else {
+                openWorldPageInstallationInstructionsModal({ currentUser });
+                closeModal(modalId);
+              }
             } else {
               const path = routes.world.show.path({
                 query: {
@@ -89,7 +96,11 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
             }
           }}
         >
-          pin to home screen
+          {install && browserDetection && !isDesktop(browserDetection) ? (
+            <>install smaller world</>
+          ) : (
+            <>let&apos;s do it</>
+          )}
         </Button>
         <BrowserNotSupportedText />
       </Stack>
