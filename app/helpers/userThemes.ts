@@ -17,6 +17,9 @@ export const USER_THEMES: UserTheme[] = [
   "aquatica",
 ];
 
+export const isUserTheme = (theme: string): theme is UserTheme =>
+  (USER_THEMES as string[]).includes(theme);
+
 export const DARK_USER_THEMES: UserTheme[] = [
   "darkSky",
   "forest",

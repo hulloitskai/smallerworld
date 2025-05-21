@@ -2,7 +2,7 @@ import { MantineProvider } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 
 import { useCreateTheme } from "~/helpers/mantine";
-import { DARK_USER_THEMES } from "~/helpers/userThemes";
+import { DARK_USER_THEMES, isUserTheme } from "~/helpers/userThemes";
 
 const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
   const theme = useCreateTheme();
@@ -14,13 +14,11 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
           return;
         }
         const theme = document.documentElement.getAttribute("data-user-theme");
-        if (theme) {
-          const themeColorScheme = (DARK_USER_THEMES as string[]).includes(
-            theme,
-          )
+        if (theme && isUserTheme(theme)) {
+          const colorScheme = DARK_USER_THEMES.includes(theme)
             ? "dark"
             : "light";
-          setForceColorScheme(themeColorScheme);
+          setForceColorScheme(colorScheme);
         } else {
           setForceColorScheme(undefined);
         }
