@@ -59,13 +59,10 @@ export const renderNotification = (
       const { reaction } =
         notification.payload as PostReactionNotificationPayload;
       const { friend, post, emoji } = reaction;
-      let body = post.body_snippet;
-      if (post.title_snippet) {
-        body = `${post.title_snippet}: ${body}`;
-      }
+      const body = "> " + post.body_snippet.split("\n").join("\n> ");
       return {
         title: `${emoji} ${friend.name} reacted to your ${POST_TYPE_TO_LABEL[post.type]}`,
-        body: `> ${body}`,
+        body,
       };
     }
     case "JoinRequest": {

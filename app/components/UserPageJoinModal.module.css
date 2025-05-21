@@ -1,0 +1,8 @@
+.notificationNotice {
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2));
+
+  @mixin dark-user-theme {
+    color: var(--mantine-color-text);
+    opacity: 0.9;
+  }
+}

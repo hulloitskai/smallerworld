@@ -15,6 +15,8 @@ import BrowserNotSupportedText from "./BrowserNotSupportedText";
 import HomeScreenPreviewWithIconCustomization from "./HomescreenPreviewWithCustomizableIcon";
 import { openUserPageInstallationInstructionsModal } from "./UserPageInstallationInstructionsModal";
 
+import classes from "./UserPageJoinModal.module.css";
+
 export interface UserPageJoinModalProps
   extends Omit<ModalBodyProps, "modalId" | "onInstalled"> {}
 
@@ -63,13 +65,24 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
         arrowLabel="it's me!"
         alternativeManifestIconPageUrlQuery={{ intent: "join" }}
       />
-      <Text ta="center" maw={300}>
-        you can install it, and{" "}
-        <span style={{ fontWeight: 600 }}>
-          get notified about life updates, personal invitations, poems, and
-          more!
-        </span>
-      </Text>
+      <Stack gap="xs">
+        <Text ta="center" maw={300}>
+          you can install it, and{" "}
+          <span style={{ fontWeight: 600 }}>
+            get notified about life updates, personal invitations, poems, and
+            more!
+          </span>
+        </Text>
+        <Text
+          className={classes.notificationNotice}
+          size="sm"
+          ta="center"
+          maw={300}
+        >
+          (and you&apos;ll ONLY get notifications from {user.name}—this
+          isn&apos;t a social network)
+        </Text>
+      </Stack>
       <Stack gap={8} align="center">
         <Button
           variant="filled"
