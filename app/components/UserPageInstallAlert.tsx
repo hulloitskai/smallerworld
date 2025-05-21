@@ -61,14 +61,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   className={classes.button}
                   variant="white"
                   size="compact-sm"
-                  {...(browserDetection && {
-                    leftSection:
-                      install && !isDesktop(browserDetection) ? (
-                        <InstallIcon />
-                      ) : (
-                        <InstructionsIcon />
-                      ),
-                  })}
+                  leftSection={<InstallIcon />}
                   loading={installing}
                   disabled={!browserDetection}
                   onClick={() => {
@@ -95,7 +88,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   !isDesktop(browserDetection) ? (
                     <>install {possessive(user.name)} world</>
                   ) : (
-                    "show me how"
+                    <>let&apos;s do it</>
                   )}
                 </Button>
                 <BrowserNotSupportedText />

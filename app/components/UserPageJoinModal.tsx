@@ -74,14 +74,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
         <Button
           variant="filled"
           size="md"
-          {...(browserDetection && {
-            leftSection:
-              install && !isDesktop(browserDetection) ? (
-                <InstallIcon />
-              ) : (
-                <InstructionsIcon />
-              ),
-          })}
+          leftSection={<InstallIcon />}
           loading={installing}
           disabled={!browserDetection}
           onClick={() => {
@@ -112,7 +105,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           {install && browserDetection && !isDesktop(browserDetection) ? (
             <>install {possessive(user.name)} world</>
           ) : (
-            "show me how"
+            <>let&apos;s do it</>
           )}
         </Button>
         <BrowserNotSupportedText />
