@@ -1,3 +1,5 @@
+import { useComputedColorScheme } from "@mantine/core";
+
 import {
   DARK_USER_THEMES,
   IMAGE_USER_THEMES,
@@ -17,34 +19,30 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<UserTheme | null>(null);
 
   // == Apply theme on document body
+  const colorScheme = useComputedColorScheme("light");
   useEffect(() => {
-    if (!theme) {
-      return;
-    }
-    document.documentElement.setAttribute("data-user-theme", theme);
-    document.body.style.setProperty(
-      "--mantine-color-body",
-      USER_THEME_BACKGROUND_COLORS[theme],
-    );
-    const themeColorScheme = DARK_USER_THEMES.includes(theme)
-      ? "dark"
-      : "light";
-    document.documentElement.setAttribute(
-      "data-mantine-color-scheme",
-      themeColorScheme,
-    );
-    return () => {
-      document.documentElement.removeAttribute("data-user-theme");
-      document.body.style.removeProperty("--mantine-color-body");
-      const darkMode =
-        "matchMedia" in window &&
-        matchMedia("(prefers-color-scheme: dark)").matches;
+    if (theme) {
+      document.documentElement.setAttribute("data-user-theme", theme);
+      document.body.style.setProperty(
+        "--mantine-color-body",
+        USER_THEME_BACKGROUND_COLORS[theme],
+      );
+      const themeColorScheme = DARK_USER_THEMES.includes(theme)
+        ? "dark"
+        : "light";
       document.documentElement.setAttribute(
         "data-mantine-color-scheme",
-        darkMode ? "dark" : "light",
+        themeColorScheme,
       );
-    };
-  }, [theme]);
+    } else {
+      document.documentElement.removeAttribute("data-user-theme");
+      document.body.style.removeProperty("--mantine-color-body");
+      document.documentElement.setAttribute(
+        "data-mantine-color-scheme",
+        colorScheme,
+      );
+    }
+  }, [theme, colorScheme]);
 
   return (
     <UserThemeContext.Provider
