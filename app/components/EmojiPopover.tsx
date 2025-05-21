@@ -33,6 +33,7 @@ const EmojiPopover: FC<EmojiPopoverProps> = ({
       middlewares={{ flip: false }}
       portalProps={{
         target: vaulPortalTarget,
+        reuseTargetNode: false,
         ...portalProps,
       }}
       classNames={{ dropdown: classes.dropdown }}
