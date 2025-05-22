@@ -34,7 +34,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
 }) => {
   const { currentUser, hideStats } = usePageProps<WorldPageProps>();
   const { isStandalone } = usePWA();
-  const { registration } = useWebPush();
+  const { registration: pushRegistration } = useWebPush();
   const { modals } = useModals();
 
   // == Post type
@@ -68,7 +68,8 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   const [newPostDraft] = useNewPostDraft();
 
   const actionsVisible =
-    (isStandalone === false || !!registration) && !pinnedPostsDrawerModalOpened;
+    (isStandalone === false || !!pushRegistration) &&
+    !pinnedPostsDrawerModalOpened;
   return (
     <>
       <Space className={classes.space} />

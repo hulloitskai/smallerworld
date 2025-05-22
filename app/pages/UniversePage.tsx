@@ -28,7 +28,7 @@ const ICON_SIZE = 80;
 const UniversePage: PageComponent<UniversePageProps> = () => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
-  const { registration } = useWebPush();
+  const { registration: pushRegistration } = useWebPush();
   useUserTheme("aquatica");
 
   // == Load worlds
@@ -122,11 +122,13 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
   );
   return (
     <>
-      <RemoveScroll enabled={isStandalone && !outOfPWAScope && !registration}>
+      <RemoveScroll
+        enabled={isStandalone && !outOfPWAScope && !pushRegistration}
+      >
         {body}
       </RemoveScroll>
       {isStandalone === false && <UniversePageInstallAlert />}
-      {isStandalone && !outOfPWAScope && registration === null && (
+      {isStandalone && !outOfPWAScope && pushRegistration === null && (
         <>
           <Overlay backgroundOpacity={0} blur={3} pos="fixed">
             <SingleDayFontHead />

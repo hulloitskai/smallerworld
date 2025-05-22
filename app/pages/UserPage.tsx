@@ -39,7 +39,8 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
-  const { registration } = useWebPush();
+  const { registration: pushRegistration, supported: pushSupported } =
+    useWebPush();
 
   // == Reload user on visibility change
   const visibility = useDocumentVisibility();
@@ -137,7 +138,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                 {currentFriend && (
                   <Group gap="xs" justify="center">
                     <UserPageNotificationsButtonCard {...{ currentFriend }} />
-                    {registration && <UserPageRefreshButton userId={user.id} />}
+                    {pushRegistration && (
+                      <UserPageRefreshButton userId={user.id} />
+                    )}
                   </Group>
                 )}
               </>
@@ -191,7 +194,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
       </Box>
       <Box pos="relative">
         <UserPageFeed />
-        {isStandalone && !outOfPWAScope && registration === null && (
+        {isStandalone && !outOfPWAScope && pushRegistration === null && (
           <>
             <SingleDayFontHead />
             <Overlay backgroundOpacity={0} blur={3}>
@@ -212,7 +215,14 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   );
   return (
     <>
-      <RemoveScroll enabled={isStandalone && !outOfPWAScope && !registration}>
+      <RemoveScroll
+        enabled={
+          isStandalone &&
+          !outOfPWAScope &&
+          !pushRegistration &&
+          pushSupported !== false
+        }
+      >
         {body}
       </RemoveScroll>
       {isStandalone && !outOfPWAScope && (
@@ -267,7 +277,7 @@ interface WelcomeBackToastProps {
 }
 
 const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
-  const { registration } = useWebPush();
+  const { registration: pushRegistration } = useWebPush();
   const visibility = useDocumentVisibility();
   const lastCheckedRef = useRef<DateTime | null>(null);
   useEffect(() => {
@@ -278,7 +288,7 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
       return;
     }
     lastCheckedRef.current = DateTime.now();
-    if (!registration) {
+    if (!pushRegistration) {
       return;
     }
     if (visibility === "visible") {
