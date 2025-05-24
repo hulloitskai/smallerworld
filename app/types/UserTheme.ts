@@ -10,6 +10,7 @@ type UserTheme =
   | "pool"
   | "forest"
   | "aquatica"
-  | "toile";
+  | "toile"
+  | "rush";
 
 export default UserTheme;

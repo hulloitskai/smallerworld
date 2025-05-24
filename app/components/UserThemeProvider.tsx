@@ -17,6 +17,7 @@ export interface UserThemeProviderProps extends PropsWithChildren {}
 
 const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<UserTheme | null>(null);
+  const [videoSuspended, setVideoSuspended] = useState(false);
 
   // == Apply theme on document body
   const colorScheme = useComputedColorScheme("light");
@@ -80,6 +81,10 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
               loop
               playsInline
               src={userThemeBackgroundVideoSrc(theme)}
+              onSuspend={() => {
+                setVideoSuspended(true);
+              }}
+              {...(videoSuspended && { style: { display: "none" } })}
             />
           )}
         </Box>

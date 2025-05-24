@@ -3,8 +3,18 @@ export default {
     "postcss-preset-mantine": {
       autoRem: true,
       mixins: {
+        "light-user-theme": {
+          "[data-mantine-color-scheme='light'][data-user-theme] &": {
+            "@mixin-content": {},
+          },
+        },
         "dark-user-theme": {
           "[data-mantine-color-scheme='dark'][data-user-theme] &": {
+            "@mixin-content": {},
+          },
+        },
+        "where-light-user-theme": {
+          ":where([data-mantine-color-scheme='light'][data-user-theme]) &": {
             "@mixin-content": {},
           },
         },

@@ -74,7 +74,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       intent === "install" ||
       ((!isStandalone || outOfPWAScope) &&
         !!browserDetection &&
-        (!!install || !isDesktop(browserDetection)))
+        (install || !isDesktop(browserDetection)))
     ) {
       openWorldPageInstallModal({ currentUser });
     }
@@ -111,7 +111,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             }}
           />
           <Stack gap={4}>
-            <Title size="h2" lh="xs" ta="center">
+            <Title className={classes.pageTitle} size="h2" lh="xs" ta="center">
               {possessive(currentUser.name)} world
             </Title>
             <Group gap={8} justify="center">

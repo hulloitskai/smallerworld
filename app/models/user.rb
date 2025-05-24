@@ -114,13 +114,14 @@ class User < ApplicationRecord
 
   sig { returns(T::Array[Symbol]) }
   def supported_features
-    Features::ALL_FEATURES.select do |feature|
-      if (active_since = Features::ACTIVE_SINCE[feature])
-        last_active_at >= active_since
-      else
-        true
-      end
+    features = []
+    if last_active_at >= Encouragement::AVAILABLE_SINCE
+      features << :encouragements
     end
+    if posts.count > 10
+      features << :search
+    end
+    features
   end
 
   sig { returns(Encouragement::PrivateAssociationRelation) }

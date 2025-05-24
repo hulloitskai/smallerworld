@@ -130,7 +130,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             })}
           />
           <Stack gap={4}>
-            <Title size="h2" lh="xs" ta="center" className={classes.pageTitle}>
+            <Title className={classes.pageTitle} size="h2" lh="xs" ta="center">
               {possessive(user.name)} world
             </Title>
             {isStandalone && !outOfPWAScope ? (

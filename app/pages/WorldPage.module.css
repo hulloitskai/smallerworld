@@ -1,3 +1,9 @@
+.pageTitle {
+  @mixin dark {
+    color: var(--mantine-color-white);
+  }
+}
+
 .menuContactItem {
   padding-block: 4px;
   cursor: default;
