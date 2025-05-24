@@ -1,7 +1,17 @@
 .pageTitle {
+  line-height: var(--mantine-line-height-xs);
+  text-align: center;
+
   @mixin dark {
     color: var(--mantine-color-white);
   }
+}
+
+.pageIcon {
+  align-self: center;
+  object-fit: cover;
+  flex: unset;
+  box-shadow: var(--mantine-shadow-lg);
 }
 
 .menuContactItem {

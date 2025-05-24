@@ -24,6 +24,7 @@ export const setupSentry = () => {
       tracesSampleRate,
       profilesSampleRate,
       sendDefaultPii: true,
+      enabled: environment === "production",
     };
     init({
       ...config,

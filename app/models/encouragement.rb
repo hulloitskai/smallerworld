@@ -25,9 +25,6 @@
 class Encouragement < ApplicationRecord
   include Noticeable
 
-  # == Constants
-  AVAILABLE_SINCE = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
-
   # == Associations
   belongs_to :friend
   has_one :user, through: :friend

@@ -1,6 +1,8 @@
 import { Text } from "@mantine/core";
 
+import ChevronUpIcon from "~icons/heroicons/chevron-up-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
+import ClearIcon from "~icons/heroicons/x-mark-20-solid";
 
 import { usePosts } from "~/helpers/posts";
 import { type WorldPageProps } from "~/pages/WorldPage";
@@ -9,44 +11,90 @@ import AuthorPostCardActions from "./AuthorPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 
-export interface WorldPageFeedProps extends BoxProps {}
+export interface WorldPageFeedProps extends BoxProps {
+  showSearch: boolean;
+  onHideSearch: () => void;
+}
 
-const WorldPageFeed: FC<WorldPageFeedProps> = props => {
+const WorldPageFeed: FC<WorldPageFeedProps> = ({
+  showSearch,
+  onHideSearch,
+  ...otherProps
+}) => {
   const { currentUser, hideStats, pausedFriends } =
     usePageProps<WorldPageProps>();
   const { post_id } = useQueryParams();
 
   // == Load posts
-  const { posts, setSize, hasMorePosts, isValidating } = usePosts();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
+  const { posts, setSize, hasMorePosts, isValidating } = usePosts({
+    searchQuery: debouncedSearchQuery,
+  });
 
   return (
-    <Stack {...props}>
+    <Stack {...otherProps}>
+      <Transition transition="slide-down" mounted={showSearch}>
+        {style => (
+          <TextInput
+            leftSection={<SearchIcon />}
+            rightSection={
+              <ActionIcon
+                {...(searchQuery
+                  ? {
+                      color: "red",
+                      onClick: () => {
+                        setSearchQuery("");
+                      },
+                    }
+                  : {
+                      onClick: onHideSearch,
+                    })}
+                {...{ style }}
+              >
+                {searchQuery ? <ClearIcon /> : <ChevronUpIcon />}
+              </ActionIcon>
+            }
+            placeholder="search your posts"
+            value={searchQuery}
+            onChange={({ currentTarget }) =>
+              setSearchQuery(currentTarget.value)
+            }
+            autoFocus
+            {...{ style }}
+          />
+        )}
+      </Transition>
       {posts ? (
         isEmpty(posts) ? (
-          <Card withBorder>
-            <Stack justify="center" gap={2} ta="center" mih={60}>
-              <Title order={4} lh="xs">
-                no posts yet!
-              </Title>
-              <Text size="sm">
-                create a new post with the{" "}
-                <Badge
-                  variant="filled"
-                  mx={4}
-                  px={4}
-                  styles={{
-                    root: {
-                      verticalAlign: "middle",
-                    },
-                    label: { display: "flex", alignItems: "center" },
-                  }}
-                >
-                  <NewIcon />
-                </Badge>{" "}
-                button :)
-              </Text>
-            </Stack>
-          </Card>
+          debouncedSearchQuery ? (
+            <EmptyCard itemLabel="results" />
+          ) : (
+            <Card withBorder>
+              <Stack justify="center" gap={2} ta="center" mih={60}>
+                <Title order={4} lh="xs">
+                  no posts yet!
+                </Title>
+                <Text size="sm">
+                  create a new post with the{" "}
+                  <Badge
+                    variant="filled"
+                    mx={4}
+                    px={4}
+                    styles={{
+                      root: {
+                        verticalAlign: "middle",
+                      },
+                      label: { display: "flex", alignItems: "center" },
+                    }}
+                  >
+                    <NewIcon />
+                  </Badge>{" "}
+                  button :)
+                </Text>
+              </Stack>
+            </Card>
+          )
         ) : (
           <>
             {posts.map(post => (

@@ -1,6 +1,5 @@
 import { Text } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
-import { closeModal } from "@mantine/modals";
 
 import {
   canOpenUrlInMobileSafari,

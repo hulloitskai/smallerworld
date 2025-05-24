@@ -1,6 +1,5 @@
 import { type BadgeProps, Image, type ModalProps, Text } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
-import { closeModal } from "@mantine/modals";
 
 import QRIcon from "~icons/heroicons/qr-code-20-solid";
 

@@ -77,6 +77,7 @@ declare global {
   const Transition: typeof import('@mantine/core')['Transition']
   const UserIcon: typeof import('~/components/icons')['UserIcon']
   const closeAllModals: typeof import('@mantine/modals')['closeAllModals']
+  const closeModal: typeof import('@mantine/modals')['closeModal']
   const cn: typeof import('clsx')['clsx']
   const createRef: typeof import('react')['createRef']
   const createVaulModalPortalTarget: typeof import('~/helpers/vaul')['createVaulModalPortalTarget']

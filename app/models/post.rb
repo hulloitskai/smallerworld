@@ -21,6 +21,7 @@
 #
 # Indexes
 #
+#  index_posts_for_search          ((((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))) USING gin
 #  index_posts_on_author_id        (author_id)
 #  index_posts_on_hidden_from_ids  (hidden_from_ids)
 #  index_posts_on_pinned_until     (pinned_until)
@@ -36,6 +37,7 @@
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Post < ApplicationRecord
   include Noticeable
+  include PgSearch::Model
 
   # == Constants
   NOTIFICATION_PUSH_DELAY = T.let(
@@ -90,6 +92,15 @@ class Post < ApplicationRecord
   def reply_snippet
     "> " + body_text.truncate(120).split("\n").join("\n> ") + "\n\n"
   end
+
+  # == Search
+  pg_search_scope :search,
+                  against: %i[emoji title body_html],
+                  using: {
+                    tsearch: {
+                      websearch: true,
+                    },
+                  }
 
   # == Associations
   belongs_to :author, class_name: "User"

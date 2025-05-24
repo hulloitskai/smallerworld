@@ -1,5 +1,4 @@
 import { randomId } from "@mantine/hooks";
-import { closeModal } from "@mantine/modals";
 
 import classes from "./VaulModalPortalTarget.module.css";
 

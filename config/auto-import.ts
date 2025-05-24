@@ -109,7 +109,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "useMounted",
       "usePrevious",
     ],
-    "@mantine/modals": ["openModal", "closeAllModals"],
+    "@mantine/modals": ["openModal", "closeModal", "closeAllModals"],
     clsx: [["clsx", "cn"]],
     inflection: ["inflect", "humanize"],
     "lodash-es": [

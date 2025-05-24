@@ -7,12 +7,15 @@ class PostsController < ApplicationController
   before_action :authenticate_friend!, only: %i[mark_seen mark_replied]
 
   # == Actions
-  # GET /posts
+  # GET /posts?q=...
   def index
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
       .includes(images_attachments: :blob)
       .order(created_at: :desc, id: :asc)
+    if (query = params[:q])
+      posts = posts.where(id: posts.search(query).select(:id))
+    end
     pagy, paginated_posts = pagy_keyset(posts, limit: 5)
     render(json: {
       posts: WorldPostSerializer.many(paginated_posts),

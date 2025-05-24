@@ -33,6 +33,10 @@ class User < ApplicationRecord
   include Notifiable
   include ImageHelpers
 
+  # == Constants
+  ENCOURAGEMENTS_AVAILABLE_SINCE = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
+  MIN_POST_COUNT_FOR_SEARCH = T.let(Rails.env.production? ? 10 : 2, Integer)
+
   # == FriendlyId
   friendly_id :handle, slug_column: :handle
 
@@ -115,10 +119,10 @@ class User < ApplicationRecord
   sig { returns(T::Array[Symbol]) }
   def supported_features
     features = []
-    if last_active_at >= Encouragement::AVAILABLE_SINCE
+    if last_active_at >= ENCOURAGEMENTS_AVAILABLE_SINCE
       features << :encouragements
     end
-    if posts.count > 10
+    if posts.count >= MIN_POST_COUNT_FOR_SEARCH
       features << :search
     end
     features

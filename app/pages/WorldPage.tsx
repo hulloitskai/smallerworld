@@ -93,28 +93,46 @@ const WorldPage: PageComponent<WorldPageProps> = ({
     }
   }, [posts]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // == Search
+  const [showSearch, setShowSearch] = useState(false);
+
   const body = (
     <Stack gap="lg">
       <Box pos="relative">
         <Stack gap="sm">
           <Image
+            className={classes.pageIcon}
             src={currentUser.page_icon.src}
             srcSet={currentUser.page_icon.srcset ?? undefined}
             w={ICON_SIZE}
             h={ICON_SIZE}
-            fit="cover"
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
-            style={{
-              alignSelf: "center",
-              flex: "unset",
-              boxShadow: "var(--mantine-shadow-lg)",
-            }}
           />
           <Stack gap={4}>
-            <Title className={classes.pageTitle} size="h2" lh="xs" ta="center">
+            <Title className={classes.pageTitle} size="h2">
               {possessive(currentUser.name)} world
             </Title>
             <Group gap={8} justify="center">
+              <Transition
+                transition="slide-up"
+                mounted={
+                  currentUser.supported_features.includes("search") &&
+                  !showSearch
+                }
+              >
+                {style => (
+                  <ActionIcon
+                    size="lg"
+                    variant="light"
+                    {...{ style }}
+                    onClick={() => {
+                      setShowSearch(true);
+                    }}
+                  >
+                    <SearchIcon />
+                  </ActionIcon>
+                )}
+              </Transition>
               {(!isStandalone ||
                 outOfPWAScope ||
                 pushRegistration !== null) && (
@@ -299,7 +317,12 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           </Alert>
         )}
       <Box pos="relative">
-        <WorldPageFeed />
+        <WorldPageFeed
+          {...{ showSearch }}
+          onHideSearch={() => {
+            setShowSearch(false);
+          }}
+        />
         {isStandalone && !outOfPWAScope && pushRegistration === null && (
           <>
             <SingleDayFontHead />

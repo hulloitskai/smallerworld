@@ -63,9 +63,12 @@ export interface PostsData {
   pagination: { next: string | null };
 }
 
-const postsGetKey = (): SWRInfiniteKeyLoader<PostsData> => {
+const postsGetKey = (searchQuery?: string): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = {};
+    if (searchQuery) {
+      query.q = searchQuery;
+    }
     if (previousPageData) {
       const { next } = previousPageData.pagination;
       if (!next) {
@@ -78,6 +81,7 @@ const postsGetKey = (): SWRInfiniteKeyLoader<PostsData> => {
 };
 
 export interface PostsOptions extends SWRInfiniteConfiguration<PostsData> {
+  searchQuery?: string;
   limit?: number;
 }
 
@@ -85,8 +89,8 @@ export const usePosts = (options?: PostsOptions) => {
   const { online } = useNetwork();
   const { ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    postsGetKey(),
-    (path: string) => fetchRoute(path, { descriptor: "load posts" }),
+    postsGetKey(options?.searchQuery),
+    (url: string) => fetchRoute(url, { descriptor: "load posts" }),
     {
       keepPreviousData: true,
       isOnline: () => online,
