@@ -10,11 +10,12 @@ class PostsController < ApplicationController
   # GET /posts?q=...
   def index
     current_user = authenticate_user!
+    ordering = { created_at: :desc, id: :asc }
     posts = authorized_scope(current_user.posts)
       .includes(images_attachments: :blob)
-      .order(created_at: :desc, id: :asc)
+      .order(ordering)
     if (query = params[:q])
-      posts = posts.where(id: posts.search(query).select(:id))
+      posts = posts.merge(Post.search(query)).reorder(ordering)
     end
     pagy, paginated_posts = pagy_keyset(posts, limit: 5)
     render(json: {

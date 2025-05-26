@@ -319,7 +319,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       <Box pos="relative">
         <WorldPageFeed
           {...{ showSearch }}
-          onHideSearch={() => {
+          onRequestHideSearch={() => {
             setShowSearch(false);
           }}
         />

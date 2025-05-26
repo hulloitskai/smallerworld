@@ -1,4 +1,4 @@
-import { Text } from "@mantine/core";
+import { Loader, Text } from "@mantine/core";
 
 import ChevronUpIcon from "~icons/heroicons/chevron-up-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
@@ -13,12 +13,12 @@ import PostCard from "./PostCard";
 
 export interface WorldPageFeedProps extends BoxProps {
   showSearch: boolean;
-  onHideSearch: () => void;
+  onRequestHideSearch: () => void;
 }
 
 const WorldPageFeed: FC<WorldPageFeedProps> = ({
   showSearch,
-  onHideSearch,
+  onRequestHideSearch,
   ...otherProps
 }) => {
   const { currentUser, hideStats, pausedFriends } =
@@ -39,21 +39,25 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
           <TextInput
             leftSection={<SearchIcon />}
             rightSection={
-              <ActionIcon
-                {...(searchQuery
-                  ? {
-                      color: "red",
-                      onClick: () => {
-                        setSearchQuery("");
-                      },
-                    }
-                  : {
-                      onClick: onHideSearch,
-                    })}
-                {...{ style }}
-              >
-                {searchQuery ? <ClearIcon /> : <ChevronUpIcon />}
-              </ActionIcon>
+              isValidating ? (
+                <Loader size="xs" />
+              ) : (
+                <ActionIcon
+                  {...(searchQuery
+                    ? {
+                        color: "red",
+                        onClick: () => {
+                          setSearchQuery("");
+                        },
+                      }
+                    : {
+                        onClick: onRequestHideSearch,
+                      })}
+                  {...{ style }}
+                >
+                  {searchQuery ? <ClearIcon /> : <ChevronUpIcon />}
+                </ActionIcon>
+              )
             }
             placeholder="search your posts"
             value={searchQuery}
