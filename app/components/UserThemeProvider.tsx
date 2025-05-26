@@ -81,8 +81,17 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
               loop
               playsInline
               src={userThemeBackgroundVideoSrc(theme)}
-              onSuspend={() => {
-                setVideoSuspended(true);
+              onSuspend={({ currentTarget }) => {
+                if (!videoSuspended && currentTarget.paused) {
+                  currentTarget.play().catch(error => {
+                    if (
+                      error instanceof Error &&
+                      error.name === "NotAllowedError"
+                    ) {
+                      setVideoSuspended(true);
+                    }
+                  });
+                }
               }}
               {...(videoSuspended && { style: { display: "none" } })}
             />
