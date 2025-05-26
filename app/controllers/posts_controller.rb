@@ -2,6 +2,9 @@
 # frozen_string_literal: true
 
 class PostsController < ApplicationController
+  # == Constants
+  POSTS_PER_PAGE = 5
+
   # == Filters
   before_action :authenticate_user!, except: %i[mark_seen mark_replied]
   before_action :authenticate_friend!, only: %i[mark_seen mark_replied]
@@ -10,14 +13,16 @@ class PostsController < ApplicationController
   # GET /posts?q=...
   def index
     current_user = authenticate_user!
-    ordering = { created_at: :desc, id: :asc }
     posts = authorized_scope(current_user.posts)
       .includes(images_attachments: :blob)
-      .order(ordering)
-    if (query = params[:q])
-      posts = posts.merge(Post.search(query)).reorder(ordering)
+    ordering = { created_at: :desc, id: :asc }
+    pagy, paginated_posts = if (query = params[:q])
+      posts = posts.search(query).order(ordering)
+      pagy(posts, limit: POSTS_PER_PAGE)
+    else
+      posts = posts.order(ordering)
+      pagy_keyset(posts, limit: POSTS_PER_PAGE)
     end
-    pagy, paginated_posts = pagy_keyset(posts, limit: 5)
     render(json: {
       posts: WorldPostSerializer.many(paginated_posts),
       pagination: {
@@ -68,7 +73,10 @@ class PostsController < ApplicationController
     if post.save
       render(json: { post: WorldPostSerializer.one(post) }, status: :created)
     else
-      render(json: { errors: post.form_errors }, status: :unprocessable_entity)
+      render(
+        json: { errors: post.form_errors },
+        status: :unprocessable_entity,
+      )
     end
   end
 
@@ -87,7 +95,10 @@ class PostsController < ApplicationController
     if post.update(post_params)
       render(json: { post: WorldPostSerializer.one(post) })
     else
-      render(json: { errors: post.form_errors }, status: :unprocessable_entity)
+      render(
+        json: { errors: post.form_errors },
+        status: :unprocessable_entity,
+      )
     end
   end
 

@@ -1,6 +1,6 @@
 import { Loader, Text } from "@mantine/core";
 
-import ChevronUpIcon from "~icons/heroicons/chevron-up-20-solid";
+import HideIcon from "~icons/heroicons/chevron-up-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 import ClearIcon from "~icons/heroicons/x-mark-20-solid";
 
@@ -42,21 +42,26 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
               isValidating ? (
                 <Loader size="xs" />
               ) : (
-                <ActionIcon
-                  {...(searchQuery
-                    ? {
-                        color: "red",
-                        onClick: () => {
-                          setSearchQuery("");
-                        },
-                      }
-                    : {
-                        onClick: onRequestHideSearch,
-                      })}
-                  {...{ style }}
+                <Tooltip
+                  label={searchQuery ? "clear search" : "hide search"}
+                  openDelay={600}
                 >
-                  {searchQuery ? <ClearIcon /> : <ChevronUpIcon />}
-                </ActionIcon>
+                  <ActionIcon
+                    {...(searchQuery
+                      ? {
+                          color: "red",
+                          onClick: () => {
+                            setSearchQuery("");
+                          },
+                        }
+                      : {
+                          onClick: onRequestHideSearch,
+                        })}
+                    {...{ style }}
+                  >
+                    {searchQuery ? <ClearIcon /> : <HideIcon />}
+                  </ActionIcon>
+                </Tooltip>
               )
             }
             placeholder="search your posts"

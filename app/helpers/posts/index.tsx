@@ -1,6 +1,7 @@
 import { useNetwork } from "@mantine/hooks";
 import { type SVGProps } from "react";
 import { mutate } from "swr";
+import { cache } from "swr/_internal";
 import useSWRInfinite, {
   type SWRInfiniteConfiguration,
   type SWRInfiniteKeyLoader,
@@ -60,7 +61,7 @@ export const POST_VISIBILITY_TO_ICON: Record<
 
 export interface PostsData {
   posts: WorldPost[];
-  pagination: { next: string | null };
+  pagination: { next: string | number | null };
 }
 
 const postsGetKey = (searchQuery?: string): SWRInfiniteKeyLoader<PostsData> => {
@@ -101,12 +102,26 @@ export const usePosts = (options?: PostsOptions) => {
   const hasMorePosts = useMemo(() => {
     if (data) {
       const lastPage = last(data);
-      return lastPage ? typeof lastPage.pagination.next === "string" : false;
+      return lastPage ? !!lastPage.pagination.next : false;
     }
   }, [data]);
   return { posts, hasMorePosts, ...swrResponse };
 };
 
-export const mutatePosts = () => {
-  void mutate(unstable_serialize(postsGetKey()));
+export const mutatePosts = async (): Promise<void> => {
+  const postsPath = routes.posts.index.path();
+  const searchQueries = new Set<string>();
+  for (const key of cache.keys()) {
+    const url = new URL(key, location.origin);
+    if (url.pathname === postsPath) {
+      const searchQuery = url.searchParams.get("q");
+      if (searchQuery) {
+        searchQueries.add(searchQuery);
+      }
+    }
+  }
+  const mutations = [undefined, ...searchQueries].map(searchQuery =>
+    mutate<PostsData>(unstable_serialize(postsGetKey(searchQuery))),
+  );
+  await Promise.all(mutations);
 };
