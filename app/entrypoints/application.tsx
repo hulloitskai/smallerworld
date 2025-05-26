@@ -40,7 +40,7 @@ setupAmplitude();
 setupClarity();
 
 // == Service worker
-if ("serviceWorker" in navigator) {
+if ("serviceWorker" in navigator && matchMedia("(display-mode: standalone)")) {
   handleServiceWorkerNavigation();
   void unregisterOutdatedServiceWorkers();
   void registerServiceWorker();
