@@ -14,7 +14,7 @@ export interface UniversePageFeedProps extends BoxProps {}
 const AUTHOR_ICON_SIZE = 26;
 
 const UniversePageFeed: FC<UniversePageFeedProps> = props => {
-  const { post_id } = useQueryParams();
+  const params = useQueryParams();
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useUniversePosts();
@@ -36,7 +36,7 @@ const UniversePageFeed: FC<UniversePageFeedProps> = props => {
               <Stack key={post.id} gap={6}>
                 <PostCard
                   {...{ post }}
-                  focus={post_id === post.id}
+                  focus={params.post_id === post.id}
                   actions={<PublicPostCardActions postId={post.id} />}
                 />
                 <Button

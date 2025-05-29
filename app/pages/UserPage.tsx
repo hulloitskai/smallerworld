@@ -37,7 +37,6 @@ const ICON_SIZE = 96;
 
 const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
-  const params = useQueryParams();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
   const { registration: pushRegistration, supported: pushSupported } =
@@ -64,15 +63,15 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   useUserTheme(user.theme);
 
   // == Auto-open join modal
-  const { intent } = useQueryParams();
+  const params = useQueryParams();
   const { modals } = useModals();
   useEffect(() => {
     if (!isEmpty(modals) || !currentFriend) {
       return;
     }
-    if (intent === "join") {
+    if (params.intent === "join") {
       openUserPageJoinModal({ user, currentFriend });
-    } else if (intent === "installation_instructions") {
+    } else if (params.intent === "installation_instructions") {
       openUserPageInstallationInstructionsModal({ user });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

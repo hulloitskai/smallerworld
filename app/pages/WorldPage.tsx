@@ -62,16 +62,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   const { install } = usePWA();
 
   // == Auto-open install modal on mobile
-  const { intent } = useQueryParams();
+  const params = useQueryParams();
   const { modals } = useModals();
   useEffect(() => {
     if (isStandalone === undefined || !isEmpty(modals)) {
       return;
     }
-    if (intent === "installation_instructions") {
+    if (params.intent === "installation_instructions") {
       openWorldPageInstallationInstructionsModal({ currentUser });
     } else if (
-      intent === "install" ||
+      params.intent === "install" ||
       ((!isStandalone || outOfPWAScope) &&
         !!browserDetection &&
         (install || !isDesktop(browserDetection)))

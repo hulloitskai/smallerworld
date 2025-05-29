@@ -15,7 +15,7 @@ export interface UserPageFeedProps extends BoxProps {}
 const UserPageFeed: FC<UserPageFeedProps> = props => {
   const { currentFriend, user, replyToNumber, lastSentEncouragement } =
     usePageProps<UserPageProps>();
-  const { post_id } = useQueryParams();
+  const params = useQueryParams();
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useUserPagePosts(
@@ -68,7 +68,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                 <PostCard
                   {...{ post }}
                   blurContent={!currentFriend && post.visibility !== "public"}
-                  focus={post_id === post.id}
+                  focus={params.post_id === post.id}
                   actions={
                     <FriendPostCardActions {...{ user, post, replyToNumber }} />
                   }
