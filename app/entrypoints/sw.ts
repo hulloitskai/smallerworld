@@ -79,8 +79,8 @@ setupRoutes();
 enableNavigationPreload();
 if (!isEmpty(MANIFEST)) {
   console.info("Precaching routes", MANIFEST);
+  precacheAndRoute(MANIFEST, { cleanURLs: false });
 }
-precacheAndRoute(MANIFEST, { cleanURLs: false });
 registerRoute(
   ({ request }) => ["", "document"].includes(request.destination),
   new NetworkOnly(),

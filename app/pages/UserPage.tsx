@@ -37,6 +37,7 @@ const ICON_SIZE = 96;
 
 const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
+  const params = useQueryParams();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
   const { registration: pushRegistration, supported: pushSupported } =
@@ -78,7 +79,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
 
   const body = (
     <Stack>
-      {currentUser?.id === user.id && !currentFriend && (
+      {currentUser?.id === user.id && !params.friend_token && (
         <Alert
           mb="xl"
           styles={{
