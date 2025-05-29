@@ -1,5 +1,5 @@
 import { Image, Overlay, Popover, RemoveScroll, Text } from "@mantine/core";
-import { useDocumentVisibility } from "@mantine/hooks";
+import { useDocumentVisibility, useWindowEvent } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 import { DateTime } from "luxon";
 
@@ -43,22 +43,22 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { registration: pushRegistration, supported: pushSupported } =
     useWebPush();
 
-  // == Reload user on visibility change
-  const visibility = useDocumentVisibility();
-  useDidUpdate(() => {
-    if (visibility === "visible" && isStandalone && !outOfPWAScope) {
-      router.reload({
-        only: [
-          "currentUser",
-          "currentFriend",
-          "faviconLinks",
-          "user",
-          "lastSentEncouragement",
-        ],
-        async: true,
-      });
+  // == Reload user on window focus
+  useWindowEvent("focus", () => {
+    if (!isStandalone || outOfPWAScope) {
+      return;
     }
-  }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
+    router.reload({
+      only: [
+        "currentUser",
+        "currentFriend",
+        "faviconLinks",
+        "user",
+        "lastSentEncouragement",
+      ],
+      async: true,
+    });
+  });
 
   // == User theme
   useUserTheme(user.theme);

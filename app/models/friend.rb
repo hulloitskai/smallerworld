@@ -59,6 +59,7 @@ class Friend < ApplicationRecord
   belongs_to :join_request, optional: true
   has_many :post_reactions, dependent: :destroy
   has_many :post_reply_receipts, dependent: :destroy
+  has_many :post_views, dependent: :destroy
   has_many :encouragements, dependent: :destroy
 
   sig { returns(User) }
