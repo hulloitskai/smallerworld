@@ -14,7 +14,12 @@ export interface AppNavProgressProps {}
 // when it resets. Maybe raise an issue in the Mantine repo?
 const AppNavProgress: FC<AppNavProgressProps> = () => {
   useEffect(() => {
-    const removeStartListener = router.on("start", startNavigationProgress);
+    const removeStartListener = router.on("start", ({ detail }) => {
+      if (!detail.visit.showProgress) {
+        return;
+      }
+      startNavigationProgress();
+    });
     const removeFinishListener = router.on(
       "finish",
       completeNavigationProgress,
