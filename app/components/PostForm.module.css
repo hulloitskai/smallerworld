@@ -36,8 +36,6 @@
 }
 
 .dateInput {
-  max-width: 190px;
-
   :global(.mantine-DateInput-input) {
     text-transform: lowercase;
   }

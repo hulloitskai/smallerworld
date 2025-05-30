@@ -149,15 +149,17 @@ const PostCard: FC<PostCardProps> = ({
         inheritPadding
         mod={{ "blur-content": blurContent }}
       >
-        <Stack gap={6}>
-          {!!post.title && (
-            <Title order={3} size="h4">
-              {post.title}
-            </Title>
-          )}
-          <TypographyStylesProvider>
-            <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-          </TypographyStylesProvider>
+        <Stack gap="sm">
+          <Stack gap={6}>
+            {!!post.title && (
+              <Title order={3} size="h4">
+                {post.title}
+              </Title>
+            )}
+            <TypographyStylesProvider>
+              <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
+            </TypographyStylesProvider>
+          </Stack>
           {!isEmpty(post.images) && blurContent && firstImage ? (
             <Image
               src={firstImage.src}

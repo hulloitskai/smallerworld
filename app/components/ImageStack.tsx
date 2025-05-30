@@ -62,7 +62,7 @@ const ImageStack: FC<ImageStackProps> = ({
     <>
       <Box
         className={cn("ImageStack", classes.container, className)}
-        h={Math.min(maxImageHeight, maxHeight) + images.length * 8}
+        h={Math.min(maxImageHeight, maxHeight) + (images.length - 1) * 8}
         {...otherProps}
       >
         {orderedImages.map((image, index) => (
@@ -178,6 +178,7 @@ const StackImage: FC<StackImageProps> = ({
   const rotateX = useTransform(y, [-100, 100], [60, -60]);
   const rotateY = useTransform(x, [-100, 100], [-60, 60]);
   const canDrag = totalImages > 1 && index === totalImages - 1;
+  const draggingRef = useRef(false);
   return (
     <motion.img
       className={classes.image}
@@ -203,18 +204,27 @@ const StackImage: FC<StackImageProps> = ({
       drag={canDrag}
       dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
       dragElastic={0.6}
+      onDragStart={() => {
+        draggingRef.current = true;
+      }}
       onDragEnd={(event, { offset }) => {
+        draggingRef.current = false;
         if (
           Math.abs(offset.x) > flipBoundary ||
           Math.abs(offset.y) > flipBoundary
         ) {
           onDragToFlipBoundary();
         } else {
+          event.stopImmediatePropagation();
           x.set(0);
           y.set(0);
         }
       }}
-      {...{ onClick }}
+      onClick={event => {
+        if (!draggingRef.current) {
+          onClick?.(event);
+        }
+      }}
     />
   );
 };
