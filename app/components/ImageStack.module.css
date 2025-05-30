@@ -11,11 +11,7 @@
   transform-origin: top center;
   box-shadow: var(--mantine-shadow-lg);
 
-  &[data-can-drag] {
-    cursor: grab;
-  }
-
-  &:not([data-can-drag]) {
+  &[data-blur] {
     filter: blur(1px);
   }
 }

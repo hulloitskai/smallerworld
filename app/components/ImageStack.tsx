@@ -184,13 +184,14 @@ const DraggableImage: FC<DraggableImageProps> = ({
       src={image.src}
       {...(image.srcset && { srcSet: image.srcset })}
       {...clampedImageDimensions(image, maxWidth, maxHeight)}
-      {...(canDrag && { "data-can-drag": true })}
+      {...((!canDrag || totalImages === 1) && { "data-blur": true })}
       style={{
         borderRadius: getRadius(radius ?? "default"),
         x,
         y,
         rotateX,
         rotateY,
+        ...(canDrag && { cursor: "grab" }),
       }}
       initial={false}
       animate={{
