@@ -91,7 +91,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
         : [],
       visibility: visibility ?? "friends",
       pinned_until: pinned_until ?? "",
-      quiet: !post,
+      quiet: !!post,
     };
   }, [post]);
   const {
