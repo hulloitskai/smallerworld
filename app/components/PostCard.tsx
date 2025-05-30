@@ -1,11 +1,4 @@
-import {
-  type BoxProps,
-  Image,
-  Overlay,
-  Text,
-  TypographyStylesProvider,
-} from "@mantine/core";
-import { type ReactNode } from "react";
+import { Image, Overlay, Text, TypographyStylesProvider } from "@mantine/core";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
@@ -28,7 +21,7 @@ export interface PostCardProps extends BoxProps {
 
 const IMAGE_MAX_WIDTH = 340;
 const IMAGE_MAX_HEIGHT = 280;
-const IMAGE_FLIP_BOUNDARY = 160;
+const IMAGE_FLIP_BOUNDARY = 125;
 
 const PostCard: FC<PostCardProps> = ({
   post,
