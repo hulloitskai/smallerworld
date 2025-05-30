@@ -6,7 +6,7 @@ class LandingController < ApplicationController
   # GET /
   def show
     render(inertia: "LandingPage", props: {
-      "demoUser" => UserSerializer.one(demo_user),
+      "demoUser" => UserSerializer.one_if(demo_user),
     })
   end
 
@@ -15,7 +15,9 @@ class LandingController < ApplicationController
   # == Helpers
   sig { returns(T.nilable(User)) }
   def demo_user
-    id = Rails.application.config_for(:landing).dig(:demo_user)
-    User.friendly.find(id)
+    if (config = Rails.application.config_for(:landing)) &&
+        (id = config[:demo_user])
+      User.friendly.find(id)
+    end
   end
 end
