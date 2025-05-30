@@ -6,7 +6,7 @@ export interface PostFormValues {
   title: string;
   body_html: string;
   emoji: string;
-  image_upload: Upload | null;
+  images_uploads: Upload[];
   visibility: PostVisibility;
   pinned_until: string | null;
 }

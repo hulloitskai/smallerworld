@@ -70,3 +70,9 @@
 .dropzoneIcon {
   color: var(--mantine-primary-color-light-color);
 }
+
+.removeButton {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+}

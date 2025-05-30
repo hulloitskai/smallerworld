@@ -1,24 +1,19 @@
 import {
   type BoxProps,
-  CloseButton,
   Image,
-  Loader,
   Overlay,
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
-import parseSrcset from "@prettier/parse-srcset";
 import { type ReactNode } from "react";
-import Lightbox, { type SlideImage } from "yet-another-react-lightbox";
-import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
-import ZoomOutIcon from "~icons/heroicons/magnifying-glass-minus-20-solid";
-import ZoomInIcon from "~icons/heroicons/magnifying-glass-plus-20-solid";
 
+import { clampedImageDimensions } from "~/helpers/images";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Dimensions, type Image as ImageType, type Post } from "~/types";
+import { type Post } from "~/types";
 
+import ImageStack from "./ImageStack";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostCard.module.css";
@@ -31,8 +26,9 @@ export interface PostCardProps extends BoxProps {
   focus?: boolean;
 }
 
-const IMAGE_MAX_WIDTH = 240;
-const IMAGE_MAX_HEIGHT = 440;
+const IMAGE_MAX_WIDTH = 340;
+const IMAGE_MAX_HEIGHT = 280;
+const IMAGE_FLIP_BOUNDARY = 160;
 
 const PostCard: FC<PostCardProps> = ({
   post,
@@ -47,7 +43,7 @@ const PostCard: FC<PostCardProps> = ({
       return DateTime.fromISO(post.pinned_until);
     }
   }, [post.pinned_until]);
-  const [coverImage] = post.images;
+  const [firstImage] = post.images;
 
   // == Auto-focus
   const { isStandalone, outOfPWAScope, activeServiceWorker } = usePWA();
@@ -169,8 +165,25 @@ const PostCard: FC<PostCardProps> = ({
           <TypographyStylesProvider>
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
           </TypographyStylesProvider>
-          {coverImage && (
-            <PostImage image={coverImage} blur={!post.reply_snippet} />
+          {!isEmpty(post.images) && blurContent && firstImage ? (
+            <Image
+              src={firstImage.src}
+              {...(firstImage.srcset && { srcSet: firstImage.srcset })}
+              fit="contain"
+              my={6}
+              {...clampedImageDimensions(
+                firstImage,
+                IMAGE_MAX_WIDTH,
+                IMAGE_MAX_HEIGHT,
+              )}
+            />
+          ) : (
+            <ImageStack
+              images={post.images}
+              maxWidth={IMAGE_MAX_WIDTH}
+              maxHeight={IMAGE_MAX_HEIGHT}
+              flipBoundary={IMAGE_FLIP_BOUNDARY}
+            />
           )}
           {post.quoted_post && (
             <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
@@ -203,133 +216,3 @@ const PostCard: FC<PostCardProps> = ({
 };
 
 export default PostCard;
-
-interface PostImageProps extends BoxProps {
-  image: ImageType;
-  blur: boolean;
-}
-
-const PostImage: FC<PostImageProps> = ({ image, blur, ...otherProps }) => {
-  const [lightboxOpened, setLightboxOpened] = useState(false);
-  const children = (
-    <Image
-      className={classes.image}
-      src={image.src}
-      srcSet={image.srcset ?? undefined}
-      fit="contain"
-      radius="md"
-      {...(image.dimensions && boundedImageDimensions(image.dimensions))}
-      mod={{ blur }}
-      onClick={() => {
-        setLightboxOpened(true);
-      }}
-    />
-  );
-  return (
-    <Box className={classes.imageContainer} {...otherProps}>
-      {children}
-      <Lightbox
-        className={classes.imageLightbox}
-        plugins={[LightboxZoomPlugin]}
-        open={lightboxOpened}
-        close={() => {
-          setLightboxOpened(false);
-        }}
-        slides={[
-          {
-            src: image.src,
-            ...(image.dimensions && {
-              ...slideImageOptionsFromDimensions(image, image.dimensions),
-            }),
-          },
-        ]}
-        carousel={{ finite: true }}
-        controller={{
-          closeOnBackdropClick: true,
-          closeOnPullDown: true,
-          closeOnPullUp: true,
-        }}
-        render={{
-          buttonPrev: () => null,
-          buttonNext: () => null,
-          buttonClose: () => (
-            <CloseButton
-              key="close"
-              className={classes.closeButton}
-              variant="transparent"
-              size="lg"
-              onClick={() => {
-                setLightboxOpened(false);
-              }}
-            />
-          ),
-          buttonZoom: ({ zoomIn, zoomOut, zoom, maxZoom }) => (
-            <Group key="zoom" gap={0} className={classes.zoomButtons}>
-              <ActionIcon
-                variant="transparent"
-                size="lg"
-                onClick={zoomOut}
-                disabled={zoom <= 1}
-              >
-                <ZoomOutIcon />
-              </ActionIcon>
-              <ActionIcon
-                variant="transparent"
-                size="lg"
-                onClick={zoomIn}
-                disabled={zoom >= maxZoom}
-              >
-                <ZoomInIcon />
-              </ActionIcon>
-            </Group>
-          ),
-          iconLoading: () => <Loader />,
-        }}
-      />
-    </Box>
-  );
-};
-
-const boundedImageDimensions = ({ width, height }: Dimensions): Dimensions => {
-  if (width > IMAGE_MAX_WIDTH) {
-    return {
-      width: IMAGE_MAX_WIDTH,
-      height: height * (IMAGE_MAX_WIDTH / width),
-    };
-  }
-  if (height > IMAGE_MAX_HEIGHT) {
-    return {
-      width: width * (IMAGE_MAX_HEIGHT / height),
-      height: IMAGE_MAX_HEIGHT,
-    };
-  }
-  return { width, height };
-};
-
-const slideImageOptionsFromDimensions = (
-  image: ImageType,
-  dimensions: Dimensions,
-): Omit<SlideImage, "src"> => {
-  const heightRatio = dimensions.height / dimensions.width;
-  return {
-    width: dimensions.width,
-    height: dimensions.height,
-    srcSet: image.srcset
-      ? parseSrcset(image.srcset).map(({ source, width }) => {
-          if (!width) {
-            return {
-              src: source.value,
-              width: NaN,
-              height: NaN,
-            };
-          }
-          const height = width.value * heightRatio;
-          return {
-            src: source.value,
-            width: width.value,
-            height,
-          };
-        })
-      : undefined,
-  };
-};

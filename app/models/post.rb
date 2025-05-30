@@ -131,7 +131,9 @@ class Post < ApplicationRecord
   validates :title, absence: true, unless: :title_visible?
   validates :quoted_post, presence: true, if: :follow_up?
   validates :quoted_post, absence: true, unless: :follow_up?
-  validates :images_blobs, absence: true, if: :follow_up?
+  validates :images_attachments,
+            length: { maximum: 4 },
+            absence: { if: :follow_up? }
   validate :validate_no_nested_quoting, if: :quoted_post?
 
   # == Callbacks

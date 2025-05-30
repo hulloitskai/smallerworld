@@ -1,0 +1,72 @@
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.draggableImage {
+  user-select: none;
+  position: absolute;
+  transform-origin: top center;
+  box-shadow: var(--mantine-shadow-lg);
+
+  &[data-can-drag] {
+    cursor: grab;
+  }
+
+  &:not([data-can-drag]) {
+    filter: blur(1px);
+  }
+}
+
+.lightbox {
+  --yarl__color_backdrop: alpha(var(--mantine-color-black), 0.8);
+
+  :global(.yarl__container) {
+    backdrop-filter: blur(3px);
+    padding-top: var(--safe-area-inset-top, 0px);
+    padding-bottom: var(--safe-area-inset-bottom, 0px);
+  }
+
+  :global(.yarl__toolbar) {
+    top: var(--safe-area-inset-top, 0px);
+  }
+}
+
+.closeButton {
+  svg {
+    color: alpha(var(--mantine-color-white), 0.8) !important;
+  }
+
+  @mixin hover {
+    svg {
+      color: var(--mantine-color-white) !important;
+    }
+  }
+}
+
+.lightboxZoomButtons {
+  :global(.mantine-ActionIcon-root) {
+    :global(.mantine-ActionIcon-icon) {
+      font-size: var(--mantine-font-size-lg);
+      border-radius: var(--mantine-radius-md);
+    }
+
+    &:disabled {
+      background-color: transparent;
+
+      :global(.mantine-ActionIcon-icon) {
+        color: alpha(var(--mantine-color-dimmed), 0.7);
+      }
+    }
+
+    &:not(:disabled) {
+      @mixin hover {
+        :global(.mantine-ActionIcon-icon) {
+          color: var(--mantine-color-primary-outline);
+        }
+      }
+    }
+  }
+}

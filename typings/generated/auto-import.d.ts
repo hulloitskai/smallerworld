@@ -63,7 +63,6 @@ declare global {
   const SignInIcon: typeof import('~/components/icons')['SignInIcon']
   const SignOutIcon: typeof import('~/components/icons')['SignOutIcon']
   const Skeleton: typeof import('@mantine/core')['Skeleton']
-  const SmallerWorldIcon: typeof import('~/components/icons')['SmallerWorldIcon']
   const Space: typeof import('@mantine/core')['Space']
   const Stack: typeof import('@mantine/core')['Stack']
   const SuccessIcon: typeof import('~/components/icons')['SuccessIcon']
@@ -133,8 +132,6 @@ declare global {
   const useForm: typeof import('~/helpers/form')['useForm']
   const useIsAdmin: typeof import('~/helpers/admin')['useIsAdmin']
   const useIsMobileSize: typeof import('~/helpers/layouts')['useIsMobileSize']
-  const useIsPWA: typeof import('~/helpers/pwa')['useIsPWA']
-  const useIsStandalone: typeof import('~/helpers/pwa')['useIsStandalone']
   const useMantineColorScheme: typeof import('@mantine/core')['useMantineColorScheme']
   const useMantineTheme: typeof import('@mantine/core')['useMantineTheme']
   const useMediaQuery: typeof import('@mantine/hooks')['useMediaQuery']
@@ -152,7 +149,6 @@ declare global {
   const useSubscription: typeof import('~/helpers/actioncable/subscription')['useSubscription']
   const useUserTheme: typeof import('~/helpers/userThemes')['useUserTheme']
   const useVaulPortalTarget: typeof import('~/helpers/vaul')['useVaulPortalTarget']
-  const uuid: typeof import('uuid')['v4']
 }
 // for type re-export
 declare global {

@@ -13,7 +13,7 @@ import {
   POST_VISIBILITY_TO_LABEL,
 } from "~/helpers/posts";
 import { type PostFormValues, useNewPostDraft } from "~/helpers/posts/form";
-import { type Post, type PostType, type WorldPost } from "~/types";
+import { type Post, type PostType, type Upload, type WorldPost } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 import ImageInput from "./ImageInput";
@@ -42,6 +42,8 @@ const POST_TITLE_PLACEHOLDERS: Partial<Record<PostType, string>> = {
 };
 
 const POST_TYPES_WITH_TITLE = Object.keys(POST_TITLE_PLACEHOLDERS);
+
+const IMAGE_INPUT_SIZE = 140;
 
 const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   journal_entry: "today felt kind of surreal. almost like a dream...",
@@ -78,18 +80,21 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
   const initialValues = useMemo<PostFormValues>(() => {
     const { title, body_html, emoji, images, visibility, pinned_until } =
       post ?? {};
-    const [coverImage] = images ?? [];
     return {
       title: title ?? "",
       body_html: body_html ?? "",
       emoji: emoji ?? "",
-      image_upload: coverImage ? { signedId: coverImage.signed_id } : null,
+      images_uploads: images
+        ? images.map<Upload>(image => ({ signedId: image.signed_id }))
+        : [],
       visibility: visibility ?? "friends",
-      pinned_until: pinned_until ?? null,
+      pinned_until: pinned_until ?? "",
     };
   }, [post]);
   const {
     setFieldValue,
+    insertListItem,
+    removeListItem,
     getInputProps,
     submit,
     values,
@@ -109,34 +114,19 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           action: routes.posts.update,
           params: { id: post.id },
           descriptor: "update post",
-          transformValues: ({
-            emoji,
-            title,
-            image_upload,
-            pinned_until,
-            ...values
-          }) => ({
+          transformValues: ({ emoji, title, images_uploads, ...values }) => ({
             post: {
               ...values,
               emoji: emoji || null,
               title: title || null,
-              images: image_upload ? [image_upload.signedId] : null,
-              pinned_until: pinned_until
-                ? transformPinnedUntil(pinned_until)
-                : null,
+              images: images_uploads.map(upload => upload.signedId),
             },
           }),
         }
       : {
           action: routes.posts.create,
           descriptor: "create post",
-          transformValues: ({
-            emoji,
-            title,
-            image_upload,
-            pinned_until,
-            ...values
-          }) => {
+          transformValues: ({ emoji, title, images_uploads, ...values }) => {
             invariant(postType, "Missing post type");
             return {
               post: {
@@ -146,10 +136,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
                 title: POST_TYPES_WITH_TITLE.includes(postType)
                   ? title || null
                   : null,
-                images: image_upload ? [image_upload.signedId] : null,
-                pinned_until: pinned_until
-                  ? transformPinnedUntil(pinned_until)
-                  : null,
+                images: images_uploads.map(upload => upload.signedId),
                 quoted_post_id: quotedPost?.id ?? null,
               },
             };
@@ -191,6 +178,11 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
   // == Pinned until
   const vaulPortalTarget = useVaulPortalTarget();
   const todayDate = useMemo(() => DateTime.now().toJSDate(), []);
+  const pinnedUntil = useMemo(() => {
+    if (values.pinned_until) {
+      return DateTime.fromISO(values.pinned_until).toJSDate();
+    }
+  }, [values.pinned_until]);
 
   // == Body text empty state
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
@@ -319,11 +311,11 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           </Input.Wrapper>
           {postType === "invitation" && (
             <DateInput
-              {...getInputProps("pinned_until")}
               className={classes.dateInput}
               placeholder="keep pinned until"
               leftSection={<CalendarIcon />}
-              {...(!post && { minDate: todayDate })}
+              minDate={todayDate}
+              value={pinnedUntil}
               error={errors.pinned_until}
               required
               withAsterisk={false}
@@ -340,12 +332,37 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
             <QuotedPostCard post={quotedPost} />
           ) : (
             <>
-              {showImageInput || values.image_upload ? (
-                <ImageInput
-                  {...getInputProps("image_upload")}
-                  previewProps={{ fit: "contain" }}
-                  h={140}
-                />
+              {showImageInput || !isEmpty(values.images_uploads) ? (
+                <Group gap="xs" wrap="wrap" justify="center">
+                  {values.images_uploads.map((upload, i) => (
+                    <ImageInput
+                      key={upload.signedId}
+                      value={upload}
+                      previewFit="contain"
+                      onChange={value => {
+                        if (value) {
+                          setFieldValue(`images_uploads.${i}`, value);
+                        } else {
+                          removeListItem("images_uploads", i);
+                        }
+                      }}
+                      h={IMAGE_INPUT_SIZE}
+                      w={IMAGE_INPUT_SIZE}
+                    />
+                  ))}
+                  {values.images_uploads.length < 4 && (
+                    <ImageInput
+                      key={values.images_uploads.length}
+                      onChange={value => {
+                        if (value) {
+                          insertListItem("images_uploads", value);
+                        }
+                      }}
+                      h={IMAGE_INPUT_SIZE}
+                      w={IMAGE_INPUT_SIZE}
+                    />
+                  )}
+                </Group>
               ) : (
                 <Button
                   size="compact-sm"
@@ -385,8 +402,3 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
 };
 
 export default PostForm;
-
-const transformPinnedUntil = (dateString: string): string =>
-  DateTime.fromJSDate(new Date(dateString))
-    .set({ hour: 23, minute: 59, second: 59 })
-    .toISO();
