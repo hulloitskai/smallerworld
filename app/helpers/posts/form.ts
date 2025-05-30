@@ -9,6 +9,7 @@ export interface PostFormValues {
   images_uploads: Upload[];
   visibility: PostVisibility;
   pinned_until: string | null;
+  quiet: boolean;
 }
 
 export interface NewPostDraft {

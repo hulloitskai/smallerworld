@@ -54,6 +54,12 @@ class Post < ApplicationRecord
             predicates: true
   enumerize :visibility, in: %i[public friends chosen_family only_me]
 
+  sig { returns(T.nilable(T::Boolean)) }
+  attr_accessor :quiet
+
+  sig { returns(T::Boolean) }
+  def quiet? = !!quiet
+
   sig { returns(String) }
   def body_text
     if (body_html = self[:body_html]) && body_html.is_a?(String)
@@ -137,7 +143,7 @@ class Post < ApplicationRecord
   validate :validate_no_nested_quoting, if: :quoted_post?
 
   # == Callbacks
-  after_create :create_notifications_later, if: :user_created?
+  after_create :create_notifications_later, if: :send_notifications?
 
   # == Scopes
   scope :visible_to_public, -> { where(visibility: :public) }
@@ -193,6 +199,25 @@ class Post < ApplicationRecord
     images_blobs.map { |blob| blob.becomes(ImageModel) }
   end
 
+  sig { returns(Friend::PrivateRelation) }
+  def viewers
+    Friend.where(id: views.select(:friend_id)).distinct
+  end
+
+  sig { returns(PostReplyReceipt::PrivateAssociationRelation) }
+  def repliers
+    reply_receipts.select(:friend_id).distinct
+  end
+
+  sig { returns(Friend::PrivateRelation) }
+  def hidden_from
+    Friend.where(id: hidden_from_ids)
+  end
+
+  # == Notifications
+  sig { returns(T::Boolean) }
+  def send_notifications? = user_created? && !quiet?
+
   sig { returns(Friend::PrivateAssociationRelation) }
   def friends_to_notify
     subscribed_type = quoted_post&.type || type
@@ -229,21 +254,6 @@ class Post < ApplicationRecord
   def notified_friends
     delivered_notifications = notifications.delivered.to_friends
     Friend.where(id: delivered_notifications.select(:recipient_id)).distinct
-  end
-
-  sig { returns(Friend::PrivateRelation) }
-  def viewers
-    Friend.where(id: views.select(:friend_id)).distinct
-  end
-
-  sig { returns(PostReplyReceipt::PrivateAssociationRelation) }
-  def repliers
-    reply_receipts.select(:friend_id).distinct
-  end
-
-  sig { returns(Friend::PrivateRelation) }
-  def hidden_from
-    Friend.where(id: hidden_from_ids)
   end
 
   sig { returns(Integer) }

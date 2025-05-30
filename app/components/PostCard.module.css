@@ -1,4 +1,6 @@
 .card {
+  overflow: visible;
+
   &[data-focus] {
     border-color: var(--mantine-color-primary-outline);
   }

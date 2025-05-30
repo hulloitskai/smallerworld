@@ -2,6 +2,8 @@ import { Input, SegmentedControl, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { type Editor } from "@tiptap/react";
 
+import NotifyIcon from "~icons/heroicons/bell";
+import QuietIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
 
@@ -89,6 +91,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
         : [],
       visibility: visibility ?? "friends",
       pinned_until: pinned_until ?? "",
+      quiet: !post,
     };
   }, [post]);
   const {
@@ -116,7 +119,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           descriptor: "update post",
           transformValues: ({ emoji, title, images_uploads, ...values }) => ({
             post: {
-              ...values,
+              ...omit(values, "quiet"),
               emoji: emoji || null,
               title: title || null,
               images: images_uploads.map(upload => upload.signedId),
@@ -217,7 +220,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
   return (
     <form onSubmit={submit}>
       <Group gap="xs" align="start" justify="center">
-        <Stack gap="xs">
+        <Stack gap="xs" align="center">
           <EmojiPopover
             onEmojiClick={({ emoji }) => {
               setFieldValue("emoji", emoji);
@@ -272,6 +275,28 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
                 value: visibility,
               }))}
             />
+          )}
+          {!post && (
+            <Tooltip
+              label={
+                values.quiet ? "don't send notifications" : "send notifications"
+              }
+              events={{ hover: true, focus: true, touch: true }}
+              onClick={() => {
+                setFieldValue("quiet", !values.quiet);
+              }}
+            >
+              <ActionIcon
+                color="gray"
+                styles={{
+                  icon: {
+                    fontSize: "var(--mantine-spacing-sm)",
+                  },
+                }}
+              >
+                {values.quiet ? <QuietIcon /> : <NotifyIcon />}
+              </ActionIcon>
+            </Tooltip>
           )}
         </Stack>
         <Stack gap="xs" style={{ flexGrow: 1 }}>

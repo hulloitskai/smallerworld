@@ -184,7 +184,7 @@ const StackImage: FC<StackImageProps> = ({
       src={image.src}
       {...(image.srcset && { srcSet: image.srcset })}
       {...clampedImageDimensions(image, maxWidth, maxHeight)}
-      {...((!canDrag || totalImages === 1) && { "data-blur": true })}
+      {...(!canDrag && totalImages > 1 && { "data-blur": true })}
       style={{
         borderRadius: getRadius(radius ?? "default"),
         x,

@@ -63,6 +63,7 @@ class PostsController < ApplicationController
       :visibility,
       :pinned_until,
       :quoted_post_id,
+      :quiet,
       images: [],
     ])
     paused_friend_ids = current_user.friends.paused.pluck(:id)
