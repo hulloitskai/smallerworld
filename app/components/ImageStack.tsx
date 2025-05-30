@@ -18,7 +18,7 @@ import classes from "./ImageStack.module.css";
 export interface ImageStackProps
   extends Omit<BoxProps, "h" | "w" | "mah" | "maw">,
     Pick<ImageProps, "radius">,
-    Pick<DraggableImageProps, "maxHeight" | "maxWidth" | "flipBoundary"> {
+    Pick<StackImageProps, "maxHeight" | "maxWidth" | "flipBoundary"> {
   images: ImageType[];
 }
 
@@ -66,7 +66,7 @@ const ImageStack: FC<ImageStackProps> = ({
         {...otherProps}
       >
         {orderedImages.map((image, index) => (
-          <DraggableImage
+          <StackImage
             key={image.id}
             {...{ image, index, maxHeight, maxWidth, radius, flipBoundary }}
             totalImages={orderedImages.length}
@@ -150,7 +150,7 @@ const ImageStack: FC<ImageStackProps> = ({
 
 export default ImageStack;
 
-interface DraggableImageProps
+interface StackImageProps
   extends Pick<ImageProps, "radius">,
     Pick<ComponentProps<typeof motion.img>, "onClick"> {
   image: ImageType;
@@ -162,7 +162,7 @@ interface DraggableImageProps
   onDragToFlipBoundary: () => void;
 }
 
-const DraggableImage: FC<DraggableImageProps> = ({
+const StackImage: FC<StackImageProps> = ({
   image,
   index,
   totalImages,
@@ -180,7 +180,7 @@ const DraggableImage: FC<DraggableImageProps> = ({
   const canDrag = totalImages > 1 && index === totalImages - 1;
   return (
     <motion.img
-      className={classes.draggableImage}
+      className={classes.image}
       src={image.src}
       {...(image.srcset && { srcSet: image.srcset })}
       {...clampedImageDimensions(image, maxWidth, maxHeight)}

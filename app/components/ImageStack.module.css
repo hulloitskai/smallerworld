@@ -5,7 +5,7 @@
   justify-content: center;
 }
 
-.draggableImage {
+.image {
   user-select: none;
   position: absolute;
   transform-origin: top center;
