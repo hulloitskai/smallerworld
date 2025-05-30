@@ -166,7 +166,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
               component={Link}
               href={routes.users.show.path({ handle: demoUser.handle })}
             >
-              <Stack className={classes.demoWorld} gap={6}>
+              <Stack className={classes.demoWorld} align="center" gap={6}>
                 <Image
                   className={classes.demoWorldIcon}
                   src={demoUser.page_icon.src}
