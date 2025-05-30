@@ -53,7 +53,7 @@ const pageImports = import.meta.glob("~/pages/*.tsx", {
 const pages = parsePageImports(pageImports);
 
 document.addEventListener("DOMContentLoaded", () => {
-  void createInertiaApp<SharedPageProps>({
+  void createInertiaApp({
     progress: false,
     resolve: async name => {
       const importPage = pages[name];

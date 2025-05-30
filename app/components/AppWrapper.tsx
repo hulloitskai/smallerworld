@@ -6,7 +6,7 @@ import AppNavProgress from "./AppNavProgress";
 import Toaster from "./Toaster";
 
 export interface AppWrapperProps extends PropsWithChildren {
-  initialPage: Page<SharedPageProps>;
+  initialPage: Page;
 }
 
 const AppWrapper: FC<AppWrapperProps> = ({ children }) => (

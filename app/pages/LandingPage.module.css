@@ -33,7 +33,7 @@
   }
 }
 
-.checkItOutText {
+.checkItOutLabel {
   font-family: "Single Day", Manrope, cursive;
   font-size: 24px;
   line-height: 1.1;
@@ -57,4 +57,39 @@
   :global(.mantine-List-itemWrapper) {
     margin-right: 22px;
   }
+}
+
+.demoWorld {
+  cursor: pointer;
+  margin-top: var(--mantine-spacing-xs);
+  margin-left: 60px;
+
+  @mixin hover {
+    transition: opacity 150ms ease;
+    opacity: 0.8;
+  }
+}
+
+.demoWorldLabel {
+  font-family: "Single Day", Manrope, cursive;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.demoWorldArrow {
+  width: 80px;
+
+  @mixin dark {
+    filter: invert(1);
+  }
+}
+
+.demoWorldIcon {
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.demoWorldName {
+  text-align: center;
+  font-family: var(--mantine-font-family-heading);
+  font-weight: 700;
 }

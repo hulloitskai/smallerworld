@@ -2,6 +2,7 @@ import { Image, Overlay, Text } from "@mantine/core";
 
 import PlayIcon from "~icons/heroicons/play-20-solid";
 
+import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 import homescreenRowSrc from "~/assets/images/homescreen-row.jpeg";
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
@@ -9,12 +10,18 @@ import demoVideoSrc from "~/assets/videos/demo.mp4";
 
 import AppLayout from "~/components/AppLayout";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { type User } from "~/types";
 
 import classes from "./LandingPage.module.css";
 
-export interface LandingPageProps extends SharedPageProps {}
+const WORLD_SIZE = 74;
 
-const LandingPage: PageComponent<LandingPageProps> = () => {
+export interface LandingPageProps extends SharedPageProps {
+  demoUser: User | null;
+}
+
+const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
   const currentUser = useCurrentUser();
 
   // == Reveal demovideo
@@ -102,7 +109,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         <Box pos="absolute" top={0} right={-150}>
           <SingleDayFontHead />
           <Stack gap={0} style={{ transform: "rotate(8deg)" }}>
-            <Text className={classes.checkItOutText}>check it out :)</Text>
+            <Text className={classes.checkItOutLabel}>check it out :)</Text>
             <Image src={swirlyUpArrowSrc} className={classes.checkItOutArrow} />
           </Stack>
         </Box>
@@ -146,6 +153,45 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
       >
         wtf? i want this!
       </Button>
+      {demoUser && (
+        <Stack align="center" gap={4} style={{ alignSelf: "stretch" }}>
+          <Box pos="relative">
+            <SingleDayFontHead />
+            <Text className={classes.demoWorldLabel}>
+              our cofounder&apos;s cat has a world!
+            </Text>
+          </Box>
+          <Group align="start" gap={8}>
+            <Anchor
+              component={Link}
+              href={routes.users.show.path({ handle: demoUser.handle })}
+            >
+              <Stack className={classes.demoWorld} gap={6}>
+                <Image
+                  className={classes.demoWorldIcon}
+                  src={demoUser.page_icon.src}
+                  {...(demoUser.page_icon.srcset && {
+                    srcSet: demoUser.page_icon.srcset,
+                  })}
+                  h={WORLD_SIZE}
+                  w={WORLD_SIZE}
+                  radius={WORLD_SIZE / USER_ICON_RADIUS_RATIO}
+                />
+                <Text className={classes.demoWorldName} size="sm">
+                  {possessive(demoUser.name)} world
+                </Text>
+              </Stack>
+            </Anchor>
+            <Stack gap={4}>
+              <Image
+                className={classes.demoWorldArrow}
+                src={bottomLeftArrowSrc}
+                w={60}
+              />
+            </Stack>
+          </Group>
+        </Stack>
+      )}
     </Stack>
   );
 };

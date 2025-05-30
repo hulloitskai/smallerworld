@@ -1,0 +1,5 @@
+development:
+  demo_user: itskai
+
+production:
+  demo_user: peppercoat

@@ -1,3 +1,4 @@
+import { type PageProps } from "@inertiajs/core";
 import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import { type SetupOptions } from "@inertiajs/react/types/createInertiaApp";
@@ -62,7 +63,7 @@ createServer(async page => {
         }
       }
     },
-    setup: ({ App, props }: SetupOptions<null, SharedPageProps>) => {
+    setup: ({ App, props }: SetupOptions<null, PageProps>) => {
       const { initialPage } = props;
       const pageType = resolvePageType(initialPage.component);
       const app = <App {...props} />;
