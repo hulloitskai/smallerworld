@@ -73,6 +73,11 @@ const ImageStack: FC<ImageStackProps> = ({
       <Lightbox
         className={classes.lightbox}
         plugins={[LightboxZoomPlugin]}
+        carousel={{
+          ...(images.length === 1 && {
+            finite: true,
+          }),
+        }}
         open={lightboxOpened}
         close={() => {
           setLightboxOpened(false);
@@ -90,12 +95,19 @@ const ImageStack: FC<ImageStackProps> = ({
           closeOnPullUp: true,
         }}
         render={{
-          iconPrev: () => (
-            <Box component={PrevIcon} fz="xl" width={32} height={32} />
-          ),
-          iconNext: () => (
-            <Box component={NextIcon} fz="xl" width={32} height={32} />
-          ),
+          ...(images.length > 1
+            ? {
+                iconPrev: () => (
+                  <Box component={PrevIcon} fz="xl" width={32} height={32} />
+                ),
+                iconNext: () => (
+                  <Box component={NextIcon} fz="xl" width={32} height={32} />
+                ),
+              }
+            : {
+                buttonNext: () => null,
+                buttonPrev: () => null,
+              }),
           buttonClose: () => (
             <CloseButton
               key="close"
