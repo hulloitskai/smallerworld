@@ -33,22 +33,13 @@ const ImageStack: FC<ImageStackProps> = ({
 }) => {
   const [lightboxOpened, setLightboxOpened] = useState(false);
   const [index, setIndex] = useState(0);
-  const orderedImages = useMemo(() => {
-    const acc: ImageType[] = [];
-    for (let i = index - 1; i >= 0; i--) {
-      const image = images[i];
-      if (image) {
-        acc.push(image);
-      }
-    }
-    for (let i = images.length - 1; i >= index; i--) {
-      const image = images[i];
-      if (image) {
-        acc.push(image);
-      }
-    }
-    return acc;
-  }, [images, index]);
+  const orderedImages = useMemo(
+    () => [
+      ...images.slice(0, index).reverse(),
+      ...images.slice(index).reverse(),
+    ],
+    [images, index],
+  );
   const maxImageHeight = useMemo(() => {
     let height = 0;
     images.forEach(({ dimensions }) => {

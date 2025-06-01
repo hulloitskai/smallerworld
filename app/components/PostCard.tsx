@@ -149,7 +149,7 @@ const PostCard: FC<PostCardProps> = ({
         inheritPadding
         mod={{ "blur-content": blurContent }}
       >
-        <Stack gap="sm">
+        <Stack gap={14}>
           <Stack gap={6}>
             {!!post.title && (
               <Title order={3} size="h4">
@@ -165,7 +165,8 @@ const PostCard: FC<PostCardProps> = ({
               src={firstImage.src}
               {...(firstImage.srcset && { srcSet: firstImage.srcset })}
               fit="contain"
-              my={6}
+              mt={4}
+              mb={6}
               {...clampedImageDimensions(
                 firstImage,
                 IMAGE_MAX_WIDTH,
@@ -178,6 +179,7 @@ const PostCard: FC<PostCardProps> = ({
               maxWidth={IMAGE_MAX_WIDTH}
               maxHeight={IMAGE_MAX_HEIGHT}
               flipBoundary={IMAGE_FLIP_BOUNDARY}
+              mb={6}
             />
           )}
           {post.quoted_post && (
