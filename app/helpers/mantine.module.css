@@ -47,10 +47,6 @@
     align-items: start;
     padding-bottom: 6px;
 
-    @mixin light-user-theme {
-      background-color: transparent;
-    }
-
     @mixin smaller-than $mantine-breakpoint-xs {
       padding-top: calc(
         var(--mantine-spacing-sm) + var(--safe-area-inset-top, 0px)
