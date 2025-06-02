@@ -80,7 +80,7 @@ class Post < ApplicationRecord
 
   sig { returns(T.nilable(String)) }
   def title_snippet
-    title&.truncate(40)
+    title&.truncate(92)
   end
 
   sig { returns(String) }

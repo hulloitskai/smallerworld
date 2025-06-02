@@ -29,9 +29,9 @@ export const renderNotification = (
       if (post.emoji) {
         title = `${post.emoji} ${title}`;
       }
-      let body = post.body_snippet;
+      let body = truncateDoubleNewlines(post.body_snippet);
       if (post.title_snippet) {
-        body = `${post.title_snippet}: ${body}`;
+        body = `${post.title_snippet}\n${body}`;
       }
       return {
         title,
@@ -45,9 +45,9 @@ export const renderNotification = (
       if (post.emoji) {
         title = `${post.emoji} ${title}`;
       }
-      let body = post.body_snippet;
+      let body = truncateDoubleNewlines(post.body_snippet);
       if (post.title_snippet) {
-        body = `${post.title_snippet}: ${body}`;
+        body = `${post.title_snippet}\n${body}`;
       }
       return {
         title,
@@ -59,9 +59,14 @@ export const renderNotification = (
       const { reaction } =
         notification.payload as PostReactionNotificationPayload;
       const { friend, post, emoji } = reaction;
-      const body = "> " + post.body_snippet.split("\n").join("\n> ");
+      let friendName = friend.name;
+      if (friend.emoji) {
+        friendName = `${friend.emoji} ${friendName}`;
+      }
+      const truncatedSnippet = truncateDoubleNewlines(post.body_snippet);
+      const body = "> " + truncatedSnippet.split("\n").join("\n> ");
       return {
-        title: `${emoji} ${friend.name} reacted to your ${POST_TYPE_TO_LABEL[post.type]}`,
+        title: `${emoji} from ${friendName}`,
         body,
       };
     }
@@ -148,3 +153,6 @@ export const notificationTargetUrl = (notification: Notification): string => {
     //   throw new Error(`Unknown notification type: ${notification.type}`);
   }
 };
+
+const truncateDoubleNewlines = (text: string): string =>
+  text.replace(/\n\n/g, "\n");
