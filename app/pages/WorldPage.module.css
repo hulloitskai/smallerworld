@@ -18,6 +18,7 @@
   padding-block: 4px;
   cursor: default;
   opacity: 1;
+  text-align: center;
 
   @mixin hover {
     background-color: transparent;

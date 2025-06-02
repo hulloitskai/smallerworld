@@ -7,7 +7,6 @@ import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import ContactLink from "~/components/ContactLink";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import UserPageDialogStateProvider from "~/components/UserPageDialogStateProvider";
 import UserPageFeed from "~/components/UserPageFeed";
@@ -153,7 +152,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             )}
           </Stack>
         </Stack>
-        <Popover position="bottom-end" arrowOffset={16} width={220}>
+        <Popover position="bottom-end" arrowOffset={16} width={228}>
           <Popover.Target>
             <ActionIcon pos="absolute" top={0} right={0} size="lg">
               <Image src={logoSrc} h={26} w="unset" />
@@ -179,15 +178,18 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                   create your world
                 </Button>
               </Stack>
-              <Divider mt={4} />
-              <ContactLink
-                type="sms"
-                body="so about this smaller world thing... "
+              <Divider mt={4} mx="calc(-1 * var(--mantine-spacing-xs))" />
+              <Anchor
+                href="/feedback"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
                 size="xs"
                 inline
+                ta="center"
+                ff="heading"
               >
-                got questions or feedback?
-              </ContactLink>
+                got feedback or feature requests?
+              </Anchor>
             </Stack>
           </Popover.Dropdown>
         </Popover>

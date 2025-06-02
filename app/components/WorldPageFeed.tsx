@@ -13,17 +13,20 @@ import PostCard from "./PostCard";
 
 export interface WorldPageFeedProps extends BoxProps {
   showSearch: boolean;
-  onRequestHideSearch: () => void;
+  hideSearch: () => void;
 }
 
 const WorldPageFeed: FC<WorldPageFeedProps> = ({
   showSearch,
-  onRequestHideSearch,
+  hideSearch,
   ...otherProps
 }) => {
   const { currentUser, hideStats, pausedFriends } =
     usePageProps<WorldPageProps>();
   const params = useQueryParams();
+
+  // == Input
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // == Load posts
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,6 +40,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
       <Transition transition="slide-down" mounted={showSearch}>
         {style => (
           <TextInput
+            ref={inputRef}
             leftSection={<SearchIcon />}
             rightSection={
               isValidating ? (
@@ -52,10 +56,11 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                           color: "red",
                           onClick: () => {
                             setSearchQuery("");
+                            inputRef.current?.focus();
                           },
                         }
                       : {
-                          onClick: onRequestHideSearch,
+                          onClick: hideSearch,
                         })}
                     {...{ style }}
                   >
@@ -69,6 +74,11 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
             onChange={({ currentTarget }) =>
               setSearchQuery(currentTarget.value)
             }
+            onBlur={({ currentTarget }) => {
+              if (currentTarget.value === "") {
+                hideSearch();
+              }
+            }}
             autoFocus
             {...{ style }}
           />

@@ -161,6 +161,15 @@ Rails.application.routes.draw do
     "https://github.com/hulloitskai/smallerworld",
     status: 302,
   )
+  get "/sentry" => redirect(
+    "https://smallerworld.sentry.io/issues/",
+    status: 302,
+  )
+  get "/feedback" => redirect("https://smallerworld.canny.io", status: 302)
+  get "/analytics" => redirect(
+    "https://app.amplitude.com/analytics/smallerworld/home",
+    status: 302,
+  )
 
   # == Devtools
   if Rails.env.development?

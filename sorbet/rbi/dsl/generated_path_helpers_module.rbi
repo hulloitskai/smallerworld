@@ -13,6 +13,9 @@ module GeneratedPathHelpersModule
   def actual_db_schema_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def analytics_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def api_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -32,6 +35,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def encouragements_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def feedback_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def file_path(*args); end
@@ -200,6 +206,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def root_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def sentry_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def session_path(*args); end

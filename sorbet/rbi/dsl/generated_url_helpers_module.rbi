@@ -13,6 +13,9 @@ module GeneratedUrlHelpersModule
   def actual_db_schema_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def analytics_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def api_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -32,6 +35,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def encouragements_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def feedback_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def file_url(*args); end
@@ -200,6 +206,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def root_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def sentry_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def session_url(*args); end

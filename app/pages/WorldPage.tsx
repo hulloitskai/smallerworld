@@ -17,7 +17,6 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import openAddFriendModal from "~/components/AddFriendModal";
 import AppLayout from "~/components/AppLayout";
-import ContactLink from "~/components/ContactLink";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
@@ -188,7 +187,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             </Group>
           </Stack>
         </Stack>
-        <Menu width={220} position="bottom-end" arrowOffset={16}>
+        <Menu width={228} position="bottom-end" arrowOffset={16}>
           <Menu.Target>
             <ActionIcon
               pos="absolute"
@@ -245,16 +244,15 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               disabled
               className={classes.menuContactItem}
             >
-              <ContactLink
-                type="sms"
-                body="so about this smaller world thing... "
+              <Anchor
+                href="/feedback"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
                 size="xs"
                 inline
-                w="100%"
-                ta="center"
               >
-                got questions or feedback?
-              </ContactLink>
+                got feedback or feature requests?
+              </Anchor>
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
@@ -319,7 +317,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       <Box pos="relative">
         <WorldPageFeed
           {...{ showSearch }}
-          onRequestHideSearch={() => {
+          hideSearch={() => {
             setShowSearch(false);
           }}
         />
