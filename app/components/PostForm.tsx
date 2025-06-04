@@ -336,7 +336,11 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           </Input.Wrapper>
           {postType === "invitation" && (
             <DateInput
-              className={classes.dateInput}
+              {...getInputProps("pinned_until")}
+              classNames={{
+                root: classes.dateInput,
+                day: classes.dateInputDay,
+              }}
               placeholder="keep pinned until"
               leftSection={<CalendarIcon />}
               minDate={todayDate}

@@ -40,3 +40,9 @@
     text-transform: lowercase;
   }
 }
+
+.dateInputDay {
+  &[data-weekend] {
+    color: var(--mantine-color-text);
+  }
+}
