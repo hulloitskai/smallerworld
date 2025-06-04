@@ -17,10 +17,14 @@ import classes from "./ImageStack.module.css";
 
 export interface ImageStackProps
   extends Omit<BoxProps, "h" | "w" | "mah" | "maw">,
-    Pick<ImageProps, "radius">,
-    Pick<StackImageProps, "maxHeight" | "maxWidth" | "flipBoundary"> {
+    Pick<
+      StackImageProps,
+      "maxHeight" | "maxWidth" | "flipBoundary" | "radius"
+    > {
   images: ImageType[];
 }
+
+const IMAGE_ROTATIONS = [-5, 1, -3, 2];
 
 const ImageStack: FC<ImageStackProps> = ({
   images,
@@ -34,10 +38,7 @@ const ImageStack: FC<ImageStackProps> = ({
   const [lightboxOpened, setLightboxOpened] = useState(false);
   const [index, setIndex] = useState(0);
   const orderedImages = useMemo(
-    () => [
-      ...images.slice(0, index).reverse(),
-      ...images.slice(index).reverse(),
-    ],
+    () => [...images.slice(index), ...images.slice(0, index)],
     [images, index],
   );
   const maxImageHeight = useMemo(() => {
@@ -56,19 +57,26 @@ const ImageStack: FC<ImageStackProps> = ({
         h={Math.min(maxImageHeight, maxHeight) + (images.length - 1) * 8}
         {...otherProps}
       >
-        {orderedImages.map((image, index) => (
-          <StackImage
-            key={image.id}
-            {...{ image, index, maxHeight, maxWidth, radius, flipBoundary }}
-            totalImages={orderedImages.length}
-            onDragToFlipBoundary={() => {
-              setIndex(prevIndex => (prevIndex + 1) % images.length);
-            }}
-            onClick={() => {
-              setLightboxOpened(true);
-            }}
-          />
-        ))}
+        {orderedImages.map((image, i) => {
+          const originalIndex = (i + index) % images.length;
+          return (
+            <StackImage
+              key={image.id}
+              {...{ image, maxHeight, maxWidth, radius, flipBoundary }}
+              totalImages={orderedImages.length}
+              index={i}
+              rotation={
+                images.length > 1 ? (IMAGE_ROTATIONS[originalIndex] ?? 0) : 0
+              }
+              onDragToFlipBoundary={() => {
+                setIndex(prevIndex => (prevIndex + 1) % images.length);
+              }}
+              onClick={() => {
+                setLightboxOpened(true);
+              }}
+            />
+          );
+        })}
       </Box>
       <Lightbox
         className={classes.lightbox}
@@ -161,6 +169,7 @@ interface StackImageProps
   totalImages: number;
   maxHeight: number;
   maxWidth: number;
+  rotation: number;
   flipBoundary: number;
   onDragToFlipBoundary: () => void;
 }
@@ -172,6 +181,7 @@ const StackImage: FC<StackImageProps> = ({
   maxHeight,
   maxWidth,
   radius,
+  rotation,
   flipBoundary,
   onDragToFlipBoundary,
   onClick,
@@ -180,28 +190,28 @@ const StackImage: FC<StackImageProps> = ({
   const y = useMotionValue(0);
   const rotateX = useTransform(y, [-100, 100], [60, -60]);
   const rotateY = useTransform(x, [-100, 100], [-60, 60]);
-  const canDrag = totalImages > 1 && index === totalImages - 1;
+  const canDrag = totalImages > 1 && index === 0;
   const draggingRef = useRef(false);
   return (
     <motion.img
       className={classes.image}
       src={image.src}
+      loading="lazy"
       {...(image.srcset && { srcSet: image.srcset })}
       {...clampedImageDimensions(image, maxWidth, maxHeight)}
       {...(!canDrag && totalImages > 1 && { "data-blur": true })}
       style={{
-        borderRadius: getRadius(radius ?? "default"),
+        borderRadius: radius ? getRadius(radius) : 0,
         x,
         y,
         rotateX,
         rotateY,
+        rotateZ: rotation,
+        zIndex: totalImages - index,
         ...(canDrag && { cursor: "grab" }),
       }}
       initial={false}
-      animate={{
-        top: index * 8,
-        scale: 1 - (totalImages - 1) * 0.06 + index * 0.06,
-      }}
+      animate={{ top: (totalImages - 1 - index) * 8, scale: 1 - index * 0.06 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
       draggable={false}
       drag={canDrag}

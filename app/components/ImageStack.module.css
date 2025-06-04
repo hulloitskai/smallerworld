@@ -6,6 +6,7 @@
 }
 
 .image {
+  background-color: var(--mantine-color-white);
   user-select: none;
   position: absolute;
   transform-origin: top center;

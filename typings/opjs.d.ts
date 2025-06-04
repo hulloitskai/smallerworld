@@ -1,6 +1,6 @@
 import { type opjs } from "overpoweredjs";
 
-type ResponseData = Awaited<ReturnType<typeof opjs>>;
+type ResponseData = Awaited<ReturnType<typeof opjs>> | { error: string };
 
 declare global {
   interface Window {
