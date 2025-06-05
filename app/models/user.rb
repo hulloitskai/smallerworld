@@ -119,7 +119,8 @@ class User < ApplicationRecord
   sig { returns(T::Array[Symbol]) }
   def supported_features
     features = []
-    if last_active_at >= ENCOURAGEMENTS_AVAILABLE_SINCE
+    if push_registrations.any? &&
+        last_active_at >= ENCOURAGEMENTS_AVAILABLE_SINCE
       features << :encouragements
     end
     if posts.count >= MIN_POST_COUNT_FOR_SEARCH
