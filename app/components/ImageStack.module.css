@@ -10,10 +10,12 @@
   user-select: none;
   position: absolute;
   transform-origin: top center;
-  box-shadow: var(--mantine-shadow-lg);
+  box-shadow: 0px 8px var(--mantine-spacing-xs) -4px
+    alpha(var(--mantine-color-black), 25%);
+  transition: filter 200ms ease-in;
 
   &[data-blur] {
-    filter: blur(1px);
+    filter: blur(2px) brightness(75%);
   }
 }
 

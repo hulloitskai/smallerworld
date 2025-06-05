@@ -216,7 +216,7 @@ const StackImage: FC<StackImageProps> = ({
       draggable={false}
       drag={canDrag}
       dragConstraints={{ top: 0, right: 0, bottom: 0, left: 0 }}
-      dragElastic={0.6}
+      dragElastic={0.75}
       onDragStart={() => {
         draggingRef.current = true;
       }}
