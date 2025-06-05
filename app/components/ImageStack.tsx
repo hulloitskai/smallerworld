@@ -35,6 +35,7 @@ const ImageStack: FC<ImageStackProps> = ({
   flipBoundary,
   ...otherProps
 }) => {
+  const { ref: containerRef, width: containerWidth } = useElementSize();
   const [lightboxOpened, setLightboxOpened] = useState(false);
   const [index, setIndex] = useState(0);
   const orderedImages = useMemo(
@@ -53,6 +54,7 @@ const ImageStack: FC<ImageStackProps> = ({
   return (
     <>
       <Box
+        ref={containerRef}
         className={cn("ImageStack", classes.container, className)}
         h={Math.min(maxImageHeight, maxHeight) + (images.length - 1) * 8}
         {...otherProps}
@@ -62,7 +64,8 @@ const ImageStack: FC<ImageStackProps> = ({
           return (
             <StackImage
               key={image.id}
-              {...{ image, maxHeight, maxWidth, radius, flipBoundary }}
+              {...{ image, maxHeight, radius, flipBoundary }}
+              maxWidth={Math.min(maxWidth, containerWidth)}
               totalImages={orderedImages.length}
               index={i}
               rotation={
