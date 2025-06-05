@@ -4,6 +4,7 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import { clampedImageDimensions } from "~/helpers/images";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
+import { useWebPush } from "~/helpers/webPush";
 import { type Post } from "~/types";
 
 import ImageStack from "./ImageStack";
@@ -39,20 +40,21 @@ const PostCard: FC<PostCardProps> = ({
   const [firstImage] = post.images;
 
   // == Auto-focus
-  const { isStandalone, outOfPWAScope, activeServiceWorker } = usePWA();
-  const autoFocusedRef = useRef(false);
+  const { isStandalone, outOfPWAScope } = usePWA();
+  const { registration: pushRegistration } = useWebPush();
+  const focusedRef = useRef(false);
   useEffect(() => {
     const card = cardRef.current;
     if (
       focus &&
       card &&
-      (outOfPWAScope || (isStandalone && activeServiceWorker)) &&
-      !autoFocusedRef.current
+      (outOfPWAScope || (isStandalone && pushRegistration)) &&
+      !focusedRef.current
     ) {
       card.scrollIntoView({ behavior: "smooth" });
-      autoFocusedRef.current = true;
+      focusedRef.current = true;
     }
-  }, [focus, isStandalone, outOfPWAScope, activeServiceWorker]);
+  }, [focus, isStandalone, outOfPWAScope, pushRegistration]);
 
   return (
     <Card
