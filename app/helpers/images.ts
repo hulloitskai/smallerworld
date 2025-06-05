@@ -11,14 +11,13 @@ export const clampedImageDimensions = (
   const { width, height } = dimensions;
   const aspectRatio = width / height;
   const maxAspectRatio = maxWidth / maxHeight;
-  if (aspectRatio > maxAspectRatio) {
-    return {
-      width: maxWidth,
-      height: maxWidth / aspectRatio,
-    };
-  }
-  return {
-    width: maxHeight * aspectRatio,
-    height: maxHeight,
-  };
+  return aspectRatio > maxAspectRatio
+    ? {
+        width: maxWidth,
+        height: maxWidth / aspectRatio,
+      }
+    : {
+        width: maxHeight * aspectRatio,
+        height: maxHeight,
+      };
 };

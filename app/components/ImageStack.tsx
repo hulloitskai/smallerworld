@@ -199,7 +199,6 @@ const StackImage: FC<StackImageProps> = ({
     <motion.img
       className={classes.image}
       src={image.src}
-      loading="lazy"
       {...(image.srcset && { srcSet: image.srcset })}
       {...clampedImageDimensions(image, maxWidth, maxHeight)}
       {...(!canDrag && totalImages > 1 && { "data-blur": true })}
