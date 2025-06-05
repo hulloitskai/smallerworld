@@ -86,7 +86,7 @@ export const useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence =
       if (!registration || loading || resubscribedRef.current) {
         return;
       }
-      if (registration.device_fingerprint_confidence <= 0.5) {
+      if (registration.device_fingerprint_confidence < 0.5) {
         resubscribedRef.current = true;
         void subscribe();
       }
