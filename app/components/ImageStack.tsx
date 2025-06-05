@@ -24,7 +24,7 @@ export interface ImageStackProps
   images: ImageType[];
 }
 
-const IMAGE_ROTATIONS = [-5, 1, -3, 2];
+const IMAGE_ROTATIONS = [-1, 2, -2, 1];
 
 const ImageStack: FC<ImageStackProps> = ({
   images,

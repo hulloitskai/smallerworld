@@ -10,6 +10,25 @@
   flex-direction: column;
   z-index: 190;
   max-height: 80%;
+
+  /* Enforce minimum lightness of 75% for light user themes */
+  @mixin light-user-theme {
+    --min-lightness: 75;
+
+    background-color: hsl(
+      from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
+    );
+
+    /* Use @supports to add in support for old syntax that requires % units to
+        be specified in lightness calculations. This is required for
+        Safari >= 16.4+ and < 18.0 */
+    @supports (color: hsl(from red h s calc(l - 20%))) {
+      background-color: hsl(
+        from var(--mantine-color-body) h s
+          clamp(calc(var(--min-lightness) * 1%), l, 100%)
+      );
+    }
+  }
 }
 
 .drawerHeader {
@@ -27,6 +46,25 @@
   background-color: var(--mantine-color-body);
   z-index: 195;
   transition: padding-inline-end 0.1s;
+
+  /* Enforce minimum lightness of 75% for light user themes */
+  @mixin light-user-theme {
+    --min-lightness: 75;
+
+    background-color: hsl(
+      from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
+    );
+
+    /* Use @supports to add in support for old syntax that requires % units to
+        be specified in lightness calculations. This is required for
+        Safari >= 16.4+ and < 18.0 */
+    @supports (color: hsl(from red h s calc(l - 20%))) {
+      background-color: hsl(
+        from var(--mantine-color-body) h s
+          clamp(calc(var(--min-lightness) * 1%), l, 100%)
+      );
+    }
+  }
 }
 
 .drawerViewport {
