@@ -78,3 +78,9 @@
 .pwaLoadingOverlaySubtext {
   color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dimmed));
 }
+
+.confettiContainer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}

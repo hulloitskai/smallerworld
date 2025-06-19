@@ -89,3 +89,16 @@
     font-weight: 600;
   }
 }
+
+.image {
+  margin-top: 4px;
+  margin-bottom: 6px;
+
+  &[data-blur] {
+    --blur-radius: rem(4px);
+    filter: blur(var(--blur-radius));
+    -webkit-filter: blur(var(--blur-radius));
+
+    border-bottom: 4px solid white;
+  }
+}

@@ -161,7 +161,7 @@ export const useFreshCSRF = (): PageCSRF | null => {
         },
         onSuccess: ({ props }) => {
           const { csrf } = props as unknown as SharedPageProps;
-          setFreshCSRF({ param: csrf.param, token: csrf.token });
+          setFreshCSRF(csrf);
           void resetSWRCache();
         },
       });

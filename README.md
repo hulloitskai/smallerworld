@@ -55,19 +55,19 @@ bin/setup
 - [x] prevent isStandalone from triggering from smaller universe when clicking
       on a friend
 - [-] some android devices don't open app from notification
-- [ ] macleod reply with telegram shows "user does not exist"???
-- [ ] better cta for user page welcome modal
+- [x] macleod reply with telegram shows "user does not exist"???
+- [x] better cta for user page welcome modal
 - [ ] add ?ref=smallerworld on outbound links
 - [ ] resolve "reply count" countroversey
   - how to incentivize people to reply more? without introducing social gaming
     elements?
 - [ ] privacy policy + tos
 - [ ] reactions v2
-- [ ] make it easy for new users to request to join peppercoat's world
+- [x] make it easy for new users to request to join peppercoat's world
   - demo vibes on landing page?
-- [ ] features + feedback area of smaller world (click on the door to enter
+- [x] features + feedback area of smaller world (click on the door to enter
       the shared area)
-- [ ] closeable prompt to open your world on mobile with qr code when on desktop
+- [x] closeable prompt to open your world on mobile with qr code when on desktop
 - [ ] android takes some time for beforeinstallprompt event to fire, i need to
       account for this
 - [ ] emoji picker search sucks

@@ -6,7 +6,11 @@ import useSWR, {
   type SWRConfiguration,
   type SWRResponse,
 } from "swr";
-import { cache } from "swr/_internal";
+import {
+  cache,
+  type MutatorCallback,
+  type MutatorOptions,
+} from "swr/_internal";
 import useSWRMutation, {
   type SWRMutationConfiguration,
   type SWRMutationResponse,
@@ -152,7 +156,9 @@ export const computeRouteKey = (
 export const mutateRoute = <Data, T = Data>(
   route: PathHelper,
   params: RequestOptions["params"] = {},
-) => mutate<Data, T>(route.path(params));
+  data?: T | Promise<T> | MutatorCallback<T>,
+  options?: boolean | MutatorOptions<Data, T>,
+) => mutate<Data, T>(route.path(params), data, options);
 
 export const resetSWRCache = async (): Promise<void> => {
   await Promise.all([...cache.keys()].map(key => mutate(key)));

@@ -524,6 +524,20 @@ class MaskedPost
     def reset_quoted_post; end
 
     sig { returns(T::Array[T.untyped]) }
+    def sticker_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def sticker_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :stickers`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostSticker::PrivateCollectionProxy) }
+    def stickers; end
+
+    sig { params(value: T::Enumerable[::PostSticker]).void }
+    def stickers=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def view_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }

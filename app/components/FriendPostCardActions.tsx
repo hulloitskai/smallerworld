@@ -1,42 +1,38 @@
-import { Popover, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
-import { useLongPress } from "use-long-press";
+import { motion } from "motion/react";
+import { lazy } from "react";
 
-import ReplyIcon from "~icons/heroicons/chat-bubble-oval-left-20-solid";
+import StickerIcon from "~icons/ri/emoji-sticker-fill";
 
-import {
-  messageUri,
-  MESSAGING_PLATFORM_TO_ICON,
-  MESSAGING_PLATFORM_TO_LABEL,
-  MESSAGING_PLATFORMS,
-  usePreferredMessagingPlatform,
-} from "~/helpers/messaging";
-import { mutateUserPagePosts } from "~/helpers/userPages";
-import { type PostReaction, type User, type UserPost } from "~/types";
+import { type PostReaction, type PostSticker } from "~/types";
 
+import Drawer from "./Drawer";
 import EmojiPopover from "./EmojiPopover";
+import PostCardReplyButton, {
+  type PostCardReplyButtonProps,
+} from "./PostCardReplyButton";
+import StickerPicker from "./StickerPicker";
 
 import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
-export interface FriendPostCardActionsProps {
-  user: User;
-  post: UserPost;
-  replyToNumber: string | null;
-}
+const StickerPad = lazy(() => import("./StickerPad"));
+
+export interface FriendPostCardActionsProps
+  extends Pick<PostCardReplyButtonProps, "user" | "post" | "replyToNumber"> {}
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   user,
   post,
   replyToNumber,
 }) => {
-  const vaulPortalTarget = useVaulPortalTarget();
   const currentFriend = useCurrentFriend();
   const { ref, inViewport } = useInViewport();
 
   // == Load reactions
-  const { data } = useRouteSWR<{ reactions: PostReaction[] }>(
+  const { data: reactionsData } = useRouteSWR<{ reactions: PostReaction[] }>(
     routes.postReactions.index,
     {
       params: inViewport ? { post_id: post.id } : null,
@@ -46,159 +42,128 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
       isVisible: () => inViewport,
     },
   );
-  const { reactions } = data ?? {};
+  const { reactions } = reactionsData ?? {};
   const reactionsByEmoji = useMemo(
     () => groupBy(reactions, "emoji"),
     [reactions],
   );
 
-  // == Reply via msg
-  const [messagingPlatformSelectorOpened, setMessagingPlatformSelectorOpened] =
-    useState(false);
-  const bindMessagingPlatformSelectorButtonLongPress = useLongPress(() =>
-    setMessagingPlatformSelectorOpened(true),
-  );
-  const [preferredMessagingPlatform, setPreferredMessagingPlatform] =
-    usePreferredMessagingPlatform(user.id);
-  const replyUri = useMemo(() => {
-    if (replyToNumber && preferredMessagingPlatform) {
-      let body = post.reply_snippet;
-      if (preferredMessagingPlatform === "whatsapp") {
-        body = formatReplySnippetForWhatsApp(body);
+  // == Stickers
+  const stickerPadRef = useRef<HTMLDivElement>(null);
+  const [showStickerPad, setShowStickerPad] = useState(false);
+  const [showStickerDrawer, setShowStickerDrawer] = useState(false);
+  const { data: stickersData, mutate: mutateStickers } = useRouteSWR<{
+    stickers: PostSticker[];
+  }>(routes.postStickers.index, {
+    params: inViewport ? { post_id: post.id } : null,
+    descriptor: "load stickers",
+    keepPreviousData: true,
+    refreshInterval: 5000,
+    isVisible: () => inViewport,
+    onSuccess: ({ stickers }) => {
+      if (!isEmpty(stickers)) {
+        setShowStickerPad(true);
       }
-      return messageUri(replyToNumber, body, preferredMessagingPlatform);
-    }
-  }, [replyToNumber, post.reply_snippet, preferredMessagingPlatform]);
-
-  // == Mark as replied
-  const { trigger: markReplied, mutating: markingReplied } = useRouteMutation<{
-    authorId: string;
-  }>(routes.posts.markReplied, {
-    params: {
-      id: post.id,
-      query: {
-        ...(currentFriend && {
-          friend_token: currentFriend.access_token,
-        }),
-      },
     },
-    descriptor: "mark post as replied",
-    failSilently: true,
-    ...(currentFriend && {
-      onSuccess: ({ authorId }) => {
-        mutateUserPagePosts(authorId, currentFriend.access_token);
-      },
-    }),
   });
+  const { stickers = [] } = stickersData ?? {};
 
   return (
-    <Group {...{ ref }} align="start" gap={2}>
-      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
-        {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
-          <ReactionButton
-            key={emoji}
-            postId={post.id}
-            {...{ emoji, reactions }}
-          />
-        ))}
-      </Group>
-      <NewReactionButton
-        postId={post.id}
-        hasExistingReactions={!isEmpty(reactions)}
-      />
-      <Text inline fz="lg" className={postCardClasses.divider}>
-        /
-      </Text>
-      <Popover
-        width={265}
-        shadow="md"
-        portalProps={{ target: vaulPortalTarget }}
-        opened={messagingPlatformSelectorOpened}
-        onChange={setMessagingPlatformSelectorOpened}
-      >
-        <Popover.Target>
-          <Button
-            component="a"
-            {...(!messagingPlatformSelectorOpened && { href: replyUri })}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            variant="subtle"
-            size="compact-xs"
-            loading={markingReplied}
-            leftSection={
-              <Box pos="relative">
-                <ReplyIcon />
-                {post.repliers > 0 && post.repliers < 40 && (
-                  <Center
-                    fz={post.repliers > 20 ? 7 : post.repliers > 10 ? 8 : 9}
-                    className={classes.repliersCount}
-                  >
-                    {post.repliers}
-                  </Center>
-                )}
-              </Box>
-            }
-            className={classes.replyButton}
-            mod={{ replied: post.replied }}
-            onClick={() => {
-              if (!currentFriend) {
-                toast.warning(
-                  "you must be invited to this page to reply via sms",
+    <>
+      <Box>
+        <Box
+          component={motion.div}
+          key="sticker-pad-container"
+          layout
+          variants={{
+            hidden: { opacity: 0, scale: 0 },
+            visible: { opacity: 1, scale: 1 },
+          }}
+          transition={{ delay: 0.2 }}
+          animate={showStickerPad ? "visible" : "hidden"}
+          pb={8}
+        >
+          {showStickerPad && (
+            <StickerPad
+              ref={stickerPadRef}
+              postId={post.id}
+              {...{ stickers }}
+              optimisticallyUpdateStickers={async update => {
+                await mutateStickers(
+                  prevData => ({
+                    stickers: update(prevData?.stickers ?? []),
+                  }),
+                  { revalidate: false },
                 );
-              } else if (replyUri) {
-                void markReplied();
-              } else {
-                setMessagingPlatformSelectorOpened(true);
-              }
-            }}
-            {...bindMessagingPlatformSelectorButtonLongPress()}
-          >
-            reply via {preferredMessagingPlatform ?? "sms"}
-          </Button>
-        </Popover.Target>
-        <Popover.Dropdown>
-          <Stack gap="xs">
-            <Text ta="center" ff="heading" fw={500}>
-              reply using:
-            </Text>
-            <Group justify="center" gap="sm">
-              {MESSAGING_PLATFORMS.map(platform => (
-                <Stack key={platform} gap={2} align="center" miw={60}>
-                  <ActionIcon
-                    component="a"
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    variant="light"
-                    size="lg"
-                    {...(currentFriend &&
-                      !!replyToNumber && {
-                        href: replyUri,
-                        onClick: () => {
-                          setPreferredMessagingPlatform(platform);
-                          setMessagingPlatformSelectorOpened(false);
-                          void markReplied();
-                        },
-                      })}
-                  >
-                    <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
-                  </ActionIcon>
-                  <Text size="xs" fw={500} ff="heading" c="dimmed">
-                    {MESSAGING_PLATFORM_TO_LABEL[platform]}
-                  </Text>
-                </Stack>
-              ))}
-            </Group>
-            <Text size="xs" className={classes.messagingPlatformSelectorHint}>
-              <span style={{ fontWeight: 600 }}>
-                smaller world will remember your choice.
-              </span>
-              <br />
-              to open this menu again, hold the reply button.
-            </Text>
-          </Stack>
-        </Popover.Dropdown>
-      </Popover>
-    </Group>
+              }}
+            />
+          )}
+        </Box>
+        <Group {...{ ref }} align="start" gap={2}>
+          <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
+            {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
+              <ReactionButton
+                key={emoji}
+                postId={post.id}
+                {...{ emoji, reactions }}
+              />
+            ))}
+          </Group>
+          {user.supported_features.includes("stickers") ? (
+            <Button
+              variant="subtle"
+              size="compact-xs"
+              leftSection={<StickerIcon />}
+              style={{ flexShrink: 0 }}
+              onClick={() => {
+                if (!currentFriend) {
+                  toast.warning(
+                    <>
+                      you must be invited to {possessive(user.name)} world to
+                      add stickers
+                    </>,
+                  );
+                  return;
+                }
+                setShowStickerDrawer(true);
+              }}
+            >
+              add sticker
+            </Button>
+          ) : (
+            <NewReactionButton
+              postId={post.id}
+              hasExistingReactions={!isEmpty(reactions)}
+            />
+          )}
+          <Text inline fz="lg" className={postCardClasses.divider}>
+            /
+          </Text>
+          <PostCardReplyButton {...{ user, post, replyToNumber }} />
+        </Group>
+      </Box>
+      <Drawer
+        title="add sticker"
+        opened={showStickerDrawer}
+        classNames={{ body: classes.stickerDrawerBody }}
+        onClose={() => {
+          setShowStickerDrawer(false);
+        }}
+      >
+        <StickerPicker
+          onSelect={() => {
+            setShowStickerPad(true);
+            setShowStickerDrawer(false);
+            setTimeout(() => {
+              stickerPadRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+            }, 100);
+          }}
+        />
+      </Drawer>
+    </>
   );
 };
 
@@ -216,23 +181,22 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
   const currentFriend = useCurrentFriend();
 
   // == Add reaction
-  const { trigger, mutating } = useRouteMutation<{ reaction: PostReaction }>(
-    routes.postReactions.create,
-    {
-      descriptor: "react to post",
-      params: currentFriend
-        ? {
-            post_id: postId,
-            query: {
-              friend_token: currentFriend.access_token,
-            },
-          }
-        : null,
-      onSuccess: () => {
-        void mutateRoute(routes.postReactions.index, { post_id: postId });
-      },
+  const { trigger: triggerAdd, mutating } = useRouteMutation<{
+    reaction: PostReaction;
+  }>(routes.postReactions.create, {
+    descriptor: "react to post",
+    params: currentFriend
+      ? {
+          post_id: postId,
+          query: {
+            friend_token: currentFriend.access_token,
+          },
+        }
+      : null,
+    onSuccess: () => {
+      void mutateRoute(routes.postReactions.index, { post_id: postId });
     },
-  );
+  });
 
   return (
     <EmojiPopover
@@ -254,7 +218,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
           );
           return;
         }
-        void trigger({ reaction: { emoji } });
+        void triggerAdd({ reaction: { emoji } });
       }}
     >
       {({ open, opened }) => (
@@ -346,8 +310,4 @@ const ReactionButton: FC<ReactionButtonProps> = ({
       {reactions.length}
     </Button>
   );
-};
-
-const formatReplySnippetForWhatsApp = (replySnippet: string) => {
-  return replySnippet.replace(/\n> \n/g, "\n") + "\u2800";
 };

@@ -18,18 +18,11 @@ class PostReactionsController < ApplicationController
     current_friend = authenticate_friend!
     post = find_post
     reaction_params = params.expect(reaction: [:emoji])
-    reaction = post.reactions.build(friend: current_friend, **reaction_params)
-    if reaction.save
-      render(
-        json: { reaction: PostReactionSerializer.one(reaction) },
-        status: :created,
-      )
-    else
-      render(
-        json: { errors: reaction.form_errors },
-        status: :unprocessable_entity,
-      )
-    end
+    reaction = post.reactions.create!(friend: current_friend, **reaction_params)
+    render(
+      json: { reaction: PostReactionSerializer.one(reaction) },
+      status: :created,
+    )
   end
 
   # DELETE /post_reactions/:id

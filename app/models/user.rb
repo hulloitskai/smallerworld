@@ -126,14 +126,17 @@ class User < ApplicationRecord
     if posts.count >= MIN_POST_COUNT_FOR_SEARCH
       features << :search
     end
+    if admin?
+      features << :stickers
+    end
     features
   end
 
   sig { returns(Encouragement::PrivateAssociationRelation) }
-  def encouragements_since_last_post
+  def encouragements_since_last_poem_or_journal_entry
     transaction do
       encouragements = self.encouragements
-      if (created_at = latest_post_created_at)
+      if (created_at = latest_poem_or_journal_created_at)
         encouragements = encouragements.where(
           "encouragements.created_at > ?",
           created_at,
@@ -178,8 +181,11 @@ class User < ApplicationRecord
 
   # == Helpers
   sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
-  def latest_post_created_at
-    posts.reverse_chronological.pick(:created_at)
+  def latest_poem_or_journal_created_at
+    posts
+      .where(type: %i[poem journal_entry])
+      .reverse_chronological
+      .pick(:created_at)
   end
 
   # == Validators

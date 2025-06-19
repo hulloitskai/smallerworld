@@ -1,3 +1,3 @@
-type Feature = "encouragements" | "search";
+type Feature = "encouragements" | "search" | "stickers";
 
 export default Feature;

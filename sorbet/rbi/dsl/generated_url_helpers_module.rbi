@@ -109,6 +109,12 @@ module GeneratedUrlHelpersModule
   def post_reactions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def post_sticker_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def post_stickers_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

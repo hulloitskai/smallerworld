@@ -17,6 +17,16 @@ module Noticeable
 
   # == Interface
   sig do
+    overridable.params(recipient: T.nilable(T.all(
+      ApplicationRecord,
+      Notifiable,
+    ))).returns(String)
+  end
+  def notification_type(recipient)
+    model_name.name
+  end
+
+  sig do
     abstract
       .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
       .returns(T::Hash[String, T.untyped])

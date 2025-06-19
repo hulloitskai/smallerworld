@@ -10,7 +10,7 @@ class EncouragementsController < ApplicationController
   # GET /encouragements
   def index
     user = authenticate_user!
-    encouragements = user.encouragements_since_last_post
+    encouragements = user.encouragements_since_last_poem_or_journal_entry
     render(json: {
       encouragements: EncouragementSerializer.many(encouragements),
     })

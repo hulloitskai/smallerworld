@@ -141,6 +141,13 @@ Rails.application.routes.draw do
             export: true
   resources :post_reactions, only: :destroy, export: true
 
+  # == Post stickers
+  resources :post_stickers,
+            path: "/posts/:post_id/stickers",
+            only: %i[index create],
+            export: true
+  resources :post_stickers, only: %i[update destroy], export: true
+
   # == Encouragements
   resources :encouragements, only: %i[index create], export: true
 

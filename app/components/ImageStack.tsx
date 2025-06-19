@@ -42,21 +42,26 @@ const ImageStack: FC<ImageStackProps> = ({
     () => [...images.slice(index), ...images.slice(0, index)],
     [images, index],
   );
-  const maxImageHeight = useMemo(() => {
-    let height = 0;
-    images.forEach(({ dimensions }) => {
-      if (dimensions) {
-        height = Math.max(height, dimensions.height);
+  const maxClampedImageHeight = useMemo(() => {
+    let h = 0;
+    images.forEach(image => {
+      const { height: clampedHeight } = clampedImageDimensions(
+        image,
+        maxWidth,
+        maxHeight,
+      );
+      if (clampedHeight) {
+        h = Math.max(h, clampedHeight);
       }
     });
-    return height;
-  }, [images]);
+    return h;
+  }, [images, maxHeight, maxWidth]);
   return (
     <>
       <Box
         ref={containerRef}
         className={cn("ImageStack", classes.container, className)}
-        h={Math.min(maxImageHeight, maxHeight) + (images.length - 1) * 8}
+        h={maxClampedImageHeight + (images.length - 1) * 8}
         {...otherProps}
       >
         {orderedImages.map((image, i) => {

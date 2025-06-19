@@ -1,7 +1,6 @@
 import { Image, Overlay, Popover, RemoveScroll, Text } from "@mantine/core";
-import { useDocumentVisibility, useWindowEvent } from "@mantine/hooks";
+import { useWindowEvent } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
-import { DateTime } from "luxon";
 
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
@@ -18,10 +17,11 @@ import UserPageNotificationsButtonCard from "~/components/UserPageNotificationsB
 import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
+import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type Encouragement, type Friend, type User } from "~/types";
+import { type Encouragement, type User } from "~/types";
 
 import classes from "./UserPage.module.css";
 
@@ -230,7 +230,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
       {isStandalone && !outOfPWAScope && (
         <>
           <UserPageFloatingActions />
-          {currentFriend && <WelcomeBackToast {...{ currentFriend }} />}
+          {currentFriend && pushRegistration && (
+            <WelcomeBackToast subject={currentFriend} />
+          )}
         </>
       )}
       {(isStandalone === false || outOfPWAScope) && (
@@ -273,46 +275,6 @@ UserPage.layout = page => (
 );
 
 export default UserPage;
-
-interface WelcomeBackToastProps {
-  currentFriend: Friend;
-}
-
-const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ currentFriend }) => {
-  const { registration: pushRegistration } = useWebPush();
-  const visibility = useDocumentVisibility();
-  const lastCheckedRef = useRef<DateTime | null>(null);
-  useEffect(() => {
-    if (visibility === "hidden") {
-      return;
-    }
-    if (lastCheckedRef.current && lastCheckedRef.current.diffNow().hours < 1) {
-      return;
-    }
-    lastCheckedRef.current = DateTime.now();
-    if (!pushRegistration) {
-      return;
-    }
-    if (visibility === "visible") {
-      const friendName = [currentFriend.emoji, currentFriend.name]
-        .filter(Boolean)
-        .join(" ");
-      const timeout = setTimeout(() => {
-        toast(`welcome back, ${friendName}`, {
-          ...(!currentFriend.emoji && { icon: "❤️" }),
-          className: classes.welcomeBackToast,
-          closeButton: false,
-          duration: 2400,
-          position: "bottom-center",
-        });
-      }, 1000);
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-  }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
-  return null;
-};
 
 const PWAScopeHead: FC = () => {
   const { user } = usePageProps<UserPageProps>();

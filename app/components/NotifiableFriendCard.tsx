@@ -31,7 +31,9 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
   const { trigger: deleteFriend, mutating: deletingFriend } = useRouteMutation(
     routes.friends.destroy,
     {
-      params: { id: friend.id },
+      params: {
+        id: friend.id,
+      },
       descriptor: "remove friend",
       onSuccess: () => {
         toast.success("friend removed");

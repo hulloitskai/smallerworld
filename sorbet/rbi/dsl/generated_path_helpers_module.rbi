@@ -112,6 +112,12 @@ module GeneratedPathHelpersModule
   def post_reactions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def post_sticker_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def post_stickers_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

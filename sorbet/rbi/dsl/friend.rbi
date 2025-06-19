@@ -423,6 +423,20 @@ class Friend
     def post_reply_receipts=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def post_view_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def post_view_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :post_views`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostView::PrivateCollectionProxy) }
+    def post_views; end
+
+    sig { params(value: T::Enumerable[::PostView]).void }
+    def post_views=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def push_registration_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }

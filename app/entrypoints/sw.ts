@@ -11,7 +11,7 @@ import { v4 as uuid } from "uuid";
 import { enable as enableNavigationPreload } from "workbox-navigation-preload";
 import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { NetworkOnly } from "workbox-strategies";
+import { CacheFirst, NetworkOnly } from "workbox-strategies";
 
 import {
   DEFAULT_NOTIFICATION_ICON_URL,
@@ -84,6 +84,20 @@ if (!isEmpty(MANIFEST)) {
 registerRoute(
   ({ request }) => ["", "document"].includes(request.destination),
   new NetworkOnly(),
+);
+registerRoute(
+  ({ request, url }) =>
+    request.destination === "image" &&
+    url.hostname === "cdn.jsdelivr.net" &&
+    url.pathname.startsWith("/npm/emoji-datasource-apple/img/"),
+  new CacheFirst({ cacheName: "emoji-datasource-apple" }),
+);
+registerRoute(
+  ({ request, url }) =>
+    request.destination === "image" &&
+    url.hostname === "tttkkdzhzvelxmbcqvlg.supabase.co" &&
+    url.pathname.startsWith("/storage/v1/object/public/emoji-stickers/"),
+  new CacheFirst({ cacheName: "emoji-stickers" }),
 );
 cleanupOutdatedCaches();
 

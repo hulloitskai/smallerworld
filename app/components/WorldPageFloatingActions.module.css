@@ -83,17 +83,30 @@
   }
 }
 
-.encouragementButton {
-  font-size: var(--mantine-font-size-sm);
+.encouragementsBadge {
   pointer-events: auto;
-  background-color: alpha(var(--mantine-color-white), light-dark(0.5, 0.8));
-  cursor: default;
+  padding-block: 4px;
+  height: unset;
+  background-color: alpha(var(--mantine-color-default), 0.5);
+
+  --blur-radius: rem(4px);
+  backdrop-filter: blur(var(--blur-radius));
+  -webkit-backdrop-filter: blur(var(--blur-radius));
+
+  > :global(.mantine-Badge-label) {
+    display: flex;
+    gap: 4px;
+  }
+
+  /* --blur-radius: rem(4px);
+  backdrop-filter: blur(var(--blur-radius));
+  -webkit-backdrop-filter: blur(var(--blur-radius));
 
   @mixin light {
     border-color: var(--mantine-color-primary-4);
   }
 
   @mixin hover {
-    background-color: var(--mantine-color-primary-light-hover);
-  }
+    border-color: var(--mantine-color-primary-filled);
+  } */
 }

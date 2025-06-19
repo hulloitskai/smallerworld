@@ -114,6 +114,7 @@ class Post < ApplicationRecord
 
   belongs_to :quoted_post, class_name: "Post", optional: true
   has_many :reactions, class_name: "PostReaction", dependent: :destroy
+  has_many :stickers, class_name: "PostSticker", dependent: :destroy
   has_many :reply_receipts, class_name: "PostReplyReceipt", dependent: :destroy
   has_many :views, class_name: "PostView", dependent: :destroy
 

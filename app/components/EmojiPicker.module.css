@@ -1,5 +1,6 @@
 .picker {
   background-color: transparent !important;
+  border: none !important;
 
   :global(.epr-header) {
     > :first-of-type {
@@ -16,6 +17,10 @@
       var(--mantine-color-gray-4),
       var(--mantine-color-dark-4)
     );
+
+    &::placeholder {
+      text-transform: lowercase;
+    }
 
     &:focus {
       border-color: var(--mantine-color-primary-outline);
@@ -37,6 +42,7 @@
   }
 
   :global(.epr-emoji-category-label) {
+    text-transform: lowercase;
     height: unset;
     padding-block: 4px;
     color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
@@ -48,9 +54,6 @@
 
   :global(.epr-emoji-category-content) {
     --epr-emoji-gap: 2px;
-  }
-
-  :global(.epr-emoji) {
     --epr-emoji-size: 24px;
     --epr-emoji-padding: 4px;
     --epr-emoji-fullsize: calc(

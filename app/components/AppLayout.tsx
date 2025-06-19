@@ -16,6 +16,7 @@ import {
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
 import { useAutoClearColorScheme } from "~/helpers/mantine";
+import { CONFETTI_CONTAINER_ID } from "~/helpers/particles";
 import { useTrackVisit } from "~/helpers/visits";
 import { useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence } from "~/helpers/webPush";
 
@@ -153,43 +154,49 @@ const AppInner: FC<AppInnerProps> = ({
   );
 
   return (
-    <AppShell
-      withBorder={LAYOUT_WITH_BORDER}
-      {...((isStandalone === false || outOfPWAScope) && {
-        header: { height: 46 },
-      })}
-      padding={padding ?? (withContainer ? undefined : "md")}
-      classNames={{ root: classes.shell, header: classes.header }}
-      data-vaul-drawer-wrapper
-      {...otherProps}
-    >
-      {(isStandalone === false || outOfPWAScope) && (
-        <AppHeader {...{ logoHref }} />
-      )}
-      <AppShell.Main
-        className={classes.main}
-        {...{ pt, pb, pr, pl, py, px, p }}
+    <>
+      <AppShell
+        withBorder={LAYOUT_WITH_BORDER}
+        {...((isStandalone === false || outOfPWAScope) && {
+          header: { height: 46 },
+        })}
+        padding={padding ?? (withContainer ? undefined : "md")}
+        classNames={{ root: classes.shell, header: classes.header }}
+        data-vaul-drawer-wrapper
+        {...otherProps}
       >
-        {!isEmpty(breadcrumbs) && (
-          <Breadcrumbs
-            mx={10}
-            mt={6}
-            classNames={{
-              root: classes.breadcrumb,
-              separator: classes.breadcrumbSeparator,
-            }}
-          >
-            {breadcrumbs.map(({ title, href }, index) => (
-              <Anchor component={Link} href={href} key={index} size="sm">
-                {title}
-              </Anchor>
-            ))}
-          </Breadcrumbs>
+        {(isStandalone === false || outOfPWAScope) && (
+          <AppHeader {...{ logoHref }} />
         )}
-        {main}
-      </AppShell.Main>
-      <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
-    </AppShell>
+        <AppShell.Main
+          className={classes.main}
+          {...{ pt, pb, pr, pl, py, px, p }}
+        >
+          {!isEmpty(breadcrumbs) && (
+            <Breadcrumbs
+              mx={10}
+              mt={6}
+              classNames={{
+                root: classes.breadcrumb,
+                separator: classes.breadcrumbSeparator,
+              }}
+            >
+              {breadcrumbs.map(({ title, href }, index) => (
+                <Anchor component={Link} href={href} key={index} size="sm">
+                  {title}
+                </Anchor>
+              ))}
+            </Breadcrumbs>
+          )}
+          {main}
+        </AppShell.Main>
+        <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
+      </AppShell>
+      <canvas
+        id={CONFETTI_CONTAINER_ID}
+        className={classes.confettiContainer}
+      />
+    </>
   );
 };
 

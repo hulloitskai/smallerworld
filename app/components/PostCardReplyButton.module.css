@@ -1,0 +1,25 @@
+.button {
+  flex-shrink: 0;
+  -webkit-touch-callout: none;
+
+  &[data-replied] {
+    color: var(--mantine-color-dimmed);
+  }
+}
+
+.repliersCount {
+  color: light-dark(var(--mantine-color-white), var(--mantine-color-black));
+  position: absolute;
+  inset: 0;
+  font-family: var(--mantine-font-family-headings);
+  padding-bottom: 1.5px;
+}
+
+.messagingPlatformSelectorHint {
+  text-align: center;
+  color: var(--mantine-color-dimmed);
+
+  @mixin dark-user-theme {
+    color: var(--mantine-color-dark-0);
+  }
+}

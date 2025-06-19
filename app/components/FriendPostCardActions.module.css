@@ -7,35 +7,23 @@
 }
 
 .reactionButton {
+  flex-shrink: 0;
   padding-inline: 4px;
+  cursor: default;
 
   :global(.mantine-Button-section) {
     font-size: var(--mantine-font-size-md);
   }
-}
 
-.repliersCount {
-  color: light-dark(var(--mantine-color-white), var(--mantine-color-black));
-  position: absolute;
-  inset: 0;
-  font-family: var(--mantine-font-family-headings);
-  padding-bottom: 1.5px;
-}
+  @mixin hover {
+    background-color: initial;
+  }
 
-.replyButton {
-  flex-shrink: 0;
-  -webkit-touch-callout: none;
-
-  &[data-replied] {
-    color: var(--mantine-color-dimmed);
+  &:active {
+    transform: none;
   }
 }
 
-.messagingPlatformSelectorHint {
-  text-align: center;
-  color: var(--mantine-color-dimmed);
-
-  @mixin dark-user-theme {
-    color: var(--mantine-color-dark-0);
-  }
+.stickerDrawerBody {
+  padding-bottom: 0px;
 }

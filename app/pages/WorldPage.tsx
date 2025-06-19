@@ -18,6 +18,7 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 import openAddFriendModal from "~/components/AddFriendModal";
 import AppLayout from "~/components/AppLayout";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
+import WelcomeBackToast from "~/components/WelcomeBackToast";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPageInstallationInstructionsModal";
@@ -358,6 +359,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           scrollTo({ top: 0, behavior: "smooth" });
         }}
       />
+      {isStandalone && !outOfPWAScope && pushRegistration && (
+        <WelcomeBackToast subject={currentUser} />
+      )}
     </>
   );
 };

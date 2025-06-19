@@ -86,7 +86,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
               align="end"
               justify="center"
               gap={8}
-              style={[style, { pointerEvents: "none" }]}
+              style={[{ pointerEvents: "none" }, style]}
             >
               <Transition
                 transition="pop"
@@ -94,46 +94,45 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                 enterDelay={100}
               >
                 {style => (
-                  <Stack gap={6} w="min-content" {...{ style }}>
-                    <Group gap={6} wrap="wrap" style={{ alignSelf: "center" }}>
-                      {encouragements.map(encouragement => (
-                        <HoverCard
-                          key={encouragement.id}
-                          position="top"
-                          shadow="sm"
-                        >
-                          <HoverCard.Target>
-                            <ActionIcon
-                              className={classes.encouragementButton}
-                              variant="outline"
-                              size="sm"
-                            >
-                              {encouragement.emoji}
-                            </ActionIcon>
-                          </HoverCard.Target>
-                          <HoverCard.Dropdown px="xs" py={8} maw={240}>
-                            <Stack gap={2}>
-                              <Text size="sm">
-                                &ldquo;{encouragement.message}&rdquo;
-                              </Text>
-                              <Text
-                                size="xs"
-                                c="dimmed"
-                                style={{ alignSelf: "end" }}
-                              >
-                                —{" "}
-                                {[
-                                  encouragement.friend.emoji,
-                                  encouragement.friend.name,
-                                ]
-                                  .filter(Boolean)
-                                  .join(" ")}
-                              </Text>
-                            </Stack>
-                          </HoverCard.Dropdown>
-                        </HoverCard>
-                      ))}
-                    </Group>
+                  <Stack gap={6} align="center" w="min-content" {...{ style }}>
+                    {!isEmpty(encouragements) && (
+                      <Badge
+                        className={classes.encouragementsBadge}
+                        variant="default"
+                      >
+                        {encouragements.map(encouragement => (
+                          <HoverCard
+                            key={encouragement.id}
+                            position="top"
+                            shadow="sm"
+                          >
+                            <HoverCard.Target>
+                              <Text inline>{encouragement.emoji}</Text>
+                            </HoverCard.Target>
+                            <HoverCard.Dropdown px="xs" py={8} maw={240}>
+                              <Stack gap={2}>
+                                <Text size="sm">
+                                  &ldquo;{encouragement.message}&rdquo;
+                                </Text>
+                                <Text
+                                  size="xs"
+                                  c="dimmed"
+                                  style={{ alignSelf: "end" }}
+                                >
+                                  —{" "}
+                                  {[
+                                    encouragement.friend.emoji,
+                                    encouragement.friend.name,
+                                  ]
+                                    .filter(Boolean)
+                                    .join(" ")}
+                                </Text>
+                              </Stack>
+                            </HoverCard.Dropdown>
+                          </HoverCard>
+                        ))}
+                      </Badge>
+                    )}
                     <Menu
                       width={220}
                       shadow="sm"

@@ -81,6 +81,11 @@ class Notification < ApplicationRecord
   end
 
   # == Methods
+  sig { returns(String) }
+  def type
+    noticeable!.notification_type(recipient)
+  end
+
   sig { returns(T::Hash[String, T.untyped]) }
   def payload
     noticeable!.notification_payload(recipient)

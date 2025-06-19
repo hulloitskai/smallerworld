@@ -1,0 +1,9 @@
+# Cursor Rules
+
+## Import Rules
+- Don't auto-add imports if they are available in the auto-import types file (`typings/generated/auto-import.d.ts`)
+- Check the global declarations in auto-import.d.ts before suggesting or adding imports for commonly used utilities and components
+
+## TypeScript Array Access Rules
+- When doing direct array access in the context of an algorithm, use non-null TypeScript assertion like `arr[i]!` as needed
+- Apply non-null assertions for array access when the algorithm logic guarantees the element exists but TypeScript cannot infer this

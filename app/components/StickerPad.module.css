@@ -1,0 +1,32 @@
+.card {
+  border-style: dashed;
+  box-shadow: none;
+  padding: 0;
+  transition: border-color 150ms ease-in-out;
+
+  &[data-dragging-over] {
+    border-color: var(--mantine-color-primary-outline);
+  }
+}
+
+.container {
+  width: 100%;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.label {
+  font-family: var(--mantine-font-family-heading);
+  opacity: 0.3;
+  font-weight: 500;
+  transition: opacity color 150ms ease-in-out;
+
+  &[data-dragging-over] {
+    opacity: 0.5;
+    color: var(--mantine-color-primary-outline);
+  }
+}

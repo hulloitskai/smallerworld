@@ -4,6 +4,7 @@ import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
 
 import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
+import SeenIcon from "~icons/heroicons/eye-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
@@ -75,7 +76,9 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   const { trigger: triggerDelete, mutating: deleting } = useRouteMutation(
     routes.posts.destroy,
     {
-      params: { id: post.id },
+      params: {
+        id: post.id,
+      },
       descriptor: "delete post",
       onSuccess: () => {
         void mutatePosts();
@@ -91,7 +94,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   return (
     <>
       <Group {...{ ref }} align="start" justify="space-between" gap={2}>
-        {!!statsData?.notifiedFriends && (
+        {statsData?.notifiedFriends ? (
           <Tooltip
             className={classes.seenTooltip}
             label={<>seen by {statsData.viewers}</>}
@@ -101,14 +104,22 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             events={{ hover: true, focus: true, touch: true }}
           >
             <Badge
+              className={classes.notifiedOrSeenBadge}
               variant="transparent"
               leftSection={<NotificationIcon />}
-              className={classes.notifiedBadge}
             >
               {statsData.notifiedFriends} notified
             </Badge>
           </Tooltip>
-        )}
+        ) : statsData?.viewers ? (
+          <Badge
+            className={classes.notifiedOrSeenBadge}
+            variant="transparent"
+            leftSection={<SeenIcon />}
+          >
+            seen by {statsData.viewers}
+          </Badge>
+        ) : null}
         <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
           {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>
             hideStats ? (

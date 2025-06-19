@@ -14,7 +14,7 @@
   font-weight: 600;
 }
 
-.notifiedBadge {
+.notifiedOrSeenBadge {
   flex-shrink: 0;
   color: var(--mantine-color-dimmed);
 
@@ -31,6 +31,7 @@
 }
 
 .reactionBadge {
+  flex-shrink: 0;
   padding-inline: 3px;
 
   :global(.mantine-Badge-section) {
@@ -39,6 +40,7 @@
 }
 
 .reactionBadgeWithoutCounts {
+  flex-shrink: 0;
   padding-inline: 1px;
 
   :global(.mantine-Badge-label) {

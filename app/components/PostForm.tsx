@@ -222,6 +222,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
       <Group gap="xs" align="start" justify="center">
         <Stack gap="xs" align="center">
           <EmojiPopover
+            position="right"
             onEmojiClick={({ emoji }) => {
               setFieldValue("emoji", emoji);
             }}
