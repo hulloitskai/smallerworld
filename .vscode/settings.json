@@ -19,6 +19,9 @@
     "markdown"
   ],
 
+  // == Rubocop
+  "rubocop.mode": "enableViaGemfile",
+
   // == YAML
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "${workspaceFolder}/.github/workflows/deploy.yml"
@@ -45,9 +48,6 @@
   },
   "[ruby]": {
     "editor.defaultFormatter": "rubocop.vscode-rubocop"
-  },
-  "[dockerfile]": {
-    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
   "[dotenv]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

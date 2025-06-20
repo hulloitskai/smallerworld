@@ -243,7 +243,7 @@ class ActiveModel::Attribute
   def type_cast(*_arg0); end
 
   # source://activemodel//lib/active_model/attribute.rb#41
-  def value; end
+  def value(&_); end
 
   # Returns the value of attribute value_before_type_cast.
   #
@@ -2308,10 +2308,10 @@ class ActiveModel::Error
 
     private
 
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#15
+    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#15
     def __class_attr_i18n_customize_full_message; end
 
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#17
+    # source://activesupport/8.0.2/lib/active_support/class_attribute.rb#17
     def __class_attr_i18n_customize_full_message=(new_value); end
   end
 end
@@ -3513,6 +3513,7 @@ end
 
 # source://activemodel//lib/active_model/attribute_mutation_tracker.rb#156
 class ActiveModel::NullMutationTracker
+  include ::Singleton::SingletonInstanceMethods
   include ::Singleton
   extend ::Singleton::SingletonClassMethods
 
@@ -4417,14 +4418,6 @@ ActiveModel::Type::Decimal::BIGDECIMAL_PRECISION = T.let(T.unsafe(nil), Integer)
 #     attribute :weight, :float
 #   end
 #
-# Values are cast using their +to_f+ method, except for the following
-# strings:
-#
-# - Blank strings are cast to +nil+.
-# - <tt>"Infinity"</tt> is cast to +Float::INFINITY+.
-# - <tt>"-Infinity"</tt> is cast to <tt>-Float::INFINITY</tt>.
-# - <tt>"NaN"</tt> is cast to +Float::NAN+.
-#
 #   bag = BagOfCoffee.new
 #
 #   bag.weight = "0.25"
@@ -4435,6 +4428,14 @@ ActiveModel::Type::Decimal::BIGDECIMAL_PRECISION = T.let(T.unsafe(nil), Integer)
 #
 #   bag.weight = "NaN"
 #   bag.weight # => Float::NAN
+#
+# Values are cast using their +to_f+ method, except for the following
+# strings:
+#
+# - Blank strings are cast to +nil+.
+# - <tt>"Infinity"</tt> is cast to +Float::INFINITY+.
+# - <tt>"-Infinity"</tt> is cast to <tt>-Float::INFINITY</tt>.
+# - <tt>"NaN"</tt> is cast to +Float::NAN+.
 #
 # source://activemodel//lib/active_model/type/float.rb#36
 class ActiveModel::Type::Float < ::ActiveModel::Type::Value
@@ -5013,7 +5014,7 @@ class ActiveModel::Type::Value
   # @return [Boolean]
   #
   # source://activemodel//lib/active_model/type/value.rb#28
-  def serializable?(value); end
+  def serializable?(value, &_); end
 
   # Casts a value from the ruby type to a type that the database knows how
   # to understand. The returned value from this method should be a
@@ -6526,9 +6527,6 @@ module ActiveModel::Validations::HelperMethods
   #
   # source://activemodel//lib/active_model/validations/numericality.rb#217
   def validates_numericality_of(*attr_names); end
-
-  # source://strong_password/0.0.10/lib/active_model/validations/password_strength_validator.rb#38
-  def validates_password_strength(*attr_names); end
 
   # Validates that the specified attributes are not blank (as defined by
   # Object#blank?).

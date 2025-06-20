@@ -15,7 +15,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     if (port = Rails.application.default_url_options[:port])
       Capybara.server_port = port
     end
-    Capybara.default_max_wait_time = 15
     wait_for_inertia_ssr
     super
   end

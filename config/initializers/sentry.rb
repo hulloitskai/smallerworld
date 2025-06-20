@@ -15,8 +15,6 @@ if (credentials = Rails.application.credentials.sentry)
     config.excluded_exceptions += %w[
       ActiveSupport::MessageVerifier::InvalidSignature
       ActionPolicy::Unauthorized
-      Notion::Api::Errors::TimeoutError
-      Notion::Api::Errors::UnavailableError
       UnauthenticatedError
     ]
 
