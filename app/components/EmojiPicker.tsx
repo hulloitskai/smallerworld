@@ -1,5 +1,9 @@
 import { useMantineColorScheme } from "@mantine/core";
-import _EmojiPicker, { type PickerProps, type Theme } from "emoji-picker-react";
+import _EmojiPicker, {
+  EmojiStyle,
+  type PickerProps,
+  type Theme,
+} from "emoji-picker-react";
 
 import classes from "./EmojiPicker.module.css";
 
@@ -18,7 +22,7 @@ const EmojiPicker: FC<EmojiPickerProps> = ({
       {...{ reactionsDefaultOpen }}
       previewConfig={{ showPreview: false }}
       lazyLoadEmojis
-      // emojiStyle={EmojiStyle.}
+      emojiStyle={EmojiStyle.NATIVE}
       skinTonesDisabled
       theme={colorScheme as Theme}
       width={300}

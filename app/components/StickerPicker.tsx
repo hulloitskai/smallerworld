@@ -1,4 +1,5 @@
 import { useId } from "@mantine/hooks";
+import { EmojiStyle } from "emoji-picker-react";
 
 import { emojiFromUnified } from "~/helpers/emojiPicker";
 import {
@@ -48,6 +49,7 @@ const StickerPicker: FC<StickerPickerProps> = ({
       className={cn("StickerPicker", classes.emojiPicker, pickerId, className)}
       searchDisabled
       hiddenEmojis={["1fae5"]}
+      emojiStyle={EmojiStyle.APPLE}
       {...otherProps}
     />
   );

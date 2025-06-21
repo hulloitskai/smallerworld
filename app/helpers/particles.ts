@@ -118,8 +118,8 @@ export const puffOfSmoke = ({ position }: Pick<ParticlesOptions, "position">) =>
         },
         position,
         life: {
-          duration: 0.5, // run for 1 second
-          count: 1, // only once
+          duration: 0.5,
+          count: 1,
         },
       },
     },

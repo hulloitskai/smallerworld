@@ -56,7 +56,10 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   const { data: stickersData, mutate: mutateStickers } = useRouteSWR<{
     stickers: PostSticker[];
   }>(routes.postStickers.index, {
-    params: inViewport ? { post_id: post.id } : null,
+    params:
+      user.supported_features.includes("stickers") && inViewport
+        ? { post_id: post.id }
+        : null,
     descriptor: "load stickers",
     keepPreviousData: true,
     refreshInterval: 5000,
