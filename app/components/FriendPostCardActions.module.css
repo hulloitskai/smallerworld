@@ -9,7 +9,6 @@
 .reactionButton {
   flex-shrink: 0;
   padding-inline: 4px;
-  cursor: default;
 
   :global(.mantine-Button-section) {
     font-size: var(--mantine-font-size-md);
