@@ -103,7 +103,7 @@ const EmojiSticker: FC<EmojiStickerProps> = ({
       ticks: 60,
       gravity: 1,
       startVelocity: 24,
-      particleCount: 8,
+      count: 8,
       scalar: 2,
       shapes: ["emoji"],
       shapeOptions: {

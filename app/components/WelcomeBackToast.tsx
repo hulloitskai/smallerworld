@@ -70,7 +70,7 @@ const CONFETTI_DEFAULTS: ConfettiOptions = {
   spread: 200,
   ticks: 60,
   gravity: 1,
-  startVelocity: 30,
+  startVelocity: 28,
 };
 
 const shootWelcomeConfetti = async (
@@ -83,14 +83,14 @@ const shootWelcomeConfetti = async (
   await Promise.all([
     confetti({
       ...CONFETTI_DEFAULTS,
-      particleCount: 30,
+      count: 30,
       scalar: 1.2,
       shapes: ["circle", "square", "star"],
       colors: ["#a864fd", "#29cdff", "#78ff44", "#fdff6a"],
     }),
     confetti({
       ...CONFETTI_DEFAULTS,
-      particleCount: 12,
+      count: 12,
       scalar: 2,
       shapes: ["emoji"],
       shapeOptions: {

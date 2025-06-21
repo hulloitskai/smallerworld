@@ -238,8 +238,8 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
           spread: 200,
           ticks: 60,
           gravity: 1,
-          startVelocity: 24,
-          particleCount: 8,
+          startVelocity: 18,
+          count: 8,
           scalar: 2,
           shapes: ["emoji"],
           shapeOptions: {
@@ -342,11 +342,11 @@ const ReactionButton: FC<ReactionButtonProps> = ({
         } else {
           void confetti({
             position: particlePositionFor(currentTarget),
+            count: 8,
             spread: 200,
             ticks: 60,
             gravity: 1,
-            startVelocity: 24,
-            particleCount: 8,
+            startVelocity: 18,
             scalar: 2,
             shapes: ["emoji"],
             shapeOptions: {

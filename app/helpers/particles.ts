@@ -121,6 +121,7 @@ export const puffOfSmoke = ({ position }: Pick<ParticlesOptions, "position">) =>
           count: 1,
         },
       },
+      smooth: true,
     },
   });
 

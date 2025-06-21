@@ -173,8 +173,8 @@ const EncouragementForm: FC<EncouragementFormProps> = ({
               spread: 200,
               ticks: 60,
               gravity: 1,
-              startVelocity: 24,
-              particleCount: 12,
+              startVelocity: 18,
+              count: 12,
               scalar: 2,
               shapes: ["emoji"],
               shapeOptions: {
