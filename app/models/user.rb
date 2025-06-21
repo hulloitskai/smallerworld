@@ -126,9 +126,9 @@ class User < ApplicationRecord
     if posts.count >= MIN_POST_COUNT_FOR_SEARCH
       features << :search
     end
-    if admin?
-      features << :stickers
-    end
+    # if admin?
+    #   features << :stickers
+    # end
     features
   end
 
