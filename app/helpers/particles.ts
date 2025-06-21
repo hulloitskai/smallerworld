@@ -3,18 +3,17 @@ import { type IConfettiOptions } from "@tsparticles/confetti/types/IConfettiOpti
 import { type ParticlesOptions, tsParticles } from "@tsparticles/engine";
 import { type RecursivePartial } from "@tsparticles/engine";
 
-export const CONFETTI_CONTAINER_ID = "particles-container";
+export const CONFETTI_CANVAS_ID = "confetti-canvas";
+export const SMOKE_CANVAS_ID = "smoke-canvas";
 
 export const confetti = (options: RecursivePartial<IConfettiOptions>) =>
-  _confetti(CONFETTI_CONTAINER_ID, options);
+  _confetti(CONFETTI_CANVAS_ID, options);
 
 export const puffOfSmoke = ({ position }: Pick<ParticlesOptions, "position">) =>
   tsParticles.load({
+    id: SMOKE_CANVAS_ID,
     options: {
       fpsLimit: 60,
-      style: {
-        pointerEvents: "none",
-      },
       particles: {
         number: {
           value: 8,

@@ -16,7 +16,7 @@ import {
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
 import { useAutoClearColorScheme } from "~/helpers/mantine";
-import { CONFETTI_CONTAINER_ID } from "~/helpers/particles";
+import { CONFETTI_CANVAS_ID, SMOKE_CANVAS_ID } from "~/helpers/particles";
 import { useTrackVisit } from "~/helpers/visits";
 import { useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence } from "~/helpers/webPush";
 
@@ -192,10 +192,8 @@ const AppInner: FC<AppInnerProps> = ({
         </AppShell.Main>
         <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
       </AppShell>
-      <canvas
-        id={CONFETTI_CONTAINER_ID}
-        className={classes.confettiContainer}
-      />
+      <canvas id={SMOKE_CANVAS_ID} className={classes.particleCanvas} />
+      <canvas id={CONFETTI_CANVAS_ID} className={classes.particleCanvas} />
     </>
   );
 };
