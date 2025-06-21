@@ -65,20 +65,14 @@ const PostCard: FC<PostCardProps> = ({
         className={cn("PostCard", classes.card)}
         withBorder
         shadow="sm"
-        layout
+        layout="size"
         mod={{
           focus,
           "post-visibility": post.visibility,
         }}
         {...otherProps}
       >
-        <Card.Section
-          component={motion.div}
-          layout
-          inheritPadding
-          pt="xs"
-          pb={10}
-        >
+        <Card.Section inheritPadding pt="xs" pb={10}>
           <Group gap={8} align="center">
             {!!post.emoji && (
               <Text size="lg" inline display="block">
@@ -160,7 +154,7 @@ const PostCard: FC<PostCardProps> = ({
           className={classes.contentSection}
           inheritPadding
           component={motion.div}
-          layout
+          layout="size"
           mod={{ "blur-content": blurContent }}
         >
           <Stack gap={14}>
