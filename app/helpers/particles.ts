@@ -123,3 +123,12 @@ export const puffOfSmoke = ({ position }: Pick<ParticlesOptions, "position">) =>
       },
     },
   });
+
+export const particlePositionFor = (target: HTMLElement) => {
+  const { innerWidth, innerHeight } = window;
+  const { x, y, width, height } = target.getBoundingClientRect();
+  return {
+    x: ((x + width / 2) / innerWidth) * 100,
+    y: ((y + height / 2) / innerHeight) * 100,
+  };
+};

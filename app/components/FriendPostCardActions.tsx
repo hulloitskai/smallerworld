@@ -1,12 +1,16 @@
 import { Text } from "@mantine/core";
-import { useInViewport, useViewportSize } from "@mantine/hooks";
+import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 import { motion } from "motion/react";
 import { lazy } from "react";
 
 import StickerIcon from "~icons/ri/emoji-sticker-fill";
 
-import { confetti, puffOfSmoke } from "~/helpers/particles";
+import {
+  confetti,
+  particlePositionFor,
+  puffOfSmoke,
+} from "~/helpers/particles";
 import { type PostReaction, type PostSticker } from "~/types";
 
 import Drawer from "./Drawer";
@@ -183,7 +187,6 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
   hasExistingReactions,
 }) => {
   const currentFriend = useCurrentFriend();
-  const viewportSize = useViewportSize();
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // == Add reaction
@@ -231,7 +234,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
           return;
         }
         void confetti({
-          position: particlePosition(button, viewportSize),
+          position: particlePositionFor(button),
           spread: 200,
           ticks: 60,
           gravity: 1,
@@ -285,7 +288,6 @@ const ReactionButton: FC<ReactionButtonProps> = ({
     [reactions, currentFriend?.id],
   );
   const [mutating, setMutating] = useState(false);
-  const viewportSize = useViewportSize();
 
   return (
     <Button
@@ -335,11 +337,11 @@ const ReactionButton: FC<ReactionButtonProps> = ({
           });
         if (currentReaction) {
           void puffOfSmoke({
-            position: particlePosition(currentTarget, viewportSize),
+            position: particlePositionFor(currentTarget),
           });
         } else {
           void confetti({
-            position: particlePosition(currentTarget, viewportSize),
+            position: particlePositionFor(currentTarget),
             spread: 200,
             ticks: 60,
             gravity: 1,
@@ -359,15 +361,4 @@ const ReactionButton: FC<ReactionButtonProps> = ({
       {reactions.length}
     </Button>
   );
-};
-
-const particlePosition = (
-  target: HTMLElement,
-  viewportSize: { width: number; height: number },
-) => {
-  const { x, y, width, height } = target.getBoundingClientRect();
-  return {
-    x: ((x + width / 2) / viewportSize.width) * 100,
-    y: ((y + height / 2) / viewportSize.height) * 100,
-  };
 };

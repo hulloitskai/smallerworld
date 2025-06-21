@@ -1,5 +1,7 @@
 import { Popover, Text } from "@mantine/core";
+import { confetti } from "@tsparticles/confetti";
 
+import { particlePositionFor } from "~/helpers/particles";
 import { type Encouragement, type Friend, type User } from "~/types";
 
 import classes from "./EncouragementCard.module.css";
@@ -165,6 +167,23 @@ const EncouragementForm: FC<EncouragementFormProps> = ({
           loading={submitting}
           disabled={!values.message}
           style={{ alignSelf: "center" }}
+          onClick={({ currentTarget }) => {
+            void confetti({
+              position: particlePositionFor(currentTarget),
+              spread: 200,
+              ticks: 60,
+              gravity: 1,
+              startVelocity: 24,
+              particleCount: 12,
+              scalar: 2,
+              shapes: ["emoji"],
+              shapeOptions: {
+                emoji: {
+                  value: emoji,
+                },
+              },
+            });
+          }}
         >
           send
         </Button>
