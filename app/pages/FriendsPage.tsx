@@ -22,6 +22,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
     routes.friends.index,
     {
       descriptor: "load friends",
+      keepPreviousData: true,
     },
   );
   const { friends } = data ?? {};
