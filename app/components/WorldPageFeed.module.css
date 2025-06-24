@@ -1,0 +1,9 @@
+.typeBadge {
+  cursor: pointer;
+  align-self: center;
+  padding-inline: 4px;
+
+  @mixin hover {
+    opacity: 0.8;
+  }
+}

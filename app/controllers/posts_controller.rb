@@ -10,11 +10,14 @@ class PostsController < ApplicationController
   before_action :authenticate_friend!, only: %i[mark_seen mark_replied]
 
   # == Actions
-  # GET /posts?q=...
+  # GET /posts?type=...&q=...
   def index
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
       .includes(images_attachments: :blob)
+    if (type = params[:type])
+      posts = posts.where(type:)
+    end
     ordering = { created_at: :desc, id: :asc }
     pagy, paginated_posts = if (query = params[:q])
       posts = posts.search(query).order(ordering)

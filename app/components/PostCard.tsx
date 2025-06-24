@@ -25,6 +25,8 @@ export interface PostCardProps extends BoxProps {
   actions: ReactNode;
   blurContent?: boolean;
   focus?: boolean;
+  highlightType?: boolean;
+  onTypeClick?: () => void;
 }
 
 const IMAGE_MAX_WIDTH = 340;
@@ -36,6 +38,8 @@ const PostCard: FC<PostCardProps> = ({
   actions,
   blurContent,
   focus,
+  highlightType,
+  onTypeClick,
   ...otherProps
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -82,16 +86,21 @@ const PostCard: FC<PostCardProps> = ({
               {post.emoji}
             </Text>
           )}
-          <Group gap={6} style={{ flexGrow: 1 }}>
+          <Group
+            className={classes.typeGroup}
+            gap={6}
+            style={{ flexGrow: 1 }}
+            mod={{ highlight: highlightType }}
+            onClick={onTypeClick}
+          >
             {!post.emoji && (
               <Box
                 component={POST_TYPE_TO_ICON[post.type]}
                 fz={10.5}
-                c="dimmed"
                 display="block"
               />
             )}
-            <Text size="xs" ff="heading" fw={600} c="dimmed">
+            <Text size="xs" ff="heading" fw={600}>
               {POST_TYPE_TO_LABEL[post.type]}
             </Text>
           </Group>

@@ -64,11 +64,19 @@ export interface PostsData {
   pagination: { next: string | number | null };
 }
 
-const postsGetKey = (searchQuery?: string): SWRInfiniteKeyLoader<PostsData> => {
+interface PostParams {
+  type?: PostType | null;
+  searchQuery?: string;
+}
+
+const postsGetKey = (params?: PostParams): SWRInfiniteKeyLoader<PostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = {};
-    if (searchQuery) {
-      query.q = searchQuery;
+    if (params?.type) {
+      query.type = params.type;
+    }
+    if (params?.searchQuery) {
+      query.q = params.searchQuery;
     }
     if (previousPageData) {
       const { next } = previousPageData.pagination;
@@ -82,6 +90,7 @@ const postsGetKey = (searchQuery?: string): SWRInfiniteKeyLoader<PostsData> => {
 };
 
 export interface PostsOptions extends SWRInfiniteConfiguration<PostsData> {
+  type?: PostType | null;
   searchQuery?: string;
   limit?: number;
 }
@@ -90,7 +99,7 @@ export const usePosts = (options?: PostsOptions) => {
   const { online } = useNetwork();
   const { ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    postsGetKey(options?.searchQuery),
+    postsGetKey(options),
     (url: string) => fetchRoute(url, { descriptor: "load posts" }),
     {
       keepPreviousData: true,
@@ -108,6 +117,7 @@ export const usePosts = (options?: PostsOptions) => {
   return { posts, hasMorePosts, ...swrResponse };
 };
 
+// TODO: Account for type param
 export const mutatePosts = async (): Promise<void> => {
   const postsPath = routes.posts.index.path();
   const searchQueries = new Set<string>();
@@ -121,7 +131,7 @@ export const mutatePosts = async (): Promise<void> => {
     }
   }
   const mutations = [undefined, ...searchQueries].map(searchQuery =>
-    mutate<PostsData>(unstable_serialize(postsGetKey(searchQuery))),
+    mutate<PostsData>(unstable_serialize(postsGetKey({ searchQuery }))),
   );
   await Promise.all(mutations);
 };

@@ -2,14 +2,22 @@ import { Loader, Text } from "@mantine/core";
 
 import HideIcon from "~icons/heroicons/chevron-up-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
-import ClearIcon from "~icons/heroicons/x-mark-20-solid";
+import CloseIcon from "~icons/heroicons/x-mark";
+import CloseOutlineIcon from "~icons/heroicons/x-mark-20-solid";
 
-import { usePosts } from "~/helpers/posts";
+import {
+  POST_TYPE_TO_ICON,
+  POST_TYPE_TO_LABEL,
+  usePosts,
+} from "~/helpers/posts";
 import { type WorldPageProps } from "~/pages/WorldPage";
+import { type PostType } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
+
+import classes from "./WorldPageFeed.module.css";
 
 export interface WorldPageFeedProps extends BoxProps {
   showSearch: boolean;
@@ -29,10 +37,12 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // == Load posts
+  const [postType, setPostType] = useState<PostType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
   const { posts, setSize, hasMorePosts, isValidating } = usePosts({
     searchQuery: debouncedSearchQuery,
+    type: postType,
   });
 
   return (
@@ -64,7 +74,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                         })}
                     {...{ style }}
                   >
-                    {searchQuery ? <ClearIcon /> : <HideIcon />}
+                    {searchQuery ? <CloseIcon /> : <HideIcon />}
                   </ActionIcon>
                 </Tooltip>
               )
@@ -84,6 +94,21 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
           />
         )}
       </Transition>
+      {postType && (
+        <Badge
+          className={classes.typeBadge}
+          variant="outline"
+          leftSection={
+            <Box component={POST_TYPE_TO_ICON[postType]} fz={10.5} />
+          }
+          rightSection={<CloseOutlineIcon />}
+          onClick={() => {
+            setPostType(null);
+          }}
+        >
+          {POST_TYPE_TO_LABEL[postType]}
+        </Badge>
+      )}
       {posts ? (
         isEmpty(posts) ? (
           debouncedSearchQuery ? (
@@ -127,6 +152,10 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                     {...{ post, hideStats, pausedFriends }}
                   />
                 }
+                highlightType={post.type === postType}
+                onTypeClick={() => {
+                  setPostType(post.type === postType ? null : post.type);
+                }}
               />
             ))}
             {hasMorePosts && (
