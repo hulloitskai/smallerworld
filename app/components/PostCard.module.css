@@ -91,6 +91,7 @@
 }
 
 .image {
+  cursor: pointer;
   margin-top: 4px;
   margin-bottom: 6px;
 

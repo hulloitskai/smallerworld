@@ -1,4 +1,10 @@
-import { Image, Overlay, Text, TypographyStylesProvider } from "@mantine/core";
+import {
+  type BoxProps,
+  Image,
+  Overlay,
+  Text,
+  TypographyStylesProvider,
+} from "@mantine/core";
 import { LayoutGroup, motion } from "motion/react";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
@@ -6,8 +12,9 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import { clampedImageDimensions } from "~/helpers/images";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { useWebPush } from "~/helpers/webPush";
-import { type Post } from "~/types";
+import { type Image as ImageType, type Post } from "~/types";
 
+import AppLightbox from "./AppLightbox";
 import ImageStack from "./ImageStack";
 import QuotedPostCard from "./QuotedPostCard";
 
@@ -171,18 +178,7 @@ const PostCard: FC<PostCardProps> = ({
             {!!firstImage && (
               <>
                 {blurContent || post.images.length === 1 ? (
-                  <Image
-                    className={classes.image}
-                    src={firstImage.src}
-                    {...(firstImage.srcset && { srcSet: firstImage.srcset })}
-                    fit="contain"
-                    mod={{ blur: blurContent }}
-                    {...clampedImageDimensions(
-                      firstImage,
-                      IMAGE_MAX_WIDTH,
-                      IMAGE_MAX_HEIGHT,
-                    )}
-                  />
+                  <ImageWithLightbox image={firstImage} {...{ blurContent }} />
                 ) : (
                   <ImageStack
                     images={post.images}
@@ -226,3 +222,42 @@ const PostCard: FC<PostCardProps> = ({
 };
 
 export default PostCard;
+
+interface ImageWithLightboxProps extends BoxProps {
+  image: ImageType;
+  blurContent?: boolean;
+}
+
+const ImageWithLightbox: FC<ImageWithLightboxProps> = ({
+  image,
+  blurContent,
+  className,
+  ...otherProps
+}) => {
+  const [opened, setOpened] = useState(false);
+  const [index, setIndex] = useState(0);
+  return (
+    <>
+      <Image
+        className={cn(classes.image, className)}
+        src={image.src}
+        {...(image.srcset && { srcSet: image.srcset })}
+        fit="contain"
+        mod={{ blur: blurContent }}
+        onClick={() => {
+          setOpened(true);
+        }}
+        {...clampedImageDimensions(image, IMAGE_MAX_WIDTH, IMAGE_MAX_HEIGHT)}
+        {...otherProps}
+      />
+      <AppLightbox
+        open={opened}
+        close={() => {
+          setOpened(false);
+        }}
+        onIndexChange={setIndex}
+        {...{ images: [image], index }}
+      />
+    </>
+  );
+};

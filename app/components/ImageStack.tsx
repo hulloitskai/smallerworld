@@ -1,17 +1,11 @@
-import { CloseButton, getRadius, type ImageProps, Loader } from "@mantine/core";
-import parseSrcset from "@prettier/parse-srcset";
+import { getRadius, type ImageProps } from "@mantine/core";
 import { motion, useMotionValue, useTransform } from "motion/react";
 import { type ComponentProps } from "react";
-import Lightbox, { type SlideImage } from "yet-another-react-lightbox";
-import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
-
-import PrevIcon from "~icons/heroicons/chevron-left-20-solid";
-import NextIcon from "~icons/heroicons/chevron-right-20-solid";
-import ZoomOutIcon from "~icons/heroicons/magnifying-glass-minus-20-solid";
-import ZoomInIcon from "~icons/heroicons/magnifying-glass-plus-20-solid";
 
 import { clampedImageDimensions } from "~/helpers/images";
-import { type Dimensions, type Image as ImageType } from "~/types";
+import { type Image as ImageType } from "~/types";
+
+import AppLightbox from "./AppLightbox";
 
 import classes from "./ImageStack.module.css";
 
@@ -86,82 +80,13 @@ const ImageStack: FC<ImageStackProps> = ({
           );
         })}
       </Box>
-      <Lightbox
-        className={classes.lightbox}
-        plugins={[LightboxZoomPlugin]}
-        carousel={{
-          ...(images.length === 1 && {
-            finite: true,
-          }),
-        }}
+      <AppLightbox
         open={lightboxOpened}
         close={() => {
           setLightboxOpened(false);
         }}
-        slides={images.map(image => ({
-          src: image.src,
-          ...(image.dimensions && {
-            ...slideImageOptionsFromDimensions(image, image.dimensions),
-          }),
-        }))}
-        {...{ index }}
-        controller={{
-          closeOnBackdropClick: true,
-          closeOnPullDown: true,
-          closeOnPullUp: true,
-        }}
-        render={{
-          ...(images.length > 1
-            ? {
-                iconPrev: () => (
-                  <Box component={PrevIcon} fz="xl" width={32} height={32} />
-                ),
-                iconNext: () => (
-                  <Box component={NextIcon} fz="xl" width={32} height={32} />
-                ),
-              }
-            : {
-                buttonNext: () => null,
-                buttonPrev: () => null,
-              }),
-          buttonClose: () => (
-            <CloseButton
-              key="close"
-              className={classes.closeButton}
-              variant="transparent"
-              size="lg"
-              onClick={() => {
-                setLightboxOpened(false);
-              }}
-            />
-          ),
-          buttonZoom: ({ zoomIn, zoomOut, zoom, maxZoom }) => (
-            <Group key="zoom" gap={0} className={classes.lightboxZoomButtons}>
-              <ActionIcon
-                variant="transparent"
-                size="lg"
-                onClick={zoomOut}
-                disabled={zoom <= 1}
-              >
-                <ZoomOutIcon />
-              </ActionIcon>
-              <ActionIcon
-                variant="transparent"
-                size="lg"
-                onClick={zoomIn}
-                disabled={zoom >= maxZoom}
-              >
-                <ZoomInIcon />
-              </ActionIcon>
-            </Group>
-          ),
-          iconLoading: () => <Loader />,
-        }}
-        on={{
-          view: ({ index }) => {
-            setIndex(index);
-          },
-        }}
+        onIndexChange={setIndex}
+        {...{ images, index }}
       />
     </>
   );
@@ -247,32 +172,4 @@ const StackImage: FC<StackImageProps> = ({
       }}
     />
   );
-};
-
-const slideImageOptionsFromDimensions = (
-  image: ImageType,
-  dimensions: Dimensions,
-): Omit<SlideImage, "src"> => {
-  const heightRatio = dimensions.height / dimensions.width;
-  return {
-    width: dimensions.width,
-    height: dimensions.height,
-    srcSet: image.srcset
-      ? parseSrcset(image.srcset).map(({ source, width }) => {
-          if (!width) {
-            return {
-              src: source.value,
-              width: NaN,
-              height: NaN,
-            };
-          }
-          const height = width.value * heightRatio;
-          return {
-            src: source.value,
-            width: width.value,
-            height,
-          };
-        })
-      : undefined,
-  };
 };
