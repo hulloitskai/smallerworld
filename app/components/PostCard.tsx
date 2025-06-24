@@ -5,7 +5,6 @@ import {
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
-import { LayoutGroup, motion } from "motion/react";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
@@ -65,159 +64,153 @@ const PostCard: FC<PostCardProps> = ({
   }, [focus, isStandalone, outOfPWAScope, registration]);
 
   return (
-    <LayoutGroup>
-      <Card
-        component={motion.div}
-        ref={cardRef}
-        className={cn("PostCard", classes.card)}
-        withBorder
-        shadow="sm"
-        layout="size"
-        mod={{
-          focus,
-          "post-visibility": post.visibility,
-        }}
-        {...otherProps}
-      >
-        <Card.Section inheritPadding pt="xs" pb={10}>
-          <Group gap={8} align="center">
-            {!!post.emoji && (
-              <Text size="lg" inline display="block">
-                {post.emoji}
-              </Text>
+    <Card
+      ref={cardRef}
+      className={cn("PostCard", classes.card)}
+      withBorder
+      shadow="sm"
+      mod={{
+        focus,
+        "post-visibility": post.visibility,
+      }}
+      {...otherProps}
+    >
+      <Card.Section inheritPadding pt="xs" pb={10}>
+        <Group gap={8} align="center">
+          {!!post.emoji && (
+            <Text size="lg" inline display="block">
+              {post.emoji}
+            </Text>
+          )}
+          <Group gap={6} style={{ flexGrow: 1 }}>
+            {!post.emoji && (
+              <Box
+                component={POST_TYPE_TO_ICON[post.type]}
+                fz={10.5}
+                c="dimmed"
+                display="block"
+              />
             )}
-            <Group gap={6} style={{ flexGrow: 1 }}>
-              {!post.emoji && (
+            <Text size="xs" ff="heading" fw={600} c="dimmed">
+              {POST_TYPE_TO_LABEL[post.type]}
+            </Text>
+          </Group>
+          {pinnedUntil ? (
+            <Box className={classes.timestamp} mod={{ pinned: true }}>
+              {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
+              <Time format={DateTime.DATE_MED} inline inherit>
+                {pinnedUntil}
+              </Time>
+            </Box>
+          ) : (
+            <Time
+              className={classes.timestamp}
+              format={dateTime => {
+                if (dateTime.hasSame(DateTime.now(), "day")) {
+                  return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
+                }
+                return dateTime.toLocaleString(DateTime.DATETIME_MED);
+              }}
+              inline
+              block
+            >
+              {post.created_at}
+            </Time>
+          )}
+          {post.visibility === "public" && (
+            <Tooltip
+              label="this post is publicly visible"
+              events={{ hover: true, focus: true, touch: true }}
+              position="top-end"
+              arrowOffset={16}
+            >
+              <Box>
                 <Box
-                  component={POST_TYPE_TO_ICON[post.type]}
+                  component={PublicIcon}
                   fz={10.5}
-                  c="dimmed"
+                  c="primary"
                   display="block"
                 />
-              )}
-              <Text size="xs" ff="heading" fw={600} c="dimmed">
-                {POST_TYPE_TO_LABEL[post.type]}
-              </Text>
-            </Group>
-            {pinnedUntil ? (
-              <Box className={classes.timestamp} mod={{ pinned: true }}>
-                {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
-                <Time format={DateTime.DATE_MED} inline inherit>
-                  {pinnedUntil}
-                </Time>
               </Box>
-            ) : (
-              <Time
-                className={classes.timestamp}
-                format={dateTime => {
-                  if (dateTime.hasSame(DateTime.now(), "day")) {
-                    return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
-                  }
-                  return dateTime.toLocaleString(DateTime.DATETIME_MED);
-                }}
-                inline
-                block
-              >
-                {post.created_at}
-              </Time>
-            )}
-            {post.visibility === "public" && (
-              <Tooltip
-                label="this post is publicly visible"
-                events={{ hover: true, focus: true, touch: true }}
-                position="top-end"
-                arrowOffset={16}
-              >
-                <Box>
-                  <Box
-                    component={PublicIcon}
-                    fz={10.5}
-                    c="primary"
-                    display="block"
-                  />
-                </Box>
-              </Tooltip>
-            )}
-            {post.visibility === "only_me" && (
-              <Tooltip
-                label="this post is visible only to you"
-                events={{ hover: true, focus: true, touch: true }}
-                position="top-end"
-                arrowOffset={16}
-              >
-                <Box>
-                  <Box
-                    component={LockIcon}
-                    fz={10.5}
-                    c="primary"
-                    display="block"
-                  />
-                </Box>
-              </Tooltip>
-            )}
-          </Group>
-        </Card.Section>
-        <Card.Section
-          className={classes.contentSection}
-          inheritPadding
-          component={motion.div}
-          layout="size"
-          mod={{ "blur-content": blurContent }}
-        >
-          <Stack gap={14}>
-            <Stack gap={6}>
-              {!!post.title && (
-                <Title order={3} size="h4">
-                  {post.title}
-                </Title>
-              )}
-              <TypographyStylesProvider>
-                <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-              </TypographyStylesProvider>
-            </Stack>
-            {!!firstImage && (
-              <>
-                {blurContent || post.images.length === 1 ? (
-                  <ImageWithLightbox image={firstImage} {...{ blurContent }} />
-                ) : (
-                  <ImageStack
-                    images={post.images}
-                    maxWidth={IMAGE_MAX_WIDTH}
-                    maxHeight={IMAGE_MAX_HEIGHT}
-                    flipBoundary={IMAGE_FLIP_BOUNDARY}
-                    mb={6}
-                  />
-                )}
-              </>
-            )}
-            {post.quoted_post && (
-              <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
-            )}
-          </Stack>
-          {blurContent && (
-            <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
-              <Stack align="center" justify="center" gap={6} h="100%">
-                <Alert
-                  variant="outline"
-                  color="gray"
-                  icon={<LockIcon />}
-                  title="visible only to invited friends"
-                  className={classes.restrictedAlert}
-                />
-              </Stack>
-            </Overlay>
+            </Tooltip>
           )}
-        </Card.Section>
-        <Card.Section
-          className={classes.footerSection}
-          inheritPadding
-          pt="xs"
-          py="sm"
-        >
-          {actions}
-        </Card.Section>
-      </Card>
-    </LayoutGroup>
+          {post.visibility === "only_me" && (
+            <Tooltip
+              label="this post is visible only to you"
+              events={{ hover: true, focus: true, touch: true }}
+              position="top-end"
+              arrowOffset={16}
+            >
+              <Box>
+                <Box
+                  component={LockIcon}
+                  fz={10.5}
+                  c="primary"
+                  display="block"
+                />
+              </Box>
+            </Tooltip>
+          )}
+        </Group>
+      </Card.Section>
+      <Card.Section
+        className={classes.contentSection}
+        inheritPadding
+        mod={{ "blur-content": blurContent }}
+      >
+        <Stack gap={14}>
+          <Stack gap={6}>
+            {!!post.title && (
+              <Title order={3} size="h4">
+                {post.title}
+              </Title>
+            )}
+            <TypographyStylesProvider>
+              <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
+            </TypographyStylesProvider>
+          </Stack>
+          {!!firstImage && (
+            <>
+              {blurContent || post.images.length === 1 ? (
+                <ImageWithLightbox image={firstImage} {...{ blurContent }} />
+              ) : (
+                <ImageStack
+                  images={post.images}
+                  maxWidth={IMAGE_MAX_WIDTH}
+                  maxHeight={IMAGE_MAX_HEIGHT}
+                  flipBoundary={IMAGE_FLIP_BOUNDARY}
+                  mb={6}
+                />
+              )}
+            </>
+          )}
+          {post.quoted_post && (
+            <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
+          )}
+        </Stack>
+        {blurContent && (
+          <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
+            <Stack align="center" justify="center" gap={6} h="100%">
+              <Alert
+                variant="outline"
+                color="gray"
+                icon={<LockIcon />}
+                title="visible only to invited friends"
+                className={classes.restrictedAlert}
+              />
+            </Stack>
+          </Overlay>
+        )}
+      </Card.Section>
+      <Card.Section
+        className={classes.footerSection}
+        inheritPadding
+        pt="xs"
+        py="sm"
+      >
+        {actions}
+      </Card.Section>
+    </Card>
   );
 };
 
