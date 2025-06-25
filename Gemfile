@@ -69,7 +69,6 @@ gem "concurrent-ruby", "~> 1.1"
 # Use Faraday to make HTTP requests
 gem "faraday", "~> 2.10"
 
-
 # Show a healthcheck route
 gem "rails-healthcheck"
 
@@ -128,9 +127,6 @@ gem "after_party", "~> 1.11"
 
 # Handle CORS requests
 gem "rack-cors", "~> 2.0"
-
-# # Control the browser with Playwright
-# gem "playwright-ruby-client", "~> 1.43", require: 'playwright'
 
 # Cache counts in models with CounterCulture
 gem "counter_culture", "~> 3.5"

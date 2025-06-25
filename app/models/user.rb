@@ -72,9 +72,9 @@ class User < ApplicationRecord
       raise ActiveRecord::RecordNotFound, "Missing page icon blob"
   end
 
-  sig { returns(ImageModel) }
-  def page_icon_model
-    page_icon_blob!.becomes(ImageModel)
+  sig { returns(Image) }
+  def serialized_page_icon
+    page_icon_blob!.becomes(Image)
   end
 
   # == Normalizations

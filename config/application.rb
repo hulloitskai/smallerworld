@@ -79,6 +79,7 @@ module SmallerWorld
     config.active_record.schema_migrations_table_name =
       "active_record_schema_migrations"
     config.active_record.index_nested_attribute_errors = true
+    config.active_record.strict_loading_by_default = true
 
     # == Action Cable
     config.action_cable.mount_path = "/cable"

@@ -161,6 +161,9 @@ class Post < ApplicationRecord
     joins(:author)
       .where("posts.updated_at > (users.created_at + INTERVAL '1 second')")
   }
+  scope :with_images, -> {
+    includes(images_attachments: [blob: { variant_records: :blob }])
+  }
 
   # == Noticeable
   sig do
@@ -195,9 +198,9 @@ class Post < ApplicationRecord
     images_blobs.first
   end
 
-  sig { returns(T::Array[ImageModel]) }
-  def images_models
-    images_blobs.map { |blob| blob.becomes(ImageModel) }
+  sig { returns(T::Array[Image]) }
+  def serialized_images
+    images_blobs.map { |blob| blob.becomes(Image) }
   end
 
   sig { returns(Friend::PrivateRelation) }

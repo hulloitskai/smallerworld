@@ -12,10 +12,10 @@ class ImagesController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(T.nilable(ImageModel)) }
+  sig { returns(T.nilable(Image)) }
   def maybe_find_image
     if (blob = ActiveStorage::Blob.find_signed(params.fetch(:signed_id)))
-      blob.becomes(ImageModel)
+      blob.becomes(Image)
     end
   end
 end

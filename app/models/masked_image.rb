@@ -21,7 +21,7 @@
 #  index_active_storage_blobs_on_key  (key) UNIQUE
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
-class MaskedImageModel < ImageModel
+class MaskedImage < Image
   # == Constants
   MASKED_SIZE = 32
 

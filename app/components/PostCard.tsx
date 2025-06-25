@@ -80,27 +80,25 @@ const PostCard: FC<PostCardProps> = ({
       {...otherProps}
     >
       <Card.Section inheritPadding pt="xs" pb={10}>
-        <Group gap={8} align="center">
+        <Group gap={8} align="center" justify="space-between">
           {!!post.emoji && (
-            <Text size="lg" inline display="block">
+            <Text inline size="lg" display="block">
               {post.emoji}
             </Text>
           )}
           <Group
             className={classes.typeGroup}
             gap={6}
-            style={{ flexGrow: 1 }}
             mod={{ highlight: highlightType }}
             onClick={onTypeClick}
           >
             {!post.emoji && (
               <Box
+                className={classes.typeIcon}
                 component={POST_TYPE_TO_ICON[post.type]}
-                fz={10.5}
-                display="block"
               />
             )}
-            <Text size="xs" ff="heading" fw={600}>
+            <Text className={classes.typeLabel} size="xs">
               {POST_TYPE_TO_LABEL[post.type]}
             </Text>
           </Group>

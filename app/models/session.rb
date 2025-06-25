@@ -33,4 +33,7 @@ class Session < ApplicationRecord
 
   # == Validations
   validates :ip_address, :user_agent, presence: true
+
+  # == Scopes
+  scope :with_user, -> { includes(:user) }
 end

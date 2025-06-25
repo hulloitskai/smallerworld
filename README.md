@@ -19,6 +19,28 @@ bin/setup
 
 ## todos
 
+- [ ] service worker versioning
+- [ ] server-side notifications rendering
+- [ ] clearer instructions for pin-to-home-screen on iOS
+- [ ] make it easier for people to give "enable notifications" a shot
+  - is it ok if we enable notifications so you can know when <user> needs
+    support from you?
+- [ ] add ?ref=smallerworld on outbound links
+- [ ] resolve "reply count" countroversey
+  - how to incentivize people to reply more? without introducing social gaming
+    elements?
+- [ ] privacy policy + tos
+- [ ] implement stickers!!
+- [ ] android takes some time for beforeinstallprompt event to fire, i need to
+      account for this
+- [ ] emoji picker search sucks
+- [ ] user-page-specific splash screens for Android / iOS
+- [ ] fix iOS text selection in Vaul drawers
+- [ ] adding friend page to chrome standalone doesn't dismiss join modal
+- [ ] remove old supabase auth code
+
+## archived todos
+
 - [x] show upcoming events when not logged in
 - [x] hide link href when not logged in
 - [x] correct pinned posts order
@@ -57,22 +79,9 @@ bin/setup
 - [-] some android devices don't open app from notification
 - [x] macleod reply with telegram shows "user does not exist"???
 - [x] better cta for user page welcome modal
-- [ ] add ?ref=smallerworld on outbound links
-- [ ] resolve "reply count" countroversey
-  - how to incentivize people to reply more? without introducing social gaming
-    elements?
-- [ ] privacy policy + tos
-- [ ] reactions v2
 - [x] make it easy for new users to request to join peppercoat's world
   - demo vibes on landing page?
 - [x] features + feedback area of smaller world (click on the door to enter
       the shared area)
 - [x] closeable prompt to open your world on mobile with qr code when on desktop
-- [ ] android takes some time for beforeinstallprompt event to fire, i need to
-      account for this
-- [ ] emoji picker search sucks
-- [ ] user-page-specific splash screens for Android / iOS
-- [ ] fix iOS text selection in Vaul drawers
-- [ ] adding friend page to chrome standalone doesn't dismiss join modal
-- [ ] add android/ios chrome add-to-homescreen instructions
-- [ ] remove old supabase auth code
+- [x] add android/ios chrome add-to-homescreen instructions

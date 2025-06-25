@@ -15,6 +15,7 @@ if (credentials = Rails.application.credentials.sentry)
     config.excluded_exceptions += %w[
       ActiveSupport::MessageVerifier::InvalidSignature
       ActionPolicy::Unauthorized
+      ActiveRecord::RecordNotUnique
       UnauthenticatedError
     ]
 

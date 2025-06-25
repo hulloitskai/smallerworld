@@ -49,7 +49,7 @@ module AuthenticatesUsers
   sig { returns(T.nilable(Session)) }
   def find_session_by_cookie
     if (id = cookies.signed[:session_id])
-      Session.find_by(id:)
+      Session.with_user.find_by(id:)
     end
   end
 

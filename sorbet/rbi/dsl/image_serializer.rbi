@@ -6,6 +6,6 @@
 
 
 class ImageSerializer
-  sig { returns(ImageModel) }
+  sig { returns(Image) }
   def image; end
 end

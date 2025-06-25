@@ -14,7 +14,7 @@ class PostsController < ApplicationController
   def index
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
-      .includes(images_attachments: :blob)
+      .with_attached_images
     if (type = params[:type])
       posts = posts.where(type:)
     end

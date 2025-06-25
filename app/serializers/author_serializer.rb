@@ -10,5 +10,5 @@ class AuthorSerializer < ApplicationSerializer
   attributes :name, :handle
 
   # == Associations
-  has_one :page_icon_model, as: :page_icon, serializer: ImageSerializer
+  has_one :serialized_page_icon, as: :page_icon, serializer: ImageSerializer
 end

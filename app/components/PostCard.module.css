@@ -119,3 +119,13 @@
     color: var(--mantine-color-primary-light-color);
   }
 }
+
+.typeIcon {
+  display: block;
+  font-size: 10.5px;
+}
+
+.typeLabel {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 600;
+}

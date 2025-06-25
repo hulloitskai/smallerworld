@@ -33,7 +33,7 @@ class PostPolicy < ApplicationPolicy
   relation_scope do |relation|
     relation = T.cast(relation, Post::PrivateRelation)
     if (friend = self.friend)
-      posts = relation.where(author: friend.user!)
+      posts = relation.not_hidden_from(friend)
       if friend.chosen_family?
         posts.visible_to_chosen_family
       else

@@ -10,5 +10,3 @@ Rails.application.configure do
     Prosopite.rails_logger = true
   end
 end
-
-Rails.configuration.middleware.use(Prosopite::Middleware::Rack)

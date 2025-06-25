@@ -21,7 +21,7 @@
 #  index_active_storage_blobs_on_key  (key) UNIQUE
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
-class ImageModel < ActiveStorage::Blob
+class Image < ActiveStorage::Blob
   extend T::Sig
 
   # == Constants

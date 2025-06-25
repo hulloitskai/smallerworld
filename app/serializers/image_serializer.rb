@@ -3,7 +3,7 @@
 
 class ImageSerializer < FileSerializer
   # == Configuration
-  object_as :image, model: "ImageModel"
+  object_as :image
 
   # == Attributes
   attributes src: { type: :string },

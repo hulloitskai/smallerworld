@@ -71,9 +71,9 @@ class MaskedPost < Post
     post.becomes(MaskedPost)
   end
 
-  sig { override.returns(T::Array[MaskedImageModel]) }
-  def images_models
-    images_blobs.map { |blob| blob.becomes(MaskedImageModel) }
+  sig { override.returns(T::Array[MaskedImage]) }
+  def serialized_images
+    images_blobs.map { |blob| blob.becomes(MaskedImage) }
   end
 
   private

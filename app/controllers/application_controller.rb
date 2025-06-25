@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   include AuthenticatesUsers
   include AuthenticatesFriends
   include DefaultFaviconLinks
+  include NPlusOneDetection
 
   # == Errors
   class AuthenticationRequired < StandardError
