@@ -179,7 +179,7 @@ group :development, :test do
   gem "brakeman", require: false
 
   # Auto-detect and warn about N+1 queries
-  # gem "prosopite"
+  gem "prosopite"
   gem "pg_query"
 
   # Generate Typescript path helpers
