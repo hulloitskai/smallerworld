@@ -12,9 +12,7 @@ module NPlusOneDetection
     T.bind(self, T.class_of(ActionController::Base))
 
     # == Filters
-    unless defined?(Prosopite)
-      around_action :n_plus_one_detection
-    end
+    around_action :n_plus_one_detection if defined?(Prosopite)
   end
 
   private

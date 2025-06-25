@@ -3,8 +3,6 @@
 
 return unless defined?(Prosopite)
 
-require "prosopite/middleware/rack"
-
 Rails.application.configure do
   config.after_initialize do
     Prosopite.rails_logger = true
