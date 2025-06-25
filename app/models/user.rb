@@ -56,7 +56,7 @@ class User < ApplicationRecord
   has_many :join_requests, dependent: :destroy
 
   # == Attachments
-  has_one_attached :page_icon, strict_loading: true
+  has_one_attached :page_icon
 
   sig { returns(T::Boolean) }
   def page_icon? = page_icon.attached?
