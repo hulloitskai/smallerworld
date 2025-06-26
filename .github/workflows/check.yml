@@ -46,7 +46,7 @@ jobs:
       - name: Install libvips
         run: sudo apt-get install libvips
       - name: Set up environment
-        run: bin/setup --skip-server
+        run: bin/setup
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       - name: Scan for common Rails security vulnerabilities using static analysis
