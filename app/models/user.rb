@@ -45,6 +45,12 @@ class User < ApplicationRecord
     ActiveSupport::TimeZone.new(time_zone_name)
   end
 
+  # == Attributes
+  sig { returns(Phonelib::Phone) }
+  def phone
+    Phonelib.parse(phone_number)
+  end
+
   # == Associations
   has_many :sessions, dependent: :destroy
   has_many :friends, dependent: :destroy

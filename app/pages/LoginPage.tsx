@@ -16,8 +16,8 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
 
   // == Form
   const initialValues = {
-    phone_number_country_code: "+1",
-    phone_number_without_country_code: "",
+    country_code: "+1",
+    national_phone_number: "",
     verification_code: "",
   };
   type FormValues = typeof initialValues;
@@ -47,7 +47,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
   >({
     initialValues,
     validate: {
-      phone_number_without_country_code: (value, values) => {
+      national_phone_number: (value, values) => {
         const phoneNumber = parsePhoneFromParts(values);
         if (!phoneNumber) {
           return "Invalid phone number";
@@ -119,15 +119,8 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
   });
 
   const stepComplete = useMemo(() => {
-    const {
-      phone_number_without_country_code,
-      phone_number_country_code,
-      verification_code,
-    } = values;
-    const phoneNumber = [
-      phone_number_country_code,
-      phone_number_without_country_code,
-    ]
+    const { national_phone_number, country_code, verification_code } = values;
+    const phoneNumber = [country_code, national_phone_number]
       .filter(Boolean)
       .join(" ");
     if (showVerificationCodeInput) {
@@ -147,16 +140,16 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
         <form onSubmit={submit}>
           <Stack gap="sm">
             <InputBase
-              {...getInputProps("phone_number_without_country_code")}
+              {...getInputProps("national_phone_number")}
               component={IMaskInput}
               mask="(000) 000-0000"
               type="tel"
               label="your phone #"
-              name="phone_number_without_country_code"
+              name="national_phone_number"
               placeholder="(___) ___ ____"
               autoComplete="mobile tel-national"
               onAccept={value => {
-                setFieldValue("phone_number_without_country_code", value);
+                setFieldValue("national_phone_number", value);
               }}
               required
               withAsterisk={false}
@@ -167,8 +160,9 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               inputContainer={children => (
                 <Group gap={8} align="start">
                   <InputBase
-                    {...getInputProps("phone_number_country_code")}
+                    {...getInputProps("country_code")}
                     component={IMaskInput}
+                    name="country_code"
                     mask="+0[00]"
                     placeholder="+1"
                     autoComplete="mobile tel-country-code"
@@ -236,18 +230,15 @@ LoginPage.layout = page => (
 export default LoginPage;
 
 interface PhonePartsFormValues {
-  phone_number_country_code: string;
-  phone_number_without_country_code: string;
+  country_code: string;
+  national_phone_number: string;
 }
 
 const parsePhoneFromParts = ({
-  phone_number_country_code,
-  phone_number_without_country_code,
+  country_code,
+  national_phone_number,
 }: PhonePartsFormValues): string | null => {
-  const number = [
-    phone_number_country_code,
-    phone_number_without_country_code,
-  ].join(" ");
+  const number = [country_code, national_phone_number].join(" ");
   const phone = parsePhone(number);
   return phone.isValid ? phone.phoneNumber : null;
 };

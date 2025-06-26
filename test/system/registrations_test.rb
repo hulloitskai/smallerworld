@@ -8,7 +8,7 @@ class RegistrationsTest < ApplicationSystemTestCase
   test "can create an account" do
     # Sign in
     visit new_session_url
-    fill_in "phone_number_without_country_code", with: "4167005432"
+    fill_in "national_phone_number", with: "4167005432"
     click_link_or_button "send login code"
     click_link_or_button "auto-fill code", wait: 4.seconds
     click_link_or_button "sign in"

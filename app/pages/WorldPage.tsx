@@ -107,6 +107,12 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             w={ICON_SIZE}
             h={ICON_SIZE}
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
+            onClick={() => {
+              const url = new URL(routes.world.show.path(), location.origin);
+              void navigator.clipboard.writeText(url.toString()).then(() => {
+                toast.success("page url copied");
+              });
+            }}
           />
           <Stack gap={4}>
             <Title className={classes.pageTitle} size="h2">
