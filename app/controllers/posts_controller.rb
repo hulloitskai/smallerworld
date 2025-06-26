@@ -15,6 +15,7 @@ class PostsController < ApplicationController
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
       .with_images
+      .with_quoted_post_and_images
     if (type = params[:type])
       posts = posts.where(type:)
     end
@@ -39,6 +40,7 @@ class PostsController < ApplicationController
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts.currently_pinned)
       .with_images
+      .with_quoted_post_and_images
       .order(pinned_until: :asc, created_at: :asc)
     render(json: {
       posts: WorldPostSerializer.many(posts),
@@ -47,7 +49,7 @@ class PostsController < ApplicationController
 
   # GET /posts/:id/stats
   def stats
-    post = find_post
+    post = load_post
     authorize!(post, to: :manage?)
     render(json: {
       "notifiedFriends" => post.notified_friends.count,
@@ -86,7 +88,7 @@ class PostsController < ApplicationController
 
   # PUT /posts/:id
   def update
-    post = find_post
+    post = load_post
     authorize!(post)
     post_params = params.expect(post: [
       :title,
@@ -109,7 +111,7 @@ class PostsController < ApplicationController
   # POST /posts/:id/mark_seen
   def mark_seen
     current_friend = authenticate_friend!
-    post = find_post
+    post = load_post
     authorize!(post)
     post.views.find_or_create_by!(friend: current_friend)
     render(json: { "authorId" => post.author_id })
@@ -118,7 +120,7 @@ class PostsController < ApplicationController
   # POST /posts/:id/mark_replied
   def mark_replied
     current_friend = authenticate_friend!
-    post = find_post
+    post = load_post
     authorize!(post)
     post.reply_receipts.create!(friend: current_friend)
     render(json: { "authorId" => post.author_id })
@@ -126,7 +128,7 @@ class PostsController < ApplicationController
 
   # DELETE /posts/:id
   def destroy
-    post = find_post
+    post = load_post
     authorize!(post)
     if post.destroy
       render(json: {})
@@ -140,8 +142,8 @@ class PostsController < ApplicationController
 
   private
 
-  sig { returns(Post) }
-  def find_post
-    Post.find(params.fetch(:id))
+  sig { params(scope: Post::PrivateRelation).returns(Post) }
+  def load_post(scope: Post.all)
+    scope.find(params.fetch(:id))
   end
 end

@@ -11,8 +11,9 @@ class PhoneVerificationRequestsController < ApplicationController
   # == Actions
   # POST /phone_verification_requests
   def create
-    verification_request_params = params
-      .expect(verification_request: [:phone_number])
+    verification_request_params = params.expect(
+      verification_request: [:phone_number],
+    )
     verification_request = PhoneVerificationRequest
       .new(verification_request_params)
     with_log_tags do

@@ -85,9 +85,13 @@
 
 .encouragementsBadge {
   pointer-events: auto;
-  padding-block: 4px;
+  padding: 4px 8px;
   height: unset;
-  background-color: alpha(var(--mantine-color-default), 0.5);
+  background-color: var(--mantine-color-primary-light);
+  border-color: light-dark(
+    var(--mantine-color-primary-filled),
+    var(--mantine-color-primary-7)
+  );
 
   --blur-radius: rem(4px);
   backdrop-filter: blur(var(--blur-radius));
@@ -96,17 +100,6 @@
   > :global(.mantine-Badge-label) {
     display: flex;
     gap: 4px;
+    flex-wrap: wrap;
   }
-
-  /* --blur-radius: rem(4px);
-  backdrop-filter: blur(var(--blur-radius));
-  -webkit-backdrop-filter: blur(var(--blur-radius));
-
-  @mixin light {
-    border-color: var(--mantine-color-primary-4);
-  }
-
-  @mixin hover {
-    border-color: var(--mantine-color-primary-filled);
-  } */
 }

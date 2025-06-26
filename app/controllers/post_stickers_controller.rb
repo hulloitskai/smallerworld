@@ -8,7 +8,7 @@ class PostStickersController < ApplicationController
   # == Actions
   # GET /posts/:post_id/stickers
   def index
-    post = find_post
+    post = load_post
     stickers = authorized_scope(post.stickers).chronological
     render(json: {
       stickers: PostStickerSerializer.many(stickers),
@@ -18,7 +18,7 @@ class PostStickersController < ApplicationController
   # POST /posts/:post_id/stickers?friend_token=...
   def create
     current_friend = authenticate_friend!
-    post = find_post
+    post = load_post
     sticker_params = params.expect(sticker: [
       :id,
       :emoji,
@@ -33,7 +33,7 @@ class PostStickersController < ApplicationController
 
   # PUT/PATCH /post_stickers/:id
   def update
-    sticker = find_sticker
+    sticker = load_sticker
     authorize!(sticker)
     sticker.update!(params.expect(sticker: [relative_position: %i[x y]]))
     render(json: { sticker: PostStickerSerializer.one(sticker) })
@@ -41,7 +41,7 @@ class PostStickersController < ApplicationController
 
   # DELETE /post_stickers/:id
   def destroy
-    sticker = find_sticker
+    sticker = load_sticker
     authorize!(sticker)
     sticker.destroy!
     render(json: { "postId": sticker.post_id })
@@ -50,13 +50,13 @@ class PostStickersController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(Post) }
-  def find_post
-    Post.find(params.fetch(:post_id))
+  sig { params(scope: Post::PrivateRelation).returns(Post) }
+  def load_post(scope: Post.all)
+    scope.find(params.fetch(:post_id))
   end
 
-  sig { returns(PostSticker) }
-  def find_sticker
-    PostSticker.find(params.fetch(:id))
+  sig { params(scope: PostSticker::PrivateRelation).returns(PostSticker) }
+  def load_sticker(scope: PostSticker.all)
+    scope.find(params.fetch(:id))
   end
 end

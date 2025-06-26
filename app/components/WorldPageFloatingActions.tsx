@@ -48,7 +48,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
     descriptor: "load encouragements",
     keepPreviousData: true,
   });
-  const encouragements = encouragementsData?.encouragements ?? [];
+  const { encouragements = [] } = encouragementsData ?? {};
 
   // == Load pinned posts
   const { data: pinnedPostsData } = useRouteSWR<{ posts: WorldPost[] }>(
@@ -69,18 +69,14 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
 
   const actionsVisible =
     (isStandalone === false || !!pushRegistration) &&
+    isEmpty(modals) &&
+    !postType &&
     !pinnedPostsDrawerModalOpened;
   return (
     <>
       <Space className={classes.space} />
       <Affix className={classes.affix} position={{}} zIndex={180}>
-        <Transition
-          transition="pop"
-          mounted={
-            isEmpty(modals) && !postType && !pinnedPostsDrawerModalOpened
-          }
-          enterDelay={100}
-        >
+        <Transition transition="pop" mounted={actionsVisible} enterDelay={100}>
           {style => (
             <Group
               align="end"
@@ -88,113 +84,103 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
               gap={8}
               style={[{ pointerEvents: "none" }, style]}
             >
-              <Transition
-                transition="pop"
-                mounted={actionsVisible}
-                enterDelay={100}
-              >
-                {style => (
-                  <Stack gap={6} align="center" w="min-content" {...{ style }}>
-                    {!isEmpty(encouragements) && (
-                      <Badge
-                        className={classes.encouragementsBadge}
-                        variant="default"
+              {!isEmpty(encouragements) && (
+                <Center mih={42} maw={176}>
+                  <Badge
+                    className={classes.encouragementsBadge}
+                    variant="outline"
+                    radius="lg"
+                  >
+                    {encouragements.map(encouragement => (
+                      <HoverCard
+                        key={encouragement.id}
+                        position="top"
+                        shadow="sm"
                       >
-                        {encouragements.map(encouragement => (
-                          <HoverCard
-                            key={encouragement.id}
-                            position="top"
-                            shadow="sm"
-                          >
-                            <HoverCard.Target>
-                              <Text inline>{encouragement.emoji}</Text>
-                            </HoverCard.Target>
-                            <HoverCard.Dropdown px="xs" py={8} maw={240}>
-                              <Stack gap={2}>
-                                <Text size="sm">
-                                  &ldquo;{encouragement.message}&rdquo;
-                                </Text>
-                                <Text
-                                  size="xs"
-                                  c="dimmed"
-                                  style={{ alignSelf: "end" }}
-                                >
-                                  —{" "}
-                                  {[
-                                    encouragement.friend.emoji,
-                                    encouragement.friend.name,
-                                  ]
-                                    .filter(Boolean)
-                                    .join(" ")}
-                                </Text>
-                              </Stack>
-                            </HoverCard.Dropdown>
-                          </HoverCard>
-                        ))}
-                      </Badge>
-                    )}
-                    <Menu
-                      width={220}
-                      shadow="sm"
-                      classNames={{
-                        dropdown: classes.menuDropdown,
-                        itemLabel: classes.menuItemLabel,
-                        itemSection: classes.menuItemSection,
+                        <HoverCard.Target>
+                          <Text inline>{encouragement.emoji}</Text>
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown px="xs" py={8} maw={240}>
+                          <Stack gap={2}>
+                            <Text size="sm">
+                              &ldquo;{encouragement.message}&rdquo;
+                            </Text>
+                            <Text
+                              size="xs"
+                              c="dimmed"
+                              style={{ alignSelf: "end" }}
+                            >
+                              —{" "}
+                              {[
+                                encouragement.friend.emoji,
+                                encouragement.friend.name,
+                              ]
+                                .filter(Boolean)
+                                .join(" ")}
+                            </Text>
+                          </Stack>
+                        </HoverCard.Dropdown>
+                      </HoverCard>
+                    ))}
+                  </Badge>
+                </Center>
+              )}
+              <Menu
+                width={220}
+                shadow="sm"
+                classNames={{
+                  dropdown: classes.menuDropdown,
+                  itemLabel: classes.menuItemLabel,
+                  itemSection: classes.menuItemSection,
+                }}
+              >
+                <Menu.Target>
+                  <Indicator
+                    className={classes.newPostDraftIndicator}
+                    color="white"
+                    label={<DraftIcon />}
+                    size={16}
+                    offset={4}
+                    disabled={!newPostDraft}
+                  >
+                    <Button
+                      size="md"
+                      variant="filled"
+                      radius="xl"
+                      className={classes.menuButton}
+                      leftSection={<Box component={NewIcon} fz="lg" />}
+                    >
+                      new post
+                    </Button>
+                  </Indicator>
+                </Menu.Target>
+                <Menu.Dropdown style={{ pointerEvents: "auto" }}>
+                  {POST_TYPES.map(type => (
+                    <Menu.Item
+                      key={type}
+                      leftSection={
+                        <Box component={POST_TYPE_TO_ICON[type]} fz="md" />
+                      }
+                      {...(type === newPostDraft?.postType && {
+                        rightSection: (
+                          <Box
+                            component={DraftCircleIcon}
+                            className={classes.menuItemDraftIcon}
+                          />
+                        ),
+                      })}
+                      onClick={() => {
+                        setPostType(type);
                       }}
                     >
-                      <Menu.Target>
-                        <Indicator
-                          className={classes.newPostDraftIndicator}
-                          color="white"
-                          label={<DraftIcon />}
-                          size={16}
-                          offset={4}
-                          disabled={!newPostDraft}
-                        >
-                          <Button
-                            size="md"
-                            variant="filled"
-                            radius="xl"
-                            className={classes.menuButton}
-                            leftSection={<Box component={NewIcon} fz="lg" />}
-                          >
-                            new post
-                          </Button>
-                        </Indicator>
-                      </Menu.Target>
-                      <Menu.Dropdown style={{ pointerEvents: "auto" }}>
-                        {POST_TYPES.map(type => (
-                          <Menu.Item
-                            key={type}
-                            leftSection={
-                              <Box
-                                component={POST_TYPE_TO_ICON[type]}
-                                fz="md"
-                              />
-                            }
-                            {...(type === newPostDraft?.postType && {
-                              rightSection: (
-                                <Box
-                                  component={DraftCircleIcon}
-                                  className={classes.menuItemDraftIcon}
-                                />
-                              ),
-                            })}
-                            onClick={() => {
-                              setPostType(type);
-                            }}
-                          >
-                            new {POST_TYPE_TO_LABEL[type]}
-                          </Menu.Item>
-                        ))}
-                      </Menu.Dropdown>
-                    </Menu>
-                  </Stack>
-                )}
-              </Transition>
+                      new {POST_TYPE_TO_LABEL[type]}
+                    </Menu.Item>
+                  ))}
+                </Menu.Dropdown>
+              </Menu>
               <Transition
                 transition="pop"
-                mounted={actionsVisible && !isEmpty(pinnedPosts)}
+                mounted={!isEmpty(pinnedPosts)}
                 enterDelay={100}
               >
                 {style => (

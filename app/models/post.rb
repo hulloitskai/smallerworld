@@ -163,6 +163,9 @@ class Post < ApplicationRecord
   }
   scope :with_images, -> { includes(:images_blobs) }
   scope :with_reactions, -> { includes(:reactions) }
+  scope :with_quoted_post_and_images, -> {
+    includes(quoted_post: :images_blobs)
+  }
 
   # == Noticeable
   sig do

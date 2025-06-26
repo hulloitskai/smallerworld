@@ -8,7 +8,7 @@ class PostReactionsController < ApplicationController
   # == Actions
   # GET /posts/:post_id/reactions
   def index
-    post = find_post(scope: Post.with_reactions)
+    post = load_post(scope: Post.with_reactions)
     reactions = authorized_scope(post.reactions)
     render(json: { reactions: PostReactionSerializer.many(reactions) })
   end
@@ -16,7 +16,7 @@ class PostReactionsController < ApplicationController
   # POST /posts/:post_id/reactions?friend_token=...
   def create
     current_friend = authenticate_friend!
-    post = find_post
+    post = load_post
     reaction_params = params.expect(reaction: [:emoji])
     reaction = post.reactions.create!(friend: current_friend, **reaction_params)
     render(
@@ -27,7 +27,7 @@ class PostReactionsController < ApplicationController
 
   # DELETE /post_reactions/:id
   def destroy
-    reaction = find_reaction
+    reaction = load_reaction
     authorize!(reaction)
     reaction.destroy!
     render(json: { "postId": reaction.post_id })
@@ -37,12 +37,12 @@ class PostReactionsController < ApplicationController
 
   # == Helpers
   sig { params(scope: Post::PrivateRelation).returns(Post) }
-  def find_post(scope: Post.all)
+  def load_post(scope: Post.all)
     scope.find(params.fetch(:post_id))
   end
 
-  sig { returns(PostReaction) }
-  def find_reaction
-    PostReaction.find(params.fetch(:id))
+  sig { params(scope: PostReaction::PrivateRelation).returns(PostReaction) }
+  def load_reaction(scope: PostReaction.all)
+    scope.find(params.fetch(:id))
   end
 end

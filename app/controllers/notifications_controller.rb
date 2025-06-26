@@ -22,7 +22,7 @@ class NotificationsController < ApplicationController
     delivery_token = params.dig(:notification, :delivery_token) or
       raise ActionController::ParameterMissing, "notification.delivery_token"
     notification = if delivery_token.length == ActiveRecord::SecureToken::MINIMUM_TOKEN_LENGTH # rubocop:disable Layout/LineLength
-      notification = find_notification
+      notification = load_notification
       notification if notification.delivery_token == delivery_token
     elsif (notification = Notification.find_by_delivery_token(delivery_token)) && notification.id == params[:id] # rubocop:disable Layout/LineLength
       notification
@@ -36,8 +36,8 @@ class NotificationsController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(Notification) }
-  def find_notification
-    Notification.find(params.fetch(:id))
+  sig { params(scope: Notification::PrivateRelation).returns(Notification) }
+  def load_notification(scope: Notification.all)
+    scope.find(params.fetch(:id))
   end
 end

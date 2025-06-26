@@ -48,7 +48,7 @@ class PushSubscriptionsController < ApplicationController
   # PUT /push_subscriptions/unsubscribe
   def unsubscribe
     owner = current_owner
-    subscription = find_subscription
+    subscription = load_subscription
     should_remove_subscription = subscription.transaction do
       subscription.registrations.destroy_by(owner:)
       if subscription.registrations.none?
@@ -79,7 +79,7 @@ class PushSubscriptionsController < ApplicationController
   # POST /push_subscriptions/test
   def test
     owner = current_owner
-    subscription = find_subscription
+    subscription = load_subscription
     registration = subscription.registrations.find_by!(owner:)
     registration.push_test_notification
     render(json: {})
@@ -96,12 +96,12 @@ class PushSubscriptionsController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(PushSubscription) }
-  def find_subscription
-    endpoint = params.dig(:subscription, :endpoint) or
-      raise ActionController::ParameterMissing,
-            "Missing push subscription endpoint"
-    PushSubscription.find_by!(endpoint:)
+  sig do
+    params(scope: PushSubscription::PrivateRelation).returns(PushSubscription)
+  end
+  def load_subscription(scope: PushSubscription.all)
+    endpoint = params.require(:subscription).fetch(:endpoint)
+    scope.find_by!(endpoint:)
   end
 
   sig { returns(T.nilable(T.any(Friend, User))) }

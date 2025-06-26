@@ -5,9 +5,10 @@ class UserPostsController < ApplicationController
   # == Actions
   # GET /users/:user_id/posts
   def index
-    user_id = T.let(params.fetch(:user_id), String)
-    user = User.find(user_id)
-    posts = authorized_scope(user.posts).with_images
+    user = load_user
+    posts = authorized_scope(user.posts)
+      .with_images
+      .with_quoted_post_and_images
     pagy, paginated_posts = pagy_keyset(
       posts.order(created_at: :desc, id: :asc),
       limit: 5,
@@ -57,9 +58,10 @@ class UserPostsController < ApplicationController
 
   # GET /users/:user_id/posts/pinned
   def pinned
-    user_id = T.let(params.fetch(:user_id), String)
-    user = User.find(user_id)
-    posts = user.posts.currently_pinned.includes(:images_blobs)
+    user = load_user
+    posts = user.posts.currently_pinned
+      .with_images
+      .with_quoted_post_and_images
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end
@@ -91,5 +93,13 @@ class UserPostsController < ApplicationController
       UserPost.new(post:, replied:, repliers:)
     end
     render(json: { posts: UserPostSerializer.many(user_posts) })
+  end
+
+  private
+
+  # == Helpers
+  sig { params(scope: User::PrivateRelation).returns(User) }
+  def load_user(scope: User.all)
+    scope.find(params.fetch(:user_id))
   end
 end

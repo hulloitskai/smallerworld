@@ -5,6 +5,7 @@ class LandingController < ApplicationController
   # == Actions
   # GET /
   def show
+    demo_user = load_demo_user(scope: User.with_page_icon)
     render(inertia: "LandingPage", props: {
       "demoUser" => UserSerializer.one_if(demo_user),
     })
@@ -13,11 +14,11 @@ class LandingController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(T.nilable(User)) }
-  def demo_user
+  sig { params(scope: User::PrivateRelation).returns(T.nilable(User)) }
+  def load_demo_user(scope: User.all)
     if (config = Rails.application.config_for(:landing)) &&
         (id = config[:demo_user])
-      User.friendly.find(id)
+      scope.with_page_icon.friendly.find(id)
     end
   end
 end

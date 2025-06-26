@@ -50,7 +50,7 @@ class FriendsController < ApplicationController
 
   # PUT /friends/:id
   def update
-    friend = find_friend
+    friend = load_friend
     authorize!(friend)
     friend_params = params.expect(friend: %i[emoji name])
     if friend.update(friend_params)
@@ -65,7 +65,7 @@ class FriendsController < ApplicationController
 
   # POST /friends/:id/pause
   def pause
-    friend = find_friend
+    friend = load_friend
     authorize!(friend)
     if friend.update(paused_since: Time.current)
       render(json: { friend: FriendSerializer.one(friend) })
@@ -79,7 +79,7 @@ class FriendsController < ApplicationController
 
   # POST /friends/:id/unpause
   def unpause
-    friend = find_friend
+    friend = load_friend
     authorize!(friend)
     if friend.update(paused_since: nil)
       render(json: { friend: FriendSerializer.one(friend) })
@@ -93,8 +93,7 @@ class FriendsController < ApplicationController
 
   # DELETE /friends/:id
   def destroy
-    friend_id = T.let(params.fetch(:id), String)
-    friend = Friend.find(friend_id)
+    friend = load_friend
     authorize!(friend)
     friend.destroy!
     render(json: {})
@@ -103,8 +102,8 @@ class FriendsController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(Friend) }
-  def find_friend
-    Friend.find(params.fetch(:id))
+  sig { params(scope: Friend::PrivateRelation).returns(Friend) }
+  def load_friend(scope: Friend.all)
+    scope.find(params.fetch(:id))
   end
 end
