@@ -1,7 +1,6 @@
 import { Popover, Text } from "@mantine/core";
-import { confetti } from "@tsparticles/confetti";
 
-import { particlePositionFor } from "~/helpers/particles";
+import { confetti, particlePositionFor } from "~/helpers/particles";
 import { type Encouragement, type Friend, type User } from "~/types";
 
 import classes from "./EncouragementCard.module.css";
@@ -32,40 +31,75 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
   user,
   lastSentEncouragement,
   onEncouragementCreated,
-}) => (
-  <Card className={classes.card} withBorder>
-    {lastSentEncouragement ? (
-      <Stack gap={4} align="center" ta="center">
-        <Text ff="heading">
-          you sent {user.name} a {lastSentEncouragement.emoji}!
-        </Text>
-        <Text size="xs" c="dimmed">
-          you can send another nudge in{" "}
-          <DurationUntilCanSendAnotherEncouragement
-            {...{ encouragement: lastSentEncouragement }}
-          />
-        </Text>
-      </Stack>
-    ) : (
-      <Stack gap={8} align="center">
-        <Text ff="heading" size="sm" fw={500} ta="center">
-          help encourage {user.name} to share!
-        </Text>
-        <Group gap="xs">
-          {PRESETS.map(({ emoji, message }) => (
-            <EncouragementPopover
-              key={emoji}
-              {...{ currentFriend, emoji, message, onEncouragementCreated }}
+}) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // == Launch confetti after encouragement
+  const pendingNewEncouragementRef = useRef(false);
+  useDidUpdate(() => {
+    if (!lastSentEncouragement || !pendingNewEncouragementRef.current) {
+      return;
+    }
+    pendingNewEncouragementRef.current = false;
+    const card = cardRef.current;
+    if (card) {
+      void confetti({
+        position: particlePositionFor(card),
+        spread: 200,
+        ticks: 60,
+        gravity: 1,
+        startVelocity: 18,
+        count: 12,
+        scalar: 2,
+        shapes: ["emoji"],
+        shapeOptions: {
+          emoji: {
+            value: lastSentEncouragement.emoji,
+          },
+        },
+      });
+    }
+  }, [lastSentEncouragement]);
+
+  return (
+    <Card ref={cardRef} className={classes.card} withBorder>
+      {lastSentEncouragement ? (
+        <Stack gap={4} align="center" ta="center">
+          <Text ff="heading">
+            you sent {user.name} a {lastSentEncouragement.emoji}!
+          </Text>
+          <Text size="xs" c="dimmed">
+            you can send another nudge in{" "}
+            <DurationUntilCanSendAnotherEncouragement
+              {...{ encouragement: lastSentEncouragement }}
             />
-          ))}
-        </Group>
-        <Text size="xs" c="dimmed" ta="center">
-          tap on an emoji to send a friendly nudge :)
-        </Text>
-      </Stack>
-    )}
-  </Card>
-);
+          </Text>
+        </Stack>
+      ) : (
+        <Stack gap={8} align="center">
+          <Text ff="heading" size="sm" fw={500} ta="center">
+            help encourage {user.name} to share!
+          </Text>
+          <Group gap="xs">
+            {PRESETS.map(({ emoji, message }) => (
+              <EncouragementPopover
+                key={emoji}
+                {...{ currentFriend, emoji, message }}
+                onEncouragementCreated={() => {
+                  pendingNewEncouragementRef.current = true;
+                  onEncouragementCreated();
+                }}
+              />
+            ))}
+          </Group>
+          <Text size="xs" c="dimmed" ta="center">
+            tap on an emoji to send a friendly nudge :)
+          </Text>
+        </Stack>
+      )}
+    </Card>
+  );
+};
 
 export default EncouragementCard;
 
@@ -167,23 +201,6 @@ const EncouragementForm: FC<EncouragementFormProps> = ({
           loading={submitting}
           disabled={!values.message}
           style={{ alignSelf: "center" }}
-          onClick={({ currentTarget }) => {
-            void confetti({
-              position: particlePositionFor(currentTarget),
-              spread: 200,
-              ticks: 60,
-              gravity: 1,
-              startVelocity: 18,
-              count: 12,
-              scalar: 2,
-              shapes: ["emoji"],
-              shapeOptions: {
-                emoji: {
-                  value: emoji,
-                },
-              },
-            });
-          }}
         >
           send
         </Button>
