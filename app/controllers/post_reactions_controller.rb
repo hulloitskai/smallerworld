@@ -8,7 +8,7 @@ class PostReactionsController < ApplicationController
   # == Actions
   # GET /posts/:post_id/reactions
   def index
-    post = find_post(includes: :reactions)
+    post = find_post(scope: Post.with_reactions)
     reactions = authorized_scope(post.reactions)
     render(json: { reactions: PostReactionSerializer.many(reactions) })
   end
@@ -36,11 +36,9 @@ class PostReactionsController < ApplicationController
   private
 
   # == Helpers
-  sig { params(includes: T.untyped).returns(Post) }
-  def find_post(includes: nil)
-    posts = Post.all
-    posts = posts.includes(includes) if includes
-    posts.find(params.fetch(:post_id))
+  sig { params(scope: Post::PrivateRelation).returns(Post) }
+  def find_post(scope: Post.all)
+    scope.find(params.fetch(:post_id))
   end
 
   sig { returns(PostReaction) }

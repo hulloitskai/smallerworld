@@ -81,26 +81,28 @@ const PostCard: FC<PostCardProps> = ({
     >
       <Card.Section inheritPadding pt="xs" pb={10}>
         <Group gap={8} align="center" justify="space-between">
-          {!!post.emoji && (
-            <Text inline size="lg" display="block">
-              {post.emoji}
-            </Text>
-          )}
-          <Group
-            className={classes.typeGroup}
-            gap={6}
-            mod={{ highlight: highlightType }}
-            onClick={onTypeClick}
-          >
-            {!post.emoji && (
-              <Box
-                className={classes.typeIcon}
-                component={POST_TYPE_TO_ICON[post.type]}
-              />
+          <Group gap={8} align="center">
+            {!!post.emoji && (
+              <Text inline size="lg" display="block">
+                {post.emoji}
+              </Text>
             )}
-            <Text className={classes.typeLabel} size="xs">
-              {POST_TYPE_TO_LABEL[post.type]}
-            </Text>
+            <Group
+              className={classes.typeGroup}
+              gap={6}
+              mod={{ highlight: highlightType }}
+              onClick={onTypeClick}
+            >
+              {!post.emoji && (
+                <Box
+                  className={classes.typeIcon}
+                  component={POST_TYPE_TO_ICON[post.type]}
+                />
+              )}
+              <Text className={classes.typeLabel} size="xs">
+                {POST_TYPE_TO_LABEL[post.type]}
+              </Text>
+            </Group>
           </Group>
           {pinnedUntil ? (
             <Box className={classes.timestamp} mod={{ pinned: true }}>

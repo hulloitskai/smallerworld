@@ -7,8 +7,7 @@ class UserPostsController < ApplicationController
   def index
     user_id = T.let(params.fetch(:user_id), String)
     user = User.find(user_id)
-    posts = authorized_scope(user.posts)
-      .with_attached_images
+    posts = authorized_scope(user.posts).with_images
     pagy, paginated_posts = pagy_keyset(
       posts.order(created_at: :desc, id: :asc),
       limit: 5,
@@ -60,9 +59,7 @@ class UserPostsController < ApplicationController
   def pinned
     user_id = T.let(params.fetch(:user_id), String)
     user = User.find(user_id)
-    posts = user.posts
-      .currently_pinned
-      .includes(images_attachments: :blob)
+    posts = user.posts.currently_pinned.includes(:images_blobs)
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end

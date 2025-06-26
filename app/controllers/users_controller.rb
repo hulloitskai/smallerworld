@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   # == Actions
   # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def show
-    user = find_user
+    user = find_user(scope: User.with_page_icon)
     if (current_user = self.current_user)
       invitation_requested = user
         .join_requests
@@ -43,7 +43,7 @@ class UsersController < ApplicationController
   # GET /@:handle/manifest.webmanifest?friend_token=...&icon_type=(generic|user)
   def manifest
     current_friend = authenticate_friend!
-    user = find_user
+    user = find_user(scope: User.with_page_icon)
     icons =
       if params[:icon_type] == "generic"
         brand_manifest_icons
@@ -116,12 +116,12 @@ class UsersController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(User) }
-  def find_user
+  sig { params(scope: User::PrivateRelation).returns(User) }
+  def find_user(scope: User.all)
     if params.include?(:id)
-      User.find(params.fetch(:id))
+      scope.find(params.fetch(:id))
     elsif params.include?(:handle)
-      User.find_by!(handle: params.fetch(:handle))
+      scope.find_by!(handle: params.fetch(:handle))
     else
       raise "route has no :id or :handle"
     end

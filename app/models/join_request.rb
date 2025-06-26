@@ -37,7 +37,7 @@ class JoinRequest < ApplicationRecord
   end
 
   # == Normalizations
-  normalizes :name, with: ->(name) { name.strip }
+  strips_text :name
   normalizes_phone_number :phone_number
 
   # == Validations

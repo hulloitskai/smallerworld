@@ -56,7 +56,7 @@ class User < ApplicationRecord
   has_many :join_requests, dependent: :destroy
 
   # == Attachments
-  has_one_attached :page_icon
+  has_one_attached :page_icon, strict_loading: true
 
   sig { returns(T::Boolean) }
   def page_icon? = page_icon.attached?
@@ -78,7 +78,7 @@ class User < ApplicationRecord
   end
 
   # == Normalizations
-  normalizes :name, with: ->(name) { name.strip }
+  strips_text :name
   normalizes_phone_number :phone_number, :reply_to_number
 
   # == Validations
@@ -97,6 +97,9 @@ class User < ApplicationRecord
 
   # == Callbacks
   after_create :create_welcome_post!
+
+  # == Scopes
+  scope :with_page_icon, -> { includes(:page_icon_blob) }
 
   # == Methods
   sig { returns(T::Boolean) }

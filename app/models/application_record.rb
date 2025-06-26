@@ -7,7 +7,7 @@ class ApplicationRecord < ActiveRecord::Base
   extend Enumerize
 
   include RequiresColumn
-  include RemovesBlank
+  include Normalizations
   include Logging
   include FormErrors
 

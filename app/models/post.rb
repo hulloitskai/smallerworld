@@ -127,10 +127,10 @@ class Post < ApplicationRecord
   def quoted_post? = quoted_post_id?
 
   # == Attachments
-  has_many_attached :images
+  has_many_attached :images, strict_loading: true
 
   # == Normalizations
-  normalizes :title, with: ->(title) { title&.strip }
+  strips_text :title
 
   # == Validations
   validates :emoji, emoji: true, allow_nil: true
@@ -161,9 +161,8 @@ class Post < ApplicationRecord
     joins(:author)
       .where("posts.updated_at > (users.created_at + INTERVAL '1 second')")
   }
-  scope :with_images, -> {
-    includes(images_attachments: [blob: { variant_records: :blob }])
-  }
+  scope :with_images, -> { includes(:images_blobs) }
+  scope :with_reactions, -> { includes(:reactions) }
 
   # == Noticeable
   sig do
