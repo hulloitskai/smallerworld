@@ -31,7 +31,7 @@ import classes from "./AppLayout.module.css";
 export interface AppLayoutProps<PageProps extends SharedPageProps>
   extends Omit<
       AppMetaProps,
-      "title" | "description" | "imageUrl" | "manifestUrl"
+      "title" | "description" | "imageUrl" | "manifestUrl" | "pwaScope"
     >,
     Omit<AppInnerProps, "breadcrumbs" | "logoHref"> {
   title?: DynamicProp<PageProps, AppMetaProps["title"]>;
@@ -45,6 +45,7 @@ export interface AppLayoutProps<PageProps extends SharedPageProps>
   logoHref?: DynamicProp<PageProps, AppHeaderProps["logoHref"]>;
   imageUrl?: DynamicProp<PageProps, AppMetaProps["imageUrl"]>;
   manifestUrl?: DynamicProp<PageProps, AppMetaProps["manifestUrl"]>;
+  pwaScope?: DynamicProp<PageProps, AppMetaProps["pwaScope"]>;
 }
 
 export interface AppBreadcrumb {
@@ -62,6 +63,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   breadcrumbs: breadcrumbsProp,
   logoHref: logoHrefProp,
   manifestUrl: manifestUrlProp,
+  pwaScope: pwaScopeProp,
   ...appShellProps
 }: AppLayoutProps<PageProps>) => {
   // == Meta
@@ -69,6 +71,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   const description = useResolveDynamicProp(descriptionProp);
   const imageUrl = useResolveDynamicProp(imageUrlProp);
   const manifestUrl = useResolveDynamicProp(manifestUrlProp);
+  const pwaScope = useResolveDynamicProp(pwaScopeProp);
 
   // == Breadcrumbs
   const page = usePage<PageProps>();
@@ -83,7 +86,9 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 
   return (
     <>
-      <AppMeta {...{ title, description, imageUrl, noIndex, manifestUrl }} />
+      <AppMeta
+        {...{ title, description, imageUrl, noIndex, manifestUrl, pwaScope }}
+      />
       <PageLayout>
         <UserThemeProvider>
           <PWALoadingRemoveScroll>

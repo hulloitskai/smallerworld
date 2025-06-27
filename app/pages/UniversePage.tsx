@@ -68,7 +68,7 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
                       key={world.user_id}
                       component={PWAScopedLink}
                       href={routes.users.show.path({
-                        handle: world.user_handle,
+                        id: world.user_handle,
                         query: {
                           ...(!!world.associated_friend_access_token && {
                             friend_token: world.associated_friend_access_token,

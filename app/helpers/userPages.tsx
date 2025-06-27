@@ -121,7 +121,7 @@ export const openUserPageInstallationInstructionsInMobileSafari = (
     instructionsQuery.manifest_icon_type = manifest_icon_type;
   }
   const instructionsUrl = routes.users.show.path({
-    handle: user.handle,
+    id: user.handle,
     query: instructionsQuery,
   });
   openUrlInMobileSafari(instructionsUrl);

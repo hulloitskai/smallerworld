@@ -1,5 +1,6 @@
 import bricolageGrotesqueSrc from "@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url";
 import manropeWoff2Src from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
+import { dirname } from "@sentry/core";
 
 const APP_META_SITE_NAME = "smaller world";
 const APP_META_SITE_DESCRIPTION = "a smaller world for you and your friends :)";
@@ -13,6 +14,7 @@ export interface AppMetaProps {
   imageUrl?: string | null;
   noIndex?: boolean;
   manifestUrl?: string | null;
+  pwaScope?: string | null;
 }
 
 const AppMeta: FC<AppMetaProps> = ({
@@ -22,6 +24,7 @@ const AppMeta: FC<AppMetaProps> = ({
   siteName = APP_META_SITE_NAME,
   title: titleProp,
   manifestUrl,
+  pwaScope = manifestUrl ? dirname(manifestUrl) : undefined,
 }) => {
   const pageTitle = useMemo<string>(() => {
     const components = Array.isArray(titleProp) ? titleProp : [titleProp];
@@ -56,6 +59,9 @@ const AppMeta: FC<AppMetaProps> = ({
           href={manifestUrl}
           crossOrigin="use-credentials"
         />
+      )}
+      {!!pwaScope && (
+        <meta head-key="pwa-scope" name="pwa-scope" content={pwaScope} />
       )}
       <meta property="og:site_name" content={siteName} />
       <meta property="og:type" content="website" />

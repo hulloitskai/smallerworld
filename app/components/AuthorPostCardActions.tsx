@@ -256,7 +256,7 @@ const usePostUrl = (post: Post, user: User): string | undefined => {
   const [url, setUrl] = useState<string>();
   useEffect(() => {
     const path = routes.users.show.path({
-      handle: user.handle,
+      id: user.handle,
       query: {
         post_id: post.id,
       },

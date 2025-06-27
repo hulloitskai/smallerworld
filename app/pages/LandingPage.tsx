@@ -164,7 +164,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
           <Group align="start" gap={8}>
             <Anchor
               component={Link}
-              href={routes.users.show.path({ handle: demoUser.handle })}
+              href={routes.users.show.path({ id: demoUser.handle })}
             >
               <Stack className={classes.demoWorld} align="center" gap={6}>
                 <Image

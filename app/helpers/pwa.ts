@@ -58,22 +58,7 @@ export const useOutOfPWAScope = (): boolean => {
   }, [url]);
 };
 
-export const getPWAScope = (): string | null => {
-  const scope = getMeta("pwa-scope");
-  if (scope) {
-    return scope;
-  }
-  const manifestLink = document.querySelector<HTMLLinkElement>(
-    "link[rel='manifest']",
-  );
-  if (manifestLink) {
-    const manifestHref = manifestLink.href;
-    const { pathname } = new URL(manifestHref, location.origin);
-    const lastSlashIndex = pathname.lastIndexOf("/");
-    return pathname.slice(0, lastSlashIndex);
-  }
-  return null;
-};
+export const getPWAScope = (): string | null => getMeta("pwa-scope") ?? null;
 
 const useInstallPromptEvent = ():
   | BeforeInstallPromptEvent

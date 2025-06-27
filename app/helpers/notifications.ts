@@ -106,7 +106,7 @@ export const notificationTargetUrl = (notification: Notification): string => {
       const { post, user_handle, friend_access_token } =
         notification.payload as PostNotificationPayload;
       return routes.users.show.path({
-        handle: user_handle,
+        id: user_handle,
         query: {
           friend_token: friend_access_token,
           post_id: post.id,

@@ -116,7 +116,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             {...(currentFriend && {
               onClick: () => {
                 const path = routes.users.show.path({
-                  handle: user.handle,
+                  id: user.handle,
                   query: {
                     friend_token: currentFriend.access_token,
                   },
@@ -257,7 +257,7 @@ UserPage.layout = page => (
       const { manifest_icon_type } = queryParamsFromPath(url);
       return currentFriend
         ? routes.users.manifest.path({
-            handle: user.handle,
+            id: user.handle,
             query: {
               friend_token: currentFriend.access_token,
               icon_type: manifest_icon_type,
@@ -265,25 +265,13 @@ UserPage.layout = page => (
           })
         : null;
     }}
+    pwaScope={({ user }) => routes.users.show.path({ id: user.id })}
     withContainer
     containerSize="xs"
     withGutter
   >
-    <PWAScopeHead />
     <UserPageDialogStateProvider>{page}</UserPageDialogStateProvider>
   </AppLayout>
 );
 
 export default UserPage;
-
-const PWAScopeHead: FC = () => {
-  const { user } = usePageProps<UserPageProps>();
-  return (
-    <Head>
-      <meta
-        name="pwa-scope"
-        content={routes.users.show.path({ handle: user.handle })}
-      />
-    </Head>
-  );
-};

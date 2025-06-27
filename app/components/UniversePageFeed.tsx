@@ -42,7 +42,7 @@ const UniversePageFeed: FC<UniversePageFeedProps> = props => {
                 <Button
                   className={classes.authorButton}
                   component={Link}
-                  href={routes.users.show.path({ handle: post.author.handle })}
+                  href={routes.users.show.path({ id: post.author.handle })}
                   size="sm"
                   variant="subtle"
                   leftSection={

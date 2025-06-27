@@ -7,7 +7,7 @@ export const formatJoinMessage = (joinUrl: string) =>
 
 const buildJoinUrl = (user: User, friend: Friend): string => {
   const joinPath = routes.users.show.path({
-    handle: user.handle,
+    id: user.handle,
     query: {
       friend_token: friend.access_token,
       intent: "join",

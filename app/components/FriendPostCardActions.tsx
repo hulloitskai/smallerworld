@@ -2,7 +2,6 @@ import { Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 import { motion } from "motion/react";
-import { lazy } from "react";
 
 import StickerIcon from "~icons/ri/emoji-sticker-fill";
 
@@ -15,6 +14,7 @@ import { type PostReaction, type PostSticker } from "~/types";
 
 import Drawer from "./Drawer";
 import EmojiPopover from "./EmojiPopover";
+import LazyStickerPad from "./LazyStickerPad";
 import PostCardReplyButton, {
   type PostCardReplyButtonProps,
 } from "./PostCardReplyButton";
@@ -22,8 +22,6 @@ import StickerPicker from "./StickerPicker";
 
 import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
-
-const StickerPad = lazy(() => import("./StickerPad"));
 
 export interface FriendPostCardActionsProps
   extends Pick<PostCardReplyButtonProps, "user" | "post" | "replyToNumber"> {}
@@ -92,7 +90,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
           pb={8}
         >
           {showStickerPad && (
-            <StickerPad
+            <LazyStickerPad
               ref={stickerPadRef}
               postId={post.id}
               {...{ stickers }}

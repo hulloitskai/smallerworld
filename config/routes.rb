@@ -111,18 +111,13 @@ Rails.application.routes.draw do
 
   # == Users
   resources :users, only: [], export: true do
-    # collection do
-    #   get :joined
-    # end
     member do
       post :request_invitation
+      get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end
-  get "/@:handle" => "users#show", as: :user, export: true
-  get "/@:handle/join" => "users#join"
-  get "/@:handle/manifest.webmanifest" => "users#manifest",
-      constraints: { format: "" },
-      export: true
+  get "/@:id" => "users#show", as: :user, export: true
+  get "/@:id/join" => "users#join"
   resources(
     :user_posts,
     path: "/users/:user_id/posts",

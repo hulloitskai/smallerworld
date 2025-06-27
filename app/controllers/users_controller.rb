@@ -40,7 +40,7 @@ class UsersController < ApplicationController
     redirect_to(user_path(user, intent: "join"))
   end
 
-  # GET /@:handle/manifest.webmanifest?friend_token=...&icon_type=(generic|user)
+  # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def manifest
     current_friend = authenticate_friend!
     user = load_user(scope: User.with_page_icon)
@@ -59,6 +59,11 @@ class UsersController < ApplicationController
         display: "standalone",
         start_url: user_path(user, friend_token: current_friend.access_token),
         scope: user_path(user),
+        # start_url: user_path(
+        #   user.id,
+        #   friend_token: current_friend.access_token,
+        # ),
+        # scope: user_path(user.id),
       },
       content_type: "application/manifest+json",
     )
@@ -118,12 +123,6 @@ class UsersController < ApplicationController
   # == Helpers
   sig { params(scope: User::PrivateRelation).returns(User) }
   def load_user(scope: User.all)
-    if params.include?(:id)
-      scope.find(params.fetch(:id))
-    elsif params.include?(:handle)
-      scope.find_by!(handle: params.fetch(:handle))
-    else
-      raise "route has no :id or :handle"
-    end
+    scope.friendly.find(params.fetch(:id))
   end
 end

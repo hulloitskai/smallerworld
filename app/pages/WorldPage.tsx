@@ -224,7 +224,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             <Menu.Item
               component="a"
               leftSection={<OpenExternalIcon />}
-              href={routes.users.show.path({ handle: currentUser.handle })}
+              href={routes.users.show.path({ id: currentUser.handle })}
               target="_blank"
               rel="noopener"
             >

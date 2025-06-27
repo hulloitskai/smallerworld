@@ -23,7 +23,7 @@ const JoinedUserCard: FC<JoinedUserCardProps> = ({
         <List.Item icon={<UserIcon />}>
           <Anchor
             href={routes.users.show.path({
-              handle: user.handle,
+              id: user.handle,
               query: {
                 friend_token: user.friend_access_token,
               },
@@ -53,7 +53,7 @@ const JoinedUserCard: FC<JoinedUserCardProps> = ({
         <Button
           component="a"
           href={routes.users.show.path({
-            handle: user.handle,
+            id: user.handle,
             ...(user.friend_access_token && {
               query: {
                 friend_token: user.friend_access_token,
