@@ -127,7 +127,7 @@ class Post < ApplicationRecord
   def quoted_post? = quoted_post_id?
 
   # == Attachments
-  has_many_attached :images, strict_loading: true
+  has_many_attached :images
 
   # == Normalizations
   strips_text :title
