@@ -104,45 +104,47 @@ const PostCard: FC<PostCardProps> = ({
               </Text>
             </Group>
           </Group>
-          {pinnedUntil ? (
-            <Box className={classes.timestamp} mod={{ pinned: true }}>
-              {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
-              <Time format={DateTime.DATE_MED} inline inherit>
-                {pinnedUntil}
-              </Time>
-            </Box>
-          ) : (
-            <Time
-              className={classes.timestamp}
-              format={dateTime => {
-                if (dateTime.hasSame(DateTime.now(), "day")) {
-                  return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
-                }
-                return dateTime.toLocaleString(DateTime.DATETIME_MED);
-              }}
-              inline
-              block
-            >
-              {post.created_at}
-            </Time>
-          )}
-          {post.visibility === "public" && (
-            <Tooltip
-              label="this post is publicly visible"
-              events={{ hover: true, focus: true, touch: true }}
-              position="top-end"
-              arrowOffset={16}
-            >
-              <Box>
-                <Box
-                  component={PublicIcon}
-                  fz={10.5}
-                  c="primary"
-                  display="block"
-                />
+          <Group gap={8} align="center">
+            {pinnedUntil ? (
+              <Box className={classes.timestamp} mod={{ pinned: true }}>
+                {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
+                <Time format={DateTime.DATE_MED} inline inherit>
+                  {pinnedUntil}
+                </Time>
               </Box>
-            </Tooltip>
-          )}
+            ) : (
+              <Time
+                className={classes.timestamp}
+                format={dateTime => {
+                  if (dateTime.hasSame(DateTime.now(), "day")) {
+                    return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
+                  }
+                  return dateTime.toLocaleString(DateTime.DATETIME_MED);
+                }}
+                inline
+                block
+              >
+                {post.created_at}
+              </Time>
+            )}
+            {post.visibility === "public" && (
+              <Tooltip
+                label="this post is publicly visible"
+                events={{ hover: true, focus: true, touch: true }}
+                position="top-end"
+                arrowOffset={16}
+              >
+                <Box>
+                  <Box
+                    component={PublicIcon}
+                    fz={10.5}
+                    c="primary"
+                    display="block"
+                  />
+                </Box>
+              </Tooltip>
+            )}
+          </Group>
           {post.visibility === "only_me" && (
             <Tooltip
               label="this post is visible only to you"

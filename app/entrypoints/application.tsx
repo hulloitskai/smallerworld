@@ -35,9 +35,11 @@ setupLuxon();
 setupDayjs();
 setupActiveStorage();
 setupSentry();
-setupFullStory();
-setupAmplitude();
-setupClarity();
+requestIdleCallback(() => {
+  setupFullStory();
+  setupAmplitude();
+  setupClarity();
+});
 
 // == Service worker
 if ("serviceWorker" in navigator && matchMedia("(display-mode: standalone)")) {

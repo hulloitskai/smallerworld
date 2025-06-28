@@ -6,6 +6,7 @@ import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
+import Oneko from "~/components/Oneko";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import UserPageDialogStateProvider from "~/components/UserPageDialogStateProvider";
 import UserPageFeed from "~/components/UserPageFeed";
@@ -271,6 +272,7 @@ UserPage.layout = page => (
     withGutter
   >
     <UserPageDialogStateProvider>{page}</UserPageDialogStateProvider>
+    <Oneko targetSelector=".PostCard" />
   </AppLayout>
 );
 
