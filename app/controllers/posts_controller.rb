@@ -88,7 +88,7 @@ class PostsController < ApplicationController
 
   # PUT /posts/:id
   def update
-    post = load_post
+    post = load_post(scope: Post.with_images.with_quoted_post_and_images)
     authorize!(post)
     post_params = params.expect(post: [
       :title,
