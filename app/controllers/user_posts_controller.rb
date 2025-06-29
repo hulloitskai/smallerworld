@@ -6,9 +6,11 @@ class UserPostsController < ApplicationController
   # GET /users/:user_id/posts
   def index
     user = load_user
-    posts = authorized_scope(user.posts)
-      .with_images
-      .with_quoted_post_and_images
+    posts = user.posts.with_images.with_quoted_post_and_images
+    if (friend = current_friend)
+      posts = posts.not_hidden_from(friend)
+      posts = posts.visible_to_friends unless friend.chosen_family?
+    end
     pagy, paginated_posts = pagy_keyset(
       posts.order(created_at: :desc, id: :asc),
       limit: 5,
