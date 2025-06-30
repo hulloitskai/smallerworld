@@ -1,4 +1,5 @@
 .card {
+  overflow: visible;
   background-color: light-dark(
     alpha(var(--mantine-color-white), 0.7),
     alpha(var(--mantine-color-black), 0.2)

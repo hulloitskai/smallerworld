@@ -1,7 +1,10 @@
 import { Popover, Text } from "@mantine/core";
 
+import { NEKO_SIZE } from "~/helpers/neko";
 import { confetti, particlePositionFor } from "~/helpers/particles";
 import { type Encouragement, type Friend, type User } from "~/types";
+
+import Neko from "./Neko";
 
 import classes from "./EncouragementCard.module.css";
 
@@ -97,6 +100,13 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
           </Text>
         </Stack>
       )}
+      <Neko
+        animation="sleeping"
+        animationSpeed={0.5}
+        pos="absolute"
+        top={-NEKO_SIZE}
+        right="var(--mantine-spacing-lg)"
+      />
     </Card>
   );
 };

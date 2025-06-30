@@ -6,6 +6,7 @@ import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-soli
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
+import { NEKO_SIZE } from "~/helpers/neko";
 import {
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
@@ -18,6 +19,7 @@ import { type Encouragement, type PostType, type WorldPost } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
+import Neko from "./Neko";
 import PostCard from "./PostCard";
 import PostForm, { type PostFormProps } from "./PostForm";
 
@@ -143,16 +145,25 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                     offset={4}
                     disabled={!newPostDraft}
                   >
-                    <Button
-                      id="new-post"
-                      size="md"
-                      variant="filled"
-                      radius="xl"
-                      className={classes.menuButton}
-                      leftSection={<Box component={NewIcon} fz="lg" />}
-                    >
-                      new post
-                    </Button>
+                    <Box pos="relative">
+                      <Button
+                        id="new-post"
+                        size="md"
+                        variant="filled"
+                        radius="xl"
+                        className={classes.menuButton}
+                        leftSection={<Box component={NewIcon} fz="lg" />}
+                      >
+                        new post
+                      </Button>
+                      <Neko
+                        animation="sleeping"
+                        animationSpeed={0.5}
+                        pos="absolute"
+                        top={-NEKO_SIZE}
+                        right="var(--mantine-spacing-lg)"
+                      />
+                    </Box>
                   </Indicator>
                 </Menu.Target>
                 <Menu.Dropdown style={{ pointerEvents: "auto" }}>

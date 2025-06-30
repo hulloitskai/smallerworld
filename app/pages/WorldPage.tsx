@@ -382,7 +382,6 @@ WorldPage.layout = page => (
     withGutter
   >
     {page}
-    {/* <Oneko targetSelector=".PostCard, #new-post" /> */}
   </AppLayout>
 );
 
