@@ -17,7 +17,7 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import openAddFriendModal from "~/components/AddFriendModal";
 import AppLayout from "~/components/AppLayout";
-import Oneko from "~/components/Oneko";
+// import Oneko from "~/components/Oneko";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import WorldPageFeed from "~/components/WorldPageFeed";
@@ -382,7 +382,7 @@ WorldPage.layout = page => (
     withGutter
   >
     {page}
-    <Oneko targetSelector=".PostCard" />
+    {/* <Oneko targetSelector=".PostCard, #new-post" /> */}
   </AppLayout>
 );
 

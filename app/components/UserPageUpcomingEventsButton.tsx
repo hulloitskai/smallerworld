@@ -44,6 +44,7 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
       <Transition transition="pop" mounted={!isEmpty(pinnedPosts)}>
         {transitionStyle => (
           <Button
+            id="upcoming-events"
             variant="filled"
             radius="xl"
             className={classes.button}

@@ -144,6 +144,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                     disabled={!newPostDraft}
                   >
                     <Button
+                      id="new-post"
                       size="md"
                       variant="filled"
                       radius="xl"
