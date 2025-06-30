@@ -1,6 +1,7 @@
 import { useInViewport } from "@mantine/hooks";
 import { type PropsWithChildren } from "react";
 
+import { NEKO_SIZE } from "~/helpers/neko";
 import { mutateUserPagePosts, useUserPagePosts } from "~/helpers/userPages";
 import { type UserPageProps } from "~/pages/UserPage";
 import { type UserPost } from "~/types";
@@ -9,6 +10,7 @@ import EncouragementCard from "./EncouragementCard";
 import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
+import SleepyNeko from "./SleepyNeko";
 
 export interface UserPageFeedProps extends BoxProps {}
 
@@ -23,7 +25,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
   );
   const longerThan24HoursSinceLastPost = useMemo(() => {
     if (!posts) {
-      return;
+      return false;
     }
     const [lastPost] = posts;
     if (!lastPost) {
@@ -33,25 +35,27 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
     return DateTime.now().diff(timestamp, "hours").hours > 24;
   }, [posts]);
 
+  const showEncouragementCard =
+    !!currentFriend &&
+    user.supported_features.includes("encouragements") &&
+    (!!lastSentEncouragement || longerThan24HoursSinceLastPost);
   return (
     <Stack {...props}>
-      {currentFriend &&
-        user.supported_features.includes("encouragements") &&
-        (!!lastSentEncouragement || longerThan24HoursSinceLastPost) && (
-          <EncouragementCard
-            {...{
-              currentFriend,
-              user,
-              lastSentEncouragement: lastSentEncouragement,
-            }}
-            onEncouragementCreated={() => {
-              router.reload({
-                only: ["lastSentEncouragement"],
-                async: true,
-              });
-            }}
-          />
-        )}
+      {showEncouragementCard && (
+        <EncouragementCard
+          {...{
+            currentFriend,
+            user,
+            lastSentEncouragement: lastSentEncouragement,
+          }}
+          onEncouragementCreated={() => {
+            router.reload({
+              only: ["lastSentEncouragement"],
+              async: true,
+            });
+          }}
+        />
+      )}
       {posts ? (
         isEmpty(posts) ? (
           <Card withBorder>
@@ -63,16 +67,27 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
           </Card>
         ) : (
           <>
-            {posts.map(post => (
+            {posts.map((post, index) => (
               <TrackUserPostSeen key={post.id} {...{ post }}>
-                <PostCard
-                  {...{ post }}
-                  blurContent={!currentFriend && post.visibility !== "public"}
-                  focus={params.post_id === post.id}
-                  actions={
-                    <FriendPostCardActions {...{ user, post, replyToNumber }} />
-                  }
-                />
+                <Box pos="relative">
+                  <PostCard
+                    {...{ post }}
+                    blurContent={!currentFriend && post.visibility !== "public"}
+                    focus={params.post_id === post.id}
+                    actions={
+                      <FriendPostCardActions
+                        {...{ user, post, replyToNumber }}
+                      />
+                    }
+                  />
+                  {!showEncouragementCard && index === 0 && (
+                    <SleepyNeko
+                      pos="absolute"
+                      top={3 - NEKO_SIZE}
+                      right="var(--mantine-spacing-lg)"
+                    />
+                  )}
+                </Box>
               </TrackUserPostSeen>
             ))}
             {hasMorePosts && (

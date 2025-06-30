@@ -102,7 +102,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
       )}
       <SleepyNeko
         pos="absolute"
-        top={-NEKO_SIZE}
+        top={2 - NEKO_SIZE}
         right="var(--mantine-spacing-lg)"
       />
     </Card>

@@ -159,7 +159,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                       {!hideNeko && (
                         <SleepyNeko
                           pos="absolute"
-                          top={-NEKO_SIZE + 3}
+                          top={3 - NEKO_SIZE}
                           right="var(--mantine-spacing-lg)"
                         />
                       )}
