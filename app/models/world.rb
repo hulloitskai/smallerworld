@@ -6,7 +6,7 @@ class World < T::Struct
 
   # == Properties
   const :user, User
-  delegate :page_icon_model, to: :user
+  delegate :serialized_page_icon, to: :user
   delegate :id, :handle, :name, to: :user, prefix: true
 
   const :post_count, Integer

@@ -53,8 +53,8 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
           >
             <Stack gap={8} align="start">
               <Text inherit>
-                get notified about life updates, personal invitations, poems,
-                and more :)
+                get notified about my thoughts, ideas, and invitations to events
+                i&apos;m going to.
               </Text>
               <Group gap="xs">
                 <Button<"a" | "button">

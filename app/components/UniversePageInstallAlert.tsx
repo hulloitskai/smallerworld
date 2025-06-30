@@ -38,8 +38,8 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
           >
             <Stack gap={8} align="start">
               <Text inherit>
-                stay connected to smaller world happenings—life updates,
-                personal invitations, poems, and more!
+                stay connected to smaller world happenings—thoughts, ideas, and
+                invitations to events you&apos;re going to.
               </Text>
               <Group gap="xs">
                 <Button<"a" | "button">

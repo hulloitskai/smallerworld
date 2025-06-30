@@ -54,8 +54,8 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
         </Title>
         <Text ta="center" maw={300}>
           i made an app that tells you what&apos;s{" "}
-          <span style={{ fontWeight: 600 }}>*actually*</span> going on in my
-          life :)
+          <span style={{ fontWeight: 600, fontStyle: "italic" }}>actually</span>{" "}
+          going on in my life :)
         </Text>
       </Stack>
       <HomeScreenPreviewWithIconCustomization

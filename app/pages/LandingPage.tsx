@@ -101,7 +101,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
                   }
                 }}
               >
-                ok show me more
+                play
               </Button>
             </Center>
           </Overlay>
@@ -133,8 +133,8 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
               to pin your page to their home screen
             </List.Item>
             <List.Item>
-              share poems, journal entries, invitations to events you&apos;re
-              going to, etc.
+              share thoughts, ideas, and invitations to events you&apos;re going
+              to.
             </List.Item>
             <List.Item>
               your friends get notifications sent right to their lock screen.
@@ -151,7 +151,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
         radius="xl"
         styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
       >
-        wtf? i want this!
+        make your smaller world
       </Button>
       {demoUser && (
         <Stack align="center" gap={4} style={{ alignSelf: "stretch" }}>

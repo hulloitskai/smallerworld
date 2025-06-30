@@ -19,9 +19,9 @@ import { type Encouragement, type PostType, type WorldPost } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
-import Neko from "./Neko";
 import PostCard from "./PostCard";
 import PostForm, { type PostFormProps } from "./PostForm";
+import SleepyNeko from "./SleepyNeko";
 
 import classes from "./WorldPageFloatingActions.module.css";
 
@@ -157,11 +157,9 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                         new post
                       </Button>
                       {!hideNeko && (
-                        <Neko
-                          animation="sleeping"
-                          animationSpeed={0.5}
+                        <SleepyNeko
                           pos="absolute"
-                          top={-NEKO_SIZE}
+                          top={-NEKO_SIZE + 3}
                           right="var(--mantine-spacing-lg)"
                         />
                       )}

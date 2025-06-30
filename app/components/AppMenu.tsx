@@ -52,9 +52,6 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
         </Badge>
       </Menu.Target>
       <Menu.Dropdown>
-        <MenuLink href={routes.universe.show.path()} leftSection="💫">
-          smaller universe
-        </MenuLink>
         {currentUser ? (
           <>
             <MenuLink
@@ -82,13 +79,21 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
             />
           </>
         ) : (
-          <Menu.Item
-            leftSection={<SignInIcon />}
-            component={Link}
-            href={routes.session.new.path()}
-          >
-            sign in
-          </Menu.Item>
+          <>
+            <MenuLink
+              href={routes.registration.new.path()}
+              leftSection={<Image src={logoSrc} h="100%" w="unset" />}
+            >
+              create your world
+            </MenuLink>
+            <Menu.Item
+              leftSection={<SignInIcon />}
+              component={Link}
+              href={routes.session.new.path()}
+            >
+              sign in
+            </Menu.Item>
+          </>
         )}
         <Menu.Divider />
         <ContactItem
