@@ -161,7 +161,7 @@ class Post < ApplicationRecord
     joins(:author)
       .where("posts.updated_at > (users.created_at + INTERVAL '1 second')")
   }
-  scope :with_images, -> { includes(:images_blobs) }
+  scope :with_images, -> { includes(:images_attachments, :images_blobs) }
   scope :with_reactions, -> { includes(:reactions) }
   scope :with_quoted_post_and_images, -> {
     includes(quoted_post: :images_blobs)

@@ -34,7 +34,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   pausedFriends,
   onPostCreated,
 }) => {
-  const { currentUser, hideStats } = usePageProps<WorldPageProps>();
+  const { currentUser, hideStats, hideNeko } = usePageProps<WorldPageProps>();
   const { isStandalone } = usePWA();
   const { registration: pushRegistration } = useWebPush();
   const { modals } = useModals();
@@ -156,13 +156,15 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                       >
                         new post
                       </Button>
-                      <Neko
-                        animation="sleeping"
-                        animationSpeed={0.5}
-                        pos="absolute"
-                        top={-NEKO_SIZE}
-                        right="var(--mantine-spacing-lg)"
-                      />
+                      {!hideNeko && (
+                        <Neko
+                          animation="sleeping"
+                          animationSpeed={0.5}
+                          pos="absolute"
+                          top={-NEKO_SIZE}
+                          right="var(--mantine-spacing-lg)"
+                        />
+                      )}
                     </Box>
                   </Indicator>
                 </Menu.Target>

@@ -44,21 +44,3 @@ module ActionController
     include CorrectMessageCapitalization
   end
 end
-
-module ActiveRecord::Associations
-  class Association
-    module ActiveStorageStrictLoadingFix
-      extend T::Sig
-      extend T::Helpers
-
-      requires_ancestor { Association }
-
-      sig { returns(T::Boolean) }
-      def violates_strict_loading?
-        !owner.previously_new_record? && !!super
-      end
-    end
-
-    prepend ActiveStorageStrictLoadingFix
-  end
-end

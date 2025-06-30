@@ -38,6 +38,7 @@ export interface WorldPageProps extends SharedPageProps {
   latestFriends: WorldFriend[];
   pendingJoinRequests: number;
   hideStats: boolean;
+  hideNeko: boolean;
   pausedFriends: number;
 }
 

@@ -32,6 +32,7 @@ class WorldsController < ApplicationController
       "pendingJoinRequests" => pending_join_requests,
       "pausedFriends" => paused_friends,
       "hideStats" => current_user.hide_stats,
+      "hideNeko" => current_user.hide_neko,
     })
   end
 
@@ -40,13 +41,20 @@ class WorldsController < ApplicationController
     current_user = authenticate_user!
     render(inertia: "EditWorldPage", props: {
       "hideStats" => current_user.hide_stats,
+      "hideNeko" => current_user.hide_neko,
     })
   end
 
   # PUT /world
   def update
     current_user = authenticate_user!
-    user_params = params.expect(user: %i[name page_icon theme hide_stats])
+    user_params = params.expect(user: %i[
+      name
+      page_icon
+      theme
+      hide_stats
+      hide_neko
+    ])
     if current_user.update(**user_params)
       render(json: { user: UserSerializer.one(current_user) })
     else

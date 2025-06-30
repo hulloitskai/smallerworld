@@ -32,6 +32,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       page_icon_upload: null as Upload | null,
       theme: "" as UserTheme | "",
       hide_stats: false,
+      hide_neko: false,
     },
     transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => {
       invariant(timeZone, "Missing time zone");
@@ -166,6 +167,11 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 <Checkbox
                   {...getInputProps("hide_stats", { type: "checkbox" })}
                   label="perception anxiety mode (hides reaction counts and # of friends notified)"
+                  radius="md"
+                />
+                <Checkbox
+                  {...getInputProps("hide_neko", { type: "checkbox" })}
+                  label="no pets in my smaller world pls >:("
                   radius="md"
                 />
               </InputWrapper>

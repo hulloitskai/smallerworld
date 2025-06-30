@@ -793,6 +793,51 @@ class User
     def handle_will_change!; end
 
     sig { returns(T::Boolean) }
+    def hide_neko; end
+
+    sig { params(value: T::Boolean).returns(T::Boolean) }
+    def hide_neko=(value); end
+
+    sig { returns(T::Boolean) }
+    def hide_neko?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_neko_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def hide_neko_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def hide_neko_came_from_user?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def hide_neko_change; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def hide_neko_change_to_be_saved; end
+
+    sig { params(from: T::Boolean, to: T::Boolean).returns(T::Boolean) }
+    def hide_neko_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_neko_in_database; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def hide_neko_previous_change; end
+
+    sig { params(from: T::Boolean, to: T::Boolean).returns(T::Boolean) }
+    def hide_neko_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_neko_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def hide_neko_was; end
+
+    sig { void }
+    def hide_neko_will_change!; end
+
+    sig { returns(T::Boolean) }
     def hide_stats; end
 
     sig { params(value: T::Boolean).returns(T::Boolean) }
@@ -1127,6 +1172,9 @@ class User
     def restore_handle!; end
 
     sig { void }
+    def restore_hide_neko!; end
+
+    sig { void }
     def restore_hide_stats!; end
 
     sig { void }
@@ -1173,6 +1221,12 @@ class User
 
     sig { returns(T::Boolean) }
     def saved_change_to_handle?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def saved_change_to_hide_neko; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_hide_neko?; end
 
     sig { returns(T.nilable([T::Boolean, T::Boolean])) }
     def saved_change_to_hide_stats; end
@@ -1377,6 +1431,9 @@ class User
 
     sig { returns(T::Boolean) }
     def will_save_change_to_handle?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_hide_neko?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_hide_stats?; end

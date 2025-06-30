@@ -27,6 +27,7 @@ class UsersController < ApplicationController
       "lastSentEncouragement" => EncouragementSerializer
         .one_if(last_sent_encouragement),
       "invitationRequested" => invitation_requested,
+      "hideNeko" => user.hide_neko,
     }
     unless params[:manifest_icon_type] == "generic"
       props["faviconLinks"] = user_favicon_links(user)

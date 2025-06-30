@@ -9,6 +9,7 @@
 #  id                            :uuid             not null, primary key
 #  api_token                     :string
 #  handle                        :string           not null
+#  hide_neko                     :boolean          not null
 #  hide_stats                    :boolean          not null
 #  name                          :string           not null
 #  notifications_last_cleared_at :datetime

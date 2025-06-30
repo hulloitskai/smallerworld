@@ -18,6 +18,7 @@ const ICON_IMAGE_INPUT_SIZE = 110;
 const EditWorldPage: PageComponent<EditWorldPageProps> = ({
   currentUser,
   hideStats,
+  hideNeko,
 }) => {
   // == Form
   const initialValues = useMemo(
@@ -28,8 +29,9 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
       } as Upload | null,
       theme: currentUser.theme ?? ("" as const),
       hide_stats: hideStats,
+      hide_neko: hideNeko,
     }),
-    [currentUser, hideStats],
+    [currentUser, hideStats, hideNeko],
   );
   const { values, getInputProps, submitting, submit, isDirty } = useForm({
     action: routes.world.update,
@@ -125,6 +127,11 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
                   <Checkbox
                     {...getInputProps("hide_stats", { type: "checkbox" })}
                     label="perception anxiety mode (hides reaction counts and # of friends notified)"
+                    radius="md"
+                  />
+                  <Checkbox
+                    {...getInputProps("hide_neko", { type: "checkbox" })}
+                    label="no pets in my smaller world pls >:("
                     radius="md"
                   />
                 </InputWrapper>

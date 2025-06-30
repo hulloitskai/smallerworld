@@ -32,6 +32,7 @@ class RegistrationsController < ApplicationController
       page_icon
       time_zone_name
       hide_stats
+      hide_neko
     ])
     user = User.new(**user_params, phone_number: verified_phone_number)
     if user.save

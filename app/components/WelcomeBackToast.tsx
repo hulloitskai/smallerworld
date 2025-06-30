@@ -17,7 +17,7 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ subject }) => {
     if (visibility === "hidden") {
       return;
     }
-    if (import.meta.env.RAILS_ENV === "production" && wasShownInLast12Hours()) {
+    if (wasShownInLast12Hours()) {
       return;
     }
     let name = subject.name;

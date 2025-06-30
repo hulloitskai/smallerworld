@@ -128,7 +128,7 @@ class PostsController < ApplicationController
 
   # DELETE /posts/:id
   def destroy
-    post = load_post
+    post = load_post(scope: Post.with_images)
     authorize!(post)
     if post.destroy
       render(json: {})
