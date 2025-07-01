@@ -14,30 +14,6 @@ export interface SleepyNekoProps
 
 type NekoState = "idle" | "alert" | "scratch-self" | "tired" | "sleeping";
 
-interface StateConfig {
-  duration?: number; // optional for indefinite states
-  nextState?: NekoState;
-  animationSpeed?: number; // defaults to unset, but 0.5 for sleeping
-}
-
-const STATE_CONFIGS: Record<NekoState, StateConfig> = {
-  idle: {},
-  "scratch-self": {
-    duration: 2000,
-    nextState: "idle",
-  },
-  tired: {
-    duration: 1000,
-    nextState: "sleeping",
-  },
-  alert: {
-    duration: 1000,
-    nextState: "idle",
-  },
-  sleeping: {
-    animationSpeed: 0.5,
-  },
-};
 const TIREDNESS_DELAY = 10000; // 10 seconds
 const SCRATCH_INTERVAL_RANGE: [number, number] = [4000, 7000]; // 4-7 seconds
 
@@ -47,28 +23,18 @@ const SCRATCH_INTERVAL_RANGE: [number, number] = [4000, 7000]; // 4-7 seconds
 const SleepyNeko: FC<SleepyNekoProps> = ({ ...otherProps }) => {
   const [state, setState] = useState<NekoState>("sleeping");
 
-  const tirednessTimeoutRef = useRef<NodeJS.Timeout>();
-  const actionTimeoutRef = useRef<NodeJS.Timeout>(); // For both state transitions and scratch scheduling
-
-  // == Scratching
-  const scheduleScratching = useCallback(() => {
-    if (actionTimeoutRef.current) {
-      return;
-    }
-    const delay = randomizedScratchingDelay();
-    actionTimeoutRef.current = setTimeout(() => {
-      setState(current => (current === "idle" ? "scratch-self" : current));
-    }, delay);
-  }, []);
-  const resetScratching = useCallback(() => {
-    const timeout = actionTimeoutRef.current;
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    actionTimeoutRef.current = undefined;
-  }, []);
-
   // == Tiredness
+  const tirednessTimeoutRef = useRef<NodeJS.Timeout>();
+  useEffect(() => {
+    return () => {
+      const tirednessTimeout = tirednessTimeoutRef.current;
+      if (tirednessTimeout) {
+        clearTimeout(tirednessTimeout);
+      }
+    };
+  }, []);
+
+  // == Tiredness scheduling
   const scheduleTiredness = useCallback(() => {
     if (tirednessTimeoutRef.current) {
       return;
@@ -86,68 +52,49 @@ const SleepyNeko: FC<SleepyNekoProps> = ({ ...otherProps }) => {
     tirednessTimeoutRef.current = undefined;
   }, []);
 
-  // == Cleanup timeouts
+  // == State transition scheduling
+  const scheduleCancellableState = useCallback(
+    (state: NekoState, delay: number) => {
+      const timeout = setTimeout(() => {
+        setState(state);
+      }, delay);
+      return () => clearTimeout(timeout);
+    },
+    [],
+  );
   useEffect(() => {
-    return () => {
-      const actionTimeout = actionTimeoutRef.current;
-      if (actionTimeout) {
-        clearTimeout(actionTimeout);
+    switch (state) {
+      case "idle": {
+        scheduleTiredness();
+        const scratchDelay = randomizedScratchingDelay();
+        return scheduleCancellableState("scratch-self", scratchDelay);
       }
-
-      const tirednessTimeout = tirednessTimeoutRef.current;
-      if (tirednessTimeout) {
-        clearTimeout(tirednessTimeout);
+      case "scratch-self": {
+        return scheduleCancellableState("idle", 2000);
       }
-    };
-  }, []);
-
-  // Handle state transitions
-  useEffect(() => {
-    const config = STATE_CONFIGS[state];
-
-    // Prevent background behaviors for non-idle states
-    if (state !== "idle" && state !== "scratch-self") {
-      resetTiredness();
-    }
-    if (state !== "idle") {
-      resetScratching();
-    }
-
-    // Set up automatic state transition
-    if (config.duration && config.nextState) {
-      const nextState = config.nextState; // Type narrowing
-      if (actionTimeoutRef.current) {
-        clearTimeout(actionTimeoutRef.current);
+      case "alert": {
+        resetTiredness();
+        return scheduleCancellableState("idle", 1000);
       }
-      actionTimeoutRef.current = setTimeout(
-        () => setState(nextState),
-        config.duration,
-      );
-    } else if (actionTimeoutRef.current) {
-      clearTimeout(actionTimeoutRef.current);
-      actionTimeoutRef.current = undefined;
+      case "tired": {
+        resetTiredness();
+        return scheduleCancellableState("sleeping", 1000);
+      }
     }
+  }, [state, scheduleCancellableState, scheduleTiredness, resetTiredness]);
 
-    // Start background behaviors for idle state
-    if (state === "idle") {
-      scheduleTiredness();
-      scheduleScratching();
-    }
-  }, [
-    state,
-    scheduleTiredness,
-    scheduleScratching,
-    resetTiredness,
-    resetScratching,
-  ]);
-
-  // Handle window click events
+  // == Alertness on click
   useWindowEvent("click", () => {
     setState("alert");
   });
 
-  const { animationSpeed } = STATE_CONFIGS[state];
-  return <Neko animation={state} {...{ animationSpeed }} {...otherProps} />;
+  return (
+    <Neko
+      animation={state}
+      animationSpeed={state === "sleeping" ? 0.5 : 1}
+      {...otherProps}
+    />
+  );
 };
 
 export default SleepyNeko;
