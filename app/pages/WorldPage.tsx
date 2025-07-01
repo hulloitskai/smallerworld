@@ -266,7 +266,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           </Menu.Dropdown>
         </Menu>
       </Box>
-      {(!isStandalone || outOfPWAScope || !!pushRegistration) &&
+      {(!isStandalone || outOfPWAScope || pushRegistration !== null) &&
         (hasOneUserCreatedPost === false ||
           (!!latestFriends && latestFriends.length < 3)) && (
           <Alert

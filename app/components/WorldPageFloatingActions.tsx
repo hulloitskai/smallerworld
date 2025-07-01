@@ -70,7 +70,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   const [newPostDraft] = useNewPostDraft();
 
   const actionsVisible =
-    (isStandalone === false || !!pushRegistration) &&
+    (isStandalone === false || pushRegistration !== null) &&
     isEmpty(modals) &&
     !postType &&
     !pinnedPostsDrawerModalOpened;

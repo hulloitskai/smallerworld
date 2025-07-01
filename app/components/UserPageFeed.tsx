@@ -50,7 +50,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
             user,
             lastSentEncouragement,
           }}
-          showNeko={!!pushRegistration}
+          showNeko={pushRegistration !== null}
           onEncouragementCreated={() => {
             router.reload({
               only: ["lastSentEncouragement"],
