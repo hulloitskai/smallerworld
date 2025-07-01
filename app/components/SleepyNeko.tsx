@@ -8,7 +8,6 @@
 import { useWindowEvent } from "@mantine/hooks";
 
 import Neko, { type NekoProps } from "~/components/Neko";
-import { type Animation } from "~/helpers/neko";
 
 export interface SleepyNekoProps
   extends Omit<NekoProps, "animation" | "animationSpeed"> {}
@@ -16,48 +15,31 @@ export interface SleepyNekoProps
 type NekoState = "idle" | "alert" | "scratch-self" | "tired" | "sleeping";
 
 interface StateConfig {
-  duration: number | null; // null for indefinite states
-  nextState: NekoState | null;
-  allowsTiredness: boolean;
-  allowsScratching: boolean;
+  duration?: number; // optional for indefinite states
+  nextState?: NekoState;
+  animationSpeed?: number; // defaults to unset, but 0.5 for sleeping
 }
 
-// State machine configuration
-const STATE_CONFIG: Record<NekoState, StateConfig> = {
-  idle: {
-    duration: null, // Indefinite
-    nextState: null,
-    allowsTiredness: true,
-    allowsScratching: true,
-  },
+const STATE_CONFIGS: Record<NekoState, StateConfig> = {
+  idle: {},
   "scratch-self": {
     duration: 2000,
     nextState: "idle",
-    allowsTiredness: false, // Preserve tiredness timer
-    allowsScratching: false,
   },
   tired: {
     duration: 1000,
     nextState: "sleeping",
-    allowsTiredness: false,
-    allowsScratching: false,
   },
   alert: {
     duration: 1000,
     nextState: "idle",
-    allowsTiredness: false, // Reset tiredness
-    allowsScratching: false,
   },
   sleeping: {
-    duration: null, // Indefinite
-    nextState: null,
-    allowsTiredness: false,
-    allowsScratching: false,
+    animationSpeed: 0.5,
   },
-} as const;
-
+};
 const TIREDNESS_DELAY = 10000; // 10 seconds
-const SCRATCH_INTERVAL_RANGE: [number, number] = [5000, 8000]; // 5-8 seconds
+const SCRATCH_INTERVAL_RANGE: [number, number] = [4000, 7000]; // 4-7 seconds
 
 /**
  * SleepyNeko component that manages behavioral states and animations
@@ -68,46 +50,67 @@ const SleepyNeko: FC<SleepyNekoProps> = ({ ...otherProps }) => {
   const tirednessTimeoutRef = useRef<NodeJS.Timeout>();
   const actionTimeoutRef = useRef<NodeJS.Timeout>(); // For both state transitions and scratch scheduling
 
-  // Schedule random scratching
+  // == Scratching
   const scheduleScratching = useCallback(() => {
-    const [min, max] = SCRATCH_INTERVAL_RANGE;
-    const delay = Math.random() * (max - min) + min;
-
     if (actionTimeoutRef.current) {
-      clearTimeout(actionTimeoutRef.current);
+      return;
     }
+    const delay = randomizedScratchingDelay();
     actionTimeoutRef.current = setTimeout(() => {
       setState(current => (current === "idle" ? "scratch-self" : current));
     }, delay);
   }, []);
+  const resetScratching = useCallback(() => {
+    const timeout = actionTimeoutRef.current;
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    actionTimeoutRef.current = undefined;
+  }, []);
 
-  // Start tiredness timer
-  const startTirednessTimer = useCallback(() => {
+  // == Tiredness
+  const scheduleTiredness = useCallback(() => {
     if (tirednessTimeoutRef.current) {
-      clearTimeout(tirednessTimeoutRef.current);
+      return;
     }
     tirednessTimeoutRef.current = setTimeout(
       () => setState("tired"),
       TIREDNESS_DELAY,
     );
   }, []);
+  const resetTiredness = useCallback(() => {
+    const timeout = tirednessTimeoutRef.current;
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    tirednessTimeoutRef.current = undefined;
+  }, []);
+
+  // == Cleanup timeouts
+  useEffect(() => {
+    return () => {
+      const actionTimeout = actionTimeoutRef.current;
+      if (actionTimeout) {
+        clearTimeout(actionTimeout);
+      }
+
+      const tirednessTimeout = tirednessTimeoutRef.current;
+      if (tirednessTimeout) {
+        clearTimeout(tirednessTimeout);
+      }
+    };
+  }, []);
 
   // Handle state transitions
   useEffect(() => {
-    const config = STATE_CONFIG[state];
+    const config = STATE_CONFIGS[state];
 
-    // Clear tiredness timeout for states that reset tiredness (not scratch-self)
-    if (
-      !config.allowsTiredness &&
-      state !== "scratch-self" &&
-      tirednessTimeoutRef.current
-    ) {
-      clearTimeout(tirednessTimeoutRef.current);
-      tirednessTimeoutRef.current = undefined;
+    // Prevent background behaviors for non-idle states
+    if (state !== "idle" && state !== "scratch-self") {
+      resetTiredness();
     }
-    if (!config.allowsScratching && actionTimeoutRef.current) {
-      clearTimeout(actionTimeoutRef.current);
-      actionTimeoutRef.current = undefined;
+    if (state !== "idle") {
+      resetScratching();
     }
 
     // Set up automatic state transition
@@ -127,52 +130,29 @@ const SleepyNeko: FC<SleepyNekoProps> = ({ ...otherProps }) => {
 
     // Start background behaviors for idle state
     if (state === "idle") {
-      // Only start tiredness timer if not already running
-      if (!tirednessTimeoutRef.current) {
-        startTirednessTimer();
-      }
+      scheduleTiredness();
       scheduleScratching();
     }
-  }, [state, startTirednessTimer, scheduleScratching]);
-
-  // Cleanup timeouts on component unmount
-  useEffect(() => {
-    return () => {
-      if (actionTimeoutRef.current) {
-        clearTimeout(actionTimeoutRef.current);
-      }
-      if (tirednessTimeoutRef.current) {
-        clearTimeout(tirednessTimeoutRef.current);
-      }
-    };
-  }, []);
+  }, [
+    state,
+    scheduleTiredness,
+    scheduleScratching,
+    resetTiredness,
+    resetScratching,
+  ]);
 
   // Handle window click events
   useWindowEvent("click", () => {
     setState("alert");
   });
 
-  return <Neko animation={animationForState(state)} {...otherProps} />;
+  const { animationSpeed } = STATE_CONFIGS[state];
+  return <Neko animation={state} {...{ animationSpeed }} {...otherProps} />;
 };
 
 export default SleepyNeko;
 
-/**
- * Map states to animations
- */
-const animationForState = (state: NekoState): Animation => {
-  switch (state) {
-    case "idle":
-      return "idle";
-    case "alert":
-      return "alert";
-    case "scratch-self":
-      return "scratch-self";
-    case "tired":
-      return "tired";
-    case "sleeping":
-      return "sleeping";
-    default:
-      return "idle";
-  }
+const randomizedScratchingDelay = (): number => {
+  const [min, max] = SCRATCH_INTERVAL_RANGE;
+  return Math.random() * (max - min) + min;
 };
