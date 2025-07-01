@@ -3,6 +3,7 @@ import { type PropsWithChildren } from "react";
 
 import { NEKO_SIZE } from "~/helpers/neko";
 import { mutateUserPagePosts, useUserPagePosts } from "~/helpers/userPages";
+import { useWebPush } from "~/helpers/webPush";
 import { type UserPageProps } from "~/pages/UserPage";
 import { type UserPost } from "~/types";
 
@@ -18,6 +19,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
   const { currentFriend, user, replyToNumber, lastSentEncouragement } =
     usePageProps<UserPageProps>();
   const params = useQueryParams();
+  const { registration: pushRegistration } = useWebPush();
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useUserPagePosts(
@@ -46,8 +48,9 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
           {...{
             currentFriend,
             user,
-            lastSentEncouragement: lastSentEncouragement,
+            lastSentEncouragement,
           }}
+          showNeko={!!pushRegistration}
           onEncouragementCreated={() => {
             router.reload({
               only: ["lastSentEncouragement"],
@@ -80,13 +83,15 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                       />
                     }
                   />
-                  {!showEncouragementCard && index === 0 && (
-                    <SleepyNeko
-                      pos="absolute"
-                      top={3 - NEKO_SIZE}
-                      right="var(--mantine-spacing-lg)"
-                    />
-                  )}
+                  {!!pushRegistration &&
+                    !showEncouragementCard &&
+                    index === 0 && (
+                      <SleepyNeko
+                        pos="absolute"
+                        top={3 - NEKO_SIZE}
+                        right="var(--mantine-spacing-lg)"
+                      />
+                    )}
                 </Box>
               </TrackUserPostSeen>
             ))}

@@ -14,6 +14,7 @@ export interface EncouragementCardProps
   currentFriend: Friend;
   user: User;
   lastSentEncouragement: Encouragement | null;
+  showNeko?: boolean;
 }
 
 interface EncouragementPreset {
@@ -34,6 +35,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
   user,
   lastSentEncouragement,
   onEncouragementCreated,
+  showNeko = true,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -100,11 +102,13 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
           </Text>
         </Stack>
       )}
-      <SleepyNeko
-        pos="absolute"
-        top={2 - NEKO_SIZE}
-        right="var(--mantine-spacing-lg)"
-      />
+      {showNeko && (
+        <SleepyNeko
+          pos="absolute"
+          top={2 - NEKO_SIZE}
+          right="var(--mantine-spacing-lg)"
+        />
+      )}
     </Card>
   );
 };

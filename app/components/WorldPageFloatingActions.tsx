@@ -156,7 +156,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                       >
                         new post
                       </Button>
-                      {!hideNeko && (
+                      {!hideNeko && !!pushRegistration && (
                         <SleepyNeko
                           pos="absolute"
                           top={3 - NEKO_SIZE}
