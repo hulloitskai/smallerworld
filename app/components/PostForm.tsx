@@ -1,6 +1,8 @@
-import { Input, SegmentedControl, Text } from "@mantine/core";
+import { Input, ScrollArea, SegmentedControl, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { useMergedRef } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
+import { type DraggableProps, motion, Reorder } from "motion/react";
 
 import NotifyIcon from "~icons/heroicons/bell";
 import QuietIcon from "~icons/heroicons/bell-slash-20-solid";
@@ -18,7 +20,7 @@ import { type PostFormValues, useNewPostDraft } from "~/helpers/posts/form";
 import { type Post, type PostType, type Upload, type WorldPost } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
-import ImageInput from "./ImageInput";
+import ImageInput, { type ImageInputProps } from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
 import QuotedPostCard from "./QuotedPostCard";
 
@@ -188,6 +190,9 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
     setInitialValues(initialValues);
     reset();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
+  const { ref: formStackSizingRef, width: formStackWidth } =
+    useElementSize<HTMLDivElement>();
+  const formStackRef = useMergedRef(formStackSizingRef);
 
   // == Post visibilities
   const postVisibilities = postType
@@ -229,7 +234,16 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
   }, [values]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const hiddenFromCount = post ? post.hidden_from_count : pausedFriends;
-  const [showImageInput, setShowImageInput] = useState(false);
+  const [showImageInput, setShowImageInput] = useState(() => {
+    if (newPostDraft) {
+      return !isEmpty(newPostDraft.values.images_uploads);
+    }
+    if (post) {
+      return !isEmpty(post.images);
+    }
+    return false;
+  });
+  const [newImageInputKey, setNewImageInputKey] = useState(0);
   return (
     <form onSubmit={submit}>
       <Group gap="xs" align="start" justify="center">
@@ -313,7 +327,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
             </Tooltip>
           )}
         </Stack>
-        <Stack gap="xs" style={{ flexGrow: 1 }}>
+        <Stack ref={formStackRef} gap="xs" style={{ flexGrow: 1 }}>
           {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
             <TextInput
               {...getInputProps("title")}
@@ -375,36 +389,59 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           ) : (
             <>
               {showImageInput || !isEmpty(values.images_uploads) ? (
-                <Group gap="xs" wrap="wrap" justify="center">
-                  {values.images_uploads.map((upload, i) => (
-                    <ImageInput
-                      key={upload.signedId}
-                      value={upload}
-                      previewFit="contain"
-                      onChange={value => {
-                        if (value) {
-                          setFieldValue(`images_uploads.${i}`, value);
-                        } else {
-                          removeListItem("images_uploads", i);
-                        }
-                      }}
-                      h={IMAGE_INPUT_SIZE}
-                      w={IMAGE_INPUT_SIZE}
-                    />
-                  ))}
-                  {values.images_uploads.length < 4 && (
-                    <ImageInput
-                      key={values.images_uploads.length}
-                      onChange={value => {
-                        if (value) {
-                          insertListItem("images_uploads", value);
-                        }
-                      }}
-                      h={IMAGE_INPUT_SIZE}
-                      w={IMAGE_INPUT_SIZE}
-                    />
-                  )}
-                </Group>
+                <ScrollArea
+                  scrollbars="x"
+                  className={classes.imagesScrollArea}
+                  w={formStackWidth}
+                >
+                  <Reorder.Group<Upload>
+                    values={values.images_uploads}
+                    axis="x"
+                    layoutScroll
+                    onReorder={uploads => {
+                      setFieldValue("images_uploads", uploads);
+                    }}
+                  >
+                    {values.images_uploads.map((upload, i) => (
+                      <ReorderableImageInput
+                        key={upload.signedId}
+                        value={upload}
+                        previewFit="contain"
+                        onChange={value => {
+                          if (value) {
+                            setFieldValue(`images_uploads.${i}`, value);
+                          } else {
+                            removeListItem("images_uploads", i);
+                          }
+                        }}
+                        h={IMAGE_INPUT_SIZE}
+                        w={IMAGE_INPUT_SIZE}
+                        draggable={values.images_uploads.length > 1}
+                      />
+                    ))}
+                    {values.images_uploads.length < 4 && (
+                      <motion.li
+                        key={newImageInputKey}
+                        layout="position"
+                        layoutScroll
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                      >
+                        <ImageInput
+                          key={newImageInputKey}
+                          onChange={value => {
+                            if (value) {
+                              insertListItem("images_uploads", value);
+                              setNewImageInputKey(prev => prev + 1);
+                            }
+                          }}
+                          h={IMAGE_INPUT_SIZE}
+                          w={IMAGE_INPUT_SIZE}
+                        />
+                      </motion.li>
+                    )}
+                  </Reorder.Group>
+                </ScrollArea>
               ) : (
                 <Button
                   size="compact-sm"
@@ -448,4 +485,36 @@ export default PostForm;
 const formatDateString = (dateString: string): string => {
   const date = DateTime.fromISO(dateString, { zone: "local" });
   return date.toISO();
+};
+
+interface ReorderableImageInputProps
+  extends ImageInputProps,
+    Pick<DraggableProps, "drag"> {
+  draggable: boolean;
+}
+
+const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
+  value,
+  draggable,
+  ...otherProps
+}) => {
+  const [dragging, setDragging] = useState(false);
+  return (
+    <Reorder.Item
+      drag={draggable ? "x" : false}
+      {...{ value }}
+      onDragStart={() => {
+        setDragging(true);
+      }}
+      onDragEnd={() => {
+        setDragging(false);
+      }}
+    >
+      <ImageInput
+        {...{ value }}
+        {...(dragging && { disabled: true, style: { cursor: "move" } })}
+        {...otherProps}
+      />
+    </Reorder.Item>
+  );
 };

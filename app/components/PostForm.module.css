@@ -46,3 +46,17 @@
     color: var(--mantine-color-text);
   }
 }
+
+.imagesScrollArea {
+  :global(.mantine-ScrollArea-content) {
+    padding-top: 4px;
+  }
+
+  ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+  }
+}
