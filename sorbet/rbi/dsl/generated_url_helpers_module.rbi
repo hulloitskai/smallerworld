@@ -61,6 +61,9 @@ module GeneratedUrlHelpersModule
   def image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def join_request_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def logout_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

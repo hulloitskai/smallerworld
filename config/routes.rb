@@ -83,6 +83,7 @@ Rails.application.routes.draw do
   get "/home" => redirect("/world")
 
   # == Join requests
+  resources :join_requests, only: %i[destroy], export: true
   get "/world/join_requests" => "join_requests#index", export: true
 
   # == Friends

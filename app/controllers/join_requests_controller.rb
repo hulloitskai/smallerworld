@@ -21,4 +21,19 @@ class JoinRequestsController < ApplicationController
       end
     end
   end
+
+  # DELETE /join_requests/:id
+  def destroy
+    join_request = load_join_request
+    authorize!(join_request)
+    join_request.destroy!
+    render(json: {})
+  end
+
+  private
+
+  sig { params(scope: JoinRequest::PrivateRelation).returns(JoinRequest) }
+  def load_join_request(scope: JoinRequest.all)
+    scope.find(params.fetch(:id))
+  end
 end

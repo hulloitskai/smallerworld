@@ -1,10 +1,4 @@
-import {
-  type BoxProps,
-  Image,
-  Overlay,
-  Text,
-  TypographyStylesProvider,
-} from "@mantine/core";
+import { Image, Overlay, Text, TypographyStylesProvider } from "@mantine/core";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 

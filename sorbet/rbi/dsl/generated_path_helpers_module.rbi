@@ -61,6 +61,9 @@ module GeneratedPathHelpersModule
   def image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def join_request_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def logout_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

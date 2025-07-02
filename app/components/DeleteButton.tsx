@@ -1,35 +1,24 @@
 import { type ButtonProps } from "@mantine/core";
 
-import classes from "./DeleteButton.module.css";
+import DeleteConfirmation, {
+  type DeleteConfirmationProps,
+} from "./DeleteConfirmation";
 
 export interface DeleteButtonProps
-  extends ButtonProps,
-    Omit<ComponentPropsWithoutRef<"button">, "color" | "style"> {
-  onConfirm: () => void;
-}
+  extends Pick<DeleteConfirmationProps, "onConfirm">,
+    ButtonProps,
+    Omit<ComponentPropsWithoutRef<"button">, "color" | "style"> {}
 
 const DeleteButton: FC<DeleteButtonProps> = ({
   children,
   onConfirm,
   ...otherProps
 }) => (
-  <Menu
-    classNames={{
-      dropdown: classes.menuDropdown,
-      arrow: classes.menuArrow,
-    }}
-  >
-    <Menu.Target>
-      <Button variant="default" leftSection={<DeleteIcon />} {...otherProps}>
-        {children ?? "delete"}
-      </Button>
-    </Menu.Target>
-    <Menu.Dropdown>
-      <Menu.Item color="red" leftSection={<AlertIcon />} onClick={onConfirm}>
-        really delete?
-      </Menu.Item>
-    </Menu.Dropdown>
-  </Menu>
+  <DeleteConfirmation {...{ onConfirm }}>
+    <Button variant="default" leftSection={<DeleteIcon />} {...otherProps}>
+      {children ?? "delete"}
+    </Button>
+  </DeleteConfirmation>
 );
 
 export default DeleteButton;
