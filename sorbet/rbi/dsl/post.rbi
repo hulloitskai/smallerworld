@@ -1014,6 +1014,51 @@ class Post
     sig { void }
     def id_will_change!; end
 
+    sig { returns(T::Array[::String]) }
+    def images_ids; end
+
+    sig { params(value: T::Array[::String]).returns(T::Array[::String]) }
+    def images_ids=(value); end
+
+    sig { returns(T::Boolean) }
+    def images_ids?; end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def images_ids_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def images_ids_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def images_ids_came_from_user?; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def images_ids_change; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def images_ids_change_to_be_saved; end
+
+    sig { params(from: T::Array[::String], to: T::Array[::String]).returns(T::Boolean) }
+    def images_ids_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def images_ids_in_database; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def images_ids_previous_change; end
+
+    sig { params(from: T::Array[::String], to: T::Array[::String]).returns(T::Boolean) }
+    def images_ids_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def images_ids_previously_was; end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def images_ids_was; end
+
+    sig { void }
+    def images_ids_will_change!; end
+
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
     def pinned_until; end
 
@@ -1136,6 +1181,9 @@ class Post
     def restore_id_value!; end
 
     sig { void }
+    def restore_images_ids!; end
+
+    sig { void }
     def restore_pinned_until!; end
 
     sig { void }
@@ -1194,6 +1242,12 @@ class Post
 
     sig { returns(T::Boolean) }
     def saved_change_to_id_value?; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def saved_change_to_images_ids; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_images_ids?; end
 
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
     def saved_change_to_pinned_until; end
@@ -1431,6 +1485,9 @@ class Post
 
     sig { returns(T::Boolean) }
     def will_save_change_to_id_value?; end
+
+    sig { returns(T::Boolean) }
+    def will_save_change_to_images_ids?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_pinned_until?; end

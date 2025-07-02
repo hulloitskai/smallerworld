@@ -65,7 +65,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   loading={installing}
                   disabled={!browserDetection}
                   onClick={() => {
-                    invariant(browserDetection);
+                    invariant(browserDetection, "Missing browser detection");
                     if (install && !isDesktop(browserDetection)) {
                       void install();
                     } else if (

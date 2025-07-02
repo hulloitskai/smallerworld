@@ -90,7 +90,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           loading={installing}
           disabled={!browserDetection}
           onClick={() => {
-            invariant(browserDetection);
+            invariant(browserDetection, "Missing browser detection");
             if (install && !isDesktop(browserDetection)) {
               void install().then(() => {
                 closeModal(modalId);

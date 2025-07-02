@@ -337,7 +337,7 @@ const useWebPushUnsubscribe = ({
 const createApplicationServerKey = (publicKey: string): Uint8Array =>
   Uint8Array.from(atob(publicKey), element => {
     const value = element.codePointAt(0);
-    invariant(typeof value === "number");
+    invariant(typeof value === "number", "Failed to parse public key");
     return value;
   });
 

@@ -10,6 +10,7 @@
 #  body_html       :text             not null
 #  emoji           :string
 #  hidden_from_ids :uuid             default([]), not null, is an Array
+#  images_ids      :uuid             default([]), not null, is an Array
 #  pinned_until    :datetime
 #  title           :string
 #  type            :string           not null
@@ -72,8 +73,8 @@ class MaskedPost < Post
   end
 
   sig { override.returns(T::Array[MaskedImage]) }
-  def serialized_images
-    images_blobs.map { |blob| blob.becomes(MaskedImage) }
+  def ordered_images
+    super.map { |image| image.becomes(MaskedImage) }
   end
 
   private

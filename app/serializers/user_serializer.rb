@@ -11,5 +11,5 @@ class UserSerializer < ApplicationSerializer
              supported_features: { type: "Feature[]" }
 
   # == Associations
-  has_one :serialized_page_icon, as: :page_icon, serializer: ImageSerializer
+  has_one :page_icon_image, as: :page_icon, serializer: ImageSerializer
 end

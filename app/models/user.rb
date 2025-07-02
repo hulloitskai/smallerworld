@@ -80,7 +80,7 @@ class User < ApplicationRecord
   end
 
   sig { returns(Image) }
-  def serialized_page_icon
+  def page_icon_image
     page_icon_blob!.becomes(Image)
   end
 

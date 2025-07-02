@@ -15,6 +15,6 @@ class PostSerializer < ApplicationSerializer
              reply_snippet: { type: :string }
 
   # == Associations
-  has_many :serialized_images, as: :images, serializer: ImageSerializer
+  has_many :ordered_images, as: :images, serializer: ImageSerializer
   has_one :quoted_post, serializer: QuotedPostSerializer, nullable: true
 end

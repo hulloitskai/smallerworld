@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_30_144415) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_02_191912) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -247,6 +247,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_30_144415) do
     t.datetime "pinned_until", precision: nil
     t.uuid "quoted_post_id"
     t.uuid "hidden_from_ids", default: [], null: false, array: true
+    t.uuid "images_ids", default: [], null: false, array: true
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
     t.index ["author_id"], name: "index_posts_on_author_id"
     t.index ["hidden_from_ids"], name: "index_posts_on_hidden_from_ids"

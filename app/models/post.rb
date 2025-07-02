@@ -10,6 +10,7 @@
 #  body_html       :text             not null
 #  emoji           :string
 #  hidden_from_ids :uuid             default([]), not null, is an Array
+#  images_ids      :uuid             default([]), not null, is an Array
 #  pinned_until    :datetime
 #  title           :string
 #  type            :string           not null
@@ -62,20 +63,19 @@ class Post < ApplicationRecord
 
   sig { returns(String) }
   def body_text
-    if (body_html = self[:body_html]) && body_html.is_a?(String)
-      fragment = Nokogiri::HTML5.fragment(body_html)
-      reshape_body_fragment_for_text_rendering(fragment)
-      Html2Text.new(fragment).convert
-    else
-      ""
-    end
+    fragment = Nokogiri::HTML5.fragment(body_html)
+    reshape_body_fragment_for_text_rendering(fragment)
+    Html2Text.new(fragment).convert
   end
 
-  T::Sig::WithoutRuntime.sig { params(text: String).void }
+  sig { params(text: String).void }
   def body_text=(text)
-    self[:body_html] = if text.is_a?(String)
-      format_body_html(text)
-    end
+    self.body_html = format_body_html(text)
+  end
+
+  sig { returns(T::Boolean) }
+  def title_visible?
+    journal_entry? || poem? || invitation?
   end
 
   sig { returns(T.nilable(String)) }
@@ -131,6 +131,7 @@ class Post < ApplicationRecord
 
   # == Normalizations
   strips_text :title
+  removes_blank :emoji
 
   # == Validations
   validates :emoji, emoji: true, allow_nil: true
@@ -138,13 +139,12 @@ class Post < ApplicationRecord
   validates :title, absence: true, unless: :title_visible?
   validates :quoted_post, presence: true, if: :follow_up?
   validates :quoted_post, absence: true, unless: :follow_up?
-  validates :images_attachments,
-            length: { maximum: 4 },
-            absence: { if: :follow_up? }
+  validates :images_ids, length: { maximum: 4 }, absence: { if: :follow_up? }
   validate :validate_no_nested_quoting, if: :quoted_post?
 
   # == Callbacks
   after_create :create_notifications_later, if: :send_notifications?
+  after_save :save_images_ids!, if: :images_changed?
 
   # == Scopes
   scope :visible_to_public, -> { where(visibility: :public) }
@@ -161,7 +161,7 @@ class Post < ApplicationRecord
     joins(:author)
       .where("posts.updated_at > (users.created_at + INTERVAL '1 second')")
   }
-  scope :with_images, -> { includes(:images_attachments, :images_blobs) }
+  scope :with_images, -> { includes(:images_blobs) }
   scope :with_reactions, -> { includes(:reactions) }
   scope :with_quoted_post_and_images, -> {
     includes(quoted_post: :images_blobs)
@@ -197,12 +197,30 @@ class Post < ApplicationRecord
 
   sig { returns(T.nilable(ActiveStorage::Blob)) }
   def cover_image_blob
-    images_blobs.first
+    if (id = images_ids.first)
+      images_blobs.find(id)
+    end
+  end
+
+  sig { returns(T::Array[ActiveStorage::Blob]) }
+  def ordered_image_blobs
+    images_blobs.find(images_ids).to_a
   end
 
   sig { returns(T::Array[Image]) }
-  def serialized_images
-    images_blobs.map { |blob| blob.becomes(Image) }
+  def ordered_images
+    ordered_image_blobs.map { |blob| blob.becomes(Image) }
+  end
+
+  sig { returns(T::Boolean) }
+  def images_changed?
+    attachment_changes.include?("images")
+  end
+
+  sig { void }
+  def save_images_ids!
+    images_ids = images.blobs.pluck(:id)
+    update_column("images_ids", images_ids) # rubocop:disable Rails/SkipsModelValidations
   end
 
   sig { returns(Friend::PrivateRelation) }
@@ -279,17 +297,6 @@ class Post < ApplicationRecord
   private
 
   # == Helpers
-  class BodyFormatter
-    extend T::Sig
-    include Singleton
-    include ActionView::Helpers::TextHelper
-
-    sig { params(text: String).returns(String) }
-    def self.text_to_html(text)
-      instance.simple_format(text)
-    end
-  end
-
   sig { params(text: String).returns(String) }
   def format_body_html(text)
     BodyFormatter.text_to_html(text)
@@ -301,11 +308,6 @@ class Post < ApplicationRecord
       child = li.first_element_child
       child.replace(child.children) if child.name == "p"
     end
-  end
-
-  sig { returns(T::Boolean) }
-  def title_visible?
-    journal_entry? || poem? || invitation?
   end
 
   # == Validators

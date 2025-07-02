@@ -69,6 +69,7 @@ class Friend < ApplicationRecord
 
   # == Normalizations
   strips_text :name
+  removes_blank :emoji
   normalizes_phone_number :phone_number
 
   # == Validations
