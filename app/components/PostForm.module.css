@@ -50,6 +50,7 @@
 .imagesScrollArea {
   :global(.mantine-ScrollArea-content) {
     padding-top: 4px;
+    padding-bottom: var(--mantine-spacing-xs);
   }
 
   ul {
