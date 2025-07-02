@@ -117,19 +117,34 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
           action: routes.posts.update,
           params: { id: post.id },
           descriptor: "update post",
-          transformValues: ({ emoji, title, images_uploads, ...values }) => ({
+          transformValues: ({
+            emoji,
+            title,
+            images_uploads,
+            pinned_until,
+            ...values
+          }) => ({
             post: {
               ...omit(values, "quiet"),
               emoji: emoji || null,
               title: title || null,
               images: images_uploads.map(upload => upload.signedId),
+              pinned_until: pinned_until
+                ? formatDateString(pinned_until)
+                : null,
             },
           }),
         }
       : {
           action: routes.posts.create,
           descriptor: "create post",
-          transformValues: ({ emoji, title, images_uploads, ...values }) => {
+          transformValues: ({
+            emoji,
+            title,
+            images_uploads,
+            pinned_until,
+            ...values
+          }) => {
             invariant(postType, "Missing post type");
             return {
               post: {
@@ -141,6 +156,9 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
                   : null,
                 images: images_uploads.map(upload => upload.signedId),
                 quoted_post_id: quotedPost?.id ?? null,
+                pinned_until: pinned_until
+                  ? formatDateString(pinned_until)
+                  : null,
               },
             };
           },
@@ -181,11 +199,6 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
   // == Pinned until
   const vaulPortalTarget = useVaulPortalTarget();
   const todayDate = useMemo(() => DateTime.now().toJSDate(), []);
-  const pinnedUntil = useMemo(() => {
-    if (values.pinned_until) {
-      return DateTime.fromISO(values.pinned_until).toJSDate();
-    }
-  }, [values.pinned_until]);
 
   // == Body text empty state
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
@@ -345,7 +358,6 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
               placeholder="keep pinned until"
               leftSection={<CalendarIcon />}
               minDate={todayDate}
-              value={pinnedUntil}
               error={errors.pinned_until}
               required
               withAsterisk={false}
@@ -432,3 +444,8 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
 };
 
 export default PostForm;
+
+const formatDateString = (dateString: string): string => {
+  const date = DateTime.fromISO(dateString, { zone: "local" });
+  return date.toISO();
+};
