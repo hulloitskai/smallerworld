@@ -33,8 +33,8 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
   // == Select platform
   const [messagingPlatformSelectorOpened, setMessagingPlatformSelectorOpened] =
     useState(false);
-  const bindMessagingPlatformSelectorButtonLongPress = useLongPress(() =>
-    setMessagingPlatformSelectorOpened(true),
+  const bindMessagingPlatformSelectorButtonLongPressHandlers = useLongPress(
+    () => setMessagingPlatformSelectorOpened(true),
   );
   const [preferredMessagingPlatform, setPreferredMessagingPlatform] =
     usePreferredMessagingPlatform(user.id);
@@ -117,7 +117,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
               setMessagingPlatformSelectorOpened(true);
             }
           }}
-          {...bindMessagingPlatformSelectorButtonLongPress()}
+          {...bindMessagingPlatformSelectorButtonLongPressHandlers()}
           {...otherProps}
         >
           reply via {preferredMessagingPlatform ?? "sms"}

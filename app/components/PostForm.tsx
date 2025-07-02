@@ -3,6 +3,7 @@ import { DateInput } from "@mantine/dates";
 import { useMergedRef } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { type DraggableProps, motion, Reorder } from "motion/react";
+import { useLongPress } from "use-long-press";
 
 import NotifyIcon from "~icons/heroicons/bell";
 import QuietIcon from "~icons/heroicons/bell-slash-20-solid";
@@ -499,6 +500,9 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
   ...otherProps
 }) => {
   const [dragging, setDragging] = useState(false);
+  const longPressHandlers = useLongPress(() => {
+    setDragging(true);
+  });
   return (
     <Reorder.Item
       drag={draggable ? "x" : false}
@@ -509,6 +513,7 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
       onDragEnd={() => {
         setDragging(false);
       }}
+      {...longPressHandlers}
     >
       <ImageInput
         {...{ value }}
