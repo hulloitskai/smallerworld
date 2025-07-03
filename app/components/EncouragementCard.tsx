@@ -27,7 +27,7 @@ const PRESETS: EncouragementPreset[] = [
   { emoji: "💭", message: "what's been on your mind?" },
   { emoji: "✨", message: "what's been inspiring you lately?" },
   { emoji: "🍵", message: "tea, please!" },
-  { emoji: "✈️", message: "how's your trip going?" },
+  { emoji: "🧳", message: "how's your trip going?" },
 ];
 
 const EncouragementCard: FC<EncouragementCardProps> = ({
