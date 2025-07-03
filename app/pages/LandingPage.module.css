@@ -23,6 +23,16 @@
   );
 }
 
+.checkItOut {
+  position: absolute;
+  top: 0;
+  right: -150px;
+
+  @mixin smaller-than 670px {
+    display: none;
+  }
+}
+
 .checkItOutArrow {
   width: 80px;
   margin-top: 14px;

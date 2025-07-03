@@ -3,7 +3,7 @@ import { Image, Overlay, Text } from "@mantine/core";
 import PlayIcon from "~icons/heroicons/play-20-solid";
 
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
-import homescreenRowSrc from "~/assets/images/homescreen-row.jpeg";
+// import homescreenRowSrc from "~/assets/images/homescreen-row.jpeg";
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 import demoVideoSrc from "~/assets/videos/demo.mp4";
@@ -51,21 +51,15 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
           </Group>
         </Alert>
       )}
-      <Image
-        src={homescreenRowSrc}
-        w="100%"
-        maw={360}
-        style={{ borderRadius: "var(--mantine-radius-default)" }}
-      />
       <Stack align="center">
         <Title className={classes.title}>
-          pov: <span className={classes.emph}>you are an app</span> on your
-          friend&apos;s phone
+          you have thoughts worth sharing.
+          <br />
+          <span className={classes.emph}>but not with the whole internet.</span>
         </Title>
         <Text className={classes.subtitle}>
-          a way for close friends to know about what&apos;s{" "}
-          <span style={{ color: "var(--mantine-color-text)" }}>*actually*</span>{" "}
-          going on in your life
+          smaller world is a private space to just be yourself—with your close
+          friends.
         </Text>
       </Stack>
       <Box pos="relative">
@@ -106,7 +100,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
             </Center>
           </Overlay>
         )}
-        <Box pos="absolute" top={0} right={-150}>
+        <Box className={classes.checkItOut}>
           <SingleDayFontHead />
           <Stack gap={0} style={{ transform: "rotate(8deg)" }}>
             <Text className={classes.checkItOutLabel}>check it out :)</Text>
@@ -197,7 +191,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
 };
 
 LandingPage.layout = page => (
-  <AppLayout<LandingPageProps> withContainer containerSize="xs">
+  <AppLayout<LandingPageProps> withContainer containerSize="sm">
     {page}
   </AppLayout>
 );
