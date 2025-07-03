@@ -111,8 +111,10 @@
   transition-timing-function: ease;
   transition-duration: 150ms;
 
-  @mixin hover {
-    opacity: 0.8;
+  &[data-interactive] {
+    @mixin hover {
+      opacity: 0.8;
+    }
   }
 
   &[data-highlight] {

@@ -84,7 +84,7 @@ const PostCard: FC<PostCardProps> = ({
             <Group
               className={classes.typeGroup}
               gap={6}
-              mod={{ highlight: highlightType }}
+              mod={{ highlight: highlightType, interactive: !!onTypeClick }}
               onClick={onTypeClick}
             >
               {!post.emoji && (
