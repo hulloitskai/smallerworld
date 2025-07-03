@@ -500,11 +500,44 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
   ...otherProps
 }) => {
   const [dragging, setDragging] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
   const longPressHandlers = useLongPress(() => {
     setDragging(true);
   });
+
+  // Handle touch events to prevent dropzone interference on iOS Safari
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !draggable || !value) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      // On iOS Safari, prevent the dropzone from capturing touch events
+      // when we have an uploaded image and reordering is enabled
+      if (value && draggable) {
+        e.stopPropagation();
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      // Allow the reorder motion to handle touch move events
+      if (value && draggable && dragging) {
+        e.stopPropagation();
+      }
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [draggable, value, dragging]);
+
   return (
     <Reorder.Item
+      ref={containerRef}
       drag={draggable ? "x" : false}
       {...{ value }}
       onDragStart={() => {
@@ -518,6 +551,8 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
       <ImageInput
         {...{ value }}
         {...(dragging && { disabled: true, style: { cursor: "move" } })}
+        // Disable dropzone when image is uploaded and dragging is enabled to prevent conflict with reordering
+        disabled={dragging || (!!value && draggable)}
         {...otherProps}
       />
     </Reorder.Item>
