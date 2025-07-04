@@ -24,7 +24,7 @@ export interface LandingPageProps extends SharedPageProps {
 const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
   const currentUser = useCurrentUser();
 
-  // == Reveal demovideo
+  // == Reveal demo video
   const videoRef = useRef<HTMLVideoElement>(null);
   const [revealVideo, setRevealVideo] = useState(false);
 
@@ -53,7 +53,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
       )}
       <Stack align="center">
         <Title className={classes.title}>
-          you have thoughts worth sharing.
+          you have thoughts worth sharing—
           <br />
           <span className={classes.emph}>but not with the whole internet.</span>
         </Title>

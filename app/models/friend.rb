@@ -40,6 +40,7 @@ class Friend < ApplicationRecord
   include NormalizesPhoneNumber
   include Notifiable
   include Noticeable
+  include PgSearch::Model
 
   # == Attributes
   enumerize :subscribed_post_types,
@@ -83,6 +84,15 @@ class Friend < ApplicationRecord
     where("? = ANY (subscribed_post_types)", post_type)
   }
   scope :chosen_family, -> { where(chosen_family: true) }
+
+  # == Search
+  pg_search_scope :search,
+                  against: %i[emoji name],
+                  using: {
+                    tsearch: {
+                      websearch: true,
+                    },
+                  }
 
   # == Noticeable
   sig do

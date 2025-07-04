@@ -33,6 +33,7 @@ class User < ApplicationRecord
   include NormalizesPhoneNumber
   include Notifiable
   include ImageHelpers
+  include PgSearch::Model
 
   # == Constants
   ENCOURAGEMENTS_AVAILABLE_SINCE = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
@@ -107,6 +108,15 @@ class User < ApplicationRecord
 
   # == Scopes
   scope :with_page_icon, -> { includes(:page_icon_blob) }
+
+  # == Search
+  pg_search_scope :search,
+                  against: %i[name],
+                  using: {
+                    tsearch: {
+                      websearch: true,
+                    },
+                  }
 
   # == Methods
   sig { returns(T::Boolean) }
