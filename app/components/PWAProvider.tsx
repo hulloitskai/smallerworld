@@ -5,7 +5,7 @@ import {
   useIsStandalone,
   useOutOfPWAScope,
 } from "~/helpers/pwa";
-import { useActiveServiceWorker } from "~/helpers/serviceWorker";
+import { useActiveServiceWorker } from "~/helpers/serviceWorker/client";
 
 export interface PWAProviderProps extends PropsWithChildren {}
 

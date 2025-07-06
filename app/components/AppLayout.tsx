@@ -18,7 +18,7 @@ import {
 import { useAutoClearColorScheme } from "~/helpers/mantine";
 import { CONFETTI_CANVAS_ID, SMOKE_CANVAS_ID } from "~/helpers/particles";
 import { useTrackVisit } from "~/helpers/visits";
-import { useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence } from "~/helpers/webPush";
+import { useReregisterPushSubscriptionIfNeeded } from "~/helpers/webPush";
 
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
 import AppMeta, { type AppMetaProps } from "./AppMeta";
@@ -137,7 +137,7 @@ const AppInner: FC<AppInnerProps> = ({
   // == Track visit and reregister push subscriptions
   useTrackVisit();
   useAutoClearColorScheme(); // TODO: Remove after May 29, 2025
-  useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence(); // TODO: Remove after May 29, 2025
+  useReregisterPushSubscriptionIfNeeded();
 
   // == Container and main
   const { style: containerStyle, ...otherContainerProps } =

@@ -2,6 +2,9 @@ import { createContext, useCallback, useContext } from "react";
 
 import { type PushRegistration } from "~/types";
 
+import { useDeviceFingerprint } from "./fingerprinting";
+import { useServiceWorkerMetadata } from "./serviceWorker/client";
+
 export interface WebPushSubscribeOptions {
   forceNewSubscription?: boolean;
 }
@@ -78,17 +81,34 @@ export const useSendTestNotification = (): SendTestNotificationReturn => {
   };
 };
 
-export const useReregisterPushSubscriptionIfLowDeviceFingerprintConfidence =
-  (): void => {
-    const { registration, loading, subscribe } = useWebPush();
-    const resubscribedRef = useRef(false);
-    useEffect(() => {
-      if (!registration || loading || resubscribedRef.current) {
-        return;
-      }
-      if (registration.device_fingerprint_confidence < 0.5) {
-        resubscribedRef.current = true;
-        void subscribe();
-      }
-    }, [registration, loading]); // eslint-disable-line react-hooks/exhaustive-deps
-  };
+export const useReregisterPushSubscriptionIfNeeded = (): void => {
+  const { registration, loading, subscribe } = useWebPush();
+  const serviceWorkerMetadata = useServiceWorkerMetadata();
+  const deviceFingerprint = useDeviceFingerprint();
+  useEffect(() => {
+    if (
+      loading ||
+      !registration ||
+      !serviceWorkerMetadata ||
+      !deviceFingerprint
+    ) {
+      return;
+    }
+    if (
+      registration.service_worker_version !==
+      serviceWorkerMetadata.service_worker_version
+    ) {
+      console.info(
+        "Service worker version mismatch; re-registering push subscription...",
+      );
+      void subscribe();
+    } else if (
+      deviceFingerprint.fingerprint !== registration.device_fingerprint
+    ) {
+      console.info(
+        "Device fingerprint mismatch; re-registering push subscription...",
+      );
+      void subscribe();
+    }
+  }, [registration, serviceWorkerMetadata, deviceFingerprint, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+};

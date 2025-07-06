@@ -24,7 +24,7 @@ import {
   handleServiceWorkerNavigation,
   registerServiceWorker,
   unregisterOutdatedServiceWorkers,
-} from "~/helpers/serviceWorker";
+} from "~/helpers/serviceWorker/client";
 
 import "./application.css";
 

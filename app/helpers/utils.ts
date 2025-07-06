@@ -14,3 +14,6 @@ export const isTruthy = (value: any): boolean => {
 };
 
 export const resolve = <T>(f: () => T): T => f();
+
+export const awaitTimeout = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));

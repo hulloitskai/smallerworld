@@ -1,5 +1,13 @@
-const SERVICE_WORKER_URL = "/sw.js";
-const UPDATE_INTERVAL = 60 * 60 * 1000; // 1 hour
+import useSWR from "swr";
+
+import { awaitTimeout } from "~/helpers/utils";
+
+import {
+  SERVICE_WORKER_METADATA_ENDPOINT,
+  SERVICE_WORKER_UPDATE_INTERVAL,
+  SERVICE_WORKER_URL,
+  type ServiceWorkerMetadata,
+} from ".";
 
 const updateServiceWorkerIfScriptIsReachable = async (
   registration: ServiceWorkerRegistration,
@@ -93,7 +101,7 @@ export const registerServiceWorker = async (): Promise<void> => {
       return;
     }
     void updateServiceWorkerIfScriptIsReachable(registration);
-  }, UPDATE_INTERVAL);
+  }, SERVICE_WORKER_UPDATE_INTERVAL);
   void updateServiceWorkerIfScriptIsReachable(registration);
 };
 
@@ -207,5 +215,83 @@ const skipWaitingServiceWorker = (sw: ServiceWorker): Promise<void> =>
     sw.postMessage({ action: "skipWaiting" }, [port2]);
   });
 
-const awaitTimeout = (ms: number): Promise<void> =>
-  new Promise(resolve => setTimeout(resolve, ms));
+export const fetchServiceWorkerMetadata =
+  async (): Promise<ServiceWorkerMetadata> => {
+    await navigator.serviceWorker.ready;
+    const maxAttempts = 3;
+    let attempts = 0;
+    while (attempts < maxAttempts) {
+      attempts += 1;
+      const response = await fetch(SERVICE_WORKER_METADATA_ENDPOINT);
+      if (response.status === 200) {
+        const metadata: ServiceWorkerMetadata = await response.json();
+        return metadata;
+      }
+
+      console.error(
+        `Failed to fetch service worker metadata (status code ${response.status}), attempt ${attempts}/${maxAttempts}`,
+      );
+      if (attempts < maxAttempts) {
+        await awaitTimeout(1000);
+      }
+    }
+    throw new Error(
+      `Failed to fetch service worker metadata after ${maxAttempts} attempts`,
+    );
+  };
+
+export const useServiceWorkerMetadata = ():
+  | ServiceWorkerMetadata
+  | undefined => {
+  const { data, mutate } = useSWR(
+    SERVICE_WORKER_METADATA_ENDPOINT,
+    fetchServiceWorkerMetadata,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      onSuccess: data => {
+        console.info("Loaded service worker metadata", data);
+      },
+    },
+  );
+  useEffect(() => {
+    const unsubscribeRef: { current?: () => void } = {};
+    void navigator.serviceWorker.ready.then(registration => {
+      if (registration.active) {
+        void mutate();
+      }
+      const handleUpdateFound = (): void => {
+        const { active, installing } = registration;
+        if (!active || !installing) {
+          return;
+        }
+        const handleStateChange = (): void => {
+          const stopListening = (): void => {
+            installing.removeEventListener("statechange", handleStateChange);
+          };
+          switch (installing.state) {
+            case "installed": {
+              void mutate();
+              stopListening();
+              break;
+            }
+            case "redundant": {
+              stopListening();
+              break;
+            }
+          }
+        };
+        installing.addEventListener("statechange", handleStateChange);
+      };
+      registration.addEventListener("updatefound", handleUpdateFound);
+      unsubscribeRef.current = () => {
+        registration.removeEventListener("updatefound", handleUpdateFound);
+      };
+    });
+    return () => {
+      unsubscribeRef.current?.();
+    };
+  }, [mutate]);
+  return data;
+};

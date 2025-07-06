@@ -20,6 +20,10 @@ import {
 } from "~/helpers/notifications";
 import routes, { setupRoutes } from "~/helpers/routes";
 import { beforeSend, DENY_URLS } from "~/helpers/sentry/filtering";
+import {
+  SERVICE_WORKER_METADATA_ENDPOINT,
+  type ServiceWorkerMetadata,
+} from "~/helpers/serviceWorker";
 import { type PushNotification } from "~/types";
 
 // == Type declarations
@@ -27,7 +31,9 @@ declare const self: ServiceWorkerGlobalScope;
 
 // == Constants
 const MANIFEST = self.__WB_MANIFEST;
-const DEVICE_ENDPOINT = "/device";
+const SERVICE_WORKER_VERSION = 1;
+const SERVICE_WORKER_METADATA_CACHE_NAME =
+  "metadata/v" + SERVICE_WORKER_VERSION;
 
 // == Lifecycle
 let shuttingDown = false;
@@ -55,16 +61,22 @@ self.addEventListener("fetch", event => {
   }
 
   // Handle device metadata requests
-  if (url.pathname === DEVICE_ENDPOINT) {
-    console.debug("Device metadata request intercepted", url.toString());
+  if (url.pathname === SERVICE_WORKER_METADATA_ENDPOINT) {
+    console.debug(
+      "Service worker metadata request intercepted",
+      url.toString(),
+    );
     return event.respondWith(
-      caches.open(DEVICE_ENDPOINT).then(cache =>
+      caches.open(SERVICE_WORKER_METADATA_CACHE_NAME).then(cache =>
         cache.match(request).then(cachedResponse => {
           if (cachedResponse) {
             return cachedResponse;
           }
-          const payload = { deviceId: uuid() };
-          const body = JSON.stringify(payload);
+          const metadata: ServiceWorkerMetadata = {
+            device_id: uuid(),
+            service_worker_version: SERVICE_WORKER_VERSION,
+          };
+          const body = JSON.stringify(metadata);
           const headers: HeadersInit = { "Content-Type": "application/json" };
           const response = new Response(body, { headers });
           return cache.put(request, response.clone()).then(() => response);
@@ -436,4 +448,4 @@ self.addEventListener("unhandledrejection", ({ reason }) => {
   captureException(reason);
 });
 
-console.info("Service worker found with scope", self.registration.scope);
+console.info("Service worker initialized with scope", self.registration.scope);

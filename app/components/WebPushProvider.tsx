@@ -3,6 +3,8 @@ import {
   fingerprintDevice,
   type FingerprintingResult,
 } from "~/helpers/fingerprinting";
+import { type ServiceWorkerMetadata } from "~/helpers/serviceWorker";
+import { fetchServiceWorkerMetadata } from "~/helpers/serviceWorker/client";
 import {
   WebPushContext,
   type WebPushSubscribeOptions,
@@ -158,17 +160,17 @@ const useWebPushSubscribe = ({
     const { forceNewSubscription = false } = options ?? {};
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
       const browserDetection = detectBrowser();
-      let deviceId: string;
+      let serviceWorkerMetadata: ServiceWorkerMetadata;
       let fingerprintingResult: FingerprintingResult;
       let subscription = currentSubscription;
       try {
         let pushManager: PushManager;
         let publicKey: string;
-        [pushManager, publicKey, deviceId, fingerprintingResult] =
+        [pushManager, publicKey, serviceWorkerMetadata, fingerprintingResult] =
           await Promise.all([
             getPushManager(),
             fetchPublicKey(),
-            fetchDeviceId(),
+            fetchServiceWorkerMetadata(),
             fingerprintDevice(),
           ]);
         if (forceNewSubscription && subscription && isIos(browserDetection)) {
@@ -188,12 +190,13 @@ const useWebPushSubscribe = ({
         throw error;
       }
       console.info("Identified device for push registartion", {
-        deviceId,
+        deviceId: serviceWorkerMetadata.device_id,
         fingerprintingResult,
       });
       await registerSubscription({
         subscription,
-        deviceId,
+        deviceId: serviceWorkerMetadata.device_id,
+        serviceWorkerVersion: serviceWorkerMetadata.service_worker_version,
         deviceFingerprint: fingerprintingResult.fingerprint,
         deviceFingerprintConfidence: fingerprintingResult.confidenceScore,
         friendAccessToken: currentFriend?.access_token,
@@ -227,6 +230,7 @@ const useWebPushSubscribe = ({
 interface RegisterSubscriptionParams {
   subscription: PushSubscription;
   deviceId: string;
+  serviceWorkerVersion: number;
   deviceFingerprint: string;
   deviceFingerprintConfidence: number;
   friendAccessToken?: string;
@@ -235,6 +239,7 @@ interface RegisterSubscriptionParams {
 const registerSubscription = ({
   subscription,
   deviceId,
+  serviceWorkerVersion,
   deviceFingerprint,
   deviceFingerprintConfidence,
   friendAccessToken,
@@ -262,6 +267,7 @@ const registerSubscription = ({
           device_id: deviceId,
           device_fingerprint: deviceFingerprint,
           device_fingerprint_confidence: deviceFingerprintConfidence,
+          service_worker_version: serviceWorkerVersion,
         },
       },
     },
@@ -350,28 +356,3 @@ const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
     params: { query },
   }).then(({ publicKey }) => publicKey);
 };
-
-const fetchDeviceId = async (): Promise<string> => {
-  await navigator.serviceWorker.ready;
-  const maxAttempts = 3;
-  let attempts = 0;
-  while (attempts < maxAttempts) {
-    attempts += 1;
-    const response = await fetch("/device");
-    if (response.status === 200) {
-      const data: { deviceId: string } = await response.json();
-      return data.deviceId;
-    }
-
-    console.error(
-      `Failed to fetch device ID (status code ${response.status}), attempt ${attempts}/${maxAttempts}`,
-    );
-    if (attempts < maxAttempts) {
-      await awaitTimeout(1000);
-    }
-  }
-  throw new Error(`Failed to fetch device ID after ${maxAttempts} attempts`);
-};
-
-const awaitTimeout = (ms: number): Promise<void> =>
-  new Promise(resolve => setTimeout(resolve, ms));

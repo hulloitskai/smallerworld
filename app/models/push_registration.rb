@@ -10,6 +10,7 @@
 #  device_fingerprint            :string           not null
 #  device_fingerprint_confidence :float(24)        not null
 #  owner_type                    :string
+#  service_worker_version        :integer
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #  device_id                     :uuid             not null

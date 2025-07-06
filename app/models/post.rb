@@ -64,7 +64,7 @@ class Post < ApplicationRecord
   sig { returns(String) }
   def body_text
     fragment = Nokogiri::HTML5.fragment(body_html)
-    reshape_body_fragment_for_text_rendering(fragment)
+    reshape_body_fragment_for_text_rendering!(fragment)
     Html2Text.new(fragment).convert
   end
 
@@ -303,7 +303,7 @@ class Post < ApplicationRecord
   end
 
   sig { overridable.params(fragment: Nokogiri::HTML5::DocumentFragment).void }
-  def reshape_body_fragment_for_text_rendering(fragment)
+  def reshape_body_fragment_for_text_rendering!(fragment)
     fragment.css("li").each do |li|
       child = li.first_element_child
       child.replace(child.children) if child.name == "p"

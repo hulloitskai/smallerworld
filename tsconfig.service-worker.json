@@ -35,6 +35,7 @@
     "app/helpers/sentry/filtering.ts",
     "app/helpers/notifications.ts",
     "app/helpers/posts/formatting.ts",
+    "app/helpers/serviceWorker/index.ts",
     "app/entrypoints/sw.ts",
     "typings/env.d.ts",
     "typings/service-worker.d.ts"
