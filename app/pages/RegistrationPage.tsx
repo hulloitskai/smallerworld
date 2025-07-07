@@ -60,7 +60,9 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       },
     },
     onSuccess: () => {
-      router.visit(routes.world.show.path());
+      // Use location.href instead of router.visit in order to force browser
+      // to load new page metadata for pin-to-homescreen + PWA detection.
+      location.href = routes.world.show.path();
     },
   });
   useEffect(() => {

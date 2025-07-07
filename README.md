@@ -19,6 +19,10 @@ bin/setup
 
 ## todos
 
+- [ ] creating world from friend page doesn't show the 'pin to home screen'
+      modal
+- [ ] needs to refresh after signup for the 'pin to home screen' to work
+      properly
 - [ ] adding friend page to chrome standalone doesn't dismiss join modal
 - [ ] server-side notifications rendering
 - [ ] clearer instructions for pin-to-home-screen on iOS
