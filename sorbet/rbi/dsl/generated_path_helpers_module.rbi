@@ -31,6 +31,9 @@ module GeneratedPathHelpersModule
   def delivered_notification_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def download_image_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -16,6 +16,7 @@ export interface ImageStackProps
       "maxHeight" | "maxWidth" | "flipBoundary" | "radius"
     > {
   images: ImageType[];
+  downloadable?: boolean;
 }
 
 const IMAGE_ROTATIONS = [-1, 2, -2, 1];
@@ -27,6 +28,7 @@ const ImageStack: FC<ImageStackProps> = ({
   className,
   radius,
   flipBoundary,
+  downloadable,
   ...otherProps
 }) => {
   const { ref: containerRef, width: containerWidth } = useElementSize();
@@ -86,7 +88,7 @@ const ImageStack: FC<ImageStackProps> = ({
           setLightboxOpened(false);
         }}
         onIndexChange={setIndex}
-        {...{ images, index }}
+        {...{ images, index, downloadable }}
       />
     </>
   );

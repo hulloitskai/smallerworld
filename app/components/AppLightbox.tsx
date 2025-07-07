@@ -2,10 +2,13 @@ import { CloseButton, Loader } from "@mantine/core";
 import parseSrcset from "@prettier/parse-srcset";
 import Lightbox, {
   type LightboxExternalProps,
+  type Plugin,
   type SlideImage,
 } from "yet-another-react-lightbox";
+import DownloadPlugin from "yet-another-react-lightbox/plugins/download";
 import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
 
+import DownloadIcon from "~icons/heroicons/arrow-down-tray-20-solid";
 import PrevIcon from "~icons/heroicons/chevron-left-20-solid";
 import NextIcon from "~icons/heroicons/chevron-right-20-solid";
 import ZoomOutIcon from "~icons/heroicons/magnifying-glass-minus-20-solid";
@@ -22,6 +25,7 @@ export interface AppLightboxProps
   > {
   images: Image[];
   onIndexChange: (index: number) => void;
+  downloadable?: boolean;
 }
 
 const AppLightbox: FC<AppLightboxProps> = ({
@@ -29,14 +33,28 @@ const AppLightbox: FC<AppLightboxProps> = ({
   images,
   close,
   onIndexChange,
+  downloadable,
   ...otherProps
 }) => {
+  const plugins = useMemo<Plugin[]>(() => {
+    const plugins = [LightboxZoomPlugin];
+    if (downloadable) {
+      plugins.push(DownloadPlugin);
+    }
+    return plugins;
+  }, [downloadable]);
   return (
     <Lightbox
       className={cn("AppLightbox", classes.lightbox, className)}
-      plugins={[LightboxZoomPlugin]}
+      {...{ plugins }}
       slides={images.map(image => ({
         src: image.src,
+        ...(downloadable && {
+          download: {
+            filename: image.filename,
+            url: routes.images.download.path({ signed_id: image.signed_id }),
+          },
+        }),
         ...(image.dimensions && {
           ...slideImageOptionsFromDimensions(image, image.dimensions),
         }),
@@ -52,19 +70,6 @@ const AppLightbox: FC<AppLightboxProps> = ({
         closeOnPullUp: true,
       }}
       render={{
-        ...(images.length > 1
-          ? {
-              iconPrev: () => (
-                <Box component={PrevIcon} fz="xl" width={32} height={32} />
-              ),
-              iconNext: () => (
-                <Box component={NextIcon} fz="xl" width={32} height={32} />
-              ),
-            }
-          : {
-              buttonNext: () => null,
-              buttonPrev: () => null,
-            }),
         buttonClose: () => (
           <CloseButton
             key="close"
@@ -95,6 +100,20 @@ const AppLightbox: FC<AppLightboxProps> = ({
           </Group>
         ),
         iconLoading: () => <Loader />,
+        iconDownload: () => <DownloadIcon />,
+        ...(images.length > 1
+          ? {
+              iconPrev: () => (
+                <Box component={PrevIcon} fz="xl" width={32} height={32} />
+              ),
+              iconNext: () => (
+                <Box component={NextIcon} fz="xl" width={32} height={32} />
+              ),
+            }
+          : {
+              buttonNext: () => null,
+              buttonPrev: () => null,
+            }),
       }}
       on={{
         view: ({ index }) => {

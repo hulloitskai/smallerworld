@@ -73,8 +73,8 @@ self.addEventListener("fetch", event => {
             return cachedResponse;
           }
           const metadata: ServiceWorkerMetadata = {
-            device_id: uuid(),
-            service_worker_version: SERVICE_WORKER_VERSION,
+            deviceId: uuid(),
+            serviceWorkerVersion: SERVICE_WORKER_VERSION,
           };
           const body = JSON.stringify(metadata);
           const headers: HeadersInit = { "Content-Type": "application/json" };

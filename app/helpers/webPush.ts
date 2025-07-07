@@ -96,7 +96,7 @@ export const useReregisterPushSubscriptionIfNeeded = (): void => {
     }
     if (
       registration.service_worker_version !==
-      serviceWorkerMetadata.service_worker_version
+      serviceWorkerMetadata.serviceWorkerVersion
     ) {
       console.info(
         "Service worker version mismatch; re-registering push subscription...",

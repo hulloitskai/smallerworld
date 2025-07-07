@@ -190,16 +190,15 @@ const useWebPushSubscribe = ({
         throw error;
       }
       console.info("Identified device for push registartion", {
-        deviceId: serviceWorkerMetadata.device_id,
+        deviceId: serviceWorkerMetadata.deviceId,
         fingerprintingResult,
       });
       await registerSubscription({
         subscription,
-        deviceId: serviceWorkerMetadata.device_id,
-        serviceWorkerVersion: serviceWorkerMetadata.service_worker_version,
         deviceFingerprint: fingerprintingResult.fingerprint,
         deviceFingerprintConfidence: fingerprintingResult.confidenceScore,
         friendAccessToken: currentFriend?.access_token,
+        ...serviceWorkerMetadata,
       });
       onSubscribed(subscription);
       return subscription;

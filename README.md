@@ -19,7 +19,7 @@ bin/setup
 
 ## todos
 
-- [ ] service worker versioning
+- [ ] adding friend page to chrome standalone doesn't dismiss join modal
 - [ ] server-side notifications rendering
 - [ ] clearer instructions for pin-to-home-screen on iOS
 - [ ] make it easier for people to give "enable notifications" a shot
@@ -36,7 +36,6 @@ bin/setup
 - [ ] emoji picker search sucks
 - [ ] user-page-specific splash screens for Android / iOS
 - [ ] fix iOS text selection in Vaul drawers
-- [ ] adding friend page to chrome standalone doesn't dismiss join modal
 - [ ] remove old supabase auth code
 
 ## archived todos
@@ -85,3 +84,5 @@ bin/setup
       the shared area)
 - [x] closeable prompt to open your world on mobile with qr code when on desktop
 - [x] add android/ios chrome add-to-homescreen instructions
+- [x] service worker versioning
+- [x] you can download your own images from lightbox mode

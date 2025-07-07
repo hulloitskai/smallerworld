@@ -31,6 +31,9 @@ module GeneratedUrlHelpersModule
   def delivered_notification_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def download_image_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

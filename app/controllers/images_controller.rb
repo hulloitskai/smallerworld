@@ -2,6 +2,9 @@
 # frozen_string_literal: true
 
 class ImagesController < ApplicationController
+  # == Filters
+  before_action :authenticate_user!, only: :download
+
   # == Actions
   # GET /images/:signed_id
   def show
@@ -12,6 +15,7 @@ class ImagesController < ApplicationController
   # GET /images/:signed_id/download
   def download
     image = maybe_find_image
+    authorize!(image)
     redirect_to(rails_representation_path(image), disposition: :attachment)
   end
 
