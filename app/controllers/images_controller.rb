@@ -9,6 +9,12 @@ class ImagesController < ApplicationController
     render(json: { image: ImageSerializer.one_if(image) })
   end
 
+  # GET /images/:signed_id/download
+  def download
+    image = maybe_find_image
+    redirect_to(rails_representation_path(image), disposition: :attachment)
+  end
+
   private
 
   # == Helpers

@@ -31,13 +31,17 @@ class Image < ActiveStorage::Blob
   # == Methods
   sig { returns(String) }
   def src
-    variant = self.variant(resize_to_limit: [MAX_SIZE, MAX_SIZE])
-    representation_path(variant)
+    if gif?
+      representation_path(self)
+    else
+      variant = self.variant(resize_to_limit: [MAX_SIZE, MAX_SIZE])
+      representation_path(variant)
+    end
   end
 
   sig { returns(T.nilable(String)) }
   def srcset
-    return if content_type&.start_with?("image/gif")
+    return if gif?
 
     sources = SIZES.map do |size|
       variant = self.variant(resize_to_limit: [size, size])
@@ -63,5 +67,10 @@ class Image < ActiveStorage::Blob
     Rails.application.routes
       .url_helpers
       .rails_representation_path(representation)
+  end
+
+  sig { returns(T::Boolean) }
+  def gif?
+    content_type&.start_with?("image/gif") || false
   end
 end

@@ -131,7 +131,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
                   />
                   <Checkbox
                     {...getInputProps("hide_neko", { type: "checkbox" })}
-                    label="no pets in my smaller world pls >:("
+                    label="no pets in my smaller world pls 🚫🐈"
                     radius="md"
                   />
                 </InputWrapper>

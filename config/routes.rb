@@ -26,7 +26,11 @@ Rails.application.routes.draw do
 
   # == Attachments
   resources :files, only: :show, param: :signed_id, export: true
-  resources :images, only: :show, param: :signed_id, export: true
+  resources :images, only: :show, param: :signed_id, export: true do
+    member do
+      get :download
+    end
+  end
 
   # == Contact
   resource :contact_url, only: :show, export: { namespace: "contact_url" }
