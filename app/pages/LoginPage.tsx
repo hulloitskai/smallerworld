@@ -34,7 +34,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
   }
   type FormData =
     | { verificationRequest?: PhoneVerificationRequest }
-    | { redirectUrl: string };
+    | { registered: boolean };
   type TransformValues = (
     values: FormValues,
   ) =>
@@ -80,17 +80,22 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
         }),
     onSuccess: data => {
       if (showVerificationCodeInput) {
-        invariant("redirectUrl" in data, "Missing redirect URL after sign in");
-        const { pwa_scope: pwaScope } = queryParamsFromPath(pageUrl);
-        const redirectUrl = new URL(data.redirectUrl, location.origin);
-        if (pwaScope) {
-          redirectUrl.searchParams.set("pwa_scope", pwaScope);
+        invariant(
+          "registered" in data,
+          "Missing registration status after sign in",
+        );
+        const { registered } = data;
+        const query = queryParamsFromPath(pageUrl);
+        if (registered) {
+          location.href = routes.world.show.path({ query });
+        } else {
+          const registrationPath = routes.registration.new.path({ query });
+          router.visit(registrationPath);
         }
-        router.visit(redirectUrl.toString());
       } else {
+        setShowVerificationCodeInput(true);
         if ("verificationRequest" in data && data.verificationRequest) {
-          const { verification_code, verification_code_message } =
-            data.verificationRequest;
+          const { verificationRequest } = data;
           const toastId = randomId();
           toast.success(
             "simulating verification code delivery in development",
@@ -98,11 +103,16 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               id: toastId,
               description: (
                 <Stack align="start" gap={8}>
-                  <Box>&quot;{verification_code_message}&quot;</Box>
+                  <Box>
+                    &quot;{verificationRequest.verification_code_message}&quot;
+                  </Box>
                   <Button
                     size="compact-sm"
                     onClick={() => {
-                      setFieldValue("verification_code", verification_code);
+                      setFieldValue(
+                        "verification_code",
+                        verificationRequest.verification_code,
+                      );
                       toast.dismiss(toastId);
                     }}
                   >
@@ -113,7 +123,6 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
             },
           );
         }
-        setShowVerificationCodeInput(true);
       }
     },
   });

@@ -25,19 +25,16 @@ class SessionsController < ApplicationController
       phone_number:,
       verification_code:,
     ))
-      if (user = User.find_by_phone_number(phone_number))
+      registered = if (user = User.find_by_phone_number(phone_number))
         start_new_session_for!(user)
-        render(json: {
-          "redirectUrl" => after_authentication_url,
-        })
+        true
       else
         self.registration_token =
           verification_request.generate_registration_token
-        render(json: {
-          "redirectUrl" => new_registration_path,
-        })
+        false
       end
       verification_request.mark_as_verified!
+      render(json: { registered: })
     else
       render(
         json: {

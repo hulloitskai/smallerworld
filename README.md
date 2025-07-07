@@ -23,6 +23,7 @@ bin/setup
       modal
 - [ ] needs to refresh after signup for the 'pin to home screen' to work
       properly
+- [ ] add 'what people are talking about' to user's world
 - [ ] adding friend page to chrome standalone doesn't dismiss join modal
 - [ ] server-side notifications rendering
 - [ ] clearer instructions for pin-to-home-screen on iOS
