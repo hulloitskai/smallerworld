@@ -21,7 +21,7 @@ import classes from "./AppLightbox.module.css";
 export interface AppLightboxProps
   extends Omit<
     LightboxExternalProps,
-    "slides" | "index" | "on" | "carousel" | "controller" | "render"
+    "slides" | "on" | "carousel" | "controller" | "render"
   > {
   images: Image[];
   onIndexChange: (index: number) => void;
@@ -31,7 +31,6 @@ export interface AppLightboxProps
 const AppLightbox: FC<AppLightboxProps> = ({
   className,
   images,
-  close,
   onIndexChange,
   downloadable,
   ...otherProps
@@ -43,11 +42,9 @@ const AppLightbox: FC<AppLightboxProps> = ({
     }
     return plugins;
   }, [downloadable]);
-  return (
-    <Lightbox
-      className={cn("AppLightbox", classes.lightbox, className)}
-      {...{ plugins }}
-      slides={images.map(image => ({
+  const slides = useMemo(
+    () =>
+      images.map(image => ({
         src: image.src,
         ...(downloadable && {
           download: {
@@ -58,7 +55,13 @@ const AppLightbox: FC<AppLightboxProps> = ({
         ...(image.dimensions && {
           ...slideImageOptionsFromDimensions(image, image.dimensions),
         }),
-      }))}
+      })),
+    [images, downloadable],
+  );
+  return (
+    <Lightbox
+      className={cn("AppLightbox", classes.lightbox, className)}
+      {...{ plugins }}
       carousel={{
         ...(images.length === 1 && {
           finite: true,
@@ -120,7 +123,7 @@ const AppLightbox: FC<AppLightboxProps> = ({
           onIndexChange(index);
         },
       }}
-      {...{ close }}
+      {...{ slides }}
       {...otherProps}
     />
   );
