@@ -31,3 +31,179 @@
 - Use arrow function expressions (`const functionName = () => {}`) instead of function declarations (`function functionName() {}`)
 - This applies to all functions including exported functions, utility functions, and event handlers
 - Prefer `const` declarations for consistency with the codebase style
+
+## Application Architecture
+
+This is a modern Rails application with React frontend using:
+- **Inertia.js** for SPA navigation without API complexity
+- **Mantine** as the primary UI component library  
+- **CSS Modules** for component styling
+- **Vite** for frontend build tooling with Rails integration
+- **SWR** for data fetching and caching
+- **TypeScript** with extensive auto-import system
+- **Progressive Web App** capabilities with service workers
+- **ActionCable** for real-time features
+- **Sorbet** for Ruby type checking
+
+## File Organization Conventions
+
+### Frontend Structure
+- **Components**: `app/components/` - React components with co-located CSS modules
+- **Pages**: `app/pages/` - Top-level page components with layout definitions
+- **Types**: `app/types/` - TypeScript type definitions organized by domain
+- **Entrypoints**: `app/entrypoints/` - Vite entry points (application.tsx, sw.ts, etc.)
+
+### Backend Structure  
+- **Models**: Standard Rails with concerns directory
+- **Controllers**: Standard Rails with API and concerns
+- **Services**: Lean service objects in `app/services/`
+- **Serializers**: API response serialization
+- **Validators**: Custom validation logic
+- **Policies**: Authorization policies using Action Policy
+
+## Naming Conventions
+
+### Frontend
+- **Components**: PascalCase (`WorldPageFloatingActions`, `UserPageFeed`)
+- **CSS Modules**: ComponentName.module.css
+- **Pages**: PascalCase ending in "Page" (`UserPage`, `WorldPage`)
+- **Types**: PascalCase in separate files
+- **Icons**: Descriptive names with "Icon" suffix
+- **Props Interfaces**: `ComponentNameProps`
+
+### Backend
+- **Files**: snake_case following Rails conventions
+- **Services**: snake_case ending in "_service.rb"
+- **Models**: PascalCase classes, snake_case files
+
+## Component Patterns
+
+### Component Structure
+```tsx
+// Import external libraries first
+import { Button, Stack } from "@mantine/core";
+import { useModals } from "@mantine/modals";
+
+// Import icons from unplugin-icons
+import IconName from "~icons/heroicons/icon-name-20-solid";
+
+// Import internal types and helpers
+import { type ComponentProps } from "~/types";
+import { helperFunction } from "~/helpers/domain";
+
+// Import other components
+import SomeComponent from "./SomeComponent";
+
+// Import styles last
+import classes from "./ComponentName.module.css";
+
+// Define props interface
+export interface ComponentNameProps {
+  // props definition
+}
+
+// Component implementation using arrow function
+const ComponentName: FC<ComponentNameProps> = ({ prop1, prop2 }) => {
+  // Component logic
+  return (
+    <div className={classes.wrapper}>
+      {/* Component JSX */}
+    </div>
+  );
+};
+
+export default ComponentName;
+```
+
+### Page Components with Layouts
+- Pages define their own layout using `PageName.layout = page => <Layout>{page}</Layout>`
+- Use `PageComponent<PropsType>` type for page components
+- Include props interface extending `SharedPageProps`
+
+## Styling Conventions
+
+- Use **CSS Modules** for component-specific styles
+- Class names in camelCase within CSS modules
+- Mantine components for UI primitives
+- Responsive design with mobile-first approach
+- Use Mantine's `rem()` function for consistent sizing
+- Theme-aware styling with user themes support
+
+## Data Fetching Patterns
+
+### SWR Usage
+```tsx
+const { data, error, mutate } = useRouteSWR<ResponseType>(
+  routes.endpoint.path(),
+  {
+    descriptor: "descriptive name for debugging",
+    keepPreviousData: true,
+  }
+);
+```
+
+### Mutations
+```tsx
+const { trigger } = useRouteMutation<ResponseType>(
+  routes.endpoint.path(),
+  {
+    descriptor: "action description",
+  }
+);
+```
+
+## State Management
+
+- Use React hooks for local state
+- SWR for server state caching
+- Global state through context providers when needed
+- Real-time updates via ActionCable subscriptions using `useSubscription`
+
+## Authentication & Authorization
+
+- **Current User**: `useCurrentUser()` for authenticated user
+- **Current Friend**: `useCurrentFriend()` for friend access tokens
+- **Admin Check**: `useIsAdmin()` for admin-only features
+- **Action Policy**: Authorization using Action Policy gem (not Pundit)
+- Dual authentication system supporting both user sessions and friend tokens
+- Handle `ActionPolicy::Unauthorized` exceptions in controllers
+
+## PWA & Mobile Patterns
+
+- **PWA Detection**: `usePWA()` hook for standalone mode detection
+- **Mobile Responsive**: `useIsMobileSize()` for responsive behavior
+- **Service Worker**: Custom navigation handling for PWA
+- **Install Prompts**: App-specific install flow components
+- **Offline Support**: Service worker caching strategies
+
+## Auto-Import System
+
+The application uses extensive auto-imports for:
+- **Mantine Components**: `Button`, `Stack`, `Text`, etc.
+- **Icons**: Custom icon system with consistent naming
+- **Utilities**: Lodash-es functions, date utilities, formatting helpers
+- **Hooks**: React hooks, Mantine hooks, custom hooks
+- **Routing**: Inertia router, custom route helpers
+- **Common Types**: Exported in global scope
+
+Check `typings/generated/auto-import.d.ts` before adding imports.
+
+## Error Handling
+
+- Use `invariant()` for runtime assertions
+- Toast notifications with `toast.success()`, `toast.error()`
+- Sentry error reporting integrated
+- Graceful error boundaries with ErrorPage component
+
+## Real-time Features
+
+- **ActionCable**: Use `useSubscription` hook for real-time updates
+- **WebPush**: Notification system with `useWebPush` hook
+- **Live Updates**: Automatic data revalidation on window focus
+
+## Testing Considerations
+
+- Playwright for end-to-end testing
+- Test files should follow naming conventions
+- Mock external services in tests
+- Consider PWA features in test scenarios
