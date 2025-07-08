@@ -5,7 +5,7 @@ import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import { formatJoinMessage, useJoinUrl } from "~/helpers/join";
+import { formatJoinMessage, JOIN_MESSAGE, useJoinUrl } from "~/helpers/join";
 import {
   messageUri,
   MESSAGING_PLATFORM_TO_ICON,
@@ -345,7 +345,7 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
   const joinShareData = useMemo(() => {
     if (joinUrl) {
       const data: ShareData = {
-        title: formatJoinMessage(joinUrl),
+        text: JOIN_MESSAGE,
         url: joinUrl,
       };
       if (navigator.canShare(data)) {
