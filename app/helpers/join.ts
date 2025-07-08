@@ -9,11 +9,10 @@ import { useEffect, useState } from "react";
 
 import { type Friend, type User } from "~/types";
 
-export const formatJoinMessage = (joinUrl: string) =>
-  `you're invited to join my smaller world: ${joinUrl}`;
+export const JOIN_MESSAGE = "you're invited to join my smaller world";
 
-export const formatJoinTitle = () =>
-  "you're invited to join my smaller world";
+export const formatJoinMessage = (joinUrl: string) =>
+  `${JOIN_MESSAGE}: ${joinUrl}`;
 
 const buildJoinUrl = (user: User, friend: Friend): string => {
   const joinPath = routes.users.show.path({
