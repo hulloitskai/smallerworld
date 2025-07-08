@@ -59,7 +59,7 @@ This is a modern Rails application with React frontend using:
 - **Services**: Lean service objects in `app/services/`
 - **Serializers**: API response serialization
 - **Validators**: Custom validation logic
-- **Policies**: Authorization policies (likely Pundit)
+- **Policies**: Authorization policies using Action Policy
 
 ## Naming Conventions
 
@@ -164,7 +164,9 @@ const { trigger } = useRouteMutation<ResponseType>(
 - **Current User**: `useCurrentUser()` for authenticated user
 - **Current Friend**: `useCurrentFriend()` for friend access tokens
 - **Admin Check**: `useIsAdmin()` for admin-only features
+- **Action Policy**: Authorization using Action Policy gem (not Pundit)
 - Dual authentication system supporting both user sessions and friend tokens
+- Handle `ActionPolicy::Unauthorized` exceptions in controllers
 
 ## PWA & Mobile Patterns
 
