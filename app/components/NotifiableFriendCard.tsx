@@ -7,7 +7,7 @@ import ResumeIcon from "~icons/heroicons/play-20-solid";
 import QrCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import { formatJoinMessage, JOIN_MESSAGE, useJoinUrl } from "~/helpers/join";
+import { JOIN_MESSAGE, useJoinUrl } from "~/helpers/join";
 import { type Friend, type NotifiableFriend, type User } from "~/types";
 
 import EditFriendForm from "./EditFriendForm";
