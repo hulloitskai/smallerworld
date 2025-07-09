@@ -17,7 +17,7 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ subject }) => {
     if (visibility === "hidden") {
       return;
     }
-    if (wasShownInLast12Hours()) {
+    if (wasShownInLast12Hours(subject)) {
       return;
     }
     let name = subject.name;
@@ -39,26 +39,31 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ subject }) => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [visibility]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [subject, visibility]);
   return null;
 };
 
 export default WelcomeBackToast;
 
-const LAST_SHOWN_AT_KEY = "welcome_back_last_shown_at";
+const LAST_SHOWN_AT_KEY_PREFIX = "welcome_back_last_shown_at";
 
-const getLastShownAt = (): DateTime | null => {
-  const timestamp = localStorage.getItem(LAST_SHOWN_AT_KEY);
+const lastShownAtKey = (subject: User | Friend) => {
+  const subjectType = "access_token" in subject ? "friend" : "user";
+  return [LAST_SHOWN_AT_KEY_PREFIX, subjectType, subject.id].join(":");
+};
+
+const getLastShownAt = (subject: User | Friend): DateTime | null => {
+  const timestamp = localStorage.getItem(lastShownAtKey(subject));
   return timestamp ? DateTime.fromISO(timestamp) : null;
 };
 
-const wasShownInLast12Hours = (): boolean => {
-  const lastShownAt = getLastShownAt();
+const wasShownInLast12Hours = (subject: User | Friend): boolean => {
+  const lastShownAt = getLastShownAt(subject);
   return lastShownAt ? lastShownAt.diffNow().hours < 12 : false;
 };
 
 const updateLastShownAt = () => {
-  localStorage.setItem(LAST_SHOWN_AT_KEY, DateTime.now().toISO());
+  localStorage.setItem(LAST_SHOWN_AT_KEY_PREFIX, DateTime.now().toISO());
 };
 
 const CONFETTI_DEFAULTS: ConfettiOptions = {
