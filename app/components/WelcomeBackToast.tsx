@@ -34,7 +34,7 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ subject }) => {
       });
       const friendEmoji = "emoji" in subject ? subject.emoji : null;
       void shootWelcomeConfetti(friendEmoji);
-      updateLastShownAt();
+      updateLastShownAt(subject);
     }, 1000);
     return () => {
       clearTimeout(timeout);
@@ -62,8 +62,8 @@ const wasShownInLast12Hours = (subject: User | Friend): boolean => {
   return lastShownAt ? lastShownAt.diffNow().hours < 12 : false;
 };
 
-const updateLastShownAt = () => {
-  localStorage.setItem(LAST_SHOWN_AT_KEY_PREFIX, DateTime.now().toISO());
+const updateLastShownAt = (subject: User | Friend) => {
+  localStorage.setItem(lastShownAtKey(subject), DateTime.now().toISO());
 };
 
 const CONFETTI_DEFAULTS: ConfettiOptions = {
