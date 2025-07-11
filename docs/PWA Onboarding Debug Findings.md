@@ -7,17 +7,20 @@ The PWA installation prompt isn't appearing when users complete registration and
 ## Root Cause Analysis
 
 ### The Flow
+
 1. User installs an existing world on their phone as a PWA
 2. Inside that world, they tap "Create Your Own World" (found in `AppMenu.tsx`)
 3. This opens a registration page in a new in-app browser
 4. After registering, they should land on their newly created world page with an install prompt
 
 ### The Issue
+
 The registration page redirects using `location.href = routes.world.show.path()` without carrying PWA scope information, causing the PWA scope detection to fail.
 
 ## Technical Details
 
 ### PWA Scope Detection Logic
+
 In `app/helpers/pwa.ts`, the `useOutOfPWAScope()` function checks if the current URL starts with the `pwa_scope` query parameter:
 
 ```typescript
@@ -34,6 +37,7 @@ export const useOutOfPWAScope = (): boolean => {
 ```
 
 ### World Page Install Logic
+
 In `WorldPage.tsx`, the install modal only shows when specific conditions are met:
 
 ```typescript
@@ -57,6 +61,7 @@ useEffect(() => {
 The key condition `(!isStandalone || outOfPWAScope)` fails when `outOfPWAScope` is `true`.
 
 ### PWA Scope Management
+
 - PWA scope is set via `AppMeta` component using `pwaScope` prop
 - World manifest has scope set to `/world` (see `WorldsController#manifest`)
 - `PWAScopedLink` component handles scope preservation during navigation

@@ -20,7 +20,7 @@ const ICON_IMAGE_INPUT_SIZE = 110;
 
 const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
   const { url: pageUrl } = usePage();
-  
+
   // == Time zone
   const timeZone = useTimeZone();
 
