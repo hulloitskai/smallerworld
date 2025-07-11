@@ -13,62 +13,19 @@ if command -v nodenv >/dev/null 2>&1; then
   eval "$(nodenv init -)"
 fi
 
-# Check if package.json exists (we're in a Node.js project)
+# Check if package.json exists
 if [ ! -f "package.json" ]; then
-  echo "❌ No package.json found. This script requires a Node.js project with dependencies."
+  echo "❌ No package.json found. This script requires a Node.js project."
   exit 1
 fi
 
-# Function to check if a package is available in project dependencies
-check_project_package() {
-  local package_name="$1"
-  npm list "$package_name" >/dev/null 2>&1
-}
+echo "✨ Formatting with prettier..."
+npm exec -- prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}' 2>/dev/null || echo "⚠️ Prettier failed or not installed"
 
-# Function to get project command or warn if missing
-get_project_command() {
-  local package_name="$1"
-  
-  if check_project_package "$package_name"; then
-    echo "npm exec -- $package_name"
-  else
-    echo ""
-  fi
-}
+echo "🧹 Running ESLint auto-fix..."
+npm exec -- eslint --fix '**/*.{js,jsx,ts,tsx}' 2>/dev/null || echo "⚠️ ESLint failed or not installed"
 
-# Always use project dependencies for consistency with CI
-PRETTIER_CMD=$(get_project_command "prettier")
-ESLINT_CMD=$(get_project_command "eslint")
-LEFTHOOK_CMD=$(get_project_command "lefthook")
-
-# Format with Prettier
-if [ -n "$PRETTIER_CMD" ]; then
-  echo "✨ Formatting frontend files (JS/TS/CSS/Markdown)..."
-  $PRETTIER_CMD --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}' 2>/dev/null || {
-    echo "⚠️ Prettier formatting failed, but continuing..."
-  }
-else
-  echo "⚠️ Prettier not found in project dependencies, skipping frontend formatting..."
-fi
-
-# ESLint auto-fix
-if [ -n "$ESLINT_CMD" ]; then
-  echo "🧹 Running ESLint auto-fix..."
-  $ESLINT_CMD --fix '**/*.{js,jsx,ts,tsx}' 2>/dev/null || {
-    echo "⚠️ ESLint auto-fix failed, but continuing..."
-  }
-else
-  echo "⚠️ ESLint not found in project dependencies, skipping auto-fix..."
-fi
-
-# Lefthook formatting
-if [ -n "$LEFTHOOK_CMD" ]; then
-  echo "🚀 Running lefthook formatting..."
-  $LEFTHOOK_CMD run fix 2>/dev/null || {
-    echo "⚠️ Lefthook failed, but frontend formatting completed"
-  }
-elif [ -f "lefthook.yml" ]; then
-  echo "⚠️ Lefthook config found but not installed in project dependencies, skipping..."
-fi
+echo "🚀 Running lefthook..."
+npm exec -- lefthook run fix 2>/dev/null || echo "⚠️ Lefthook failed or not installed"
 
 echo "✅ Formatting complete!"
