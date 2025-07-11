@@ -5,6 +5,7 @@ import {
   canOpenUrlInMobileSafari,
   isDesktop,
   isMobileStandaloneBrowser,
+  shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import {
@@ -65,7 +66,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   loading={
                     installing ||
                     (browserDetection &&
-                      !isDesktop(browserDetection) &&
+                      shouldWaitForInstallEvent(browserDetection) &&
                       !install)
                   }
                   disabled={!browserDetection}
