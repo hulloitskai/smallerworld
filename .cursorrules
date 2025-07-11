@@ -10,6 +10,27 @@ bin/cursor_agent_format_code
 
 **This script automatically handles environment setup and runs all formatting tools with proper error handling.**
 
+## Code Simplicity
+
+### Prefer Direct Logic Over Premature Optimization
+- Avoid unnecessary `useMemo`, `useCallback`, or complex abstractions when simple inline logic suffices
+- Example: Instead of memoizing a simple boolean calculation, use it directly in props:
+  ```tsx
+  // ❌ Unnecessary complexity
+  const waitingForInstallEvent = useMemo(() => {
+    if (!browserDetection) return false;
+    return shouldWaitForInstallEvent(browserDetection) && !install;
+  }, [browserDetection, install]);
+
+  // ✅ Simple and direct
+  loading={installing || (browserDetection && shouldWaitForInstallEvent(browserDetection) && !install)}
+  ```
+- Prioritize readability and maintainability over micro-optimizations unless performance issues are measured
+
+### Browser Detection Specifics
+- Android devices may not always be detected as "Chrome" browser but can still support `beforeinstallprompt`
+- When checking for PWA install support, check both `result.browser.is("Chrome")` OR `result.os.is("Android")`
+
 ## Project Structure Guidelines
 
 ### `docs/` Directory
