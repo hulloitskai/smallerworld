@@ -26,7 +26,7 @@ export const isDesktopChrome = (result: IResult): boolean =>
 
 // Helper function to check if we should wait for the install event
 export const shouldWaitForInstallEvent = (result: IResult): boolean =>
-  result.browser.is("Chrome");
+  result.browser.is("Chrome") || result.os.is("Android");
 
 const canUseIosShortcutsExploit = (result: IResult): boolean =>
   isIos(result) &&
