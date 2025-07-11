@@ -13,45 +13,33 @@ if command -v nodenv >/dev/null 2>&1; then
   eval "$(nodenv init -)"
 fi
 
-# Function to check if a package is available
-check_package() {
+# Check if package.json exists (we're in a Node.js project)
+if [ ! -f "package.json" ]; then
+  echo "❌ No package.json found. This script requires a Node.js project with dependencies."
+  exit 1
+fi
+
+# Function to check if a package is available in project dependencies
+check_project_package() {
   local package_name="$1"
-  local use_project="$2"
-  
-  if [ "$use_project" = "true" ]; then
-    npm list "$package_name" >/dev/null 2>&1
-  else
-    command -v "$package_name" >/dev/null 2>&1
-  fi
+  npm list "$package_name" >/dev/null 2>&1
 }
 
-# Function to get command with fallback
-get_command() {
+# Function to get project command or warn if missing
+get_project_command() {
   local package_name="$1"
-  local use_project="$2"
   
-  if [ "$use_project" = "true" ] && check_package "$package_name" true; then
+  if check_project_package "$package_name"; then
     echo "npm exec -- $package_name"
-  elif check_package "$package_name" false; then
-    echo "npx $package_name"
   else
     echo ""
   fi
 }
 
-# Use project dependencies by default, fall back to global if needed
-USE_PROJECT_DEPS=${USE_PROJECT_DEPS:-true}
-
-# Check if package.json exists (we're in a Node.js project)
-if [ ! -f "package.json" ]; then
-  echo "⚠️ No package.json found, using global tools..."
-  USE_PROJECT_DEPS=false
-fi
-
-# Get commands with automatic fallback
-PRETTIER_CMD=$(get_command "prettier" "$USE_PROJECT_DEPS")
-ESLINT_CMD=$(get_command "eslint" "$USE_PROJECT_DEPS")
-LEFTHOOK_CMD=$(get_command "lefthook" "$USE_PROJECT_DEPS")
+# Always use project dependencies for consistency with CI
+PRETTIER_CMD=$(get_project_command "prettier")
+ESLINT_CMD=$(get_project_command "eslint")
+LEFTHOOK_CMD=$(get_project_command "lefthook")
 
 # Format with Prettier
 if [ -n "$PRETTIER_CMD" ]; then
@@ -60,7 +48,7 @@ if [ -n "$PRETTIER_CMD" ]; then
     echo "⚠️ Prettier formatting failed, but continuing..."
   }
 else
-  echo "⚠️ Prettier not found, skipping frontend formatting..."
+  echo "⚠️ Prettier not found in project dependencies, skipping frontend formatting..."
 fi
 
 # ESLint auto-fix
@@ -70,7 +58,7 @@ if [ -n "$ESLINT_CMD" ]; then
     echo "⚠️ ESLint auto-fix failed, but continuing..."
   }
 else
-  echo "⚠️ ESLint not found, skipping auto-fix..."
+  echo "⚠️ ESLint not found in project dependencies, skipping auto-fix..."
 fi
 
 # Lefthook formatting
@@ -80,7 +68,7 @@ if [ -n "$LEFTHOOK_CMD" ]; then
     echo "⚠️ Lefthook failed, but frontend formatting completed"
   }
 elif [ -f "lefthook.yml" ]; then
-  echo "⚠️ Lefthook config found but command not available, skipping..."
+  echo "⚠️ Lefthook config found but not installed in project dependencies, skipping..."
 fi
 
 echo "✅ Formatting complete!"

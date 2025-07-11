@@ -11,12 +11,13 @@ bin/cursor_agent_format_code
 **This script automatically handles environment setup and runs all formatting tools with proper error handling.**
 
 ### Version Consistency
-- The formatting script uses project dependencies (`npm exec`) instead of global versions to ensure consistency with CI
+
+- The formatting script **always uses project dependencies** (`npm exec`) to ensure 100% consistency with CI
 - If experiencing formatting differences between local and CI:
-  1. Check that your local Node.js version matches CI
-  2. Run `npm ci` to ensure exact dependency versions
-  3. Set `USE_PROJECT_DEPS=false bin/cursor_agent_format_code` only for debugging
-- **Never mix global and project versions** of formatting tools in the same workflow
+  1. Run `npm ci` to ensure exact dependency versions match package-lock.json
+  2. Check that your local Node.js version matches CI (see `.nvmrc` or CI config)
+  3. Verify all formatting tools are listed in `package.json` devDependencies
+- **The script will fail if package.json is missing** - this ensures we never accidentally use global versions
 
 ## Code Simplicity
 
