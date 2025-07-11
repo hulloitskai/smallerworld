@@ -112,6 +112,8 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 - **Service Worker**: Custom navigation handling for PWA
 - **Install Prompts**: App-specific install flow components
 - **Offline Support**: Service worker caching strategies
+- **PWA Scope Management**: Use `pwa_scope` query parameter to maintain PWA context during navigation; `useOutOfPWAScope()` relies on this parameter for proper scope detection
+- **PWA Navigation**: Use `PWAScopedLink` component for internal navigation that preserves PWA scope; for `location.href` redirects, manually add `pwa_scope` parameter
 
 ## Auto-Import System
 
