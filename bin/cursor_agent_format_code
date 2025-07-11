@@ -13,19 +13,7 @@ if command -v nodenv >/dev/null 2>&1; then
   eval "$(nodenv init -)"
 fi
 
-# Check if package.json exists
-if [ ! -f "package.json" ]; then
-  echo "❌ No package.json found. This script requires a Node.js project."
-  exit 1
-fi
-
-echo "✨ Formatting with prettier..."
-npm exec -- prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}' 2>/dev/null || echo "⚠️ Prettier failed or not installed"
-
-echo "🧹 Running ESLint auto-fix..."
-npm exec -- eslint --fix '**/*.{js,jsx,ts,tsx}' 2>/dev/null || echo "⚠️ ESLint failed or not installed"
-
-echo "🚀 Running lefthook..."
-npm exec -- lefthook run fix 2>/dev/null || echo "⚠️ Lefthook failed or not installed"
+echo "🚀 Running lefthook formatting..."
+npx lefthook run fix
 
 echo "✅ Formatting complete!"
