@@ -13,8 +13,10 @@ bin/cursor_agent_format_code
 ## Code Simplicity
 
 ### Prefer Direct Logic Over Premature Optimization
+
 - Avoid unnecessary `useMemo`, `useCallback`, or complex abstractions when simple inline logic suffices
 - Example: Instead of memoizing a simple boolean calculation, use it directly in props:
+
   ```tsx
   // ❌ Unnecessary complexity
   const waitingForInstallEvent = useMemo(() => {
@@ -25,21 +27,25 @@ bin/cursor_agent_format_code
   // ✅ Simple and direct
   loading={installing || (browserDetection && shouldWaitForInstallEvent(browserDetection) && !install)}
   ```
+
 - Prioritize readability and maintainability over micro-optimizations unless performance issues are measured
 
 ### Browser Detection Specifics
+
 - Android devices may not always be detected as "Chrome" browser but can still support `beforeinstallprompt`
 - When checking for PWA install support, check both `result.browser.is("Chrome")` OR `result.os.is("Android")`
 
 ## Project Structure Guidelines
 
 ### `docs/` Directory
+
 - **Purpose**: Documentation for debugging findings, technical decisions, and architectural notes
 - **Naming**: Use "Title Casing With Spaces.md" for readability
 - **Content**: Comprehensive technical documentation that helps future developers understand complex issues, fixes, and decisions
 - **When to create**: After solving complex bugs, implementing significant features, or making architectural decisions
 
-### `bin/` Directory  
+### `bin/` Directory
+
 - **Purpose**: Executable scripts for cursor agents and project automation
 - **For cursor agents**: `bin/cursor_agent_format_code` - Automatic code formatting
 - **Future agent scripts**: Place new cursor agent-specific executables here
@@ -49,6 +55,7 @@ bin/cursor_agent_format_code
 ## Generated Files - DO NOT MODIFY
 
 **NEVER modify these generated files:**
+
 - `typings/generated/auto-import.d.ts` (unplugin-auto-import generated)
 - `app/helpers/routes/generated/**/*.ts` (JsFromRoutes generated)
 - `db/schema.rb` (Rails database schema)
@@ -57,6 +64,7 @@ bin/cursor_agent_format_code
 - Any file with comments indicating it's auto-generated
 
 **If you need to modify functionality related to these files:**
+
 - For auto-imports: Update the import configuration in `vite.config.ts`
 - For routes: Modify the Rails routes in `config/routes.rb`
 - For database: Create a new migration instead of editing schema directly
