@@ -22,14 +22,11 @@ export const isMobileChrome = (result: IResult): boolean =>
 
 // Helper function to detect if browser supports beforeinstallprompt
 export const isDesktopChrome = (result: IResult): boolean =>
-  isDesktop(result) && result.browser.is("Chrome");
+  result.browser.is("Chrome");
 
-export const supportsBeforeInstallPrompt = (result: IResult): boolean =>
-  isAndroid(result) || isDesktopChrome(result);
-
-// Helper function to determine if we should wait for install event
+// Helper function to check if we should wait for the install event
 export const shouldWaitForInstallEvent = (result: IResult): boolean =>
-  supportsBeforeInstallPrompt(result);
+  result.browser.is("Chrome");
 
 const canUseIosShortcutsExploit = (result: IResult): boolean =>
   isIos(result) &&
