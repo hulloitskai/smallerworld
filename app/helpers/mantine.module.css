@@ -241,6 +241,12 @@
         margin-bottom: 4px;
       }
     }
+
+    :where(hr) {
+      @mixin dark-user-theme {
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
   }
 
   .divider {
