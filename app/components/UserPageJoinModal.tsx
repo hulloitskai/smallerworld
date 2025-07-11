@@ -5,6 +5,7 @@ import {
   canOpenUrlInMobileSafari,
   isDesktop,
   isMobileStandaloneBrowser,
+  shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/userPages";
@@ -87,7 +88,12 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           variant="filled"
           size="md"
           leftSection={<InstallIcon />}
-          loading={installing}
+          loading={
+            installing ||
+            (browserDetection &&
+              shouldWaitForInstallEvent(browserDetection) &&
+              !install)
+          }
           disabled={!browserDetection}
           onClick={() => {
             invariant(browserDetection, "Missing browser detection");

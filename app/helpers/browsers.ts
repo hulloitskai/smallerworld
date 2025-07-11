@@ -20,6 +20,10 @@ export const isAndroid = (result: IResult): boolean => result.os.is("Android");
 export const isMobileChrome = (result: IResult): boolean =>
   result.browser.is("Mobile Chrome");
 
+// Helper function to check if we should wait for the install event
+export const shouldWaitForInstallEvent = (result: IResult): boolean =>
+  result.browser.is("Chrome") || result.os.is("Android");
+
 const canUseIosShortcutsExploit = (result: IResult): boolean =>
   isIos(result) &&
   !!result.os.version &&

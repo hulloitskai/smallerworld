@@ -6,6 +6,7 @@ import {
   isDesktop,
   isMobileStandaloneBrowser,
   openUrlInMobileSafari,
+  shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { type User } from "~/types";
@@ -55,7 +56,12 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
         <Button
           size="md"
           leftSection={<InstallIcon />}
-          loading={installing}
+          loading={
+            installing ||
+            (browserDetection &&
+              shouldWaitForInstallEvent(browserDetection) &&
+              !install)
+          }
           disabled={
             !browserDetection ||
             (!install &&
