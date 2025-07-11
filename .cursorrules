@@ -10,6 +10,23 @@ bin/cursor_agent_format_code
 
 **This script automatically handles environment setup and runs all formatting tools with proper error handling.**
 
+## Project Structure Guidelines
+
+### `docs/` Directory
+- **Purpose**: Documentation for debugging findings, technical decisions, and architectural notes
+- **Naming**: Use "Title Casing With Spaces.md" for readability
+- **Content**: Comprehensive technical documentation that helps future developers understand complex issues, fixes, and decisions
+- **When to create**: After solving complex bugs, implementing significant features, or making architectural decisions
+
+### `bin/` Directory  
+- **Purpose**: Executable scripts following Rails conventions
+- **Key scripts**:
+  - `bin/cursor_agent_format_code` - Automatic code formatting for agents
+  - `bin/fix` - Full formatting including Ruby (requires Ruby setup)
+  - `bin/setup` - Project setup script
+- **Usage**: Always use relative path (e.g., `bin/cursor_agent_format_code`, not `./bin/cursor_agent_format_code`)
+- **Permissions**: Scripts should be executable (`chmod +x`)
+
 ## Generated Files - DO NOT MODIFY
 
 **NEVER modify these generated files:**
