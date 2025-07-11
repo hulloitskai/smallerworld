@@ -96,6 +96,20 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 });
 ```
 
+## URL Handling Conventions
+
+### usePage() URL Extraction
+
+- **Pages**: Use `pageUrl` for clarity when dealing with multiple URLs
+  ```tsx
+  const { url: pageUrl } = usePage();
+  ```
+- **Helpers**: Use `url` when context is clear and focused
+  ```tsx
+  const { url } = usePage();
+  ```
+- **Components**: Use `pageUrl` when dealing with multiple URLs for clarity
+
 ## Authentication & Authorization
 
 - **Current User**: `useCurrentUser()` for authenticated user
