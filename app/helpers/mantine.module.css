@@ -3,9 +3,9 @@
 @layer components {
   .button {
     &:where(
-      :disabled:not([data-loading]),
-      [data-disabled]:not([data-loading])
-    ) {
+        :disabled:not([data-loading]),
+        [data-disabled]:not([data-loading])
+      ) {
       @mixin dark-user-theme {
         color: var(--mantine-color-dark-2);
         background-color: alpha(var(--mantine-color-black), 0.4);
