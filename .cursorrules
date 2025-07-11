@@ -1,8 +1,8 @@
 # Cursor Rules
 
-## Automatic Code Formatting
+## Code Formatting
 
-**After editing any TypeScript/JavaScript/CSS files, ALWAYS run:**
+**Before committing code changes, run:**
 
 ```bash
 bin/cursor_agent_format_code
