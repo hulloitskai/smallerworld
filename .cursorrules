@@ -1,5 +1,48 @@
 # Cursor Rules
 
+## Environment Setup for Background Agents
+
+**ALWAYS run these setup commands at the start of any session:**
+
+```bash
+# Setup Node.js (required)
+export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)"
+
+# Setup Ruby gems (optional, for full bin/fix support)  
+export PATH="$HOME/.local/share/gem/ruby/3.3.0/bin:$PATH"
+```
+
+**For Ubuntu/apt-based systems missing dependencies:**
+```bash
+# Install Node.js version manager and Ruby
+sudo apt-get update
+sudo apt-get install -y ruby-full build-essential libssl-dev libreadline-dev zlib1g-dev
+
+# Install bundler and lefthook
+gem install bundler lefthook
+```
+
+## Automatic Code Formatting
+
+**ALWAYS format code after making changes by running:**
+
+```bash
+# Format all frontend files (works without Ruby setup)
+export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)" && npx prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}'
+
+# Run full formatting (requires Ruby setup)
+export PATH="$HOME/.local/share/gem/ruby/3.3.0/bin:$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)" && lefthook run fix
+
+# Alternative: run individual tools
+npx eslint --fix '**/*.{js,jsx,ts,tsx}'
+```
+
+**After editing any TypeScript/JavaScript/CSS files, ALWAYS run one of:**
+- `./scripts/format-code.sh` (recommended - handles everything automatically)
+- `export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)" && npx prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}'` (manual fallback)
+
+**The format-code.sh script handles all setup and runs the appropriate formatting tools automatically.**
+
 ## Generated Files - DO NOT MODIFY
 
 **NEVER modify these generated files:**
