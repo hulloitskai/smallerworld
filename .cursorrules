@@ -44,6 +44,31 @@ bin/cursor_agent_format_code
 - Android devices may not always be detected as "Chrome" browser but can still support `beforeinstallprompt`
 - When checking for PWA install support, check both `result.browser.is("Chrome")` OR `result.os.is("Android")`
 
+## Scope Clarification & Communication
+
+### When Asked to Clean Up Code
+
+- **Always distinguish** between:
+  - Code you just added (your new additions)
+  - Pre-existing code (was there before you started)
+  - Actually unused code (not referenced anywhere)
+- **Ask clarifying questions** if scope is unclear before making changes
+- **Keep the core fix separate** from cleanup tasks - don't remove your actual solution when cleaning up
+
+### Code Removal Guidelines
+
+- When told to "remove unused helpers" or similar:
+  1. First identify what was there before you started
+  2. Then identify what you added that's genuinely unused
+  3. **Never remove your core fix/solution** unless explicitly told
+  4. If unclear, ask: "Do you want me to remove my fix or just clean up unused additions?"
+
+### Progressive Simplification
+
+- Start with simple solutions, avoid over-engineering
+- Leverage existing tools (lefthook, package.json scripts) rather than recreating functionality
+- When simplifying, preserve the core functionality while reducing complexity
+
 ## Project Structure Guidelines
 
 ### `docs/` Directory
