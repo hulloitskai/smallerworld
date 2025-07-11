@@ -65,7 +65,20 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       // Use location.href instead of router.visit in order to force browser
       // to load new page metadata for pin-to-homescreen + PWA detection.
       const worldPath = routes.world.show.path();
-      const scopedUrl = addPWAScopeToHref(worldPath);
+      const { pwa_scope: previousScope } = queryParamsFromPath(location.href);
+      let scopedUrl = worldPath;
+      if (previousScope) {
+        const url = new URL(worldPath, location.origin);
+        url.searchParams.set("pwa_scope", previousScope);
+        scopedUrl = url.toString();
+      } else {
+        const currentScope = getPWAScope();
+        if (currentScope) {
+          const url = new URL(worldPath, location.origin);
+          url.searchParams.set("pwa_scope", currentScope);
+          scopedUrl = url.toString();
+        }
+      }
       location.href = scopedUrl;
     },
   });
@@ -118,7 +131,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 {...getInputProps("prefixed_handle")}
                 component={IMaskInput}
                 mask={/^@[a-z0-9_]*$/}
-                prepare={(value: string) => {
+                prepare={value => {
                   if (value && !value.startsWith("@")) {
                     return "@" + value;
                   }
@@ -127,7 +140,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 onAccept={value => {
                   setFieldValue("prefixed_handle", value);
                 }}
-                onInput={({ currentTarget }: { currentTarget: HTMLInputElement }) => {
+                onInput={({ currentTarget }) => {
                   setShouldDeriveHandle(!currentTarget.value);
                 }}
                 label="your handle"
@@ -209,21 +222,3 @@ RegistrationPage.layout = page => (
 );
 
 export default RegistrationPage;
-
-const addPWAScopeToHref = (href: string): string => {
-  const { pwa_scope: previousScope } = queryParamsFromPath(location.href);
-  if (previousScope) {
-    return addScopeToHref(href, previousScope);
-  }
-  const currentScope = getPWAScope();
-  if (currentScope) {
-    return addScopeToHref(href, currentScope);
-  }
-  return href;
-};
-
-const addScopeToHref = (href: string, scope: string): string => {
-  const url = new URL(href, location.origin);
-  url.searchParams.set("pwa_scope", scope);
-  return url.toString();
-};
