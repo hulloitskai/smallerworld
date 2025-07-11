@@ -5,6 +5,7 @@ import {
   canOpenUrlInMobileSafari,
   isDesktop,
   isMobileStandaloneBrowser,
+  shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import {
@@ -36,6 +37,12 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
   // == Install to home screen
   const { install, installing } = usePWA();
 
+  // == Determine if we should wait for install event
+  const waitingForInstallEvent = useMemo(() => {
+    if (!browserDetection) return false;
+    return shouldWaitForInstallEvent(browserDetection) && !install;
+  }, [browserDetection, install]);
+
   return (
     <Affix className={classes.affix} position={{}} zIndex={180}>
       <Transition
@@ -62,7 +69,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   variant="white"
                   size="compact-sm"
                   leftSection={<InstallIcon />}
-                  loading={installing}
+                  loading={installing || waitingForInstallEvent}
                   disabled={!browserDetection}
                   onClick={() => {
                     invariant(browserDetection, "Missing browser detection");

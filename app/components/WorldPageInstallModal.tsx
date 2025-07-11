@@ -6,6 +6,7 @@ import {
   isDesktop,
   isMobileStandaloneBrowser,
   openUrlInMobileSafari,
+  shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { type User } from "~/types";
@@ -41,6 +42,12 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
   // == PWA installation
   const { install, installing, isStandalone, outOfPWAScope } = usePWA();
 
+  // == Determine if we should wait for install event
+  const waitingForInstallEvent = useMemo(() => {
+    if (!browserDetection) return false;
+    return shouldWaitForInstallEvent(browserDetection) && !install;
+  }, [browserDetection, install]);
+
   return (
     <Stack gap="lg" align="center" pb="xs">
       <HomeScreenPreview
@@ -55,7 +62,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
         <Button
           size="md"
           leftSection={<InstallIcon />}
-          loading={installing}
+          loading={installing || waitingForInstallEvent}
           disabled={
             !browserDetection ||
             (!install &&
