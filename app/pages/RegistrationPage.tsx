@@ -10,7 +10,6 @@ import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { CANONICAL_DOMAIN } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import { getPWAScope } from "~/helpers/pwa";
 import { useTimeZone } from "~/helpers/time";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type Image, type Upload, type UserTheme } from "~/types";
@@ -20,6 +19,8 @@ export interface RegistrationPageProps extends SharedPageProps {}
 const ICON_IMAGE_INPUT_SIZE = 110;
 
 const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
+  const { url: pageUrl } = usePage();
+  
   // == Time zone
   const timeZone = useTimeZone();
 
@@ -64,22 +65,8 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
     onSuccess: () => {
       // Use location.href instead of router.visit in order to force browser
       // to load new page metadata for pin-to-homescreen + PWA detection.
-      const worldPath = routes.world.show.path();
-      const { pwa_scope: previousScope } = queryParamsFromPath(location.href);
-      let scopedUrl = worldPath;
-      if (previousScope) {
-        const url = new URL(worldPath, location.origin);
-        url.searchParams.set("pwa_scope", previousScope);
-        scopedUrl = url.toString();
-      } else {
-        const currentScope = getPWAScope();
-        if (currentScope) {
-          const url = new URL(worldPath, location.origin);
-          url.searchParams.set("pwa_scope", currentScope);
-          scopedUrl = url.toString();
-        }
-      }
-      location.href = scopedUrl;
+      const query = queryParamsFromPath(pageUrl);
+      location.href = routes.world.show.path({ query });
     },
   });
   useEffect(() => {
