@@ -5,7 +5,7 @@
 **Before committing code changes, run:**
 
 ```bash
-bin/cursor_agent_format_code
+bin/fix
 ```
 
 **This script automatically handles environment setup and runs all formatting tools with proper error handling.**
@@ -81,9 +81,9 @@ bin/cursor_agent_format_code
 ### `bin/` Directory
 
 - **Purpose**: Executable scripts for cursor agents and project automation
-- **For cursor agents**: `bin/cursor_agent_format_code` - Automatic code formatting
+- **For cursor agents**: `bin/fix` - Automatic code formatting
 - **Future agent scripts**: Place new cursor agent-specific executables here
-- **Usage**: Always use relative path (e.g., `bin/cursor_agent_format_code`, not `./bin/cursor_agent_format_code`)
+- **Usage**: Always use relative path (e.g., `bin/fix`, not `./bin/fix`)
 - **Permissions**: Scripts should be executable (`chmod +x`)
 
 ## Generated Files - DO NOT MODIFY
