@@ -7,19 +7,17 @@
 ```bash
 # Setup Node.js (required)
 export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)"
-
-# Setup Ruby gems (optional, for full bin/fix support)  
-export PATH="$HOME/.local/share/gem/ruby/3.3.0/bin:$PATH"
 ```
 
-**For Ubuntu/apt-based systems missing dependencies:**
+**For Ubuntu/apt-based systems missing Node.js:**
 ```bash
-# Install Node.js version manager and Ruby
-sudo apt-get update
-sudo apt-get install -y ruby-full build-essential libssl-dev libreadline-dev zlib1g-dev
-
-# Install bundler and lefthook
-gem install bundler lefthook
+# Install Node.js version manager
+git clone https://github.com/nodenv/nodenv.git ~/.nodenv
+git clone https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
+echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(nodenv init -)"' >> ~/.bashrc
+export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)"
+nodenv install 22.13.1
 ```
 
 ## Automatic Code Formatting
@@ -27,21 +25,19 @@ gem install bundler lefthook
 **ALWAYS format code after making changes by running:**
 
 ```bash
-# Format all frontend files (works without Ruby setup)
+# Recommended: Use the automated script
+bin/cursor_agent_format_code
+
+# Manual alternatives:
 export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)" && npx prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}'
-
-# Run full formatting (requires Ruby setup)
-export PATH="$HOME/.local/share/gem/ruby/3.3.0/bin:$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)" && lefthook run fix
-
-# Alternative: run individual tools
 npx eslint --fix '**/*.{js,jsx,ts,tsx}'
+npx lefthook run fix
 ```
 
-**After editing any TypeScript/JavaScript/CSS files, ALWAYS run one of:**
-- `./scripts/format-code.sh` (recommended - handles everything automatically)
-- `export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)" && npx prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}'` (manual fallback)
+**After editing any TypeScript/JavaScript/CSS files, ALWAYS run:**
+- `bin/cursor_agent_format_code` (recommended - handles everything automatically)
 
-**The format-code.sh script handles all setup and runs the appropriate formatting tools automatically.**
+**The cursor_agent_format_code script handles environment setup and runs all formatting tools with proper error handling.**
 
 ## Generated Files - DO NOT MODIFY
 
