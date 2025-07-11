@@ -9,6 +9,8 @@ import HomeScreenPreview from "~/components/HomescreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { CANONICAL_DOMAIN } from "~/helpers/app";
+import { queryParamsFromPath } from "~/helpers/inertia/routing";
+import { getPWAScope } from "~/helpers/pwa";
 import { useTimeZone } from "~/helpers/time";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type Image, type Upload, type UserTheme } from "~/types";
@@ -62,10 +64,9 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
     onSuccess: () => {
       // Use location.href instead of router.visit in order to force browser
       // to load new page metadata for pin-to-homescreen + PWA detection.
-      // Add pwa_scope parameter to ensure proper PWA scope detection.
-      const worldUrl = new URL(routes.world.show.path(), location.origin);
-      worldUrl.searchParams.set("pwa_scope", "/world");
-      location.href = worldUrl.toString();
+      const worldPath = routes.world.show.path();
+      const scopedUrl = addPWAScopeToHref(worldPath);
+      location.href = scopedUrl;
     },
   });
   useEffect(() => {
@@ -117,7 +118,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 {...getInputProps("prefixed_handle")}
                 component={IMaskInput}
                 mask={/^@[a-z0-9_]*$/}
-                prepare={value => {
+                prepare={(value: string) => {
                   if (value && !value.startsWith("@")) {
                     return "@" + value;
                   }
@@ -126,7 +127,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 onAccept={value => {
                   setFieldValue("prefixed_handle", value);
                 }}
-                onInput={({ currentTarget }) => {
+                onInput={({ currentTarget }: { currentTarget: HTMLInputElement }) => {
                   setShouldDeriveHandle(!currentTarget.value);
                 }}
                 label="your handle"
@@ -208,3 +209,21 @@ RegistrationPage.layout = page => (
 );
 
 export default RegistrationPage;
+
+const addPWAScopeToHref = (href: string): string => {
+  const { pwa_scope: previousScope } = queryParamsFromPath(location.href);
+  if (previousScope) {
+    return addScopeToHref(href, previousScope);
+  }
+  const currentScope = getPWAScope();
+  if (currentScope) {
+    return addScopeToHref(href, currentScope);
+  }
+  return href;
+};
+
+const addScopeToHref = (href: string, scope: string): string => {
+  const url = new URL(href, location.origin);
+  url.searchParams.set("pwa_scope", scope);
+  return url.toString();
+};

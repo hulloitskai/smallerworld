@@ -113,7 +113,26 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 - **Install Prompts**: App-specific install flow components
 - **Offline Support**: Service worker caching strategies
 - **PWA Scope Management**: Use `pwa_scope` query parameter to maintain PWA context during navigation; `useOutOfPWAScope()` relies on this parameter for proper scope detection
-- **PWA Navigation**: Use `PWAScopedLink` component for internal navigation that preserves PWA scope; for `location.href` redirects, manually add `pwa_scope` parameter
+- **PWA Navigation**: Use `PWAScopedLink` component for internal navigation that preserves PWA scope; for `location.href` redirects, create helper functions following the pattern from `PWAScopedLink.tsx`:
+  ```typescript
+  const addPWAScopeToHref = (href: string): string => {
+    const { pwa_scope: previousScope } = queryParamsFromPath(location.href);
+    if (previousScope) {
+      return addScopeToHref(href, previousScope);
+    }
+    const currentScope = getPWAScope();
+    if (currentScope) {
+      return addScopeToHref(href, currentScope);
+    }
+    return href;
+  };
+  
+  const addScopeToHref = (href: string, scope: string): string => {
+    const url = new URL(href, location.origin);
+    url.searchParams.set("pwa_scope", scope);
+    return url.toString();
+  };
+  ```
 
 ## Auto-Import System
 
