@@ -5,15 +5,7 @@
 
 set -e
 
-echo "🔧 Setting up environment..."
-
-# Setup Node.js
-export PATH="$HOME/.nodenv/bin:$PATH"
-if command -v nodenv >/dev/null 2>&1; then
-  eval "$(nodenv init -)"
-fi
-
-echo "🚀 Running lefthook formatting..."
+echo " Running lefthook formatting..."
 npx lefthook run fix
 
 echo "✅ Formatting complete!"
