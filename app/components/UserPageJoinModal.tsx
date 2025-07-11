@@ -47,12 +47,6 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
   // == PWA installation
   const { install, installing } = usePWA();
 
-  // == Determine if we should wait for install event
-  const waitingForInstallEvent = useMemo(() => {
-    if (!browserDetection) return false;
-    return shouldWaitForInstallEvent(browserDetection) && !install;
-  }, [browserDetection, install]);
-
   return (
     <Stack gap="lg" align="center" pb="xs">
       <Stack gap={4}>
@@ -94,7 +88,12 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           variant="filled"
           size="md"
           leftSection={<InstallIcon />}
-          loading={installing || waitingForInstallEvent}
+          loading={
+            installing ||
+            (browserDetection &&
+              shouldWaitForInstallEvent(browserDetection) &&
+              !install)
+          }
           disabled={!browserDetection}
           onClick={() => {
             invariant(browserDetection, "Missing browser detection");
