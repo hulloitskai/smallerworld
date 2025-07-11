@@ -13,18 +13,31 @@ if command -v nodenv >/dev/null 2>&1; then
   eval "$(nodenv init -)"
 fi
 
+# Use project dependencies instead of global npx to ensure version consistency
+USE_PROJECT_DEPS=${USE_PROJECT_DEPS:-true}
+
+if [ "$USE_PROJECT_DEPS" = "true" ]; then
+  PRETTIER_CMD="npm exec -- prettier"
+  ESLINT_CMD="npm exec -- eslint"
+  LEFTHOOK_CMD="npm exec -- lefthook"
+else
+  PRETTIER_CMD="npx prettier"
+  ESLINT_CMD="npx eslint"
+  LEFTHOOK_CMD="npx lefthook"
+fi
+
 echo "✨ Formatting frontend files (JS/TS/CSS/Markdown)..."
-npx prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}' || {
+$PRETTIER_CMD --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}' || {
   echo "⚠️ Prettier formatting failed, but continuing..."
 }
 
 echo "🧹 Running ESLint auto-fix..."
-npx eslint --fix '**/*.{js,jsx,ts,tsx}' || {
+$ESLINT_CMD --fix '**/*.{js,jsx,ts,tsx}' || {
   echo "⚠️ ESLint auto-fix failed, but continuing..."
 }
 
 echo "🚀 Running lefthook formatting..."
-npx lefthook run fix || {
+$LEFTHOOK_CMD run fix || {
   echo "⚠️ Lefthook failed, but frontend formatting completed"
 }
 
