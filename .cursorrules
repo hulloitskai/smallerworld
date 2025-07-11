@@ -1,5 +1,21 @@
 # Cursor Rules
 
+## Generated Files - DO NOT MODIFY
+
+**NEVER modify these generated files:**
+- `typings/generated/auto-import.d.ts` (unplugin-auto-import generated)
+- `app/helpers/routes/generated/**/*.ts` (JsFromRoutes generated)
+- `db/schema.rb` (Rails database schema)
+- `sorbet/rbi/dsl/**/*.rbi` (Sorbet RBI files)
+- Any file with `*generated*` in the path
+- Any file with comments indicating it's auto-generated
+
+**If you need to modify functionality related to these files:**
+- For auto-imports: Update the import configuration in `vite.config.ts`
+- For routes: Modify the Rails routes in `config/routes.rb`
+- For database: Create a new migration instead of editing schema directly
+- For Sorbet: Let the tools regenerate the files
+
 ## AI Generation Headers
 
 - When generating new files or substantially modifying existing files, add a header comment indicating:
