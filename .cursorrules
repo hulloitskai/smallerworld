@@ -1,43 +1,14 @@
 # Cursor Rules
 
-## Environment Setup for Background Agents
-
-**ALWAYS run these setup commands at the start of any session:**
-
-```bash
-# Setup Node.js (required)
-export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)"
-```
-
-**For Ubuntu/apt-based systems missing Node.js:**
-```bash
-# Install Node.js version manager
-git clone https://github.com/nodenv/nodenv.git ~/.nodenv
-git clone https://github.com/nodenv/node-build.git ~/.nodenv/plugins/node-build
-echo 'export PATH="$HOME/.nodenv/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(nodenv init -)"' >> ~/.bashrc
-export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)"
-nodenv install 22.13.1
-```
-
 ## Automatic Code Formatting
 
-**ALWAYS format code after making changes by running:**
+**After editing any TypeScript/JavaScript/CSS files, ALWAYS run:**
 
 ```bash
-# Recommended: Use the automated script
 bin/cursor_agent_format_code
-
-# Manual alternatives:
-export PATH="$HOME/.nodenv/bin:$PATH" && eval "$(nodenv init -)" && npx prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}'
-npx eslint --fix '**/*.{js,jsx,ts,tsx}'
-npx lefthook run fix
 ```
 
-**After editing any TypeScript/JavaScript/CSS files, ALWAYS run:**
-- `bin/cursor_agent_format_code` (recommended - handles everything automatically)
-
-**The cursor_agent_format_code script handles environment setup and runs all formatting tools with proper error handling.**
+**This script automatically handles environment setup and runs all formatting tools with proper error handling.**
 
 ## Generated Files - DO NOT MODIFY
 
