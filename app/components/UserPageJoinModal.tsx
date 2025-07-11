@@ -5,7 +5,6 @@ import {
   canOpenUrlInMobileSafari,
   isDesktop,
   isMobileStandaloneBrowser,
-  shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/userPages";
@@ -91,7 +90,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           loading={
             installing ||
             (browserDetection &&
-              shouldWaitForInstallEvent(browserDetection) &&
+              !isDesktop(browserDetection) &&
               !install)
           }
           disabled={!browserDetection}
