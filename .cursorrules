@@ -1,5 +1,46 @@
 # Cursor Rules
 
+## Code Formatting
+
+**Before committing code changes, run:**
+
+```bash
+bin/cursor_agent_format_code
+```
+
+**This script automatically handles environment setup and runs all formatting tools with proper error handling.**
+
+## Project Structure Guidelines
+
+### `docs/` Directory
+- **Purpose**: Documentation for debugging findings, technical decisions, and architectural notes
+- **Naming**: Use "Title Casing With Spaces.md" for readability
+- **Content**: Comprehensive technical documentation that helps future developers understand complex issues, fixes, and decisions
+- **When to create**: After solving complex bugs, implementing significant features, or making architectural decisions
+
+### `bin/` Directory  
+- **Purpose**: Executable scripts for cursor agents and project automation
+- **For cursor agents**: `bin/cursor_agent_format_code` - Automatic code formatting
+- **Future agent scripts**: Place new cursor agent-specific executables here
+- **Usage**: Always use relative path (e.g., `bin/cursor_agent_format_code`, not `./bin/cursor_agent_format_code`)
+- **Permissions**: Scripts should be executable (`chmod +x`)
+
+## Generated Files - DO NOT MODIFY
+
+**NEVER modify these generated files:**
+- `typings/generated/auto-import.d.ts` (unplugin-auto-import generated)
+- `app/helpers/routes/generated/**/*.ts` (JsFromRoutes generated)
+- `db/schema.rb` (Rails database schema)
+- `sorbet/rbi/dsl/**/*.rbi` (Sorbet RBI files)
+- Any file with `*generated*` in the path
+- Any file with comments indicating it's auto-generated
+
+**If you need to modify functionality related to these files:**
+- For auto-imports: Update the import configuration in `vite.config.ts`
+- For routes: Modify the Rails routes in `config/routes.rb`
+- For database: Create a new migration instead of editing schema directly
+- For Sorbet: Let the tools regenerate the files
+
 ## AI Generation Headers
 
 - When generating new files or substantially modifying existing files, add a header comment indicating:
@@ -96,6 +137,20 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 });
 ```
 
+## URL Handling Conventions
+
+### usePage() URL Extraction
+
+- **Pages**: Use `pageUrl` for clarity when dealing with multiple URLs
+  ```tsx
+  const { url: pageUrl } = usePage();
+  ```
+- **Helpers**: Use `url` when context is clear and focused
+  ```tsx
+  const { url } = usePage();
+  ```
+- **Components**: Use `pageUrl` when dealing with multiple URLs for clarity
+
 ## Authentication & Authorization
 
 - **Current User**: `useCurrentUser()` for authenticated user
@@ -112,6 +167,8 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 - **Service Worker**: Custom navigation handling for PWA
 - **Install Prompts**: App-specific install flow components
 - **Offline Support**: Service worker caching strategies
+- **PWA Scope Management**: Use `pwa_scope` query parameter to maintain PWA context during navigation; `useOutOfPWAScope()` relies on this parameter for proper scope detection
+- **PWA Navigation**: Use `PWAScopedLink` component for internal navigation; for `location.href` redirects, preserve query parameters using `queryParamsFromPath(pageUrl)` and pass to routes as `{ query }`
 
 ## Auto-Import System
 

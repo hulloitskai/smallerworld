@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Format code after making changes
+# Usage: bin/cursor_agent_format_code
+
+set -e
+
+echo "🔧 Setting up environment..."
+
+# Setup Node.js
+export PATH="$HOME/.nodenv/bin:$PATH"
+if command -v nodenv >/dev/null 2>&1; then
+  eval "$(nodenv init -)"
+fi
+
+echo "✨ Formatting frontend files (JS/TS/CSS/Markdown)..."
+npx prettier --write '**/*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}' || {
+  echo "⚠️ Prettier formatting failed, but continuing..."
+}
+
+echo "🧹 Running ESLint auto-fix..."
+npx eslint --fix '**/*.{js,jsx,ts,tsx}' || {
+  echo "⚠️ ESLint auto-fix failed, but continuing..."
+}
+
+echo "🚀 Running lefthook formatting..."
+npx lefthook run fix || {
+  echo "⚠️ Lefthook failed, but frontend formatting completed"
+}
+
+echo "✅ Formatting complete!"
