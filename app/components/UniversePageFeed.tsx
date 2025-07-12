@@ -14,6 +14,7 @@ export interface UniversePageFeedProps extends BoxProps {}
 const AUTHOR_ICON_SIZE = 26;
 
 const UniversePageFeed: FC<UniversePageFeedProps> = props => {
+  const { isStandalone } = usePWA();
   const params = useQueryParams();
 
   // == Load posts
@@ -39,9 +40,9 @@ const UniversePageFeed: FC<UniversePageFeedProps> = props => {
                   focus={params.post_id === post.id}
                   actions={<PublicPostCardActions postId={post.id} />}
                 />
-                <Button
+                <Button<"a" | typeof Link>
                   className={classes.authorButton}
-                  component={Link}
+                  component={isStandalone ? "a" : Link}
                   href={routes.users.show.path({ id: post.author.handle })}
                   size="sm"
                   variant="subtle"
