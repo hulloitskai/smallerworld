@@ -171,6 +171,19 @@ class Post < ApplicationRecord
   sig do
     override
       .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
+      .returns(String)
+  end
+  def notification_type(recipient)
+    if recipient.nil?
+      "UniversePost"
+    else
+      "Post"
+    end
+  end
+
+  sig do
+    override
+      .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
       .returns(T::Hash[String, T.untyped])
   end
   def notification_payload(recipient)
