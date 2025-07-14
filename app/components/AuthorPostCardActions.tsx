@@ -1,14 +1,13 @@
-import { CopyButton } from "@mantine/core";
+import { CopyButton, HoverCard } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
 
 import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
-import SeenIcon from "~icons/heroicons/eye-20-solid";
+import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { POST_VIEWS_LAUNCHED_AT } from "~/helpers/postViews";
 import {
   type Post,
   type PostReaction,
@@ -37,10 +36,6 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   onFollowUpDrawerModalOpened,
 }) => {
   const postUrl = usePostUrl(post, user);
-  const postCreatedAt = useMemo(
-    () => DateTime.fromISO(post.created_at),
-    [post.created_at],
-  );
   const { ref, inViewport } = useInViewport();
 
   // == Load post stats
@@ -93,57 +88,66 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
 
   return (
     <>
-      <Group {...{ ref }} align="start" justify="space-between" gap={2}>
-        {statsData?.notifiedFriends ? (
-          <Tooltip
-            className={classes.seenTooltip}
-            label={<>seen by {statsData.viewers}</>}
-            disabled={
-              postCreatedAt < POST_VIEWS_LAUNCHED_AT || !statsData.viewers
-            }
-            events={{ hover: true, focus: true, touch: true }}
-          >
-            <Badge
-              className={classes.notifiedOrSeenBadge}
-              variant="transparent"
-              leftSection={<NotificationIcon />}
-            >
-              {statsData.notifiedFriends} notified
-            </Badge>
-          </Tooltip>
-        ) : statsData?.viewers ? (
-          <Badge
-            className={classes.notifiedOrSeenBadge}
-            variant="transparent"
-            leftSection={<SeenIcon />}
-          >
-            seen by {statsData.viewers}
-          </Badge>
-        ) : null}
-        <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
-          {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>
-            hideStats ? (
-              <Badge
-                key={emoji}
-                variant="transparent"
-                color="gray"
-                className={classes.reactionBadgeWithoutCounts}
-              >
-                {emoji}
-              </Badge>
-            ) : (
-              <Badge
-                key={emoji}
-                variant="transparent"
-                color="gray"
-                leftSection={emoji}
-                className={classes.reactionBadge}
-              >
-                {reactions.length}
-              </Badge>
-            ),
-          )}
-        </Group>
+      <Group {...{ ref }} align="start" justify="space-between" gap={3}>
+        {(!!statsData?.notifiedFriends || !!statsData?.viewers) && (
+          <>
+            <HoverCard position="top-start" arrowOffset={16}>
+              <HoverCard.Target>
+                <ActionIcon
+                  size="xs"
+                  variant="transparent"
+                  className={classes.statsIcon}
+                >
+                  {statsData?.viewers ? <OpenedIcon /> : <NotificationIcon />}
+                </ActionIcon>
+              </HoverCard.Target>
+              <HoverCard.Dropdown px="xs" py={8}>
+                <List className={classes.statsList}>
+                  {!!statsData?.notifiedFriends && (
+                    <List.Item icon={<NotificationIcon />}>
+                      notified {statsData.notifiedFriends}{" "}
+                      {inflect("friend", statsData.notifiedFriends)}
+                    </List.Item>
+                  )}
+                  {!!statsData?.viewers && (
+                    <List.Item icon={<OpenedIcon />}>
+                      seen by {statsData.viewers}{" "}
+                      {inflect("friend", statsData.viewers)}
+                    </List.Item>
+                  )}
+                </List>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          </>
+        )}
+        {(!!statsData?.notifiedFriends || !!statsData?.viewers) &&
+          !isEmpty(reactions) && <Divider orientation="vertical" />}
+        {!isEmpty(reactions) && (
+          <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
+            {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>
+              hideStats ? (
+                <Badge
+                  key={emoji}
+                  variant="transparent"
+                  color="gray"
+                  className={classes.reactionBadgeWithoutCounts}
+                >
+                  {emoji}
+                </Badge>
+              ) : (
+                <Badge
+                  key={emoji}
+                  variant="transparent"
+                  color="gray"
+                  leftSection={emoji}
+                  className={classes.reactionBadge}
+                >
+                  {reactions.length}
+                </Badge>
+              ),
+            )}
+          </Group>
+        )}
         <Menu width={165}>
           <Menu.Target>
             <Button

@@ -124,10 +124,11 @@
 
 .typeIcon {
   display: block;
-  font-size: 10.5px;
+  font-size: 11px;
 }
 
 .typeLabel {
   font-family: var(--mantine-font-family-headings);
   font-weight: 600;
+  margin-top: 2px;
 }

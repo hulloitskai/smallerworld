@@ -183,9 +183,12 @@ const useWebPushSubscribe = ({
           });
         }
       } catch (error) {
+        console.error("Web push error", error);
         if (error instanceof Error) {
           setSubscribeError(error);
-          reportProblem(error.message);
+          toast.error("failed to subscribe to push notifications", {
+            description: error.message,
+          });
         }
         throw error;
       }
@@ -273,11 +276,6 @@ const registerSubscription = ({
   ).then(() => {
     void mutateRoute(routes.pushSubscriptions.lookup, { query });
   });
-};
-
-const reportProblem = (message: string): void => {
-  toast.error("something went wrong", { description: message });
-  console.error("Web push error", message);
 };
 
 export interface WebPushUnsubscribeParams {

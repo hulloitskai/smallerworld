@@ -129,6 +129,11 @@ class Friend < ApplicationRecord
     notifications.create!(recipient: user!)
   end
 
+  sig { returns(String) }
+  def generate_share_token
+    generate_token_for(:share)
+  end
+
   private
 
   # == Helpers
