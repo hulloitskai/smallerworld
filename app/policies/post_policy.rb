@@ -16,7 +16,9 @@ class PostPolicy < ApplicationPolicy
 
   def share?
     post = T.cast(record, Post)
-    post.author! == friend!.user!
+    user = friend!.user!
+    post.author! == user &&
+      (post.visibility == :public || user.allow_friend_sharing?)
   end
 
   def manage?

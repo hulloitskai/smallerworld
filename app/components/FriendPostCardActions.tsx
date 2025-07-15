@@ -25,12 +25,15 @@ import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
 export interface FriendPostCardActionsProps
-  extends Pick<PostCardReplyButtonProps, "user" | "post" | "replyToNumber"> {}
+  extends Pick<PostCardReplyButtonProps, "user" | "post" | "replyToNumber"> {
+  shareable?: boolean;
+}
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   user,
   post,
   replyToNumber,
+  shareable,
 }) => {
   const currentFriend = useCurrentFriend();
   const { ref, inViewport } = useInViewport();
@@ -146,8 +149,12 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             )}
             <Text className={postCardClasses.actionSeparator}>/</Text>
             <PostCardReplyButton {...{ user, post, replyToNumber }} />
-            <Text className={postCardClasses.actionSeparator}>/</Text>
-            <PostCardShareButton {...{ user, post }} />
+            {shareable && (
+              <>
+                <Text className={postCardClasses.actionSeparator}>/</Text>
+                <PostCardShareButton {...{ user, post }} />
+              </>
+            )}
           </Group>
         </Group>
       </Box>

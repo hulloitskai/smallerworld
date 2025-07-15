@@ -37,6 +37,8 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
             "user",
             "lastSentEncouragement",
             "invitationRequested",
+            "hideNeko",
+            "allowFriendSharing",
           ],
           async: true,
           onFinish: () => {

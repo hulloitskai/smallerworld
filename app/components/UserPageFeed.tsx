@@ -16,8 +16,14 @@ import SleepyNeko from "./SleepyNeko";
 export interface UserPageFeedProps extends BoxProps {}
 
 const UserPageFeed: FC<UserPageFeedProps> = props => {
-  const { currentFriend, user, replyToNumber, lastSentEncouragement } =
-    usePageProps<UserPageProps>();
+  const {
+    currentFriend,
+    user,
+    replyToNumber,
+    lastSentEncouragement,
+    hideNeko,
+    allowFriendSharing,
+  } = usePageProps<UserPageProps>();
   const params = useQueryParams();
   const { registration: pushRegistration } = useWebPush();
 
@@ -50,7 +56,6 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
             user,
             lastSentEncouragement,
           }}
-          showNeko={pushRegistration !== null}
           onEncouragementCreated={() => {
             router.reload({
               only: ["lastSentEncouragement"],
@@ -80,10 +85,12 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                     actions={
                       <FriendPostCardActions
                         {...{ user, post, replyToNumber }}
+                        shareable={allowFriendSharing}
                       />
                     }
                   />
-                  {!!pushRegistration &&
+                  {!hideNeko &&
+                    !!pushRegistration &&
                     !showEncouragementCard &&
                     index === 0 && (
                       <SleepyNeko

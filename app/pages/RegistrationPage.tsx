@@ -14,6 +14,8 @@ import { useTimeZone } from "~/helpers/time";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type Image, type Upload, type UserTheme } from "~/types";
 
+import classes from "./RegistrationPage.module.css";
+
 export interface RegistrationPageProps extends SharedPageProps {}
 
 const ICON_IMAGE_INPUT_SIZE = 110;
@@ -36,6 +38,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       theme: "" as UserTheme | "",
       hide_stats: false,
       hide_neko: false,
+      allow_friend_sharing: false,
     },
     transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => {
       invariant(timeZone, "Missing time zone");
@@ -162,14 +165,16 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
               />
               <UserThemeRadioGroup {...getInputProps("theme")} />
               <InputWrapper
+                className={classes.advancedSettingsWrapper}
                 label="advanced settings"
-                styles={{
-                  label: {
-                    marginTop: "var(--mantine-spacing-xs)",
-                    marginBottom: rem(4),
-                  },
-                }}
               >
+                <Checkbox
+                  {...getInputProps("allow_friend_sharing", {
+                    type: "checkbox",
+                  })}
+                  label="allow invited friends to share your posts"
+                  radius="md"
+                />
                 <Checkbox
                   {...getInputProps("hide_stats", { type: "checkbox" })}
                   label="perception anxiety mode (hides reaction counts and # of friends notified)"

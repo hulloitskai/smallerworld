@@ -1,0 +1,10 @@
+.advancedSettingsWrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+
+  :global(.mantine-InputWrapper-label) {
+    margin-top: var(--mantine-spacing-xs);
+    margin-bottom: 4px;
+  }
+}

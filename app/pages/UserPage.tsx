@@ -30,6 +30,8 @@ export interface UserPageProps extends SharedPageProps {
   replyToNumber: string | null;
   lastSentEncouragement: Encouragement | null;
   invitationRequested: boolean;
+  hideNeko: boolean;
+  allowFriendSharing: boolean;
 }
 
 const ICON_SIZE = 96;
@@ -53,6 +55,8 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
         "faviconLinks",
         "user",
         "lastSentEncouragement",
+        "hideNeko",
+        "allowFriendSharing",
       ],
       async: true,
     });

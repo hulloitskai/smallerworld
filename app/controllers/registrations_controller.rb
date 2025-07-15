@@ -33,6 +33,7 @@ class RegistrationsController < ApplicationController
       time_zone_name
       hide_stats
       hide_neko
+      allow_friend_sharing
     ])
     user = User.new(**user_params, phone_number: verified_phone_number)
     if user.save

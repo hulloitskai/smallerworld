@@ -42,6 +42,7 @@ class WorldsController < ApplicationController
     render(inertia: "EditWorldPage", props: {
       "hideStats" => current_user.hide_stats,
       "hideNeko" => current_user.hide_neko,
+      "allowFriendSharing" => current_user.allow_friend_sharing,
     })
   end
 
@@ -54,6 +55,7 @@ class WorldsController < ApplicationController
       theme
       hide_stats
       hide_neko
+      allow_friend_sharing
     ])
     if current_user.update(**user_params)
       render(json: { user: UserSerializer.one(current_user) })

@@ -16,7 +16,8 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
   style,
   ...otherProps
 }) => {
-  const { user, replyToNumber } = usePageProps<UserPageProps>();
+  const { user, replyToNumber, allowFriendSharing } =
+    usePageProps<UserPageProps>();
   const currentFriend = useCurrentFriend();
 
   // == Load pinned posts
@@ -75,7 +76,10 @@ const UserPageUpcomingEventsButton: FC<UserPageUpcomingEventsButtonProps> = ({
               {...{ post }}
               blurContent={!currentFriend && post.visibility !== "public"}
               actions={
-                <FriendPostCardActions {...{ user, post, replyToNumber }} />
+                <FriendPostCardActions
+                  {...{ user, post, replyToNumber }}
+                  shareable={allowFriendSharing}
+                />
               }
             />
           ))}

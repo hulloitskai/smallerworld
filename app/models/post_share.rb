@@ -59,7 +59,12 @@ class PostShare < ApplicationRecord
 
   # == Methods
   def share_snippet
-    share_url = Rails.application.routes.url_helpers.post_share_url(self)
-    post!.reply_snippet_base + "\n> \n> (see full post) [#{share_url}]\n\n"
+    post!.reply_snippet_base + "\n> \n> (see full post) [#{shortlink_url}]\n\n"
+  end
+
+  sig { returns(String) }
+  def shortlink_url
+    options = ShortlinkService.shortlink_url_options
+    Rails.application.routes.url_helpers.post_share_url(self, **options)
   end
 end

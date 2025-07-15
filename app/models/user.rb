@@ -7,6 +7,7 @@
 # Table name: users
 #
 #  id                            :uuid             not null, primary key
+#  allow_friend_sharing          :boolean          not null
 #  api_token                     :string
 #  handle                        :string           not null
 #  hide_neko                     :boolean          not null
@@ -62,6 +63,7 @@ class User < ApplicationRecord
            inverse_of: :author,
            foreign_key: :author_id
   has_many :join_requests, dependent: :destroy
+  has_many :activities, dependent: :destroy
 
   # == Attachments
   has_one_attached :page_icon

@@ -28,6 +28,7 @@ class UsersController < ApplicationController
         .one_if(last_sent_encouragement),
       "invitationRequested" => invitation_requested,
       "hideNeko" => user.hide_neko,
+      "allowFriendSharing" => user.allow_friend_sharing,
     }
     unless params[:manifest_icon_type] == "generic"
       props["faviconLinks"] = user_favicon_links(user)
