@@ -18,7 +18,7 @@ import classes from "./PostCardReplyButton.module.css";
 export interface PostCardReplyButtonProps extends ButtonProps {
   user: User;
   post: UserPost;
-  replyToNumber: string | null;
+  replyToNumber?: string | null;
 }
 
 const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
@@ -31,24 +31,23 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
   const vaulPortalTarget = useVaulPortalTarget();
 
   // == Select platform
-  const [messagingPlatformSelectorOpened, setMessagingPlatformSelectorOpened] =
-    useState(false);
-  const bindMessagingPlatformSelectorButtonLongPressHandlers = useLongPress(
-    () => setMessagingPlatformSelectorOpened(true),
+  const [platformSelectorOpened, setPlatformSelectorOpened] = useState(false);
+  const platformSelectorLongPressHandlers = useLongPress(() =>
+    setPlatformSelectorOpened(true),
   );
-  const [preferredMessagingPlatform, setPreferredMessagingPlatform] =
+  const [preferredPlatform, setPreferredPlatform] =
     usePreferredMessagingPlatform(user.id);
 
   // == Reply URI
   const replyUri = useMemo(() => {
-    if (replyToNumber && preferredMessagingPlatform) {
+    if (replyToNumber && preferredPlatform) {
       let body = post.reply_snippet;
-      if (preferredMessagingPlatform === "whatsapp") {
+      if (preferredPlatform === "whatsapp") {
         body = formatReplySnippetForWhatsApp(body);
       }
-      return messageUri(replyToNumber, body, preferredMessagingPlatform);
+      return messageUri(replyToNumber, body, preferredPlatform);
     }
-  }, [replyToNumber, post.reply_snippet, preferredMessagingPlatform]);
+  }, [replyToNumber, post.reply_snippet, preferredPlatform]);
 
   // == Mark as replied
   const { trigger: markReplied, mutating: markingReplied } = useRouteMutation<{
@@ -73,16 +72,19 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
 
   return (
     <Popover
-      width={265}
-      shadow="md"
+      position="bottom-end"
+      arrowOffset={16}
+      width={270}
+      shadow="sm"
       portalProps={{ target: vaulPortalTarget }}
-      opened={messagingPlatformSelectorOpened}
-      onChange={setMessagingPlatformSelectorOpened}
+      opened={platformSelectorOpened}
+      onChange={setPlatformSelectorOpened}
     >
       <Popover.Target>
         <Button
+          className={classes.button}
           component="a"
-          {...(!messagingPlatformSelectorOpened && { href: replyUri })}
+          {...(!platformSelectorOpened && { href: replyUri })}
           target="_blank"
           rel="noopener noreferrer nofollow"
           variant="subtle"
@@ -101,7 +103,6 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
               )}
             </Box>
           }
-          className={classes.button}
           mod={{ replied: post.replied }}
           onClick={() => {
             if (!currentFriend) {
@@ -114,13 +115,13 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
             } else if (replyUri) {
               void markReplied();
             } else {
-              setMessagingPlatformSelectorOpened(true);
+              setPlatformSelectorOpened(true);
             }
           }}
-          {...bindMessagingPlatformSelectorButtonLongPressHandlers()}
+          {...platformSelectorLongPressHandlers()}
           {...otherProps}
         >
-          reply via {preferredMessagingPlatform ?? "sms"}
+          reply via {preferredPlatform ?? "sms"}
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
@@ -141,8 +142,8 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
                     !!replyToNumber && {
                       href: replyUri,
                       onClick: () => {
-                        setPreferredMessagingPlatform(platform);
-                        setMessagingPlatformSelectorOpened(false);
+                        setPreferredPlatform(platform);
+                        setPlatformSelectorOpened(false);
                         void markReplied();
                       },
                     })}

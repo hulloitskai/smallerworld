@@ -9,12 +9,12 @@ import {
   type UseFormInput,
   type UseFormReturnType,
 } from "@mantine/form";
-import { type LooseKeys } from "@mantine/form/lib/paths.types";
+import { useShallowEffect } from "@mantine/hooks";
+import { type LooseKeys } from "node_modules/@mantine/form/lib/paths.types";
 import {
   type _TransformValues,
   type FormErrors,
-} from "@mantine/form/lib/types";
-import { useShallowEffect } from "@mantine/hooks";
+} from "node_modules/@mantine/form/lib/types";
 import { type FormEvent, startTransition } from "react";
 import scrollIntoView from "scroll-into-view";
 

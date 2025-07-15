@@ -1,0 +1,8 @@
+.button {
+  flex-shrink: 0;
+  -webkit-touch-callout: none;
+
+  :global(.mantine-ActionIcon-icon) {
+    font-size: var(--mantine-font-size-xs);
+  }
+}

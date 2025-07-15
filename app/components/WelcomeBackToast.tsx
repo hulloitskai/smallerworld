@@ -14,10 +14,7 @@ export interface WelcomeBackToastProps {
 const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ subject }) => {
   const visibility = useDocumentVisibility();
   useEffect(() => {
-    if (visibility === "hidden") {
-      return;
-    }
-    if (wasShownInLast12Hours(subject)) {
+    if (visibility === "hidden" || wasShownInLast12Hours(subject)) {
       return;
     }
     let name = subject.name;

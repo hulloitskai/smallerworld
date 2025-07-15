@@ -58,6 +58,7 @@ class ApplicationController < ActionController::Base
               ActiveRecord::RecordNotSaved,
               with: :handle_runtime_error
   rescue_from ActionPolicy::Unauthorized, with: :handle_unauthorized
+  rescue_from ActiveRecord::RecordInvalid, with: :handle_record_invalid
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :handle_invalid_authenticity_token
   rescue_from UnauthenticatedError, with: :handle_unauthenticated_error
@@ -170,6 +171,18 @@ class ApplicationController < ActionController::Base
   def handle_unauthorized(error)
     if request.format.json?
       report_and_render_json_exception(error)
+    else
+      raise
+    end
+  end
+
+  sig { params(error: ActiveRecord::RecordInvalid).void }
+  def handle_record_invalid(error)
+    if request.format.json?
+      render(
+        json: { error: error.record.errors.full_messages.first },
+        status: :unprocessable_entity,
+      )
     else
       raise
     end

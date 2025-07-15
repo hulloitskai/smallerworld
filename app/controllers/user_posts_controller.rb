@@ -104,4 +104,14 @@ class UserPostsController < ApplicationController
   def load_user(scope: User.all)
     scope.find(params.fetch(:user_id))
   end
+
+  sig do
+    params(scope: T.any(
+      Post::PrivateRelation,
+      Post::PrivateCollectionProxy,
+    )).returns(Post)
+  end
+  def load_post(scope: Post.all)
+    scope.find(params.fetch(:id))
+  end
 end

@@ -14,6 +14,11 @@ class PostPolicy < ApplicationPolicy
     end
   end
 
+  def share?
+    post = T.cast(record, Post)
+    post.author! == friend!.user!
+  end
+
   def manage?
     post = T.cast(record, Post)
     post.author! == user!

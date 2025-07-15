@@ -157,6 +157,9 @@ const useWebPushSubscribe = ({
   const subscribe = (
     options?: WebPushSubscribeOptions,
   ): Promise<PushSubscription> => {
+    if (subscribing) {
+      throw new Error("Already subscribing");
+    }
     const { forceNewSubscription = false } = options ?? {};
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
       const browserDetection = detectBrowser();
@@ -296,6 +299,9 @@ const useWebPushUnsubscribe = ({
   const unsubscribe = async (): Promise<void> => {
     if (!subscription) {
       throw new Error("No current subscription");
+    }
+    if (unsubscribing) {
+      throw new Error("Already unsubscribing");
     }
     setUnsubscribing(true);
     try {

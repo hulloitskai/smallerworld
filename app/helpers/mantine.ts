@@ -26,9 +26,9 @@ import {
   ThemeIcon,
   TypographyStylesProvider,
 } from "@mantine/core";
-import { type PopoverMiddlewares } from "@mantine/core/lib/components/Popover/Popover.types";
 import { DateInput } from "@mantine/dates";
 import { RichTextEditor } from "@mantine/tiptap";
+import { type PopoverMiddlewares } from "node_modules/@mantine/core/lib/components/Popover/Popover.types";
 
 import { type Rect, useSafeViewportRect } from "./safeArea";
 

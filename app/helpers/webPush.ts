@@ -110,5 +110,6 @@ export const useReregisterPushSubscriptionIfNeeded = (): void => {
       );
       void subscribe();
     }
-  }, [registration, serviceWorkerMetadata, deviceFingerprint, loading]); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registration, serviceWorkerMetadata, deviceFingerprint, loading]);
 };

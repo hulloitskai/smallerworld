@@ -109,6 +109,7 @@ Rails.application.routes.draw do
     end
     member do
       get :stats
+      post :share
       post :mark_seen
       post :mark_replied
     end
@@ -147,6 +148,9 @@ Rails.application.routes.draw do
             only: %i[index create],
             export: true
   resources :post_stickers, only: %i[update destroy], export: true
+
+  # == Post shares
+  resources :post_shares, only: :show, export: true
 
   # == Encouragements
   resources :encouragements, only: %i[index create], export: true

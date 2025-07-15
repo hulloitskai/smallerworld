@@ -29,10 +29,12 @@
   }
 }
 
-.divider {
+.actionSeparator {
   display: block;
+  margin-inline: -1px;
+  line-height: 1;
+  font-size: var(--mantine-font-size-lg);
   flex-shrink: 0;
-  margin-top: 2px;
   color: light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3));
 }
 

@@ -2,12 +2,8 @@ import { getRadius, type MantineRadius } from "@mantine/core";
 import { RichTextEditor, type RichTextEditorProps } from "@mantine/tiptap";
 import { Link as LinkExtension } from "@mantine/tiptap";
 import PlaceholderExtension from "@tiptap/extension-placeholder";
-import {
-  BubbleMenu,
-  type Editor,
-  type EditorOptions,
-  useEditor,
-} from "@tiptap/react";
+import { type Editor, type EditorOptions, useEditor } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKitExtension from "@tiptap/starter-kit";
 import { InPortal, OutPortal } from "react-reverse-portal";
 
@@ -42,7 +38,7 @@ const PostEditor: FC<PostEditorProps> = ({
   const editor = useEditor(
     {
       extensions: [
-        StarterKitExtension.configure({ heading: false, history: false }),
+        StarterKitExtension.configure({ heading: false }),
         LinkExtension.configure({ defaultProtocol: "https" }),
         PlaceholderExtension.configure({ placeholder }),
       ],
@@ -128,10 +124,8 @@ const PostEditor: FC<PostEditorProps> = ({
             </RichTextEditor.ControlsGroup>
           </InPortal>
           <BubbleMenu
-            tippyOptions={{
-              appendTo: ref =>
-                vaulPortalTarget ?? findPortalParent(ref) ?? document.body,
-            }}
+            options={{ inline: true }}
+            shouldShow={() => true}
             {...{ editor }}
           >
             <OutPortal node={bubbleMenuPortalNode} />
@@ -145,10 +139,10 @@ const PostEditor: FC<PostEditorProps> = ({
 
 export default PostEditor;
 
-const findPortalParent = (ref: Element): Element | null => {
-  let portalParent: Element | null = ref;
-  while (portalParent instanceof HTMLElement && !portalParent.dataset.portal) {
-    portalParent = portalParent.parentElement;
-  }
-  return portalParent;
-};
+// const findPortalParent = (ref: Element): Element | null => {
+//   let portalParent: Element | null = ref;
+//   while (portalParent instanceof HTMLElement && !portalParent.dataset.portal) {
+//     portalParent = portalParent.parentElement;
+//   }
+//   return portalParent;
+// };

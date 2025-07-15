@@ -1,0 +1,6 @@
+.sharerAlert {
+  :global(.mantine-Alert-icon) {
+    font-size: var(--mantine-font-size-xs);
+    margin-right: 6px;
+  }
+}

@@ -118,6 +118,9 @@ module GeneratedPathHelpersModule
   def post_reactions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def post_share_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_sticker_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -224,6 +227,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def session_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def share_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end

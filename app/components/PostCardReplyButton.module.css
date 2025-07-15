@@ -1,5 +1,6 @@
 .button {
   flex-shrink: 0;
+  padding-right: 5px;
   -webkit-touch-callout: none;
 
   &[data-replied] {

@@ -115,6 +115,9 @@ module GeneratedUrlHelpersModule
   def post_reactions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def post_share_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_sticker_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -224,6 +227,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def session_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def share_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_url(*args); end

@@ -1,4 +1,4 @@
-import { CopyButton, HoverCard } from "@mantine/core";
+import { CopyButton, HoverCard, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
@@ -19,6 +19,7 @@ import DrawerModal from "./DrawerModal";
 import PostForm, { type PostFormProps } from "./PostForm";
 
 import classes from "./AuthorPostCardActions.module.css";
+import postCardClasses from "./PostCard.module.css";
 
 export interface AuthorPostCardActionsProps
   extends Pick<PostFormProps, "pausedFriends"> {
@@ -91,7 +92,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
       <Group {...{ ref }} align="start" justify="space-between" gap={3}>
         {(!!statsData?.notifiedFriends || !!statsData?.viewers) && (
           <>
-            <HoverCard position="top-start" arrowOffset={16}>
+            <HoverCard position="top-start" arrowOffset={16} shadow="sm">
               <HoverCard.Target>
                 <ActionIcon
                   size="xs"
@@ -121,7 +122,9 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
           </>
         )}
         {(!!statsData?.notifiedFriends || !!statsData?.viewers) &&
-          !isEmpty(reactions) && <Divider orientation="vertical" />}
+          !isEmpty(reactions) && (
+            <Text className={postCardClasses.actionSeparator}>/</Text>
+          )}
         {!isEmpty(reactions) && (
           <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
             {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>

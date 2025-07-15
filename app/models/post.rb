@@ -95,8 +95,12 @@ class Post < ApplicationRecord
   end
 
   sig { returns(String) }
+  def reply_snippet_base
+    "> " + body_text.strip.truncate(120).split("\n").join("\n> ")
+  end
+
   def reply_snippet
-    "> " + body_text.truncate(120).split("\n").join("\n> ") + "\n\n"
+    reply_snippet_base + "\n\n"
   end
 
   # == Search
@@ -117,6 +121,7 @@ class Post < ApplicationRecord
   has_many :stickers, class_name: "PostSticker", dependent: :destroy
   has_many :reply_receipts, class_name: "PostReplyReceipt", dependent: :destroy
   has_many :views, class_name: "PostView", dependent: :destroy
+  has_many :shares, class_name: "PostShare", dependent: :destroy
 
   sig { returns(User) }
   def author!

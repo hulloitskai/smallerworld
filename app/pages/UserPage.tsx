@@ -41,7 +41,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { registration: pushRegistration, supported: pushSupported } =
     useWebPush();
 
-  // == Reload user on window focus
+  // == Reload data on window focus
   useWindowEvent("focus", () => {
     if (!isStandalone || outOfPWAScope) {
       return;

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_07_205017) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_14_204427) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -214,6 +214,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_205017) do
     t.index ["post_id"], name: "index_post_reply_receipts_on_post_id"
   end
 
+  create_table "post_shares", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "post_id", null: false
+    t.string "sharer_type", null: false
+    t.uuid "sharer_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.index ["post_id", "sharer_id", "sharer_type"], name: "index_post_shares_uniqueness", unique: true
+    t.index ["post_id"], name: "index_post_shares_on_post_id"
+    t.index ["sharer_type", "sharer_id"], name: "index_post_shares_on_sharer"
+  end
+
   create_table "post_stickers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "post_id", null: false
     t.uuid "friend_id", null: false
@@ -325,6 +335,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_07_205017) do
   add_foreign_key "post_reactions", "posts"
   add_foreign_key "post_reply_receipts", "friends"
   add_foreign_key "post_reply_receipts", "posts"
+  add_foreign_key "post_shares", "posts"
   add_foreign_key "post_stickers", "friends"
   add_foreign_key "post_stickers", "posts"
   add_foreign_key "post_views", "friends"

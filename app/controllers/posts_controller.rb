@@ -6,8 +6,8 @@ class PostsController < ApplicationController
   POSTS_PER_PAGE = 5
 
   # == Filters
-  before_action :authenticate_user!, except: %i[mark_seen mark_replied]
-  before_action :authenticate_friend!, only: %i[mark_seen mark_replied]
+  before_action :authenticate_user!, except: %i[share mark_seen mark_replied]
+  before_action :authenticate_friend!, only: %i[share mark_seen mark_replied]
 
   # == Actions
   # GET /posts?type=...&q=...
@@ -106,6 +106,17 @@ class PostsController < ApplicationController
         status: :unprocessable_entity,
       )
     end
+  end
+
+  # POST /posts/:id/share?friend_token=...
+  def share
+    current_friend = authenticate_friend!
+    post = load_post
+    authorize!(post)
+    share = post.shares.find_or_create_by!(sharer: current_friend)
+    render(json: {
+      share: PostShareSerializer.one(share),
+    })
   end
 
   # POST /posts/:id/mark_seen

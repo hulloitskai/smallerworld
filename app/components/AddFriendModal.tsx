@@ -1,5 +1,5 @@
 import { CopyButton, Popover, Text } from "@mantine/core";
-import { type ModalSettings } from "@mantine/modals/lib/context";
+import { type ModalSettings } from "node_modules/@mantine/modals/lib/context";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
@@ -343,15 +343,17 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
 }) => {
   const joinUrl = useJoinUrl(currentUser, friend);
   const joinShareData = useMemo(() => {
-    if (joinUrl) {
-      const data: ShareData = {
-        text: JOIN_MESSAGE,
-        url: joinUrl,
-      };
-      if (navigator.canShare(data)) {
-        return data;
-      }
+    if (!joinUrl) {
+      return;
     }
+    const shareData: ShareData = {
+      text: JOIN_MESSAGE,
+      url: joinUrl,
+    };
+    if (!navigator.canShare(shareData)) {
+      return;
+    }
+    return shareData;
   }, [joinUrl]);
   return (
     <Menu width={140}>

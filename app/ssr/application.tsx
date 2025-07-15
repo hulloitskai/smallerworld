@@ -1,7 +1,7 @@
 import { type PageProps } from "@inertiajs/core";
 import { createInertiaApp } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
-import { type SetupOptions } from "@inertiajs/react/types/createInertiaApp";
+import { type SetupOptions } from "node_modules/@inertiajs/react/types/createInertiaApp";
 import { renderToString } from "react-dom/server";
 
 import AppWrapper from "~/components/AppWrapper";

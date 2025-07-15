@@ -48,7 +48,9 @@ class PostReaction < ApplicationRecord
   end
 
   # == Validations
-  validates :emoji, presence: true, uniqueness: { scope: %i[post friend] }
+  validates :emoji,
+            presence: true,
+            uniqueness: { scope: %i[post friend], message: "already added" }
 
   # == Callbacks
   after_create :create_notification!, unless: :friend_already_reacted_to_post?

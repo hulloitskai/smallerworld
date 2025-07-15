@@ -18,7 +18,10 @@ class PostReactionsController < ApplicationController
     current_friend = authenticate_friend!
     post = load_post
     reaction_params = params.expect(reaction: [:emoji])
-    reaction = post.reactions.create!(friend: current_friend, **reaction_params)
+    reaction = post.reactions.find_or_create_by!(
+      friend: current_friend,
+      **reaction_params,
+    )
     render(
       json: { reaction: PostReactionSerializer.one(reaction) },
       status: :created,

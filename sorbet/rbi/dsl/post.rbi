@@ -486,6 +486,20 @@ class Post
     def reset_quoted_post; end
 
     sig { returns(T::Array[T.untyped]) }
+    def share_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def share_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :shares`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostShare::PrivateCollectionProxy) }
+    def shares; end
+
+    sig { params(value: T::Enumerable[::PostShare]).void }
+    def shares=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def sticker_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }

@@ -242,15 +242,17 @@ const SendJoinLinkMenuItem: FC<SendJoinLinkMenuItemProps> = ({
 }) => {
   const joinUrl = useJoinUrl(currentUser, friend);
   const joinShareData = useMemo(() => {
-    if (joinUrl) {
-      const data: ShareData = {
-        text: JOIN_MESSAGE,
-        url: joinUrl,
-      };
-      if (navigator.canShare(data)) {
-        return data;
-      }
+    if (!joinUrl) {
+      return;
     }
+    const shareData: ShareData = {
+      text: JOIN_MESSAGE,
+      url: joinUrl,
+    };
+    if (!navigator.canShare(shareData)) {
+      return;
+    }
+    return shareData;
   }, [joinUrl]);
   return (
     <Menu.Sub arrowOffset={12} closeDelay={100}>

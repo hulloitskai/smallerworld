@@ -18,6 +18,7 @@ import LazyStickerPad from "./LazyStickerPad";
 import PostCardReplyButton, {
   type PostCardReplyButtonProps,
 } from "./PostCardReplyButton";
+import PostCardShareButton from "./PostCardShareButton";
 import StickerPicker from "./StickerPicker";
 
 import classes from "./FriendPostCardActions.module.css";
@@ -105,7 +106,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             />
           )}
         </Box>
-        <Group {...{ ref }} align="start" gap={2}>
+        <Group {...{ ref }} align="start" gap={2} wrap="wrap">
           <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
             {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
               <ReactionButton
@@ -115,37 +116,39 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
               />
             ))}
           </Group>
-          {user.supported_features.includes("stickers") ? (
-            <Button
-              variant="subtle"
-              size="compact-xs"
-              leftSection={<StickerIcon />}
-              style={{ flexShrink: 0 }}
-              onClick={() => {
-                if (!currentFriend) {
-                  toast.warning(
-                    <>
-                      you must be invited to {possessive(user.name)} world to
-                      add stickers
-                    </>,
-                  );
-                  return;
-                }
-                setShowStickerDrawer(true);
-              }}
-            >
-              add sticker
-            </Button>
-          ) : (
-            <NewReactionButton
-              postId={post.id}
-              hasExistingReactions={!isEmpty(reactions)}
-            />
-          )}
-          <Text inline fz="lg" className={postCardClasses.divider}>
-            /
-          </Text>
-          <PostCardReplyButton {...{ user, post, replyToNumber }} />
+          <Group justify="end" gap={2} style={{ flexGrow: 1 }}>
+            {user.supported_features.includes("stickers") ? (
+              <Button
+                variant="subtle"
+                size="compact-xs"
+                leftSection={<StickerIcon />}
+                style={{ flexShrink: 0 }}
+                onClick={() => {
+                  if (!currentFriend) {
+                    toast.warning(
+                      <>
+                        you must be invited to {possessive(user.name)} world to
+                        add stickers
+                      </>,
+                    );
+                    return;
+                  }
+                  setShowStickerDrawer(true);
+                }}
+              >
+                add sticker
+              </Button>
+            ) : (
+              <NewReactionButton
+                postId={post.id}
+                hasExistingReactions={!isEmpty(reactions)}
+              />
+            )}
+            <Text className={postCardClasses.actionSeparator}>/</Text>
+            <PostCardReplyButton {...{ user, post, replyToNumber }} />
+            <Text className={postCardClasses.actionSeparator}>/</Text>
+            <PostCardShareButton {...{ user, post }} />
+          </Group>
         </Group>
       </Box>
       <Drawer
