@@ -97,6 +97,19 @@ export const useInstallPWA = (): InstallPWAResult => {
       return () => {
         console.info("Installing PWA");
         setInstalling(true);
+        const standaloneQuery = matchMedia("(display-mode: standalone)");
+        const handleDisplayModeChange = (event: MediaQueryListEvent) => {
+          if (event.matches) {
+            const url = new URL(location.href);
+            for (const key of url.searchParams.keys()) {
+              if (!["friend_token", "pwa_scope"].includes(key)) {
+                url.searchParams.delete(key);
+              }
+            }
+            router.visit(url.toString());
+          }
+        };
+        standaloneQuery.addEventListener("change", handleDisplayModeChange);
         return installPromptEvent
           .prompt()
           .then(
@@ -116,6 +129,10 @@ export const useInstallPWA = (): InstallPWAResult => {
           )
           .finally(() => {
             setInstalling(false);
+            standaloneQuery.removeEventListener(
+              "change",
+              handleDisplayModeChange,
+            );
           });
       };
     }
