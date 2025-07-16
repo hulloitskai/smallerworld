@@ -3,6 +3,7 @@ testy:
   name: Testy McTestface
   hide_stats: false
   hide_neko: false
+  allow_friend_sharing: false
   phone_number: "+14168554759"
   time_zone_name: "America/Toronto"
   theme: "darkSky"
