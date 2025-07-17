@@ -15,7 +15,7 @@ import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
-import openAddFriendModal from "~/components/AddFriendModal";
+import AddFriendDrawer from "~/components/AddFriendDrawer";
 import AppLayout from "~/components/AppLayout";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
@@ -97,6 +97,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   // == Search
   const [showSearch, setShowSearch] = useState(false);
 
+  // == Add friend modal
+  const [addFriendModalOpened, setAddFriendModalOpened] = useState(false);
+
   const body = (
     <Stack gap="lg">
       <Box pos="relative">
@@ -172,15 +175,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   onClick={event => {
                     if (isEmpty(latestFriends)) {
                       event.preventDefault();
-                      openAddFriendModal({
-                        currentUser,
-                        onFriendCreated: () => {
-                          router.reload({
-                            only: ["latestFriends"],
-                            async: true,
-                          });
-                        },
-                      });
+                      setAddFriendModalOpened(true);
                     }
                   }}
                 >
@@ -369,6 +364,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       {isStandalone && !outOfPWAScope && pushRegistration && (
         <WelcomeBackToast subject={currentUser} />
       )}
+      <AddFriendDrawer
+        opened={addFriendModalOpened}
+        onClose={() => {
+          setAddFriendModalOpened(false);
+        }}
+        currentUser={currentUser}
+        onFriendCreated={() => {
+          router.reload({ only: ["latestFriends"], async: true });
+        }}
+      />
     </>
   );
 };
