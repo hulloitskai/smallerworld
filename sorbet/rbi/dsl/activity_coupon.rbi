@@ -440,6 +440,9 @@ class ActivityCoupon
   end
 
   module GeneratedAssociationRelationMethods
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def active(*args, &blk); end
+
     sig { returns(PrivateAssociationRelation) }
     def all; end
 
@@ -996,6 +999,9 @@ class ActivityCoupon
   end
 
   module GeneratedRelationMethods
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def active(*args, &blk); end
+
     sig { returns(PrivateRelation) }
     def all; end
 

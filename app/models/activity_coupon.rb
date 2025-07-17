@@ -32,4 +32,7 @@ class ActivityCoupon < ApplicationRecord
   # == Associations
   belongs_to :friend
   belongs_to :activity
+
+  # == Scopes
+  scope :active, -> { where("expires_at > NOW()") }
 end

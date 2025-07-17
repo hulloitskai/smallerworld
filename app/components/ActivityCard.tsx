@@ -1,4 +1,4 @@
-import { AspectRatio, type BoxProps, Popover, Text } from "@mantine/core";
+import { AspectRatio, Popover, Text } from "@mantine/core";
 
 import AtIcon from "~icons/heroicons/at-symbol-20-solid";
 import SetupIcon from "~icons/heroicons/cog-6-tooth-20-solid";

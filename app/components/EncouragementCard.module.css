@@ -11,6 +11,7 @@
     z-index: -1;
     content: "";
     backdrop-filter: blur(light-dark(rem(8px), rem(12px)));
+    border-radius: var(--paper-radius);
   }
 
   &[data-with-border] {

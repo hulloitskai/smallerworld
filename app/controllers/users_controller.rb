@@ -20,6 +20,7 @@ class UsersController < ApplicationController
     if (friend = current_friend)
       reply_to_number = user.reply_to_number || user.phone_number
       last_sent_encouragement = friend.latest_visible_encouragement
+      activity_coupons = friend.activity_coupons.active
     end
     props = {
       user: UserSerializer.one(user),
@@ -29,6 +30,7 @@ class UsersController < ApplicationController
       "invitationRequested" => invitation_requested,
       "hideNeko" => user.hide_neko,
       "allowFriendSharing" => user.allow_friend_sharing,
+      "activityCoupons" => ActivityCouponSerializer.many(activity_coupons),
     }
     unless params[:manifest_icon_type] == "generic"
       props["faviconLinks"] = user_favicon_links(user)

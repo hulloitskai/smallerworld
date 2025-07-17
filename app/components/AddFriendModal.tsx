@@ -66,7 +66,7 @@ const ModalBody: FC<ModalBodyProps> = ({
   fromUser,
   onFriendCreated,
 }) => {
-  const wheelGesturesPlugin = useRef(WheelGesturesPlugin());
+  const [wheelGesturesPlugin] = useState(WheelGesturesPlugin);
   const [revealBackToHomeButton, setRevealBackToHomeButton] = useState(false);
 
   // == Joiner info
@@ -279,7 +279,7 @@ const ModalBody: FC<ModalBodyProps> = ({
                     className={classes.activitiesCarousel}
                     slideSize={ACTIVITY_CARD_WIDTH}
                     slideGap="md"
-                    plugins={[wheelGesturesPlugin.current]}
+                    plugins={[wheelGesturesPlugin]}
                     emblaOptions={{
                       align: "center",
                     }}

@@ -21,7 +21,7 @@ import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type Encouragement, type User } from "~/types";
+import { type ActivityCoupon, type Encouragement, type User } from "~/types";
 
 import classes from "./UserPage.module.css";
 
@@ -32,6 +32,7 @@ export interface UserPageProps extends SharedPageProps {
   invitationRequested: boolean;
   hideNeko: boolean;
   allowFriendSharing: boolean;
+  activityCoupons: ActivityCoupon[];
 }
 
 const ICON_SIZE = 96;

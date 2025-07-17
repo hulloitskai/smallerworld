@@ -1,0 +1,3 @@
+.activityCouponsCarousel {
+  margin-inline: min(calc((100dvw - var(--container-size-xs)) / -2), 0px);
+}
