@@ -93,7 +93,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
         <Group align="start" gap={3} style={{ flexGrow: 1 }}>
           {(!!statsData?.notifiedFriends || !!statsData?.viewers) && (
             <>
-              <HoverCard position="top-start" arrowOffset={16} shadow="sm">
+              <HoverCard position="top-start" arrowOffset={20} shadow="sm">
                 <HoverCard.Target>
                   <ActionIcon
                     size="xs"

@@ -119,6 +119,15 @@
     }
   }
 
+  .badge {
+    &[data-variant="default"] {
+      @mixin dark-user-theme {
+        background-color: var(--mantine-color-body);
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
+  }
+
   .badgeLabel {
     text-transform: none;
     font-family: var(--mantine-font-family-headings);
@@ -315,7 +324,7 @@
 
     @mixin dark-user-theme {
       --popover-border-color: alpha(var(--mantine-color-white), 0.2);
-      background-color: alpha(var(--mantine-color-black), 0.4);
+      background-color: var(--mantine-color-body);
       backdrop-filter: blur(rem(8px));
     }
   }
@@ -349,6 +358,15 @@
     @mixin where-dark-user-theme {
       @mixin hover {
         background-color: alpha(var(--mantine-color-black), 0.2);
+      }
+    }
+  }
+
+  .checkbox {
+    @mixin dark-user-theme {
+      &:not([data-checked]) :global(.mantine-Checkbox-input) {
+        background-color: transparent;
+        border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
   }

@@ -87,7 +87,7 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
       <Text size="xs" c="dimmed">
         expires <TimeAgo>{coupon.expires_at}</TimeAgo>
       </Text>
-      <Popover portalProps={{ target: vaulPortalTarget }}>
+      <Popover shadow="md" portalProps={{ target: vaulPortalTarget }}>
         <Popover.Target>
           <Button
             size="compact-sm"

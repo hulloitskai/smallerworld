@@ -52,8 +52,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
   return (
     <Popover
       position="bottom-end"
-      arrowOffset={16}
-      width={270}
+      arrowOffset={20}
       shadow="sm"
       portalProps={{ target: vaulPortalTarget }}
       disabled={!currentFriend || !replyToNumber}

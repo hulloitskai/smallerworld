@@ -36,7 +36,7 @@ export interface UserPageProps extends SharedPageProps {
 
 const ICON_SIZE = 96;
 
-const UserPage: PageComponent<UserPageProps> = ({ user, replyToNumber }) => {
+const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -159,7 +159,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user, replyToNumber }) => {
           </Stack>
         </Stack>
         {(isStandalone === true || !currentUser) && (
-          <Popover position="bottom-end" arrowOffset={16} width={228}>
+          <Popover position="bottom-end" arrowOffset={20} width={228}>
             <Popover.Target>
               <ActionIcon pos="absolute" top={0} right={0} size="lg">
                 <Image src={logoSrc} h={26} w="unset" />

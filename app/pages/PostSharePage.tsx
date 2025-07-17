@@ -63,7 +63,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
           </Title>
         </Stack>
         {!currentUser && (
-          <Popover position="bottom-end" arrowOffset={16} width={228}>
+          <Popover position="bottom-end" arrowOffset={20} width={228}>
             <Popover.Target>
               <ActionIcon pos="absolute" top={0} right={0} size="lg">
                 <Image src={logoSrc} h={26} w="unset" />

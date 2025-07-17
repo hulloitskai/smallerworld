@@ -128,7 +128,7 @@ const PostCard: FC<PostCardProps> = ({
                 label="this post is publicly visible"
                 events={{ hover: true, focus: true, touch: true }}
                 position="top-end"
-                arrowOffset={16}
+                arrowOffset={20}
               >
                 <Box>
                   <Box
@@ -146,7 +146,7 @@ const PostCard: FC<PostCardProps> = ({
               label="this post is visible only to you"
               events={{ hover: true, focus: true, touch: true }}
               position="top-end"
-              arrowOffset={16}
+              arrowOffset={20}
             >
               <Box>
                 <Box

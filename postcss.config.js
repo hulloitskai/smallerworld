@@ -3,18 +3,28 @@ export default {
     "postcss-preset-mantine": {
       autoRem: true,
       mixins: {
+        "user-theme": {
+          "[data-user-theme] &": {
+            "@mixin-content": {},
+          },
+        },
+        "where-user-theme": {
+          ":where([data-user-theme]) &": {
+            "@mixin-content": {},
+          },
+        },
         "light-user-theme": {
           "[data-mantine-color-scheme='light'][data-user-theme] &": {
             "@mixin-content": {},
           },
         },
-        "dark-user-theme": {
-          "[data-mantine-color-scheme='dark'][data-user-theme] &": {
+        "where-light-user-theme": {
+          ":where([data-mantine-color-scheme='light'][data-user-theme]) &": {
             "@mixin-content": {},
           },
         },
-        "where-light-user-theme": {
-          ":where([data-mantine-color-scheme='light'][data-user-theme]) &": {
+        "dark-user-theme": {
+          "[data-mantine-color-scheme='dark'][data-user-theme] &": {
             "@mixin-content": {},
           },
         },

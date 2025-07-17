@@ -113,6 +113,7 @@ const createTheme = (
           variant: "light",
         },
         classNames: {
+          root: classes.badge,
           label: classes.badgeLabel,
         },
       }),
@@ -311,6 +312,11 @@ const createTheme = (
       Chip: Chip.extend({
         defaultProps: {
           variant: "outline",
+        },
+      }),
+      Checkbox: Checkbox.extend({
+        classNames: {
+          root: classes.checkbox,
         },
       }),
       Skeleton: Skeleton.extend({

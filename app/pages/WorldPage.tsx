@@ -190,7 +190,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             </Group>
           </Stack>
         </Stack>
-        <Menu width={228} position="bottom-end" arrowOffset={16}>
+        <Menu width={228} position="bottom-end" arrowOffset={20}>
           <Menu.Target>
             <ActionIcon
               pos="absolute"
