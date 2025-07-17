@@ -14,7 +14,9 @@ class FriendsController < ApplicationController
         render(inertia: "FriendsPage")
       end
       format.json do
-        friends = current_user.friends.reverse_chronological
+        friends = current_user.friends
+          .includes(:offered_activities)
+          .reverse_chronological
         notifiable_friend_ids = PushRegistration
           .where(owner: friends)
           .pluck(:owner_id)
