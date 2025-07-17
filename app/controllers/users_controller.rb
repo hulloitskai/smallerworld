@@ -21,6 +21,8 @@ class UsersController < ApplicationController
       reply_to_number = user.reply_to_number || user.phone_number
       last_sent_encouragement = friend.latest_visible_encouragement
       activity_coupons = friend.activity_coupons.active
+    else
+      activity_coupons = []
     end
     props = {
       user: UserSerializer.one(user),
