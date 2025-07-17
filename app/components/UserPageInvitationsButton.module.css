@@ -1,7 +1,6 @@
 .button {
   pointer-events: auto;
-  padding-left: 8px;
-  padding-right: var(--mantine-spacing-sm);
+  padding-inline: var(--mantine-spacing-sm);
   box-shadow: var(--mantine-shadow-lg);
 
   &[data-expanded] {
@@ -55,4 +54,10 @@
   height: var(--badge-size);
   background-color: var(--mantine-color-white);
   color: var(--mantine-color-primary-filled);
+}
+
+.activityCouponsContainer {
+  margin-inline: calc(var(--mantine-spacing-md) * -1);
+  background-color: darken(var(--mantine-color-body), 40%);
+  padding-block: var(--mantine-spacing-md);
 }

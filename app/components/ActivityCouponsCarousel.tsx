@@ -13,13 +13,14 @@ import "@mantine/carousel/styles.layer.css";
 const COUPON_CARD_WIDTH = 320;
 
 export interface ActivityCouponsCarouselProps
-  extends Pick<ActivityCouponCardProps, "replyToNumber">,
+  extends Pick<ActivityCouponCardProps, "replyToNumber" | "user">,
     BoxProps {
   coupons: ActivityCoupon[];
 }
 
 const ActivityCouponsCarousel: FC<ActivityCouponsCarouselProps> = ({
   replyToNumber,
+  user,
   coupons,
   className,
   ...otherProps
@@ -36,7 +37,7 @@ const ActivityCouponsCarousel: FC<ActivityCouponsCarouselProps> = ({
     >
       {coupons.map(coupon => (
         <Carousel.Slide key={coupon.id}>
-          <ActivityCouponCard {...{ replyToNumber, coupon }} />
+          <ActivityCouponCard {...{ replyToNumber, user, coupon }} />
         </Carousel.Slide>
       ))}
     </Carousel>

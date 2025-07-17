@@ -1,6 +1,6 @@
 import { Affix } from "@mantine/core";
 
-import UserPageUpcomingEventsButton from "./UserPageUpcomingEventsButton";
+import UserPageInvitationsButton from "./UserPageInvitationsButton";
 
 import classes from "./UserPageFloatingActions.module.css";
 
@@ -10,9 +10,14 @@ const UserPageFloatingActions: FC<UserPageFloatingActionsProps> = () => (
   <>
     <Space className={classes.space} />
     <Affix className={classes.affix} position={{}} zIndex={180}>
-      <Center style={{ pointerEvents: "none" }}>
-        <UserPageUpcomingEventsButton />
-      </Center>
+      <Group
+        align="end"
+        justify="center"
+        gap={8}
+        style={{ pointerEvents: "none" }}
+      >
+        <UserPageInvitationsButton />
+      </Group>
     </Affix>
   </>
 );

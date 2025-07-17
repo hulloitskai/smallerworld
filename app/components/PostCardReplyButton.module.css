@@ -15,12 +15,3 @@
   font-family: var(--mantine-font-family-headings);
   padding-bottom: 1.5px;
 }
-
-.messagingPlatformSelectorHint {
-  text-align: center;
-  color: var(--mantine-color-dimmed);
-
-  @mixin dark-user-theme {
-    color: var(--mantine-color-dark-0);
-  }
-}

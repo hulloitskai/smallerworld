@@ -12,16 +12,16 @@ import UserPageFeed from "~/components/UserPageFeed";
 import UserPageFloatingActions from "~/components/UserPageFloatingActions";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
+import UserPageInvitationsButton from "~/components/UserPageInvitationsButton";
 import { openUserPageJoinModal } from "~/components/UserPageJoinModal";
 import UserPageNotificationsButtonCard from "~/components/UserPageNotificationsButtonCard";
 import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
-import UserPageUpcomingEventsButton from "~/components/UserPageUpcomingEventsButton";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type ActivityCoupon, type Encouragement, type User } from "~/types";
+import { type Encouragement, type User } from "~/types";
 
 import classes from "./UserPage.module.css";
 
@@ -32,12 +32,11 @@ export interface UserPageProps extends SharedPageProps {
   invitationRequested: boolean;
   hideNeko: boolean;
   allowFriendSharing: boolean;
-  activityCoupons: ActivityCoupon[];
 }
 
 const ICON_SIZE = 96;
 
-const UserPage: PageComponent<UserPageProps> = ({ user }) => {
+const UserPage: PageComponent<UserPageProps> = ({ user, replyToNumber }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -149,7 +148,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                 )}
               </>
             ) : isStandalone === false || outOfPWAScope ? (
-              <UserPageUpcomingEventsButton style={{ alignSelf: "center" }} />
+              <Group justify="center" gap={8}>
+                <UserPageInvitationsButton />
+              </Group>
             ) : (
               <Skeleton style={{ alignSelf: "center", width: "unset" }}>
                 <Button>some placeholder</Button>

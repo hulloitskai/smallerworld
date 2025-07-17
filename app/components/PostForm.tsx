@@ -1,9 +1,8 @@
 import { Input, ScrollArea, SegmentedControl, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { useMergedRef } from "@mantine/hooks";
+import { useLongPress, useMergedRef } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { type DraggableProps, motion, Reorder } from "motion/react";
-import { useLongPress } from "use-long-press";
 
 import NotifyIcon from "~icons/heroicons/bell";
 import QuietIcon from "~icons/heroicons/bell-slash-20-solid";

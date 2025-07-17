@@ -8,21 +8,24 @@ import {
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
-import { type ActivityCoupon } from "~/types";
+import { type ActivityCoupon, type User } from "~/types";
 
 import activityCardClasses from "./ActivityCard.module.css";
 
 export interface ActivityCouponCardProps extends BoxProps {
   replyToNumber: string;
+  user: User;
   coupon: ActivityCoupon;
 }
 
 const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
-  coupon,
   replyToNumber,
+  user,
+  coupon,
   className,
   ...otherProps
 }) => {
+  const vaulPortalTarget = useVaulPortalTarget();
   const { activity } = coupon;
   return (
     <Stack
@@ -81,11 +84,14 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
           </Card>
         </Box>
       </AspectRatio>
-      <Popover>
+      <Text size="xs" c="dimmed">
+        expires <TimeAgo>{coupon.expires_at}</TimeAgo>
+      </Text>
+      <Popover portalProps={{ target: vaulPortalTarget }}>
         <Popover.Target>
           <Button
             size="compact-sm"
-            variant="light"
+            variant="filled"
             leftSection={<CouponIcon />}
           >
             redeem coupon
@@ -94,7 +100,7 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
         <Popover.Dropdown>
           <Stack gap={8}>
             <Text ta="center" ff="heading" fw={500} size="sm">
-              redeem through:
+              contact {user.name} to redeem:
             </Text>
             <Group justify="center" gap="sm">
               {MESSAGING_PLATFORMS.map(platform => (

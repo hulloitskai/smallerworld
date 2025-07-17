@@ -7,14 +7,11 @@ import { useWebPush } from "~/helpers/webPush";
 import { type UserPageProps } from "~/pages/UserPage";
 import { type UserPost } from "~/types";
 
-import ActivityCouponsCarousel from "./ActivityCouponsCarousel";
 import EncouragementCard from "./EncouragementCard";
 import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 import SleepyNeko from "./SleepyNeko";
-
-import classes from "./UserPageFeed.module.css";
 
 export interface UserPageFeedProps extends BoxProps {}
 
@@ -26,7 +23,6 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
     lastSentEncouragement,
     hideNeko,
     allowFriendSharing,
-    activityCoupons,
   } = usePageProps<UserPageProps>();
   const params = useQueryParams();
   const { registration: pushRegistration } = useWebPush();
@@ -53,13 +49,6 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
     (!!lastSentEncouragement || longerThan24HoursSinceLastPost);
   return (
     <Stack {...props}>
-      {!!replyToNumber && !isEmpty(activityCoupons) && (
-        <ActivityCouponsCarousel
-          {...{ replyToNumber }}
-          className={classes.activityCouponsCarousel}
-          coupons={activityCoupons}
-        />
-      )}
       {showEncouragementCard && (
         <EncouragementCard
           {...{

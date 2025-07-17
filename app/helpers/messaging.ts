@@ -1,4 +1,4 @@
-import { useLocalStorage } from "@mantine/hooks";
+// import { useLocalStorage } from "@mantine/hooks";
 import { type SVGProps } from "react";
 
 import TelegramIcon from "~icons/basil/telegram-solid";
@@ -28,10 +28,10 @@ export const MESSAGING_PLATFORM_TO_ICON: Record<
   whatsapp: WhatsappIcon,
 };
 
-export const usePreferredMessagingPlatform = (userId: string) =>
-  useLocalStorage<MessagingPlatform | undefined>({
-    key: `preferred_messaging_platform:${userId}`,
-  });
+// export const usePreferredMessagingPlatform = (userId: string) =>
+//   useLocalStorage<MessagingPlatform | undefined>({
+//     key: `preferred_messaging_platform:${userId}`,
+//   });
 
 export const messageUri = (
   phoneNumber: string,

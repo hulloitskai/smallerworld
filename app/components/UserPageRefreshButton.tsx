@@ -46,6 +46,10 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
           },
         });
 
+        // Reload pinned posts and activity coupons
+        void mutateRoute(routes.userPosts.pinned);
+        void mutateRoute(routes.activityCoupons.index);
+
         // Revalidate posts and post stats, reactions, etc
         const firstPost = first(posts);
         void mutatePosts().then(pages => {

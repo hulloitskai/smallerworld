@@ -157,6 +157,7 @@ Rails.application.routes.draw do
 
   # == Activities
   resources :activities, only: %i[index create], export: true
+  resources :activity_coupons, only: :index, export: true
 
   # == Universe
   resource :universe, only: :show, export: { namespace: "universe" } do
