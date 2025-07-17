@@ -78,7 +78,7 @@ gem "silencer", "~> 2.0", require: false
 # Validate emails, phone numbers, dates, arrays, and more
 gem "can_has_validations", "~> 1.8"
 gem "email_validator", "~> 2.2"
-gem "phonelib", "~> 0.6.55"
+gem "phonelib", "~> 0.10.10"
 gem "validate_url", "~> 1.0"
 gem "date_validator", "~> 0.12.0"
 gem "active_storage_validations", "~> 0.9.6"
@@ -238,3 +238,4 @@ group :test do
   gem "capybara-playwright-driver"
   gem "rack-test"
 end
+
