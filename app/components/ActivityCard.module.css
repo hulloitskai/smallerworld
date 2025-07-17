@@ -1,8 +1,9 @@
 .container {
+  --mantine-color-text: var(--mantine-color-black);
+
   filter: drop-shadow(
     0 calc(0.0625rem * 1) calc(0.1875rem * 1) rgba(0, 0, 0, 0.2)
   );
-  --mantine-color-text: var(--mantine-color-black);
 }
 
 .stub {
@@ -10,10 +11,11 @@
   mask-image: url("~/assets/images/ticket-stub.svg");
   mask-size: contain;
   padding: 20px;
+  display: flex;
+  align-items: stretch;
 }
 
 .card {
-  height: 100%;
   display: flex;
   overflow: visible;
   padding: var(--mantine-spacing-xs);
