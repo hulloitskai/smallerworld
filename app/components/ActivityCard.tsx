@@ -38,7 +38,7 @@ const ActivityCard: FC<ActivityCardProps> = ({
         <Box className={classes.stub}>
           <Card className={classes.card} withBorder>
             <Stack gap={0} justify="center" h="100%" ta="center">
-              <Text className={classes.activityName} size="lg">
+              <Text className={classes.activityName} size="lg" c="black">
                 {activity?.name ?? activityOrTemplate.name}
               </Text>
               <Text

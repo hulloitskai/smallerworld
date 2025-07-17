@@ -1,10 +1,6 @@
 .pageTitle {
   line-height: var(--mantine-line-height-xs);
   text-align: center;
-
-  @mixin dark {
-    color: var(--mantine-color-white);
-  }
 }
 
 .pageIcon {

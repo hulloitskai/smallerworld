@@ -270,7 +270,7 @@ const ModalBody: FC<ModalBodyProps> = ({
                     <Title order={3} size="h4">
                       activity coupons!
                     </Title>
-                    <Text size="xs" c="dimmed">
+                    <Text size="xs" className={classes.activitiesDescription}>
                       give your friend a coupon they can redeem to do stuff with
                       you!
                     </Text>

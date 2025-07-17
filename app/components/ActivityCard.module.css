@@ -2,6 +2,7 @@
   filter: drop-shadow(
     0 calc(0.0625rem * 1) calc(0.1875rem * 1) rgba(0, 0, 0, 0.2)
   );
+  --mantine-color-text: var(--mantine-color-black);
 }
 
 .stub {
@@ -17,6 +18,7 @@
   overflow: visible;
   padding: var(--mantine-spacing-xs);
   padding-top: var(--mantine-spacing-md);
+  background-color: var(--mantine-color-white);
 }
 
 .activityName {
@@ -28,7 +30,7 @@
 }
 
 .activityDescription {
-  color: var(--mantine-color-dimmed);
+  color: var(--mantine-color-gray-6);
   line-height: var(--mantine-line-height-xs);
   white-space: pre-wrap;
   flex-shrink: 0;
@@ -40,11 +42,14 @@
   right: 0;
   margin-inline: auto;
   height: unset;
+  background-color: var(--mantine-color-white);
+  border-color: var(--mantine-color-gray-3);
+  color: var(--mantine-color-black);
 }
 
 .emojiBadgeLabel {
   font-size: var(--mantine-font-size-md);
-  padding-top: 3px;
+  padding-top: 2px;
 }
 
 .locationBadgeLabel {

@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Alert,
   Button,
+  CloseButton,
   createTheme as createMantineTheme,
   DEFAULT_THEME,
   type DefaultMantineColor,
@@ -281,6 +282,11 @@ const createTheme = (
       TypographyStylesProvider: TypographyStylesProvider.extend({
         classNames: {
           root: classes.typographyStylesProvider,
+        },
+      }),
+      CloseButton: CloseButton.extend({
+        classNames: {
+          root: classes.closeButton,
         },
       }),
       Divider: Divider.extend({

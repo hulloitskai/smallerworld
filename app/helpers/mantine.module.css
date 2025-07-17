@@ -338,4 +338,12 @@
       }
     }
   }
+
+  .closeButton {
+    @mixin where-dark-user-theme {
+      @mixin hover {
+        background-color: alpha(var(--mantine-color-black), 0.2);
+      }
+    }
+  }
 }

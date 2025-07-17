@@ -38,11 +38,11 @@
   :global(.mantine-Button-label) {
     font-weight: 900;
     font-size: var(--mantine-font-size-md);
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    /* color: light-dark(var(--mantine-color-black), var(--mantine-color-white)); */
   }
 
   :global(.mantine-Button-section)[data-position="left"] {
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    /* color: light-dark(var(--mantine-color-black), var(--mantine-color-white)); */
     margin-right: 4px;
   }
 }

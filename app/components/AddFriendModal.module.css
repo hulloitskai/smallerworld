@@ -66,3 +66,7 @@
     padding-right: 1px;
   }
 }
+
+.activitiesDescription {
+  color: alpha(var(--mantine-color-text), 60%);
+}
