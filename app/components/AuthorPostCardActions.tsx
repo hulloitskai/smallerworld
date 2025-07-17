@@ -89,68 +89,70 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
 
   return (
     <>
-      <Group {...{ ref }} align="start" justify="space-between" gap={3}>
-        {(!!statsData?.notifiedFriends || !!statsData?.viewers) && (
-          <>
-            <HoverCard position="top-start" arrowOffset={16} shadow="sm">
-              <HoverCard.Target>
-                <ActionIcon
-                  size="xs"
-                  variant="transparent"
-                  className={classes.statsIcon}
-                >
-                  {statsData?.viewers ? <OpenedIcon /> : <NotificationIcon />}
-                </ActionIcon>
-              </HoverCard.Target>
-              <HoverCard.Dropdown px="xs" py={8}>
-                <List className={classes.statsList}>
-                  {!!statsData?.notifiedFriends && (
-                    <List.Item icon={<NotificationIcon />}>
-                      notified {statsData.notifiedFriends}{" "}
-                      {inflect("friend", statsData.notifiedFriends)}
-                    </List.Item>
-                  )}
-                  {!!statsData?.viewers && (
-                    <List.Item icon={<OpenedIcon />}>
-                      seen by {statsData.viewers}{" "}
-                      {inflect("friend", statsData.viewers)}
-                    </List.Item>
-                  )}
-                </List>
-              </HoverCard.Dropdown>
-            </HoverCard>
-          </>
-        )}
-        {(!!statsData?.notifiedFriends || !!statsData?.viewers) &&
-          !isEmpty(reactions) && (
-            <Text className={postCardClasses.actionSeparator}>/</Text>
+      <Group {...{ ref }} align="start" gap={3}>
+        <Group align="start" gap={3} style={{ flexGrow: 1 }}>
+          {(!!statsData?.notifiedFriends || !!statsData?.viewers) && (
+            <>
+              <HoverCard position="top-start" arrowOffset={16} shadow="sm">
+                <HoverCard.Target>
+                  <ActionIcon
+                    size="xs"
+                    variant="transparent"
+                    className={classes.statsIcon}
+                  >
+                    {statsData?.viewers ? <OpenedIcon /> : <NotificationIcon />}
+                  </ActionIcon>
+                </HoverCard.Target>
+                <HoverCard.Dropdown px="xs" py={8}>
+                  <List className={classes.statsList}>
+                    {!!statsData?.notifiedFriends && (
+                      <List.Item icon={<NotificationIcon />}>
+                        notified {statsData.notifiedFriends}{" "}
+                        {inflect("friend", statsData.notifiedFriends)}
+                      </List.Item>
+                    )}
+                    {!!statsData?.viewers && (
+                      <List.Item icon={<OpenedIcon />}>
+                        seen by {statsData.viewers}{" "}
+                        {inflect("friend", statsData.viewers)}
+                      </List.Item>
+                    )}
+                  </List>
+                </HoverCard.Dropdown>
+              </HoverCard>
+            </>
           )}
-        {!isEmpty(reactions) && (
-          <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
-            {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>
-              hideStats ? (
-                <Badge
-                  key={emoji}
-                  variant="transparent"
-                  color="gray"
-                  className={classes.reactionBadgeWithoutCounts}
-                >
-                  {emoji}
-                </Badge>
-              ) : (
-                <Badge
-                  key={emoji}
-                  variant="transparent"
-                  color="gray"
-                  leftSection={emoji}
-                  className={classes.reactionBadge}
-                >
-                  {reactions.length}
-                </Badge>
-              ),
+          {(!!statsData?.notifiedFriends || !!statsData?.viewers) &&
+            !isEmpty(reactions) && (
+              <Text className={postCardClasses.actionSeparator}>/</Text>
             )}
-          </Group>
-        )}
+          {!isEmpty(reactions) && (
+            <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
+              {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>
+                hideStats ? (
+                  <Badge
+                    key={emoji}
+                    variant="transparent"
+                    color="gray"
+                    className={classes.reactionBadgeWithoutCounts}
+                  >
+                    {emoji}
+                  </Badge>
+                ) : (
+                  <Badge
+                    key={emoji}
+                    variant="transparent"
+                    color="gray"
+                    leftSection={emoji}
+                    className={classes.reactionBadge}
+                  >
+                    {reactions.length}
+                  </Badge>
+                ),
+              )}
+            </Group>
+          )}
+        </Group>
         <Menu width={165}>
           <Menu.Target>
             <Button

@@ -10,11 +10,7 @@
 
   @mixin dark-user-theme {
     background-color: alpha(var(--mantine-color-black), 0.4);
-
-    /* Blur backdrop */
-    --blur-radius: rem(8px);
-    backdrop-filter: blur(var(--blur-radius));
-    -webkit-backdrop-filter: blur(var(--blur-radius));
+    backdrop-filter: blur(rem(8px));
 
     &:not([data-expanded]) {
       border-color: alpha(var(--mantine-color-white), 0.2);

@@ -115,10 +115,7 @@
 
 .onboardingAlert {
   @mixin dark-user-theme {
-    /* Blur backdrop */
-    --blur-radius: rem(8px);
-    backdrop-filter: blur(var(--blur-radius));
-    -webkit-backdrop-filter: blur(var(--blur-radius));
+    backdrop-filter: blur(rem(8px));
   }
 
   :global(.mantine-Alert-icon) {

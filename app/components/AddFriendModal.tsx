@@ -1,4 +1,7 @@
+import { Carousel } from "@mantine/carousel";
 import { CopyButton, Popover, Text } from "@mantine/core";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
+import { map } from "lodash-es";
 import { type ModalSettings } from "node_modules/@mantine/modals/lib/context";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
@@ -13,16 +16,22 @@ import {
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
 import {
+  type Activity,
+  type ActivityTemplate,
   type Friend,
   type JoinedUser,
   type JoinRequest,
   type User,
 } from "~/types";
 
+import ActivityCard from "./ActivityCard";
 import EmojiPopover from "./EmojiPopover";
 import PlainQRCode from "./PlainQRCode";
 
 import classes from "./AddFriendModal.module.css";
+import "@mantine/carousel/styles.layer.css";
+
+const ACTIVITY_CARD_WIDTH = 320;
 
 export interface AddFriendModalProps
   extends Omit<ModalSettings, "children">,
@@ -57,6 +66,7 @@ const ModalBody: FC<ModalBodyProps> = ({
   fromUser,
   onFriendCreated,
 }) => {
+  const wheelGesturesPlugin = useRef(WheelGesturesPlugin());
   const [revealBackToHomeButton, setRevealBackToHomeButton] = useState(false);
 
   // == Joiner info
@@ -69,6 +79,20 @@ const ModalBody: FC<ModalBodyProps> = ({
     }
   }, [fromJoinRequest, fromUser]);
 
+  // == Load activities
+  const [showActivities, setShowActivities] = useState(false);
+  const { data: activitiesData } = useRouteSWR<{
+    activities: Activity[];
+    activityTemplates: ActivityTemplate[];
+  }>(routes.activities.index, {
+    descriptor: "load activities",
+  });
+  const { activities, activityTemplates } = activitiesData ?? {};
+  const activitiesAndTemplates = useMemo(
+    () => [...(activities ?? []), ...(activityTemplates ?? [])],
+    [activities, activityTemplates],
+  );
+
   // == Form
   interface FormData {
     friend: Friend;
@@ -76,18 +100,21 @@ const ModalBody: FC<ModalBodyProps> = ({
   interface FormValues {
     emoji: string;
     name: string;
+    offered_activities: Activity[];
   }
   interface FormSubmission {
     friend: {
       emoji: string | null;
       name: string;
       phone_number: string | null;
+      offered_activity_ids: string[];
     };
   }
   const initialValues = useMemo<FormValues>(
     () => ({
       emoji: "",
       name: joinerInfo?.name ?? "",
+      offered_activities: [],
     }),
     [joinerInfo],
   );
@@ -104,14 +131,16 @@ const ModalBody: FC<ModalBodyProps> = ({
     action: routes.friends.create,
     descriptor: "invite friend",
     initialValues,
-    transformValues: ({ emoji, name }) => ({
+    transformValues: ({ emoji, name, offered_activities }) => ({
       friend: {
         emoji: emoji || null,
         name: name.trim(),
         phone_number: joinerInfo?.phone_number ?? null,
+        offered_activity_ids: map(offered_activities, "id"),
       },
     }),
     onSuccess: () => {
+      setShowActivities(false);
       void mutateRoute(routes.friends.index);
       void mutateRoute(routes.joinRequests.index);
       onFriendCreated?.();
@@ -159,13 +188,140 @@ const ModalBody: FC<ModalBodyProps> = ({
                 </ActionIcon>
               )}
             </EmojiPopover>
-            <TextInput
-              {...getInputProps("name")}
-              placeholder="friend's name"
-              disabled={!!friend}
-              style={{ flexGrow: 1 }}
-            />
+            <Stack gap="xs" style={{ flexGrow: 1 }}>
+              <TextInput
+                {...getInputProps("name")}
+                placeholder="friend's name"
+                disabled={!!friend}
+              />
+              <Transition
+                transition="pop"
+                mounted={!isEmpty(values.offered_activities)}
+              >
+                {style => (
+                  <Group gap={8} wrap="wrap" {...{ style }}>
+                    {values.offered_activities.map(activity => (
+                      <Badge
+                        className={classes.activityBadge}
+                        key={activity.id}
+                        variant="default"
+                        leftSection={activity.emoji ?? <CouponIcon />}
+                        {...(friend
+                          ? { opacity: 0.5 }
+                          : {
+                              rightSection: (
+                                <ActionIcon
+                                  size="xs"
+                                  variant="transparent"
+                                  color="red"
+                                  onClick={() => {
+                                    setFieldValue(
+                                      "offered_activities",
+                                      values.offered_activities.filter(
+                                        a => a.id !== activity.id,
+                                      ),
+                                    );
+                                  }}
+                                >
+                                  <RemoveIcon />
+                                </ActionIcon>
+                              ),
+                            })}
+                      >
+                        {activity.name}
+                      </Badge>
+                    ))}
+                  </Group>
+                )}
+              </Transition>
+            </Stack>
           </Group>
+          <Transition
+            transition="pop"
+            mounted={!isEmpty(activitiesAndTemplates) && !showActivities}
+          >
+            {style => (
+              <Button
+                size="compact-sm"
+                leftSection={<CouponIcon />}
+                style={[style, { alignSelf: "center" }]}
+                disabled={!!friend}
+                onClick={() => {
+                  setShowActivities(show => !show);
+                }}
+              >
+                include a coupon!
+              </Button>
+            )}
+          </Transition>
+          {!isEmpty(activitiesAndTemplates) && (
+            <Transition
+              transition="pop"
+              mounted={showActivities}
+              enterDelay={250}
+            >
+              {style => (
+                <Stack
+                  className={classes.activitiesContainer}
+                  gap="sm"
+                  {...{ style }}
+                >
+                  <Box ta="center">
+                    <Title order={3} size="h4">
+                      activity coupons!
+                    </Title>
+                    <Text size="xs" c="dimmed">
+                      give your friend a coupon they can redeem to do stuff with
+                      you!
+                    </Text>
+                  </Box>
+                  <Carousel
+                    className={classes.activitiesCarousel}
+                    slideSize={ACTIVITY_CARD_WIDTH}
+                    slideGap="md"
+                    plugins={[wheelGesturesPlugin.current]}
+                    emblaOptions={{
+                      align: "center",
+                    }}
+                  >
+                    {activitiesAndTemplates.map(activityOrTemplate => {
+                      const { offered_activities: activities } = values;
+                      const activityValue = activities.find(a => {
+                        if ("template_id" in activityOrTemplate) {
+                          return a.id === activityOrTemplate.id;
+                        } else {
+                          return a.template_id === activityOrTemplate.id;
+                        }
+                      });
+                      return (
+                        <Carousel.Slide key={activityOrTemplate.id}>
+                          <ActivityCard
+                            {...{ activityOrTemplate }}
+                            added={!!activityValue}
+                            onChange={newActivity => {
+                              if (newActivity) {
+                                setFieldValue("offered_activities", [
+                                  ...activities,
+                                  newActivity,
+                                ]);
+                              } else if (activityValue) {
+                                setFieldValue(
+                                  "offered_activities",
+                                  activities.filter(
+                                    a => a.id !== activityValue.id,
+                                  ),
+                                );
+                              }
+                            }}
+                          />
+                        </Carousel.Slide>
+                      );
+                    })}
+                  </Carousel>
+                </Stack>
+              )}
+            </Transition>
+          )}
           <Button
             type="submit"
             variant="filled"
@@ -180,7 +336,11 @@ const ModalBody: FC<ModalBodyProps> = ({
       </form>
       {!friend && (
         <>
-          <Divider opacity={0.5} mt={6} />
+          <Divider
+            variant="dashed"
+            mt={6}
+            mx="calc(var(--mantine-spacing-md) * -1)"
+          />
           <Box ta="center" mb="xs">
             <Title order={3} size="h6">
               how does this work?
@@ -201,7 +361,7 @@ const ModalBody: FC<ModalBodyProps> = ({
       )}
       {friend && (
         <>
-          <Divider />
+          <Divider variant="dashed" mx="calc(var(--mantine-spacing-md) * -1)" />
           <Stack gap="lg" align="center">
             <Box ta="center">
               <Title order={3} lh="xs">

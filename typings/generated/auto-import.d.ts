@@ -29,6 +29,7 @@ declare global {
   const ContinueIcon: typeof import('~/components/icons')['ContinueIcon']
   const CopiedIcon: typeof import('~/components/icons')['CopiedIcon']
   const CopyIcon: typeof import('~/components/icons')['CopyIcon']
+  const CouponIcon: typeof import('~/components/icons')['CouponIcon']
   const CreateIcon: typeof import('~/components/icons')['CreateIcon']
   const DateTime: typeof import('luxon')['DateTime']
   const DeleteIcon: typeof import('~/components/icons')['DeleteIcon']

@@ -1,0 +1,15 @@
+- id: coffee_hang
+  emoji: ☕️
+  name: Coffee Hangout
+  description: Let's meet for coffee and talk about life.
+- id: sunset_reflections
+  emoji: 🌅
+  name: Sunset Reflections
+  description: >-
+    We'll go to my favorite sunset spot, share some snacks, and do some
+    journaling. After, we'll share what we journaled about :>
+- id: coworking_session
+  emoji: 💻
+  name: Coworking Session
+  description: >-
+    Let's meet at a coffee shop and work on our passion projects together!

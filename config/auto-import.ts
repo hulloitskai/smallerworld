@@ -25,6 +25,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "SearchIcon",
       "SettingsIcon",
       "UserIcon",
+      "CouponIcon",
       "AuthenticateIcon",
       "ClipboardIcon",
       "SendIcon",

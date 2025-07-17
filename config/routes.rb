@@ -155,6 +155,9 @@ Rails.application.routes.draw do
   # == Encouragements
   resources :encouragements, only: %i[index create], export: true
 
+  # == Activities
+  resources :activities, only: %i[index create], export: true
+
   # == Universe
   resource :universe, only: :show, export: { namespace: "universe" } do
     get :worlds

@@ -34,5 +34,6 @@ export default {
         "mantine-breakpoint-xl": "88em",
       },
     },
+    autoprefixer: {},
   },
 };

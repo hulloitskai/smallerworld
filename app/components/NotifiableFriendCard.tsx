@@ -8,7 +8,12 @@ import QrCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { JOIN_MESSAGE, useJoinUrl } from "~/helpers/join";
-import { type Friend, type NotifiableFriend, type User } from "~/types";
+import {
+  type Activity,
+  type Friend,
+  type NotifiableFriend,
+  type User,
+} from "~/types";
 
 import EditFriendForm from "./EditFriendForm";
 import PlainQRCode from "./PlainQRCode";
@@ -16,16 +21,28 @@ import PlainQRCode from "./PlainQRCode";
 import classes from "./NotifiableFriendCard.module.css";
 
 export interface NotifiableFriendCardProps {
+  activitiesById: Record<string, Activity>;
   currentUser: User;
   friend: NotifiableFriend;
 }
 
 const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
+  activitiesById,
   currentUser,
   friend,
 }) => {
   const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
   const [menuOpened, setMenuOpened] = useState(false);
+  const offeredActivities = useMemo(() => {
+    const activities: Activity[] = [];
+    friend.offered_activity_ids.forEach(id => {
+      const activity = activitiesById[id];
+      if (activity) {
+        activities.push(activity);
+      }
+    });
+    return activities;
+  }, [activitiesById, friend.offered_activity_ids]);
 
   // == Remove friend
   const { trigger: deleteFriend, mutating: deletingFriend } = useRouteMutation(
@@ -43,10 +60,10 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
   );
 
   return (
-    <Card withBorder>
+    <Card className={cn("NotifiableFriendCard", classes.card)} withBorder>
       <Group gap={6} justify="space-between" className={classes.group}>
         <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
-          <Box fz="xl">{friend.emoji}</Box>
+          {!!friend.emoji && <Box fz="xl">{friend.emoji}</Box>}
           <Text ff="heading" fw={600}>
             {friend.name}
           </Text>
@@ -152,6 +169,20 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
           </Menu>
         </Group>
       </Group>
+      {!isEmpty(friend.offered_activity_ids) && (
+        <Group>
+          {offeredActivities.map(activity => (
+            <Badge
+              className={classes.activityBadge}
+              key={activity.id}
+              variant="default"
+              leftSection={activity.emoji ?? <CouponIcon />}
+            >
+              {activity.name}
+            </Badge>
+          ))}
+        </Group>
+      )}
       <LoadingOverlay visible={deletingFriend} />
     </Card>
   );

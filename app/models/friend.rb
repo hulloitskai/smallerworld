@@ -57,6 +57,9 @@ class Friend < ApplicationRecord
   belongs_to :user
   has_many :user_posts, through: :user, source: :posts
 
+  has_many :activity_coupons, dependent: :destroy
+  has_many :offered_activities, through: :activity_coupons, source: :activity
+
   belongs_to :join_request, optional: true
   has_many :post_reactions, dependent: :destroy
   has_many :post_reply_receipts, dependent: :destroy

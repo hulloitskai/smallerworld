@@ -92,10 +92,7 @@
     var(--mantine-color-primary-filled),
     var(--mantine-color-primary-7)
   );
-
-  --blur-radius: rem(4px);
-  backdrop-filter: blur(var(--blur-radius));
-  -webkit-backdrop-filter: blur(var(--blur-radius));
+  backdrop-filter: blur(rem(4px));
 
   > :global(.mantine-Badge-label) {
     display: flex;

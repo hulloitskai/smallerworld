@@ -1,3 +1,9 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .group {
   :global(.mantine-Button-section) {
     &[data-position="left"] {
@@ -10,4 +16,9 @@
   :global(.mantine-Badge-label) {
     text-transform: none;
   }
+}
+
+.activityBadge {
+  padding-inline: 4px;
+  --badge-radius: var(--mantine-radius-md);
 }

@@ -10,6 +10,9 @@ module GeneratedPathHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
+  def activities_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def actual_db_schema_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

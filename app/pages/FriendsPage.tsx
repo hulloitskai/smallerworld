@@ -7,7 +7,12 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import NotifiableFriendCard from "~/components/NotifiableFriendCard";
-import { type NotifiableFriend, type User } from "~/types";
+import {
+  type Activity,
+  type ActivityTemplate,
+  type NotifiableFriend,
+  type User,
+} from "~/types";
 
 export interface FriendsPageProps extends SharedPageProps {
   currentUser: User;
@@ -18,18 +23,28 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   useUserTheme(currentUser.theme);
 
   // == Load friends
-  const { data } = useRouteSWR<{ friends: NotifiableFriend[] }>(
+  const { data: friendsData } = useRouteSWR<{ friends: NotifiableFriend[] }>(
     routes.friends.index,
     {
       descriptor: "load friends",
       keepPreviousData: true,
     },
   );
-  const { friends } = data ?? {};
+  const { friends } = friendsData ?? {};
   const [notifiableFriends, unnotifiableFriends] = useMemo(
     () => partition(friends, friend => friend.notifiable),
     [friends],
   );
+
+  // == Load activities
+  const { data: activitiesData } = useRouteSWR<{
+    activities: Activity[];
+    activityTemplates: ActivityTemplate[];
+  }>(routes.activities.index, {
+    descriptor: "load activities",
+  });
+  const { activities } = activitiesData ?? {};
+  const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
 
   return (
     <Stack gap="lg">
@@ -69,7 +84,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
             [...notifiableFriends, ...unnotifiableFriends].map(friend => (
               <NotifiableFriendCard
                 key={friend.id}
-                {...{ currentUser, friend }}
+                {...{ activitiesById, currentUser, friend }}
               />
             ))
           )

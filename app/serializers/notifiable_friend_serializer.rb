@@ -7,5 +7,6 @@ class NotifiableFriendSerializer < FriendSerializer
 
   # == Attributes
   attributes notifiable: { type: :boolean },
-             paused?: { as: :paused, type: :boolean }
+             paused?: { as: :paused, type: :boolean },
+             offered_activity_ids: { type: "string[]" }
 end

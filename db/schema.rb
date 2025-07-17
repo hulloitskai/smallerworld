@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_14_204427) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_16_203832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_204427) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "emoji"
+    t.string "template_id"
+    t.uuid "user_id", null: false
+    t.text "description", null: false
+    t.string "location_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "template_id"], name: "index_activities_on_user_id_and_template_id", unique: true
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
+
+  create_table "activity_coupons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "friend_id", null: false
+    t.uuid "activity_id", null: false
+    t.datetime "expires_at", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id"], name: "index_activity_coupons_on_activity_id"
+    t.index ["expires_at"], name: "index_activity_coupons_on_expires_at"
+    t.index ["friend_id"], name: "index_activity_coupons_on_friend_id"
   end
 
   create_table "encouragements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -319,6 +343,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_204427) do
     t.string "reply_to_number"
     t.string "api_token"
     t.boolean "hide_neko", null: false
+    t.boolean "allow_friend_sharing", null: false
     t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["handle"], name: "index_users_on_handle", unique: true
     t.index ["notifications_last_cleared_at"], name: "index_users_on_notifications_last_cleared_at"
@@ -327,6 +352,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_204427) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activities", "users"
+  add_foreign_key "activity_coupons", "activities"
+  add_foreign_key "activity_coupons", "friends"
   add_foreign_key "encouragements", "friends"
   add_foreign_key "friends", "join_requests"
   add_foreign_key "friends", "users"

@@ -133,11 +133,7 @@
         inset: 0;
         z-index: -1;
         content: "";
-
-        /* Blur backdrop */
-        --blur-radius: rem(8px);
-        backdrop-filter: blur(var(--blur-radius));
-        -webkit-backdrop-filter: blur(var(--blur-radius));
+        backdrop-filter: blur(rem(8px));
       }
     }
 
@@ -153,13 +149,15 @@
   }
 
   .cardSection {
-    @mixin dark {
-      border-color: var(--mantine-color-dark-6);
-    }
+    &[data-with-border] {
+      @mixin dark {
+        border-color: var(--mantine-color-dark-6);
+      }
 
-    @mixin dark-user-theme {
-      &:not(:global(.mantine-Paper-root .cardSection)) {
-        border-color: alpha(var(--mantine-color-white), 0.2);
+      @mixin dark-user-theme {
+        &:not(:global(.mantine-Paper-root .cardSection)) {
+          border-color: alpha(var(--mantine-color-white), 0.2);
+        }
       }
     }
   }
@@ -172,11 +170,7 @@
     @mixin dark-user-theme {
       background-color: alpha(var(--mantine-color-black), 0.4);
       border-color: alpha(var(--mantine-color-white), 0.2);
-
-      /* Blur backdrop */
-      --blur-radius: rem(8px);
-      backdrop-filter: blur(var(--blur-radius));
-      -webkit-backdrop-filter: blur(var(--blur-radius));
+      backdrop-filter: blur(rem(8px));
     }
   }
 
@@ -316,11 +310,7 @@
     @mixin dark-user-theme {
       --popover-border-color: alpha(var(--mantine-color-white), 0.2);
       background-color: alpha(var(--mantine-color-black), 0.4);
-
-      /* Blur backdrop */
-      --blur-radius: rem(8px);
-      backdrop-filter: blur(var(--blur-radius));
-      -webkit-backdrop-filter: blur(var(--blur-radius));
+      backdrop-filter: blur(rem(8px));
     }
   }
 

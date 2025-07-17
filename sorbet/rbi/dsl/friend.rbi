@@ -336,6 +336,20 @@ class Friend
   end
 
   module GeneratedAssociationMethods
+    sig { returns(T::Array[T.untyped]) }
+    def activity_coupon_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def activity_coupon_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :activity_coupons`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActivityCoupon::PrivateCollectionProxy) }
+    def activity_coupons; end
+
+    sig { params(value: T::Enumerable[::ActivityCoupon]).void }
+    def activity_coupons=(value); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
     def build_join_request(*args, &blk); end
 
@@ -393,6 +407,20 @@ class Friend
 
     sig { params(value: T::Enumerable[::Notification]).void }
     def notifications=(value); end
+
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :offered_activities, through: :activity_coupons`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Activity::PrivateCollectionProxy) }
+    def offered_activities; end
+
+    sig { params(value: T::Enumerable[::Activity]).void }
+    def offered_activities=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def offered_activity_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def offered_activity_ids=(ids); end
 
     sig { returns(T::Array[T.untyped]) }
     def post_reaction_ids; end

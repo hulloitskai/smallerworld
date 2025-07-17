@@ -1,0 +1,53 @@
+.container {
+  filter: drop-shadow(
+    0 calc(0.0625rem * 1) calc(0.1875rem * 1) rgba(0, 0, 0, 0.2)
+  );
+}
+
+.stub {
+  background-color: var(--mantine-color-white);
+  mask-image: url("~/assets/images/ticket-stub.svg");
+  mask-size: contain;
+  padding: 20px;
+}
+
+.card {
+  height: 100%;
+  display: flex;
+  overflow: visible;
+  padding: var(--mantine-spacing-xs);
+  padding-top: var(--mantine-spacing-md);
+}
+
+.activityName {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 700;
+  line-height: var(--mantine-line-height-xs);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.activityDescription {
+  color: var(--mantine-color-dimmed);
+  line-height: var(--mantine-line-height-xs);
+  white-space: pre-wrap;
+  flex-shrink: 0;
+}
+
+.cardBadge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  height: unset;
+}
+
+.emojiBadgeLabel {
+  font-size: var(--mantine-font-size-md);
+  padding-top: 3px;
+}
+
+.locationBadgeLabel {
+  text-transform: none;
+  font-weight: 500;
+}

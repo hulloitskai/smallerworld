@@ -16,11 +16,7 @@
       inset: 0;
       z-index: -1;
       content: "";
-
-      /* Blur backdrop */
-      --blur-radius: light-dark(rem(8px), rem(12px));
-      backdrop-filter: blur(var(--blur-radius));
-      -webkit-backdrop-filter: blur(var(--blur-radius));
+      backdrop-filter: blur(light-dark(rem(8px), rem(12px)));
     }
 
     &[data-with-border] {
@@ -98,11 +94,8 @@
   margin-bottom: 6px;
 
   &[data-blur] {
-    --blur-radius: rem(4px);
-    filter: blur(var(--blur-radius));
-    -webkit-filter: blur(var(--blur-radius));
-
     border-bottom: 4px solid white;
+    filter: blur(rem(4px));
   }
 }
 

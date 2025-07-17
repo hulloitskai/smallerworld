@@ -33,7 +33,12 @@ class FriendsController < ApplicationController
   # POST /friends
   def create
     current_user = authenticate_user!
-    friend_params = params.expect(friend: %i[emoji name phone_number])
+    friend_params = params.expect(friend: [
+      :emoji,
+      :name,
+      :phone_number,
+      offered_activity_ids: [],
+    ])
     friend = current_user.friends.build(**friend_params)
     friend.join_request = current_user
       .join_requests
