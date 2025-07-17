@@ -3,8 +3,8 @@
 
 class ActivityTemplateSerializer < ApplicationSerializer
   # == Attributes
-  identifier type: :string
-  attributes emoji: { type: :string, nullable: true },
+  attributes id: { type: :string },
+             emoji: { type: :string, nullable: true },
              name: { type: :string },
              description: { type: :string }
 end
