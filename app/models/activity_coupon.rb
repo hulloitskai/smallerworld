@@ -8,6 +8,7 @@
 #
 #  id          :uuid             not null, primary key
 #  expires_at  :datetime         not null
+#  redeemed_at :datetime
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  activity_id :uuid             not null
@@ -18,6 +19,7 @@
 #  index_activity_coupons_on_activity_id  (activity_id)
 #  index_activity_coupons_on_expires_at   (expires_at)
 #  index_activity_coupons_on_friend_id    (friend_id)
+#  index_activity_coupons_on_redeemed_at  (redeemed_at)
 #
 # Foreign Keys
 #
@@ -30,6 +32,9 @@ class ActivityCoupon < ApplicationRecord
 
   # == Attributes
   attribute :expires_at, default: -> { 1.month.from_now }
+
+  sig { returns(T::Boolean) }
+  def redeemed? = redeemed_at?
 
   # == Associations
   belongs_to :friend
@@ -60,7 +65,9 @@ class ActivityCoupon < ApplicationRecord
   after_create :create_notification!
 
   # == Scopes
-  scope :active, -> { where("expires_at > NOW()") }
+  scope :expired, -> { where("expires_at <= NOW()") }
+  scope :redeemed, -> { where.not(redeemed_at: nil) }
+  scope :active, -> { where("expires_at > NOW()").where(redeemed_at: nil) }
 
   # == Noticeable
   sig do
@@ -93,10 +100,15 @@ class ActivityCoupon < ApplicationRecord
     notifications.create!(recipient: friend!)
   end
 
+  sig { void }
+  def mark_as_redeemed!
+    update!(redeemed_at: Time.current)
+  end
+
   private
 
   # == Validators
-  # sig{void}
+  sig { void }
   def validate_no_other_identical_active_coupons
     if friend!.activity_coupons.active.where.not(id:).exists?(activity:)
       errors.add(

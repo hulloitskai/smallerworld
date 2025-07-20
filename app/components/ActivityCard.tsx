@@ -15,6 +15,8 @@ export interface ActivityCardProps
   activityOrTemplate: Activity | ActivityTemplate;
   added: boolean;
   disableAdded?: boolean;
+  addLabel?: ReactNode;
+  addedLabel?: ReactNode;
   onChange: (activity: Activity | null) => void;
 }
 
@@ -23,6 +25,8 @@ const ActivityCard: FC<ActivityCardProps> = ({
   added,
   loading,
   disableAdded,
+  addLabel,
+  addedLabel,
   className,
   onChange,
   ...otherProps
@@ -105,7 +109,7 @@ const ActivityCard: FC<ActivityCardProps> = ({
             }
           }}
         >
-          {added ? "coupon added" : "add coupon"}
+          {added ? (addedLabel ?? "coupon added") : (addLabel ?? "add coupon")}
         </Button>
       </Stack>
       <Modal

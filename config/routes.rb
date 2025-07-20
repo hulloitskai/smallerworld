@@ -161,7 +161,11 @@ Rails.application.routes.draw do
 
   # == Activities
   resources :activities, only: %i[index create], export: true
-  resources :activity_coupons, only: %i[index create], export: true
+  resources :activity_coupons, only: %i[index create], export: true do
+    member do
+      post :mark_as_redeemed
+    end
+  end
 
   # == Universe
   resource :universe, only: :show, export: { namespace: "universe" } do

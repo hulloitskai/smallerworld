@@ -1,6 +1,5 @@
-import { mutate } from "swr";
-
 import { useUserPagePosts } from "~/helpers/userPages";
+import { type UserPageProps } from "~/pages/UserPage";
 
 export interface UserPageRefreshButtonProps extends BoxProps {
   userId: string;
@@ -10,6 +9,7 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
   userId,
   ...otherProps
 }) => {
+  const { currentFriend } = usePageProps<UserPageProps>();
   const [loading, setLoading] = useState(false);
 
   // == Revalidate posts
@@ -47,8 +47,11 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
         });
 
         // Reload pinned posts and activity coupons
-        void mutateRoute(routes.userPosts.pinned);
-        void mutateRoute(routes.activityCoupons.index);
+        const query = currentFriend
+          ? { friend_token: currentFriend.access_token }
+          : {};
+        void mutateRoute(routes.userPosts.pinned, { query });
+        void mutateRoute(routes.activityCoupons.index, { query });
 
         // Revalidate posts and post stats, reactions, etc
         const firstPost = first(posts);
@@ -65,7 +68,6 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
             });
           }
         });
-        void mutatePostStatsAndReactions();
       }}
       {...otherProps}
     >
@@ -75,11 +77,3 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
 };
 
 export default UserPageRefreshButton;
-
-const mutatePostStatsAndReactions = async (): Promise<void> => {
-  await mutate((key: string) => {
-    if (typeof key === "string") {
-      return key.startsWith("/posts");
-    }
-  });
-};

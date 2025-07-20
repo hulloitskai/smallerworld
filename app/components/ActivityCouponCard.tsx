@@ -8,25 +8,70 @@ import {
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
-import { type ActivityCoupon, type User } from "~/types";
+import { confetti } from "~/helpers/particles";
+import { type ActivityCoupon, type Friend, type User } from "~/types";
 
 import activityCardClasses from "./ActivityCard.module.css";
+import classes from "./ActivityCouponCard.module.css";
 
 export interface ActivityCouponCardProps extends BoxProps {
+  currentFriend: Friend;
   replyToNumber: string;
   user: User;
   coupon: ActivityCoupon;
+  onCouponRedeemed: () => void;
 }
 
 const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
+  currentFriend,
   replyToNumber,
   user,
   coupon,
+  onCouponRedeemed,
   className,
   ...otherProps
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
   const { activity } = coupon;
+
+  // == Mark coupon as redeemed
+  const { trigger: triggerMarkAsRedeemed, mutating: markingAsRedeemed } =
+    useRouteMutation(routes.activityCoupons.markAsRedeemed, {
+      params: {
+        id: coupon.id,
+        query: {
+          friend_token: currentFriend.access_token,
+        },
+      },
+      descriptor: "mark coupon as redeemed",
+      onSuccess: () => {
+        toast.success("activity coupon marked as redeemed");
+        void confetti({
+          position: {
+            x: 50,
+            y: 50,
+          },
+          angle: 180,
+          spread: 200,
+          ticks: 60,
+          gravity: 1,
+          startVelocity: 18,
+          count: 12,
+          scalar: 2,
+          shapes: ["emoji"],
+          shapeOptions: {
+            emoji: {
+              value: coupon.activity.emoji ?? "🎟️",
+            },
+          },
+        });
+        void mutateRoute(routes.activityCoupons.index, {
+          query: { friend_token: currentFriend.access_token },
+        });
+        onCouponRedeemed();
+      },
+    });
+
   return (
     <Stack
       className={cn("ActivityCouponCard", className)}
@@ -125,6 +170,17 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
                 </Stack>
               ))}
             </Group>
+            <Anchor
+              component="button"
+              className={classes.markAsRedeemedButton}
+              size="xs"
+              disabled={markingAsRedeemed}
+              onClick={() => {
+                void triggerMarkAsRedeemed();
+              }}
+            >
+              mark as redeemed
+            </Anchor>
           </Stack>
         </Popover.Dropdown>
       </Popover>

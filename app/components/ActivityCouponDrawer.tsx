@@ -1,6 +1,7 @@
 import { Carousel } from "@mantine/carousel";
 import { AspectRatio, Text } from "@mantine/core";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
+import { map } from "lodash-es";
 
 import { prettyName } from "~/helpers/friends";
 import {
@@ -32,6 +33,10 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
   const [wheelGesturesPlugin] = useState(WheelGesturesPlugin);
 
   // == Load activities
+  const addedActivityIds = useMemo(
+    () => map(friend.active_activity_coupons, "activity_id"),
+    [friend.active_activity_coupons],
+  );
   const { data } = useRouteSWR<{
     activities: Activity[];
     activityTemplates: ActivityTemplate[];
@@ -50,13 +55,13 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
       return 0;
     }
     for (const [i, activity] of activities.entries()) {
-      if (friend.offered_activity_ids.includes(activity.id)) {
+      if (addedActivityIds.includes(activity.id)) {
         continue;
       }
       return i;
     }
     return 0;
-  }, [activities, friend.offered_activity_ids]);
+  }, [activities, addedActivityIds]);
 
   // == Create coupon
   const { trigger, mutating } = useRouteMutation<{
@@ -100,12 +105,10 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
           <Carousel.Slide key={activityOrTemplate.id}>
             <ActivityCard
               {...{ activityOrTemplate }}
+              addLabel="send coupon"
+              addedLabel="already sent"
               disableAdded
-              added={
-                "template_id" in activityOrTemplate
-                  ? friend.offered_activity_ids.includes(activityOrTemplate.id)
-                  : false
-              }
+              added={addedActivityIds.includes(activityOrTemplate.id)}
               loading={mutating}
               onChange={activity => {
                 if (activity) {

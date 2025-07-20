@@ -7,6 +7,13 @@ class NotifiableFriendSerializer < FriendSerializer
 
   # == Attributes
   attributes notifiable: { type: :boolean },
-             paused?: { as: :paused, type: :boolean },
-             offered_activity_ids: { type: "string[]" }
+             paused?: { as: :paused, type: :boolean }
+
+  # == Associations
+  has_many(
+    :active_activity_coupons,
+    serializer: FriendActivityCouponSerializer,
+  ) do
+    friend.activity_coupons.active
+  end
 end

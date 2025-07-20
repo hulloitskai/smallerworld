@@ -211,7 +211,13 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
         }
       : null,
     onSuccess: () => {
-      void mutateRoute(routes.postReactions.index, { post_id: postId });
+      invariant(currentFriend, "Missing current friend");
+      void mutateRoute(routes.postReactions.index, {
+        post_id: postId,
+        query: {
+          friend_token: currentFriend.access_token,
+        },
+      });
     },
   });
 

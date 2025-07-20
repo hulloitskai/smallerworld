@@ -87,14 +87,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
   const invitationCount = pinnedPosts.length + activityCoupons.length;
   return (
     <>
-      <Transition
-        transition="pop"
-        mounted={
-          !!pinnedPostsData &&
-          !!activityCouponsData &&
-          (!isEmpty(pinnedPosts) || !isEmpty(activityCoupons))
-        }
-      >
+      <Transition transition="pop" mounted={invitationCount > 0}>
         {transitionStyle => (
           <Tooltip
             label={<>{user.name} sent you an activity coupon!</>}
@@ -116,7 +109,8 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
               style={[style, transitionStyle]}
               {...otherProps}
             >
-              you have {invitationCount} invitations
+              you have {invitationCount}{" "}
+              {inflect("invitation", invitationCount)}
             </Button>
           </Tooltip>
         )}
@@ -129,7 +123,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
         }}
       >
         <Stack gap="lg">
-          {!isEmpty(activityCoupons) && !!replyToNumber && (
+          {!isEmpty(activityCoupons) && !!currentFriend && !!replyToNumber && (
             <Box className={classes.activityCouponsContainer}>
               <Stack gap="md">
                 <Box px="md">
@@ -145,7 +139,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
                   </Text>
                 </Box>
                 <ActivityCouponsCarousel
-                  {...{ replyToNumber, user }}
+                  {...{ currentFriend, replyToNumber, user }}
                   coupons={activityCoupons}
                 />
               </Stack>

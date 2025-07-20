@@ -85,6 +85,9 @@ module GeneratedPathHelpersModule
   def mailcatcher_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def mark_as_redeemed_activity_coupon_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def mark_delivered_notifications_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

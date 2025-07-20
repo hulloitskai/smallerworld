@@ -32,4 +32,20 @@ class ActivityCouponsController < ApplicationController
       status: :created,
     )
   end
+
+  # PATCH /activity_coupons/:id/mark_as_redeemed
+  def mark_as_redeemed
+    coupon = load_coupon
+    authorize!(coupon)
+    coupon.mark_as_redeemed!
+    render(json: {})
+  end
+
+  private
+
+  # == Helpers
+  sig { returns(ActivityCoupon) }
+  def load_coupon
+    ActivityCoupon.find(params.fetch(:id))
+  end
 end

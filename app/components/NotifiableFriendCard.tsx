@@ -39,14 +39,14 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
   const [activityDrawerOpened, setActivityDrawerOpened] = useState(false);
   const offeredActivities = useMemo(() => {
     const activities: Activity[] = [];
-    friend.offered_activity_ids.forEach(id => {
-      const activity = activitiesById[id];
+    friend.active_activity_coupons.forEach(coupon => {
+      const activity = activitiesById[coupon.activity_id];
       if (activity) {
         activities.push(activity);
       }
     });
     return activities;
-  }, [activitiesById, friend.offered_activity_ids]);
+  }, [activitiesById, friend.active_activity_coupons]);
 
   // == Remove friend
   const { trigger: deleteFriend, mutating: deletingFriend } = useRouteMutation(
