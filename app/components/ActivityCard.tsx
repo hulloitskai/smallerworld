@@ -1,4 +1,4 @@
-import { AspectRatio, Modal, Text } from "@mantine/core";
+import { AspectRatio, type ButtonProps, Modal, Text } from "@mantine/core";
 
 import AtIcon from "~icons/heroicons/at-symbol-20-solid";
 import SetupIcon from "~icons/heroicons/cog-6-tooth-20-solid";
@@ -9,17 +9,22 @@ import CreateActivityForm from "./CreateActivityForm";
 
 import classes from "./ActivityCard.module.css";
 
-export interface ActivityCardProps extends BoxProps {
+export interface ActivityCardProps
+  extends BoxProps,
+    Pick<ButtonProps, "loading"> {
   activityOrTemplate: Activity | ActivityTemplate;
   added: boolean;
+  disableAdded?: boolean;
   onChange: (activity: Activity | null) => void;
 }
 
 const ActivityCard: FC<ActivityCardProps> = ({
   activityOrTemplate,
   added,
-  onChange,
+  loading,
+  disableAdded,
   className,
+  onChange,
   ...otherProps
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
@@ -85,10 +90,11 @@ const ActivityCard: FC<ActivityCardProps> = ({
         <Button
           size="compact-sm"
           variant={added ? "outline" : "light"}
+          {...{ loading }}
           leftSection={
             added ? <SuccessIcon /> : activity ? <AddIcon /> : <SetupIcon />
           }
-          {...(!activity && { disabled: drawerOpened })}
+          disabled={(added && !!disableAdded) || (!activity && drawerOpened)}
           onClick={() => {
             if (added) {
               onChange(null);

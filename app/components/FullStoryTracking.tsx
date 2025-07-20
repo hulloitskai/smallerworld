@@ -1,5 +1,7 @@
 import { FullStory } from "@fullstory/browser";
 
+import { prettyName } from "~/helpers/friends";
+
 const FullStoryTracking: FC = () => {
   const {
     component,
@@ -12,11 +14,9 @@ const FullStoryTracking: FC = () => {
       return;
     }
     if (currentFriend) {
-      const { name, emoji } = currentFriend;
-      const displayName = [emoji, name].filter(Boolean).join(" ");
       void FullStory("setIdentityAsync", {
         uid: currentFriend.id,
-        properties: { displayName, type: "friend" },
+        properties: { displayName: prettyName(currentFriend), type: "friend" },
         schema: {
           properties: {
             type: "string",

@@ -8,6 +8,7 @@ import {
   shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
+import { prettyName } from "~/helpers/friends";
 import { openUserPageInstallationInstructionsInMobileSafari } from "~/helpers/userPages";
 import { type Friend, type User } from "~/types";
 
@@ -36,11 +37,6 @@ interface ModalBodyProps {
 
 // eslint-disable-next-line react-refresh/only-export-components
 const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
-  const friendNameWithEmoji = useMemo(
-    () => [currentFriend.emoji, currentFriend.name].filter(Boolean).join(" "),
-    [currentFriend],
-  );
-
   // == Browser detection
   const browserDetection = useBrowserDetection();
 
@@ -51,7 +47,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
     <Stack gap="lg" align="center" pb="xs">
       <Stack gap={4}>
         <Title order={3} ta="center" maw={300}>
-          hi, {friendNameWithEmoji}!
+          hi, {prettyName(currentFriend)}!
         </Title>
         <Text ta="center" maw={300}>
           i made an app that tells you what&apos;s{" "}

@@ -6,6 +6,7 @@ import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-soli
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
+import { prettyName } from "~/helpers/friends";
 import { NEKO_SIZE } from "~/helpers/neko";
 import {
   POST_TYPE_TO_ICON,
@@ -112,13 +113,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                               c="dimmed"
                               style={{ alignSelf: "end" }}
                             >
-                              —{" "}
-                              {[
-                                encouragement.friend.emoji,
-                                encouragement.friend.name,
-                              ]
-                                .filter(Boolean)
-                                .join(" ")}
+                              — {prettyName(encouragement.friend)}
                             </Text>
                           </Stack>
                         </HoverCard.Dropdown>

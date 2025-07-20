@@ -1,5 +1,7 @@
 import { isInitialized, setUser } from "@sentry/react";
 
+import { prettyName } from "~/helpers/friends";
+
 const SentryTracking: FC = () => {
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -9,10 +11,7 @@ const SentryTracking: FC = () => {
     if (isInitialized()) {
       if (currentFriend) {
         const { id } = currentFriend;
-        const name = [currentFriend.emoji, currentFriend.name]
-          .filter(Boolean)
-          .join(" ");
-        setUser({ id, name });
+        setUser({ id, name: prettyName(currentFriend) });
       } else if (currentUser) {
         const { id, handle, name } = currentUser;
         setUser({ id, username: handle, name });

@@ -1,5 +1,5 @@
 import { Carousel } from "@mantine/carousel";
-import { CopyButton, type ModalProps, Popover, Text } from "@mantine/core";
+import { CopyButton, Popover, Text } from "@mantine/core";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
@@ -24,7 +24,7 @@ import {
 } from "~/types";
 
 import ActivityCard from "./ActivityCard";
-import Drawer from "./Drawer";
+import Drawer, { type DrawerProps } from "./Drawer";
 import EmojiPopover from "./EmojiPopover";
 import PlainQRCode from "./PlainQRCode";
 
@@ -33,7 +33,7 @@ import "@mantine/carousel/styles.layer.css";
 
 const ACTIVITY_CARD_WIDTH = 320;
 
-export interface AddFriendDrawerProps extends Omit<ModalProps, "children"> {
+export interface AddFriendDrawerProps extends Omit<DrawerProps, "children"> {
   currentUser: User;
   fromJoinRequest?: JoinRequest;
   fromUser?: JoinedUser;
@@ -45,6 +45,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
   fromJoinRequest,
   fromUser,
   onFriendCreated,
+  opened,
   ...otherProps
 }) => {
   const [wheelGesturesPlugin] = useState(WheelGesturesPlugin);
@@ -67,6 +68,8 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
     activityTemplates: ActivityTemplate[];
   }>(routes.activities.index, {
     descriptor: "load activities",
+    params: opened ? {} : null,
+    keepPreviousData: true,
   });
   const { activities, activityTemplates } = activitiesData ?? {};
   const activitiesAndTemplates = useMemo(
@@ -74,7 +77,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
     [activities, activityTemplates],
   );
 
-  // == Form
+  // == Create friend
   interface FormData {
     friend: Friend;
   }
@@ -137,7 +140,11 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
   const { friend } = data ?? {};
 
   return (
-    <Drawer title="invite a friend to your world" {...otherProps}>
+    <Drawer
+      title="invite a friend to your world"
+      {...{ opened }}
+      {...otherProps}
+    >
       <Stack gap="lg">
         <form onSubmit={submit}>
           <Stack gap="xs">
@@ -252,7 +259,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
                       <Title order={3} size="h4">
                         activity coupons
                       </Title>
-                      <Text size="xs" className={classes.activitiesDescription}>
+                      <Text size="xs" c="dimmed">
                         give your friend a coupon they can redeem to do stuff
                         with you!
                       </Text>
@@ -496,10 +503,9 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
       text: JOIN_MESSAGE,
       url: joinUrl,
     };
-    if (!navigator.canShare(shareData)) {
-      return;
+    if (navigator.canShare(shareData)) {
+      return shareData;
     }
-    return shareData;
   }, [joinUrl]);
   return (
     <Menu width={140}>

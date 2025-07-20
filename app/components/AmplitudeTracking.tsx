@@ -5,6 +5,8 @@ import {
   setUserId,
 } from "@amplitude/analytics-browser";
 
+import { prettyName } from "~/helpers/friends";
+
 const AmplitudeTracking: FC = () => {
   const { currentUser, currentFriend } = usePageProps();
 
@@ -13,10 +15,7 @@ const AmplitudeTracking: FC = () => {
     if (currentFriend) {
       setUserId(currentFriend.id);
       const identifyEvent = new Identify();
-      const name = [currentFriend.emoji, currentFriend.name]
-        .filter(Boolean)
-        .join(" ");
-      identifyEvent.set("name", name);
+      identifyEvent.set("name", prettyName(currentFriend));
       identifyEvent.set("type", "friend");
       identify(identifyEvent);
       return () => {

@@ -64,6 +64,7 @@ class User < ApplicationRecord
            foreign_key: :author_id
   has_many :join_requests, dependent: :destroy
   has_many :activities, dependent: :destroy
+  has_many :activity_coupons, dependent: :destroy
 
   # == Attachments
   has_one_attached :page_icon

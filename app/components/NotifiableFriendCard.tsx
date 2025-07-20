@@ -7,6 +7,7 @@ import ResumeIcon from "~icons/heroicons/play-20-solid";
 import QrCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
+import { prettyName } from "~/helpers/friends";
 import { JOIN_MESSAGE, useJoinUrl } from "~/helpers/join";
 import {
   type Activity,
@@ -15,6 +16,7 @@ import {
   type User,
 } from "~/types";
 
+import ActivityCouponDrawer from "./ActivityCouponDrawer";
 import EditFriendForm from "./EditFriendForm";
 import PlainQRCode from "./PlainQRCode";
 
@@ -31,8 +33,10 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
   currentUser,
   friend,
 }) => {
-  const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
   const [menuOpened, setMenuOpened] = useState(false);
+
+  // == Activities
+  const [activityDrawerOpened, setActivityDrawerOpened] = useState(false);
   const offeredActivities = useMemo(() => {
     const activities: Activity[] = [];
     friend.offered_activity_ids.forEach(id => {
@@ -60,117 +64,119 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
   );
 
   return (
-    <Card className={cn("NotifiableFriendCard", classes.card)} withBorder>
-      <Group gap={6} justify="space-between" className={classes.group}>
-        <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
-          {!!friend.emoji && <Box fz="xl">{friend.emoji}</Box>}
-          <Text ff="heading" fw={600}>
-            {friend.name}
-          </Text>
-        </Group>
-        <Group gap={2} style={{ flexShrink: 0 }}>
-          {friend.notifiable && !friend.paused && (
-            <Badge
-              className={classes.badge}
-              color="gray"
-              leftSection={<NotificationIcon />}
-            >
-              notifiable
-            </Badge>
-          )}
-          {friend.paused && (
-            <Tooltip
-              label={<>{prettyName} will not see new posts you create</>}
-            >
+    <>
+      <Card className={cn("NotifiableFriendCard", classes.card)} withBorder>
+        <Group gap={6} justify="space-between" className={classes.group}>
+          <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
+            {!!friend.emoji && <Box fz="xl">{friend.emoji}</Box>}
+            <Text ff="heading" fw={600}>
+              {friend.name}
+            </Text>
+          </Group>
+          <Group gap={2} style={{ flexShrink: 0 }}>
+            {friend.notifiable && !friend.paused && (
               <Badge
                 className={classes.badge}
-                color="red"
-                leftSection={<PauseIcon />}
+                color="gray"
+                leftSection={<NotificationIcon />}
               >
-                paused
+                notifiable
               </Badge>
-            </Tooltip>
-          )}
-          <Menu
-            width={180}
-            position="bottom-end"
-            arrowOffset={16}
-            trigger="click-hover"
-            opened={menuOpened}
-            onChange={setMenuOpened}
-          >
-            <Menu.Target>
-              <ActionIcon variant="subtle" size="compact-xs">
-                <MenuIcon />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <SendJoinLinkMenuItem {...{ currentUser, friend }} />
-              <Menu.Item
-                leftSection={<EditIcon />}
-                onClick={() => {
-                  openModal({
-                    title: "change friend name",
-                    children: (
-                      <EditFriendForm
-                        {...{ friend }}
-                        onFriendUpdated={() => {
-                          closeAllModals();
-                        }}
-                      />
-                    ),
-                  });
-                }}
+            )}
+            {friend.paused && (
+              <Tooltip
+                label={
+                  <>{prettyName(friend)} will not see new posts you create</>
+                }
               >
-                edit name
-              </Menu.Item>
-              <Menu.Item
-                leftSection={<RemoveIcon />}
-                onClick={() => {
-                  openConfirmModal({
-                    title: "really remove friend?",
-                    children: <>you can't undo this action</>,
-                    cancelProps: { variant: "light", color: "gray" },
-                    groupProps: { gap: "xs" },
-                    labels: {
-                      confirm: "do it",
-                      cancel: "wait nvm",
-                    },
-                    styles: {
-                      header: {
-                        minHeight: 0,
-                        paddingBottom: 0,
+                <Badge
+                  className={classes.badge}
+                  color="red"
+                  leftSection={<PauseIcon />}
+                >
+                  paused
+                </Badge>
+              </Tooltip>
+            )}
+            <Menu
+              width={180}
+              position="bottom-end"
+              arrowOffset={16}
+              trigger="click-hover"
+              opened={menuOpened}
+              onChange={setMenuOpened}
+            >
+              <Menu.Target>
+                <ActionIcon variant="subtle" size="compact-xs">
+                  <MenuIcon />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <SendJoinLinkMenuItem {...{ currentUser, friend }} />
+                <Menu.Item
+                  leftSection={<EditIcon />}
+                  onClick={() => {
+                    openModal({
+                      title: "change friend name",
+                      children: (
+                        <EditFriendForm
+                          {...{ friend }}
+                          onFriendUpdated={() => {
+                            closeAllModals();
+                          }}
+                        />
+                      ),
+                    });
+                  }}
+                >
+                  edit name
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={<RemoveIcon />}
+                  onClick={() => {
+                    openConfirmModal({
+                      title: "really remove friend?",
+                      children: <>you can't undo this action</>,
+                      cancelProps: { variant: "light", color: "gray" },
+                      groupProps: { gap: "xs" },
+                      labels: {
+                        confirm: "do it",
+                        cancel: "wait nvm",
                       },
-                    },
-                    onConfirm: () => {
-                      void deleteFriend();
-                    },
-                  });
-                }}
-              >
-                remove friend
-              </Menu.Item>
-              {friend.paused ? (
-                <UnpauseFriendItem
-                  friend={friend}
-                  onFriendUnpaused={() => {
-                    setMenuOpened(false);
+                      styles: {
+                        header: {
+                          minHeight: 0,
+                          paddingBottom: 0,
+                        },
+                      },
+                      onConfirm: () => {
+                        void deleteFriend();
+                      },
+                    });
                   }}
-                />
-              ) : (
-                <PauseFriendItem
-                  friend={friend}
-                  onFriendPaused={() => {
-                    setMenuOpened(false);
-                  }}
-                />
-              )}
-            </Menu.Dropdown>
-          </Menu>
+                >
+                  remove friend
+                </Menu.Item>
+                {friend.paused ? (
+                  <UnpauseFriendItem
+                    friend={friend}
+                    onFriendUnpaused={() => {
+                      setMenuOpened(false);
+                    }}
+                  />
+                ) : (
+                  <PauseFriendItem
+                    friend={friend}
+                    onFriendPaused={() => {
+                      setMenuOpened(false);
+                    }}
+                  />
+                )}
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
         </Group>
-      </Group>
-      {!isEmpty(friend.offered_activity_ids) && (
-        <Group>
+        <Group gap={8} wrap="wrap">
           {offeredActivities.map(activity => (
             <Badge
               className={classes.activityBadge}
@@ -181,10 +187,29 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
               {activity.name}
             </Badge>
           ))}
+          <Button
+            className={classes.activityCouponButton}
+            variant="subtle"
+            size="compact-xs"
+            leftSection={<CouponIcon />}
+            disabled={activityDrawerOpened}
+            onClick={() => {
+              setActivityDrawerOpened(true);
+            }}
+          >
+            send a coupon
+          </Button>
         </Group>
-      )}
-      <LoadingOverlay visible={deletingFriend} />
-    </Card>
+        <LoadingOverlay visible={deletingFriend} />
+      </Card>
+      <ActivityCouponDrawer
+        {...{ friend }}
+        opened={activityDrawerOpened}
+        onClose={() => {
+          setActivityDrawerOpened(false);
+        }}
+      />
+    </>
   );
 };
 
@@ -206,8 +231,7 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
     descriptor: "pause friend",
     onSuccess: () => {
       void mutateRoute(routes.friends.index);
-      const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
-      toast.success(`${prettyName} was paused`, {
+      toast.success(`${prettyName(friend)} was paused`, {
         description: `they will not see new posts you create until you unpause them`,
       });
       onFriendPaused();
@@ -241,8 +265,7 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
     descriptor: "unpause friend",
     onSuccess: () => {
       void mutateRoute(routes.friends.index);
-      const prettyName = [friend.emoji, friend.name].filter(Boolean).join(" ");
-      toast.success(`${prettyName} was unpaused`, {
+      toast.success(`${prettyName(friend)} was unpaused`, {
         description: `they will see new posts you create`,
       });
       onFriendUnpaused();
@@ -280,10 +303,9 @@ const SendJoinLinkMenuItem: FC<SendJoinLinkMenuItemProps> = ({
       text: JOIN_MESSAGE,
       url: joinUrl,
     };
-    if (!navigator.canShare(shareData)) {
-      return;
+    if (navigator.canShare(shareData)) {
+      return shareData;
     }
-    return shareData;
   }, [joinUrl]);
   return (
     <Menu.Sub arrowOffset={12} closeDelay={100}>

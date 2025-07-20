@@ -22,3 +22,12 @@
   padding-inline: 4px;
   --badge-radius: var(--mantine-radius-md);
 }
+
+.activityCouponButton {
+  --button-radius: var(--mantine-radius-md);
+
+  color: light-dark(
+    var(--mantine-color-gray-filled),
+    alpha(var(--mantine-color-white), 0.5)
+  );
+}

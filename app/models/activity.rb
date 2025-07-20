@@ -30,6 +30,11 @@ class Activity < ApplicationRecord
   # == Associations
   belongs_to :user
 
+  sig { returns(User) }
+  def user!
+    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
+  end
+
   # == Normalizations
   removes_blank :emoji
 

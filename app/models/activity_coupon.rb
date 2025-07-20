@@ -53,6 +53,12 @@ class ActivityCoupon < ApplicationRecord
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
+  # == Validations
+  validate :validate_no_other_identical_active_coupons
+
+  # == Callbacks
+  after_create :create_notification!
+
   # == Scopes
   scope :active, -> { where("expires_at > NOW()") }
 
@@ -85,5 +91,19 @@ class ActivityCoupon < ApplicationRecord
   sig { void }
   def create_notification!
     notifications.create!(recipient: friend!)
+  end
+
+  private
+
+  # == Validators
+  # sig{void}
+  def validate_no_other_identical_active_coupons
+    if friend!.activity_coupons.active.where.not(id:).exists?(activity:)
+      errors.add(
+        :base,
+        :uniqueness,
+        message: "There is another active coupon for this activity",
+      )
+    end
   end
 end

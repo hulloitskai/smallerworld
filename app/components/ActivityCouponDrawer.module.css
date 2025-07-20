@@ -1,0 +1,24 @@
+.carousel {
+  :global(.mantine-Carousel-viewport) {
+    padding-bottom: 4px;
+  }
+
+  :global(.mantine-Carousel-container) {
+    margin-inline: calc((100dvw - var(--carousel-slide-size)) / 2);
+
+    :global(.mantine-Modal-root) & {
+      @mixin larger-than $mantine-breakpoint-xs {
+        margin-inline: calc((var(--modal-size) - 320px) / 2);
+      }
+    }
+  }
+
+  :global(.mantine-Carousel-control) {
+    transition: opacity 150ms ease-in-out;
+
+    &[data-inactive] {
+      opacity: 0;
+      cursor: default;
+    }
+  }
+}

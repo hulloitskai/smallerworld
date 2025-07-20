@@ -87,24 +87,6 @@ class PushRegistration < ApplicationRecord
     push_subscription!.push_payload(payload.compact, urgency: :high)
   end
 
-  private
-
-  # == Helpers
-  sig { returns(T.nilable(String)) }
-  def page_icon_url
-    owner = self.owner
-    icon_blob = case owner
-    when User
-      owner.page_icon_blob
-    when Friend
-      owner.user&.page_icon_blob
-    end
-    if icon_blob
-      variant = icon_blob.variant(resize_to_fill: [192, 192])
-      Rails.application.routes.url_helpers.rails_representation_path(variant)
-    end
-  end
-
   # == Callback handlers
   sig { void }
   def create_friend_notification!
@@ -121,8 +103,28 @@ class PushRegistration < ApplicationRecord
     transaction do
       owner = self.owner
       if owner.is_a?(Friend)
-        owner.activity_coupons.active.find_each(&:create_notification!)
+        owner.activity_coupons.active
+          .where.missing(:notifications)
+          .find_each(&:create_notification!)
       end
+    end
+  end
+
+  private
+
+  # == Helpers
+  sig { returns(T.nilable(String)) }
+  def page_icon_url
+    owner = self.owner
+    icon_blob = case owner
+    when User
+      owner.page_icon_blob
+    when Friend
+      owner.user&.page_icon_blob
+    end
+    if icon_blob
+      variant = icon_blob.variant(resize_to_fill: [192, 192])
+      Rails.application.routes.url_helpers.rails_representation_path(variant)
     end
   end
 end

@@ -18,8 +18,9 @@
 .card {
   display: flex;
   overflow: visible;
-  padding: var(--mantine-spacing-xs);
+  padding-inline: var(--mantine-spacing-xs);
   padding-top: var(--mantine-spacing-md);
+  padding-bottom: 6px;
   background-color: var(--mantine-color-white);
   border-color: var(--mantine-color-gray-3);
 }
