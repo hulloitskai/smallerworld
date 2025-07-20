@@ -79,7 +79,6 @@ declare global {
   const closeAllModals: typeof import('@mantine/modals')['closeAllModals']
   const closeModal: typeof import('@mantine/modals')['closeModal']
   const cn: typeof import('clsx')['clsx']
-  const createRef: typeof import('react')['createRef']
   const createVaulModalPortalTarget: typeof import('~/helpers/vaul')['createVaulModalPortalTarget']
   const env: typeof import('~/helpers/meta')['env']
   const fetchRoute: typeof import('~/helpers/routes/fetch')['fetchRoute']

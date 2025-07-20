@@ -58,6 +58,7 @@ class PushRegistration < ApplicationRecord
     else
       return
     end
+
     payload = {
       "notification" => serializer.one(notification),
       "pageIconUrl" => page_icon_url,
