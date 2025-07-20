@@ -80,27 +80,34 @@ class Post < ApplicationRecord
 
   sig { returns(T.nilable(String)) }
   def title_snippet
-    title&.truncate(92)
+    if (title = self.title)
+      snip(emoji ? "#{emoji} " : "" + title.strip.truncate(92))
+    end
   end
 
   sig { returns(String) }
   def body_snippet
-    body_text.truncate(120)
+    snip(body_text.strip.truncate(120))
+  end
+
+  sig { returns(String) }
+  def compact_body_snippet
+    snip(body_text.strip.truncate(120).gsub("\n\n", "\n"))
   end
 
   sig { returns(String) }
   def snippet
-    title = self.title || body_snippet
-    [emoji, title].compact.join(" ")
+    [title_snippet, body_snippet].compact.join("\n")
   end
 
   sig { returns(String) }
-  def reply_snippet_base
-    "> " + body_text.strip.truncate(120).split("\n").join("\n> ")
+  def compact_snippet
+    [title_snippet, compact_body_snippet].compact.join("\n")
   end
 
+  sig { returns(String) }
   def reply_snippet
-    reply_snippet_base + "\n\n"
+    snippet + "\n\n"
   end
 
   # == Search
@@ -175,10 +182,41 @@ class Post < ApplicationRecord
   # == Noticeable
   sig do
     override
-      .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
+      .params(recipient: T.nilable(NotificationRecipient))
+      .returns(NotificationMessage)
+  end
+  def notification_message(recipient:)
+    recipient = if recipient.nil? || recipient.is_a?(Friend)
+      recipient
+    else
+      raise "Invalid recipient for #{self.class}} notification: " \
+        "#{recipient.inspect}"
+    end
+
+    title = "new #{type}"
+    author = author!
+    unless recipient
+      title += " from #{author.name}"
+    end
+    url_helpers = Rails.application.routes.url_helpers
+    NotificationMessage.new(
+      title:,
+      body: compact_snippet,
+      image: cover_image,
+      target_url: url_helpers.user_url(
+        author,
+        friend_token: recipient&.access_token,
+        post_id: id,
+      ),
+    )
+  end
+
+  sig do
+    override
+      .params(recipient: T.nilable(NotificationRecipient))
       .returns(String)
   end
-  def notification_type(recipient)
+  def legacy_notification_type(recipient)
     if recipient.nil?
       "UniversePost"
     else
@@ -188,10 +226,10 @@ class Post < ApplicationRecord
 
   sig do
     override
-      .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
-      .returns(T::Hash[String, T.untyped])
+      .params(recipient: T.nilable(NotificationRecipient))
+      .returns(T.nilable(T::Hash[String, T.untyped]))
   end
-  def notification_payload(recipient)
+  def legacy_notification_payload(recipient)
     case recipient
     when Friend
       payload = PostNotificationPayload.new(
@@ -211,6 +249,13 @@ class Post < ApplicationRecord
   sig { returns(T::Boolean) }
   def user_created?
     updated_at > (author!.created_at + 1.second)
+  end
+
+  sig { returns(T.nilable(Image)) }
+  def cover_image
+    if (blob = cover_image_blob)
+      blob.becomes(Image)
+    end
   end
 
   sig { returns(T.nilable(ActiveStorage::Blob)) }
@@ -315,6 +360,11 @@ class Post < ApplicationRecord
   private
 
   # == Helpers
+  sig { params(text: String).returns(String) }
+  def snip(text)
+    "> " + text.split("\n").join("\n> ")
+  end
+
   sig { params(text: String).returns(String) }
   def format_body_html(text)
     BodyFormatter.text_to_html(text)

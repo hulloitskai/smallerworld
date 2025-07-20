@@ -81,14 +81,20 @@ class Notification < ApplicationRecord
   end
 
   # == Methods
+  sig { returns(NotificationMessage) }
+  def message
+    noticeable!.notification_message(recipient:)
+  end
+  delegate :title, :body, :image, to: :message
+
   sig { returns(String) }
-  def type
-    noticeable!.notification_type(recipient)
+  def legacy_type
+    noticeable!.legacy_notification_type(recipient)
   end
 
-  sig { returns(T::Hash[String, T.untyped]) }
-  def payload
-    noticeable!.notification_payload(recipient)
+  sig { returns(T.nilable(T::Hash[String, T.untyped])) }
+  def legacy_payload
+    noticeable!.legacy_notification_payload(recipient)
   end
 
   sig { void }

@@ -48,10 +48,15 @@ class PushRegistration < ApplicationRecord
   after_create :create_friend_notification!
 
   # == Methods
-  sig { params(notification: Notification).void }
-  def push(notification)
+  sig { params(notification: Notification, urgency: T.nilable(Symbol)).void }
+  def push(notification, urgency: nil)
+    serializer = if service_worker_version.to_i > 1
+      NotificationSerializer
+    else
+      LegacyNotificationSerializer
+    end
     payload = {
-      notification: PushNotificationSerializer.one(notification),
+      "notification" => serializer.one(notification),
       "pageIconUrl" => page_icon_url,
     }
     if (recipient = notification.recipient)
@@ -59,12 +64,22 @@ class PushRegistration < ApplicationRecord
         .notifications_received_since_last_cleared
         .count
     end
-    push_subscription!.push_payload(payload.compact)
+    push_subscription!.push_payload(payload.compact, urgency:)
   end
 
   sig { void }
   def push_test_notification
-    payload = { "pageIconUrl" => page_icon_url }
+    payload = {
+      "pageIconUrl" => page_icon_url,
+    }
+    if service_worker_version.to_i > 1
+      message = NotificationMessage.new(
+        title: "test notification",
+        body: "this is a test notification. if you are seeing this, then " \
+          "your push notifications are working!",
+      )
+      payload["message"] = NotificationMessageSerializer.one(message)
+    end
     push_subscription!.push_payload(payload.compact, urgency: :high)
   end
 

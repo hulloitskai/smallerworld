@@ -88,7 +88,9 @@ Rails.application.routes.draw do
 
   # == Join requests
   resources :join_requests, only: %i[destroy], export: true
-  get "/world/join_requests" => "join_requests#index", export: true
+  scope :world do
+    resources :join_requests, only: :index, export: true
+  end
 
   # == Friends
   resources :friends, only: %i[create update destroy], export: true do
@@ -97,7 +99,9 @@ Rails.application.routes.draw do
       post :unpause
     end
   end
-  get "/world/friends" => "friends#index", export: true
+  scope :world do
+    resources :friends, only: :index, export: true
+  end
 
   # == Friend notification settings
   resource :friend_notification_settings, only: %i[show update], export: true

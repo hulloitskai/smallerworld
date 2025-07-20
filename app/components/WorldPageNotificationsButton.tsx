@@ -100,6 +100,7 @@ const SendTestNotificationMenuItem: FC<SendTestNotificationMenuItemProps> = ({
           disabled
           pt={2}
           pb={6}
+          bg="transparent"
           style={{ cursor: "default" }}
         >
           <Anchor

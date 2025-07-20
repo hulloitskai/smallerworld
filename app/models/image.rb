@@ -25,8 +25,9 @@ class Image < ActiveStorage::Blob
   extend T::Sig
 
   # == Constants
+  NOTIFICATION_SIZE = 720
   MAX_SIZE = 2400
-  SIZES = [320, 720, 1400, MAX_SIZE]
+  SIZES = [320, NOTIFICATION_SIZE, 1400, MAX_SIZE]
 
   # == Methods
   sig { returns(String) }
@@ -34,8 +35,8 @@ class Image < ActiveStorage::Blob
     if gif?
       representation_path(self)
     else
-      variant = self.variant(resize_to_limit: [MAX_SIZE, MAX_SIZE])
-      representation_path(variant)
+      resized = variant(resize_to_limit: [MAX_SIZE, MAX_SIZE])
+      representation_path(resized)
     end
   end
 

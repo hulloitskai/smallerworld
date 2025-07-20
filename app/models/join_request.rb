@@ -54,10 +54,28 @@ class JoinRequest < ApplicationRecord
   # == Noticeable
   sig do
     override
-      .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
+      .params(recipient: T.nilable(NotificationRecipient))
+      .returns(NotificationMessage)
+  end
+  def notification_message(recipient:)
+    unless recipient.nil? || recipient.is_a?(User)
+      raise "Invalid recipient for #{self.class} notification: " \
+        "#{recipient.inspect}"
+    end
+    NotificationMessage.new(
+      title: "#{name} wants to join your world!",
+      body: "request from #{name} (#{phone_number})",
+      target_url: Rails.application.routes.url_helpers
+        .join_requests_url(join_request_id: id),
+    )
+  end
+
+  sig do
+    override
+      .params(recipient: T.nilable(NotificationRecipient))
       .returns(T::Hash[String, T.untyped])
   end
-  def notification_payload(recipient)
+  def legacy_notification_payload(recipient)
     payload = JoinRequestNotificationPayload.new(
       join_request: self,
     )

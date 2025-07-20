@@ -13,6 +13,9 @@ module GeneratedPathHelpersModule
   def activities_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def activity_coupons_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def actual_db_schema_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -68,6 +71,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def join_request_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def join_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def logout_path(*args); end
@@ -278,12 +284,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def visit_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def world_friends_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def world_join_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_path(*args); end

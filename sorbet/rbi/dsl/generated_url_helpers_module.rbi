@@ -13,6 +13,9 @@ module GeneratedUrlHelpersModule
   def activities_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def activity_coupons_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def actual_db_schema_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -68,6 +71,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def join_request_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def join_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def logout_url(*args); end
@@ -278,12 +284,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def visit_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def world_friends_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def world_join_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_url(*args); end

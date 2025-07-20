@@ -58,10 +58,28 @@ class PostReaction < ApplicationRecord
   # == Noticeable
   sig do
     override
-      .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
-      .returns(T::Hash[String, T.untyped])
+      .params(recipient: T.nilable(NotificationRecipient))
+      .returns(NotificationMessage)
   end
-  def notification_payload(recipient)
+  def notification_message(recipient:)
+    unless recipient.nil? || recipient.is_a?(User)
+      raise "Invalid recipient for #{self.class}} notification: " \
+        "#{recipient.inspect}"
+    end
+    friend = friend!
+    NotificationMessage.new(
+      title: "#{emoji} from #{friend.name}",
+      body: post!.compact_snippet,
+      target_url: Rails.application.routes.url_helpers.world_url(post_id:),
+    )
+  end
+
+  sig do
+    override
+      .params(recipient: T.nilable(NotificationRecipient))
+      .returns(T.nilable(T::Hash[String, T.untyped]))
+  end
+  def legacy_notification_payload(recipient)
     payload = PostReactionNotificationPayload.new(reaction: self)
     PostReactionNotificationPayloadSerializer.one(payload)
   end

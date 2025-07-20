@@ -46,7 +46,7 @@ class PostShare < ApplicationRecord
 
   sig { returns(Post) }
   def post!
-    post or raise ActiveRecord::RecordNotFound, "Missing post"
+    post or raise ActiveRecord::RecordNotFound, "Missing associated post"
   end
 
   sig { returns(User) }
@@ -58,8 +58,9 @@ class PostShare < ApplicationRecord
   validates :sharer_type, inclusion: { in: %w[User Friend] }
 
   # == Methods
+  sig { returns(String) }
   def share_snippet
-    post!.reply_snippet_base + "\n> \n> (see full post) [#{shortlink_url}]\n\n"
+    post!.snippet + "\n> \n> (see full post) [#{shortlink_url}]\n\n"
   end
 
   sig { returns(String) }

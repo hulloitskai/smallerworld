@@ -53,6 +53,11 @@ class Friend < ApplicationRecord
   sig { returns(T::Boolean) }
   def paused? = paused_since?
 
+  sig { returns(String) }
+  def fun_name
+    [emoji, name].compact.join(" ")
+  end
+
   # == Associations
   belongs_to :user
   has_many :user_posts, through: :user, source: :posts
@@ -100,10 +105,28 @@ class Friend < ApplicationRecord
   # == Noticeable
   sig do
     override
+      .params(recipient: T.nilable(NotificationRecipient))
+      .returns(NotificationMessage)
+  end
+  def notification_message(recipient:)
+    unless recipient.nil? || recipient.is_a?(User)
+      raise "Invalid recipient for #{self.class} notification: " \
+        "#{recipient.inspect}"
+    end
+    NotificationMessage.new(
+      title: "#{fun_name} joined your world!",
+      body: "#{name} installed your world on their phone :)",
+      target_url: Rails.application.routes.url_helpers
+        .friends_url(friend_id: id),
+    )
+  end
+
+  sig do
+    override
       .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
       .returns(T::Hash[String, T.untyped])
   end
-  def notification_payload(recipient)
+  def legacy_notification_payload(recipient)
     payload = FriendNotificationPayload.new(friend: self)
     FriendNotificationPayloadSerializer.one(payload)
   end

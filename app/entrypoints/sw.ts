@@ -13,25 +13,21 @@ import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { CacheFirst, NetworkOnly } from "workbox-strategies";
 
-import {
-  DEFAULT_NOTIFICATION_ICON_URL,
-  notificationTargetUrl,
-  renderNotification,
-} from "~/helpers/notifications";
+import { DEFAULT_NOTIFICATION_ICON_URL } from "~/helpers/notifications";
 import routes, { setupRoutes } from "~/helpers/routes";
 import { beforeSend, DENY_URLS } from "~/helpers/sentry/filtering";
 import {
   SERVICE_WORKER_METADATA_ENDPOINT,
   type ServiceWorkerMetadata,
 } from "~/helpers/serviceWorker";
-import { type PushNotification } from "~/types";
+import { type Notification, type NotificationMessage } from "~/types";
 
 // == Type declarations
 declare const self: ServiceWorkerGlobalScope;
 
 // == Constants
 const MANIFEST = self.__WB_MANIFEST;
-const SERVICE_WORKER_VERSION = 1;
+const SERVICE_WORKER_VERSION = 2;
 const SERVICE_WORKER_METADATA_CACHE_NAME =
   "metadata/v" + SERVICE_WORKER_VERSION;
 
@@ -150,13 +146,12 @@ self.addEventListener("activate", event => {
 
 // == Helpers
 const markDelivered = (
-  notification: PushNotification,
-  deliveryToken: string,
+  notification: Notification & { delivery_token: string },
 ): Promise<void> =>
   routes.notifications
     .markDelivered<{}>({
       query: {
-        delivery_token: deliveryToken,
+        delivery_token: notification.delivery_token,
       },
     })
     .then(
@@ -178,9 +173,9 @@ const pathname = (url: string): string => {
 
 // == Push handlers
 interface NotificationData {
-  notification?: PushNotification;
+  notification?: Notification;
+  message?: NotificationMessage;
   pageIconUrl?: string;
-  test?: true;
   badgeCount?: number;
 }
 
@@ -189,25 +184,41 @@ self.addEventListener("push", event => {
 
   const data: NotificationData = event.data.json();
   console.debug("Received push event", data);
-  const { notification, pageIconUrl, badgeCount } = data;
+  const { notification, message, pageIconUrl, badgeCount } = data;
 
   const actions: Promise<void>[] = [];
   if (notification) {
-    const { title, icon, ...options } = renderNotification(notification);
+    const { title, body, image_url } = notification ?? message;
     actions.push(
       self.registration.showNotification(title, {
-        ...options,
-        icon: icon ?? pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
+        icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
+        body: body ?? undefined,
         data,
+        ...(image_url && { type: "image", imageUrl: image_url }),
       }),
     );
     if (notification.delivery_token) {
-      actions.push(markDelivered(notification, notification.delivery_token));
+      actions.push(
+        markDelivered({
+          ...notification,
+          delivery_token: notification.delivery_token,
+        }),
+      );
     }
+  } else if (message) {
+    const { title, body, image_url } = message;
+    actions.push(
+      self.registration.showNotification(title, {
+        icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
+        body: body ?? undefined,
+        data,
+        ...(image_url && { type: "image", imageUrl: image_url }),
+      }),
+    );
   } else {
     actions.push(
-      self.registration.showNotification("test notification", {
-        body: "this is a test notification. if you are seeing this, then your push notifications are working!",
+      self.registration.showNotification("unsupported notification", {
+        body: "this version of smaller world doesn't support this notification type. please re-open to update!",
         icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,
       }),
     );
@@ -287,14 +298,13 @@ self.addEventListener("notificationclick", event => {
   console.debug("Notification clicked", data);
   event.notification.close(); // Android needs explicit close
 
-  const { notification }: NotificationData = event.notification.data;
-  if (!notification) {
+  const { notification, message }: NotificationData = event.notification.data;
+  const { target_url } = notification ?? message ?? {};
+  if (!target_url) {
     return;
   }
 
-  const targetUrl = notificationTargetUrl(notification);
-  console.debug("Requesting navigation to", targetUrl);
-
+  console.debug("Requesting navigation to", target_url);
   // Open the target URL
   event.waitUntil(
     self.clients
@@ -308,7 +318,7 @@ self.addEventListener("notificationclick", event => {
           }
 
           // Skip clients that are on a different page
-          if (pathname(client.url) !== pathname(targetUrl)) {
+          if (pathname(client.url) !== pathname(target_url)) {
             continue;
           }
 
@@ -318,7 +328,7 @@ self.addEventListener("notificationclick", event => {
           }
 
           // Skip clients whose full URLs match
-          if (client.url === targetUrl) {
+          if (client.url === target_url) {
             return client;
           }
 
@@ -348,7 +358,7 @@ self.addEventListener("notificationclick", event => {
           });
 
           // Send client-side navigation request with MessagePort
-          client.postMessage({ action: "navigate", url: targetUrl }, [port2]);
+          client.postMessage({ action: "navigate", url: target_url }, [port2]);
 
           // Wait for navigation to complete or timeout
           const success = await navigationPromise;
@@ -356,13 +366,13 @@ self.addEventListener("notificationclick", event => {
             console.info(
               "Client-side navigation timed out, falling back to client.navigate()",
             );
-            await client.navigate(targetUrl);
+            await client.navigate(target_url);
           }
           return client;
         }
 
         // If not, then open the target URL in a new window/tab.
-        return self.clients.openWindow(targetUrl);
+        return self.clients.openWindow(target_url);
       }),
   );
 });
