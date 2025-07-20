@@ -34,6 +34,7 @@
   padding-left: 2px;
   border-radius: var(--mantine-radius-xl);
   pointer-events: auto;
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
 
   :global(.mantine-Button-label) {
     font-weight: 900;

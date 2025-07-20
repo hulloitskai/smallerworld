@@ -26,13 +26,64 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class ActivityCoupon < ApplicationRecord
+  include Noticeable
+
   # == Attributes
   attribute :expires_at, default: -> { 1.month.from_now }
 
   # == Associations
   belongs_to :friend
   belongs_to :activity
+  has_one :user, through: :activity
+  has_many :notifications, as: :noticeable, dependent: :destroy
+
+  sig { returns(Friend) }
+  def friend!
+    friend or raise ActiveRecord::RecordNotFound, "Missing associated friend"
+  end
+
+  sig { returns(Activity) }
+  def activity!
+    activity or raise ActiveRecord::RecordNotFound,
+                      "Missing associated activity"
+  end
+
+  sig { returns(User) }
+  def user!
+    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
+  end
 
   # == Scopes
   scope :active, -> { where("expires_at > NOW()") }
+
+  # == Noticeable
+  sig do
+    override
+      .params(recipient: T.nilable(NotificationRecipient))
+      .returns(NotificationMessage)
+  end
+  def notification_message(recipient:)
+    unless recipient.is_a?(Friend)
+      raise "Invalid recipient for #{self.class} notification: " \
+        "#{recipient.inspect}"
+    end
+
+    activity = activity!
+    NotificationMessage.new(
+      title: "You've got a coupon for: #{activity.name}",
+      body: "This coupon expires in " \
+        "#{ExpiryFormatter.relative_to_now(expires_at)}, redeem it soon!",
+      target_url: Rails.application.routes.url_helpers.user_url(
+        user!,
+        friend_token: recipient.access_token,
+        anchor: "#invitations",
+      ),
+    )
+  end
+
+  # == Methods
+  sig { void }
+  def create_notification!
+    notifications.create!(recipient: friend!)
+  end
 end

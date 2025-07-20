@@ -402,6 +402,9 @@ class ActivityCoupon
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def build_friend(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
+    def build_user(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Activity) }
     def create_activity(*args, &blk); end
 
@@ -413,6 +416,12 @@ class ActivityCoupon
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
+    def create_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
+    def create_user!(*args, &blk); end
 
     sig { returns(T.nilable(::Friend)) }
     def friend; end
@@ -426,17 +435,43 @@ class ActivityCoupon
     sig { returns(T::Boolean) }
     def friend_previously_changed?; end
 
+    sig { returns(T::Array[T.untyped]) }
+    def notification_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def notification_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `ActivityCoupon` class because it declared `has_many :notifications`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Notification::PrivateCollectionProxy) }
+    def notifications; end
+
+    sig { params(value: T::Enumerable[::Notification]).void }
+    def notifications=(value); end
+
     sig { returns(T.nilable(::Activity)) }
     def reload_activity; end
 
     sig { returns(T.nilable(::Friend)) }
     def reload_friend; end
 
+    sig { returns(T.nilable(::User)) }
+    def reload_user; end
+
     sig { void }
     def reset_activity; end
 
     sig { void }
     def reset_friend; end
+
+    sig { void }
+    def reset_user; end
+
+    sig { returns(T.nilable(::User)) }
+    def user; end
+
+    sig { params(value: T.nilable(::User)).void }
+    def user=(value); end
   end
 
   module GeneratedAssociationRelationMethods

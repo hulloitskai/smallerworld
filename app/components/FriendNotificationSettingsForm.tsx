@@ -1,4 +1,3 @@
-import { type BoxProps } from "@mantine/core";
 import { Input } from "@mantine/core";
 import { pluralize } from "inflection";
 

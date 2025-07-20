@@ -122,3 +122,8 @@
     row-gap: var(--mantine-spacing-xs);
   }
 }
+
+.friendButton {
+  border-radius: var(--mantine-radius-xl);
+  display: block;
+}

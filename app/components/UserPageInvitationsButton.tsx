@@ -1,4 +1,4 @@
-import { type BoxProps, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
@@ -74,6 +74,12 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
 
   // == Drawer modal
   const [drawerModalOpened, setDrawerModalOpened] = useState(false);
+  // Auto-open if url is targetting #invitations
+  useEffect(() => {
+    if (location.hash === "#invitations") {
+      setDrawerModalOpened(true);
+    }
+  }, []);
 
   // == Page dialog state
   useUserPageDialogOpened(drawerModalOpened);
@@ -127,13 +133,13 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
             <Box className={classes.activityCouponsContainer}>
               <Stack gap="md">
                 <Box px="md">
-                  <Group gap={8} justify="center">
+                  <Group gap={8}>
                     <CouponIcon />
                     <Title order={3} size="h4">
                       activity coupons
                     </Title>
                   </Group>
-                  <Text size="xs" c="dimmed" lh="xs" ta="center">
+                  <Text size="xs" c="dimmed" lh="xs">
                     private invitations for us to do stuff together, that you
                     can redeem anytime.
                   </Text>
@@ -148,13 +154,13 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
           {!isEmpty(pinnedPosts) && (
             <Stack gap="sm">
               <Box>
-                <Group gap={8} justify="center">
+                <Group gap={8}>
                   <CalendarIcon />
                   <Title order={3} size="h4">
                     upcoming events
                   </Title>
                 </Group>
-                <Text size="xs" c="dimmed" lh="xs" ta="center">
+                <Text size="xs" c="dimmed" lh="xs">
                   gatherings that i&apos;m hosting or attending, that
                   you&apos;re welcome to join me on.
                 </Text>

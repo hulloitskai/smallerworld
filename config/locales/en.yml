@@ -29,3 +29,8 @@
 
 en:
   hello: "Hello world"
+  datetime:
+    distance_in_words:
+      about_x_months:
+        one: "%{count} month"
+        other: "%{count} months"

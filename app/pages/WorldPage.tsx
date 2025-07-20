@@ -149,8 +149,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 <Button
                   component={Link}
                   href={routes.friends.index.path()}
-                  radius="xl"
-                  display="block"
+                  className={classes.friendButton}
                   leftSection={
                     !isEmpty(latestFriends) ? (
                       <Avatar.Group className={classes.avatarGroup}>

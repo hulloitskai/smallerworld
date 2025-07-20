@@ -3,9 +3,4 @@
   --safe-area-inset-right: env(safe-area-inset-right, 0px);
   --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-inset-left: env(safe-area-inset-left, 0px);
-
-  &[data-mantine-color-scheme="dark"][data-user-theme] {
-    --mantine-color-dimmed: alpha(var(--mantine-color-white), 0.6);
-    --mantine-color-placeholder: alpha(var(--mantine-color-white), 0.4);
-  }
 }

@@ -30,8 +30,8 @@
 .activitiesContainer {
   margin-inline: calc(var(--mantine-spacing-md) * -1);
   background-color: light-dark(
-    lighten(var(--mantine-color-body), 40%),
-    darken(var(--mantine-color-body), 30%)
+    lighten(var(--mantine-color-body), 0.4),
+    darken(var(--mantine-color-body), 0.3)
   );
   padding-block: var(--mantine-spacing-md);
 }
@@ -71,5 +71,5 @@
 }
 
 .activitiesDescription {
-  color: alpha(var(--mantine-color-text), 60%);
+  color: alpha(var(--mantine-color-text), 0.6);
 }

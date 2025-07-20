@@ -21,4 +21,14 @@ body {
     --mantine-color-default: var(--mantine-color-dark-8);
     --mantine-color-default-border: var(--mantine-color-dark-6);
   }
+
+  @mixin dark-user-theme {
+    --mantine-color-dimmed: alpha(var(--mantine-color-white), 0.6);
+    --mantine-color-placeholder: alpha(var(--mantine-color-white), 0.4);
+  }
+
+  @mixin light-user-theme {
+    --mantine-color-dimmed: alpha(var(--mantine-color-black), 0.5);
+    --mantine-color-placeholder: alpha(var(--mantine-color-black), 0.4);
+  }
 }

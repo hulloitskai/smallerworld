@@ -251,3 +251,32 @@ Check `typings/generated/auto-import.d.ts` before adding imports.
 - **ActionCable**: Use `useSubscription` hook for real-time updates
 - **WebPush**: Notification system with `useWebPush` hook
 - **Live Updates**: Automatic data revalidation on window focus
+
+## Rails Model Associations & Sorbet
+
+### Tapioca DSL Generation
+
+**When adding associations to Rails models, run:**
+
+```bash
+bin/tapioca dsl
+```
+
+**This is required because:**
+
+- Sorbet needs generated Ruby interface (RBI) files to understand ActiveRecord associations
+- Without running `bin/tapioca dsl`, you'll get linter errors like "Method `association_name` does not exist"
+- The DSL generation creates type definitions for associations, scopes, and other ActiveRecord features
+
+**Common scenarios requiring `bin/tapioca dsl`:**
+
+- Adding `has_many`, `belongs_to`, `has_one` associations
+- Including concerns that add associations (like `Noticeable`, `Notifiable`)
+- Adding scopes or other ActiveRecord methods
+- Any changes that affect the model's public interface
+
+**If `bin/tapioca dsl` fails due to database connection:**
+
+- The command requires a running database to check for pending migrations
+- The implementation will still work correctly at runtime
+- Run the command when the database is available to resolve linter errors

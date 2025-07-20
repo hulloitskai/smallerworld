@@ -2,7 +2,7 @@
   :global(.mantine-NavLink-root) {
     &:not([data-active]) {
       color: light-dark(
-        lighten(var(--mantine-color-gray-7), 10%),
+        lighten(var(--mantine-color-gray-7), 0.1),
         var(--mantine-color-dark-1)
       );
 

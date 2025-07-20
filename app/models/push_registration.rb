@@ -46,14 +46,17 @@ class PushRegistration < ApplicationRecord
 
   # == Callbacks
   after_create :create_friend_notification!
+  after_create :create_activity_coupon_notification!
 
   # == Methods
   sig { params(notification: Notification, urgency: T.nilable(Symbol)).void }
   def push(notification, urgency: nil)
     serializer = if service_worker_version.to_i > 1
       NotificationSerializer
-    else
+    elsif notification.legacy_payload.present?
       LegacyNotificationSerializer
+    else
+      return
     end
     payload = {
       "notification" => serializer.one(notification),
@@ -85,7 +88,7 @@ class PushRegistration < ApplicationRecord
 
   private
 
-  # == Heleprs
+  # == Helpers
   sig { returns(T.nilable(String)) }
   def page_icon_url
     owner = self.owner
@@ -101,12 +104,23 @@ class PushRegistration < ApplicationRecord
     end
   end
 
+  # == Callback handlers
   sig { void }
   def create_friend_notification!
     transaction do
       owner = self.owner
       if owner.is_a?(Friend) && !owner.push_registrations.where.not(id:).exists?
         owner.create_notification!
+      end
+    end
+  end
+
+  sig { void }
+  def create_activity_coupon_notification!
+    transaction do
+      owner = self.owner
+      if owner.is_a?(Friend)
+        owner.activity_coupons.active.find_each(&:create_notification!)
       end
     end
   end

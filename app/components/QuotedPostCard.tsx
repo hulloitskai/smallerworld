@@ -1,6 +1,5 @@
 import {
   AspectRatio,
-  type BoxProps,
   type CardProps,
   Image,
   Text,

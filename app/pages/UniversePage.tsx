@@ -1,5 +1,4 @@
 import {
-  type BoxProps,
   Image,
   Indicator,
   Overlay,

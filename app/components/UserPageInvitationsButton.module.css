@@ -58,6 +58,31 @@
 
 .activityCouponsContainer {
   margin-inline: calc(var(--mantine-spacing-md) * -1);
-  background-color: darken(var(--mantine-color-body), 40%);
   padding-block: var(--mantine-spacing-md);
+
+  @mixin dark {
+    background-color: darken(var(--mantine-color-body), 0.4);
+  }
+
+  @mixin light {
+    background-color: var(--mantine-color-gray-2);
+  }
+
+  @mixin light-user-theme {
+    --min-user-theme-lightness: 75;
+
+    --base-background-color: hsl(
+      from var(--mantine-color-body) h s
+        clamp(var(--min-user-theme-lightness), l, 100)
+    );
+    background-color: lighten(var(--base-background-color), 0.2);
+
+    @supports (color: hsl(from red h s calc(l - 20%))) {
+      --base-background-color: hsl(
+        from var(--mantine-color-body) h s
+          clamp(calc(var(--min-user-theme-lightness) * 1%), l, 100%)
+      );
+      background-color: lighten(var(--base-background-color), 0.2);
+    }
+  }
 }

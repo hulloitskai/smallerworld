@@ -109,7 +109,7 @@ class Friend < ApplicationRecord
       .returns(NotificationMessage)
   end
   def notification_message(recipient:)
-    unless recipient.nil? || recipient.is_a?(User)
+    unless recipient.is_a?(User)
       raise "Invalid recipient for #{self.class} notification: " \
         "#{recipient.inspect}"
     end
