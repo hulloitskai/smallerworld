@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class FriendNotificationPayloadSerializer < ApplicationSerializer
+class LegacyFriendNotificationPayloadSerializer < ApplicationSerializer
   # == Configuration
   object_as :payload, model: "FriendNotificationPayload"
 

@@ -81,7 +81,7 @@ class PostReaction < ApplicationRecord
   end
   def legacy_notification_payload(recipient)
     payload = PostReactionNotificationPayload.new(reaction: self)
-    PostReactionNotificationPayloadSerializer.one(payload)
+    LegacyPostReactionNotificationPayloadSerializer.one(payload)
   end
 
   # == Methods

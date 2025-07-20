@@ -72,7 +72,7 @@ class Encouragement < ApplicationRecord
   end
   def legacy_notification_payload(recipient)
     payload = EncouragementNotificationPayload.new(encouragement: self)
-    EncouragementNotificationPayloadSerializer.one(payload)
+    LegacyEncouragementNotificationPayloadSerializer.one(payload)
   end
 
   # == Methods

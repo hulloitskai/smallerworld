@@ -128,7 +128,7 @@ class Friend < ApplicationRecord
   end
   def legacy_notification_payload(recipient)
     payload = FriendNotificationPayload.new(friend: self)
-    FriendNotificationPayloadSerializer.one(payload)
+    LegacyFriendNotificationPayloadSerializer.one(payload)
   end
 
   # == Methods

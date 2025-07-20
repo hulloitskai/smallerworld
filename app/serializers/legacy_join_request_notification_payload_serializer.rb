@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class JoinRequestNotificationPayloadSerializer < ApplicationSerializer
+class LegacyJoinRequestNotificationPayloadSerializer < ApplicationSerializer
   # == Configuration
   object_as :payload, model: "JoinRequestNotificationPayload"
 

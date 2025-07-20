@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class PostReactionNotificationPayloadSerializer < ApplicationSerializer
+class LegacyPostReactionNotificationPayloadSerializer < ApplicationSerializer
   # == Configuration
   object_as :payload, model: "PostReactionNotificationPayload"
 

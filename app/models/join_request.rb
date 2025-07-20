@@ -79,7 +79,7 @@ class JoinRequest < ApplicationRecord
     payload = JoinRequestNotificationPayload.new(
       join_request: self,
     )
-    JoinRequestNotificationPayloadSerializer.one(payload)
+    LegacyJoinRequestNotificationPayloadSerializer.one(payload)
   end
 
   # == Methods

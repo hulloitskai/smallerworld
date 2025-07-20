@@ -252,6 +252,34 @@ Check `typings/generated/auto-import.d.ts` before adding imports.
 - **WebPush**: Notification system with `useWebPush` hook
 - **Live Updates**: Automatic data revalidation on window focus
 
+## Testing
+
+### Running Tests
+
+**Always use the project's test runner:**
+
+```bash
+bin/test
+```
+
+**This script provides:**
+
+- Proper environment setup with database, Vite SSR, and other services
+- Consistent test execution across development and CI environments
+- Automatic service management through Overmind
+- Better error reporting and debugging capabilities
+
+**Do not use Rails commands directly:**
+
+```bash
+# ❌ Don't use these
+bin/rails test
+rails test
+
+# ✅ Use this instead
+bin/test
+```
+
 ## Rails Model Associations & Sorbet
 
 ### Tapioca DSL Generation

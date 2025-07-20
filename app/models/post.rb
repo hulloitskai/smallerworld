@@ -236,10 +236,10 @@ class Post < ApplicationRecord
         post: self,
         friend_access_token: recipient.access_token,
       )
-      PostNotificationPayloadSerializer.one(payload)
+      LegacyPostNotificationPayloadSerializer.one(payload)
     when nil
       payload = UniversePostNotificationPayload.new(post: self)
-      UniversePostNotificationPayloadSerializer.one(payload)
+      LegacyUniversePostNotificationPayloadSerializer.one(payload)
     else
       raise ArgumentError, "Invalid recipient: #{recipient.inspect}"
     end

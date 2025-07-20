@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class UniversePostNotificationPayloadSerializer < ApplicationSerializer
+class LegacyUniversePostNotificationPayloadSerializer < ApplicationSerializer
   # == Configuration
   object_as :payload, model: "UniversePostNotificationPayload"
 
