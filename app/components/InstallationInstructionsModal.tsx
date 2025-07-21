@@ -54,8 +54,12 @@ const ModalBody: FC<ModalBodyProps> = ({
   modalId,
   user,
 }) => {
+  // == Browser detection
   const browserDetection = useBrowserDetection();
-  const { install, installing } = usePWA();
+
+  // == PWA installation
+  const { install: installPWA, installing: installingPWA } = usePWA();
+
   return (
     <>
       {browserDetection && (
@@ -72,16 +76,16 @@ const ModalBody: FC<ModalBodyProps> = ({
                 scan the QR code with your phone to continue
               </Badge>
             </Stack>
-          ) : install ? (
+          ) : installPWA ? (
             <Stack align="center" py="xs" gap="xs">
               <Text>you&apos;re almost there!</Text>
               <Button
                 variant="filled"
                 size="md"
                 leftSection={<InstallIcon />}
-                loading={installing}
+                loading={installingPWA}
                 onClick={() =>
-                  void install().then(() => {
+                  void installPWA().then(() => {
                     closeModal(modalId);
                     const url = new URL(location.href);
                     if (url.searchParams.has("intent")) {

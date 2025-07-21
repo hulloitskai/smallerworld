@@ -15,22 +15,23 @@ export interface WebPushProviderProps extends PropsWithChildren {}
 
 const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
   const supported = useWebPushSupported();
-  const [subscription, setSubscription] = useState<
+  const [pushSubscription, setPushSubscription] = useState<
     PushSubscription | undefined | null
   >();
-  const subscriptionIfSupported = supported === null ? null : subscription;
+  const pushSubscriptionIfSupported =
+    supported === null ? null : pushSubscription;
   useDidUpdate(() => {
     if (!supported) {
       return;
     }
     console.info("Loading current push subscription...");
     void getPushSubscription().then(
-      subscription => {
-        setSubscription(subscription);
-        console.info("Loaded current push subscription", subscription);
+      pushSubscription => {
+        setPushSubscription(pushSubscription);
+        console.info("Loaded current push subscription", pushSubscription);
       },
       error => {
-        setSubscription(null);
+        setPushSubscription(null);
         console.error("Failed to load current push subscription", error);
         if (error instanceof Error) {
           toast.error("failed to load current push subscription", {
@@ -40,18 +41,18 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
       },
     );
   }, [supported]);
-  const registration = useLookupPushRegistration({
-    subscription: subscriptionIfSupported,
+  const pushRegistration = useLookupPushRegistration({
+    pushSubscription: pushSubscriptionIfSupported,
   });
   const [subscribe, { subscribing, subscribeError }] = useWebPushSubscribe({
-    currentSubscription: subscriptionIfSupported,
-    onSubscribed: setSubscription,
+    currentPushSubscription: pushSubscriptionIfSupported,
+    onSubscribed: setPushSubscription,
   });
   const [unsubscribe, { unsubscribing, unsubscribeError }] =
     useWebPushUnsubscribe({
-      subscription: subscriptionIfSupported,
+      pushSubscription: pushSubscriptionIfSupported,
       onUnsubscribed: () => {
-        setSubscription(null);
+        setPushSubscription(null);
       },
     });
   const loading = supported === undefined || subscribing || unsubscribing;
@@ -59,8 +60,8 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
     <WebPushContext.Provider
       value={{
         supported,
-        subscription: subscriptionIfSupported,
-        registration,
+        pushSubscription: pushSubscriptionIfSupported,
+        pushRegistration,
         subscribe,
         subscribing,
         subscribeError,
@@ -94,18 +95,18 @@ const getPushSubscription = (): Promise<PushSubscription | null | undefined> =>
   getPushManager().then(pushManager => pushManager?.getSubscription() ?? null);
 
 interface LookupPushRegistrationOptions {
-  subscription: PushSubscription | undefined | null;
+  pushSubscription: PushSubscription | undefined | null;
 }
 
 const useLookupPushRegistration = ({
-  subscription,
+  pushSubscription,
 }: LookupPushRegistrationOptions): PushRegistration | undefined | null => {
   const currentFriend = useCurrentFriend();
   const { data } = useRouteSWR<{
-    registration: PushRegistration | null;
+    pushRegistration: PushRegistration | null;
   }>(routes.pushSubscriptions.lookup, {
     descriptor: "lookup push registration",
-    ...(subscription
+    ...(pushSubscription
       ? {
           params: {
             query: {
@@ -115,15 +116,15 @@ const useLookupPushRegistration = ({
             },
           },
           data: {
-            subscription: pick(subscription, "endpoint"),
+            push_subscription: pick(pushSubscription, "endpoint"),
           },
           keepPreviousData: true,
           failSilently: true,
           revalidateOnFocus: false,
           revalidateOnReconnect: false,
-          onSuccess: ({ registration }) => {
-            if (registration) {
-              console.info("Found push registration", registration);
+          onSuccess: ({ pushRegistration }) => {
+            if (pushRegistration) {
+              console.info("Found push registration", pushRegistration);
             } else {
               console.info("No push registration found");
             }
@@ -135,17 +136,17 @@ const useLookupPushRegistration = ({
         }),
     revalidateOnFocus: false,
   });
-  const { registration } = data ?? {};
-  return subscription === null ? null : registration;
+  const { pushRegistration } = data ?? {};
+  return pushSubscription === null ? null : pushRegistration;
 };
 
 interface WebPushSubscribeParams {
-  currentSubscription: PushSubscription | null | undefined;
+  currentPushSubscription: PushSubscription | null | undefined;
   onSubscribed: (subscription: PushSubscription) => void;
 }
 
 const useWebPushSubscribe = ({
-  currentSubscription,
+  currentPushSubscription,
   onSubscribed,
 }: WebPushSubscribeParams): [
   (options?: WebPushSubscribeOptions) => Promise<PushSubscription>,
@@ -157,15 +158,18 @@ const useWebPushSubscribe = ({
   const subscribe = (
     options?: WebPushSubscribeOptions,
   ): Promise<PushSubscription> => {
+    console.debug("Requested to subscribe to push notifications", {
+      currentPushSubscription,
+    });
     if (subscribing) {
-      throw new Error("Already subscribing");
+      throw new Error("Already subscribing to push notifications");
     }
     const { forceNewSubscription = false } = options ?? {};
     const subscribeAndRegister = async (): Promise<PushSubscription> => {
       const browserDetection = detectBrowser();
       let serviceWorkerMetadata: ServiceWorkerMetadata;
       let fingerprintingResult: FingerprintingResult;
-      let subscription = currentSubscription;
+      let pushSubscription = currentPushSubscription;
       try {
         let pushManager: PushManager;
         let publicKey: string;
@@ -176,14 +180,24 @@ const useWebPushSubscribe = ({
             fetchServiceWorkerMetadata(),
             fingerprintDevice(),
           ]);
-        if (forceNewSubscription && subscription && isIos(browserDetection)) {
-          await subscription.unsubscribe();
+        if (
+          forceNewSubscription &&
+          pushSubscription &&
+          isIos(browserDetection)
+        ) {
+          console.debug("Unsubscribing from existing push subscription", {
+            forceNewSubscription,
+            currentPushSubscription,
+          });
+          await pushSubscription.unsubscribe();
         }
-        if (!subscription || forceNewSubscription) {
-          subscription = await pushManager.subscribe({
+        if (!pushSubscription || forceNewSubscription) {
+          console.debug("Creating new push subscription");
+          pushSubscription = await pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: createApplicationServerKey(publicKey),
           });
+          console.debug("New push subscription", { pushSubscription });
         }
       } catch (error) {
         console.error("Web push error", error);
@@ -199,18 +213,25 @@ const useWebPushSubscribe = ({
         deviceId: serviceWorkerMetadata.deviceId,
         fingerprintingResult,
       });
-      await registerSubscription({
-        subscription,
+      const registrationParams: RegisterPushSubscriptionParams = {
+        pushSubscription,
         deviceFingerprint: fingerprintingResult.fingerprint,
         deviceFingerprintConfidence: fingerprintingResult.confidenceScore,
         friendAccessToken: currentFriend?.access_token,
         ...serviceWorkerMetadata,
-      });
-      onSubscribed(subscription);
-      return subscription;
+      };
+      console.debug("Registering push subscription", registrationParams);
+      const pushRegistration =
+        await registerPushSubscription(registrationParams);
+      console.info("Registered push subscription", { pushRegistration });
+      onSubscribed(pushSubscription);
+      return pushSubscription;
     };
     setSubscribing(true);
     if (Notification.permission === "granted") {
+      console.debug(
+        "Push notification permission already granted; subscribing...",
+      );
       return subscribeAndRegister().finally(() => {
         setSubscribing(false);
       });
@@ -232,8 +253,8 @@ const useWebPushSubscribe = ({
   return [subscribe, { subscribing, subscribeError }];
 };
 
-interface RegisterSubscriptionParams {
-  subscription: PushSubscription;
+interface RegisterPushSubscriptionParams {
+  pushSubscription: PushSubscription;
   deviceId: string;
   serviceWorkerVersion: number;
   deviceFingerprint: string;
@@ -241,15 +262,15 @@ interface RegisterSubscriptionParams {
   friendAccessToken?: string;
 }
 
-const registerSubscription = ({
-  subscription,
+const registerPushSubscription = ({
+  pushSubscription,
   deviceId,
   serviceWorkerVersion,
   deviceFingerprint,
   deviceFingerprintConfidence,
   friendAccessToken,
-}: RegisterSubscriptionParams): Promise<void> => {
-  const { keys } = pick(subscription.toJSON(), "keys.auth", "keys.p256dh");
+}: RegisterPushSubscriptionParams): Promise<PushRegistration> => {
+  const { keys } = pick(pushSubscription.toJSON(), "keys.auth", "keys.p256dh");
   if (!keys?.auth) {
     throw new Error("Missing push subscription auth key");
   }
@@ -257,37 +278,38 @@ const registerSubscription = ({
     throw new Error("Missing push subscription p256dh key");
   }
   const query = friendAccessToken ? { friend_token: friendAccessToken } : {};
-  return fetchRoute<{ registration: PushRegistration }>(
+  return fetchRoute<{ pushRegistration: PushRegistration }>(
     routes.pushSubscriptions.create,
     {
       descriptor: "subscribe to push notifications",
       params: { query },
       data: {
-        subscription: {
-          endpoint: subscription.endpoint,
+        push_subscription: {
+          endpoint: pushSubscription.endpoint,
           auth_key: keys.auth,
           p256dh_key: keys.p256dh,
+          service_worker_version: serviceWorkerVersion,
         },
-        registration: {
+        push_registration: {
           device_id: deviceId,
           device_fingerprint: deviceFingerprint,
           device_fingerprint_confidence: deviceFingerprintConfidence,
-          service_worker_version: serviceWorkerVersion,
         },
       },
     },
-  ).then(() => {
+  ).then(({ pushRegistration }) => {
     void mutateRoute(routes.pushSubscriptions.lookup, { query });
+    return pushRegistration;
   });
 };
 
 export interface WebPushUnsubscribeParams {
-  subscription: PushSubscription | null | undefined;
+  pushSubscription: PushSubscription | null | undefined;
   onUnsubscribed: () => void;
 }
 
 const useWebPushUnsubscribe = ({
-  subscription,
+  pushSubscription,
   onUnsubscribed,
 }: WebPushUnsubscribeParams): [
   () => Promise<void>,
@@ -297,8 +319,8 @@ const useWebPushUnsubscribe = ({
   const [unsubscribing, setUnsubscribing] = useState(false);
   const [unsubscribeError, setUnsubscribeError] = useState<Error | null>(null);
   const unsubscribe = async (): Promise<void> => {
-    if (!subscription) {
-      throw new Error("No current subscription");
+    if (!pushSubscription) {
+      throw new Error("No current push subscription");
     }
     if (unsubscribing) {
       throw new Error("Already unsubscribing");
@@ -317,13 +339,13 @@ const useWebPushUnsubscribe = ({
           },
         },
         data: {
-          subscription: {
-            endpoint: subscription.endpoint,
+          push_subscription: {
+            endpoint: pushSubscription.endpoint,
           },
         },
       });
       if (shouldRemoveSubscription) {
-        await subscription.unsubscribe();
+        await pushSubscription.unsubscribe();
       }
       void mutateRoute(routes.pushSubscriptions.lookup, {
         query: currentFriend
@@ -350,12 +372,12 @@ const createApplicationServerKey = (publicKey: string): Uint8Array =>
     return value;
   });
 
-const fetchPublicKey = (friendAccessToken?: string): Promise<string> => {
-  const query = friendAccessToken
-    ? { friend_token: friendAccessToken }
-    : undefined;
-  return fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
+const fetchPublicKey = (friendAccessToken?: string): Promise<string> =>
+  fetchRoute<{ publicKey: string }>(routes.pushSubscriptions.publicKey, {
     descriptor: "load web push public key",
-    params: { query },
+    params: {
+      query: {
+        ...(friendAccessToken && { friend_token: friendAccessToken }),
+      },
+    },
   }).then(({ publicKey }) => publicKey);
-};

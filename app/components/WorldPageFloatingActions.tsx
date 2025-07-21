@@ -37,7 +37,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
 }) => {
   const { currentUser, hideStats, hideNeko } = usePageProps<WorldPageProps>();
   const { isStandalone } = usePWA();
-  const { registration: pushRegistration } = useWebPush();
+  const { pushRegistration } = useWebPush();
   const { modals } = useModals();
 
   // == Post type

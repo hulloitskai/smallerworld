@@ -25,7 +25,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
     allowFriendSharing,
   } = usePageProps<UserPageProps>();
   const params = useQueryParams();
-  const { registration: pushRegistration } = useWebPush();
+  const { pushRegistration } = useWebPush();
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useUserPagePosts(
@@ -56,6 +56,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
             user,
             lastSentEncouragement,
           }}
+          showNeko={!!pushRegistration}
           onEncouragementCreated={() => {
             router.reload({
               only: ["lastSentEncouragement"],

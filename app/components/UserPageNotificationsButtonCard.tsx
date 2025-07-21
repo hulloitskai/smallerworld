@@ -24,11 +24,11 @@ const UserPageNotificationsButtonCard: FC<
 
   // == Web push
   const {
-    subscription,
-    registration,
+    pushSubscription,
+    pushRegistration,
     subscribe,
     subscribing,
-    supported,
+    supported: webPushSupported,
     loading,
     subscribeError,
   } = useWebPush();
@@ -49,10 +49,10 @@ const UserPageNotificationsButtonCard: FC<
 
   return (
     <>
-      {supported === false ? null : subscription === undefined ||
-        registration === undefined ? (
+      {webPushSupported === false ? null : pushSubscription === undefined ||
+        pushRegistration === undefined ? (
         <Button loading>Placeholder button</Button>
-      ) : subscription === null || registration === null ? (
+      ) : pushSubscription === null || pushRegistration === null ? (
         <Card withBorder w="100%">
           <Stack>
             <FriendNotificationSettingsFormInputs
@@ -62,7 +62,7 @@ const UserPageNotificationsButtonCard: FC<
               <Button
                 variant="filled"
                 loading={loading || subscribing}
-                disabled={!supported}
+                disabled={!webPushSupported}
                 leftSection={<NotificationIcon />}
                 onClick={() => {
                   if (notificationSettingsForm.isDirty()) {
@@ -73,7 +73,7 @@ const UserPageNotificationsButtonCard: FC<
               >
                 enable push notifications
               </Button>
-              {!supported && (
+              {!webPushSupported && (
                 <Text size="xs" c="dimmed" ta="center">
                   push notifications not supported on this device :(
                 </Text>
@@ -106,7 +106,7 @@ const UserPageNotificationsButtonCard: FC<
           </Popover.Target>
           <Popover.Dropdown pb={0}>
             <NotificationPopoverBody
-              {...{ currentFriend, subscription, notificationSettings }}
+              {...{ currentFriend, pushSubscription, notificationSettings }}
               onClose={() => {
                 setDropdownOpened(false);
               }}
@@ -122,14 +122,14 @@ export default UserPageNotificationsButtonCard;
 
 interface NotificationPopoverBodyProps {
   currentFriend: Friend;
-  subscription: PushSubscription;
+  pushSubscription: PushSubscription;
   notificationSettings: FriendNotificationSettings | undefined;
   onClose: () => void;
 }
 
 const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
   currentFriend,
-  subscription,
+  pushSubscription,
   notificationSettings,
   onClose,
 }) => {
@@ -145,19 +145,19 @@ const NotificationPopoverBody: FC<NotificationPopoverBodyProps> = ({
       )}
       <Divider mt="md" mx="calc(-1 * var(--mantine-spacing-md))" />
       <Center py={8}>
-        <SendTestNotificationButton {...{ subscription, onClose }} />
+        <SendTestNotificationButton {...{ pushSubscription, onClose }} />
       </Center>
     </Stack>
   );
 };
 
 interface SendTestNotificationButtonProps {
-  subscription: PushSubscription;
+  pushSubscription: PushSubscription;
   onClose: () => void;
 }
 
 const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
-  subscription,
+  pushSubscription,
   onClose,
 }) => {
   const { send, sent, sending } = useSendTestNotification();
@@ -169,7 +169,7 @@ const SendTestNotificationButton: FC<SendTestNotificationButtonProps> = ({
         size="compact-sm"
         leftSection={<NotificationIcon />}
         onClick={() => {
-          void send(subscription);
+          void send(pushSubscription);
         }}
       >
         send test notification

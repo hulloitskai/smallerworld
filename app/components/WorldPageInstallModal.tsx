@@ -40,7 +40,12 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
   const browserDetection = useBrowserDetection();
 
   // == PWA installation
-  const { install, installing, isStandalone, outOfPWAScope } = usePWA();
+  const {
+    install: installPWA,
+    installing: installingPWA,
+    isStandalone,
+    outOfPWAScope,
+  } = usePWA();
 
   return (
     <Stack gap="lg" align="center" pb="xs">
@@ -57,20 +62,20 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
           size="md"
           leftSection={<InstallIcon />}
           loading={
-            installing ||
+            installingPWA ||
             (browserDetection &&
               shouldWaitForInstallEvent(browserDetection) &&
-              !install)
+              !installPWA)
           }
           disabled={
             !browserDetection ||
-            (!install &&
+            (!installPWA &&
               !isMobileStandaloneBrowser(browserDetection) &&
               !canOpenUrlInMobileSafari(browserDetection))
           }
           onClick={() => {
-            if (install) {
-              void install().then(() => {
+            if (installPWA) {
+              void installPWA().then(() => {
                 closeModal(modalId);
                 const url = new URL(location.href);
                 url.searchParams.delete("intent");
@@ -101,7 +106,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
             }
           }}
         >
-          {install && browserDetection && !isDesktop(browserDetection) ? (
+          {installPWA && browserDetection && !isDesktop(browserDetection) ? (
             <>install smaller world</>
           ) : (
             <>let&apos;s do it</>

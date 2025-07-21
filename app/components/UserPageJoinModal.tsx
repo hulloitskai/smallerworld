@@ -41,7 +41,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
   const browserDetection = useBrowserDetection();
 
   // == PWA installation
-  const { install, installing } = usePWA();
+  const { install: installPWA, installing: installingPWA } = usePWA();
 
   return (
     <Stack gap="lg" align="center" pb="xs">
@@ -85,16 +85,16 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
           size="md"
           leftSection={<InstallIcon />}
           loading={
-            installing ||
+            installingPWA ||
             (browserDetection &&
               shouldWaitForInstallEvent(browserDetection) &&
-              !install)
+              !installPWA)
           }
           disabled={!browserDetection}
           onClick={() => {
             invariant(browserDetection, "Missing browser detection");
-            if (install && !isDesktop(browserDetection)) {
-              void install().then(() => {
+            if (installPWA && !isDesktop(browserDetection)) {
+              void installPWA().then(() => {
                 closeModal(modalId);
                 const url = new URL(location.href);
                 if (url.searchParams.has("intent")) {
@@ -116,7 +116,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
             }
           }}
         >
-          {install && browserDetection && !isDesktop(browserDetection) ? (
+          {installPWA && browserDetection && !isDesktop(browserDetection) ? (
             <>install {possessive(user.name)} world</>
           ) : (
             <>let&apos;s do it</>

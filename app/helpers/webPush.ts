@@ -11,8 +11,8 @@ export interface WebPushSubscribeOptions {
 
 export interface WebPush {
   supported: boolean | undefined;
-  subscription: PushSubscription | undefined | null;
-  registration: PushRegistration | undefined | null;
+  pushSubscription: PushSubscription | undefined | null;
+  pushRegistration: PushRegistration | undefined | null;
   subscribe: (options?: WebPushSubscribeOptions) => Promise<PushSubscription>;
   subscribing: boolean;
   subscribeError: Error | null;
@@ -44,7 +44,7 @@ export const useWebPush = (options?: WebPushOptions): WebPush => {
 };
 
 export interface SendTestNotificationReturn {
-  send: (subscription: PushSubscription) => Promise<void>;
+  send: (pushSubscription: PushSubscription) => Promise<void>;
   sent: boolean;
   sending: boolean;
 }
@@ -62,15 +62,12 @@ export const useSendTestNotification = (): SendTestNotificationReturn => {
           }),
         },
       },
+      serializeData: attributes => ({ push_subscription: attributes }),
     },
   );
   const send = useCallback(
-    async (subscription: PushSubscription) => {
-      await trigger({
-        subscription: {
-          endpoint: subscription.endpoint,
-        },
-      });
+    async (pushSubscription: PushSubscription) => {
+      await trigger(pick(pushSubscription, "endpoint"));
     },
     [trigger],
   );
@@ -82,34 +79,38 @@ export const useSendTestNotification = (): SendTestNotificationReturn => {
 };
 
 export const useReregisterPushSubscriptionIfNeeded = (): void => {
-  const { registration, loading, subscribe } = useWebPush();
+  const { pushRegistration, loading, subscribe } = useWebPush();
   const serviceWorkerMetadata = useServiceWorkerMetadata();
   const deviceFingerprint = useDeviceFingerprint();
+  const registrationAttemptedRef = useRef(false);
   useEffect(() => {
     if (
+      registrationAttemptedRef.current ||
       loading ||
-      !registration ||
+      !pushRegistration ||
       !serviceWorkerMetadata ||
       !deviceFingerprint
     ) {
       return;
     }
     if (
-      registration.service_worker_version !==
+      pushRegistration.service_worker_version !==
       serviceWorkerMetadata.serviceWorkerVersion
     ) {
       console.info(
         "Service worker version mismatch; re-registering push subscription...",
       );
+      registrationAttemptedRef.current = true;
       void subscribe();
     } else if (
-      deviceFingerprint.fingerprint !== registration.device_fingerprint
+      deviceFingerprint.fingerprint !== pushRegistration.device_fingerprint
     ) {
       console.info(
         "Device fingerprint mismatch; re-registering push subscription...",
       );
+      registrationAttemptedRef.current = true;
       void subscribe();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [registration, serviceWorkerMetadata, deviceFingerprint, loading]);
+  }, [pushRegistration, serviceWorkerMetadata, deviceFingerprint, loading]);
 };

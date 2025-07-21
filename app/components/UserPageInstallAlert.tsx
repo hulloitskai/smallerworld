@@ -35,7 +35,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
   const browserDetection = useBrowserDetection();
 
   // == Install to home screen
-  const { install, installing } = usePWA();
+  const { install: installPWA, installing: installingPWA } = usePWA();
 
   return (
     <Affix className={classes.affix} position={{}} zIndex={180}>
@@ -64,16 +64,16 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                   size="compact-sm"
                   leftSection={<InstallIcon />}
                   loading={
-                    installing ||
+                    installingPWA ||
                     (browserDetection &&
                       shouldWaitForInstallEvent(browserDetection) &&
-                      !install)
+                      !installPWA)
                   }
                   disabled={!browserDetection}
                   onClick={() => {
                     invariant(browserDetection, "Missing browser detection");
-                    if (install && !isDesktop(browserDetection)) {
-                      void install();
+                    if (installPWA && !isDesktop(browserDetection)) {
+                      void installPWA();
                     } else if (
                       !isMobileStandaloneBrowser(browserDetection) &&
                       canOpenUrlInMobileSafari(browserDetection)
@@ -89,7 +89,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                     }
                   }}
                 >
-                  {install &&
+                  {installPWA &&
                   browserDetection &&
                   !isDesktop(browserDetection) ? (
                     <>install {possessive(user.name)} world</>

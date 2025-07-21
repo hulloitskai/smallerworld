@@ -6,12 +6,13 @@
 #
 # Table name: push_subscriptions
 #
-#  id         :uuid             not null, primary key
-#  auth_key   :string           not null
-#  endpoint   :string           not null
-#  p256dh_key :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                     :uuid             not null, primary key
+#  auth_key               :string           not null
+#  endpoint               :string           not null
+#  p256dh_key             :string           not null
+#  service_worker_version :integer
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #
 # Indexes
 #

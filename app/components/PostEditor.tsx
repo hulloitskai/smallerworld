@@ -91,11 +91,11 @@ const PostEditor: FC<PostEditorProps> = ({
       <BubbleMenu
         shouldShow={() => true}
         options={{
+          placement: "bottom",
           inline: true,
           flip: true,
           shift: true,
           offset: true,
-          autoPlacement: true,
         }}
         {...{ editor }}
       >

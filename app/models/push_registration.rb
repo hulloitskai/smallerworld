@@ -6,16 +6,16 @@
 #
 # Table name: push_registrations
 #
-#  id                            :uuid             not null, primary key
-#  device_fingerprint            :string           not null
-#  device_fingerprint_confidence :float(24)        not null
-#  owner_type                    :string
-#  service_worker_version        :integer
-#  created_at                    :datetime         not null
-#  updated_at                    :datetime         not null
-#  device_id                     :uuid             not null
-#  owner_id                      :uuid
-#  push_subscription_id          :uuid             not null
+#  id                                :uuid             not null, primary key
+#  deprecated_service_worker_version :integer
+#  device_fingerprint                :string           not null
+#  device_fingerprint_confidence     :float(24)        not null
+#  owner_type                        :string
+#  created_at                        :datetime         not null
+#  updated_at                        :datetime         not null
+#  device_id                         :uuid             not null
+#  owner_id                          :uuid
+#  push_subscription_id              :uuid             not null
 #
 # Indexes
 #
@@ -34,6 +34,7 @@ class PushRegistration < ApplicationRecord
   # == Associations
   belongs_to :owner, polymorphic: true, optional: true
   belongs_to :push_subscription, inverse_of: :registrations
+  delegate :service_worker_version, to: :push_subscription
 
   sig { returns(PushSubscription) }
   def push_subscription!

@@ -4,6 +4,7 @@ import { useModals } from "@mantine/modals";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 
 import { useUserPageDialogOpened } from "~/helpers/userPages";
+import { useWebPush } from "~/helpers/webPush";
 import { type UserPageProps } from "~/pages/UserPage";
 import { type ActivityCoupon, type UserPost } from "~/types";
 
@@ -20,9 +21,9 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
   style,
   ...otherProps
 }) => {
-  const { user, replyToNumber, allowFriendSharing } =
+  const { user, replyToNumber, allowFriendSharing, currentFriend } =
     usePageProps<UserPageProps>();
-  const currentFriend = useCurrentFriend();
+  const { pushRegistration } = useWebPush();
 
   // == Load pinned posts
   const { data: pinnedPostsData } = useRouteSWR<{ posts: UserPost[] }>(
@@ -46,7 +47,12 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
   const { modals } = useModals();
   const [showActivityCouponTooltip, setShowActivityCouponTooltip] =
     useState(false);
+  const tooltipActivatedRef = useRef(false);
   useEffect(() => {
+    if (!pushRegistration || tooltipActivatedRef.current) {
+      return;
+    }
+    tooltipActivatedRef.current = true;
     const showTimeout = setTimeout(() => {
       setShowActivityCouponTooltip(true);
     }, 2000);
@@ -57,7 +63,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
       clearTimeout(showTimeout);
       clearTimeout(hideTimeout);
     };
-  }, []);
+  }, [pushRegistration]);
   const { data: activityCouponsData } = useRouteSWR<{
     activityCoupons: ActivityCoupon[];
   }>(routes.activityCoupons.index, {
@@ -92,6 +98,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
           <Tooltip
             label={<>{user.name} sent you an activity coupon!</>}
             opened={
+              !!pushRegistration &&
               !isEmpty(activityCoupons) &&
               isEmpty(modals) &&
               showActivityCouponTooltip

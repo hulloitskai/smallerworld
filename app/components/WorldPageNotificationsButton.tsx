@@ -10,28 +10,28 @@ const WorldPageNotificationsButton: FC = () => {
 
   // == Web push
   const {
-    subscription,
-    registration,
+    pushSubscription,
+    pushRegistration,
     subscribe,
     subscribing,
     subscribeError,
-    supported,
+    supported: webPushSupported,
     loading,
   } = useWebPush();
 
   return (
     <>
-      {supported === false ? null : subscription === undefined ||
-        registration === undefined ? (
+      {webPushSupported === false ? null : pushSubscription === undefined ||
+        pushRegistration === undefined ? (
         <ActionIcon size="lg" variant="light" loading>
           <NotificationIcon />
         </ActionIcon>
-      ) : subscription === null || registration === null ? (
+      ) : pushSubscription === null || pushRegistration === null ? (
         <Stack gap={4}>
           <Button
             variant="filled"
             loading={loading || subscribing}
-            disabled={!supported}
+            disabled={!webPushSupported}
             leftSection={<NotificationIcon />}
             onClick={() => {
               void subscribe();
@@ -39,7 +39,7 @@ const WorldPageNotificationsButton: FC = () => {
           >
             enable push notifications
           </Button>
-          {!supported && (
+          {!webPushSupported && (
             <Text size="xs" c="dimmed" ta="center">
               push notifications not supported on this device :(
             </Text>
@@ -59,7 +59,7 @@ const WorldPageNotificationsButton: FC = () => {
           </Menu.Target>
           <Menu.Dropdown>
             <SendTestNotificationMenuItem
-              {...{ subscription }}
+              {...{ pushSubscription }}
               onClose={() => {
                 setMenuOpened(false);
               }}
@@ -74,12 +74,12 @@ const WorldPageNotificationsButton: FC = () => {
 export default WorldPageNotificationsButton;
 
 interface SendTestNotificationMenuItemProps {
-  subscription: PushSubscription;
+  pushSubscription: PushSubscription;
   onClose: () => void;
 }
 
 const SendTestNotificationMenuItem: FC<SendTestNotificationMenuItemProps> = ({
-  subscription,
+  pushSubscription,
   onClose,
 }) => {
   const { send, sent, sending } = useSendTestNotification();
@@ -89,7 +89,7 @@ const SendTestNotificationMenuItem: FC<SendTestNotificationMenuItemProps> = ({
         closeMenuOnClick={false}
         leftSection={sending ? <Loader size="xs" /> : <NotificationIcon />}
         onClick={() => {
-          void send(subscription);
+          void send(pushSubscription);
         }}
       >
         send test notification

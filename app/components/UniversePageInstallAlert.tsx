@@ -24,7 +24,7 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
   const browserDetection = useBrowserDetection();
 
   // == Install to home screen
-  const { install, installing } = usePWA();
+  const { install: installPWA, installing: installingPWA } = usePWA();
 
   return (
     <Affix className={classes.affix} position={{}} zIndex={180}>
@@ -49,16 +49,16 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
                   size="compact-sm"
                   leftSection={<InstallIcon />}
                   loading={
-                    installing ||
+                    installingPWA ||
                     (browserDetection &&
                       shouldWaitForInstallEvent(browserDetection) &&
-                      !install)
+                      !installPWA)
                   }
                   disabled={!browserDetection}
                   onClick={() => {
                     invariant(browserDetection, "Missing browser detection");
-                    if (install && !isDesktop(browserDetection)) {
-                      void install();
+                    if (installPWA && !isDesktop(browserDetection)) {
+                      void installPWA();
                     } else if (
                       !isMobileStandaloneBrowser(browserDetection) &&
                       canOpenUrlInMobileSafari(browserDetection)
@@ -73,7 +73,7 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
                     }
                   }}
                 >
-                  {install &&
+                  {installPWA &&
                   browserDetection &&
                   !isDesktop(browserDetection) ? (
                     <>install smaller universe</>

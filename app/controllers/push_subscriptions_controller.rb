@@ -6,30 +6,30 @@ class PushSubscriptionsController < ApplicationController
   # POST /push_subscriptions/lookup
   def lookup
     owner = current_owner
-    endpoint = params.dig(:subscription, :endpoint) or
+    endpoint = params.dig(:push_subscription, :endpoint) or
       raise ActionController::ParameterMissing,
             "Missing push subscription endpoint"
     registration = PushRegistration.joins(:push_subscription)
       .where(push_subscriptions: { endpoint: })
       .find_by(owner:)
     render(json: {
-      registration: PushRegistrationSerializer.one_if(registration),
+      "pushRegistration" => PushRegistrationSerializer.one_if(registration),
     })
   end
 
   # POST /push_subscriptions
   def create
     owner = current_owner
-    subscription_params = params.expect(subscription: %i[
+    subscription_params = params.expect(push_subscription: %i[
       endpoint
       p256dh_key
       auth_key
+      service_worker_version
     ])
-    registration_params = params.expect(registration: %i[
+    registration_params = params.expect(push_registration: %i[
       device_id
       device_fingerprint
       device_fingerprint_confidence
-      service_worker_version
     ])
     endpoint = subscription_params.delete(:endpoint) or
       raise ActionController::ParameterMissing,
@@ -40,7 +40,7 @@ class PushSubscriptionsController < ApplicationController
     registration.update!(registration_params)
     render(
       json: {
-        registration: PushRegistrationSerializer.one(registration),
+        "pushRegistration" => PushRegistrationSerializer.one(registration),
       },
       status: :created,
     )
@@ -64,10 +64,10 @@ class PushSubscriptionsController < ApplicationController
 
   # POST /push_subscriptions/change
   def change
-    endpoint = params.dig(:old_subscription, :endpoint) or
+    endpoint = params.dig(:old_push_subscription, :endpoint) or
       raise ActionController::ParameterMissing,
             "Missing old subscription endpoint"
-    new_subscription_params = params.expect(new_subscription: %i[
+    new_subscription_params = params.expect(new_push_subscription: %i[
       endpoint
       p256dh_key
       auth_key
@@ -101,7 +101,7 @@ class PushSubscriptionsController < ApplicationController
     params(scope: PushSubscription::PrivateRelation).returns(PushSubscription)
   end
   def load_subscription(scope: PushSubscription.all)
-    endpoint = params.require(:subscription).fetch(:endpoint)
+    endpoint = params.require(:push_subscription).fetch(:endpoint)
     scope.find_by!(endpoint:)
   end
 

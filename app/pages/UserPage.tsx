@@ -40,8 +40,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
-  const { registration: pushRegistration, supported: pushSupported } =
-    useWebPush();
+  const { pushRegistration, supported: webPushSupported } = useWebPush();
 
   // == Reload data on window focus
   useWindowEvent("focus", () => {
@@ -230,7 +229,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
           isStandalone &&
           !outOfPWAScope &&
           !pushRegistration &&
-          pushSupported !== false
+          webPushSupported !== false
         }
       >
         {body}

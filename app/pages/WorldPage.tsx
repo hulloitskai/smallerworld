@@ -50,8 +50,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   pausedFriends,
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
-  const { registration: pushRegistration, supported: pushSupported } =
-    useWebPush();
+  const { pushRegistration, supported: webPushSupported } = useWebPush();
 
   // == User theme
   useUserTheme(currentUser.theme);
@@ -60,7 +59,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   const browserDetection = useBrowserDetection();
 
   // == PWA installation
-  const { install } = usePWA();
+  const { install: installPWA } = usePWA();
 
   // == Auto-open install modal on mobile
   const params = useQueryParams();
@@ -75,11 +74,11 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       params.intent === "install" ||
       ((!isStandalone || outOfPWAScope) &&
         !!browserDetection &&
-        (install || !isDesktop(browserDetection)))
+        (installPWA || !isDesktop(browserDetection)))
     ) {
       openWorldPageInstallModal({ currentUser });
     }
-  }, [isStandalone, browserDetection, install]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isStandalone, browserDetection, installPWA]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Posts
   const { posts } = usePosts();
@@ -349,7 +348,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           isStandalone &&
           !outOfPWAScope &&
           !pushRegistration &&
-          pushSupported !== false
+          webPushSupported !== false
         }
       >
         {body}

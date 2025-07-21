@@ -27,7 +27,7 @@ const ICON_SIZE = 80;
 const UniversePage: PageComponent<UniversePageProps> = () => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
-  const { registration: pushRegistration } = useWebPush();
+  const { pushRegistration } = useWebPush();
   useUserTheme("aquatica");
 
   // == Load worlds

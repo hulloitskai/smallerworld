@@ -5,26 +5,26 @@ import { useWebPush } from "~/helpers/webPush";
 const UniversePageNotificationsButton: FC = () => {
   // == Web push
   const {
-    subscription,
-    registration,
+    pushSubscription,
+    pushRegistration,
     subscribe,
     subscribing,
-    supported,
+    supported: webPushSupported,
     loading,
     subscribeError,
   } = useWebPush();
 
   return (
     <>
-      {supported === false ? null : subscription === undefined ||
-        registration === undefined ? (
+      {webPushSupported === false ? null : pushSubscription === undefined ||
+        pushRegistration === undefined ? (
         <Button loading>Placeholder button</Button>
-      ) : subscription === null || registration === null ? (
+      ) : pushSubscription === null || pushRegistration === null ? (
         <Stack gap={4}>
           <Button
             variant="filled"
             loading={loading || subscribing}
-            disabled={!supported}
+            disabled={!webPushSupported}
             leftSection={<NotificationIcon />}
             onClick={() => {
               void subscribe();
@@ -32,7 +32,7 @@ const UniversePageNotificationsButton: FC = () => {
           >
             enable push notifications
           </Button>
-          {!supported && (
+          {!webPushSupported && (
             <Text size="xs" c="dimmed" ta="center">
               push notifications not supported on this device :(
             </Text>

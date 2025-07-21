@@ -48,20 +48,20 @@ const PostCard: FC<PostCardProps> = ({
 
   // == Auto-focus
   const { isStandalone, outOfPWAScope } = usePWA();
-  const { registration } = useWebPush();
+  const { pushRegistration } = useWebPush();
   const focusedRef = useRef(false);
   useEffect(() => {
     const card = cardRef.current;
     if (
       focus &&
       card &&
-      (outOfPWAScope || (isStandalone && registration)) &&
+      (outOfPWAScope || (isStandalone && pushRegistration)) &&
       !focusedRef.current
     ) {
       card.scrollIntoView({ behavior: "smooth" });
       focusedRef.current = true;
     }
-  }, [focus, isStandalone, outOfPWAScope, registration]);
+  }, [focus, isStandalone, outOfPWAScope, pushRegistration]);
 
   return (
     <Card

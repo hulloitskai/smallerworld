@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_20_050311) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_21_201119) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -302,7 +302,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_20_050311) do
     t.string "device_fingerprint", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.float "device_fingerprint_confidence", limit: 24, null: false
-    t.integer "service_worker_version"
+    t.integer "deprecated_service_worker_version"
     t.index ["device_fingerprint"], name: "index_push_registrations_on_device_fingerprint"
     t.index ["device_id"], name: "index_push_registrations_on_device_id"
     t.index ["owner_type", "owner_id", "push_subscription_id"], name: "index_push_registrations_uniqueness", unique: true
@@ -316,6 +316,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_20_050311) do
     t.string "p256dh_key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "service_worker_version"
     t.index ["endpoint"], name: "index_push_subscriptions_on_endpoint", unique: true
   end
 
