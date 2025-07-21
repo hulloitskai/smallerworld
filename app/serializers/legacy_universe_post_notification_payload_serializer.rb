@@ -6,5 +6,5 @@ class LegacyUniversePostNotificationPayloadSerializer < ApplicationSerializer
   object_as :payload, model: "UniversePostNotificationPayload"
 
   # == Associations
-  has_one :post, serializer: NotificationPostSerializer
+  has_one :post, serializer: LegacyNotificationPostSerializer
 end

@@ -188,7 +188,7 @@ self.addEventListener("push", event => {
 
   const actions: Promise<void>[] = [];
   if (notification) {
-    const { title, body, image_url } = notification ?? message;
+    const { title, body, image_url } = notification;
     actions.push(
       self.registration.showNotification(title, {
         icon: pageIconUrl ?? DEFAULT_NOTIFICATION_ICON_URL,

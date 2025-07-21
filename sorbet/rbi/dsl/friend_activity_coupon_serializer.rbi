@@ -6,6 +6,6 @@
 
 
 class FriendActivityCouponSerializer
-  sig { returns(T.untyped) }
-  def friend_activity_coupon; end
+  sig { returns(ActivityCoupon) }
+  def activity_coupon; end
 end

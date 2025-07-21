@@ -12,5 +12,5 @@ class LegacyPostNotificationPayloadSerializer < ApplicationSerializer
   end
 
   # == Associations
-  has_one :post, serializer: NotificationPostSerializer
+  has_one :post, serializer: LegacyNotificationPostSerializer
 end

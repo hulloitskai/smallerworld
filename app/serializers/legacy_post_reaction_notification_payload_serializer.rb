@@ -7,5 +7,5 @@ class LegacyPostReactionNotificationPayloadSerializer < ApplicationSerializer
 
   # == Associations
   has_one :reaction,
-          serializer: PostReactionNotificationPayloadReactionSerializer
+          serializer: LegacyPostReactionNotificationPayloadReactionSerializer
 end

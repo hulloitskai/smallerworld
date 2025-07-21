@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class NotificationPostSerializer < ApplicationSerializer
+class LegacyNotificationPostSerializer < ApplicationSerializer
   # == Configuration
   object_as :post
 
