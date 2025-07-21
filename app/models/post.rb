@@ -79,9 +79,14 @@ class Post < ApplicationRecord
   end
 
   sig { returns(T.nilable(String)) }
+  def fun_title
+    [emoji, title].compact.join(" ").presence
+  end
+
+  sig { returns(T.nilable(String)) }
   def title_snippet
-    if (title = self.title)
-      snip(emoji ? "#{emoji} " : "" + title.strip.truncate(92))
+    if (title = fun_title)
+      snip(title.strip.truncate(92))
     end
   end
 
@@ -198,10 +203,11 @@ class Post < ApplicationRecord
     unless recipient
       title += " from #{author.name}"
     end
+    body = [fun_title, body_snippet].compact.join("\n")
     url_helpers = Rails.application.routes.url_helpers
     NotificationMessage.new(
       title:,
-      body: compact_snippet,
+      body:,
       image: cover_image,
       target_url: url_helpers.user_url(
         author,
