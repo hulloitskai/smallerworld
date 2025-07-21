@@ -1,7 +1,5 @@
 import { type ButtonProps, Popover, Text } from "@mantine/core";
 
-import ReplyIcon from "~icons/heroicons/chat-bubble-oval-left-20-solid";
-
 import {
   messageUri,
   MESSAGING_PLATFORM_TO_ICON,

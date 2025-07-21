@@ -43,6 +43,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   const { data: statsData } = useRouteSWR<{
     notifiedFriends: number;
     viewers: number;
+    repliers: number;
   }>(routes.posts.stats, {
     descriptor: "load post stats",
     params: !hideStats && inViewport ? { id: post.id } : null,
@@ -93,7 +94,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
         <Group align="start" gap={3} style={{ flexGrow: 1 }}>
           {(!!statsData?.notifiedFriends || !!statsData?.viewers) && (
             <>
-              <HoverCard position="top-start" arrowOffset={20} shadow="sm">
+              <HoverCard position="bottom-start" arrowOffset={20} shadow="sm">
                 <HoverCard.Target>
                   <ActionIcon
                     size="xs"
@@ -115,6 +116,13 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
                       <List.Item icon={<OpenedIcon />}>
                         seen by {statsData.viewers}{" "}
                         {inflect("friend", statsData.viewers)}
+                      </List.Item>
+                    )}
+                    {!!statsData?.repliers && (
+                      <List.Item icon={<ReplyIcon />}>
+                        {inflect("reply", statsData.repliers)} from{" "}
+                        {statsData.repliers}{" "}
+                        {inflect("friend", statsData.repliers)}
                       </List.Item>
                     )}
                   </List>

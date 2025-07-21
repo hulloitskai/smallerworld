@@ -43,7 +43,7 @@
 
   :global(.mantine-List-itemIcon) {
     font-size: 11px;
-    margin-inline-end: var(--mantine-spacing-xs);
+    margin-inline-end: 8px;
     color: light-dark(
       var(--mantine-color-primary-filled),
       var(--mantine-color-white)

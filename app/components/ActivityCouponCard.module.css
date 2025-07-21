@@ -1,0 +1,7 @@
+.markAsRedeemedButton {
+  align-self: center;
+
+  &[data-disabled] {
+    opacity: 0.5;
+  }
+}

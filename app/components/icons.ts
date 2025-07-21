@@ -7,6 +7,7 @@ export { default as SignInIcon } from "~icons/heroicons/arrow-right-on-rectangle
 export { default as OpenExternalIcon } from "~icons/heroicons/arrow-top-right-on-square-20-solid";
 export { default as BackIcon } from "~icons/heroicons/arrow-uturn-left-20-solid";
 export { default as NotificationIcon } from "~icons/heroicons/bell-20-solid";
+export { default as ReplyIcon } from "~icons/heroicons/chat-bubble-oval-left-20-solid";
 export { default as SuccessIcon } from "~icons/heroicons/check-circle-20-solid";
 export { default as ClipboardIcon } from "~icons/heroicons/clipboard-20-solid";
 export { default as CopyIcon } from "~icons/heroicons/clipboard-document-20-solid";

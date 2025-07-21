@@ -54,6 +54,7 @@ class PostsController < ApplicationController
     render(json: {
       "notifiedFriends" => post.notified_friends.count,
       "viewers" => post.viewers.count,
+      "repliers" => post.reply_receipts.distinct.count(:friend_id),
     })
   end
 
