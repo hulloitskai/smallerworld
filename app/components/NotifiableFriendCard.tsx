@@ -35,8 +35,8 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
 }) => {
   const [menuOpened, setMenuOpened] = useState(false);
 
-  // == Activities
-  const [activityDrawerOpened, setActivityDrawerOpened] = useState(false);
+  // == Activities drawer
+  const [activitiesDrawerOpened, setActivitiesDrawerOpened] = useState(false);
   const offeredActivities = useMemo(() => {
     const activities: Activity[] = [];
     friend.active_activity_coupons.forEach(coupon => {
@@ -192,9 +192,9 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
             variant="subtle"
             size="compact-xs"
             leftSection={<CouponIcon />}
-            disabled={activityDrawerOpened}
+            disabled={activitiesDrawerOpened}
             onClick={() => {
-              setActivityDrawerOpened(true);
+              setActivitiesDrawerOpened(true);
             }}
           >
             send a coupon
@@ -204,9 +204,9 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
       </Card>
       <ActivityCouponDrawer
         {...{ friend }}
-        opened={activityDrawerOpened}
+        opened={activitiesDrawerOpened}
         onClose={() => {
-          setActivityDrawerOpened(false);
+          setActivitiesDrawerOpened(false);
         }}
       />
     </>

@@ -66,7 +66,7 @@
       }
     }
 
-    :where:not([data-disable-auto-fullscreen]) & {
+    :not([data-disable-auto-fullscreen]) & {
       @mixin smaller-than $mantine-breakpoint-xs {
         padding-top: calc(
           var(--mantine-spacing-sm) + var(--safe-area-inset-top, 0px)
@@ -80,7 +80,7 @@
   }
 
   .modalInner {
-    :where:not([data-disable-auto-fullscreen]) & {
+    :not([data-disable-auto-fullscreen]) & {
       @mixin smaller-than $mantine-breakpoint-xs {
         --modal-inner-y-offset: 0px;
         --modal-inner-x-offset: 0px;
@@ -108,7 +108,7 @@
       }
     }
 
-    :where:not([data-disable-auto-fullscreen]) & {
+    :not([data-disable-auto-fullscreen]) & {
       @mixin smaller-than $mantine-breakpoint-xs {
         --modal-content-flex: 0 0 100%;
         --modal-content-max-height: auto;

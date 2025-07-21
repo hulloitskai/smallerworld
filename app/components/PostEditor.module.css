@@ -4,7 +4,6 @@
 
 .content {
   border-radius: var(--editor-radius, var(--mantine-radius-default));
-  overflow: hidden;
 }
 
 .contentEditable {
