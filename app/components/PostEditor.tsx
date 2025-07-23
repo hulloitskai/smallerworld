@@ -1,6 +1,5 @@
 import { getRadius, type MantineRadius } from "@mantine/core";
 import { RichTextEditor, type RichTextEditorProps } from "@mantine/tiptap";
-import { Link as LinkExtension } from "@mantine/tiptap";
 import PlaceholderExtension from "@tiptap/extension-placeholder";
 import { type Editor, type EditorOptions, useEditor } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
@@ -36,8 +35,10 @@ const PostEditor: FC<PostEditorProps> = ({
   const editor = useEditor(
     {
       extensions: [
-        StarterKitExtension.configure({ heading: false }),
-        LinkExtension.configure({ defaultProtocol: "https" }),
+        StarterKitExtension.configure({
+          heading: false,
+          link: { defaultProtocol: "https" },
+        }),
         PlaceholderExtension.configure({ placeholder }),
       ],
       editorProps: {

@@ -7,7 +7,11 @@ import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import { formatJoinMessage, JOIN_MESSAGE, useJoinUrl } from "~/helpers/join";
+import {
+  formatJoinInvitation,
+  useJoinShareData,
+  useJoinUrl,
+} from "~/helpers/join";
 import {
   messageUri,
   MESSAGING_PLATFORM_TO_ICON,
@@ -465,7 +469,7 @@ const InviteViaSMSDropdownBody: FC<InviteViaSMSDropdownBodyProps> = ({
                 ? {
                     href: messageUri(
                       joinerInfo.phone_number,
-                      formatJoinMessage(joinUrl),
+                      formatJoinInvitation(joinUrl),
                       platform,
                     ),
                   }
@@ -495,18 +499,7 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
   friend,
 }) => {
   const joinUrl = useJoinUrl(currentUser, friend);
-  const joinShareData = useMemo(() => {
-    if (!joinUrl) {
-      return;
-    }
-    const shareData: ShareData = {
-      text: JOIN_MESSAGE,
-      url: joinUrl,
-    };
-    if (navigator.canShare(shareData)) {
-      return shareData;
-    }
-  }, [joinUrl]);
+  const joinShareData = useJoinShareData(joinUrl);
   return (
     <Menu width={140}>
       <Menu.Target>

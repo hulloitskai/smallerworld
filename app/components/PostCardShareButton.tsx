@@ -38,8 +38,8 @@ const PostCardShareButton: FC<PostCardShareButtonProps> = ({
         toast.success("share snippet copied to clipboard!");
       };
       if (navigator.canShare(shareData)) {
-        void navigator.share(shareData).then(undefined, error => {
-          if (error instanceof Error && error.name === "AbortError") {
+        void navigator.share(shareData).then(undefined, reason => {
+          if (reason instanceof Error && reason.name === "AbortError") {
             copyToClipboard();
           }
         });

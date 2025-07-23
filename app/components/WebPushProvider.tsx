@@ -4,7 +4,7 @@ import {
   type FingerprintingResult,
 } from "~/helpers/fingerprinting";
 import { type ServiceWorkerMetadata } from "~/helpers/serviceWorker";
-import { fetchServiceWorkerMetadata } from "~/helpers/serviceWorker/client";
+import { getServiceWorkerMetadata } from "~/helpers/serviceWorker/client";
 import {
   WebPushContext,
   type WebPushSubscribeOptions,
@@ -28,14 +28,14 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
     void getPushSubscription().then(
       pushSubscription => {
         setPushSubscription(pushSubscription);
-        console.info("Loaded current push subscription", pushSubscription);
+        console.info("Current push subscription", pushSubscription);
       },
-      error => {
+      reason => {
         setPushSubscription(null);
-        console.error("Failed to load current push subscription", error);
-        if (error instanceof Error) {
+        console.error("Failed to load current push subscription", reason);
+        if (reason instanceof Error) {
           toast.error("failed to load current push subscription", {
-            description: error.message,
+            description: reason.message,
           });
         }
       },
@@ -173,11 +173,11 @@ const useWebPushSubscribe = ({
       try {
         let pushManager: PushManager;
         let publicKey: string;
-        [pushManager, publicKey, serviceWorkerMetadata, fingerprintingResult] =
+        [pushManager, serviceWorkerMetadata, publicKey, fingerprintingResult] =
           await Promise.all([
             getPushManager(),
+            getServiceWorkerMetadata(),
             fetchPublicKey(),
-            fetchServiceWorkerMetadata(),
             fingerprintDevice(),
           ]);
         if (
@@ -192,7 +192,7 @@ const useWebPushSubscribe = ({
           await pushSubscription.unsubscribe();
         }
         if (!pushSubscription || forceNewSubscription) {
-          console.debug("Creating new push subscription");
+          console.debug("Creating new push subscription...");
           pushSubscription = await pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: createApplicationServerKey(publicKey),

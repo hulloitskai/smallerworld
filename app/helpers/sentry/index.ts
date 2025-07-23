@@ -10,6 +10,7 @@ import {
 
 import { getMeta } from "~/helpers/meta";
 
+import { initServiceWorkerSentry } from "../serviceWorker/client";
 import { beforeSend, DENY_URLS } from "./filtering";
 
 export const setupSentry = () => {
@@ -26,6 +27,8 @@ export const setupSentry = () => {
       sendDefaultPii: true,
       enabled: environment === "production",
     };
+
+    // == Browser client initialization
     init({
       ...config,
       integrations: [
@@ -45,49 +48,21 @@ export const setupSentry = () => {
     });
     console.info("Initialized Sentry", config);
 
-    const setupSentryOnServiceWorker = (sw: ServiceWorker): void => {
-      const { port1, port2 } = new MessageChannel();
-      port1.onmessage = ({ data }) => {
-        invariant(typeof data === "object", "Invalid message data");
-        const { config, error } = data;
-        if (config) {
-          console.info("Initialized Sentry on service worker", config);
-        } else if (typeof error === "string") {
-          console.error("Failed to initialize Sentry on service worker", error);
-        }
-      };
-      console.info("Initializing Sentry on service worker...");
-      sw.postMessage(
-        {
-          action: "initSentry",
-          dsn,
-          environment,
-          tracesSampleRate,
-          profilesSampleRate,
-        },
-        [port2],
-      );
-    };
-    void navigator.serviceWorker.ready.then(registration => {
-      // Handle the current active service worker
-      if (registration.active) {
-        setupSentryOnServiceWorker(registration.active);
-      }
-
-      // Handle future service worker updates
-      registration.addEventListener("updatefound", () => {
-        // Get the installing service worker
-        const newWorker = registration.installing;
-        if (newWorker) {
-          newWorker.addEventListener("statechange", () => {
-            // Set up Sentry when it becomes active
-            if (newWorker.state === "activated") {
-              setupSentryOnServiceWorker(newWorker);
-            }
-          });
+    // == Service worker client initialization
+    if ("serviceWorker" in navigator) {
+      const { serviceWorker } = navigator;
+      void serviceWorker.ready.then(({ active }) => {
+        if (active) {
+          void initServiceWorkerSentry(active, config);
         }
       });
-    });
+      serviceWorker.addEventListener("controllerchange", () => {
+        const { controller } = serviceWorker;
+        if (controller) {
+          void initServiceWorkerSentry(controller, config);
+        }
+      });
+    }
   } else {
     console.warn("Missing Sentry DSN; skipping initialization");
   }

@@ -3,23 +3,23 @@ import { type QRCodeProps } from "react-qr-code";
 import PlainQRCode from "./PlainQRCode";
 
 export interface CurrentUrlQRCodeProps extends Omit<QRCodeProps, "value"> {
-  query?: Record<string, string>;
+  queryParams?: Record<string, string>;
 }
 
 const CurrentUrlQRCode: FC<CurrentUrlQRCodeProps> = ({
-  query,
+  queryParams,
   ...otherProps
 }) => {
   const [currentUrl, setCurrentUrl] = useState<string>();
   useEffect(() => {
-    const url = new URL(location.href);
-    if (query) {
-      Object.entries(query).forEach(([key, value]) => {
+    const url = hrefToUrl(location.href);
+    if (queryParams) {
+      Object.entries(queryParams).forEach(([key, value]) => {
         url.searchParams.set(key, value);
       });
     }
     setCurrentUrl(url.toString());
-  }, [query]);
+  }, [queryParams]);
   return (
     <>{!!currentUrl && <PlainQRCode value={currentUrl} {...otherProps} />}</>
   );

@@ -29,7 +29,7 @@ const PWAScopedLink = forwardRef<HTMLAnchorElement, PWAScopedLinkProps>(
 export default PWAScopedLink;
 
 const addScopeToHref = (href: string, scope: string) => {
-  const url = new URL(href, location.origin);
+  const url = hrefToUrl(href);
   url.searchParams.set("pwa_scope", scope);
   return url.toString();
 };

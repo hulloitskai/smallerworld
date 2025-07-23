@@ -1,3 +1,5 @@
+import { type DependencyList } from "react";
+
 const TRUTHY_VALUES = ["1", "true", "t"];
 
 export const isTruthy = (value: any): boolean => {
@@ -15,5 +17,38 @@ export const isTruthy = (value: any): boolean => {
 
 export const resolve = <T>(f: () => T): T => f();
 
-export const awaitTimeout = (ms: number): Promise<void> =>
-  new Promise(resolve => setTimeout(resolve, ms));
+export const normalizeUrl = (urlOrPath: string): string =>
+  hrefToUrl(urlOrPath).toString();
+
+export const useNormalizeUrl = (
+  resolveUrlOrPath: () => string,
+  deps: DependencyList,
+): string | undefined => {
+  const [url, setUrl] = useState<string>();
+  useEffect(
+    () => {
+      setUrl(normalizeUrl(resolveUrlOrPath()));
+    },
+    deps, // eslint-disable-line react-hooks/exhaustive-deps
+  );
+  return url;
+};
+
+// export const awaitTimeout = (ms: number): Promise<void> =>
+//   new Promise(resolve => setTimeout(resolve, ms));
+
+// export const isRecord = (value: unknown): value is Record<string, unknown> => {
+//   if (typeof value !== "object") {
+//     return false;
+//   }
+//   if (!value) {
+//     return false;
+//   }
+//   if (Array.isArray(value)) {
+//     return false;
+//   }
+//   if (Object.getOwnPropertySymbols(value).length > 0) {
+//     return false;
+//   }
+//   return true;
+// };

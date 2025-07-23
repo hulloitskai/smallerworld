@@ -111,8 +111,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             h={ICON_SIZE}
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
             onClick={() => {
-              const url = new URL(routes.world.show.path(), location.origin);
-              void navigator.clipboard.writeText(url.toString()).then(() => {
+              const pageUrl = normalizeUrl(routes.world.show.path());
+              void navigator.clipboard.writeText(pageUrl).then(() => {
                 toast.success("page url copied");
               });
             }}

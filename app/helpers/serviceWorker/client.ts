@@ -1,11 +1,9 @@
-import useSWR from "swr";
-
-import { awaitTimeout } from "~/helpers/utils";
+import { type BrowserOptions } from "@sentry/browser";
 
 import {
-  SERVICE_WORKER_METADATA_ENDPOINT,
   SERVICE_WORKER_UPDATE_INTERVAL,
   SERVICE_WORKER_URL,
+  type ServiceWorkerCommandMessage,
   type ServiceWorkerMetadata,
 } from ".";
 
@@ -52,42 +50,48 @@ export const registerServiceWorker = async (): Promise<void> => {
 
   // Listen for update
   registration.addEventListener("updatefound", () => {
-    const { active, installing } = registration;
-    if (!active || !installing) {
+    const { active: oldWorker, installing, waiting } = registration;
+    const newWorker = installing ?? waiting;
+    if (!newWorker) {
       return;
     }
-    console.info("Service worker updating...");
-    installing.addEventListener("statechange", () => {
-      switch (installing.state) {
+    console.info("Service worker update found", { oldWorker, newWorker });
+    const handleNewWorkerStateChange = (): void => {
+      const stopListening = (): void =>
+        newWorker.removeEventListener(
+          "statechange",
+          handleNewWorkerStateChange,
+        );
+      switch (newWorker.state) {
         case "installed": {
           console.info("New service worker installed");
-          if (active.state === "activated") {
+          if (oldWorker?.state === "activated") {
             console.info(
               "Old service worker still active; sending shutdown signal",
             );
-            void Promise.race([
-              shutdownServiceWorker(active),
-              awaitTimeout(5000),
-            ]).then(() => {
-              if (installing.state !== "installed") {
+            void sendShutdown(oldWorker, 5000).then(() => {
+              if (newWorker.state !== "installed") {
                 return;
               }
               console.info("Skipping waiting on new service worker");
-              return skipWaitingServiceWorker(installing);
+              return sendSkipWaiting(newWorker);
             });
           }
           break;
         }
         case "activated": {
+          stopListening();
           console.info("New service worker activated");
           break;
         }
         case "redundant": {
+          stopListening();
           console.error("Service worker update failed");
           break;
         }
       }
-    });
+    };
+    newWorker.addEventListener("statechange", handleNewWorkerStateChange);
   });
 
   // Poll for service worker updates
@@ -119,9 +123,6 @@ export const unregisterOutdatedServiceWorkers = async (): Promise<void> => {
     oldRegistrations.map(registration => registration.unregister()),
   );
 };
-
-const normalizeUrl = (url: string): string =>
-  new URL(url, location.origin).toString();
 
 export const handleServiceWorkerNavigation = (): void => {
   const handleMessage = ({ data, ports }: MessageEvent<any>): void => {
@@ -155,6 +156,51 @@ export const handleServiceWorkerNavigation = (): void => {
   navigator.serviceWorker.addEventListener("message", handleMessage);
 };
 
+export const waitForActiveServiceWorker = async (): Promise<ServiceWorker> => {
+  const { active, installing, waiting } = await navigator.serviceWorker.ready;
+  if (active) {
+    return active;
+  }
+  if (installing) {
+    return waitForServiceWorkerToActivate(installing);
+  }
+  if (waiting) {
+    return waitForServiceWorkerToActivate(waiting);
+  }
+  throw new Error("No service worker found");
+};
+
+const waitForServiceWorkerToActivate = (
+  serviceWorker: ServiceWorker,
+): Promise<ServiceWorker> => {
+  if (serviceWorker.state === "activated") {
+    return Promise.resolve(serviceWorker);
+  }
+  return new Promise((resolve, reject) => {
+    const handleNewWorkerStateChange = (): void => {
+      const stopListening = (): void => {
+        serviceWorker.removeEventListener(
+          "statechange",
+          handleNewWorkerStateChange,
+        );
+      };
+      switch (serviceWorker.state) {
+        case "activated": {
+          stopListening();
+          resolve(serviceWorker);
+          break;
+        }
+        case "redundant": {
+          stopListening();
+          reject(new Error("Service worker installation failed"));
+          break;
+        }
+      }
+    };
+    serviceWorker.addEventListener("statechange", handleNewWorkerStateChange);
+  });
+};
+
 export const useActiveServiceWorker = (): ServiceWorker | null | undefined => {
   const [serviceWorker, setServiceWorker] = useState<ServiceWorker | null>();
   useEffect(() => {
@@ -162,136 +208,120 @@ export const useActiveServiceWorker = (): ServiceWorker | null | undefined => {
       setServiceWorker(null);
       return;
     }
-    const { controller, ready } = navigator.serviceWorker;
+    const { serviceWorker } = navigator;
+    const { controller, ready } = serviceWorker;
     if (controller) {
       setServiceWorker(controller);
       return;
     }
-    void ready.then(({ active, installing }) => {
-      setServiceWorker(active);
-      if (installing) {
-        installing.addEventListener("statechange", () => {
-          setServiceWorker(installing);
-        });
+    void ready.then(({ active }) => {
+      if (active) {
+        setServiceWorker(active);
       }
     });
+    const handleChange = (): void => {
+      setServiceWorker(serviceWorker.controller);
+    };
+    serviceWorker.addEventListener("controllerchange", handleChange);
+    return () => {
+      serviceWorker.removeEventListener("controllerchange", handleChange);
+    };
   }, []);
   return serviceWorker;
 };
 
-const shutdownServiceWorker = (sw: ServiceWorker): Promise<void> =>
+const isValidCommandResponse = (data: any): data is Record<string, any> =>
+  typeof data === "object" && data !== null;
+
+const sendCommand = <T extends Record<string, any>>(
+  serviceWorker: ServiceWorker,
+  message: ServiceWorkerCommandMessage,
+  timeout = 1000,
+): Promise<T> =>
   new Promise((resolve, reject) => {
+    const messageTimeout = setTimeout(() => {
+      const reason = `Command timeout after ${timeout}ms: ${JSON.stringify(
+        message,
+      )}`;
+      reject(new Error(reason));
+    }, timeout);
     const { port1, port2 } = new MessageChannel();
     port1.onmessage = ({ data }) => {
-      invariant(typeof data === "object", "Invalid message data");
-      const { success } = data;
-      if (success) {
-        resolve();
-        console.info("Old service worker shutdown started");
+      clearTimeout(messageTimeout);
+      if (isValidCommandResponse(data)) {
+        if ("error" in data) {
+          if (typeof data.error === "string") {
+            reject(new Error(data.error));
+          } else {
+            reject(new Error(`Invalid error field: ${data.error}`));
+          }
+        } else {
+          resolve(data as T);
+        }
       } else {
-        const message = "Failed to shutdown old service worker";
-        console.error(message);
-        reject(new Error(message));
+        const reason = `Invalid response data: ${JSON.stringify(data)}`;
+        reject(new Error(reason));
       }
     };
-    sw.postMessage({ action: "shutdown" }, [port2]);
+    serviceWorker.postMessage(message, [port2]);
   });
 
-const skipWaitingServiceWorker = (sw: ServiceWorker): Promise<void> =>
-  new Promise((resolve, reject) => {
-    const { port1, port2 } = new MessageChannel();
-    port1.onmessage = ({ data }) => {
-      invariant(typeof data === "object", "Invalid message data");
-      const { success, error } = data;
-      if (success) {
-        console.info("New service worker skipped waiting");
-        resolve();
-      } else if (error) {
-        const message = "Failed to skip waiting on new service worker";
-        console.error(message, error);
-        reject(new Error(message));
-      }
-    };
-    sw.postMessage({ action: "skipWaiting" }, [port2]);
+const sendShutdown = (
+  serviceWorker: ServiceWorker,
+  timeout?: number,
+): Promise<void> =>
+  sendCommand(serviceWorker, { command: "shutdown" }, timeout).then(() => {
+    console.info("Old service worker shutdown started");
   });
 
-export const fetchServiceWorkerMetadata =
-  async (): Promise<ServiceWorkerMetadata> => {
-    await navigator.serviceWorker.ready;
-    const maxAttempts = 3;
-    let attempts = 0;
-    while (attempts < maxAttempts) {
-      attempts += 1;
-      const response = await fetch(SERVICE_WORKER_METADATA_ENDPOINT);
-      if (response.status === 200) {
-        const metadata: ServiceWorkerMetadata = await response.json();
-        return metadata;
-      }
+const sendSkipWaiting = (serviceWorker: ServiceWorker): Promise<void> =>
+  sendCommand(serviceWorker, { command: "skipWaiting" }).then(
+    () => {
+      console.info("New service worker skipped waiting");
+    },
+    reason => {
+      console.error("Failed to skip waiting on new service worker", reason);
+    },
+  );
 
-      console.error(
-        `Failed to fetch service worker metadata (status code ${response.status}), attempt ${attempts}/${maxAttempts}`,
-      );
-      if (attempts < maxAttempts) {
-        await awaitTimeout(1000);
-      }
-    }
-    throw new Error(
-      `Failed to fetch service worker metadata after ${maxAttempts} attempts`,
-    );
-  };
+const sendGetMetadata = async (
+  serviceWorker: ServiceWorker,
+): Promise<ServiceWorkerMetadata> => {
+  const { metadata } = await sendCommand<{ metadata: ServiceWorkerMetadata }>(
+    serviceWorker,
+    { command: "getMetadata" },
+  );
+  return metadata;
+};
+
+export const initServiceWorkerSentry = (
+  serviceWorker: ServiceWorker,
+  options: BrowserOptions,
+): Promise<void> =>
+  sendCommand(serviceWorker, { command: "initSentry", options }).then(
+    () => {
+      console.info("Initialized Sentry on service worker");
+    },
+    reason => {
+      console.error("Failed to initialize Sentry on service worker", reason);
+    },
+  );
+
+export const getServiceWorkerMetadata = (): Promise<ServiceWorkerMetadata> =>
+  waitForActiveServiceWorker().then(sendGetMetadata);
 
 export const useServiceWorkerMetadata = ():
   | ServiceWorkerMetadata
+  | null
   | undefined => {
-  const { data, mutate } = useSWR(
-    SERVICE_WORKER_METADATA_ENDPOINT,
-    fetchServiceWorkerMetadata,
-    {
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      onSuccess: data => {
-        console.info("Loaded service worker metadata", data);
-      },
-    },
-  );
+  const [metadata, setMetadata] = useState<ServiceWorkerMetadata | null>();
+  const serviceWorker = useActiveServiceWorker();
   useEffect(() => {
-    const unsubscribeRef: { current?: () => void } = {};
-    void navigator.serviceWorker.ready.then(registration => {
-      if (registration.active) {
-        void mutate();
-      }
-      const handleUpdateFound = (): void => {
-        const { active, installing } = registration;
-        if (!active || !installing) {
-          return;
-        }
-        const handleStateChange = (): void => {
-          const stopListening = (): void => {
-            installing.removeEventListener("statechange", handleStateChange);
-          };
-          switch (installing.state) {
-            case "installed": {
-              void mutate();
-              stopListening();
-              break;
-            }
-            case "redundant": {
-              stopListening();
-              break;
-            }
-          }
-        };
-        installing.addEventListener("statechange", handleStateChange);
-      };
-      registration.addEventListener("updatefound", handleUpdateFound);
-      unsubscribeRef.current = () => {
-        registration.removeEventListener("updatefound", handleUpdateFound);
-      };
-    });
-    return () => {
-      unsubscribeRef.current?.();
-    };
-  }, [mutate]);
-  return data;
+    if (serviceWorker) {
+      void sendGetMetadata(serviceWorker).then(setMetadata);
+    } else {
+      setMetadata(serviceWorker);
+    }
+  }, [serviceWorker]);
+  return metadata;
 };

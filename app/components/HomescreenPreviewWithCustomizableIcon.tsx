@@ -53,22 +53,22 @@ export default HomescreenPreviewWithIconCustomization;
 const usePageUrlWithAlternativeManifestIcon = (
   query?: Record<string, string>,
 ): string | undefined => {
-  const { url: pageUrl } = usePage();
+  const { url: pagePath } = usePage();
   const [alternateUrl, setAlternateUrl] = useState<string>();
   useEffect(() => {
-    const url = new URL(pageUrl, location.origin);
+    const pageUrl = hrefToUrl(pagePath);
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
-        url.searchParams.set(key, value);
+        pageUrl.searchParams.set(key, value);
       });
     }
-    const iconType = url.searchParams.get("manifest_icon_type");
+    const iconType = pageUrl.searchParams.get("manifest_icon_type");
     if (iconType === "generic") {
-      url.searchParams.delete("manifest_icon_type");
+      pageUrl.searchParams.delete("manifest_icon_type");
     } else {
-      url.searchParams.set("manifest_icon_type", "generic");
+      pageUrl.searchParams.set("manifest_icon_type", "generic");
     }
-    setAlternateUrl(url.toString());
-  }, [pageUrl]); // eslint-disable-line react-hooks/exhaustive-deps
+    setAlternateUrl(pageUrl.toString());
+  }, [pagePath]); // eslint-disable-line react-hooks/exhaustive-deps
   return alternateUrl;
 };

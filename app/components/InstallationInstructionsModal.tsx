@@ -70,7 +70,7 @@ const ModalBody: FC<ModalBodyProps> = ({
                 smaller world is designed for phones!
               </Text>
               <CurrentUrlQRCode
-                query={{ intent: "installation_instructions" }}
+                queryParams={{ intent: "installation_instructions" }}
               />
               <Badge variant="transparent" leftSection={<QRIcon />}>
                 scan the QR code with your phone to continue
@@ -87,7 +87,7 @@ const ModalBody: FC<ModalBodyProps> = ({
                 onClick={() =>
                   void installPWA().then(() => {
                     closeModal(modalId);
-                    const url = new URL(location.href);
+                    const url = hrefToUrl(location.href);
                     if (url.searchParams.has("intent")) {
                       url.searchParams.delete("intent");
                       router.replace({ url: url.toString() });

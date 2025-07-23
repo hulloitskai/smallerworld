@@ -121,8 +121,8 @@ export const usePosts = (options?: PostsOptions) => {
 export const mutatePosts = async (): Promise<void> => {
   const postsPath = routes.posts.index.path();
   const searchQueries = new Set<string>();
-  for (const key of cache.keys()) {
-    const url = new URL(key, location.origin);
+  for (const path of cache.keys()) {
+    const url = hrefToUrl(path);
     if (url.pathname === postsPath) {
       const searchQuery = url.searchParams.get("q");
       if (searchQuery) {

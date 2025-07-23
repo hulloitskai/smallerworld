@@ -48,6 +48,7 @@
     "embla-carousel-wheel-gestures": "^8.0.2",
     "emoji-picker-react": "^4.12.0",
     "humanize-duration": "^3.32.1",
+    "idb-keyval": "^6.2.2",
     "inflection": "^3.0.0",
     "konva": "^9.3.20",
     "linkify-react": "^4.1.3",

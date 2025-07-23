@@ -28,9 +28,10 @@ export const useContact = (
           location.href = params.type === "sms" ? sms : mailto;
           onTriggered?.();
         },
-        error => {
-          if (error instanceof Error) {
-            setResult(result => ({ ...result, error }));
+        reason => {
+          console.error("Failed to redirect to contact URI", reason);
+          if (reason instanceof Error) {
+            setResult(result => ({ ...result, error: reason }));
           }
         },
       )

@@ -96,7 +96,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentFriend, user }) => {
             if (installPWA && !isDesktop(browserDetection)) {
               void installPWA().then(() => {
                 closeModal(modalId);
-                const url = new URL(location.href);
+                const url = hrefToUrl(location.href);
                 if (url.searchParams.has("intent")) {
                   url.searchParams.delete("intent");
                   router.replace({ url: url.toString() });

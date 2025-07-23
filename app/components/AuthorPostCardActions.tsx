@@ -8,12 +8,7 @@ import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import {
-  type Post,
-  type PostReaction,
-  type User,
-  type WorldPost,
-} from "~/types";
+import { type PostReaction, type User, type WorldPost } from "~/types";
 
 import DrawerModal from "./DrawerModal";
 import PostForm, { type PostFormProps } from "./PostForm";
@@ -36,8 +31,21 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   pausedFriends,
   onFollowUpDrawerModalOpened,
 }) => {
-  const postUrl = usePostUrl(post, user);
+  const postUrl = useNormalizeUrl(
+    () =>
+      routes.users.show.path({
+        id: user.handle,
+        query: {
+          post_id: post.id,
+        },
+      }),
+    [user.handle, post.id],
+  );
   const { ref, inViewport } = useInViewport();
+
+  // == UI
+  const [followUpDrawerModalOpened, setFollowUpModalDrawerOpened] =
+    useState(false);
 
   // == Load post stats
   const { data: statsData } = useRouteSWR<{
@@ -69,8 +77,8 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     [reactions],
   );
 
-  // == Delete post mutation
-  const { trigger: triggerDelete, mutating: deleting } = useRouteMutation(
+  // == Delete post
+  const { trigger: deletePost, mutating: deletingPost } = useRouteMutation(
     routes.posts.destroy,
     {
       params: {
@@ -84,9 +92,6 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
       },
     },
   );
-
-  // == Follow-up drawer modal
-  const [followUpOpened, setFollowUpOpened] = useState(false);
 
   return (
     <>
@@ -167,7 +172,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
               variant="subtle"
               size="compact-xs"
               leftSection={<ActionsIcon />}
-              loading={deleting}
+              loading={deletingPost}
               style={{ flexShrink: 0 }}
             >
               actions
@@ -212,7 +217,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
                     },
                   },
                   onConfirm: () => {
-                    void triggerDelete();
+                    void deletePost();
                   },
                 });
               }}
@@ -224,7 +229,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
               leftSection={<FollowUpIcon />}
               disabled={post.type === "follow_up"}
               onClick={() => {
-                setFollowUpOpened(true);
+                setFollowUpModalDrawerOpened(true);
                 onFollowUpDrawerModalOpened?.();
               }}
             >
@@ -249,9 +254,9 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
       </Group>
       <DrawerModal
         title="new follow-up"
-        opened={followUpOpened}
+        opened={followUpDrawerModalOpened}
         onClose={() => {
-          setFollowUpOpened(false);
+          setFollowUpModalDrawerOpened(false);
         }}
       >
         <PostForm
@@ -259,7 +264,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
           postType="follow_up"
           quotedPost={post}
           onPostCreated={() => {
-            setFollowUpOpened(false);
+            setFollowUpModalDrawerOpened(false);
           }}
         />
       </DrawerModal>
@@ -268,18 +273,3 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
 };
 
 export default AuthorPostCardActions;
-
-const usePostUrl = (post: Post, user: User): string | undefined => {
-  const [url, setUrl] = useState<string>();
-  useEffect(() => {
-    const path = routes.users.show.path({
-      id: user.handle,
-      query: {
-        post_id: post.id,
-      },
-    });
-    const url = new URL(path, window.location.origin);
-    setUrl(url.toString());
-  }, [user.handle, post.id]);
-  return url;
-};

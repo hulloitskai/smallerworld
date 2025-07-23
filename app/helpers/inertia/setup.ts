@@ -20,7 +20,7 @@ export const setupInertia = (): void => {
     }
     if (status >= 200 && status < 300) {
       const contentType = headers.get("Content-Type");
-      const url = new URL(request.responseURL);
+      const url = hrefToUrl(request.responseURL);
       if (
         url.host === location.host &&
         typeof contentType === "string" &&

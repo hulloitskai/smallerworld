@@ -120,11 +120,11 @@ const ImageInput: FC<ImageInputProps> = ({
                   const value = { signedId: blob.signed_id };
                   handleChange(value);
                 })
-                .catch(error => {
-                  console.error("Failed to upload image", error);
-                  if (error instanceof Error) {
+                .catch(reason => {
+                  console.error("Failed to upload image", reason);
+                  if (reason instanceof Error) {
                     toast.error("failed to upload image", {
-                      description: error.message,
+                      description: reason.message,
                     });
                   }
                 })

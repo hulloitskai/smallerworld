@@ -118,14 +118,15 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
             {...(currentFriend && {
               onClick: () => {
-                const path = routes.users.show.path({
-                  id: user.handle,
-                  query: {
-                    friend_token: currentFriend.access_token,
-                  },
-                });
-                const url = new URL(path, location.origin);
-                void navigator.clipboard.writeText(url.toString()).then(() => {
+                const pageUrl = normalizeUrl(
+                  routes.users.show.path({
+                    id: user.handle,
+                    query: {
+                      friend_token: currentFriend.access_token,
+                    },
+                  }),
+                );
+                void navigator.clipboard.writeText(pageUrl).then(() => {
                   toast.success("page url copied");
                 });
               },

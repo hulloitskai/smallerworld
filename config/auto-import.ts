@@ -60,7 +60,12 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
     "~/helpers/routes/fetch": ["fetchRoute"],
     "~/helpers/routes/swr": ["useRouteSWR", "useRouteMutation", "mutateRoute"],
     "~/helpers/form": ["useFieldsFilled", "useForm"],
-    "~/helpers/utils": ["resolve", "isTruthy"],
+    "~/helpers/utils": [
+      "resolve",
+      "isTruthy",
+      "normalizeUrl",
+      "useNormalizeUrl",
+    ],
     "~/helpers/formatting": ["possessive"],
     "~/helpers/layouts": ["useIsMobileSize"],
     "~/helpers/userThemes": ["useUserTheme"],

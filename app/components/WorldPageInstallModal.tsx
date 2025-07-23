@@ -77,7 +77,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
             if (installPWA) {
               void installPWA().then(() => {
                 closeModal(modalId);
-                const url = new URL(location.href);
+                const url = hrefToUrl(location.href);
                 url.searchParams.delete("intent");
                 router.replace({ url: url.toString() });
               });

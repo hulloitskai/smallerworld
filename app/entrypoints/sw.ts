@@ -5,6 +5,11 @@ import {
   httpClientIntegration,
   init as initSentry,
 } from "@sentry/browser";
+import {
+  createStore,
+  get as getStoreValue,
+  set as setStoreValue,
+} from "idb-keyval";
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
@@ -17,7 +22,7 @@ import { DEFAULT_NOTIFICATION_ICON_URL } from "~/helpers/notifications";
 import routes, { setupRoutes } from "~/helpers/routes";
 import { beforeSend, DENY_URLS } from "~/helpers/sentry/filtering";
 import {
-  SERVICE_WORKER_METADATA_ENDPOINT,
+  type ServiceWorkerCommandMessage,
   type ServiceWorkerMetadata,
 } from "~/helpers/serviceWorker";
 import { type Notification, type NotificationMessage } from "~/types";
@@ -28,8 +33,7 @@ declare const self: ServiceWorkerGlobalScope;
 // == Constants
 const MANIFEST = self.__WB_MANIFEST;
 const SERVICE_WORKER_VERSION = 2;
-const SERVICE_WORKER_METADATA_CACHE_NAME =
-  "metadata/v" + SERVICE_WORKER_VERSION;
+const metadataStore = createStore("smallerworld", "metadata");
 
 // == Lifecycle
 let shuttingDown = false;
@@ -46,39 +50,11 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Parse request
-  const { request } = event;
-  const url = new URL(request.url);
-
   // Ignore EventStream requests
+  const { request } = event;
   if (request.headers.get("Accept") === "text/event-stream") {
     event.stopImmediatePropagation();
     return;
-  }
-
-  // Handle device metadata requests
-  if (url.pathname === SERVICE_WORKER_METADATA_ENDPOINT) {
-    console.debug(
-      "Service worker metadata request intercepted",
-      url.toString(),
-    );
-    return event.respondWith(
-      caches.open(SERVICE_WORKER_METADATA_CACHE_NAME).then(cache =>
-        cache.match(request).then(cachedResponse => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          const metadata: ServiceWorkerMetadata = {
-            deviceId: uuid(),
-            serviceWorkerVersion: SERVICE_WORKER_VERSION,
-          };
-          const body = JSON.stringify(metadata);
-          const headers: HeadersInit = { "Content-Type": "application/json" };
-          const response = new Response(body, { headers });
-          return cache.put(request, response.clone()).then(() => response);
-        }),
-      ),
-    );
   }
 });
 
@@ -118,8 +94,8 @@ self.addEventListener("install", event => {
         () => {
           console.info("Service worker skipped waiting");
         },
-        error => {
-          console.error("Service worker skipped waiting failed", error);
+        reason => {
+          console.error("Service worker skipped waiting failed", reason);
         },
       ),
       awaitTimeout(1000).then(() => {
@@ -136,9 +112,9 @@ self.addEventListener("activate", event => {
       () => {
         console.info("Service worker activated");
       },
-      error => {
-        console.error("Claiming clients failed", error);
-        throw error; // Re-throw to fail activation
+      reason => {
+        console.error("Claiming clients failed", reason);
+        throw reason; // Re-throw to fail activation
       },
     ),
   );
@@ -158,10 +134,10 @@ const markDelivered = (
       () => {
         console.info(`Marked notification '${notification.id}' as delivered`);
       },
-      error => {
+      reason => {
         console.error(
           `Failed to mark notification '${notification.id}' as delivered`,
-          error,
+          reason,
         );
       },
     );
@@ -287,8 +263,8 @@ self.addEventListener("pushsubscriptionchange", event => {
             : null,
         },
       })
-      .catch(error => {
-        console.error("Failed to change push subscription", error);
+      .catch(reason => {
+        console.error("Failed to change push subscription", reason);
       }),
   );
 });
@@ -377,77 +353,101 @@ self.addEventListener("notificationclick", event => {
   );
 });
 
-self.addEventListener("message", event => {
-  const { data, ports } = event;
-  const [responsePort] = ports;
-  invariant(
-    typeof data === "object" && "action" in data,
-    "Invalid message data",
-  );
-  const { action } = data;
-  switch (action) {
-    case "initSentry": {
-      const { dsn, environment, tracesSampleRate, profilesSampleRate } = data;
-      invariant(typeof dsn === "string", "Invalid Sentry DSN");
-      invariant(typeof environment === "string", "Invalid Sentry environment");
-      invariant(
-        typeof tracesSampleRate === "number",
-        "Invalid Sentry traces sample rate",
-      );
-      invariant(
-        typeof profilesSampleRate === "number",
-        "Invalid Sentry profiles sample rate",
-      );
-      try {
-        const config: BrowserOptions = {
-          dsn,
-          environment,
-          tracesSampleRate,
-          profilesSampleRate,
-          sendDefaultPii: true,
-        };
-        initSentry({
-          ...config,
-          integrations: [
-            captureConsoleIntegration({ levels: ["error", "assert"] }),
-            httpClientIntegration(),
-          ],
-          denyUrls: DENY_URLS,
-          beforeSend,
-        });
-        console.info("Initialized Sentry", config);
-        responsePort?.postMessage({ config });
-      } catch (error) {
-        console.error("Failed to initialize Sentry", error);
-        if (error instanceof Error) {
-          responsePort?.postMessage({ error: error.message });
-        }
-      }
-      break;
-    }
-    case "skipWaiting": {
-      console.info("Received skip waiting request");
-      event.waitUntil(
-        self.skipWaiting().then(
-          () => {
-            responsePort?.postMessage({ success: true });
-            console.info("Skipped waiting");
-          },
-          error => {
-            responsePort?.postMessage({ error });
-            console.error("Failed to skip waiting", error);
-          },
-        ),
-      );
-      break;
-    }
-    case "shutdown": {
-      console.info("Received shutdown request");
-      shuttingDown = true;
-      responsePort?.postMessage({ success: true });
-      break;
+const getDeviceId = async (): Promise<string> => {
+  const deviceId = await getStoreValue<string>("device_id", metadataStore);
+  if (deviceId) {
+    return deviceId;
+  }
+  const newDeviceId = uuid();
+  await setStoreValue("device_id", newDeviceId, metadataStore);
+  return newDeviceId;
+};
+
+const processInitSentry = (config: BrowserOptions): void => {
+  try {
+    initSentry({
+      ...config,
+      integrations: [
+        captureConsoleIntegration({ levels: ["error", "assert"] }),
+        httpClientIntegration(),
+      ],
+      denyUrls: DENY_URLS,
+      beforeSend,
+    });
+    console.info("Initialized Sentry", config);
+  } catch (error) {
+    console.error("Failed to initialize Sentry", error);
+    throw error;
+  }
+};
+
+const processShutdown = (): void => {
+  shuttingDown = true;
+};
+
+const processSkipWaiting = async (): Promise<void> => {
+  try {
+    await self.skipWaiting();
+    console.info("Skipped waiting");
+  } catch (error) {
+    console.error("Failed to skip waiting", error);
+    throw error;
+  }
+};
+
+const processGetMetadata = async (): Promise<ServiceWorkerMetadata> => {
+  const deviceId = await getDeviceId();
+  return {
+    deviceId,
+    serviceWorkerVersion: SERVICE_WORKER_VERSION,
+  };
+};
+
+const processCommand = async (
+  message: ServiceWorkerCommandMessage,
+): Promise<any> => {
+  switch (message.command) {
+    case "initSentry":
+      return processInitSentry(message.options);
+    case "shutdown":
+      return processShutdown();
+    case "skipWaiting":
+      return processSkipWaiting();
+    case "getMetadata": {
+      const metadata = await processGetMetadata();
+      return { metadata };
     }
   }
+};
+
+const isValidCommandMessage = (
+  data: any,
+): data is ServiceWorkerCommandMessage =>
+  typeof data === "object" &&
+  data !== null &&
+  "command" in data &&
+  typeof data.command === "string"; // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+
+self.addEventListener("message", event => {
+  const { data, ports } = event;
+  if (!isValidCommandMessage(data)) {
+    throw new Error("Invalid command message");
+  }
+  const [responsePort] = ports;
+  if (!responsePort) {
+    throw new Error("Missing response port");
+  }
+  event.waitUntil(
+    processCommand(data)
+      .then<Record<string, any>, Record<string, any>>(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        result => (typeof result === "object" && result !== null ? result : {}),
+        reason => ({
+          error: reason instanceof Error ? reason.message : String(reason),
+        }),
+      )
+      .then(response => responsePort.postMessage(response)),
+  );
 });
 
 self.addEventListener("error", ({ error }) => {

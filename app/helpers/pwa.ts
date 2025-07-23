@@ -100,7 +100,7 @@ export const useInstallPWA = (): InstallPWAResult => {
         const standaloneQuery = matchMedia("(display-mode: standalone)");
         const handleDisplayModeChange = (event: MediaQueryListEvent) => {
           if (event.matches) {
-            const url = new URL(location.href);
+            const url = hrefToUrl(location.href);
             for (const key of url.searchParams.keys()) {
               if (!["friend_token", "pwa_scope"].includes(key)) {
                 url.searchParams.delete(key);
@@ -117,12 +117,12 @@ export const useInstallPWA = (): InstallPWAResult => {
               console.info("PWA installation triggered");
               toast.success("app installation started");
             },
-            error => {
-              console.error("Failed to install PWA", error);
-              if (error instanceof Error) {
-                setError(error);
+            reason => {
+              console.error("Failed to install PWA", reason);
+              if (reason instanceof Error) {
+                setError(reason);
                 toast.error("failed to install app", {
-                  description: error.message,
+                  description: reason.message,
                 });
               }
             },

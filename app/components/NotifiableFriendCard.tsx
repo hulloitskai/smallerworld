@@ -8,7 +8,7 @@ import QrCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { prettyName } from "~/helpers/friends";
-import { JOIN_MESSAGE, useJoinUrl } from "~/helpers/join";
+import { useJoinShareData, useJoinUrl } from "~/helpers/join";
 import {
   type Activity,
   type Friend,
@@ -295,18 +295,7 @@ const SendJoinLinkMenuItem: FC<SendJoinLinkMenuItemProps> = ({
   friend,
 }) => {
   const joinUrl = useJoinUrl(currentUser, friend);
-  const joinShareData = useMemo(() => {
-    if (!joinUrl) {
-      return;
-    }
-    const shareData: ShareData = {
-      text: JOIN_MESSAGE,
-      url: joinUrl,
-    };
-    if (navigator.canShare(shareData)) {
-      return shareData;
-    }
-  }, [joinUrl]);
+  const joinShareData = useJoinShareData(joinUrl);
   return (
     <Menu.Sub arrowOffset={12} closeDelay={100}>
       <Menu.Sub.Target>
