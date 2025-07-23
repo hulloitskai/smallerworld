@@ -43,7 +43,9 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
 
   // Filter friends based on search query
   const filteredFriends = useMemo(() => {
-    if (!friends || !searchQuery) return friends;
+    if (!friends || !searchQuery) {
+      return friends;
+    }
 
     const query = searchQuery.toLowerCase();
     return friends.filter(friend => {
