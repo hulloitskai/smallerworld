@@ -33,6 +33,16 @@ bin/fix
 - **Pre-push hooks**: The repository has pre-push hooks that check for vulnerabilities - use `--no-verify` flag only when absolutely necessary and document why
 - **Documentation**: Document any vulnerabilities that cannot be fixed in the project README or security documentation
 
+## Dependency Management
+
+### Never Update Dependencies Without User Confirmation
+
+- **No automatic updates**: Never run `npm update`, `npm install <package>@latest`, or similar commands without explicit user permission
+- **Security vulnerabilities**: Even when npm audit suggests updates, ask for confirmation before updating any packages
+- **Version conflicts**: If a dependency update is suggested to resolve conflicts, explain the situation and wait for user approval
+- **Breaking changes**: Always warn about potential breaking changes before suggesting any dependency updates
+- **Documentation**: If updates are approved, document what was changed and why in the commit message
+
 ## Code Simplicity
 
 ### Prefer Direct Logic Over Premature Optimization
