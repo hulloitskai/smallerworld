@@ -87,7 +87,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
           </Button>
           <Transition
             transition="slide-up"
-            mounted={!showSearch && !!friends && friends.length > 0}
+            mounted={!showSearch && !!friends && friends.length > 20}
           >
             {style => (
               <ActionIcon
