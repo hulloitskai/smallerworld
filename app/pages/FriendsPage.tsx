@@ -1,12 +1,16 @@
 import { Text } from "@mantine/core";
 import { partition } from "lodash-es";
 
+import HideIcon from "~icons/heroicons/chevron-up-20-solid";
 import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
+import SearchIcon from "~icons/heroicons/magnifying-glass-20-solid";
 import FriendsIcon from "~icons/heroicons/users-20-solid";
+import CloseIcon from "~icons/heroicons/x-mark";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import NotifiableFriendCard from "~/components/NotifiableFriendCard";
+import { prettyName } from "~/helpers/friends";
 import {
   type Activity,
   type ActivityTemplate,
@@ -22,6 +26,11 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   // == User theme
   useUserTheme(currentUser.theme);
 
+  // == Search
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
   // == Load friends
   const { data: friendsData } = useRouteSWR<{ friends: NotifiableFriend[] }>(
     routes.friends.index,
@@ -31,9 +40,21 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
     },
   );
   const { friends } = friendsData ?? {};
+
+  // Filter friends based on search query
+  const filteredFriends = useMemo(() => {
+    if (!friends || !searchQuery) return friends;
+
+    const query = searchQuery.toLowerCase();
+    return friends.filter(friend => {
+      const friendName = prettyName(friend).toLowerCase();
+      return friendName.includes(query);
+    });
+  }, [friends, searchQuery]);
+
   const [notifiableFriends, unnotifiableFriends] = useMemo(
-    () => partition(friends, friend => friend.notifiable),
-    [friends],
+    () => partition(filteredFriends, friend => friend.notifiable),
+    [filteredFriends],
   );
 
   // == Load activities
@@ -53,33 +74,113 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
         <Title size="h2" ta="center">
           your friends
         </Title>
-        <Button
-          component={Link}
-          leftSection={<BackIcon />}
-          radius="xl"
-          href={routes.world.show.path()}
-          mt={2}
-        >
-          back to your world
-        </Button>
+        <Group gap={8} justify="center">
+          <Button
+            component={Link}
+            leftSection={<BackIcon />}
+            radius="xl"
+            href={routes.world.show.path()}
+          >
+            back to your world
+          </Button>
+          <Transition
+            transition="slide-up"
+            mounted={!showSearch && !!friends && friends.length > 0}
+          >
+            {style => (
+              <ActionIcon
+                size="lg"
+                variant="light"
+                {...{ style }}
+                onClick={() => {
+                  setShowSearch(true);
+                }}
+              >
+                <SearchIcon />
+              </ActionIcon>
+            )}
+          </Transition>
+        </Group>
       </Stack>
       <Stack gap="xs">
+        <Transition transition="slide-down" mounted={showSearch}>
+          {style => (
+            <TextInput
+              ref={inputRef}
+              leftSection={<SearchIcon />}
+              rightSection={
+                <Tooltip
+                  label={searchQuery ? "clear search" : "hide search"}
+                  openDelay={600}
+                >
+                  <ActionIcon
+                    {...(searchQuery
+                      ? {
+                          color: "red",
+                          onClick: () => {
+                            setSearchQuery("");
+                            inputRef.current?.focus();
+                          },
+                        }
+                      : {
+                          onClick: () => {
+                            setShowSearch(false);
+                            setSearchQuery("");
+                          },
+                        })}
+                    {...{ style }}
+                  >
+                    {searchQuery ? <CloseIcon /> : <HideIcon />}
+                  </ActionIcon>
+                </Tooltip>
+              }
+              placeholder="search your friends"
+              value={searchQuery}
+              onChange={({ currentTarget }) =>
+                setSearchQuery(currentTarget.value)
+              }
+              onBlur={({ currentTarget }) => {
+                if (currentTarget.value === "") {
+                  setShowSearch(false);
+                }
+              }}
+              autoFocus
+              {...{ style }}
+            />
+          )}
+        </Transition>
         <AddFriendButton {...{ currentUser }} size="md" mih={54} />
         {friends ? (
-          isEmpty(friends) ? (
-            <Card
-              withBorder
-              c="dimmed"
-              py="lg"
-              style={{ borderStyle: "dashed" }}
-            >
-              <Stack align="center" gap={4}>
-                <FrownyFaceIcon />
-                <Text size="sm" fw={500}>
-                  you world is too small (add a friend!)
-                </Text>
-              </Stack>
-            </Card>
+          isEmpty(filteredFriends) ? (
+            searchQuery ? (
+              <Card
+                withBorder
+                c="dimmed"
+                py="lg"
+                style={{ borderStyle: "dashed" }}
+              >
+                <Stack align="center" gap={4}>
+                  <SearchIcon />
+                  <Text size="sm" fw={500}>
+                    no friends match "{searchQuery}"
+                  </Text>
+                </Stack>
+              </Card>
+            ) : (
+              <Card
+                withBorder
+                c="dimmed"
+                py="lg"
+                style={{ borderStyle: "dashed" }}
+              >
+                <Stack align="center" gap={4}>
+                  <FrownyFaceIcon />
+                  <Text size="sm" fw={500}>
+                    you world is too small (add a friend!)
+                  </Text>
+                </Stack>
+              </Card>
+            )
           ) : (
             [...notifiableFriends, ...unnotifiableFriends].map(friend => (
               <NotifiableFriendCard
