@@ -64,7 +64,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   const { data: reactionsData } = useRouteSWR<{ reactions: PostReaction[] }>(
     routes.postReactions.index,
     {
-      params: inViewport ? { post_id: post.id } : null,
+      params: !hideStats && inViewport ? { post_id: post.id } : null,
       descriptor: "load reactions",
       keepPreviousData: true,
       refreshInterval: 5000,
@@ -141,28 +141,17 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             )}
           {!isEmpty(reactions) && (
             <Group gap={2} wrap="wrap" style={{ flexGrow: 1, rowGap: 0 }}>
-              {Object.entries(reactionsByEmoji).map(([emoji, reactions]) =>
-                hideStats ? (
-                  <Badge
-                    key={emoji}
-                    variant="transparent"
-                    color="gray"
-                    className={classes.reactionBadgeWithoutCounts}
-                  >
-                    {emoji}
-                  </Badge>
-                ) : (
-                  <Badge
-                    key={emoji}
-                    variant="transparent"
-                    color="gray"
-                    leftSection={emoji}
-                    className={classes.reactionBadge}
-                  >
-                    {reactions.length}
-                  </Badge>
-                ),
-              )}
+              {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
+                <Badge
+                  key={emoji}
+                  variant="transparent"
+                  color="gray"
+                  leftSection={emoji}
+                  className={classes.reactionBadge}
+                >
+                  {reactions.length}
+                </Badge>
+              ))}
             </Group>
           )}
         </Group>

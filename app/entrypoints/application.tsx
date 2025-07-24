@@ -10,6 +10,7 @@ import { setupActiveStorage } from "~/helpers/activestorage";
 import { setupAmplitude } from "~/helpers/amplitude";
 import { setupClarity } from "~/helpers/clarity";
 import { setupDayjs } from "~/helpers/dayjs";
+import { setupDevtools } from "~/helpers/devtools";
 import { setupFullStory } from "~/helpers/fullstory";
 import {
   type PageComponent,
@@ -34,8 +35,9 @@ setupRoutes();
 setupLuxon();
 setupDayjs();
 setupActiveStorage();
-setupSentry();
 requestIdleCallback(() => {
+  setupDevtools();
+  setupSentry();
   setupFullStory();
   setupAmplitude();
   setupClarity();

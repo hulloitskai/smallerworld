@@ -33,22 +33,3 @@ export const useNormalizeUrl = (
   );
   return url;
 };
-
-// export const awaitTimeout = (ms: number): Promise<void> =>
-//   new Promise(resolve => setTimeout(resolve, ms));
-
-// export const isRecord = (value: unknown): value is Record<string, unknown> => {
-//   if (typeof value !== "object") {
-//     return false;
-//   }
-//   if (!value) {
-//     return false;
-//   }
-//   if (Array.isArray(value)) {
-//     return false;
-//   }
-//   if (Object.getOwnPropertySymbols(value).length > 0) {
-//     return false;
-//   }
-//   return true;
-// };

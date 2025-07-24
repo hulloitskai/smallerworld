@@ -14,7 +14,7 @@ const WorldPageNotificationsButton: FC = () => {
     pushRegistration,
     subscribe,
     subscribing,
-    subscribeError,
+    subscribeError = new Error("meow meow meow"),
     supported: webPushSupported,
     loading,
   } = useWebPush();
@@ -27,7 +27,7 @@ const WorldPageNotificationsButton: FC = () => {
           <NotificationIcon />
         </ActionIcon>
       ) : pushSubscription === null || pushRegistration === null ? (
-        <Stack gap={4}>
+        <Stack gap={4} align="start">
           <Button
             variant="filled"
             loading={loading || subscribing}

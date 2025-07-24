@@ -17,15 +17,6 @@
   }
 }
 
-.reactionBadgeWithoutCounts {
-  flex-shrink: 0;
-  padding-inline: 1px;
-
-  :global(.mantine-Badge-label) {
-    font-size: var(--mantine-font-size-sm);
-  }
-}
-
 .statsIcon {
   color: var(--mantine-color-dimmed);
   margin-right: 3px;
