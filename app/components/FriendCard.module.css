@@ -1,0 +1,56 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.emoji {
+  --font-size: var(--mantine-font-size-md);
+
+  font-family: var(--font-family-emoji);
+  font-size: var(--font-size);
+  vertical-align: middle;
+
+  @mixin safari-only {
+    font-size: calc(var(--font-size) * 0.8);
+  }
+}
+
+.group {
+  :global(.mantine-Button-section) {
+    &[data-position="left"] {
+      margin-right: 6px;
+    }
+  }
+}
+
+.badge {
+  :global(.mantine-Badge-label) {
+    text-transform: none;
+  }
+}
+
+.activityBadge {
+  padding-inline: 4px;
+  --badge-radius: var(--mantine-radius-md);
+
+  :global(.mantine-Badge-section)[data-position="left"] {
+    --font-size: var(--mantine-font-size-xs);
+
+    font-family: var(--font-family-emoji);
+    font-size: var(--font-size);
+    vertical-align: middle;
+
+    @mixin safari-only {
+      font-size: calc(var(--font-size) * 0.8);
+    }
+  }
+}
+
+.activityCouponButton {
+  --button-radius: var(--mantine-radius-md);
+
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: 6px;
+  }
+}

@@ -12,23 +12,23 @@ import { useJoinShareData, useJoinUrl } from "~/helpers/join";
 import {
   type Activity,
   type Friend,
-  type NotifiableFriend,
   type User,
+  type WorldFriend,
 } from "~/types";
 
 import ActivityCouponDrawer from "./ActivityCouponDrawer";
 import EditFriendForm from "./EditFriendForm";
 import PlainQRCode from "./PlainQRCode";
 
-import classes from "./NotifiableFriendCard.module.css";
+import classes from "./FriendCard.module.css";
 
-export interface NotifiableFriendCardProps {
+export interface FriendCardProps {
   activitiesById: Record<string, Activity>;
   currentUser: User;
-  friend: NotifiableFriend;
+  friend: WorldFriend;
 }
 
-const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
+const FriendCard: FC<FriendCardProps> = ({
   activitiesById,
   currentUser,
   friend,
@@ -68,7 +68,9 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
       <Card className={cn("NotifiableFriendCard", classes.card)} withBorder>
         <Group gap={6} justify="space-between" className={classes.group}>
           <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
-            {!!friend.emoji && <Box fz="xl">{friend.emoji}</Box>}
+            {!!friend.emoji && (
+              <Box className={classes.emoji}>{friend.emoji}</Box>
+            )}
             <Text ff="heading" fw={600}>
               {friend.name}
             </Text>
@@ -213,7 +215,7 @@ const NotifiableFriendCard: FC<NotifiableFriendCardProps> = ({
   );
 };
 
-export default NotifiableFriendCard;
+export default FriendCard;
 
 interface PauseFriendItemProps {
   friend: Friend;

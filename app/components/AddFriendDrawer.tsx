@@ -174,7 +174,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
                     mod={{ opened }}
                   >
                     {values.emoji ? (
-                      <Text size="xl">{values.emoji}</Text>
+                      <Box className={classes.emoji}>{values.emoji}</Box>
                     ) : (
                       <Box component={EmojiIcon} c="dimmed" />
                     )}

@@ -269,7 +269,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
                 }}
               >
                 {values.emoji ? (
-                  <Text size="xl">{values.emoji}</Text>
+                  <Box className={classes.emoji}>{values.emoji}</Box>
                 ) : (
                   <Box
                     component={EmojiIcon}

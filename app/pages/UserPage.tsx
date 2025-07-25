@@ -42,7 +42,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const currentFriend = useCurrentFriend();
   const { pushRegistration, supported: webPushSupported } = useWebPush();
 
-  // == Reload data on window focus
+  // == Reload page props on window focus
   useWindowEvent("focus", () => {
     if (!isStandalone || outOfPWAScope) {
       return;

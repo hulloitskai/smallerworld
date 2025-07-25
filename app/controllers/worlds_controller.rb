@@ -16,19 +16,21 @@ class WorldsController < ApplicationController
       .reverse_chronological
       .where.associated(:push_registrations)
       .distinct
+      .select(:id, :created_at, :emoji)
       .first(3)
     if latest_friends.size < 3
       latest_friends += current_user.friends
         .reverse_chronological
         .where.missing(:push_registrations)
         .distinct
+        .select(:id, :created_at, :emoji)
         .first(3 - latest_friends.size)
     end
     pending_join_requests = current_user.join_requests.pending.count
     paused_friends = current_user.friends.paused.count
     render(inertia: "WorldPage", props: {
       "faviconLinks" => user_favicon_links(current_user),
-      "latestFriends" => WorldFriendSerializer.many(latest_friends),
+      "latestFriendEmojis" => latest_friends.map(&:emoji),
       "pendingJoinRequests" => pending_join_requests,
       "pausedFriends" => paused_friends,
       "hideStats" => current_user.hide_stats,

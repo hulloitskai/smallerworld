@@ -17,6 +17,18 @@
   }
 }
 
+.emoji {
+  --font-size: var(--mantine-font-size-xl);
+
+  font-family: var(--font-family-emoji);
+  font-size: var(--font-size);
+  vertical-align: middle;
+
+  @mixin safari-only {
+    font-size: calc(var(--font-size) * 0.8);
+  }
+}
+
 .visibilitySegmentedControl {
   border: rem(1px) solid
     light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));

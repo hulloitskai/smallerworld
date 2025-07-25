@@ -8,7 +8,7 @@ import {
   type Activity,
   type ActivityCoupon,
   type ActivityTemplate,
-  type NotifiableFriend,
+  type WorldFriend,
 } from "~/types";
 
 import ActivityCard from "./ActivityCard";
@@ -21,7 +21,7 @@ const ACTIVITY_CARD_WIDTH = 320;
 
 export interface ActivityCouponDrawerProps
   extends Omit<DrawerProps, "children"> {
-  friend: NotifiableFriend;
+  friend: WorldFriend;
 }
 
 const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({

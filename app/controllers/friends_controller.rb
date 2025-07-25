@@ -21,12 +21,12 @@ class FriendsController < ApplicationController
           .where(owner: friends)
           .pluck(:owner_id)
           .to_set
-        notifiable_friends = friends.map do |friend|
+        world_friends = friends.map do |friend|
           notifiable = notifiable_friend_ids.include?(friend.id)
-          NotifiableFriend.new(friend:, notifiable:)
+          WorldFriend.new(friend:, notifiable:)
         end
         render(json: {
-          friends: NotifiableFriendSerializer.many(notifiable_friends),
+          friends: WorldFriendSerializer.many(world_friends),
         })
       end
     end

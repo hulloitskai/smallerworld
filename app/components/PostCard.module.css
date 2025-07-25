@@ -25,6 +25,18 @@
   }
 }
 
+.emoji {
+  --font-size: var(--mantine-font-size-lg);
+
+  font-family: var(--font-family-emoji);
+  font-size: var(--font-size);
+  vertical-align: middle;
+
+  @mixin safari-only {
+    font-size: calc(var(--font-size) * 0.8);
+  }
+}
+
 .actionSeparator {
   display: block;
   margin-inline: -1px;
@@ -118,12 +130,11 @@
 }
 
 .typeIcon {
-  display: block;
   font-size: 11px;
+  vertical-align: middle;
 }
 
 .typeLabel {
   font-family: var(--mantine-font-family-headings);
   font-weight: 600;
-  margin-top: 2px;
 }

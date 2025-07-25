@@ -7,6 +7,7 @@ import {
   RemoveScroll,
   Text,
 } from "@mantine/core";
+import { useWindowEvent } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
 
 import EllipsisHorizontalIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
@@ -28,13 +29,13 @@ import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { usePosts } from "~/helpers/posts";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type User, type WorldFriend } from "~/types";
+import { type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
 
 export interface WorldPageProps extends SharedPageProps {
   currentUser: User;
-  latestFriends: WorldFriend[];
+  latestFriendEmojis: (string | null)[];
   pendingJoinRequests: number;
   hideStats: boolean;
   hideNeko: boolean;
@@ -45,12 +46,31 @@ const ICON_SIZE = 96;
 
 const WorldPage: PageComponent<WorldPageProps> = ({
   currentUser,
-  latestFriends,
+  latestFriendEmojis,
   pendingJoinRequests,
   pausedFriends,
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const { pushRegistration, supported: webPushSupported } = useWebPush();
+
+  // == Reload page props on window focus
+  useWindowEvent("focus", () => {
+    if (!isStandalone || outOfPWAScope) {
+      return;
+    }
+    router.reload({
+      only: [
+        "currentUser",
+        "faviconLinks",
+        "hideStats",
+        "hideNeko",
+        "pendingJoinRequests",
+        "latestFriendEmojis",
+        "pausedFriends",
+      ],
+      async: true,
+    });
+  });
 
   // == User theme
   useUserTheme(currentUser.theme);
@@ -150,16 +170,15 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   href={routes.friends.index.path()}
                   className={classes.friendButton}
                   leftSection={
-                    !isEmpty(latestFriends) ? (
+                    !isEmpty(latestFriendEmojis) ? (
                       <Avatar.Group className={classes.avatarGroup}>
-                        {latestFriends.map(({ id, emoji }) => (
-                          <Avatar key={id} size="sm">
+                        {latestFriendEmojis.map((emoji, index) => (
+                          <Avatar key={index} size="sm">
                             {emoji ? (
-                              <Text fz="md">{emoji}</Text>
+                              <Box className={classes.friendEmoji}>{emoji}</Box>
                             ) : (
                               <Box
                                 component={UserIcon}
-                                fz="sm"
                                 className={classes.friendIcon}
                               />
                             )}
@@ -171,13 +190,13 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                     )
                   }
                   onClick={event => {
-                    if (isEmpty(latestFriends)) {
+                    if (isEmpty(latestFriendEmojis)) {
                       event.preventDefault();
                       setAddFriendModalOpened(true);
                     }
                   }}
                 >
-                  {!isEmpty(latestFriends)
+                  {!isEmpty(latestFriendEmojis)
                     ? "your friends"
                     : "invite a friend!"}
                 </Button>
@@ -260,7 +279,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       </Box>
       {(!isStandalone || outOfPWAScope || pushRegistration !== null) &&
         (hasOneUserCreatedPost === false ||
-          (!!latestFriends && latestFriends.length < 3)) && (
+          (!!latestFriendEmojis && latestFriendEmojis.length < 3)) && (
           <Alert
             className={classes.onboardingAlert}
             variant="outline"
@@ -276,9 +295,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             <List>
               <CheckableListItem
                 checked={
-                  latestFriends.length >= 3
+                  latestFriendEmojis.length >= 3
                     ? true
-                    : isEmpty(latestFriends)
+                    : isEmpty(latestFriendEmojis)
                       ? false
                       : "partial"
                 }
@@ -286,8 +305,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 invite{" "}
                 <span
                   style={{
-                    ...(!isEmpty(latestFriends) &&
-                      latestFriends.length < 3 && {
+                    ...(!isEmpty(latestFriendEmojis) &&
+                      latestFriendEmojis.length < 3 && {
                         opacity: 0.5,
                         textDecoration: "line-through",
                       }),
@@ -298,14 +317,14 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 <span
                   style={{
                     fontWeight: 500,
-                    ...(isEmpty(latestFriends) &&
-                      latestFriends.length < 3 && {
+                    ...(isEmpty(latestFriendEmojis) &&
+                      latestFriendEmojis.length < 3 && {
                         display: "none",
                       }),
                   }}
                 >
-                  {3 - latestFriends.length} more{" "}
-                  {inflect("friend", 3 - latestFriends.length)}{" "}
+                  {3 - latestFriendEmojis.length} more{" "}
+                  {inflect("friend", 3 - latestFriendEmojis.length)}{" "}
                 </span>
                 to join your world 👯
               </CheckableListItem>

@@ -6,12 +6,12 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
-import NotifiableFriendCard from "~/components/NotifiableFriendCard";
+import FriendCard from "~/components/FriendCard";
 import {
   type Activity,
   type ActivityTemplate,
-  type NotifiableFriend,
   type User,
+  type WorldFriend,
 } from "~/types";
 
 export interface FriendsPageProps extends SharedPageProps {
@@ -23,7 +23,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   useUserTheme(currentUser.theme);
 
   // == Load friends
-  const { data: friendsData } = useRouteSWR<{ friends: NotifiableFriend[] }>(
+  const { data: friendsData } = useRouteSWR<{ friends: WorldFriend[] }>(
     routes.friends.index,
     {
       descriptor: "load friends",
@@ -82,7 +82,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
             </Card>
           ) : (
             [...notifiableFriends, ...unnotifiableFriends].map(friend => (
-              <NotifiableFriendCard
+              <FriendCard
                 key={friend.id}
                 {...{ activitiesById, currentUser, friend }}
               />

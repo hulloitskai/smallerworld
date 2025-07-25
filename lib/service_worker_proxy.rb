@@ -21,25 +21,17 @@ class ServiceWorkerProxy
       .query_values(Hash) || {}
     if path == "/sw.js"
       if dev_server_running?
-        rewritten_env = if query_values["worker_src"].present?
-          deprecated_rewrite_env(env)
-        else
-          path = sw_path(query_values.fetch("worker", "dev-sw.js"))
-          rewrite_env(env, path:, query_string: "dev-sw")
-        end
-        @proxy.call(rewritten_env)
+        path = sw_path(query_values.fetch("worker", "dev-sw.js"))
+        target_env = rewrite_env(env, path:, query_string: "dev-sw")
+        @proxy.call(target_env)
       else
         files = Rack::Files.new(Rails.public_path.to_s, {
           "cache-control" => "no-store must-revalidate",
           "max-age" => "0",
         })
-        rewritten_env = if query_values["worker_src"].present?
-          deprecated_rewrite_env(env)
-        else
-          path = sw_path(query_values.fetch("worker", "sw.js"))
-          rewrite_env(env, path:)
-        end
-        files.call(rewritten_env)
+        path = sw_path(query_values.fetch("worker", "sw.js"))
+        target_env = rewrite_env(env, path:)
+        files.call(target_env)
       end
     else
       @app.call(env)
@@ -71,21 +63,6 @@ class ServiceWorkerProxy
       "REQUEST_PATH" => path,
       "REQUEST_URI" => [path, query_string].compact_blank.join("?"),
       "QUERY_STRING" => query_string,
-    )
-  end
-
-  sig do
-    params(env: T::Hash[String, T.untyped])
-      .returns(T::Hash[String, T.untyped])
-  end
-  def deprecated_rewrite_env(env)
-    query_values = Addressable::URI.parse(env.fetch("REQUEST_URI")).query_values
-    worker_uri = Addressable::URI.parse(query_values.fetch("worker_src"))
-    env.merge(
-      "PATH_INFO" => worker_uri.path,
-      "REQUEST_PATH" => worker_uri.path,
-      "REQUEST_URI" => worker_uri.to_s,
-      "QUERY_STRING" => worker_uri.query,
     )
   end
 end

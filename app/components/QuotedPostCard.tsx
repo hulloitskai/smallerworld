@@ -35,11 +35,7 @@ const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
     >
       <Card.Section inheritPadding pt="xs" pb={10}>
         <Group gap={8} align="center">
-          {!!post.emoji && (
-            <Text size="lg" inline display="block">
-              {post.emoji}
-            </Text>
-          )}
+          {!!post.emoji && <Box fz="lg">{post.emoji}</Box>}
           <Group gap={6} style={{ flexGrow: 1 }}>
             {!post.emoji && (
               <Box

@@ -66,7 +66,7 @@ const CreateActivityForm: FC<CreateActivityFormProps> = ({
                     mod={{ opened }}
                   >
                     {values.emoji ? (
-                      <Text size="xl">{values.emoji}</Text>
+                      <Box fz="xl">{values.emoji}</Box>
                     ) : (
                       <Box component={EmojiIcon} c="dimmed" />
                     )}

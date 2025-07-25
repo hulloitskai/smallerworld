@@ -101,7 +101,9 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                         shadow="sm"
                       >
                         <HoverCard.Target>
-                          <Text inline>{encouragement.emoji}</Text>
+                          <Box className={classes.encouragementEmoji}>
+                            {encouragement.emoji}
+                          </Box>
                         </HoverCard.Target>
                         <HoverCard.Dropdown px="xs" py={8} maw={240}>
                           <Stack gap={2}>

@@ -33,6 +33,11 @@ export default {
             "@mixin-content": {},
           },
         },
+        "safari-only": {
+          "_::-webkit-full-page-media, _:future, :root &": {
+            "@mixin-content": {},
+          },
+        },
       },
     },
     "postcss-simple-vars": {
