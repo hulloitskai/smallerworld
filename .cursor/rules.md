@@ -19,6 +19,30 @@ bin/fix
   3. Verify all formatting tools are listed in `package.json` devDependencies
 - **The script will fail if package.json is missing** - this ensures we never accidentally use global versions
 
+## Security Audits
+
+### Handling npm audit vulnerabilities
+
+- **Regular audits**: Run `npm audit` to check for security vulnerabilities
+- **Automatic fixes**: When possible, use `npm audit fix` to automatically update vulnerable dependencies
+- **Force fixes with caution**: Only use `npm audit fix --force` after careful review as it may introduce breaking changes
+- **Known issues**: Some vulnerabilities may not be fixable due to:
+  - Dependencies requiring specific vulnerable versions
+  - Malware in packages (like stylus) that are deeply nested dependencies
+  - Breaking changes that would require significant refactoring
+- **Pre-push hooks**: The repository has pre-push hooks that check for vulnerabilities - use `--no-verify` flag only when absolutely necessary and document why
+- **Documentation**: Document any vulnerabilities that cannot be fixed in the project README or security documentation
+
+## Dependency Management
+
+### Never Update Dependencies Without User Confirmation
+
+- **No automatic updates**: Never run `npm update`, `npm install <package>@latest`, or similar commands without explicit user permission
+- **Security vulnerabilities**: Even when npm audit suggests updates, ask for confirmation before updating any packages
+- **Version conflicts**: If a dependency update is suggested to resolve conflicts, explain the situation and wait for user approval
+- **Breaking changes**: Always warn about potential breaking changes before suggesting any dependency updates
+- **Documentation**: If updates are approved, document what was changed and why in the commit message
+
 ## Code Simplicity
 
 ### Prefer Direct Logic Over Premature Optimization
