@@ -7,7 +7,7 @@ class PostingTest < ApplicationSystemTestCase
   # == Tests
   test "can post a journal entry" do
     # Sign in as Testy
-    testy = user(:testy)
+    testy = users(:testy)
     visit new_session_url
 
     phone = testy.phone

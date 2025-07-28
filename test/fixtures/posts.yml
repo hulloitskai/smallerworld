@@ -1,0 +1,20 @@
+post_with_title_and_emoji:
+  author: testy
+  type: "journal_entry"
+  title: "Hello World"
+  emoji: "👋"
+  body_html: "<p>This is a post with a title and an emoji.</p>"
+  visibility: "public"
+
+post_with_emoji:
+  author: testy
+  type: "journal_entry"
+  emoji: "👋"
+  body_html: "<p>This is a post with an emoji.</p>"
+  visibility: "public"
+
+post_without_title_or_emoji:
+  author: testy
+  type: "journal_entry"
+  body_html: "<p>This is a post without a title or an emoji.</p>"
+  visibility: "public"

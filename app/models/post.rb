@@ -91,13 +91,18 @@ class Post < ApplicationRecord
   end
 
   sig { returns(String) }
+  def truncated_body_text
+    body_text.strip.truncate(120)
+  end
+
+  sig { returns(String) }
   def body_snippet
-    snip(body_text.strip.truncate(120))
+    snip(truncated_body_text)
   end
 
   sig { returns(String) }
   def compact_body_snippet
-    snip(body_text.strip.truncate(120).gsub("\n\n", "\n"))
+    snip(truncated_body_text.gsub("\n\n", "\n"))
   end
 
   sig { returns(String) }
@@ -198,12 +203,20 @@ class Post < ApplicationRecord
         "#{recipient.inspect}"
     end
 
-    title = "new #{type}"
+    title = "new #{type.humanize(capitalize: false)}"
     author = author!
     unless recipient
       title += " from #{author.name}"
     end
-    body = [fun_title, body_snippet].compact.join("\n")
+    body = ""
+    if (emoji = self.emoji)
+      body += "#{emoji} "
+    end
+    body += if (post_title = self.title)
+      post_title.strip + "\n" + truncated_body_text
+    else
+      truncated_body_text
+    end
     url_helpers = Rails.application.routes.url_helpers
     NotificationMessage.new(
       title:,

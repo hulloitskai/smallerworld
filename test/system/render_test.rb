@@ -12,7 +12,7 @@ class RenderTest < ApplicationSystemTestCase
   end
 
   test "renders user page" do
-    testy = user(:testy)
+    testy = users(:testy)
     visit user_url(testy)
     assert_selector "#app"
     assert_not_empty find_by_id("app").find_all("*")

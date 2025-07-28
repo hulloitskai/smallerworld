@@ -26,8 +26,13 @@ class ActiveSupport::TestCase
   end
   def active_storage_blobs(fixture_name = nil, *other_fixtures); end
 
+  sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[Post]) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(Post) }
+  sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[Post]) }
+  def posts(fixture_name = nil, *other_fixtures); end
+
   sig { params(fixture_name: NilClass, other_fixtures: NilClass).returns(T::Array[User]) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: NilClass).returns(User) }
   sig { params(fixture_name: T.any(String, Symbol), other_fixtures: T.any(String, Symbol)).returns(T::Array[User]) }
-  def user(fixture_name = nil, *other_fixtures); end
+  def users(fixture_name = nil, *other_fixtures); end
 end
