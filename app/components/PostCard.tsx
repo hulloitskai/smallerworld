@@ -76,8 +76,8 @@ const PostCard: FC<PostCardProps> = ({
       {...otherProps}
     >
       <Card.Section inheritPadding pt="xs" pb={10}>
-        <Group gap={8} align="center" justify="space-between">
-          <Group gap={6} align="center">
+        <Group gap={8} align="center">
+          <Group gap={6} align="center" style={{ flexGrow: 1 }}>
             {!!post.emoji && <Box className={classes.emoji}>{post.emoji}</Box>}
             <Group
               className={classes.typeGroup}
