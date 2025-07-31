@@ -187,13 +187,14 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                 </Stack>
                 <Divider mt={4} mx="calc(-1 * var(--mantine-spacing-xs))" />
                 <Anchor
-                  href="/feedback"
+                  href={routes.feedback.redirect.path()}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                   size="xs"
                   inline
                   ta="center"
                   ff="heading"
+                  data-canny-link
                 >
                   got feedback or feature requests?
                 </Anchor>

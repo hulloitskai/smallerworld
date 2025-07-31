@@ -2,6 +2,7 @@ import { ModalsProvider } from "@mantine/modals";
 
 import AmplitudeTracking from "./AmplitudeTracking";
 import AppFlash from "./AppFlash";
+import CannyTracking from "./CannyTracking";
 import ClarityTracking from "./ClarityTracking";
 import FullStoryTracking from "./FullStoryTracking";
 import MiniProfilerPageTracking from "./MiniProfilerPageTracking";
@@ -28,6 +29,7 @@ const PageLayout: FC<PropsWithChildren> = ({ children }) => (
     <FullStoryTracking />
     <ClarityTracking />
     <AmplitudeTracking />
+    <CannyTracking />
     <MiniProfilerPageTracking />
   </>
 );

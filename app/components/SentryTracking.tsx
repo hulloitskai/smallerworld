@@ -1,4 +1,4 @@
-import { isInitialized, setUser } from "@sentry/react";
+import { isInitialized, setUser, type User } from "@sentry/react";
 
 import { prettyName } from "~/helpers/friends";
 
@@ -11,10 +11,14 @@ const SentryTracking: FC = () => {
     if (isInitialized()) {
       if (currentFriend) {
         const { id } = currentFriend;
-        setUser({ id, name: prettyName(currentFriend) });
+        const user: User = { id, name: prettyName(currentFriend) };
+        setUser(user);
+        console.info("Set Sentry user", user);
       } else if (currentUser) {
         const { id, handle, name } = currentUser;
-        setUser({ id, username: handle, name });
+        const user: User = { id, username: handle, name };
+        setUser(user);
+        console.info("Set Sentry user", user);
       } else {
         setUser(null);
       }

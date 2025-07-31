@@ -4,5 +4,5 @@
 class FriendSerializer < ApplicationSerializer
   # == Attributes
   identifier
-  attributes :name, :emoji, :access_token
+  attributes :created_at, :name, :emoji, :access_token
 end

@@ -36,10 +36,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
       offset={4}
       width={220}
       arrowPosition="center"
-      classNames={{
-        dropdown: classes.dropdown,
-        item: classes.item,
-      }}
+      className={classes.menu}
       {...otherProps}
     >
       <Menu.Target>
@@ -181,7 +178,12 @@ const ServerInfoItem: FC<BoxProps> = props => {
   const { bootedAt } = data ?? {};
 
   return (
-    <Menu.Item component="div" disabled fz="xs" mod={{ info: true }} {...props}>
+    <Menu.Item
+      component="div"
+      disabled
+      className={classes.serverInfoItem}
+      {...props}
+    >
       server booted{" "}
       {bootedAt ? (
         <TimeAgo inherit>{bootedAt}</TimeAgo>
@@ -193,7 +195,7 @@ const ServerInfoItem: FC<BoxProps> = props => {
           lh={1}
           style={{ verticalAlign: "middle" }}
         >
-          <Text span inherit display="inline-block" lh={1}>
+          <Text span inherit inline display="inline-block">
             2 minutes ago
           </Text>
         </Skeleton>

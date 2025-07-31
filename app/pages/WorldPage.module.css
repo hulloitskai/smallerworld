@@ -12,13 +12,10 @@
 
 .menuContactItem {
   padding-block: 4px;
+  background-color: transparent;
   cursor: default;
   opacity: 1;
   text-align: center;
-
-  @mixin hover {
-    background-color: transparent;
-  }
 }
 
 .avatarGroup {

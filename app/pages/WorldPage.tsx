@@ -265,11 +265,12 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               className={classes.menuContactItem}
             >
               <Anchor
-                href="/feedback"
+                href={routes.feedback.redirect.path()}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
                 size="xs"
                 inline
+                data-canny-link
               >
                 got feedback or feature requests?
               </Anchor>
