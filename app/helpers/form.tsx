@@ -243,6 +243,11 @@ export const useForm = <
   );
   return {
     ...form,
+    reset: () => {
+      form.reset();
+      setData(undefined);
+      setError(undefined);
+    },
     submit,
     data,
     error,

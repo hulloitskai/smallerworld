@@ -140,7 +140,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
   useDidUpdate(() => {
     setInitialValues(initialValues);
     reset();
-  }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [initialValues, opened]); // eslint-disable-line react-hooks/exhaustive-deps
   const { friend } = data ?? {};
 
   return (
