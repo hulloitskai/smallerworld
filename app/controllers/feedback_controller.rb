@@ -2,8 +2,9 @@
 # frozen_string_literal: true
 
 class FeedbackController < ApplicationController
+  # == Constants
   CANNY_URL = T.let(
-    Addressable::URI.parse("https://smallerworld.canny.io"),
+    Addressable::URI.parse("https://smallerworld.canny.io/feature-requests"),
     Addressable::URI,
   )
 
