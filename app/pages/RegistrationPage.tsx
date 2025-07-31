@@ -87,6 +87,11 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
   // == Page icon preview
   const [pageIconPreview, setPageIconPreview] = useState<Image | null>(null);
 
+  const signupDisabled =
+    !timeZone ||
+    !values.name ||
+    values.prefixed_handle.length <= 1 ||
+    !values.page_icon_upload;
   return (
     <Card w="100%" maw={380} withBorder>
       <Card.Section inheritPadding withBorder py="md">
@@ -115,7 +120,6 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 label="your name"
                 placeholder="jimmy"
                 required
-                withAsterisk={false}
               />
               <InputBase
                 {...getInputProps("prefixed_handle")}
@@ -150,7 +154,6 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                   </Stack>
                 )}
                 required
-                withAsterisk={false}
               />
               <ImageInput
                 {...getInputProps("page_icon_upload")}
@@ -160,7 +163,6 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 w={ICON_IMAGE_INPUT_SIZE}
                 radius={ICON_IMAGE_INPUT_SIZE / USER_ICON_RADIUS_RATIO}
                 required
-                withAsterisk={false}
                 onPreviewChange={setPageIconPreview}
               />
               <UserThemeRadioGroup {...getInputProps("theme")} />
@@ -187,19 +189,38 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 />
               </InputWrapper>
             </Stack>
-            <Button
-              type="submit"
-              leftSection={<ProfileIcon />}
-              loading={submitting}
-              disabled={
-                !timeZone ||
-                !values.name ||
-                values.prefixed_handle.length <= 1 ||
-                !values.page_icon_upload
-              }
-            >
-              complete signup
-            </Button>
+            <Stack gap={6}>
+              <Button
+                type="submit"
+                leftSection={<ProfileIcon />}
+                loading={submitting}
+                disabled={signupDisabled}
+              >
+                complete signup
+              </Button>
+              <Text
+                size="xs"
+                c="dimmed"
+                ta="center"
+                maw={240}
+                style={{ alignSelf: "center" }}
+              >
+                by continuing, you agree to our{" "}
+                <Anchor
+                  component={Link}
+                  href={routes.policies.show.path({
+                    query: {
+                      referrer: "signup",
+                    },
+                  })}
+                  fw={600}
+                  opacity={0.8}
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  usage and privacy policies
+                </Anchor>
+              </Text>
+            </Stack>
           </Stack>
         </form>
       </Card.Section>

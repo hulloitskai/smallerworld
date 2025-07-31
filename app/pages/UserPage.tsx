@@ -65,22 +65,22 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   useUserTheme(user.theme);
 
   // == Auto-open join modal
-  const params = useQueryParams();
+  const queryParams = useQueryParams();
   const { modals } = useModals();
   useEffect(() => {
     if (!isEmpty(modals) || !currentFriend) {
       return;
     }
-    if (params.intent === "join") {
+    if (queryParams.intent === "join") {
       openUserPageJoinModal({ user, currentFriend });
-    } else if (params.intent === "installation_instructions") {
+    } else if (queryParams.intent === "installation_instructions") {
       openUserPageInstallationInstructionsModal({ user });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const body = (
     <Stack>
-      {currentUser?.id === user.id && !params.friend_token && (
+      {currentUser?.id === user.id && !queryParams.friend_token && (
         <Alert
           mb="xl"
           styles={{

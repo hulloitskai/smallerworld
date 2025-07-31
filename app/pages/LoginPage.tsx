@@ -85,11 +85,13 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
           "Missing registration status after sign in",
         );
         const { registered } = data;
-        const query = queryParamsFromPath(pageUrl);
+        const queryParams = queryParamsFromPath(pageUrl);
         if (registered) {
-          location.href = routes.world.show.path({ query });
+          location.href = routes.world.show.path({ query: queryParams });
         } else {
-          const registrationPath = routes.registration.new.path({ query });
+          const registrationPath = routes.registration.new.path({
+            query: queryParams,
+          });
           router.visit(registrationPath);
         }
       } else {

@@ -165,6 +165,7 @@ const AppInner: FC<AppInnerProps> = ({
         {...((isStandalone === false || outOfPWAScope) && {
           header: { height: 46 },
         })}
+        footer={{ height: "var(--mantine-spacing-md)" }}
         padding={padding ?? (withContainer ? undefined : "md")}
         classNames={{ root: classes.shell, header: classes.header }}
         data-vaul-drawer-wrapper
@@ -195,7 +196,7 @@ const AppInner: FC<AppInnerProps> = ({
           )}
           {main}
         </AppShell.Main>
-        <footer style={{ height: "var(--safe-area-inset-bottom, 0px)" }} />
+        <footer className={classes.footer} />
       </AppShell>
       <canvas id={SMOKE_CANVAS_ID} className={classes.particleCanvas} />
       <canvas id={CONFETTI_CANVAS_ID} className={classes.particleCanvas} />

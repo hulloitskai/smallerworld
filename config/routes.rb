@@ -178,6 +178,9 @@ Rails.application.routes.draw do
   resources :api_posts, path: "/api/posts", only: :create
   post "/api/post" => "api_posts#create"
 
+  # == Policies
+  get "/policies" => "policies#show", export: true
+
   # == Pages
   root "landing#show", export: true
   get "/src" => redirect(

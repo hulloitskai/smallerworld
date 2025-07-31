@@ -31,7 +31,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
 }) => {
   const { currentUser, hideStats, pausedFriends } =
     usePageProps<WorldPageProps>();
-  const params = useQueryParams();
+  const queryParams = useQueryParams();
 
   // == Input
   const inputRef = useRef<HTMLInputElement>(null);
@@ -145,7 +145,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
               <PostCard
                 key={post.id}
                 {...{ post }}
-                focus={params.post_id === post.id}
+                focus={queryParams.post_id === post.id}
                 actions={
                   <AuthorPostCardActions
                     user={currentUser}

@@ -1,0 +1,42 @@
+.container {
+  @mixin larger-than 648px {
+    padding-inline: var(--mantine-spacing-xl) !important;
+  }
+}
+
+.title {
+  @mixin smaller-than $mantine-breakpoint-xs {
+    font-size: var(--mantine-h3-font-size);
+  }
+}
+
+.contentBlock {
+  flex: 1;
+  min-width: 300px;
+}
+
+.explainer {
+  :global(.mantine-Badge-label) {
+    font-weight: 600;
+  }
+
+  @mixin smaller-than 648px {
+    display: none;
+  }
+}
+
+.policySectionCard {
+  [role="separator"] {
+    flex-basis: 100%;
+  }
+
+  @mixin larger-than 648px {
+    padding: 0;
+    border: none;
+    border-radius: 0;
+
+    [role="separator"] {
+      display: none;
+    }
+  }
+}

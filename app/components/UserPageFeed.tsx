@@ -24,7 +24,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
     hideNeko,
     allowFriendSharing,
   } = usePageProps<UserPageProps>();
-  const params = useQueryParams();
+  const queryParams = useQueryParams();
   const { pushRegistration } = useWebPush();
 
   // == Load posts
@@ -82,7 +82,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                   <PostCard
                     {...{ post }}
                     blurContent={!currentFriend && post.visibility !== "public"}
-                    focus={params.post_id === post.id}
+                    focus={queryParams.post_id === post.id}
                     actions={
                       <FriendPostCardActions
                         {...{ user, post, replyToNumber }}

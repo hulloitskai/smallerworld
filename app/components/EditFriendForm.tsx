@@ -1,5 +1,3 @@
-import { Text } from "@mantine/core";
-
 import { type Friend } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";

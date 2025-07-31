@@ -34,6 +34,7 @@
 
 .item {
   &[data-info] {
+    background-color: transparent;
     cursor: default;
   }
 }

@@ -6,7 +6,10 @@ class RegistrationsController < ApplicationController
   # GET /signup
   def new
     if signed_in?
-      redirect_to(after_authentication_url)
+      redirect_to(
+        after_authentication_url,
+        notice: "You already have an account!",
+      )
     elsif valid_registration_token?
       render(inertia: "RegistrationPage")
     else

@@ -20,7 +20,7 @@ const HomescreenPreviewWithIconCustomization: FC<
   ...otherProps
 }) => {
   // == Manifest icons
-  const params = useQueryParams();
+  const queryParams = useQueryParams();
   const alternatePageUrl = usePageUrlWithAlternativeManifestIcon(
     alternativeManifestIconPageUrlQuery,
   );
@@ -28,7 +28,9 @@ const HomescreenPreviewWithIconCustomization: FC<
   return (
     <Stack gap="xs" {...otherProps}>
       <HomescreenPreview
-        pageIcon={params.manifest_icon_type === "generic" ? null : pageIcon}
+        pageIcon={
+          queryParams.manifest_icon_type === "generic" ? null : pageIcon
+        }
         {...{ pageName, arrowLabel, radius }}
       />
       <Button
@@ -39,7 +41,7 @@ const HomescreenPreviewWithIconCustomization: FC<
         style={{ alignSelf: "center" }}
       >
         use{" "}
-        {params.manifest_icon_type === "generic"
+        {queryParams.manifest_icon_type === "generic"
           ? possessive(pageName)
           : "alternative"}{" "}
         icon

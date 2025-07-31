@@ -22,9 +22,9 @@ export const UserPageRequestInvitationAlert: FC<
   const [showDrawerModal, setShowDrawerModal] = useState(false);
 
   // == Auto-open modal
-  const params = useQueryParams();
+  const queryParams = useQueryParams();
   useEffect(() => {
-    if (params.intent === "join" && !invitationRequested) {
+    if (queryParams.intent === "join" && !invitationRequested) {
       setShowDrawerModal(true);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

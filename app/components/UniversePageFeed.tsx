@@ -15,7 +15,7 @@ const AUTHOR_ICON_SIZE = 26;
 
 const UniversePageFeed: FC<UniversePageFeedProps> = props => {
   const { isStandalone } = usePWA();
-  const params = useQueryParams();
+  const queryParams = useQueryParams();
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useUniversePosts();
@@ -37,7 +37,7 @@ const UniversePageFeed: FC<UniversePageFeedProps> = props => {
               <Stack key={post.id} gap={6}>
                 <PostCard
                   {...{ post }}
-                  focus={params.post_id === post.id}
+                  focus={queryParams.post_id === post.id}
                   actions={<PublicPostCardActions postId={post.id} />}
                 />
                 <Button<"a" | typeof Link>

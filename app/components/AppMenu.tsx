@@ -2,6 +2,7 @@ import { type InertiaLinkProps } from "@inertiajs/react";
 import { Image, Loader, type MenuItemProps, Text } from "@mantine/core";
 
 import MenuIcon from "~icons/heroicons/bars-3-20-solid";
+import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import logoSrc from "~/assets/images/logo.png";
 
@@ -101,6 +102,9 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
             setOpened(false);
           }}
         />
+        <MenuLink href={routes.policies.show.path()} leftSection={<LockIcon />}>
+          terms of use & privacy
+        </MenuLink>
         <Menu.Divider />
         <ServerInfoItem />
       </Menu.Dropdown>
