@@ -12,10 +12,11 @@
 
 .contentBlock {
   flex: 1;
-  min-width: 300px;
 }
 
 .explainer {
+  padding-top: 8px;
+
   :global(.mantine-Badge-label) {
     font-weight: 600;
   }
