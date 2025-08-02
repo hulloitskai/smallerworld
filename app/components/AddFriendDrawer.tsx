@@ -498,10 +498,11 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
   currentUser,
   friend,
 }) => {
+  const vaulPortalTarget = useVaulPortalTarget();
   const joinUrl = useJoinUrl(currentUser, friend);
   const joinShareData = useJoinShareData(joinUrl);
   return (
-    <Menu width={140}>
+    <Menu width={140} portalProps={{ target: vaulPortalTarget }}>
       <Menu.Target>
         <Button variant="filled" leftSection={<SendIcon />} disabled={!joinUrl}>
           send invite link
