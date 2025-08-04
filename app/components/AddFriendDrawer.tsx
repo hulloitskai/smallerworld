@@ -154,6 +154,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
           <Stack gap="xs">
             <Group gap="xs" align="start">
               <EmojiPopover
+                middlewares={{ flip: true }}
                 onEmojiClick={({ emoji }) => {
                   setFieldValue("emoji", emoji);
                 }}
