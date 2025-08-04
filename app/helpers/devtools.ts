@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     resetWebPush: () => Promise<void>;
+    sendTestNotification: () => Promise<void>;
   }
 }
 
@@ -20,4 +21,28 @@ export const setupDevtools = (): void => {
           console.info("No active push subscription");
         }
       });
+
+  window.sendTestNotification = (): Promise<void> => {
+    const url = hrefToUrl(location.href);
+    const friendToken = url.searchParams.get("friend_token");
+    return navigator.serviceWorker.ready.then(async ({ pushManager }) => {
+      const subscription = await pushManager.getSubscription();
+      if (!subscription) {
+        throw new Error("No active push subscription");
+      }
+      return fetchRoute(routes.pushSubscriptions.test, {
+        descriptor: "send test notification",
+        params: {
+          query: {
+            ...(friendToken && {
+              friend_token: friendToken,
+            }),
+          },
+        },
+        data: {
+          push_subscription: pick(subscription, "endpoint"),
+        },
+      });
+    });
+  };
 };

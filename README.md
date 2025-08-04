@@ -6,7 +6,7 @@ _a smaller world for you and your friends._
 
 ```bash
 # install tools
-brew install docker rbenv nodenv pyenv poetry watchman overmind
+brew install docker rbenv nodenv watchman overmind
 
 # install libraries
 brew install libvips
