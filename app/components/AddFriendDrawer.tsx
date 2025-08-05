@@ -149,12 +149,11 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
       {...{ opened }}
       {...otherProps}
     >
-      <Stack gap="lg">
+      <Stack gap="lg" className={classes.stack}>
         <form onSubmit={submit}>
           <Stack gap="xs">
             <Group gap="xs" align="start">
               <EmojiPopover
-                middlewares={{ flip: true }}
                 onEmojiClick={({ emoji }) => {
                   setFieldValue("emoji", emoji);
                 }}

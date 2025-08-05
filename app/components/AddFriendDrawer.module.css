@@ -1,3 +1,7 @@
+.stack {
+  min-height: calc(rem(414px) + var(--safe-area-inset-bottom, 0px));
+}
+
 .addButton {
   align-self: center;
 
