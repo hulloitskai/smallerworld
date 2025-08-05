@@ -125,6 +125,7 @@ const ActivityCard: FC<ActivityCardProps> = ({
           template={activityOrTemplate}
           onCreated={activity => {
             setActivity(activity);
+            setDrawerOpened(false);
             onChange(activity);
           }}
         />

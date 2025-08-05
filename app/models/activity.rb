@@ -29,6 +29,7 @@
 class Activity < ApplicationRecord
   # == Associations
   belongs_to :user
+  has_many :coupons, class_name: "ActivityCoupon", dependent: :destroy
 
   sig { returns(User) }
   def user!

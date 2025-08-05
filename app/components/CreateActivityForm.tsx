@@ -23,7 +23,7 @@ const CreateActivityForm: FC<CreateActivityFormProps> = ({
     description: template.description,
     location_name: "",
   };
-  const { values, getInputProps, setFieldValue, submit } = useForm<
+  const { values, getInputProps, setFieldValue, submit, submitting } = useForm<
     { activity: Activity },
     typeof initialValues
   >({
@@ -105,6 +105,7 @@ const CreateActivityForm: FC<CreateActivityFormProps> = ({
           leftSection={<SaveIcon />}
           variant="filled"
           disabled={!filled}
+          loading={submitting}
           style={{ alignSelf: "center" }}
           onClick={() => {
             submit();
