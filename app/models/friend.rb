@@ -88,6 +88,11 @@ class Friend < ApplicationRecord
   # == Scopes
   scope :active, -> { where(paused_since: nil) }
   scope :paused, -> { where.not(paused_since: nil) }
+  scope :paused_during, ->(interval) {
+    joins(:user_posts)
+      .where("posts.created_at" => interval)
+      .where("friends.id = ANY(posts.hidden_from_ids)")
+  }
   scope :subscribed_to, ->(post_type) {
     where("? = ANY (subscribed_post_types)", post_type)
   }

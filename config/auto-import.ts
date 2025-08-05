@@ -89,7 +89,6 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "Card",
       "Center",
       "Checkbox",
-      "Chip",
       "Container",
       "Divider",
       "Flex",

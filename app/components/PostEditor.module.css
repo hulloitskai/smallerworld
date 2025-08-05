@@ -4,6 +4,10 @@
 
 .content {
   border-radius: var(--editor-radius, var(--mantine-radius-default));
+
+  div[tabindex="0"] {
+    z-index: 2;
+  }
 }
 
 .contentEditable {

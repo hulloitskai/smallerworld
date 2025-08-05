@@ -59,7 +59,10 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
           />
         ) : (
           <Box>
-            <ScrollArea className={classes.scrollArea}>
+            <ScrollArea
+              className={classes.scrollArea}
+              offsetScrollbars="present"
+            >
               {worlds
                 ? worlds.map(world => (
                     <Anchor

@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Alert,
   Button,
+  Chip,
   CloseButton,
   createTheme as createMantineTheme,
   DEFAULT_THEME,
@@ -22,6 +23,7 @@ import {
   PasswordInput,
   PinInput,
   Popover,
+  ScrollArea,
   Text,
   TextInput,
   ThemeIcon,
@@ -327,6 +329,11 @@ const createTheme = (
       InputWrapper: InputWrapper.extend({
         classNames: {
           label: classes.inputLabel,
+        },
+      }),
+      ScrollArea: ScrollArea.extend({
+        defaultProps: {
+          type: "auto",
         },
       }),
     },

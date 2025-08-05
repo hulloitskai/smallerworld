@@ -6,8 +6,5 @@ class WorldPostSerializer < PostSerializer
   object_as :post
 
   # == Attributes
-  attributes :updated_at
-  attribute :hidden_from_count, type: :number do
-    post.hidden_from.count
-  end
+  attributes :updated_at, hidden_from_ids: { type: "string[]" }
 end

@@ -1,4 +1,4 @@
-import { Input } from "@mantine/core";
+import { Chip, Input } from "@mantine/core";
 import { pluralize } from "inflection";
 
 import { type FormHelper } from "~/helpers/form";

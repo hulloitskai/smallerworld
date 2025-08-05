@@ -1,4 +1,4 @@
-import { Input, ScrollArea, SegmentedControl, Text } from "@mantine/core";
+import { Input, ScrollArea, SegmentedControl } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useLongPress, useMergedRef } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
@@ -22,22 +22,24 @@ import { type Post, type PostType, type Upload, type WorldPost } from "~/types";
 import EmojiPopover from "./EmojiPopover";
 import ImageInput, { type ImageInputProps } from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
+import PostFormHiddenFromIdsPicker from "./PostFormHiddenFromIdsPicker";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostForm.module.css";
 import "@mantine/dates/styles.layer.css";
 
-export type PostFormProps = { pausedFriends: number } & (
+export type PostFormProps =
   | {
       post: WorldPost;
       onPostUpdated?: (post: WorldPost) => void;
     }
   | {
       postType: PostType | null;
+      pausedFriendIds: string[];
+      recentlyPausedFriendIds: string[];
       quotedPost?: Post;
       onPostCreated?: (post: WorldPost) => void;
-    }
-);
+    };
 
 const POST_TITLE_PLACEHOLDERS: Partial<Record<PostType, string>> = {
   journal_entry: "what a day!",
@@ -58,14 +60,17 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   follow_up: "um, actually...",
 };
 
-const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
-  const postType =
-    "postType" in otherProps ? otherProps.postType : otherProps.post.type;
-  const post = "post" in otherProps ? otherProps.post : null;
+const PostForm: FC<PostFormProps> = props => {
+  const postType = "postType" in props ? props.postType : props.post.type;
+  const post = "post" in props ? props.post : null;
   const quotedPost =
-    "quotedPost" in otherProps
-      ? otherProps.quotedPost
-      : (post?.quoted_post ?? undefined);
+    "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
+  const pausedFriendIds =
+    "pausedFriendIds" in props ? props.pausedFriendIds : undefined;
+  const recentlyPausedFriendIds =
+    "recentlyPausedFriendIds" in props
+      ? props.recentlyPausedFriendIds
+      : undefined;
 
   const titlePlaceholder = postType
     ? POST_TITLE_PLACEHOLDERS[postType]
@@ -82,8 +87,15 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
-    const { title, body_html, emoji, images, visibility, pinned_until } =
-      post ?? {};
+    const {
+      title,
+      body_html,
+      emoji,
+      images,
+      visibility,
+      pinned_until,
+      hidden_from_ids,
+    } = post ?? {};
     return {
       title: title ?? "",
       body_html: body_html ?? "",
@@ -94,8 +106,9 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
       visibility: visibility ?? "friends",
       pinned_until: pinned_until ?? "",
       quiet: !!post,
+      hidden_from_ids: hidden_from_ids ?? pausedFriendIds ?? [],
     };
-  }, [post]);
+  }, [post, pausedFriendIds]);
   const {
     setFieldValue,
     insertListItem,
@@ -171,7 +184,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
         }),
     initialValues,
     onSuccess: ({ post }, { reset }) => {
-      if (!("post" in otherProps)) {
+      if (!("post" in props)) {
         reset();
         editorRef.current?.commands.clearContent();
         clearNewPostDraft();
@@ -179,10 +192,10 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
       void mutatePosts();
       void mutateRoute(routes.posts.pinned);
       void mutateRoute(routes.encouragements.index);
-      if ("onPostCreated" in otherProps) {
-        otherProps.onPostCreated?.(post);
-      } else if ("onPostUpdated" in otherProps) {
-        otherProps.onPostUpdated?.(post);
+      if ("onPostCreated" in props) {
+        props.onPostCreated?.(post);
+      } else if ("onPostUpdated" in props) {
+        props.onPostUpdated?.(post);
       }
     },
   });
@@ -233,7 +246,6 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
     }
   }, [values]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const hiddenFromCount = post ? post.hidden_from_count : pausedFriends;
   const [showImageInput, setShowImageInput] = useState(() => {
     if (newPostDraft) {
       return !isEmpty(newPostDraft.values.images_uploads);
@@ -391,6 +403,7 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
               {showImageInput || !isEmpty(values.images_uploads) ? (
                 <ScrollArea
                   scrollbars="x"
+                  offsetScrollbars="present"
                   className={classes.imagesScrollArea}
                   w={formStackWidth}
                 >
@@ -457,12 +470,27 @@ const PostForm: FC<PostFormProps> = ({ pausedFriends, ...otherProps }) => {
             </>
           )}
           <Group justify="end" mt="xs">
-            {hiddenFromCount > 0 && (
-              <Text size="xs" c="dimmed">
-                hidden from {hiddenFromCount}{" "}
-                {inflect("friend", hiddenFromCount)}
-              </Text>
-            )}
+            <PostFormHiddenFromIdsPicker
+              {...{ recentlyPausedFriendIds }}
+              {...getInputProps("hidden_from_ids")}
+            >
+              <Anchor
+                component="button"
+                type="button"
+                size="xs"
+                underline="always"
+                c="dimmed"
+              >
+                {isEmpty(values.hidden_from_ids) ? (
+                  "visible to all friends"
+                ) : (
+                  <>
+                    hidden from {values.hidden_from_ids.length}{" "}
+                    {inflect("friend", values.hidden_from_ids.length)}
+                  </>
+                )}
+              </Anchor>
+            </PostFormHiddenFromIdsPicker>
             <Button
               type="submit"
               variant="filled"

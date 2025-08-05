@@ -71,12 +71,9 @@ class PostsController < ApplicationController
       :quoted_post_id,
       :quiet,
       images: [],
+      hidden_from_ids: [],
     ])
-    paused_friend_ids = current_user.friends.paused.pluck(:id)
-    post = current_user.posts.build(
-      hidden_from_ids: paused_friend_ids,
-      **post_params,
-    )
+    post = current_user.posts.build(**post_params)
     if post.save
       render(json: { post: WorldPostSerializer.one(post) }, status: :created)
     else
@@ -98,6 +95,7 @@ class PostsController < ApplicationController
       :visibility,
       :pinned_until,
       images: [],
+      hidden_from_ids: [],
     ])
     if post.update(post_params)
       render(json: { post: WorldPostSerializer.one(post) })

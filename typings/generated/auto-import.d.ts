@@ -22,7 +22,6 @@ declare global {
   const Card: typeof import('@mantine/core')['Card']
   const Center: typeof import('@mantine/core')['Center']
   const Checkbox: typeof import('@mantine/core')['Checkbox']
-  const Chip: typeof import('@mantine/core')['Chip']
   const ChosenFamilyIcon: typeof import('~/components/icons')['ChosenFamilyIcon']
   const ClipboardIcon: typeof import('~/components/icons')['ClipboardIcon']
   const Container: typeof import('@mantine/core')['Container']

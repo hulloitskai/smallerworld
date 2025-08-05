@@ -29,7 +29,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
   hideSearch,
   ...otherProps
 }) => {
-  const { currentUser, hideStats, pausedFriends } =
+  const { currentUser, hideStats, pausedFriendIds, recentlyPausedFriendIds } =
     usePageProps<WorldPageProps>();
   const queryParams = useQueryParams();
 
@@ -149,7 +149,12 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                 actions={
                   <AuthorPostCardActions
                     user={currentUser}
-                    {...{ post, hideStats, pausedFriends }}
+                    {...{
+                      post,
+                      hideStats,
+                      pausedFriendIds,
+                      recentlyPausedFriendIds,
+                    }}
                   />
                 }
                 highlightType={post.type === postType}

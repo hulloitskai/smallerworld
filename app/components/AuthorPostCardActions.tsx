@@ -11,15 +11,16 @@ import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type PostReaction, type User, type WorldPost } from "~/types";
 
 import DrawerModal from "./DrawerModal";
-import PostForm, { type PostFormProps } from "./PostForm";
+import PostForm from "./PostForm";
 
 import classes from "./AuthorPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
-export interface AuthorPostCardActionsProps
-  extends Pick<PostFormProps, "pausedFriends"> {
+export interface AuthorPostCardActionsProps {
   user: User;
   post: WorldPost;
+  pausedFriendIds: string[];
+  recentlyPausedFriendIds: string[];
   hideStats: boolean;
   onFollowUpDrawerModalOpened?: () => void;
 }
@@ -27,8 +28,9 @@ export interface AuthorPostCardActionsProps
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   user,
   post,
+  pausedFriendIds,
+  recentlyPausedFriendIds,
   hideStats,
-  pausedFriends,
   onFollowUpDrawerModalOpened,
 }) => {
   const postUrl = useNormalizeUrl(
@@ -176,7 +178,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
                   size: "var(--container-size-xs)",
                   children: (
                     <PostForm
-                      {...{ post, pausedFriends }}
+                      {...{ post }}
                       onPostUpdated={() => {
                         closeAllModals();
                       }}
@@ -249,8 +251,8 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
         }}
       >
         <PostForm
-          {...{ pausedFriends }}
           postType="follow_up"
+          {...{ pausedFriendIds, recentlyPausedFriendIds }}
           quotedPost={post}
           onPostCreated={() => {
             setFollowUpModalDrawerOpened(false);

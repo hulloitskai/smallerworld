@@ -1,0 +1,14 @@
+.chip {
+  &[data-unnotifiable] {
+    :global(.mantine-Chip-label) {
+      opacity: 0.7;
+      border-style: dashed;
+    }
+  }
+}
+
+.content {
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  max-height: min(440px, 80dvh);
+  overflow-y: auto;
+}

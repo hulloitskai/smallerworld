@@ -21,21 +21,25 @@ import { type Encouragement, type PostType, type WorldPost } from "~/types";
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
 import PostCard from "./PostCard";
-import PostForm, { type PostFormProps } from "./PostForm";
+import PostForm from "./PostForm";
 import SleepyNeko from "./SleepyNeko";
 
 import classes from "./WorldPageFloatingActions.module.css";
 
-export interface WorldPageFloatingActionsProps
-  extends Pick<PostFormProps, "pausedFriends"> {
+export interface WorldPageFloatingActionsProps {
   onPostCreated?: () => void;
 }
 
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
-  pausedFriends,
   onPostCreated,
 }) => {
-  const { currentUser, hideStats, hideNeko } = usePageProps<WorldPageProps>();
+  const {
+    currentUser,
+    hideStats,
+    hideNeko,
+    pausedFriendIds,
+    recentlyPausedFriendIds,
+  } = usePageProps<WorldPageProps>();
   const { isStandalone } = usePWA();
   const { pushRegistration } = useWebPush();
   const { modals } = useModals();
@@ -235,7 +239,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
         }}
       >
         <PostForm
-          {...{ pausedFriends }}
+          {...{ pausedFriendIds, recentlyPausedFriendIds }}
           postType={postType ?? previousPostType ?? null}
           onPostCreated={() => {
             setPostType(null);
@@ -258,7 +262,12 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
               actions={
                 <AuthorPostCardActions
                   user={currentUser}
-                  {...{ post, hideStats, pausedFriends }}
+                  {...{
+                    post,
+                    hideStats,
+                    pausedFriendIds,
+                    recentlyPausedFriendIds,
+                  }}
                   onFollowUpDrawerModalOpened={() => {
                     setPinnedPostsDrawerModalOpened(false);
                   }}

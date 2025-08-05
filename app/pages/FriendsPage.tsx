@@ -1,5 +1,4 @@
 import { Text } from "@mantine/core";
-import { partition } from "lodash-es";
 
 import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
 import FriendsIcon from "~icons/heroicons/users-20-solid";
@@ -7,12 +6,8 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
 import FriendCard from "~/components/FriendCard";
-import {
-  type Activity,
-  type ActivityTemplate,
-  type User,
-  type WorldFriend,
-} from "~/types";
+import { useFriends } from "~/helpers/friends";
+import { type Activity, type ActivityTemplate, type User } from "~/types";
 
 export interface FriendsPageProps extends SharedPageProps {
   currentUser: User;
@@ -23,18 +18,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   useUserTheme(currentUser.theme);
 
   // == Load friends
-  const { data: friendsData } = useRouteSWR<{ friends: WorldFriend[] }>(
-    routes.friends.index,
-    {
-      descriptor: "load friends",
-      keepPreviousData: true,
-    },
-  );
-  const { friends } = friendsData ?? {};
-  const [notifiableFriends, unnotifiableFriends] = useMemo(
-    () => partition(friends, friend => friend.notifiable),
-    [friends],
-  );
+  const { allFriends, notifiableFriends, unnotifiableFriends } = useFriends();
 
   // == Load activities
   const { data: activitiesData } = useRouteSWR<{
@@ -65,8 +49,8 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
       </Stack>
       <Stack gap="xs">
         <AddFriendButton {...{ currentUser }} size="md" mih={54} />
-        {friends ? (
-          isEmpty(friends) ? (
+        {allFriends ? (
+          isEmpty(allFriends) ? (
             <Card
               withBorder
               c="dimmed"

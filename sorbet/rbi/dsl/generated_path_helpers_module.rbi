@@ -121,6 +121,9 @@ module GeneratedPathHelpersModule
   def pinned_user_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def policies_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -121,6 +121,9 @@ module GeneratedUrlHelpersModule
   def pinned_user_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def policies_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def post_reaction_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -332,6 +332,20 @@ class Activity
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def coupon_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def coupon_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Activity` class because it declared `has_many :coupons`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActivityCoupon::PrivateCollectionProxy) }
+    def coupons; end
+
+    sig { params(value: T::Enumerable[::ActivityCoupon]).void }
+    def coupons=(value); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user(*args, &blk); end
 

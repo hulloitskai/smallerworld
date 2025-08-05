@@ -10,6 +10,7 @@ export interface PostFormValues {
   visibility: PostVisibility;
   pinned_until: string | null;
   quiet: boolean;
+  hidden_from_ids: string[];
 }
 
 export interface NewPostDraft {

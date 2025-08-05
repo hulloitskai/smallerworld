@@ -51,6 +51,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
         <ScrollArea.Autosize
           {...{ ref, viewportRef }}
           scrollbars="y"
+          offsetScrollbars="present"
           classNames={{ viewport: classes.modalViewport }}
           {...props}
         />

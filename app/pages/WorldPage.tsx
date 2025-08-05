@@ -39,7 +39,8 @@ export interface WorldPageProps extends SharedPageProps {
   pendingJoinRequests: number;
   hideStats: boolean;
   hideNeko: boolean;
-  pausedFriends: number;
+  pausedFriendIds: string[];
+  recentlyPausedFriendIds: string[];
 }
 
 const ICON_SIZE = 96;
@@ -48,7 +49,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   currentUser,
   latestFriendEmojis,
   pendingJoinRequests,
-  pausedFriends,
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const { pushRegistration, supported: webPushSupported } = useWebPush();
@@ -66,7 +66,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         "hideNeko",
         "pendingJoinRequests",
         "latestFriendEmojis",
-        "pausedFriends",
+        "pausedFriendIds",
+        "recentlyPausedFriendIds",
       ],
       async: true,
     });
@@ -374,7 +375,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         {body}
       </RemoveScroll>
       <WorldPageFloatingActions
-        {...{ pausedFriends }}
         onPostCreated={() => {
           scrollTo({ top: 0, behavior: "smooth" });
         }}
