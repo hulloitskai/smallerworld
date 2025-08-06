@@ -42,22 +42,22 @@ class PushSubscription < ApplicationRecord
       message:,
       **options,
     )
-    with_log_tags do
+    tag_logger do
       logger.info("Sent web push: #{response.inspect}")
     end
   rescue WebPush::ExpiredSubscription, WebPush::InvalidSubscription => error
     message = T.let(error.response.body, String)
-    with_log_tags do
+    tag_logger do
       logger.warn("Bad subscription: #{message}")
     end
-    destroy or with_log_tags do |; message| # rubocop:disable Layout/SpaceAroundBlockParameters
+    destroy or tag_logger do |; message| # rubocop:disable Layout/SpaceAroundBlockParameters
       message = "Failed to destroy expired or invalid push subscription"
       logger.error(message)
       Sentry.capture_message(message)
     end
   rescue WebPush::ResponseError => error
     message = error.response.body
-    with_log_tags do
+    tag_logger do
       error_message = "Web push error: #{message}"
       logger.error(error_message)
       Sentry.capture_message(error_message)

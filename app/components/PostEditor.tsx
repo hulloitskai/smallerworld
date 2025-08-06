@@ -81,7 +81,9 @@ const PostEditor: FC<PostEditorProps> = ({
         controlsGroup: classes.controlsGroup,
       }}
       style={{
-        ...(radius && { "--editor-radius": getRadius(radius) }),
+        ...(radius && {
+          "--editor-radius": getRadius(radius),
+        }),
         ...(contentEditableMinHeight && {
           "--editor-content-editable-min-height": rem(contentEditableMinHeight),
         }),

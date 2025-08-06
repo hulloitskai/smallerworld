@@ -16,7 +16,7 @@ class PhoneVerificationRequestsController < ApplicationController
     )
     verification_request = PhoneVerificationRequest
       .new(verification_request_params)
-    with_log_tags do
+    tag_logger do
       logger.info(
         "Sending verification code #{verification_request.verification_code} " \
           "to #{verification_request.phone_number}",

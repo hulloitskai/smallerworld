@@ -12,7 +12,12 @@ Rails.application.configure do
       "active_storage/cleanup_blobs": {
         class: "ActiveStorage::CleanupBlobsJob",
         description: "Schedule purging of unattached ActiveStorage blobs.",
-        cron: "0 */6 * * *",
+        cron: "0 */6 * * *", # Every 6 hours
+      },
+      "activity_coupon_reminders": {
+        class: "ScheduleActivityCouponReminderJob",
+        description: "Schedule activity coupon reminders.",
+        cron: "0 0 * * *", # Daily at midnight GMT
       },
     }
 

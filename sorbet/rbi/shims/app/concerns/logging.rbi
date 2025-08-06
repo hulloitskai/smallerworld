@@ -5,5 +5,5 @@ module Logging
   def logger; end
 
   sig { params(tags: String, block: T.proc.void).void }
-  def with_log_tags(*tags, &block); end
+  def tag_logger(*tags, &block); end
 end

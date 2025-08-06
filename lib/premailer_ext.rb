@@ -34,7 +34,7 @@ module Premailer::Adapter::Nokogiri
     def to_inline_css
       unmergeable_rules = CssParser::Parser.new
 
-      with_log_tags do
+      tag_logger do
         logger.debug(
           "Converting CSS to inline styles for document: #{@processed_doc}",
         )
@@ -325,21 +325,21 @@ module Premailer::Adapter::Nokogiri
       ).returns(T.nilable(String))
     end
     def lookup_css_variable_value(name, element)
-      with_log_tags do
+      tag_logger do
         logger.debug("Looking up CSS variable `#{name}' for: #{element}")
       end
       node = T.let(element, Nokogiri::XML::Element)
       until node.is_a?(Nokogiri::HTML4::Document)
         css_variables = element_css_variables[node] || {}
         if (replacement = css_variables[name])
-          with_log_tags do
+          tag_logger do
             logger.debug("Resolved CSS variable to `#{replacement}'")
           end
           return replacement
         end
         node = node.parent
       end
-      with_log_tags do
+      tag_logger do
         logger.debug("Failed to resolve CSS variable")
       end
       nil
@@ -353,7 +353,7 @@ module Premailer::Adapter::Nokogiri
     end
 
     sig { params(block: T.proc.void).void }
-    def with_log_tags(&block)
+    def tag_logger(&block)
       if logger.respond_to?(:tagged)
         conditionally_enable_logger do
           T.unsafe(logger).tagged("Premailer", &block)

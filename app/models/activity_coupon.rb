@@ -68,6 +68,12 @@ class ActivityCoupon < ApplicationRecord
   scope :expired, -> { where("expires_at <= NOW()") }
   scope :redeemed, -> { where.not(redeemed_at: nil) }
   scope :active, -> { where("expires_at > NOW()").where(redeemed_at: nil) }
+  scope :without_recent_notification, -> {
+    recently_notified_ids = joins(:notifications)
+      .where("notifications.created_at > ?", 1.week.ago)
+      .select(:noticeable_id)
+    where.not(id: recently_notified_ids)
+  }
 
   # == Noticeable
   sig do
@@ -98,6 +104,11 @@ class ActivityCoupon < ApplicationRecord
   sig { void }
   def create_notification!
     notifications.create!(recipient: friend!)
+  end
+
+  sig { returns(T.nilable(Notification)) }
+  def recent_notification
+    notifications.chronological.where("created_at > ?", 1.week.ago).last
   end
 
   sig { void }
