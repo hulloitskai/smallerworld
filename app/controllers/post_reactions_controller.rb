@@ -3,14 +3,16 @@
 
 class PostReactionsController < ApplicationController
   # == Filters
-  before_action :authenticate_friend!, only: :create
+  before_action :authenticate_friend!, only: %i[create destroy]
 
   # == Actions
   # GET /posts/:post_id/reactions
   def index
     post = load_post(scope: Post.with_reactions)
     reactions = authorized_scope(post.reactions)
-    render(json: { reactions: PostReactionSerializer.many(reactions) })
+    render(json: {
+      reactions: PostReactionSerializer.many(reactions),
+    })
   end
 
   # POST /posts/:post_id/reactions?friend_token=...
@@ -23,7 +25,9 @@ class PostReactionsController < ApplicationController
       **reaction_params,
     )
     render(
-      json: { reaction: PostReactionSerializer.one(reaction) },
+      json: {
+        reaction: PostReactionSerializer.one(reaction),
+      },
       status: :created,
     )
   end

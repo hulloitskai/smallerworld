@@ -210,14 +210,19 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
           },
         }
       : null,
-    onSuccess: () => {
+    onSuccess: ({ reaction }) => {
       invariant(currentFriend, "Missing current friend");
-      void mutateRoute(routes.postReactions.index, {
-        post_id: postId,
-        query: {
-          friend_token: currentFriend.access_token,
+      void mutateRoute<{ reactions: PostReaction[] }>(
+        routes.postReactions.index,
+        { post_id: postId },
+        undefined,
+        {
+          optimisticData: currentData => {
+            const { reactions = [] } = currentData ?? {};
+            return { reactions: [...reactions, reaction] };
+          },
         },
-      });
+      );
     },
   });
 
@@ -327,28 +332,55 @@ const ReactionButton: FC<ReactionButtonProps> = ({
                 },
               },
               descriptor: "remove reaction",
+            }).then(() => {
+              void mutateRoute<{ reactions: PostReaction[] }>(
+                routes.postReactions.index,
+                { post_id: postId },
+                undefined,
+                {
+                  optimisticData: currentData => {
+                    const { reactions = [] } = currentData ?? {};
+                    return {
+                      reactions: reactions.filter(
+                        reaction => reaction.id !== currentReaction.id,
+                      ),
+                    };
+                  },
+                },
+              );
             })
-          : fetchRoute(routes.postReactions.create, {
-              params: {
-                post_id: postId,
-                query: {
-                  friend_token: currentFriend.access_token,
+          : fetchRoute<{ reaction: PostReaction }>(
+              routes.postReactions.create,
+              {
+                params: {
+                  post_id: postId,
+                  query: {
+                    friend_token: currentFriend.access_token,
+                  },
+                },
+                descriptor: "react to post",
+                data: {
+                  reaction: {
+                    emoji,
+                  },
                 },
               },
-              descriptor: "react to post",
-              data: {
-                reaction: {
-                  emoji,
+            ).then(({ reaction }) => {
+              void mutateRoute<{ reactions: PostReaction[] }>(
+                routes.postReactions.index,
+                { post_id: postId },
+                undefined,
+                {
+                  optimisticData: currentData => {
+                    const { reactions = [] } = currentData ?? {};
+                    return { reactions: [...reactions, reaction] };
+                  },
                 },
-              },
+              );
             });
-        void action
-          .then(() => {
-            void mutateRoute(routes.postReactions.index, { post_id: postId });
-          })
-          .finally(() => {
-            setMutating(false);
-          });
+        void action.finally(() => {
+          setMutating(false);
+        });
         if (currentReaction) {
           void puffOfSmoke({
             position: particlePositionFor(currentTarget),
