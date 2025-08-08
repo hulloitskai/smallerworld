@@ -1,26 +1,23 @@
 import { Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
-import { motion } from "motion/react";
 
-import StickerIcon from "~icons/ri/emoji-sticker-fill";
-
+// import StickerIcon from "~icons/ri/emoji-sticker-fill";
 import {
   confetti,
   particlePositionFor,
   puffOfSmoke,
 } from "~/helpers/particles";
-import { type PostReaction, type PostSticker } from "~/types";
+import { type PostReaction /*, type PostSticker */ } from "~/types";
 
-import Drawer from "./Drawer";
 import EmojiPopover from "./EmojiPopover";
-import LazyStickerPad from "./LazyStickerPad";
+// import LazyStickerPad from "./LazyStickerPad";
 import PostCardReplyButton, {
   type PostCardReplyButtonProps,
 } from "./PostCardReplyButton";
 import PostCardShareButton from "./PostCardShareButton";
-import StickerPicker from "./StickerPicker";
 
+// import StickerPicker from "./StickerPicker";
 import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
@@ -35,7 +32,6 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   replyToNumber,
   shareable,
 }) => {
-  const currentFriend = useCurrentFriend();
   const { ref, inViewport } = useInViewport();
 
   // == Load reactions
@@ -55,33 +51,33 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
     [reactions],
   );
 
-  // == Stickers
-  const stickerPadRef = useRef<HTMLDivElement>(null);
-  const [showStickerPad, setShowStickerPad] = useState(false);
-  const [showStickerDrawer, setShowStickerDrawer] = useState(false);
-  const { data: stickersData, mutate: mutateStickers } = useRouteSWR<{
-    stickers: PostSticker[];
-  }>(routes.postStickers.index, {
-    params:
-      user.supported_features.includes("stickers") && inViewport
-        ? { post_id: post.id }
-        : null,
-    descriptor: "load stickers",
-    keepPreviousData: true,
-    refreshInterval: 5000,
-    isVisible: () => inViewport,
-    onSuccess: ({ stickers }) => {
-      if (!isEmpty(stickers)) {
-        setShowStickerPad(true);
-      }
-    },
-  });
-  const { stickers = [] } = stickersData ?? {};
+  // // == Stickers
+  // const stickerPadRef = useRef<HTMLDivElement>(null);
+  // const [showStickerPad, setShowStickerPad] = useState(false);
+  // const [showStickerDrawer, setShowStickerDrawer] = useState(false);
+  // const { data: stickersData, mutate: mutateStickers } = useRouteSWR<{
+  //   stickers: PostSticker[];
+  // }>(routes.postStickers.index, {
+  //   params:
+  //     user.supported_features.includes("stickers") && inViewport
+  //       ? { post_id: post.id }
+  //       : null,
+  //   descriptor: "load stickers",
+  //   keepPreviousData: true,
+  //   refreshInterval: 5000,
+  //   isVisible: () => inViewport,
+  //   onSuccess: ({ stickers }) => {
+  //     if (!isEmpty(stickers)) {
+  //       setShowStickerPad(true);
+  //     }
+  //   },
+  // });
+  // const { stickers = [] } = stickersData ?? {};
 
   return (
     <>
       <Box>
-        <Box
+        {/* <Box
           component={motion.div}
           key="sticker-pad-container"
           layout="size"
@@ -108,7 +104,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
               }}
             />
           )}
-        </Box>
+        </Box> */}
         <Group {...{ ref }} align="start" gap={2} wrap="wrap">
           <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
             {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
@@ -120,7 +116,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             ))}
           </Group>
           <Group justify="end" gap={2} style={{ flexGrow: 1 }}>
-            {user.supported_features.includes("stickers") ? (
+            {/* {user.supported_features.includes("stickers") ? (
               <Button
                 variant="subtle"
                 size="compact-xs"
@@ -146,7 +142,11 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                 postId={post.id}
                 hasExistingReactions={!isEmpty(reactions)}
               />
-            )}
+            )} */}
+            <NewReactionButton
+              postId={post.id}
+              hasExistingReactions={!isEmpty(reactions)}
+            />
             <Text className={postCardClasses.actionSeparator}>/</Text>
             <PostCardReplyButton {...{ user, post, replyToNumber }} />
             {shareable && (
@@ -158,7 +158,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
           </Group>
         </Group>
       </Box>
-      <Drawer
+      {/* <Drawer
         title="add sticker"
         opened={showStickerDrawer}
         classNames={{ body: classes.stickerDrawerBody }}
@@ -178,7 +178,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             }, 100);
           }}
         />
-      </Drawer>
+      </Drawer> */}
     </>
   );
 };

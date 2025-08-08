@@ -25,7 +25,9 @@ const postFormValuesIsEmpty = ({
   if (!!body_html && body_html !== "<p></p>") {
     return false;
   }
-  const contentValues = Object.values(omit(otherValues, "visibility"));
+  const contentValues = Object.values(
+    omit(otherValues, "visibility", "quiet", "hidden_from_ids"),
+  );
   return contentValues.every(value =>
     typeof value === "string" ? !value.trim() : !value,
   );
