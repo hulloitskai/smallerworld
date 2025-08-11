@@ -79,17 +79,15 @@ const PostForm: FC<PostFormProps> = props => {
     ? POST_BODY_PLACEHOLDERS[postType]
     : undefined;
 
-  // == Editor
+  // == Post editor
   const editorRef = useRef<Editor | null>();
+  const [editorKey, setEditorKey] = useState(0);
 
   // == New post draft
   const [newPostDraft, saveNewPostDraft, clearNewPostDraft] = useNewPostDraft();
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
-    if (!post && newPostDraft?.postType === postType) {
-      return newPostDraft.values;
-    }
     const {
       title,
       body_html,
@@ -111,8 +109,7 @@ const PostForm: FC<PostFormProps> = props => {
       quiet: !!post,
       hidden_from_ids: hidden_from_ids ?? pausedFriendIds ?? [],
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [post, pausedFriendIds, postType, newPostDraft?.postType]);
+  }, [post, pausedFriendIds]);
   const {
     setFieldValue,
     insertListItem,
@@ -125,6 +122,7 @@ const PostForm: FC<PostFormProps> = props => {
     setInitialValues,
     isDirty,
     errors,
+    getInitialValues,
   } = useForm<
     { post: WorldPost },
     PostFormValues,
@@ -186,7 +184,10 @@ const PostForm: FC<PostFormProps> = props => {
           }),
         }),
     initialValues,
-    onValuesChange: values => {
+    onValuesChange: (values, previous) => {
+      if (isEqual(values, previous)) {
+        return;
+      }
       if (!post && !!postType && postType !== "follow_up" && isDirty()) {
         saveNewPostDraft({ postType, values });
       }
@@ -209,9 +210,17 @@ const PostForm: FC<PostFormProps> = props => {
     },
   });
   useDidUpdate(() => {
+    if (isEqual(initialValues, getInitialValues())) {
+      return;
+    }
     setInitialValues(initialValues);
     reset();
+    setEditorKey(prev => prev + 1);
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
+  useDidUpdate(() => {
+    reset();
+    setEditorKey(prev => prev + 1);
+  }, [postType]); // eslint-disable-line react-hooks/exhaustive-deps
   const { ref: formStackSizingRef, width: formStackWidth } =
     useElementSize<HTMLDivElement>();
   const formStackRef = useMergedRef(formStackSizingRef);
@@ -232,7 +241,7 @@ const PostForm: FC<PostFormProps> = props => {
 
   // == Image
   const [showImageInput, setShowImageInput] = useState(() => {
-    if (newPostDraft) {
+    if (newPostDraft && newPostDraft.postType === postType) {
       return !isEmpty(newPostDraft.values.images_uploads);
     }
     if (post) {
@@ -240,6 +249,11 @@ const PostForm: FC<PostFormProps> = props => {
     }
     return false;
   });
+  useDidUpdate(() => {
+    if (newPostDraft && newPostDraft.postType === postType) {
+      setShowImageInput(!isEmpty(newPostDraft.values.images_uploads));
+    }
+  }, [newPostDraft]); // eslint-disable-line react-hooks/exhaustive-deps
   const [newImageInputKey, setNewImageInputKey] = useState(0);
   const animateImageInputLayout = post
     ? isEmpty(post.images)
@@ -346,19 +360,20 @@ const PostForm: FC<PostFormProps> = props => {
           )}
           <Input.Wrapper error={errors.body_html}>
             <LazyPostEditor
+              {...{ editorKey }}
               {...getInputProps("body_html")}
               initialValue={initialValues?.body_html}
               placeholder={bodyPlaceholder}
               onEditorCreated={editor => {
                 editorRef.current = editor;
                 setBodyTextEmpty(editor.getText().trim() === "");
-                if (!post && postType && postType !== "follow_up") {
-                  if (newPostDraft?.postType === postType) {
-                    editor.commands.setContent(newPostDraft.values.body_html);
-                  } else {
-                    editor.commands.clearContent();
-                  }
-                }
+                // if (!post && postType && postType !== "follow_up") {
+                //   if (newPostDraft?.postType === postType) {
+                //     editor.commands.setContent(newPostDraft.values.body_html);
+                //   } else {
+                //     editor.commands.clearContent();
+                //   }
+                // }
               }}
               onUpdate={({ editor }) => {
                 setBodyTextEmpty(editor.getText().trim() === "");

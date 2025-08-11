@@ -46,7 +46,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
 
   // == Post type
   const [postType, setPostType] = useState<PostType | null>(null);
-  const previousPostType = usePrevious(postType);
 
   // == Load encouragements
   const { data: encouragementsData } = useRouteSWR<{
@@ -239,8 +238,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
         }}
       >
         <PostForm
-          {...{ pausedFriendIds, recentlyPausedFriendIds }}
-          postType={postType ?? previousPostType ?? null}
+          {...{ pausedFriendIds, recentlyPausedFriendIds, postType }}
           onPostCreated={() => {
             setPostType(null);
             onPostCreated?.();

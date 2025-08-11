@@ -26,7 +26,7 @@ const postFormValuesIsEmpty = ({
     return false;
   }
   const contentValues = Object.values(
-    omit(otherValues, "visibility", "quiet", "hidden_from_ids"),
+    pick(otherValues, "title", "pinned_until", "emoji"),
   );
   return contentValues.every(value =>
     typeof value === "string" ? !value.trim() : !value,
@@ -44,10 +44,14 @@ export const useNewPostDraft = (): [
     key: "new_post_draft",
     getInitialValueInEffect: false,
   });
-  const saveDraft = useThrottledCallback((draft: NewPostDraft | null) => {
-    if (!!draft && !postFormValuesIsEmpty(draft.values)) {
-      console.debug("Saving draft...", draft);
-      setDraft(draft);
+  const saveDraft = useThrottledCallback((newDraft: NewPostDraft | null) => {
+    if (
+      newDraft &&
+      !postFormValuesIsEmpty(newDraft.values) &&
+      (!draft || !isEqual(draft.values, newDraft.values))
+    ) {
+      console.debug("Saving draft...", newDraft);
+      setDraft(newDraft);
     } else {
       clearDraft();
     }
