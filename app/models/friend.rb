@@ -122,7 +122,7 @@ class Friend < ApplicationRecord
       title: "#{fun_name} joined your world!",
       body: "#{name} installed your world on their phone :)",
       target_url: Rails.application.routes.url_helpers
-        .friends_url(friend_id: id),
+        .world_friends_url(friend_id: id),
     )
   end
 

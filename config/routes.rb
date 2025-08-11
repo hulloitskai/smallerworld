@@ -88,7 +88,7 @@ Rails.application.routes.draw do
 
   # == Join requests
   resources :join_requests, only: %i[destroy], export: true
-  scope :world do
+  scope :world, as: :world do
     resources :join_requests, only: :index, export: true
   end
 
@@ -99,7 +99,7 @@ Rails.application.routes.draw do
       post :unpause
     end
   end
-  scope :world do
+  scope :world, as: :world do
     resources :friends, only: :index, export: true
   end
 

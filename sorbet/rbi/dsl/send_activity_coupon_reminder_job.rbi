@@ -9,13 +9,13 @@ class SendActivityCouponReminderJob
   class << self
     sig do
       params(
-        activity_coupon: ::ActivityCoupon,
+        coupon: ::ActivityCoupon,
         block: T.nilable(T.proc.params(job: SendActivityCouponReminderJob).void)
       ).returns(T.any(SendActivityCouponReminderJob, FalseClass))
     end
-    def perform_later(activity_coupon, &block); end
+    def perform_later(coupon, &block); end
 
-    sig { params(activity_coupon: ::ActivityCoupon).void }
-    def perform_now(activity_coupon); end
+    sig { params(coupon: ::ActivityCoupon).void }
+    def perform_now(coupon); end
   end
 end
