@@ -92,7 +92,6 @@ const PostEditor: FC<PostEditorProps> = ({
       {...otherProps}
     >
       <BubbleMenu
-        shouldShow={() => true}
         options={{
           placement: "bottom",
           inline: true,

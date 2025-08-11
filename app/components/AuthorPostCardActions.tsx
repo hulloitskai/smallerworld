@@ -48,6 +48,8 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   // == UI
   const [followUpDrawerModalOpened, setFollowUpModalDrawerOpened] =
     useState(false);
+  const [followUpDrawerModalExiting, setFollowUpModalDrawerExiting] =
+    useState(false);
 
   // == Load post stats
   const { data: statsData } = useRouteSWR<{
@@ -248,16 +250,22 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
         opened={followUpDrawerModalOpened}
         onClose={() => {
           setFollowUpModalDrawerOpened(false);
+          setFollowUpModalDrawerExiting(true);
+        }}
+        onExitTransitionEnd={() => {
+          setFollowUpModalDrawerExiting(false);
         }}
       >
-        <PostForm
-          postType="follow_up"
-          {...{ pausedFriendIds, recentlyPausedFriendIds }}
-          quotedPost={post}
-          onPostCreated={() => {
-            setFollowUpModalDrawerOpened(false);
-          }}
-        />
+        {(followUpDrawerModalOpened || followUpDrawerModalExiting) && (
+          <PostForm
+            postType="follow_up"
+            {...{ pausedFriendIds, recentlyPausedFriendIds }}
+            quotedPost={post}
+            onPostCreated={() => {
+              setFollowUpModalDrawerOpened(false);
+            }}
+          />
+        )}
       </DrawerModal>
     </>
   );

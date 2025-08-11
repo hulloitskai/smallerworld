@@ -46,6 +46,7 @@ export const useNewPostDraft = (): [
   });
   const saveDraft = useThrottledCallback((draft: NewPostDraft | null) => {
     if (!!draft && !postFormValuesIsEmpty(draft.values)) {
+      console.debug("Saving draft...", draft);
       setDraft(draft);
     } else {
       clearDraft();

@@ -25,38 +25,28 @@ export interface AppLightboxProps
   > {
   images: Image[];
   onIndexChange: (index: number) => void;
-  downloadable?: boolean;
 }
 
 const AppLightbox: FC<AppLightboxProps> = ({
   className,
   images,
   onIndexChange,
-  downloadable,
   ...otherProps
 }) => {
-  const plugins = useMemo<Plugin[]>(() => {
-    const plugins = [LightboxZoomPlugin];
-    if (downloadable) {
-      plugins.push(DownloadPlugin);
-    }
-    return plugins;
-  }, [downloadable]);
+  const [plugins] = useState<Plugin[]>([LightboxZoomPlugin, DownloadPlugin]);
   const slides = useMemo(
     () =>
       images.map(image => ({
         src: image.src,
-        ...(downloadable && {
-          download: {
-            filename: image.filename,
-            url: routes.images.download.path({ signed_id: image.signed_id }),
-          },
-        }),
+        download: {
+          filename: image.filename,
+          url: routes.images.download.path({ signed_id: image.signed_id }),
+        },
         ...(image.dimensions && {
           ...slideImageOptionsFromDimensions(image, image.dimensions),
         }),
       })),
-    [images, downloadable],
+    [images],
   );
   return (
     <Lightbox

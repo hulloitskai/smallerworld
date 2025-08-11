@@ -16,7 +16,10 @@ import classes from "./DrawerBase.module.css";
 import mantineClasses from "~/helpers/mantine.module.css";
 
 export interface DrawerBaseProps
-  extends Pick<ModalProps, "title" | "opened" | "onClose" | "children"> {
+  extends Pick<
+    ModalProps,
+    "title" | "opened" | "onClose" | "onExitTransitionEnd" | "children"
+  > {
   setVaulPortalRoot: (portalRoot: HTMLDivElement | undefined) => void;
   classNames?: {
     content?: string;
@@ -31,6 +34,7 @@ const DrawerBase: FC<DrawerBaseProps> = ({
   children,
   opened,
   setVaulPortalRoot,
+  onExitTransitionEnd,
   ...otherProps
 }) => {
   // == Prevent closing drawer when modals are open
@@ -43,6 +47,11 @@ const DrawerBase: FC<DrawerBaseProps> = ({
       disablePreventScroll
       repositionInputs={false}
       open={opened}
+      onAnimationEnd={open => {
+        if (onExitTransitionEnd && !open) {
+          onExitTransitionEnd();
+        }
+      }}
       {...otherProps}
     >
       <VaulDrawer.Portal>

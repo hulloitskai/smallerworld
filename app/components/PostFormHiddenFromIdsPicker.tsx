@@ -93,6 +93,7 @@ const PostFormHiddenFromIdsPicker: FC<PostFormHiddenFromIdsPickerProps> = ({
             <Group gap={6} justify="center" wrap="wrap">
               {orderedFriends.map(friend => (
                 <Chip
+                  key={friend.id}
                   value={friend.id}
                   className={classes.chip}
                   mod={{ unnotifiable: !friend.notifiable }}

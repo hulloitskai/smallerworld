@@ -15,7 +15,10 @@ import VaulPortalProvider from "./VaulPortalProvider";
 import classes from "./DrawerModal.module.css";
 
 export interface DrawerModalProps
-  extends Pick<ModalProps, "title" | "opened" | "onClose" | "children"> {
+  extends Pick<
+    ModalProps,
+    "title" | "opened" | "onClose" | "onExitTransitionEnd" | "children"
+  > {
   contentClassName?: string;
 }
 
@@ -24,6 +27,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
   title,
   opened,
   onClose,
+  onExitTransitionEnd,
   children,
 }) => {
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -72,6 +76,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
             onClose();
           }
         }}
+        {...{ onExitTransitionEnd }}
       >
         {contentPortalNode && <OutPortal node={contentPortalNode} />}
       </DrawerBase>
@@ -90,6 +95,7 @@ const DrawerModal: FC<DrawerModalProps> = ({
             onClose();
           }
         }}
+        {...{ onExitTransitionEnd }}
       >
         {contentPortalNode && <OutPortal node={contentPortalNode} />}
       </Modal>

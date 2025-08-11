@@ -158,7 +158,6 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                   />
                 }
                 highlightType={post.type === postType}
-                downloadableImages
                 onTypeClick={() => {
                   setPostType(post.type === postType ? null : post.type);
                 }}

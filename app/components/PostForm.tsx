@@ -87,6 +87,9 @@ const PostForm: FC<PostFormProps> = props => {
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
+    if (!post && newPostDraft?.postType === postType) {
+      return newPostDraft.values;
+    }
     const {
       title,
       body_html,
@@ -108,7 +111,8 @@ const PostForm: FC<PostFormProps> = props => {
       quiet: !!post,
       hidden_from_ids: hidden_from_ids ?? pausedFriendIds ?? [],
     };
-  }, [post, pausedFriendIds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post, pausedFriendIds, postType, newPostDraft?.postType]);
   const {
     setFieldValue,
     insertListItem,
@@ -119,7 +123,6 @@ const PostForm: FC<PostFormProps> = props => {
     submitting,
     reset,
     setInitialValues,
-    setValues,
     isDirty,
     errors,
   } = useForm<
@@ -183,9 +186,15 @@ const PostForm: FC<PostFormProps> = props => {
           }),
         }),
     initialValues,
+    onValuesChange: values => {
+      if (!post && !!postType && postType !== "follow_up" && isDirty()) {
+        saveNewPostDraft({ postType, values });
+      }
+    },
     onSuccess: ({ post }, { reset }) => {
       if (!("post" in props)) {
         reset();
+        setShowImageInput(false);
         editorRef.current?.commands.clearContent();
         clearNewPostDraft();
       }
@@ -221,31 +230,7 @@ const PostForm: FC<PostFormProps> = props => {
   // == Body text empty state
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
 
-  // == Sync new post draft with form
-  useEffect(() => {
-    if (post || !postType || postType === "follow_up") {
-      return;
-    }
-    if (newPostDraft?.postType === postType) {
-      const { values } = newPostDraft;
-      setValues(values);
-      setTimeout(() => {
-        const editor = editorRef.current;
-        if (editor) {
-          setBodyTextEmpty(editor.getText().trim() === "");
-        }
-      }, 10);
-      return () => {
-        reset();
-      };
-    }
-  }, [newPostDraft?.postType, postType]); // eslint-disable-line react-hooks/exhaustive-deps
-  useDidUpdate(() => {
-    if (!post && !!postType && postType !== "follow_up" && isDirty()) {
-      saveNewPostDraft({ postType, values });
-    }
-  }, [values]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  // == Image
   const [showImageInput, setShowImageInput] = useState(() => {
     if (newPostDraft) {
       return !isEmpty(newPostDraft.values.images_uploads);
@@ -256,6 +241,12 @@ const PostForm: FC<PostFormProps> = props => {
     return false;
   });
   const [newImageInputKey, setNewImageInputKey] = useState(0);
+  const animateImageInputLayout = post
+    ? isEmpty(post.images)
+    : newPostDraft
+      ? isEmpty(newPostDraft.values.images_uploads)
+      : true;
+
   return (
     <form onSubmit={submit}>
       <Group gap="xs" align="start" justify="center">
@@ -410,7 +401,7 @@ const PostForm: FC<PostFormProps> = props => {
                   <Reorder.Group<Upload>
                     values={values.images_uploads}
                     axis="x"
-                    layoutScroll
+                    layoutScroll={animateImageInputLayout}
                     onReorder={uploads => {
                       setFieldValue("images_uploads", uploads);
                     }}
@@ -436,7 +427,7 @@ const PostForm: FC<PostFormProps> = props => {
                       <motion.li
                         key={newImageInputKey}
                         layout="position"
-                        layoutScroll
+                        layoutScroll={animateImageInputLayout}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
                       >

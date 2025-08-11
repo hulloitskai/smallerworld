@@ -21,7 +21,6 @@ export interface PostCardProps extends BoxProps {
   focus?: boolean;
   highlightType?: boolean;
   onTypeClick?: () => void;
-  downloadableImages?: boolean;
 }
 
 const IMAGE_MAX_WIDTH = 340;
@@ -35,7 +34,6 @@ const PostCard: FC<PostCardProps> = ({
   focus,
   highlightType,
   onTypeClick,
-  downloadableImages,
   ...otherProps
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -175,18 +173,13 @@ const PostCard: FC<PostCardProps> = ({
           {!!firstImage && (
             <>
               {blurContent || post.images.length === 1 ? (
-                <ImageWithLightbox
-                  image={firstImage}
-                  {...{ blurContent }}
-                  downloadable={downloadableImages}
-                />
+                <ImageWithLightbox image={firstImage} {...{ blurContent }} />
               ) : (
                 <ImageStack
                   images={post.images}
                   maxWidth={IMAGE_MAX_WIDTH}
                   maxHeight={IMAGE_MAX_HEIGHT}
                   flipBoundary={IMAGE_FLIP_BOUNDARY}
-                  downloadable={downloadableImages}
                   mb={6}
                 />
               )}
