@@ -66,7 +66,7 @@ const PostEditor: FC<PostEditorProps> = ({
         setShowUnlink(!!attributes.href);
       },
     },
-    [initialValue, placeholder],
+    [],
   );
 
   // == Link editor

@@ -13,7 +13,7 @@ export interface PostFormValues {
   hidden_from_ids: string[];
 }
 
-export interface NewPostDraft {
+interface PostDraft {
   postType: PostType;
   values: PostFormValues;
 }
@@ -22,39 +22,58 @@ const postFormValuesIsEmpty = ({
   body_html,
   ...otherValues
 }: PostFormValues) => {
-  if (!!body_html && body_html !== "<p></p>") {
+  if (body_html && body_html !== "<p></p>") {
     return false;
   }
   const contentValues = Object.values(
-    pick(otherValues, "title", "pinned_until", "emoji"),
+    pick(otherValues, "title", "pinned_until", "emoji", "images_uploads"),
   );
   return contentValues.every(value =>
-    typeof value === "string" ? !value.trim() : !value,
+    typeof value === "string" ? !value.trim() : isEmpty(value),
   );
 };
 
-export const useNewPostDraft = (): [
-  NewPostDraft | undefined,
-  (draft: NewPostDraft) => void,
+export const usePostDraftValues = (
+  postType: PostType | null | undefined,
+): [
+  () => PostFormValues | undefined,
+  (values: PostFormValues) => void,
   () => void,
 ] => {
-  const [draft, setDraft, clearDraft] = useLocalStorage<
-    NewPostDraft | undefined
-  >({
+  const [, setDraft, clearDraft] = useLocalStorage<PostDraft | undefined>({
     key: "new_post_draft",
     getInitialValueInEffect: false,
   });
-  const saveDraft = useThrottledCallback((newDraft: NewPostDraft | null) => {
-    if (
-      newDraft &&
-      !postFormValuesIsEmpty(newDraft.values) &&
-      (!draft || !isEqual(draft.values, newDraft.values))
-    ) {
-      console.debug("Saving draft...", newDraft);
-      setDraft(newDraft);
+  const loadValues = (): PostFormValues | undefined => {
+    const serializedDraft = localStorage.getItem("new_post_draft");
+    if (!serializedDraft) {
+      return;
+    }
+    const draft: PostDraft = JSON.parse(serializedDraft);
+    if (draft.postType !== postType) {
+      return;
+    }
+    return draft.values;
+  };
+  const saveValues = useThrottledCallback((values: PostFormValues) => {
+    if (!postType) {
+      return;
+    }
+    if (!postFormValuesIsEmpty(values)) {
+      console.debug("Saving draft...", { postType, values });
+      setDraft({ postType, values });
     } else {
+      console.debug("Clearing draft...", { postType });
       clearDraft();
     }
   }, 500);
-  return [draft, saveDraft, clearDraft];
+  return [loadValues, saveValues, clearDraft];
+};
+
+export const useSavedDraftType = (): PostType | undefined => {
+  const [draft] = useLocalStorage<PostDraft | undefined>({
+    key: "new_post_draft",
+    getInitialValueInEffect: false,
+  });
+  return draft?.postType;
 };

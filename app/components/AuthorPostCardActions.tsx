@@ -258,7 +258,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
       >
         {(followUpDrawerModalOpened || followUpDrawerModalExiting) && (
           <PostForm
-            postType="follow_up"
+            newPostType="follow_up"
             {...{ pausedFriendIds, recentlyPausedFriendIds }}
             quotedPost={post}
             onPostCreated={() => {

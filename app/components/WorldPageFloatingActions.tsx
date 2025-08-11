@@ -13,7 +13,7 @@ import {
   POST_TYPE_TO_LABEL,
   POST_TYPES,
 } from "~/helpers/posts";
-import { useNewPostDraft } from "~/helpers/posts/form";
+import { useSavedDraftType } from "~/helpers/posts/form";
 import { useWebPush } from "~/helpers/webPush";
 import { type WorldPageProps } from "~/pages/WorldPage";
 import { type Encouragement, type PostType, type WorldPost } from "~/types";
@@ -71,7 +71,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
     useState(false);
 
   // == New post draft
-  const [newPostDraft] = useNewPostDraft();
+  const newPostDraftType = useSavedDraftType();
 
   const actionsVisible =
     (isStandalone === false || pushRegistration !== null) &&
@@ -143,7 +143,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                     label={<DraftIcon />}
                     size={16}
                     offset={4}
-                    disabled={!newPostDraft}
+                    disabled={!newPostDraftType}
                   >
                     <Box pos="relative">
                       <Button
@@ -173,7 +173,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                       leftSection={
                         <Box component={POST_TYPE_TO_ICON[type]} fz="md" />
                       }
-                      {...(type === newPostDraft?.postType && {
+                      {...(type === newPostDraftType && {
                         rightSection: (
                           <Box
                             component={DraftCircleIcon}
@@ -238,7 +238,11 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
         }}
       >
         <PostForm
-          {...{ pausedFriendIds, recentlyPausedFriendIds, postType }}
+          {...{
+            pausedFriendIds,
+            recentlyPausedFriendIds,
+            newPostType: postType,
+          }}
           onPostCreated={() => {
             setPostType(null);
             onPostCreated?.();

@@ -16,7 +16,7 @@ import {
   POST_VISIBILITY_TO_ICON,
   POST_VISIBILITY_TO_LABEL,
 } from "~/helpers/posts";
-import { type PostFormValues, useNewPostDraft } from "~/helpers/posts/form";
+import { type PostFormValues, usePostDraftValues } from "~/helpers/posts/form";
 import { type Post, type PostType, type Upload, type WorldPost } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
@@ -34,7 +34,7 @@ export type PostFormProps =
       onPostUpdated?: (post: WorldPost) => void;
     }
   | {
-      postType: PostType | null;
+      newPostType: PostType | null;
       pausedFriendIds: string[];
       recentlyPausedFriendIds: string[];
       quotedPost?: Post;
@@ -61,7 +61,8 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
 };
 
 const PostForm: FC<PostFormProps> = props => {
-  const postType = "postType" in props ? props.postType : props.post.type;
+  const newPostType = "newPostType" in props ? props.newPostType : undefined;
+  const postType = "newPostType" in props ? props.newPostType : props.post.type;
   const post = "post" in props ? props.post : null;
   const quotedPost =
     "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
@@ -81,10 +82,12 @@ const PostForm: FC<PostFormProps> = props => {
 
   // == Post editor
   const editorRef = useRef<Editor | null>();
+  const [editorMounted, setEditorMounted] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
 
-  // == New post draft
-  const [newPostDraft, saveNewPostDraft, clearNewPostDraft] = useNewPostDraft();
+  // == Draft values
+  const [loadDraftValues, saveDraftValues, clearDraft] =
+    usePostDraftValues(newPostType);
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
@@ -119,8 +122,11 @@ const PostForm: FC<PostFormProps> = props => {
     values,
     submitting,
     reset,
+    setValues,
     setInitialValues,
+    setTouched,
     isDirty,
+    isTouched,
     errors,
     getInitialValues,
   } = useForm<
@@ -188,8 +194,8 @@ const PostForm: FC<PostFormProps> = props => {
       if (isEqual(values, previous)) {
         return;
       }
-      if (!post && !!postType && postType !== "follow_up" && isDirty()) {
-        saveNewPostDraft({ postType, values });
+      if (isTouched()) {
+        saveDraftValues(values);
       }
     },
     onSuccess: ({ post }, { reset }) => {
@@ -197,7 +203,7 @@ const PostForm: FC<PostFormProps> = props => {
         reset();
         setShowImageInput(false);
         editorRef.current?.commands.clearContent();
-        clearNewPostDraft();
+        clearDraft();
       }
       void mutatePosts();
       void mutateRoute(routes.posts.pinned);
@@ -209,17 +215,38 @@ const PostForm: FC<PostFormProps> = props => {
       }
     },
   });
+  const resetFormAndEditor = useCallback(() => {
+    reset();
+    setEditorMounted(false);
+    setEditorKey(prev => prev + 1);
+    setShowImageInput(false);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const updateFromDraft = (): boolean => {
+    const draftValues = loadDraftValues();
+    if (!draftValues) {
+      return false;
+    }
+    setValues(draftValues);
+    setEditorMounted(false);
+    setEditorKey(prev => prev + 1);
+    setShowImageInput(!isEmpty(draftValues.images_uploads));
+    return true;
+  };
   useDidUpdate(() => {
     if (isEqual(initialValues, getInitialValues())) {
       return;
     }
     setInitialValues(initialValues);
-    reset();
-    setEditorKey(prev => prev + 1);
+    resetFormAndEditor();
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    updateFromDraft();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useDidUpdate(() => {
-    reset();
-    setEditorKey(prev => prev + 1);
+    const updated = updateFromDraft();
+    if (!updated) {
+      resetFormAndEditor();
+    }
   }, [postType]); // eslint-disable-line react-hooks/exhaustive-deps
   const { ref: formStackSizingRef, width: formStackWidth } =
     useElementSize<HTMLDivElement>();
@@ -240,26 +267,10 @@ const PostForm: FC<PostFormProps> = props => {
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
 
   // == Image
-  const [showImageInput, setShowImageInput] = useState(() => {
-    if (newPostDraft && newPostDraft.postType === postType) {
-      return !isEmpty(newPostDraft.values.images_uploads);
-    }
-    if (post) {
-      return !isEmpty(post.images);
-    }
-    return false;
-  });
-  useDidUpdate(() => {
-    if (newPostDraft && newPostDraft.postType === postType) {
-      setShowImageInput(!isEmpty(newPostDraft.values.images_uploads));
-    }
-  }, [newPostDraft]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [showImageInput, setShowImageInput] = useState(() =>
+    post ? !isEmpty(post.images) : false,
+  );
   const [newImageInputKey, setNewImageInputKey] = useState(0);
-  const animateImageInputLayout = post
-    ? isEmpty(post.images)
-    : newPostDraft
-      ? isEmpty(newPostDraft.values.images_uploads)
-      : true;
 
   return (
     <form onSubmit={submit}>
@@ -360,20 +371,16 @@ const PostForm: FC<PostFormProps> = props => {
           )}
           <Input.Wrapper error={errors.body_html}>
             <LazyPostEditor
-              {...{ editorKey }}
-              {...getInputProps("body_html")}
-              initialValue={initialValues?.body_html}
+              key={editorKey}
+              initialValue={values.body_html}
               placeholder={bodyPlaceholder}
               onEditorCreated={editor => {
                 editorRef.current = editor;
+                setEditorMounted(true);
                 setBodyTextEmpty(editor.getText().trim() === "");
-                // if (!post && postType && postType !== "follow_up") {
-                //   if (newPostDraft?.postType === postType) {
-                //     editor.commands.setContent(newPostDraft.values.body_html);
-                //   } else {
-                //     editor.commands.clearContent();
-                //   }
-                // }
+              }}
+              onChange={value => {
+                setFieldValue("body_html", value);
               }}
               onUpdate={({ editor }) => {
                 setBodyTextEmpty(editor.getText().trim() === "");
@@ -416,7 +423,7 @@ const PostForm: FC<PostFormProps> = props => {
                   <Reorder.Group<Upload>
                     values={values.images_uploads}
                     axis="x"
-                    layoutScroll={animateImageInputLayout}
+                    layoutScroll={editorMounted}
                     onReorder={uploads => {
                       setFieldValue("images_uploads", uploads);
                     }}
@@ -427,6 +434,10 @@ const PostForm: FC<PostFormProps> = props => {
                         value={upload}
                         previewFit="contain"
                         onChange={value => {
+                          setTouched(touchedFields => ({
+                            ...touchedFields,
+                            images_uploads: true,
+                          }));
                           if (value) {
                             setFieldValue(`images_uploads.${i}`, value);
                           } else {
@@ -442,7 +453,7 @@ const PostForm: FC<PostFormProps> = props => {
                       <motion.li
                         key={newImageInputKey}
                         layout="position"
-                        layoutScroll={animateImageInputLayout}
+                        layoutScroll={editorMounted}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
                       >
@@ -450,6 +461,10 @@ const PostForm: FC<PostFormProps> = props => {
                           key={newImageInputKey}
                           onChange={value => {
                             if (value) {
+                              setTouched(touchedFields => ({
+                                ...touchedFields,
+                                images_uploads: true,
+                              }));
                               insertListItem("images_uploads", value);
                               setNewImageInputKey(prev => prev + 1);
                             }
