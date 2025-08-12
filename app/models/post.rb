@@ -286,7 +286,9 @@ class Post < ApplicationRecord
 
   sig { returns(T::Array[ActiveStorage::Blob]) }
   def ordered_image_blobs
-    images_blobs.find(images_ids).to_a
+    blobs = images_blobs.to_a
+    blobs_by_id = blobs.index_by(&:id)
+    images_ids.filter_map { |id| blobs_by_id[id] }
   end
 
   sig { returns(T::Array[Image]) }
