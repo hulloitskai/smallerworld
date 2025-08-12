@@ -1,6 +1,6 @@
 .title {
   color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-  font-size: 38px;
+  videocalloute: 38px;
   font-weight: 900;
   line-height: 1.2;
   text-align: center;
@@ -23,17 +23,40 @@
   );
 }
 
-.checkItOut {
-  position: absolute;
-  top: 0;
-  right: -150px;
+.videoContainer {
+  position: relative;
 
-  @mixin smaller-than 670px {
-    display: none;
+  @mixin smaller-than 680px {
+    margin-top: var(--mantine-spacing-xl);
   }
 }
 
-.checkItOutArrow {
+.video {
+  max-width: 275px;
+  border-radius: var(--mantine-radius-default);
+}
+
+.videoCallout {
+  position: absolute;
+  top: 0;
+  right: -180px;
+
+  @mixin smaller-than 680px {
+    top: 0px;
+    left: 40px;
+  }
+}
+
+.videoCalloutStack {
+  gap: 0;
+  transform: rotate(8deg);
+
+  @mixin smaller-than 680px {
+    transform: none;
+  }
+}
+
+.videoCalloutArrow {
   width: 80px;
   margin-top: 14px;
   transform: rotate(90deg) scaleY(-1);
@@ -41,9 +64,13 @@
   @mixin light {
     filter: invert(1);
   }
+
+  @mixin smaller-than 680px {
+    display: none;
+  }
 }
 
-.checkItOutLabel {
+.videoCalloutLabel {
   font-family: "Single Day", Manrope, cursive;
   font-size: 24px;
   line-height: 1.1;

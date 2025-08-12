@@ -6,8 +6,10 @@ namespace :after_party do
     puts "Running deploy task 'remove_variant_records'"
 
     # Put your task implementation HERE.
-    result = ActiveStorage::VariantRecord.destroy_all
-    puts "Destroyed #{result.count} variant records"
+    ActiveStorage::VariantRecord.find_in_batches.with_index do |batch, index|
+      batch.destroy_all
+      puts "[Batch #{index}] Destroyed #{batch.count} variant records"
+    end
 
     # Update task as completed.  If you remove the line below, the task will
     # run with every deploy (or every time you call after_party:run).

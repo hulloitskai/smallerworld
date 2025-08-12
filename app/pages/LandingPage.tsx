@@ -6,7 +6,6 @@ import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 // import homescreenRowSrc from "~/assets/images/homescreen-row.jpeg";
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
-import demoVideoSrc from "~/assets/videos/demo.mp4";
 
 import AppLayout from "~/components/AppLayout";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
@@ -26,7 +25,15 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
 
   // == Reveal demo video
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [revealVideo, setRevealVideo] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const updateVideoPlaying = useCallback(() => {
+    setTimeout(() => {
+      const video = videoRef.current;
+      if (video) {
+        setVideoPlaying(!video.paused && !video.ended);
+      }
+    }, 10);
+  }, []);
 
   return (
     <Stack align="center" gap={44} pb="xl">
@@ -63,48 +70,68 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
         </Text>
       </Stack>
       <Box pos="relative">
-        <Box
-          component="video"
-          ref={videoRef}
-          muted
-          loop
-          playsInline
-          controls={false}
-          autoPlay
-          preload="auto"
-          disablePictureInPicture
-          disableRemotePlayback
-          maw={275}
-          style={{ borderRadius: "var(--mantine-radius-default)" }}
-        >
-          <source src={demoVideoSrc} type="video/mp4" />
-        </Box>
-        {!revealVideo && (
-          <Overlay backgroundOpacity={0} blur={3} radius="lg">
-            <Center h="100%">
-              <Button
-                variant="filled"
-                leftSection={<PlayIcon />}
-                onClick={() => {
-                  const video = videoRef.current;
-                  if (video) {
-                    video.pause();
-                    video.currentTime = 0;
-                    setRevealVideo(true);
-                    void video.play();
-                  }
-                }}
+        <Box className={classes.videoContainer}>
+          <Box
+            component="video"
+            ref={videoRef}
+            playsInline
+            controls={videoPlaying}
+            preload="auto"
+            disablePictureInPicture
+            disableRemotePlayback
+            className={classes.video}
+            onPlaying={updateVideoPlaying}
+            onPause={updateVideoPlaying}
+            onEnded={updateVideoPlaying}
+          >
+            <source
+              src="https://tttkkdzhzvelxmbcqvlg.supabase.co/storage/v1/object/public/media/realtalk-v2-web.webm"
+              type="video/webm"
+            />
+            <source
+              src="https://tttkkdzhzvelxmbcqvlg.supabase.co/storage/v1/object/public/media/realtalk-v2-web.mp4"
+              type="video/mp4"
+            />
+          </Box>
+          <Transition transition="fade" mounted={!videoPlaying}>
+            {style => (
+              <Overlay
+                backgroundOpacity={0}
+                blur={3}
+                radius="lg"
+                {...{ style }}
               >
-                play
-              </Button>
-            </Center>
-          </Overlay>
-        )}
-        <Box className={classes.checkItOut}>
+                <Center h="100%">
+                  <Button
+                    variant="filled"
+                    leftSection={<PlayIcon />}
+                    onClick={() => {
+                      const video = videoRef.current;
+                      if (video) {
+                        if (video.ended) {
+                          video.currentTime = 0;
+                        }
+                        void video.play();
+                      }
+                    }}
+                  >
+                    play
+                  </Button>
+                </Center>
+              </Overlay>
+            )}
+          </Transition>
+        </Box>
+        <Box className={classes.videoCallout}>
           <SingleDayFontHead />
-          <Stack gap={0} style={{ transform: "rotate(8deg)" }}>
-            <Text className={classes.checkItOutLabel}>check it out :)</Text>
-            <Image src={swirlyUpArrowSrc} className={classes.checkItOutArrow} />
+          <Stack className={classes.videoCalloutStack}>
+            <Text className={classes.videoCalloutLabel}>
+              why i made this :)
+            </Text>
+            <Image
+              src={swirlyUpArrowSrc}
+              className={classes.videoCalloutArrow}
+            />
           </Stack>
         </Box>
       </Box>
