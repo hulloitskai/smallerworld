@@ -23,7 +23,8 @@ const SentryTracking: FC = () => {
         setUser(null);
       }
     }
-  }, [currentFriend, currentUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFriend?.id, currentUser?.id]);
 
   return null;
 };

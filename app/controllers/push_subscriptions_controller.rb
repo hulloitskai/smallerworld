@@ -37,7 +37,10 @@ class PushSubscriptionsController < ApplicationController
     subscription = PushSubscription.find_or_initialize_by(endpoint:)
     subscription.attributes = subscription_params
     registration = subscription.registrations.find_or_initialize_by(owner:)
-    registration.update!(registration_params)
+    registration.transaction do
+      registration.update!(registration_params)
+      subscription.save! if subscription.changed?
+    end
     render(
       json: {
         "pushRegistration" => PushRegistrationSerializer.one(registration),
