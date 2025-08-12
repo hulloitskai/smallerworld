@@ -36,7 +36,7 @@ jobs:
           echo "Found last working image: $LAST_IMAGE"
           echo "image=$LAST_IMAGE" >> $GITHUB_OUTPUT
       - name: Deploy
-        run: flyctl deploy --remote-only --ha=false --memory=768
+        run: flyctl deploy --remote-only --memory=768
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       - name: Revert to last working image on failure
