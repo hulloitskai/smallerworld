@@ -3,7 +3,7 @@
 
 class ActivityCouponsController < ApplicationController
   # == Filters
-  before_action :authenticate_friend!, only: :index
+  before_action :authenticate_friend!, only: :mark_as_redeemed
   before_action :authenticate_user!, only: :create
 
   # == Actions

@@ -280,6 +280,9 @@ module GeneratedUrlHelpersModule
   def update_rails_disk_service_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def user_activity_coupons_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def user_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

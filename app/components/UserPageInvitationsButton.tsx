@@ -39,6 +39,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
           }),
       },
       descriptor: "load posts",
+      keepPreviousData: true,
     },
   );
   const pinnedPosts = pinnedPostsData?.posts ?? [];
@@ -66,15 +67,17 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
   }, [pushRegistration]);
   const { data: activityCouponsData } = useRouteSWR<{
     activityCoupons: ActivityCoupon[];
-  }>(routes.activityCoupons.index, {
+  }>(routes.userActivityCoupons.index, {
     params: currentFriend
       ? {
+          user_id: user.id,
           query: {
             friend_token: currentFriend.access_token,
           },
         }
       : null,
     descriptor: "load activity coupons",
+    keepPreviousData: true,
   });
   const { activityCoupons = [] } = activityCouponsData ?? {};
 
@@ -101,6 +104,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
               !!pushRegistration &&
               !isEmpty(activityCoupons) &&
               isEmpty(modals) &&
+              !drawerModalOpened &&
               showActivityCouponTooltip
             }
           >

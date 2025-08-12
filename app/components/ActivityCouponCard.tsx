@@ -65,8 +65,11 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
             },
           },
         });
-        void mutateRoute(routes.activityCoupons.index, {
-          query: { friend_token: currentFriend.access_token },
+        void mutateRoute(routes.userActivityCoupons.index, {
+          user_id: user.id,
+          query: {
+            friend_token: currentFriend.access_token,
+          },
         });
         onCouponRedeemed();
       },

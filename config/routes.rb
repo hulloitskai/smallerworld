@@ -138,6 +138,12 @@ Rails.application.routes.draw do
       get :pinned
     end
   end
+  resources(
+    :user_activity_coupons,
+    path: "/users/:user_id/activity_coupons",
+    only: :index,
+    export: true,
+  )
 
   # == Post reactions
   resources :post_reactions,
@@ -161,7 +167,7 @@ Rails.application.routes.draw do
 
   # == Activities
   resources :activities, only: %i[index create], export: true
-  resources :activity_coupons, only: %i[index create], export: true do
+  resources :activity_coupons, only: %i[create], export: true do
     member do
       post :mark_as_redeemed
     end

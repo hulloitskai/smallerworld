@@ -349,8 +349,8 @@ class User
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
     def activity_coupon_ids=(ids); end
 
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :activity_coupons`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :activity_coupons, through: :activities`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
     sig { returns(::ActivityCoupon::PrivateCollectionProxy) }
     def activity_coupons; end
 
