@@ -148,32 +148,37 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
             how it works
           </Title>
           <List type="ordered" className={classes.howItWorksList}>
-            <List.Item>set up your page and custom home screen icon</List.Item>
             <List.Item>
-              invite only your real friends (or people you want to be closer to)
-              to pin your page to their home screen
+              <strong>create your world</strong>: a private page for your
+              thoughts, casual event invites, or little life updates —
+              whatever&apos;s on your mind.
             </List.Item>
             <List.Item>
-              share thoughts, ideas, and invitations to events you&apos;re going
-              to.
+              <strong>invite close friends</strong>: send them a special link to
+              enter your world and get notified whenever you post.
             </List.Item>
             <List.Item>
-              your friends get notifications sent right to their lock screen.
-              they can click on it to drop into a dm with you
+              <strong>share real stuff</strong>: no likes, no followers. just
+              staying connected with your close friends.
             </List.Item>
           </List>
         </Stack>
       </Card>
-      <Button
-        component={Link}
-        href={routes.world.show.path()}
-        leftSection="😍"
-        size="lg"
-        radius="xl"
-        styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
-      >
-        make your smaller world
-      </Button>
+      <Stack gap={6}>
+        <Text size="sm" ta="center" c="dimmed">
+          start your smaller world today!
+        </Text>
+        <Button
+          component={Link}
+          href={routes.world.show.path()}
+          leftSection="😍"
+          size="lg"
+          radius="xl"
+          styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
+        >
+          create your world
+        </Button>
+      </Stack>
       {demoUser && (
         <Stack align="center" gap={4} style={{ alignSelf: "stretch" }}>
           <Box pos="relative">

@@ -41,11 +41,15 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
 
   // == Launch confetti after encouragement
   const pendingNewEncouragementRef = useRef(false);
+  const [pendingNewEncouragement, setPendingNewEncouragement] = useState(false);
+  useDidUpdate(() => {
+    pendingNewEncouragementRef.current = pendingNewEncouragement;
+  }, [pendingNewEncouragement]);
   useDidUpdate(() => {
     if (!lastSentEncouragement || !pendingNewEncouragementRef.current) {
       return;
     }
-    pendingNewEncouragementRef.current = false;
+    setPendingNewEncouragement(false);
     const card = cardRef.current;
     if (card) {
       void confetti({
@@ -76,7 +80,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
           <Text size="xs" c="dimmed">
             you can send another nudge in{" "}
             <DurationUntilCanSendAnotherEncouragement
-              {...{ encouragement: lastSentEncouragement }}
+              encouragement={lastSentEncouragement}
             />
           </Text>
         </Stack>
@@ -91,7 +95,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
                 key={emoji}
                 {...{ currentFriend, emoji, message }}
                 onEncouragementCreated={() => {
-                  pendingNewEncouragementRef.current = true;
+                  setPendingNewEncouragement(true);
                   onEncouragementCreated();
                 }}
               />
@@ -109,6 +113,10 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
           right="var(--mantine-spacing-lg)"
         />
       )}
+      <LoadingOverlay
+        visible={pendingNewEncouragement}
+        overlayProps={{ radius: "default", backgroundOpacity: 0 }}
+      />
     </Card>
   );
 };
@@ -196,7 +204,6 @@ const EncouragementForm: FC<EncouragementFormProps> = ({
             maxLength={MAX_MESSAGE_LENGTH}
             radius={10}
             autoFocus
-            style={{ flexGrow: 1 }}
             onFocus={({ currentTarget }) => {
               currentTarget.selectionStart = currentTarget.value.length;
             }}

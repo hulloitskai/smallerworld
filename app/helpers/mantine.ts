@@ -236,6 +236,11 @@ const createTheme = (
           input: classes.input,
           label: classes.inputLabel,
         },
+        styles: {
+          input: {
+            "--input-padding-y": "var(--input-padding-y-sm)",
+          },
+        },
       }),
       ThemeIcon: ThemeIcon.extend({
         defaultProps: {

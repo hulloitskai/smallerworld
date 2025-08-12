@@ -46,11 +46,11 @@ class Image < ActiveStorage::Blob
     if gif?
       representation_path(self)
     else
-      procesesed = variant(
+      processed = variant(
         resize_to_limit: [MAX_SIZE, MAX_SIZE],
         **VARIANT_PARAMS,
       )
-      representation_path(procesesed)
+      representation_path(processed)
     end
   end
 
