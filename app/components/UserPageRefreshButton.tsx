@@ -50,7 +50,7 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
         const query = currentFriend
           ? { friend_token: currentFriend.access_token }
           : {};
-        void mutateRoute(routes.userPosts.pinned, { query });
+        void mutateRoute(routes.userPosts.pinned, { user_id: userId, query });
         void mutateRoute(routes.activityCoupons.index, { query });
 
         // Revalidate posts and post stats, reactions, etc
