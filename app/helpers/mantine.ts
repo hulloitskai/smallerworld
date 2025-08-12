@@ -27,7 +27,7 @@ import {
   Text,
   TextInput,
   ThemeIcon,
-  TypographyStylesProvider,
+  Typography,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { RichTextEditor } from "@mantine/tiptap";
@@ -282,9 +282,9 @@ const createTheme = (
           input: classes.input,
         },
       }),
-      TypographyStylesProvider: TypographyStylesProvider.extend({
+      Typography: Typography.extend({
         classNames: {
-          root: classes.typographyStylesProvider,
+          root: classes.typography,
         },
       }),
       CloseButton: CloseButton.extend({

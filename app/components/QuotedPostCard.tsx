@@ -3,7 +3,7 @@ import {
   type CardProps,
   Image,
   Text,
-  TypographyStylesProvider,
+  Typography,
 } from "@mantine/core";
 import Lightbox from "yet-another-react-lightbox";
 
@@ -74,9 +74,9 @@ const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
               {post.title}
             </Title>
           )}
-          <TypographyStylesProvider>
+          <Typography>
             <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-          </TypographyStylesProvider>
+          </Typography>
           {coverImage && <PostImage image={coverImage} />}
         </Stack>
       </Card.Section>

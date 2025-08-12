@@ -1,4 +1,4 @@
-import { Image, Overlay, Text, TypographyStylesProvider } from "@mantine/core";
+import { Image, Overlay, Text, Typography } from "@mantine/core";
 
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
@@ -166,9 +166,9 @@ const PostCard: FC<PostCardProps> = ({
                 {post.title}
               </Title>
             )}
-            <TypographyStylesProvider>
+            <Typography>
               <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-            </TypographyStylesProvider>
+            </Typography>
           </Stack>
           {!!firstImage && (
             <>
