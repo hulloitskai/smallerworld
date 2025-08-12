@@ -10,10 +10,5 @@ class WorldFriendSerializer < FriendSerializer
              paused?: { as: :paused, type: :boolean }
 
   # == Associations
-  has_many(
-    :active_activity_coupons,
-    serializer: FriendActivityCouponSerializer,
-  ) do
-    friend.activity_coupons.active
-  end
+  has_many :active_activity_coupons, serializer: FriendActivityCouponSerializer
 end

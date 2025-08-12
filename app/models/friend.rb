@@ -63,7 +63,17 @@ class Friend < ApplicationRecord
   has_many :user_posts, through: :user, source: :posts
 
   has_many :activity_coupons, dependent: :destroy
-  has_many :offered_activities, through: :activity_coupons, source: :activity
+  has_many :active_activity_coupons,
+           -> {
+             T.bind(self, ActivityCoupon::PrivateRelation)
+             active
+           },
+           class_name: "ActivityCoupon",
+           dependent: :destroy,
+           inverse_of: :friend
+  has_many :offered_activities,
+           through: :active_activity_coupons,
+           source: :activity
 
   belongs_to :join_request, optional: true
   has_many :post_reactions, dependent: :destroy
@@ -97,6 +107,9 @@ class Friend < ApplicationRecord
     where("? = ANY (subscribed_post_types)", post_type)
   }
   scope :chosen_family, -> { where(chosen_family: true) }
+  scope :with_active_activity_coupons, -> {
+    includes(:active_activity_coupons)
+  }
 
   # == Search
   pg_search_scope :search,

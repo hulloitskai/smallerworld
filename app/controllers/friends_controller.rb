@@ -15,7 +15,7 @@ class FriendsController < ApplicationController
       end
       format.json do
         friends = current_user.friends
-          .includes(:offered_activities)
+          .with_active_activity_coupons
           .reverse_chronological
         notifiable_friend_ids = PushRegistration
           .where(owner: friends)

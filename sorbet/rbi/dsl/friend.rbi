@@ -337,6 +337,20 @@ class Friend
 
   module GeneratedAssociationMethods
     sig { returns(T::Array[T.untyped]) }
+    def active_activity_coupon_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def active_activity_coupon_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :active_activity_coupons`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::ActivityCoupon::PrivateCollectionProxy) }
+    def active_activity_coupons; end
+
+    sig { params(value: T::Enumerable[::ActivityCoupon]).void }
+    def active_activity_coupons=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def activity_coupon_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -408,7 +422,7 @@ class Friend
     sig { params(value: T::Enumerable[::Notification]).void }
     def notifications=(value); end
 
-    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :offered_activities, through: :activity_coupons`.
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :offered_activities, through: :active_activity_coupons`.
     # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
     sig { returns(::Activity::PrivateCollectionProxy) }
     def offered_activities; end
@@ -712,6 +726,9 @@ class Friend
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def with_active_activity_coupons(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_recursive(*args, &blk); end
@@ -1707,6 +1724,9 @@ class Friend
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def with_active_activity_coupons(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_recursive(*args, &blk); end
