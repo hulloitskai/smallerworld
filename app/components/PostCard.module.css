@@ -144,20 +144,25 @@
   align-self: center;
   padding-block: 3px;
   margin-inline: var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-default);
   border-style: dashed;
   max-width: 400px;
 
   :global(.mantine-Badge-label) {
     white-space: pre-wrap;
     line-height: 1.2;
-    text-align: start;
     padding-block: 3px;
+    text-align: start;
+    text-wrap: pretty;
     font-family: var(--mantine-font-family-body);
     font-weight: 500;
     font-style: italic;
   }
 
   :global(.mantine-Badge-section)[data-position="left"] {
+    font-family: var(--font-family-emoji);
+    align-self: flex-start;
+    margin-top: 1px;
     margin-right: 8px;
   }
 

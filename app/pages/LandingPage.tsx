@@ -192,14 +192,53 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
           bottomSection={
             <Stack align="center">
               <Image src={shareRealStuffSrc} radius="default" />
-              <HoverCard>
+              <HoverCard width={354} withArrow shadow="md">
                 <HoverCard.Target>
                   <Badge size="lg">but wait... what do i post???</Badge>
                 </HoverCard.Target>
                 <HoverCard.Dropdown>
-                  <List type="ordered" size="sm">
-                    <List.Item>feet pics</List.Item>
-                  </List>
+                  <Stack gap={4}>
+                    <Text size="sm" ff="heading" fw={600}>
+                      you can post whatever you want, but here are some ideas:
+                    </Text>
+                    <List type="unordered" size="sm" pr="md">
+                      <List.Item>
+                        a blurry photo you like for reasons even you can&apos;t
+                        explain.
+                      </List.Item>
+                      <List.Item>
+                        a snack combination that makes no nutritional sense but
+                        works.
+                      </List.Item>
+                      <List.Item>
+                        a tiny win no one clapped for but you.
+                      </List.Item>
+                      <List.Item>
+                        the dumbest thing you believed as a kid.
+                      </List.Item>
+                      <List.Item>
+                        a hill you&apos;d die on that you know is objectively
+                        wrong.
+                      </List.Item>
+                      <List.Item>
+                        a photo that makes you look unhinged but happy.
+                      </List.Item>
+                      <List.Item>
+                        the last screenshot you took (no cropping).
+                      </List.Item>
+                      <List.Item>
+                        a weird flex so specific it could be used to identify
+                        you in court.
+                      </List.Item>
+                      <List.Item>
+                        the most petty reason you&apos;ve ever disliked someone.
+                      </List.Item>
+                      <List.Item>
+                        something you probably shouldn&apos;t say here but are
+                        going to anyway.
+                      </List.Item>
+                    </List>
+                  </Stack>
                 </HoverCard.Dropdown>
               </HoverCard>
             </Stack>
