@@ -34,6 +34,7 @@ const PostCard: FC<PostCardProps> = ({
   focus,
   highlightType,
   onTypeClick,
+  className,
   ...otherProps
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -62,71 +63,101 @@ const PostCard: FC<PostCardProps> = ({
   }, [focus, isStandalone, outOfPWAScope, pushRegistration]);
 
   return (
-    <Card
-      ref={cardRef}
-      className={cn("PostCard", classes.card)}
-      withBorder
-      shadow="sm"
-      mod={{
-        focus,
-        "post-visibility": post.visibility,
-      }}
-      {...otherProps}
-    >
-      <Card.Section inheritPadding pt="xs" pb={10}>
-        <Group gap={8} align="center">
-          <Group gap={6} align="center" style={{ flexGrow: 1 }}>
-            {!!post.emoji && <Box className={classes.emoji}>{post.emoji}</Box>}
-            <Group
-              className={classes.typeGroup}
-              gap={6}
-              mod={{ highlight: highlightType, interactive: !!onTypeClick }}
-              onClick={onTypeClick}
-            >
-              {!post.emoji && (
-                <Box
-                  className={classes.typeIcon}
-                  component={POST_TYPE_TO_ICON[post.type]}
-                />
-              )}
-              <Text className={classes.typeLabel} size="xs">
-                {POST_TYPE_TO_LABEL[post.type]}
-              </Text>
-            </Group>
-          </Group>
+    <Stack className={cn("PostCard", className)} gap={6} {...otherProps}>
+      {post.encouragement && (
+        <Badge
+          variant="default"
+          leftSection={post.encouragement.emoji}
+          rightSection="— a friend"
+          className={classes.encouragementBadge}
+        >
+          &ldquo;{post.encouragement.message}&rdquo;
+        </Badge>
+      )}
+      <Card
+        ref={cardRef}
+        withBorder
+        shadow="sm"
+        className={classes.card}
+        mod={{
+          focus,
+          "post-visibility": post.visibility,
+        }}
+      >
+        <Card.Section inheritPadding pt="xs" pb={10}>
           <Group gap={8} align="center">
-            {pinnedUntil ? (
-              <Box className={classes.timestamp} mod={{ pinned: true }}>
-                {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
-                <Time format={DateTime.DATE_MED} inline inherit>
-                  {pinnedUntil}
-                </Time>
-              </Box>
-            ) : (
-              <Time
-                className={classes.timestamp}
-                format={dateTime => {
-                  if (dateTime.hasSame(DateTime.now(), "day")) {
-                    return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
-                  }
-                  return dateTime.toLocaleString(DateTime.DATETIME_MED);
-                }}
-                inline
-                block
+            <Group gap={6} align="center" style={{ flexGrow: 1 }}>
+              {!!post.emoji && (
+                <Box className={classes.emoji}>{post.emoji}</Box>
+              )}
+              <Group
+                className={classes.typeGroup}
+                gap={6}
+                mod={{ highlight: highlightType, interactive: !!onTypeClick }}
+                onClick={onTypeClick}
               >
-                {post.created_at}
-              </Time>
-            )}
-            {post.visibility === "public" && (
+                {!post.emoji && (
+                  <Box
+                    className={classes.typeIcon}
+                    component={POST_TYPE_TO_ICON[post.type]}
+                  />
+                )}
+                <Text className={classes.typeLabel} size="xs">
+                  {POST_TYPE_TO_LABEL[post.type]}
+                </Text>
+              </Group>
+            </Group>
+            <Group gap={8} align="center">
+              {pinnedUntil ? (
+                <Box className={classes.timestamp} mod={{ pinned: true }}>
+                  {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
+                  <Time format={DateTime.DATE_MED} inline inherit>
+                    {pinnedUntil}
+                  </Time>
+                </Box>
+              ) : (
+                <Time
+                  className={classes.timestamp}
+                  format={dateTime => {
+                    if (dateTime.hasSame(DateTime.now(), "day")) {
+                      return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
+                    }
+                    return dateTime.toLocaleString(DateTime.DATETIME_MED);
+                  }}
+                  inline
+                  block
+                >
+                  {post.created_at}
+                </Time>
+              )}
+              {post.visibility === "public" && (
+                <Tooltip
+                  label="this post is publicly visible"
+                  events={{ hover: true, focus: true, touch: true }}
+                  position="top-end"
+                  arrowOffset={20}
+                >
+                  <Box>
+                    <Box
+                      component={PublicIcon}
+                      fz={10.5}
+                      c="primary"
+                      display="block"
+                    />
+                  </Box>
+                </Tooltip>
+              )}
+            </Group>
+            {post.visibility === "only_me" && (
               <Tooltip
-                label="this post is publicly visible"
+                label="this post is visible only to you"
                 events={{ hover: true, focus: true, touch: true }}
                 position="top-end"
                 arrowOffset={20}
               >
                 <Box>
                   <Box
-                    component={PublicIcon}
+                    component={LockIcon}
                     fz={10.5}
                     c="primary"
                     display="block"
@@ -135,83 +166,66 @@ const PostCard: FC<PostCardProps> = ({
               </Tooltip>
             )}
           </Group>
-          {post.visibility === "only_me" && (
-            <Tooltip
-              label="this post is visible only to you"
-              events={{ hover: true, focus: true, touch: true }}
-              position="top-end"
-              arrowOffset={20}
-            >
-              <Box>
-                <Box
-                  component={LockIcon}
-                  fz={10.5}
-                  c="primary"
-                  display="block"
-                />
-              </Box>
-            </Tooltip>
-          )}
-        </Group>
-      </Card.Section>
-      <Card.Section
-        className={classes.contentSection}
-        inheritPadding
-        mod={{ "blur-content": blurContent }}
-      >
-        <Stack gap={14}>
-          <Stack gap={6}>
-            {!!post.title && (
-              <Title order={3} size="h4">
-                {post.title}
-              </Title>
-            )}
-            <Typography>
-              <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-            </Typography>
-          </Stack>
-          {!!firstImage && (
-            <>
-              {blurContent || post.images.length === 1 ? (
-                <ImageWithLightbox image={firstImage} {...{ blurContent }} />
-              ) : (
-                <ImageStack
-                  images={post.images}
-                  maxWidth={IMAGE_MAX_WIDTH}
-                  maxHeight={IMAGE_MAX_HEIGHT}
-                  flipBoundary={IMAGE_FLIP_BOUNDARY}
-                  mb={6}
-                />
+        </Card.Section>
+        <Card.Section
+          className={classes.contentSection}
+          inheritPadding
+          mod={{ "blur-content": blurContent }}
+        >
+          <Stack gap={14}>
+            <Stack gap={6}>
+              {!!post.title && (
+                <Title order={3} size="h4">
+                  {post.title}
+                </Title>
               )}
-            </>
-          )}
-          {post.quoted_post && (
-            <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
-          )}
-        </Stack>
-        {blurContent && (
-          <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
-            <Stack align="center" justify="center" gap={6} h="100%">
-              <Alert
-                variant="outline"
-                color="gray"
-                icon={<LockIcon />}
-                title="visible only to invited friends"
-                className={classes.restrictedAlert}
-              />
+              <Typography>
+                <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
+              </Typography>
             </Stack>
-          </Overlay>
-        )}
-      </Card.Section>
-      <Card.Section
-        className={classes.footerSection}
-        inheritPadding
-        pt="xs"
-        py="sm"
-      >
-        {actions}
-      </Card.Section>
-    </Card>
+            {!!firstImage && (
+              <>
+                {blurContent || post.images.length === 1 ? (
+                  <ImageWithLightbox image={firstImage} {...{ blurContent }} />
+                ) : (
+                  <ImageStack
+                    images={post.images}
+                    maxWidth={IMAGE_MAX_WIDTH}
+                    maxHeight={IMAGE_MAX_HEIGHT}
+                    flipBoundary={IMAGE_FLIP_BOUNDARY}
+                    mb={6}
+                  />
+                )}
+              </>
+            )}
+            {post.quoted_post && (
+              <QuotedPostCard post={post.quoted_post} radius="md" mt={8} />
+            )}
+          </Stack>
+          {blurContent && (
+            <Overlay backgroundOpacity={0} blur={4} zIndex={0} inset={1}>
+              <Stack align="center" justify="center" gap={6} h="100%">
+                <Alert
+                  variant="outline"
+                  color="gray"
+                  icon={<LockIcon />}
+                  title="visible only to invited friends"
+                  className={classes.restrictedAlert}
+                />
+              </Stack>
+            </Overlay>
+          )}
+        </Card.Section>
+        <Card.Section
+          className={classes.footerSection}
+          inheritPadding
+          pt="xs"
+          py="sm"
+        >
+          {actions}
+        </Card.Section>
+      </Card>
+    </Stack>
   );
 };
 

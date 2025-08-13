@@ -6,33 +6,36 @@
 #
 # Table name: posts
 #
-#  id              :uuid             not null, primary key
-#  body_html       :text             not null
-#  emoji           :string
-#  hidden_from_ids :uuid             default([]), not null, is an Array
-#  images_ids      :uuid             default([]), not null, is an Array
-#  pinned_until    :datetime
-#  title           :string
-#  type            :string           not null
-#  visibility      :string           not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  author_id       :uuid             not null
-#  quoted_post_id  :uuid
+#  id               :uuid             not null, primary key
+#  body_html        :text             not null
+#  emoji            :string
+#  hidden_from_ids  :uuid             default([]), not null, is an Array
+#  images_ids       :uuid             default([]), not null, is an Array
+#  pinned_until     :datetime
+#  title            :string
+#  type             :string           not null
+#  visibility       :string           not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  author_id        :uuid             not null
+#  encouragement_id :uuid
+#  quoted_post_id   :uuid
 #
 # Indexes
 #
-#  index_posts_for_search          ((((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))) USING gin
-#  index_posts_on_author_id        (author_id)
-#  index_posts_on_hidden_from_ids  (hidden_from_ids) USING gin
-#  index_posts_on_pinned_until     (pinned_until)
-#  index_posts_on_quoted_post_id   (quoted_post_id)
-#  index_posts_on_type             (type)
-#  index_posts_on_visibility       (visibility)
+#  index_posts_for_search           ((((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))) USING gin
+#  index_posts_on_author_id         (author_id)
+#  index_posts_on_encouragement_id  (encouragement_id)
+#  index_posts_on_hidden_from_ids   (hidden_from_ids) USING gin
+#  index_posts_on_pinned_until      (pinned_until)
+#  index_posts_on_quoted_post_id    (quoted_post_id)
+#  index_posts_on_type              (type)
+#  index_posts_on_visibility        (visibility)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (author_id => users.id)
+#  fk_rails_...  (encouragement_id => encouragements.id)
 #  fk_rails_...  (quoted_post_id => posts.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
@@ -134,6 +137,7 @@ class Post < ApplicationRecord
   has_many :author_friends, through: :author, source: :friends
 
   belongs_to :quoted_post, class_name: "Post", optional: true
+  belongs_to :encouragement, optional: true
   has_many :reactions, class_name: "PostReaction", dependent: :destroy
   has_many :stickers, class_name: "PostSticker", dependent: :destroy
   has_many :reply_receipts, class_name: "PostReplyReceipt", dependent: :destroy
@@ -185,6 +189,7 @@ class Post < ApplicationRecord
   }
   scope :with_images, -> { includes(:images_blobs) }
   scope :with_reactions, -> { includes(:reactions) }
+  scope :with_encouragement, -> { includes(:encouragement) }
   scope :with_quoted_post_and_images, -> {
     includes(quoted_post: :images_blobs)
   }

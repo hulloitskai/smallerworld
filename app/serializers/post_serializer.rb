@@ -17,4 +17,7 @@ class PostSerializer < ApplicationSerializer
   # == Associations
   has_many :ordered_images, as: :images, serializer: ImageSerializer
   has_one :quoted_post, serializer: QuotedPostSerializer, nullable: true
+  has_one :encouragement,
+          serializer: PostEncouragementSerializer,
+          nullable: true
 end

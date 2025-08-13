@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_21_201119) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_13_150635) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -284,8 +284,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_201119) do
     t.uuid "quoted_post_id"
     t.uuid "hidden_from_ids", default: [], null: false, array: true
     t.uuid "images_ids", default: [], null: false, array: true
+    t.uuid "encouragement_id"
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
     t.index ["author_id"], name: "index_posts_on_author_id"
+    t.index ["encouragement_id"], name: "index_posts_on_encouragement_id"
     t.index ["hidden_from_ids"], name: "index_posts_on_hidden_from_ids", using: :gin
     t.index ["pinned_until"], name: "index_posts_on_pinned_until"
     t.index ["quoted_post_id"], name: "index_posts_on_quoted_post_id"
@@ -371,6 +373,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_201119) do
   add_foreign_key "post_stickers", "posts"
   add_foreign_key "post_views", "friends"
   add_foreign_key "post_views", "posts"
+  add_foreign_key "posts", "encouragements"
   add_foreign_key "posts", "posts", column: "quoted_post_id"
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "push_registrations", "push_subscriptions"

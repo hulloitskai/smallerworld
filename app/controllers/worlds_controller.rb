@@ -30,6 +30,7 @@ class WorldsController < ApplicationController
     paused_friend_ids = current_user.friends.paused.pluck(:id)
     recently_paused_friend_ids = current_user.friends
       .paused_during(1.month.ago..)
+      .distinct
       .pluck(:id)
     render(inertia: "WorldPage", props: {
       "faviconLinks" => user_favicon_links(current_user),

@@ -55,6 +55,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
     keepPreviousData: true,
   });
   const { encouragements = [] } = encouragementsData ?? {};
+  const latestEncouragement = last(encouragements);
 
   // == Load pinned posts
   const { data: pinnedPostsData } = useRouteSWR<{ posts: WorldPost[] }>(
@@ -238,10 +239,12 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
         }}
       >
         <PostForm
+          key={postType}
+          newPostType={postType}
+          encouragement={latestEncouragement}
           {...{
             pausedFriendIds,
             recentlyPausedFriendIds,
-            newPostType: postType,
           }}
           onPostCreated={() => {
             setPostType(null);

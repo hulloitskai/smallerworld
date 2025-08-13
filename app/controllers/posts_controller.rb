@@ -16,6 +16,7 @@ class PostsController < ApplicationController
     posts = authorized_scope(current_user.posts)
       .with_images
       .with_quoted_post_and_images
+      .with_encouragement
     if (type = params[:type])
       posts = posts.where(type:)
     end
@@ -68,6 +69,7 @@ class PostsController < ApplicationController
       :emoji,
       :visibility,
       :pinned_until,
+      :encouragement_id,
       :quoted_post_id,
       :quiet,
       images: [],

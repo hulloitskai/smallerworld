@@ -6,7 +6,10 @@ class UserPostsController < ApplicationController
   # GET /users/:user_id/posts
   def index
     user = load_user
-    posts = user.posts.with_images.with_quoted_post_and_images
+    posts = user.posts
+      .with_images
+      .with_quoted_post_and_images
+      .with_encouragement
     if (friend = current_friend)
       posts = posts.not_hidden_from(friend)
       posts = posts.visible_to_friends unless friend.chosen_family?

@@ -732,6 +732,9 @@ class MaskedPost
     def with_attached_images(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def with_encouragement(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_images(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -927,6 +930,51 @@ class MaskedPost
 
     sig { void }
     def emoji_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def encouragement_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def encouragement_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def encouragement_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def encouragement_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def encouragement_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def encouragement_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def encouragement_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def encouragement_id_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def encouragement_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def encouragement_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def encouragement_id_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def encouragement_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def encouragement_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def encouragement_id_was; end
+
+    sig { void }
+    def encouragement_id_will_change!; end
 
     sig { returns(T::Array[::String]) }
     def hidden_from_ids; end
@@ -1221,6 +1269,9 @@ class MaskedPost
     def restore_emoji!; end
 
     sig { void }
+    def restore_encouragement_id!; end
+
+    sig { void }
     def restore_hidden_from_ids!; end
 
     sig { void }
@@ -1273,6 +1324,12 @@ class MaskedPost
 
     sig { returns(T::Boolean) }
     def saved_change_to_emoji?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_encouragement_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_encouragement_id?; end
 
     sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
     def saved_change_to_hidden_from_ids; end
@@ -1527,6 +1584,9 @@ class MaskedPost
     def will_save_change_to_emoji?; end
 
     sig { returns(T::Boolean) }
+    def will_save_change_to_encouragement_id?; end
+
+    sig { returns(T::Boolean) }
     def will_save_change_to_hidden_from_ids?; end
 
     sig { returns(T::Boolean) }
@@ -1721,6 +1781,9 @@ class MaskedPost
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_attached_images(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def with_encouragement(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_images(*args, &blk); end

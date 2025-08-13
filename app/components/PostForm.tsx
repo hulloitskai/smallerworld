@@ -1,4 +1,4 @@
-import { Input, ScrollArea, SegmentedControl } from "@mantine/core";
+import { Input, ScrollArea, SegmentedControl, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useLongPress, useMergedRef } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
@@ -9,6 +9,7 @@ import QuietIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
 
+import { prettyName } from "~/helpers/friends";
 import {
   mutatePosts,
   NONPRIVATE_POST_VISIBILITIES,
@@ -17,7 +18,13 @@ import {
   POST_VISIBILITY_TO_LABEL,
 } from "~/helpers/posts";
 import { type PostFormValues, usePostDraftValues } from "~/helpers/posts/form";
-import { type Post, type PostType, type Upload, type WorldPost } from "~/types";
+import {
+  type Encouragement,
+  type Post,
+  type PostType,
+  type Upload,
+  type WorldPost,
+} from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 import ImageInput, { type ImageInputProps } from "./ImageInput";
@@ -37,6 +44,7 @@ export type PostFormProps =
       newPostType: PostType | null;
       pausedFriendIds: string[];
       recentlyPausedFriendIds: string[];
+      encouragement?: Encouragement;
       quotedPost?: Post;
       onPostCreated?: (post: WorldPost) => void;
     };
@@ -64,6 +72,7 @@ const PostForm: FC<PostFormProps> = props => {
   const newPostType = "newPostType" in props ? props.newPostType : undefined;
   const postType = "newPostType" in props ? props.newPostType : props.post.type;
   const post = "post" in props ? props.post : null;
+  const encouragement = "encouragement" in props ? props.encouragement : null;
   const quotedPost =
     "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
   const pausedFriendIds =
@@ -88,6 +97,10 @@ const PostForm: FC<PostFormProps> = props => {
   // == Draft values
   const [loadDraftValues, saveDraftValues, clearDraft] =
     usePostDraftValues(newPostType);
+
+  // == Encouragement
+  const [includedEncouragement, setIncludeEncouragement] =
+    useState<boolean>(true);
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
@@ -177,6 +190,10 @@ const PostForm: FC<PostFormProps> = props => {
                   ? title || null
                   : null,
                 images: images_uploads.map(upload => upload.signedId),
+                encouragement_id:
+                  encouragement && includedEncouragement
+                    ? encouragement.id
+                    : null,
                 quoted_post_id: quotedPost?.id ?? null,
                 pinned_until: pinned_until
                   ? formatDateString(pinned_until)
@@ -274,257 +291,295 @@ const PostForm: FC<PostFormProps> = props => {
 
   return (
     <form onSubmit={submit}>
-      <Group gap="xs" align="start" justify="center">
-        <Stack gap="xs" align="center">
-          <EmojiPopover
-            position="right"
-            onEmojiClick={({ emoji }) => {
-              setFieldValue("emoji", emoji);
-            }}
-          >
-            {({ open, opened }) => (
-              <ActionIcon
-                className={classes.emojiButton}
-                variant="default"
-                size={36}
-                mod={{ opened }}
-                onClick={() => {
-                  if (values.emoji) {
-                    setFieldValue("emoji", "");
-                  } else {
-                    open();
-                  }
-                }}
-              >
-                {values.emoji ? (
-                  <Box className={classes.emoji}>{values.emoji}</Box>
-                ) : (
-                  <Box
-                    component={EmojiIcon}
-                    c="var(--mantine-color-placeholder)"
-                  />
-                )}
-              </ActionIcon>
-            )}
-          </EmojiPopover>
-          {postVisibilities && (
-            <SegmentedControl
-              {...getInputProps("visibility")}
-              className={classes.visibilitySegmentedControl}
-              orientation="vertical"
-              size="xs"
-              data={postVisibilities.map(visibility => ({
-                label: (
-                  <Tooltip
-                    label={
-                      <>visible to {POST_VISIBILITY_TO_LABEL[visibility]}</>
-                    }
-                    events={{ hover: true, focus: true, touch: true }}
-                    position="right"
-                    withArrow
-                  >
-                    <Center h={20}>
-                      <Box component={POST_VISIBILITY_TO_ICON[visibility]} />
-                    </Center>
-                  </Tooltip>
-                ),
-                value: visibility,
-              }))}
-            />
-          )}
-          {!post && (
-            <Tooltip
-              label={
-                values.quiet ? "don't send notifications" : "send notifications"
-              }
-              events={{ hover: true, focus: true, touch: true }}
-              onClick={() => {
-                setFieldValue("quiet", !values.quiet);
-              }}
-            >
-              <ActionIcon
-                color="gray"
-                styles={{
-                  icon: {
-                    fontSize: "var(--mantine-spacing-sm)",
-                  },
-                }}
-              >
-                {values.quiet ? <QuietIcon /> : <NotifyIcon />}
-              </ActionIcon>
-            </Tooltip>
-          )}
-        </Stack>
-        <Stack ref={formStackRef} gap="xs" style={{ flexGrow: 1 }}>
-          {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
-            <TextInput
-              {...getInputProps("title")}
-              {...(!!titlePlaceholder && {
-                placeholder: `(optional) ${titlePlaceholder}`,
-              })}
-              styles={{
-                input: {
-                  fontFamily: "var(--mantine-font-family-headings)",
-                },
-              }}
-            />
-          )}
-          <Input.Wrapper error={errors.body_html}>
-            <LazyPostEditor
-              key={editorKey}
-              initialValue={values.body_html}
-              placeholder={bodyPlaceholder}
-              onEditorCreated={editor => {
-                editorRef.current = editor;
-                setEditorMounted(true);
-                setBodyTextEmpty(editor.getText().trim() === "");
-              }}
-              onChange={value => {
-                setFieldValue("body_html", value);
-              }}
-              onUpdate={({ editor }) => {
-                setBodyTextEmpty(editor.getText().trim() === "");
-              }}
-            />
-          </Input.Wrapper>
-          {postType === "invitation" && (
-            <DateInput
-              {...getInputProps("pinned_until")}
-              classNames={{
-                root: classes.dateInput,
-                day: classes.dateInputDay,
-              }}
-              placeholder="keep pinned until"
-              leftSection={<CalendarIcon />}
-              minDate={todayDate}
-              error={errors.pinned_until}
-              required
-              withAsterisk={false}
-              popoverProps={{
-                portalProps: {
-                  target: vaulPortalTarget,
-                },
-                position: "bottom",
-              }}
-              data-vaul-no-drag
-            />
-          )}
-          {quotedPost ? (
-            <QuotedPostCard post={quotedPost} />
-          ) : (
-            <>
-              {showImageInput || !isEmpty(values.images_uploads) ? (
-                <ScrollArea
-                  scrollbars="x"
-                  offsetScrollbars="present"
-                  className={classes.imagesScrollArea}
-                  w={formStackWidth}
-                >
-                  <Reorder.Group<Upload>
-                    values={values.images_uploads}
-                    axis="x"
-                    layoutScroll={editorMounted}
-                    onReorder={uploads => {
-                      setFieldValue("images_uploads", uploads);
+      <Stack>
+        {encouragement && (
+          <Transition transition="pop" mounted={includedEncouragement}>
+            {style => (
+              <Stack gap={4} mx="md" {...{ style }}>
+                <Card withBorder className={classes.encouragementCard}>
+                  <Stack gap={2} style={{ alignSelf: "center" }}>
+                    <Text size="sm">&ldquo;{encouragement.message}&rdquo;</Text>
+                    <Text size="xs" c="dimmed" style={{ alignSelf: "end" }}>
+                      — {prettyName(encouragement.friend)}
+                    </Text>
+                  </Stack>
+                </Card>
+                <Text size="xs" c="dimmed" ta="center" mx="md" fs="italic">
+                  message from{" "}
+                  <Text span inherit fw={600}>
+                    {encouragement.friend.name}
+                  </Text>{" "}
+                  will be attached.{" "}
+                  <Anchor
+                    component="button"
+                    type="button"
+                    size="xs"
+                    fw={600}
+                    onClick={() => {
+                      setIncludeEncouragement(false);
                     }}
                   >
-                    {values.images_uploads.map((upload, i) => (
-                      <ReorderableImageInput
-                        key={upload.signedId}
-                        value={upload}
-                        previewFit="contain"
-                        onChange={value => {
-                          setTouched(touchedFields => ({
-                            ...touchedFields,
-                            images_uploads: true,
-                          }));
-                          if (value) {
-                            setFieldValue(`images_uploads.${i}`, value);
-                          } else {
-                            removeListItem("images_uploads", i);
-                          }
-                        }}
-                        h={IMAGE_INPUT_SIZE}
-                        w={IMAGE_INPUT_SIZE}
-                        draggable={values.images_uploads.length > 1}
-                      />
-                    ))}
-                    {values.images_uploads.length < 4 && (
-                      <motion.li
-                        key={newImageInputKey}
-                        layout="position"
-                        layoutScroll={editorMounted}
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                      >
-                        <ImageInput
-                          key={newImageInputKey}
+                    remove?
+                  </Anchor>
+                </Text>
+              </Stack>
+            )}
+          </Transition>
+        )}
+        <Group gap="xs" align="start" justify="center">
+          <Stack gap="xs" align="center">
+            <EmojiPopover
+              position="right"
+              onEmojiClick={({ emoji }) => {
+                setFieldValue("emoji", emoji);
+              }}
+            >
+              {({ open, opened }) => (
+                <ActionIcon
+                  className={classes.emojiButton}
+                  variant="default"
+                  size={36}
+                  mod={{ opened }}
+                  onClick={() => {
+                    if (values.emoji) {
+                      setFieldValue("emoji", "");
+                    } else {
+                      open();
+                    }
+                  }}
+                >
+                  {values.emoji ? (
+                    <Box className={classes.emoji}>{values.emoji}</Box>
+                  ) : (
+                    <Box
+                      component={EmojiIcon}
+                      c="var(--mantine-color-placeholder)"
+                    />
+                  )}
+                </ActionIcon>
+              )}
+            </EmojiPopover>
+            {postVisibilities && (
+              <SegmentedControl
+                {...getInputProps("visibility")}
+                className={classes.visibilitySegmentedControl}
+                orientation="vertical"
+                size="xs"
+                data={postVisibilities.map(visibility => ({
+                  label: (
+                    <Tooltip
+                      label={
+                        <>visible to {POST_VISIBILITY_TO_LABEL[visibility]}</>
+                      }
+                      events={{ hover: true, focus: true, touch: true }}
+                      position="right"
+                      withArrow
+                    >
+                      <Center h={20}>
+                        <Box component={POST_VISIBILITY_TO_ICON[visibility]} />
+                      </Center>
+                    </Tooltip>
+                  ),
+                  value: visibility,
+                }))}
+              />
+            )}
+            {!post && (
+              <Tooltip
+                label={
+                  values.quiet
+                    ? "don't send notifications"
+                    : "send notifications"
+                }
+                events={{ hover: true, focus: true, touch: true }}
+                onClick={() => {
+                  setFieldValue("quiet", !values.quiet);
+                }}
+              >
+                <ActionIcon
+                  color="gray"
+                  styles={{
+                    icon: {
+                      fontSize: "var(--mantine-spacing-sm)",
+                    },
+                  }}
+                >
+                  {values.quiet ? <QuietIcon /> : <NotifyIcon />}
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </Stack>
+          <Stack ref={formStackRef} gap="xs" style={{ flexGrow: 1 }}>
+            {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
+              <TextInput
+                {...getInputProps("title")}
+                {...(!!titlePlaceholder && {
+                  placeholder: `(optional) ${titlePlaceholder}`,
+                })}
+                styles={{
+                  input: {
+                    fontFamily: "var(--mantine-font-family-headings)",
+                  },
+                }}
+              />
+            )}
+            <Input.Wrapper error={errors.body_html}>
+              <LazyPostEditor
+                key={editorKey}
+                initialValue={values.body_html}
+                placeholder={bodyPlaceholder}
+                onEditorCreated={editor => {
+                  editorRef.current = editor;
+                  setEditorMounted(true);
+                  setBodyTextEmpty(editor.getText().trim() === "");
+                }}
+                onChange={value => {
+                  setFieldValue("body_html", value);
+                }}
+                onUpdate={({ editor }) => {
+                  setBodyTextEmpty(editor.getText().trim() === "");
+                }}
+              />
+            </Input.Wrapper>
+            {postType === "invitation" && (
+              <DateInput
+                {...getInputProps("pinned_until")}
+                classNames={{
+                  root: classes.dateInput,
+                  day: classes.dateInputDay,
+                }}
+                placeholder="keep pinned until"
+                leftSection={<CalendarIcon />}
+                minDate={todayDate}
+                error={errors.pinned_until}
+                required
+                withAsterisk={false}
+                popoverProps={{
+                  portalProps: {
+                    target: vaulPortalTarget,
+                  },
+                  position: "bottom",
+                }}
+                data-vaul-no-drag
+              />
+            )}
+            {quotedPost ? (
+              <QuotedPostCard post={quotedPost} />
+            ) : (
+              <>
+                {showImageInput || !isEmpty(values.images_uploads) ? (
+                  <ScrollArea
+                    scrollbars="x"
+                    offsetScrollbars="present"
+                    className={classes.imagesScrollArea}
+                    w={formStackWidth}
+                  >
+                    <Reorder.Group<Upload>
+                      values={values.images_uploads}
+                      axis="x"
+                      layoutScroll={editorMounted}
+                      onReorder={uploads => {
+                        setFieldValue("images_uploads", uploads);
+                      }}
+                    >
+                      {values.images_uploads.map((upload, i) => (
+                        <ReorderableImageInput
+                          key={upload.signedId}
+                          value={upload}
+                          previewFit="contain"
                           onChange={value => {
+                            setTouched(touchedFields => ({
+                              ...touchedFields,
+                              images_uploads: true,
+                            }));
                             if (value) {
-                              setTouched(touchedFields => ({
-                                ...touchedFields,
-                                images_uploads: true,
-                              }));
-                              insertListItem("images_uploads", value);
-                              setNewImageInputKey(prev => prev + 1);
+                              setFieldValue(`images_uploads.${i}`, value);
+                            } else {
+                              removeListItem("images_uploads", i);
                             }
                           }}
                           h={IMAGE_INPUT_SIZE}
                           w={IMAGE_INPUT_SIZE}
+                          draggable={values.images_uploads.length > 1}
                         />
-                      </motion.li>
-                    )}
-                  </Reorder.Group>
-                </ScrollArea>
-              ) : (
-                <Button
-                  size="compact-sm"
-                  style={{ alignSelf: "center" }}
-                  leftSection={<ImageIcon />}
-                  onClick={() => {
-                    setShowImageInput(true);
-                  }}
-                >
-                  attach an image
-                </Button>
-              )}
-            </>
-          )}
-          <Group justify="end" mt="xs">
-            <PostFormHiddenFromIdsPicker
-              {...{ recentlyPausedFriendIds }}
-              {...getInputProps("hidden_from_ids")}
-            >
-              <Anchor
-                component="button"
-                type="button"
-                size="xs"
-                underline="always"
-                c="dimmed"
-              >
-                {isEmpty(values.hidden_from_ids) ? (
-                  "visible to all friends"
+                      ))}
+                      {values.images_uploads.length < 4 && (
+                        <motion.li
+                          key={newImageInputKey}
+                          layout="position"
+                          layoutScroll={editorMounted}
+                          initial={{ opacity: 0, scale: 0 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                        >
+                          <ImageInput
+                            key={newImageInputKey}
+                            onChange={value => {
+                              if (value) {
+                                setTouched(touchedFields => ({
+                                  ...touchedFields,
+                                  images_uploads: true,
+                                }));
+                                insertListItem("images_uploads", value);
+                                setNewImageInputKey(prev => prev + 1);
+                              }
+                            }}
+                            h={IMAGE_INPUT_SIZE}
+                            w={IMAGE_INPUT_SIZE}
+                          />
+                        </motion.li>
+                      )}
+                    </Reorder.Group>
+                  </ScrollArea>
                 ) : (
-                  <>
-                    hidden from {values.hidden_from_ids.length}{" "}
-                    {inflect("friend", values.hidden_from_ids.length)}
-                  </>
+                  <Button
+                    size="compact-sm"
+                    style={{ alignSelf: "center" }}
+                    leftSection={<ImageIcon />}
+                    onClick={() => {
+                      setShowImageInput(true);
+                    }}
+                  >
+                    attach an image
+                  </Button>
                 )}
-              </Anchor>
-            </PostFormHiddenFromIdsPicker>
-            <Button
-              type="submit"
-              variant="filled"
-              leftSection={post ? <SaveIcon /> : <SendIcon />}
-              disabled={bodyTextEmpty || !isDirty()}
-              loading={submitting}
-              style={{ flexShrink: 0 }}
-            >
-              {post ? "save" : "post"}
-            </Button>
-          </Group>
-        </Stack>
-      </Group>
+              </>
+            )}
+            <Group justify="end" mt="xs">
+              <PostFormHiddenFromIdsPicker
+                {...{ recentlyPausedFriendIds }}
+                {...getInputProps("hidden_from_ids")}
+              >
+                <Anchor
+                  component="button"
+                  type="button"
+                  size="xs"
+                  underline="always"
+                  c="dimmed"
+                >
+                  {isEmpty(values.hidden_from_ids) ? (
+                    "visible to all friends"
+                  ) : (
+                    <>
+                      hidden from {values.hidden_from_ids.length}{" "}
+                      {inflect("friend", values.hidden_from_ids.length)}
+                    </>
+                  )}
+                </Anchor>
+              </PostFormHiddenFromIdsPicker>
+              <Button
+                type="submit"
+                variant="filled"
+                leftSection={post ? <SaveIcon /> : <SendIcon />}
+                disabled={bodyTextEmpty || !isDirty()}
+                loading={submitting}
+                style={{ flexShrink: 0 }}
+              >
+                {post ? "save" : "post"}
+              </Button>
+            </Group>
+          </Stack>
+        </Group>
+      </Stack>
     </form>
   );
 };

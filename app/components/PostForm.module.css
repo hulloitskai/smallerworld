@@ -73,3 +73,12 @@
     gap: var(--mantine-spacing-xs);
   }
 }
+
+.encouragementCard {
+  padding: rem(6px) var(--mantine-spacing-xs);
+  border-style: dashed;
+
+  @mixin light-user-theme {
+    background-color: alpha(var(--mantine-color-white), 0.7);
+  }
+}

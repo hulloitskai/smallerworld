@@ -138,3 +138,33 @@
   font-family: var(--mantine-font-family-headings);
   font-weight: 600;
 }
+
+.encouragementBadge {
+  height: unset;
+  align-self: center;
+  border-radius: var(--mantine-radius-default);
+  padding-block: 3px;
+  margin-inline: var(--mantine-spacing-md);
+
+  :global(.mantine-Badge-label) {
+    white-space: pre-wrap;
+    line-height: 1.2;
+    text-align: start;
+    padding-block: 3px;
+  }
+
+  :global(.mantine-Badge-section) {
+    text-transform: none;
+
+    &[data-position="left"] {
+      align-self: flex-start;
+    }
+
+    &[data-position="right"] {
+      align-self: flex-end;
+      margin-left: var(--mantine-spacing-sm);
+      font-weight: 400;
+      font-family: var(--mantine-font-family-body);
+    }
+  }
+}
