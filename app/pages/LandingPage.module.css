@@ -80,22 +80,6 @@
   }
 }
 
-.howItWorksCard {
-  @mixin larger-than $mantine-breakpoint-xs {
-    padding: var(--mantine-spacing-lg);
-  }
-}
-
-.howItWorksList {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-
-  :global(.mantine-List-itemWrapper) {
-    margin-right: 22px;
-  }
-}
-
 .demoWorld {
   cursor: pointer;
   margin-top: var(--mantine-spacing-xs);

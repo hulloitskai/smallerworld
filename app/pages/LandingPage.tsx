@@ -1,10 +1,18 @@
-import { Image, Overlay, Text } from "@mantine/core";
+import {
+  HoverCard,
+  Image,
+  Overlay,
+  type StackProps,
+  Text,
+} from "@mantine/core";
 
 import PlayIcon from "~icons/heroicons/play-20-solid";
+import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
-// import homescreenRowSrc from "~/assets/images/homescreen-row.jpeg";
+import inviteCloseFriendsSrc from "~/assets/images/invite-close-friends.png";
 import logoSrc from "~/assets/images/logo.png";
+import shareRealStuffSrc from "~/assets/images/share-real-stuff.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
@@ -36,7 +44,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
   }, []);
 
   return (
-    <Stack align="center" gap={44} pb="xl">
+    <Stack align="center" gap={48} pb="xl">
       {currentUser && (
         <Alert
           styles={{ root: { alignSelf: "stretch" }, body: { rowGap: rem(4) } }}
@@ -135,7 +143,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
           </Stack>
         </Box>
       </Box>
-      <Card className={classes.howItWorksCard} withBorder>
+      <Stack>
         <Stack gap={8}>
           <Center
             p={8}
@@ -144,42 +152,96 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
           >
             <Image src={logoSrc} h={44} w="unset" />
           </Center>
-          <Title order={2} size="h3" ta="center">
+          <Title order={2} size="h3" ta="center" lh={1.2}>
             how it works
           </Title>
-          <List type="ordered" className={classes.howItWorksList}>
-            <List.Item>
-              <strong>create your world</strong>: a private page for your
-              thoughts, casual event invites, or little life updates —
-              whatever&apos;s on your mind.
-            </List.Item>
-            <List.Item>
-              <strong>invite close friends</strong>: send them a special link to
-              enter your world and get notified whenever you post.
-            </List.Item>
-            <List.Item>
-              <strong>share real stuff</strong>: no likes, no followers. just
-              staying connected with your close friends.
-            </List.Item>
-          </List>
         </Stack>
-      </Card>
-      <Stack gap={6}>
-        <Text size="sm" ta="center" c="dimmed">
-          start your smaller world today!
-        </Text>
+        <HowItWorksStepCard
+          step={1}
+          title="create your world"
+          description="a private page for your thoughts, casual event invites, or little life updates — whatever's on your mind."
+          bottomSection={
+            <Button
+              component={Link}
+              href={routes.world.show.path()}
+              leftSection="😍"
+              variant="filled"
+              radius="xl"
+              styles={{
+                section: {
+                  fontSize: "var(--mantine-font-size-lg)",
+                },
+              }}
+            >
+              create your world
+            </Button>
+          }
+        />
+        <HowItWorksStepCard
+          step={2}
+          title="invite close friends"
+          description="send them a special link to enter your world and get notified whenever you post."
+          bottomSection={
+            <Image src={inviteCloseFriendsSrc} w={320} radius="default" />
+          }
+        />
+        <HowItWorksStepCard
+          step={3}
+          title="share real stuff"
+          description="no likes, no followers. just staying connected with your close friends."
+          bottomSection={
+            <Stack align="center">
+              <Image src={shareRealStuffSrc} radius="default" />
+              <HoverCard>
+                <HoverCard.Target>
+                  <Badge size="lg">but wait... what do i post???</Badge>
+                </HoverCard.Target>
+                <HoverCard.Dropdown>
+                  <List type="ordered" size="sm">
+                    <List.Item>feet pics</List.Item>
+                  </List>
+                </HoverCard.Dropdown>
+              </HoverCard>
+            </Stack>
+          }
+        />
+        {/* <List type="ordered" className={classes.howItWorksList}>
+          <List.Item>
+            <strong>create your world</strong>: a private page for your
+            thoughts, casual event invites, or little life updates —
+            whatever&apos;s on your mind.
+          </List.Item>
+          <List.Item>
+            <strong>invite close friends</strong>: send them a special link to
+            enter your world and get notified whenever you post.
+          </List.Item>
+          <List.Item>
+            <strong>share real stuff</strong>: no likes, no followers. just
+            staying connected with your close friends.
+          </List.Item>
+        </List> */}
+      </Stack>
+      <Stack align="center" gap={8}>
+        <Title order={2} size="h3" ta="center">
+          start your smaller world today 😌
+        </Title>
         <Button
           component={Link}
           href={routes.world.show.path()}
           leftSection="😍"
           size="lg"
           radius="xl"
-          styles={{ section: { fontSize: "var(--mantine-font-size-xl)" } }}
+          variant="filled"
+          styles={{
+            section: {
+              fontSize: rem(28),
+            },
+          }}
         >
           create your world
         </Button>
       </Stack>
-      {demoUser && (
+      {/* {demoUser && (
         <Stack align="center" gap={4} style={{ alignSelf: "stretch" }}>
           <Box pos="relative">
             <SingleDayFontHead />
@@ -217,7 +279,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
             </Stack>
           </Group>
         </Stack>
-      )}
+      )} */}
     </Stack>
   );
 };
@@ -229,3 +291,31 @@ LandingPage.layout = page => (
 );
 
 export default LandingPage;
+
+interface HowItWorksStepCardProps {
+  step: number;
+  title: ReactNode;
+  description: ReactNode;
+  bottomSection?: ReactNode;
+}
+
+const HowItWorksStepCard: FC<HowItWorksStepCardProps> = ({
+  step,
+  title,
+  description,
+  bottomSection,
+}) => (
+  <Card withBorder maw={440} pt="sm">
+    <Stack align="center" gap="xs">
+      <Box ta="center">
+        <Title order={3} size="h5">
+          {step}. {title}
+        </Title>
+        <Text size="sm" lh={1.3} opacity={0.7} style={{ textWrap: "pretty" }}>
+          {description}
+        </Text>
+      </Box>
+      {bottomSection}
+    </Stack>
+  </Card>
+);
