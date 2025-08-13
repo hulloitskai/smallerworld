@@ -68,7 +68,6 @@ const PostCard: FC<PostCardProps> = ({
         <Badge
           variant="default"
           leftSection={post.encouragement.emoji}
-          rightSection="— a friend"
           className={classes.encouragementBadge}
         >
           &ldquo;{post.encouragement.message}&rdquo;

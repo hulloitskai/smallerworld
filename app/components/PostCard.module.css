@@ -142,29 +142,31 @@
 .encouragementBadge {
   height: unset;
   align-self: center;
-  border-radius: var(--mantine-radius-default);
   padding-block: 3px;
   margin-inline: var(--mantine-spacing-md);
+  border-style: dashed;
+  max-width: 400px;
 
   :global(.mantine-Badge-label) {
     white-space: pre-wrap;
     line-height: 1.2;
     text-align: start;
     padding-block: 3px;
+    font-family: var(--mantine-font-family-body);
+    font-weight: 500;
+    font-style: italic;
   }
 
-  :global(.mantine-Badge-section) {
-    text-transform: none;
+  :global(.mantine-Badge-section)[data-position="left"] {
+    margin-right: 8px;
+  }
 
-    &[data-position="left"] {
-      align-self: flex-start;
-    }
+  @mixin dark {
+    background-color: var(--mantine-color-primary-light);
+  }
 
-    &[data-position="right"] {
-      align-self: flex-end;
-      margin-left: var(--mantine-spacing-sm);
-      font-weight: 400;
-      font-family: var(--mantine-font-family-body);
-    }
+  @mixin light-user-theme {
+    background-color: alpha(var(--mantine-color-white), 0.5);
+    backdrop-filter: blur(rem(4px));
   }
 }
