@@ -68,7 +68,7 @@ const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
       )}
       <Stack align="center">
         <Title className={classes.title}>
-          you have thoughts worth sharing—
+          you have thoughts you want to share—
           <br />
           <span className={classes.emph}>but not with the whole internet.</span>
         </Title>
