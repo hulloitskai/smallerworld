@@ -6,7 +6,6 @@ class ImagesController < ApplicationController
   # GET /images/:signed_id
   def show
     image = maybe_find_image
-    authorize!(image) if image
     render(json: {
       image: ImageSerializer.one_if(image),
     })
