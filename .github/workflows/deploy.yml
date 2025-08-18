@@ -27,6 +27,7 @@ jobs:
         id: last_image
         run: |
           # Get the last successful release image
+          set -e
           LAST_IMAGE=$(flyctl releases --json | jq -r '.[] | select(.Status == "complete") | .ImageRef' | head -n 1)
           if [ -z "$LAST_IMAGE" ]; then
             echo "No successful releases found"
@@ -35,6 +36,8 @@ jobs:
           fi
           echo "Found last working image: $LAST_IMAGE"
           echo "image=$LAST_IMAGE" >> $GITHUB_OUTPUT
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       - name: Deploy
         run: flyctl deploy --remote-only --memory=768
         env:
