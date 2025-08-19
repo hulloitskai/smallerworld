@@ -77,6 +77,9 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
     [activities, activityTemplates],
   );
 
+  // == Invitation URL
+  const [invitationUrl, setInvitationUrl] = useState<string>();
+
   // == Create friend
   interface FormData {
     friend: WorldFriend;
@@ -123,8 +126,17 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
         offered_activity_ids: map(offered_activities, "id"),
       },
     }),
-    onSuccess: () => {
+    onSuccess: ({ friend }) => {
       setShowActivities(false);
+      void fetchRoute<{ inviteToken: string }>(routes.friends.inviteToken, {
+        params: pick(friend, "id"),
+        descriptor: "generate invite token",
+      }).then(({ inviteToken }) => {
+        const invitationPath = routes.invitations.show.path({
+          invite_token: inviteToken,
+        });
+        setInvitationUrl(normalizeUrl(invitationPath));
+      });
       void mutateRoute(routes.worldFriends.index);
       void mutateRoute(routes.worldJoinRequests.index);
       onFriendCreated?.();
@@ -138,30 +150,6 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
     reset();
   }, [initialValues, opened]); // eslint-disable-line react-hooks/exhaustive-deps
   const { friend } = data ?? {};
-
-  // == Invitation URL
-  const [invitationUrl, setInvitationUrl] = useState<string>();
-  const { mutate: mutateInviteToken } = useRouteSWR<{ inviteToken: string }>(
-    routes.friends.inviteToken,
-    {
-      params: friend ? pick(friend, "id") : null,
-      descriptor: "generate invite token",
-      onSuccess: ({ inviteToken }) => {
-        const invitationPath = routes.invitations.show.path({
-          invite_token: inviteToken,
-        });
-        setInvitationUrl(normalizeUrl(invitationPath));
-      },
-      revalidateOnFocus: false,
-      revalidateOnMount: false,
-      revalidateIfStale: false,
-    },
-  );
-  useEffect(() => {
-    if (opened && !invitationUrl) {
-      void mutateInviteToken();
-    }
-  }, [opened]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Drawer
