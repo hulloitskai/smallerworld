@@ -1,10 +1,10 @@
 import { Input, InputBase, PinInput, Text } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
-import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
 
 import AppLayout from "~/components/AppLayout";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
+import { mustParsePhoneFromParts, parsePhoneFromParts } from "~/helpers/phone";
 import { type PhoneVerificationRequest } from "~/types";
 
 export interface LoginPageProps extends SharedPageProps {}
@@ -239,27 +239,3 @@ LoginPage.layout = page => (
 );
 
 export default LoginPage;
-
-interface PhonePartsFormValues {
-  country_code: string;
-  national_phone_number: string;
-}
-
-const parsePhoneFromParts = ({
-  country_code,
-  national_phone_number,
-}: PhonePartsFormValues): string | null => {
-  const number = [country_code, national_phone_number].join(" ");
-  const phone = parsePhone(number);
-  return phone.isValid ? phone.phoneNumber : null;
-};
-
-const mustParsePhoneFromParts = (
-  phonePartsValues: PhonePartsFormValues,
-): string => {
-  const phoneNumber = parsePhoneFromParts(phonePartsValues);
-  if (!phoneNumber) {
-    throw new Error("Invalid phone number");
-  }
-  return phoneNumber;
-};

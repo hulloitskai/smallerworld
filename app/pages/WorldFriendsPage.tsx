@@ -5,20 +5,23 @@ import FriendsIcon from "~icons/heroicons/users-20-solid";
 
 import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
-import FriendCard from "~/components/FriendCard";
-import { useFriends } from "~/helpers/friends";
+import WorldFriendCard from "~/components/WorldFriendCard";
+import { useWorldFriends } from "~/helpers/friends";
 import { type Activity, type ActivityTemplate, type User } from "~/types";
 
-export interface FriendsPageProps extends SharedPageProps {
+export interface WorldFriendsPageProps extends SharedPageProps {
   currentUser: User;
 }
 
-const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
+const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
+  currentUser,
+}) => {
   // == User theme
   useUserTheme(currentUser.theme);
 
   // == Load friends
-  const { allFriends, notifiableFriends, unnotifiableFriends } = useFriends();
+  const { allFriends, notifiableFriends, unnotifiableFriends } =
+    useWorldFriends();
 
   // == Load activities
   const { data: activitiesData } = useRouteSWR<{
@@ -48,7 +51,7 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
         </Button>
       </Stack>
       <Stack gap="xs">
-        <AddFriendButton {...{ currentUser }} size="md" mih={54} />
+        <AddFriendButton size="md" mih={54} />
         {allFriends ? (
           isEmpty(allFriends) ? (
             <Card
@@ -66,9 +69,9 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
             </Card>
           ) : (
             [...notifiableFriends, ...unnotifiableFriends].map(friend => (
-              <FriendCard
+              <WorldFriendCard
                 key={friend.id}
-                {...{ activitiesById, currentUser, friend }}
+                {...{ activitiesById, friend }}
               />
             ))
           )
@@ -80,8 +83,8 @@ const FriendsPage: PageComponent<FriendsPageProps> = ({ currentUser }) => {
   );
 };
 
-FriendsPage.layout = page => (
-  <AppLayout<FriendsPageProps>
+WorldFriendsPage.layout = page => (
+  <AppLayout<WorldFriendsPageProps>
     title="your friends"
     manifestUrl={routes.world.manifest.path()}
     withContainer
@@ -92,4 +95,4 @@ FriendsPage.layout = page => (
   </AppLayout>
 );
 
-export default FriendsPage;
+export default WorldFriendsPage;

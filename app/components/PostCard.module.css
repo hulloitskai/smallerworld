@@ -74,6 +74,18 @@
     margin-block: -4px;
     padding-block: 4px;
   }
+
+  &[data-preview] {
+    max-height: 340px;
+    overflow-y: hidden;
+    mask: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 1) 0,
+        rgba(0, 0, 0, 1) 80%,
+        rgba(0, 0, 0, 0) 95%
+      )
+      100% 50% / 100% 100% repeat-x;
+  }
 }
 
 .restrictedAlert {

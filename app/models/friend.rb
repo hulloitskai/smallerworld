@@ -58,6 +58,19 @@ class Friend < ApplicationRecord
     [emoji, name].compact.join(" ")
   end
 
+  # == Tokens
+  generates_token_for :invite
+
+  sig { returns(String) }
+  def generate_invite_token
+    generate_token_for(:invite)
+  end
+
+  sig { params(token: String).returns(Friend) }
+  def self.find_by_invite_token!(token)
+    find_by_token_for!(:invite, token)
+  end
+
   # == Associations
   belongs_to :user
   has_many :user_posts, through: :user, source: :posts
@@ -120,6 +133,9 @@ class Friend < ApplicationRecord
                     },
                   }
 
+  # == Callbacks
+  after_commit :send_welcome_message
+
   # == Noticeable
   sig do
     override
@@ -179,5 +195,38 @@ class Friend < ApplicationRecord
   sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
   def latest_user_post_created_at
     user_posts.reverse_chronological.pick(:created_at)
+  end
+
+  sig { returns(String) }
+  def welcome_message
+    user = user!
+    user_possessive = scoped do
+      name = user.name
+      name.end_with?("s") ? "#{name}'" : "#{name}'s"
+    end
+    world_url = Rails.application.routes.url_helpers.user_url(
+      user,
+      friend_token: access_token,
+    )
+    <<~EOF.strip
+      hi, #{fun_name}! here's your secret link to #{user_possessive}#{" "}
+      world: #{world_url}
+
+      we'll send you occasional text updates, but if you're a REAL ONE you can
+      click the link and install #{user_possessive} world to your phone for
+      realtime life updates.
+    EOF
+  end
+
+  # == Callbacks
+  sig { void }
+  def send_welcome_message
+    past_number, new_number = phone_number_previous_change
+    if past_number.nil? && new_number.present?
+      TwilioService.instance.send_message(
+        to: new_number,
+        body: welcome_message,
+      )
+    end
   end
 end

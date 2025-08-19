@@ -15,7 +15,7 @@ class PostSharesController < ApplicationController
     render(inertia: "PostSharePage", props: {
       user: UserSerializer.one(share.post_author!),
       post: UserPostSerializer.one(user_post),
-      sharer: FriendSerializer.one(share.sharer!),
+      sharer: FriendProfileSerializer.one(share.sharer!),
     })
   end
 

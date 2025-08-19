@@ -1,15 +1,7 @@
-import {
-  HoverCard,
-  Image,
-  Overlay,
-  type StackProps,
-  Text,
-} from "@mantine/core";
+import { HoverCard, Image, Overlay, Text } from "@mantine/core";
 
 import PlayIcon from "~icons/heroicons/play-20-solid";
-import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
-import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 import inviteCloseFriendsSrc from "~/assets/images/invite-close-friends.png";
 import logoSrc from "~/assets/images/logo.png";
 import shareRealStuffSrc from "~/assets/images/share-real-stuff.png";
@@ -17,18 +9,12 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { type User } from "~/types";
 
 import classes from "./LandingPage.module.css";
 
-const WORLD_SIZE = 74;
+export interface LandingPageProps extends SharedPageProps {}
 
-export interface LandingPageProps extends SharedPageProps {
-  demoUser: User | null;
-}
-
-const LandingPage: PageComponent<LandingPageProps> = ({ demoUser }) => {
+const LandingPage: PageComponent<LandingPageProps> = () => {
   const currentUser = useCurrentUser();
 
   // == Reveal demo video

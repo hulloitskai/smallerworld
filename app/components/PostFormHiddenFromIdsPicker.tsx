@@ -2,7 +2,7 @@ import { Chip, Popover, type PopoverProps } from "@mantine/core";
 import { difference, map } from "lodash-es";
 
 import { prettyName } from "~/helpers/friends";
-import { useFriends } from "~/helpers/friends";
+import { useWorldFriends } from "~/helpers/friends";
 import { type WorldFriend } from "~/types";
 
 import classes from "./PostFormHiddenFromIdsPicker.module.css";
@@ -28,7 +28,8 @@ const PostFormHiddenFromIdsPicker: FC<PostFormHiddenFromIdsPickerProps> = ({
   const vaulPortalTarget = useVaulPortalTarget();
 
   // == Load friends
-  const { allFriends, notifiableFriends, unnotifiableFriends } = useFriends();
+  const { allFriends, notifiableFriends, unnotifiableFriends } =
+    useWorldFriends();
   const allFriendIds = useMemo(() => map(allFriends, "id"), [allFriends]);
   const invertedValue = useMemo(
     () => difference(allFriendIds, value),

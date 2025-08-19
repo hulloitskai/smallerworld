@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class PushRegistration < ApplicationRecord
+class PushRegistration
   sig { returns(T.nilable(T.all(ActiveRecord::Base, Notifiable))) }
   def owner; end
 

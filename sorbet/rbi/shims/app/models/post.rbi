@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class Post < ApplicationRecord
+class Post
   # == Types
   sig { returns(T::Boolean) }
   def journal_entry?; end

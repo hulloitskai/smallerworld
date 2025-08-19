@@ -168,7 +168,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 pushRegistration !== null) && (
                 <Button
                   component={Link}
-                  href={routes.friends.index.path()}
+                  href={routes.worldFriends.index.path()}
                   className={classes.friendButton}
                   leftSection={
                     !isEmpty(latestFriendEmojis) ? (
@@ -248,7 +248,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               component={Link}
               className={classes.joinRequestMenuItem}
               leftSection={<JoinRequestsIcon />}
-              href={routes.joinRequests.index.path()}
+              href={routes.worldJoinRequests.index.path()}
               {...(pendingJoinRequests > 0 && {
                 rightSection: (
                   <Badge variant="filled" px={6} py={0}>
@@ -387,7 +387,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         onClose={() => {
           setAddFriendModalOpened(false);
         }}
-        currentUser={currentUser}
         onFriendCreated={() => {
           router.reload({ only: ["latestFriends"], async: true });
         }}

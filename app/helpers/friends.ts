@@ -3,9 +3,9 @@ import { partition } from "lodash-es";
 import { type WorldFriend } from "~/types";
 import { type EncouragementFriend, type Friend } from "~/types";
 
-export const useFriends = () => {
+export const useWorldFriends = () => {
   const { data, ...swrResponse } = useRouteSWR<{ friends: WorldFriend[] }>(
-    routes.friends.index,
+    routes.worldFriends.index,
     {
       descriptor: "load friends",
       keepPreviousData: true,

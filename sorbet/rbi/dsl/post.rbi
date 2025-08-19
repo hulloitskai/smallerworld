@@ -376,6 +376,9 @@ class Post
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_author(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Encouragement) }
+    def build_encouragement(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def build_quoted_post(*args, &blk); end
 
@@ -385,11 +388,29 @@ class Post
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_author!(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Encouragement) }
+    def create_encouragement(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Encouragement) }
+    def create_encouragement!(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_quoted_post(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_quoted_post!(*args, &blk); end
+
+    sig { returns(T.nilable(::Encouragement)) }
+    def encouragement; end
+
+    sig { params(value: T.nilable(::Encouragement)).void }
+    def encouragement=(value); end
+
+    sig { returns(T::Boolean) }
+    def encouragement_changed?; end
+
+    sig { returns(T::Boolean) }
+    def encouragement_previously_changed?; end
 
     sig { returns(T::Array[T.untyped]) }
     def images_attachment_ids; end
@@ -462,6 +483,9 @@ class Post
     sig { returns(T.nilable(::User)) }
     def reload_author; end
 
+    sig { returns(T.nilable(::Encouragement)) }
+    def reload_encouragement; end
+
     sig { returns(T.nilable(::Post)) }
     def reload_quoted_post; end
 
@@ -481,6 +505,9 @@ class Post
 
     sig { void }
     def reset_author; end
+
+    sig { void }
+    def reset_encouragement; end
 
     sig { void }
     def reset_quoted_post; end

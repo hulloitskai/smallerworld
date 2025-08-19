@@ -13,7 +13,6 @@ import UserPageFloatingActions from "~/components/UserPageFloatingActions";
 import UserPageInstallAlert from "~/components/UserPageInstallAlert";
 import { openUserPageInstallationInstructionsModal } from "~/components/UserPageInstallationInstructionsModal";
 import UserPageInvitationsButton from "~/components/UserPageInvitationsButton";
-import { openUserPageJoinModal } from "~/components/UserPageJoinModal";
 import UserPageNotificationsButtonCard from "~/components/UserPageNotificationsButtonCard";
 import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
@@ -71,9 +70,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
     if (!isEmpty(modals) || !currentFriend) {
       return;
     }
-    if (queryParams.intent === "join") {
-      openUserPageJoinModal({ user, currentFriend });
-    } else if (queryParams.intent === "installation_instructions") {
+    if (queryParams.intent === "installation_instructions") {
       openUserPageInstallationInstructionsModal({ user });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

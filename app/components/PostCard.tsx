@@ -18,6 +18,7 @@ export interface PostCardProps extends BoxProps {
   post: Post;
   actions: ReactNode;
   blurContent?: boolean;
+  preview?: boolean;
   focus?: boolean;
   highlightType?: boolean;
   onTypeClick?: () => void;
@@ -31,6 +32,7 @@ const PostCard: FC<PostCardProps> = ({
   post,
   actions,
   blurContent,
+  preview,
   focus,
   highlightType,
   onTypeClick,
@@ -64,7 +66,7 @@ const PostCard: FC<PostCardProps> = ({
 
   return (
     <Stack className={cn("PostCard", className)} gap={6} {...otherProps}>
-      {post.encouragement && (
+      {post.encouragement && !preview && (
         <Badge
           variant="default"
           leftSection={post.encouragement.emoji}
@@ -169,7 +171,7 @@ const PostCard: FC<PostCardProps> = ({
         <Card.Section
           className={classes.contentSection}
           inheritPadding
-          mod={{ "blur-content": blurContent }}
+          mod={{ "blur-content": blurContent, preview }}
         >
           <Stack gap={14}>
             <Stack gap={6}>

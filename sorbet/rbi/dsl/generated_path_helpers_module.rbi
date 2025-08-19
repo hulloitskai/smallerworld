@@ -70,6 +70,9 @@ module GeneratedPathHelpersModule
   def image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def invitation_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def join_request_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -299,6 +302,12 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def world_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_post_pinned_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def worlds_universe_path(*args); end

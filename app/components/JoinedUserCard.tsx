@@ -2,21 +2,15 @@ import { type CardProps, CopyButton } from "@mantine/core";
 
 import { type JoinedUser } from "~/types";
 
-import AddFriendButton, { type AddFriendButtonProps } from "./AddFriendButton";
+import AddFriendButton from "./AddFriendButton";
 
 import classes from "./JoinRequestCard.module.css";
 
-interface JoinedUserCardProps
-  extends CardProps,
-    Pick<AddFriendButtonProps, "currentUser"> {
+interface JoinedUserCardProps extends CardProps {
   user: JoinedUser;
 }
 
-const JoinedUserCard: FC<JoinedUserCardProps> = ({
-  currentUser,
-  user,
-  ...otherProps
-}) => (
+const JoinedUserCard: FC<JoinedUserCardProps> = ({ user, ...otherProps }) => (
   <Card withBorder pb="sm" {...otherProps}>
     <Group align="center" gap="xs" justify="space-between">
       <List className={classes.list}>
@@ -66,7 +60,7 @@ const JoinedUserCard: FC<JoinedUserCardProps> = ({
           visit world
         </Button>
       ) : (
-        <AddFriendButton {...{ currentUser }} fromUser={user} />
+        <AddFriendButton fromUser={user} />
       )}
     </Group>
   </Card>

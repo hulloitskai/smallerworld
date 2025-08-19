@@ -5,9 +5,9 @@ class LandingController < ApplicationController
   # == Actions
   # GET /
   def show
-    demo_user = load_demo_user(scope: User.with_page_icon)
+    # demo_user = load_demo_user(scope: User.with_page_icon)
     render(inertia: "LandingPage", props: {
-      "demoUser" => UserSerializer.one_if(demo_user),
+      # "demoUser" => UserSerializer.one_if(demo_user),
     })
   end
 

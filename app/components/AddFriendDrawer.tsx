@@ -8,10 +8,9 @@ import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import {
-  formatJoinInvitation,
-  useJoinShareData,
-  useJoinUrl,
-} from "~/helpers/join";
+  formatInvitation,
+  useInvitationShareData,
+} from "~/helpers/invitations";
 import {
   messageUri,
   MESSAGING_PLATFORM_TO_ICON,
@@ -21,10 +20,9 @@ import {
 import {
   type Activity,
   type ActivityTemplate,
-  type Friend,
   type JoinedUser,
   type JoinRequest,
-  type User,
+  type WorldFriend,
 } from "~/types";
 
 import ActivityCard from "./ActivityCard";
@@ -38,14 +36,12 @@ import "@mantine/carousel/styles.layer.css";
 const ACTIVITY_CARD_WIDTH = 320;
 
 export interface AddFriendDrawerProps extends Omit<DrawerProps, "children"> {
-  currentUser: User;
   fromJoinRequest?: JoinRequest;
   fromUser?: JoinedUser;
   onFriendCreated?: () => void;
 }
 
 const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
-  currentUser,
   fromJoinRequest,
   fromUser,
   onFriendCreated,
@@ -83,7 +79,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
 
   // == Create friend
   interface FormData {
-    friend: Friend;
+    friend: WorldFriend;
   }
   interface FormValues {
     emoji: string;
@@ -116,7 +112,7 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
     reset,
     data,
   } = useForm<FormData, FormValues, (values: FormValues) => FormSubmission>({
-    action: routes.friends.create,
+    action: routes.worldFriends.create,
     descriptor: "invite friend",
     initialValues,
     transformValues: ({ emoji, name, offered_activities }) => ({
@@ -129,8 +125,8 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
     }),
     onSuccess: () => {
       setShowActivities(false);
-      void mutateRoute(routes.friends.index);
-      void mutateRoute(routes.joinRequests.index);
+      void mutateRoute(routes.worldFriends.index);
+      void mutateRoute(routes.worldJoinRequests.index);
       onFriendCreated?.();
       setTimeout(() => {
         setRevealBackToHomeButton(true);
@@ -142,6 +138,30 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
     reset();
   }, [initialValues, opened]); // eslint-disable-line react-hooks/exhaustive-deps
   const { friend } = data ?? {};
+
+  // == Invitation URL
+  const [invitationUrl, setInvitationUrl] = useState<string>();
+  const { mutate: mutateInviteToken } = useRouteSWR<{ inviteToken: string }>(
+    routes.friends.inviteToken,
+    {
+      params: friend ? pick(friend, "id") : null,
+      descriptor: "generate invite token",
+      onSuccess: ({ inviteToken }) => {
+        const invitationPath = routes.invitations.show.path({
+          invite_token: inviteToken,
+        });
+        setInvitationUrl(normalizeUrl(invitationPath));
+      },
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+      revalidateIfStale: false,
+    },
+  );
+  useEffect(() => {
+    if (opened && !invitationUrl) {
+      void mutateInviteToken();
+    }
+  }, [opened]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Drawer
@@ -393,16 +413,16 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
                     </Popover.Target>
                     <Popover.Dropdown>
                       <InviteViaSMSDropdownBody
-                        {...{ currentUser, friend, joinerInfo }}
+                        {...{ invitationUrl, joinerInfo }}
                       />
                     </Popover.Dropdown>
                   </Popover>
                 ) : (
                   <>
-                    <JoinQRCode {...{ currentUser, friend }} />
+                    <InvitationQRCode {...{ invitationUrl }} />
                     <Divider label="or" w="100%" maw={120} mx="auto" />
                     <Center>
-                      <SendInviteLinkButton {...{ currentUser, friend }} />
+                      <SendInviteLinkButton {...{ invitationUrl }} />
                     </Center>
                   </>
                 )}
@@ -429,88 +449,82 @@ const AddFriendDrawer: FC<AddFriendDrawerProps> = ({
 
 export default AddFriendDrawer;
 
-interface JoinQRCodeProps {
-  currentUser: User;
-  friend: Friend;
+interface InvitationQRCodeProps {
+  invitationUrl: string | undefined;
 }
 
-const JoinQRCode: FC<JoinQRCodeProps> = ({ currentUser, friend }) => {
-  const joinUrl = useJoinUrl(currentUser, friend);
-  return <>{joinUrl && <PlainQRCode value={joinUrl} />}</>;
+const InvitationQRCode: FC<InvitationQRCodeProps> = ({ invitationUrl }) => {
+  return <>{invitationUrl && <PlainQRCode value={invitationUrl} />}</>;
 };
 
 interface InviteViaSMSDropdownBodyProps {
-  currentUser: User;
-  friend: Friend;
   joinerInfo: { name: string; phone_number: string };
+  invitationUrl: string | undefined;
 }
 
 const InviteViaSMSDropdownBody: FC<InviteViaSMSDropdownBodyProps> = ({
-  currentUser,
-  friend,
   joinerInfo,
-}) => {
-  const joinUrl = useJoinUrl(currentUser, friend);
-  return (
-    <Stack gap="xs">
-      <Text ta="center" ff="heading" fw={500}>
-        send via:
-      </Text>
-      <Group justify="center" gap="sm">
-        {MESSAGING_PLATFORMS.map(platform => (
-          <Stack key={platform} gap={2} align="center" miw={60}>
-            <ActionIcon
-              component="a"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              variant="light"
-              size="lg"
-              {...(joinUrl
-                ? {
-                    href: messageUri(
-                      joinerInfo.phone_number,
-                      formatJoinInvitation(joinUrl),
-                      platform,
-                    ),
-                  }
-                : {
-                    disabled: true,
-                  })}
-            >
-              <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
-            </ActionIcon>
-            <Text size="xs" fw={500} ff="heading" c="dimmed">
-              {MESSAGING_PLATFORM_TO_LABEL[platform]}
-            </Text>
-          </Stack>
-        ))}
-      </Group>
-    </Stack>
-  );
-};
+  invitationUrl,
+}) => (
+  <Stack gap="xs">
+    <Text ta="center" ff="heading" fw={500}>
+      send via:
+    </Text>
+    <Group justify="center" gap="sm">
+      {MESSAGING_PLATFORMS.map(platform => (
+        <Stack key={platform} gap={2} align="center" miw={60}>
+          <ActionIcon
+            component="a"
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            variant="light"
+            size="lg"
+            {...(invitationUrl
+              ? {
+                  href: messageUri(
+                    joinerInfo.phone_number,
+                    formatInvitation(invitationUrl),
+                    platform,
+                  ),
+                }
+              : {
+                  disabled: true,
+                })}
+          >
+            <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
+          </ActionIcon>
+          <Text size="xs" fw={500} ff="heading" c="dimmed">
+            {MESSAGING_PLATFORM_TO_LABEL[platform]}
+          </Text>
+        </Stack>
+      ))}
+    </Group>
+  </Stack>
+);
 
 interface SendInviteLinkButtonProps {
-  currentUser: User;
-  friend: Friend;
+  invitationUrl: string | undefined;
 }
 
 const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
-  currentUser,
-  friend,
+  invitationUrl,
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
-  const joinUrl = useJoinUrl(currentUser, friend);
-  const joinShareData = useJoinShareData(joinUrl);
+  const invitationShareData = useInvitationShareData(invitationUrl);
   return (
     <Menu width={140} portalProps={{ target: vaulPortalTarget }}>
       <Menu.Target>
-        <Button variant="filled" leftSection={<SendIcon />} disabled={!joinUrl}>
+        <Button
+          variant="filled"
+          leftSection={<SendIcon />}
+          disabled={!invitationUrl}
+        >
           send invite link
         </Button>
       </Menu.Target>
-      {!!joinUrl && (
+      {!!invitationUrl && (
         <Menu.Dropdown>
-          <CopyButton value={joinUrl}>
+          <CopyButton value={invitationUrl}>
             {({ copied, copy }) => (
               <Menu.Item
                 leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
@@ -521,12 +535,12 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
               </Menu.Item>
             )}
           </CopyButton>
-          {joinShareData && (
+          {invitationShareData && (
             <Menu.Item
               leftSection={<ShareIcon />}
               closeMenuOnClick={false}
               onClick={() => {
-                void navigator.share(joinShareData);
+                void navigator.share(invitationShareData);
               }}
             >
               share via...

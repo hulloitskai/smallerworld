@@ -8,29 +8,22 @@ import QrCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { prettyName } from "~/helpers/friends";
-import { useJoinShareData, useJoinUrl } from "~/helpers/join";
-import {
-  type Activity,
-  type Friend,
-  type User,
-  type WorldFriend,
-} from "~/types";
+import { useInvitationShareData } from "~/helpers/invitations";
+import { type Activity, type WorldFriend } from "~/types";
 
 import ActivityCouponDrawer from "./ActivityCouponDrawer";
 import EditFriendForm from "./EditFriendForm";
 import PlainQRCode from "./PlainQRCode";
 
-import classes from "./FriendCard.module.css";
+import classes from "./WorldFriendCard.module.css";
 
-export interface FriendCardProps {
+export interface WorldFriendCardProps {
   activitiesById: Record<string, Activity>;
-  currentUser: User;
   friend: WorldFriend;
 }
 
-const FriendCard: FC<FriendCardProps> = ({
+const WorldFriendCard: FC<WorldFriendCardProps> = ({
   activitiesById,
-  currentUser,
   friend,
 }) => {
   const [menuOpened, setMenuOpened] = useState(false);
@@ -58,10 +51,34 @@ const FriendCard: FC<FriendCardProps> = ({
       descriptor: "remove friend",
       onSuccess: () => {
         toast.success("friend removed");
-        void mutateRoute(routes.friends.index);
+        void mutateRoute(routes.worldFriends.index);
       },
     },
   );
+
+  // == Invitation URL
+  const [invitationUrl, setInvitationUrl] = useState<string>();
+  const { mutate: mutateInviteToken } = useRouteSWR<{ inviteToken: string }>(
+    routes.friends.inviteToken,
+    {
+      params: pick(friend, "id"),
+      descriptor: "generate invite token",
+      onSuccess: ({ inviteToken }) => {
+        const invitationPath = routes.invitations.show.path({
+          invite_token: inviteToken,
+        });
+        setInvitationUrl(normalizeUrl(invitationPath));
+      },
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+      revalidateIfStale: false,
+    },
+  );
+  const loadInvitationUrl = () => {
+    if (!invitationUrl) {
+      void mutateInviteToken();
+    }
+  };
 
   return (
     <>
@@ -107,6 +124,7 @@ const FriendCard: FC<FriendCardProps> = ({
               trigger="click-hover"
               opened={menuOpened}
               onChange={setMenuOpened}
+              onOpen={loadInvitationUrl}
             >
               <Menu.Target>
                 <ActionIcon variant="subtle" size="compact-xs">
@@ -114,7 +132,7 @@ const FriendCard: FC<FriendCardProps> = ({
                 </ActionIcon>
               </Menu.Target>
               <Menu.Dropdown>
-                <SendJoinLinkMenuItem {...{ currentUser, friend }} />
+                <SendInvitationMenuItem {...{ invitationUrl }} />
                 <Menu.Item
                   leftSection={<EditIcon />}
                   onClick={() => {
@@ -215,10 +233,10 @@ const FriendCard: FC<FriendCardProps> = ({
   );
 };
 
-export default FriendCard;
+export default WorldFriendCard;
 
 interface PauseFriendItemProps {
-  friend: Friend;
+  friend: WorldFriend;
   onFriendPaused: () => void;
 }
 
@@ -226,13 +244,13 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
   friend,
   onFriendPaused,
 }) => {
-  const { trigger, mutating } = useRouteMutation(routes.friends.pause, {
+  const { trigger, mutating } = useRouteMutation(routes.worldFriends.pause, {
     params: {
       id: friend.id,
     },
     descriptor: "pause friend",
     onSuccess: () => {
-      void mutateRoute(routes.friends.index);
+      void mutateRoute(routes.worldFriends.index);
       toast.success(`${prettyName(friend)} was paused`, {
         description: `they will not see new posts you create until you unpause them`,
       });
@@ -254,7 +272,7 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
 };
 
 interface UnpauseFriendItemProps {
-  friend: Friend;
+  friend: WorldFriend;
   onFriendUnpaused: () => void;
 }
 
@@ -262,11 +280,11 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
   friend,
   onFriendUnpaused,
 }) => {
-  const { trigger, mutating } = useRouteMutation(routes.friends.unpause, {
+  const { trigger, mutating } = useRouteMutation(routes.worldFriends.unpause, {
     params: { id: friend.id },
     descriptor: "unpause friend",
     onSuccess: () => {
-      void mutateRoute(routes.friends.index);
+      void mutateRoute(routes.worldFriends.index);
       toast.success(`${prettyName(friend)} was unpaused`, {
         description: `they will see new posts you create`,
       });
@@ -287,69 +305,71 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
   );
 };
 
-interface SendJoinLinkMenuItemProps {
-  currentUser: User;
-  friend: Friend;
+interface SendInvitationMenuItemProps {
+  invitationUrl: string | undefined;
 }
 
-const SendJoinLinkMenuItem: FC<SendJoinLinkMenuItemProps> = ({
-  currentUser,
-  friend,
+const SendInvitationMenuItem: FC<SendInvitationMenuItemProps> = ({
+  invitationUrl,
 }) => {
-  const joinUrl = useJoinUrl(currentUser, friend);
-  const joinShareData = useJoinShareData(joinUrl);
+  const invitationShareData = useInvitationShareData(invitationUrl);
   return (
-    <Menu.Sub arrowOffset={12} closeDelay={100}>
+    <Menu.Sub arrowOffset={12} closeDelay={100} disabled={!invitationUrl}>
       <Menu.Sub.Target>
-        <Menu.Sub.Item leftSection={<SendIcon />} disabled={!joinUrl}>
+        <Menu.Sub.Item
+          leftSection={invitationUrl ? <SendIcon /> : <Loader size="xs" />}
+        >
           send invite link
         </Menu.Sub.Item>
       </Menu.Sub.Target>
-      {!!joinUrl && (
-        <Menu.Sub.Dropdown>
-          <CopyButton value={joinUrl}>
-            {({ copied, copy }) => (
-              <Menu.Item
-                leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                closeMenuOnClick={false}
-                onClick={copy}
-              >
-                {copied ? "link copied!" : "copy link"}
-              </Menu.Item>
-            )}
-          </CopyButton>
-          <Menu.Item
-            leftSection={<QrCodeIcon />}
-            onClick={() => {
-              openModal({
-                title: "invite friend via QR code",
-                children: (
-                  <Stack align="center" justify="center" pb="md">
-                    <Text size="sm" c="dimmed" display="block">
-                      get your friend to scan this QR code, so they can add your
-                      page to their home screen :)
-                    </Text>
-                    <PlainQRCode value={joinUrl} />
-                  </Stack>
-                ),
-              });
-            }}
-          >
-            show QR code
-          </Menu.Item>
-          {joinShareData && (
+      <Menu.Sub.Dropdown>
+        <CopyButton value={invitationUrl ?? ""}>
+          {({ copied, copy }) => (
             <Menu.Item
-              leftSection={<ShareIcon />}
+              leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
               closeMenuOnClick={false}
-              onClick={() => {
-                void navigator.share(joinShareData);
-              }}
+              disabled={!invitationUrl}
+              onClick={copy}
             >
-              share via...
+              {copied ? "link copied!" : "copy link"}
             </Menu.Item>
           )}
-        </Menu.Sub.Dropdown>
-      )}
+        </CopyButton>
+        <Menu.Item
+          leftSection={<QrCodeIcon />}
+          disabled={!invitationUrl}
+          onClick={() => {
+            if (!invitationUrl) {
+              throw new Error("Missing invitation URL");
+            }
+            openModal({
+              title: "invite friend via QR code",
+              children: (
+                <Stack align="center" justify="center" pb="md">
+                  <Text size="sm" c="dimmed" display="block">
+                    get your friend to scan this QR code, so they can add your
+                    page to their home screen :)
+                  </Text>
+                  <PlainQRCode value={invitationUrl} />
+                </Stack>
+              ),
+            });
+          }}
+        >
+          show QR code
+        </Menu.Item>
+        {invitationShareData && (
+          <Menu.Item
+            leftSection={<ShareIcon />}
+            closeMenuOnClick={false}
+            onClick={() => {
+              void navigator.share(invitationShareData);
+            }}
+          >
+            share via...
+          </Menu.Item>
+        )}
+      </Menu.Sub.Dropdown>
     </Menu.Sub>
   );
 };

@@ -2,11 +2,11 @@ import AppLayout from "~/components/AppLayout";
 import JoinRequestCard from "~/components/JoinRequestCard";
 import { type JoinRequest, type User } from "~/types";
 
-export interface JoinRequestsPageProps extends SharedPageProps {
+export interface WorldJoinRequestsPageProps extends SharedPageProps {
   currentUser: User;
 }
 
-const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
+const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
   currentUser,
 }) => {
   // == User theme
@@ -14,7 +14,7 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
 
   // == Load join requests
   const { data } = useRouteSWR<{ joinRequests: JoinRequest[] }>(
-    routes.joinRequests.index,
+    routes.worldJoinRequests.index,
     {
       descriptor: "load join requests",
     },
@@ -42,10 +42,7 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
             <EmptyCard itemLabel="join requests" />
           ) : (
             joinRequests.map(joinRequest => (
-              <JoinRequestCard
-                key={joinRequest.id}
-                {...{ currentUser, joinRequest }}
-              />
+              <JoinRequestCard key={joinRequest.id} {...{ joinRequest }} />
             ))
           )
         ) : (
@@ -56,8 +53,8 @@ const JoinRequestsPage: PageComponent<JoinRequestsPageProps> = ({
   );
 };
 
-JoinRequestsPage.layout = page => (
-  <AppLayout<JoinRequestsPageProps>
+WorldJoinRequestsPage.layout = page => (
+  <AppLayout<WorldJoinRequestsPageProps>
     title="your join requests"
     manifestUrl={routes.world.manifest.path()}
     withContainer
@@ -68,4 +65,4 @@ JoinRequestsPage.layout = page => (
   </AppLayout>
 );
 
-export default JoinRequestsPage;
+export default WorldJoinRequestsPage;

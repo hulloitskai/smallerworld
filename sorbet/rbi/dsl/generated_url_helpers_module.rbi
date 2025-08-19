@@ -70,6 +70,9 @@ module GeneratedUrlHelpersModule
   def image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def invitation_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def join_request_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -296,6 +299,12 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def world_join_requests_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_post_pinned_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_url(*args); end

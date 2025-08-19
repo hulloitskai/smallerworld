@@ -23,7 +23,7 @@ class PhoneVerificationRequestsController < ApplicationController
       )
     end
     if verification_request.save
-      if !Rails.env.production? && !TwilioService.enabled?
+      if !Rails.env.production?
         render(json: {
           "verificationRequest" => PhoneVerificationRequestSerializer
             .one(verification_request),

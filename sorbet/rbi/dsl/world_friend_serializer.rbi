@@ -6,6 +6,6 @@
 
 
 class WorldFriendSerializer
-  sig { returns(Friend) }
-  def friend; end
+  sig { returns(WorldFriend) }
+  def world_friend; end
 end

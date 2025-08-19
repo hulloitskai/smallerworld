@@ -8,7 +8,7 @@ import AppLayout from "~/components/AppLayout";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
 import PostCard from "~/components/PostCard";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { type Friend, type User, type UserPost } from "~/types";
+import { type FriendProfile, type User, type UserPost } from "~/types";
 
 import classes from "./PostSharePage.module.css";
 import userPageClasses from "./UserPage.module.css";
@@ -16,7 +16,7 @@ import userPageClasses from "./UserPage.module.css";
 export interface PostSharePageProps extends SharedPageProps {
   user: User;
   post: UserPost;
-  sharer: Friend;
+  sharer: FriendProfile;
 }
 
 const ICON_SIZE = 96;

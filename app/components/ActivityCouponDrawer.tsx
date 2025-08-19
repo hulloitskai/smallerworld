@@ -74,7 +74,7 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
       toast.success(`you gave ${prettyName(friend)} a coupon!`, {
         ...(activity.emoji && { icon: activity.emoji }),
       });
-      void mutateRoute(routes.friends.index);
+      void mutateRoute(routes.worldFriends.index);
     },
   });
 

@@ -84,27 +84,45 @@ Rails.application.routes.draw do
   resource :world, only: %i[show edit update], export: { namespace: "world" } do
     get "manifest.webmanifest" => :manifest, constraints: { format: "" }
   end
-  get "/home" => redirect("/world")
-
-  # == Join requests
-  resources :join_requests, only: %i[destroy], export: true
-  scope :world, as: :world do
-    resources :join_requests, only: :index, export: true
+  resources :world_posts, path: "/world/posts", only: :index, export: true do
+    get :pinned
   end
-
-  # == Friends
-  resources :friends, only: %i[create update destroy], export: true do
+  resources(
+    :world_friends,
+    path: "/world/friends",
+    only: %i[create index update],
+    export: true,
+  ) do
     member do
       post :pause
       post :unpause
     end
   end
-  scope :world, as: :world do
-    resources :friends, only: :index, export: true
+  resources :world_join_requests,
+            path: "/world/join_requests",
+            only: :index,
+            export: true
+  get "/home" => redirect("/world")
+
+  # == Join requests
+  resources :join_requests, only: %i[destroy], export: true
+
+  # == Friends
+  resources :friends, only: :destroy, export: true do
+    member do
+      post :invite_token
+    end
   end
 
   # == Friend notification settings
   resource :friend_notification_settings, only: %i[show update], export: true
+
+  # == Invitations
+  resources :invitations, only: :show, param: :invite_token, export: true do
+    member do
+      post :accept
+    end
+  end
 
   # == Posts
   resources :posts, only: %i[index create update destroy], export: true do

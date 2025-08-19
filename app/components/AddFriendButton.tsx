@@ -5,14 +5,10 @@ import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
 import AddFriendDrawer, { type AddFriendDrawerProps } from "./AddFriendDrawer";
 
 export interface AddFriendButtonProps
-  extends Pick<
-      AddFriendDrawerProps,
-      "currentUser" | "fromJoinRequest" | "fromUser"
-    >,
+  extends Pick<AddFriendDrawerProps, "fromJoinRequest" | "fromUser">,
     Omit<ButtonProps, "children"> {}
 
 const AddFriendButton: FC<AddFriendButtonProps> = ({
-  currentUser,
   fromJoinRequest,
   fromUser,
   ...otherProps
@@ -30,7 +26,6 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
         invite to your world
       </Button>
       <AddFriendDrawer
-        currentUser={currentUser}
         fromJoinRequest={fromJoinRequest}
         fromUser={fromUser}
         opened={modalOpened}
