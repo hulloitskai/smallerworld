@@ -108,7 +108,6 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.12",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "patch-package": "^8.0.0",
     "playwright": "1.52.0",
     "postcss": "^8.4.32",
     "postcss-preset-mantine": "^1.17.0",
