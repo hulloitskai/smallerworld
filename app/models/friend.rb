@@ -208,13 +208,10 @@ class Friend < ApplicationRecord
       user,
       friend_token: access_token,
     )
-    <<~EOF.strip
-      hi, #{fun_name}! here's your secret link to #{user_possessive}#{" "}
-      world: #{world_url}
+    <<~EOF
+      hi, #{fun_name}! here's your secret link to #{user_possessive} world: #{world_url}
 
-      we'll send you occasional text updates, but if you're a REAL ONE you can
-      click the link and install #{user_possessive} world to your phone for
-      realtime life updates.
+      we'll send you occasional text updates, but if you're a REAL ONE you can click the link and install #{user_possessive} world to your phone for realtime life updates.
     EOF
   end
 

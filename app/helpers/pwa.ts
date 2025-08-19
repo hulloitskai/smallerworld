@@ -113,9 +113,12 @@ export const useInstallPWA = (): InstallPWAResult => {
         return installPromptEvent
           .prompt()
           .then(
-            () => {
-              console.info("PWA installation triggered");
-              toast.success("app installation started");
+            async () => {
+              const { outcome } = await installPromptEvent.userChoice;
+              if (outcome === "accepted") {
+                console.info("PWA installation triggered");
+                toast.success("app installation started");
+              }
             },
             reason => {
               console.error("Failed to install PWA", reason);

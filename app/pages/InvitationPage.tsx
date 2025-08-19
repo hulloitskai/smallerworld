@@ -59,19 +59,14 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
         title="we've sent you a text!"
         styles={{ title: { fontWeight: 600 } }}
       >
-        check your messages for your personal link to {possessive(user.name)}{" "}
-        world.
+        check your messages for your personal link to my world world.
       </Alert>
     ) : (
       <Card withBorder>
         <Stack gap={8}>
           <Text>
             if all this sounds dope to you, drop your # below, and we&apos;ll
-            send you a private link you can use to access{" "}
-            <span style={{ fontWeight: 600 }}>
-              {possessive(user.name)} world
-            </span>
-            .
+            send you a private link you can use to access my world.
           </Text>
           <AcceptInvitationForm
             {...{ user, inviteToken }}
