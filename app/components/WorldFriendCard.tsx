@@ -314,7 +314,12 @@ const SendInvitationMenuItem: FC<SendInvitationMenuItemProps> = ({
 }) => {
   const invitationShareData = useInvitationShareData(invitationUrl);
   return (
-    <Menu.Sub arrowOffset={12} closeDelay={100} disabled={!invitationUrl}>
+    <Menu.Sub
+      position="left-start"
+      arrowOffset={12}
+      closeDelay={100}
+      disabled={!invitationUrl}
+    >
       <Menu.Sub.Target>
         <Menu.Sub.Item
           leftSection={invitationUrl ? <SendIcon /> : <Loader size="xs" />}
