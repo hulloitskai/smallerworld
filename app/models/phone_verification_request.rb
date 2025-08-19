@@ -77,7 +77,7 @@ class PhoneVerificationRequest < ApplicationRecord
 
   sig { returns(T::Boolean) }
   def should_deliver_verification_code?
-    TwilioService.enabled? || Rails.env.production?
+    Rails.env.production?
   end
 
   sig { returns(String) }

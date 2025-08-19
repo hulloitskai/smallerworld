@@ -3,6 +3,7 @@ import {
   Image,
   Indicator,
   type ListItemProps,
+  Loader,
   Overlay,
   RemoveScroll,
   Text,
@@ -259,6 +260,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             >
               view join requests
             </Menu.Item>
+            {isStandalone && <LogoutItem />}
             <Menu.Divider />
             <Menu.Item
               component="div"
@@ -440,5 +442,34 @@ const CheckableListItem: FC<CheckableListItemProps> = ({
     >
       {children}
     </List.Item>
+  );
+};
+
+interface LogoutItemProps extends BoxProps {}
+
+const LogoutItem: FC<LogoutItemProps> = ({ ...otherProps }) => {
+  // == Logout
+  const { trigger, mutating } = useRouteMutation(routes.sessions.destroy, {
+    descriptor: "sign out",
+    onSuccess: () => {
+      // TODO: Remove after May 1st
+      document.cookie =
+        "supabase_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      router.visit(routes.world.show.path());
+    },
+  });
+
+  return (
+    <Menu.Item
+      pos="relative"
+      leftSection={mutating ? <Loader size={12} /> : <SignOutIcon />}
+      closeMenuOnClick={false}
+      onClick={() => {
+        void trigger();
+      }}
+      {...otherProps}
+    >
+      sign out
+    </Menu.Item>
   );
 };

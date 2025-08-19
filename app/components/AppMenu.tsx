@@ -58,18 +58,6 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
             >
               your world
             </MenuLink>
-            <MenuLink
-              href={routes.worldFriends.index.path()}
-              leftSection={<FriendsIcon />}
-            >
-              your friends
-            </MenuLink>
-            <MenuLink
-              href={routes.worldJoinRequests.index.path()}
-              leftSection={<JoinRequestsIcon />}
-            >
-              your join requests
-            </MenuLink>
             <LogoutItem
               onClose={() => {
                 setOpened(false);
