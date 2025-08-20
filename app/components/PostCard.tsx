@@ -1,5 +1,6 @@
-import { Image, Overlay, Text, Typography } from "@mantine/core";
+import { Image, Overlay, Spoiler, Text, Typography } from "@mantine/core";
 
+import ExpandIcon from "~icons/heroicons/chevron-down-20-solid";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import { clampedImageDimensions } from "~/helpers/images";
@@ -18,7 +19,7 @@ export interface PostCardProps extends BoxProps {
   post: Post;
   actions: ReactNode;
   blurContent?: boolean;
-  preview?: boolean;
+  hideEncouragement?: boolean;
   focus?: boolean;
   highlightType?: boolean;
   onTypeClick?: () => void;
@@ -32,7 +33,7 @@ const PostCard: FC<PostCardProps> = ({
   post,
   actions,
   blurContent,
-  preview,
+  hideEncouragement,
   focus,
   highlightType,
   onTypeClick,
@@ -64,9 +65,12 @@ const PostCard: FC<PostCardProps> = ({
     }
   }, [focus, isStandalone, outOfPWAScope, pushRegistration]);
 
+  // == Spoiler
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <Stack className={cn("PostCard", className)} gap={6} {...otherProps}>
-      {post.encouragement && !preview && (
+      {post.encouragement && !hideEncouragement && (
         <Badge
           variant="default"
           leftSection={post.encouragement.emoji}
@@ -171,7 +175,7 @@ const PostCard: FC<PostCardProps> = ({
         <Card.Section
           className={classes.contentSection}
           inheritPadding
-          mod={{ "blur-content": blurContent, preview }}
+          mod={{ "blur-content": blurContent }}
         >
           <Stack gap={14}>
             <Stack gap={6}>
@@ -180,9 +184,32 @@ const PostCard: FC<PostCardProps> = ({
                   {post.title}
                 </Title>
               )}
-              <Typography>
-                <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-              </Typography>
+              <Spoiler
+                maxHeight={380}
+                showLabel={
+                  <Button
+                    component="div"
+                    className={classes.showMoreButton}
+                    leftSection={<ExpandIcon />}
+                    size="compact-sm"
+                  >
+                    show more
+                  </Button>
+                }
+                hideLabel={null}
+                {...{ expanded }}
+                onExpandedChange={setExpanded}
+                classNames={{
+                  root: classes.spoiler,
+                  control: classes.spoilerControl,
+                  content: classes.spoilerContent,
+                }}
+                mod={{ expanded }}
+              >
+                <Typography
+                  dangerouslySetInnerHTML={{ __html: post.body_html }}
+                />
+              </Spoiler>
             </Stack>
             {!!firstImage && (
               <>

@@ -38,7 +38,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
         <Text size="sm" fs="italic" ta="center">
           (psst... here&apos;s a peek into one of my posts...)
         </Text>
-        <PostCard post={featuredPost} actions={null} preview />
+        <PostCard post={featuredPost} actions={null} hideEncouragement />
       </Stack>
     )}
     <Stack gap={8} align="center" my="xs">

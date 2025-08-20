@@ -74,18 +74,6 @@
     margin-block: -4px;
     padding-block: 4px;
   }
-
-  &[data-preview] {
-    max-height: 340px;
-    overflow-y: hidden;
-    mask: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 1) 0,
-        rgba(0, 0, 0, 1) 80%,
-        rgba(0, 0, 0, 0) 95%
-      )
-      100% 50% / 100% 100% repeat-x;
-  }
 }
 
 .restrictedAlert {
@@ -185,5 +173,25 @@
   @mixin light-user-theme {
     background-color: alpha(var(--mantine-color-white), 0.5);
     backdrop-filter: blur(rem(4px));
+  }
+}
+
+.spoilerControl {
+  left: 0;
+  right: 0;
+}
+
+.spoiler:not([data-expanded]) > .spoilerControl + .spoilerContent {
+  mask: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0,
+    rgba(0, 0, 0, 1) 80%,
+    transparent 100%
+  );
+}
+
+.showMoreButton {
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: 4px;
   }
 }
