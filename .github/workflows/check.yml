@@ -44,7 +44,7 @@ jobs:
           sudo chmod u+x /usr/bin/overmind
           sudo chown $(whoami) /usr/bin/overmind
       - name: Install libvips
-        run: sudo apt-get install libvips
+        run: sudo apt update && sudo apt install libvips
       - name: Set up environment
         run: bin/setup
         env:
