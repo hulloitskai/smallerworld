@@ -2,15 +2,20 @@ import { type ButtonProps } from "@mantine/core";
 
 import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
 
-import AddFriendDrawer, { type AddFriendDrawerProps } from "./AddFriendDrawer";
+import CreateInvitationDrawer, {
+  type CreateInvitationDrawerProps,
+} from "./CreateInvitationDrawer";
 
-export interface AddFriendButtonProps
-  extends Pick<AddFriendDrawerProps, "fromJoinRequest" | "fromUser">,
+export interface CreateInvitationButtonProps
+  extends Pick<
+      CreateInvitationDrawerProps,
+      "fromJoinRequest" | "onInvitationCreated"
+    >,
     Omit<ButtonProps, "children"> {}
 
-const AddFriendButton: FC<AddFriendButtonProps> = ({
+const CreateInvitationButton: FC<CreateInvitationButtonProps> = ({
   fromJoinRequest,
-  fromUser,
+  onInvitationCreated,
   ...otherProps
 }) => {
   const [modalOpened, setModalOpened] = useState(false);
@@ -23,11 +28,10 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
         }}
         {...otherProps}
       >
-        invite to your world
+        invite a friend to your world
       </Button>
-      <AddFriendDrawer
-        fromJoinRequest={fromJoinRequest}
-        fromUser={fromUser}
+      <CreateInvitationDrawer
+        {...{ fromJoinRequest, onInvitationCreated }}
         opened={modalOpened}
         onClose={() => {
           setModalOpened(false);
@@ -37,4 +41,4 @@ const AddFriendButton: FC<AddFriendButtonProps> = ({
   );
 };
 
-export default AddFriendButton;
+export default CreateInvitationButton;

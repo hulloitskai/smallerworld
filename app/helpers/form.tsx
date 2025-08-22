@@ -125,6 +125,7 @@ export interface FormHelper<
     UseFormReturnType<Values, TransformValues>,
     "setSubmitting" | "onSubmit"
   > {
+  submitted: boolean;
   data: Data | undefined;
   error: Error | undefined;
   submit: (event?: FormEvent<HTMLFormElement>) => void;
@@ -243,6 +244,7 @@ export const useForm = <
   );
   return {
     ...form,
+    submitted: !!data,
     reset: () => {
       form.reset();
       setData(undefined);

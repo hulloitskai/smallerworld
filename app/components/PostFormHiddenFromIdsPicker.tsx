@@ -2,7 +2,7 @@ import { Chip, Popover, type PopoverProps } from "@mantine/core";
 import { difference, map } from "lodash-es";
 
 import { prettyName } from "~/helpers/friends";
-import { useWorldFriends } from "~/helpers/friends";
+import { useWorldFriends } from "~/helpers/world";
 import { type WorldFriend } from "~/types";
 
 import classes from "./PostFormHiddenFromIdsPicker.module.css";
@@ -29,7 +29,7 @@ const PostFormHiddenFromIdsPicker: FC<PostFormHiddenFromIdsPickerProps> = ({
 
   // == Load friends
   const { allFriends, notifiableFriends, unnotifiableFriends } =
-    useWorldFriends();
+    useWorldFriends({ keepPreviousData: true });
   const allFriendIds = useMemo(() => map(allFriends, "id"), [allFriends]);
   const invertedValue = useMemo(
     () => difference(allFriendIds, value),

@@ -90,7 +90,7 @@ Rails.application.routes.draw do
   resources(
     :world_friends,
     path: "/world/friends",
-    only: %i[create index update],
+    only: %i[create index update destroy],
     export: true,
   ) do
     member do
@@ -102,23 +102,24 @@ Rails.application.routes.draw do
             path: "/world/join_requests",
             only: :index,
             export: true
+  resources :world_invitations,
+            path: "/world/invitations",
+            only: %i[index create update destroy],
+            export: true
+  resources :world_activities,
+            path: "/world/activities",
+            only: %i[index create],
+            export: true
   get "/home" => redirect("/world")
 
   # == Join requests
-  resources :join_requests, only: %i[destroy], export: true
-
-  # == Friends
-  resources :friends, only: :destroy, export: true do
-    member do
-      post :invite_token
-    end
-  end
+  resources :join_requests, only: :destroy, export: true
 
   # == Friend notification settings
   resource :friend_notification_settings, only: %i[show update], export: true
 
   # == Invitations
-  resources :invitations, only: :show, param: :invite_token, export: true do
+  resources :invitations, only: :show, export: true do
     member do
       post :accept
     end
@@ -183,8 +184,7 @@ Rails.application.routes.draw do
   # == Encouragements
   resources :encouragements, only: %i[index create], export: true
 
-  # == Activities
-  resources :activities, only: %i[index create], export: true
+  # == Activities & coupons
   resources :activity_coupons, only: %i[create], export: true do
     member do
       post :mark_as_redeemed

@@ -365,10 +365,28 @@ class Friend
     def activity_coupons=(value); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
+    def build_deprecated_join_request(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Invitation) }
+    def build_invitation(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
     def build_join_request(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
+    def create_deprecated_join_request(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
+    def create_deprecated_join_request!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Invitation) }
+    def create_invitation(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Invitation) }
+    def create_invitation!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
     def create_join_request(*args, &blk); end
@@ -381,6 +399,18 @@ class Friend
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
+
+    sig { returns(T.nilable(::JoinRequest)) }
+    def deprecated_join_request; end
+
+    sig { params(value: T.nilable(::JoinRequest)).void }
+    def deprecated_join_request=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_join_request_changed?; end
+
+    sig { returns(T::Boolean) }
+    def deprecated_join_request_previously_changed?; end
 
     sig { returns(T::Array[T.untyped]) }
     def encouragement_ids; end
@@ -396,17 +426,23 @@ class Friend
     sig { params(value: T::Enumerable[::Encouragement]).void }
     def encouragements=(value); end
 
+    sig { returns(T.nilable(::Invitation)) }
+    def invitation; end
+
+    sig { params(value: T.nilable(::Invitation)).void }
+    def invitation=(value); end
+
+    sig { returns(T::Boolean) }
+    def invitation_changed?; end
+
+    sig { returns(T::Boolean) }
+    def invitation_previously_changed?; end
+
     sig { returns(T.nilable(::JoinRequest)) }
     def join_request; end
 
     sig { params(value: T.nilable(::JoinRequest)).void }
     def join_request=(value); end
-
-    sig { returns(T::Boolean) }
-    def join_request_changed?; end
-
-    sig { returns(T::Boolean) }
-    def join_request_previously_changed?; end
 
     sig { returns(T::Array[T.untyped]) }
     def notification_ids; end
@@ -521,10 +557,22 @@ class Friend
     def received_notifications=(value); end
 
     sig { returns(T.nilable(::JoinRequest)) }
+    def reload_deprecated_join_request; end
+
+    sig { returns(T.nilable(::Invitation)) }
+    def reload_invitation; end
+
+    sig { returns(T.nilable(::JoinRequest)) }
     def reload_join_request; end
 
     sig { returns(T.nilable(::User)) }
     def reload_user; end
+
+    sig { void }
+    def reset_deprecated_join_request; end
+
+    sig { void }
+    def reset_invitation; end
 
     sig { void }
     def reset_join_request; end
@@ -874,6 +922,51 @@ class Friend
     def created_at_will_change!; end
 
     sig { returns(T.nilable(::String)) }
+    def deprecated_join_request_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def deprecated_join_request_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_join_request_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_join_request_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def deprecated_join_request_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def deprecated_join_request_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_join_request_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_join_request_id_change_to_be_saved; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def deprecated_join_request_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_join_request_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_join_request_id_previous_change; end
+
+    sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
+    def deprecated_join_request_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_join_request_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_join_request_id_was; end
+
+    sig { void }
+    def deprecated_join_request_id_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
     def emoji; end
 
     sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
@@ -1009,49 +1102,49 @@ class Friend
     def id_will_change!; end
 
     sig { returns(T.nilable(::String)) }
-    def join_request_id; end
+    def invitation_id; end
 
     sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
-    def join_request_id=(value); end
+    def invitation_id=(value); end
 
     sig { returns(T::Boolean) }
-    def join_request_id?; end
+    def invitation_id?; end
 
     sig { returns(T.nilable(::String)) }
-    def join_request_id_before_last_save; end
+    def invitation_id_before_last_save; end
 
     sig { returns(T.untyped) }
-    def join_request_id_before_type_cast; end
+    def invitation_id_before_type_cast; end
 
     sig { returns(T::Boolean) }
-    def join_request_id_came_from_user?; end
+    def invitation_id_came_from_user?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def join_request_id_change; end
+    def invitation_id_change; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def join_request_id_change_to_be_saved; end
+    def invitation_id_change_to_be_saved; end
 
     sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
-    def join_request_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def invitation_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
-    def join_request_id_in_database; end
+    def invitation_id_in_database; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def join_request_id_previous_change; end
+    def invitation_id_previous_change; end
 
     sig { params(from: T.nilable(::String), to: T.nilable(::String)).returns(T::Boolean) }
-    def join_request_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def invitation_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
-    def join_request_id_previously_was; end
+    def invitation_id_previously_was; end
 
     sig { returns(T.nilable(::String)) }
-    def join_request_id_was; end
+    def invitation_id_was; end
 
     sig { void }
-    def join_request_id_will_change!; end
+    def invitation_id_will_change!; end
 
     sig { returns(::String) }
     def name; end
@@ -1263,6 +1356,9 @@ class Friend
     def restore_created_at!; end
 
     sig { void }
+    def restore_deprecated_join_request_id!; end
+
+    sig { void }
     def restore_emoji!; end
 
     sig { void }
@@ -1272,7 +1368,7 @@ class Friend
     def restore_id_value!; end
 
     sig { void }
-    def restore_join_request_id!; end
+    def restore_invitation_id!; end
 
     sig { void }
     def restore_name!; end
@@ -1314,6 +1410,12 @@ class Friend
     def saved_change_to_created_at?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_deprecated_join_request_id; end
+
+    sig { returns(T::Boolean) }
+    def saved_change_to_deprecated_join_request_id?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_emoji; end
 
     sig { returns(T::Boolean) }
@@ -1332,10 +1434,10 @@ class Friend
     def saved_change_to_id_value?; end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def saved_change_to_join_request_id; end
+    def saved_change_to_invitation_id; end
 
     sig { returns(T::Boolean) }
-    def saved_change_to_join_request_id?; end
+    def saved_change_to_invitation_id?; end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_name; end
@@ -1524,6 +1626,9 @@ class Friend
     def will_save_change_to_created_at?; end
 
     sig { returns(T::Boolean) }
+    def will_save_change_to_deprecated_join_request_id?; end
+
+    sig { returns(T::Boolean) }
     def will_save_change_to_emoji?; end
 
     sig { returns(T::Boolean) }
@@ -1533,7 +1638,7 @@ class Friend
     def will_save_change_to_id_value?; end
 
     sig { returns(T::Boolean) }
-    def will_save_change_to_join_request_id?; end
+    def will_save_change_to_invitation_id?; end
 
     sig { returns(T::Boolean) }
     def will_save_change_to_name?; end

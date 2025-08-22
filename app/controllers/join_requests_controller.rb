@@ -13,7 +13,7 @@ class JoinRequestsController < ApplicationController
       format.html do
         render(inertia: "JoinRequestsPage")
       end
-      format.any do
+      format.json do
         join_requests = current_user.join_requests.pending.reverse_chronological
         render(json: {
           "joinRequests" => JoinRequestSerializer.many(join_requests),

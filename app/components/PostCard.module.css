@@ -179,6 +179,12 @@
 .spoilerControl {
   left: 0;
   right: 0;
+
+  @mixin hover {
+    .showMoreButton {
+      background-color: var(--button-hover);
+    }
+  }
 }
 
 .spoiler:not([data-expanded]) > .spoilerControl + .spoilerContent {

@@ -15,10 +15,11 @@ export { default as CopiedIcon } from "~icons/heroicons/clipboard-document-check
 export { default as SettingsIcon } from "~icons/heroicons/cog-6-tooth-20-solid";
 export { default as PhoneIcon } from "~icons/heroicons/device-phone-mobile-20-solid";
 export { default as CreateIcon } from "~icons/heroicons/document-plus-20-solid";
+export { default as InvitationIcon } from "~icons/heroicons/envelope-20-solid";
 export { default as AlertIcon } from "~icons/heroicons/exclamation-triangle-20-solid";
 export { default as EmojiIcon } from "~icons/heroicons/face-smile-20-solid";
 export { default as PublicIcon } from "~icons/heroicons/globe-alt-20-solid";
-export { default as JoinRequestsIcon } from "~icons/heroicons/inbox-arrow-down-20-solid";
+export { default as JoinRequestIcon } from "~icons/heroicons/inbox-arrow-down-20-solid";
 export { default as AdminIcon } from "~icons/heroicons/key-20-solid";
 export { default as SearchIcon } from "~icons/heroicons/magnifying-glass-20-solid";
 export { default as RemoveIcon } from "~icons/heroicons/minus-circle-20-solid";

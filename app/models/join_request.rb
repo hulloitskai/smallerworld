@@ -29,7 +29,8 @@ class JoinRequest < ApplicationRecord
 
   # == Associations
   belongs_to :user
-  has_one :friend, dependent: :nullify
+  has_one :invitation, dependent: :nullify
+  has_one :friend, through: :invitation
 
   sig { returns(User) }
   def user!

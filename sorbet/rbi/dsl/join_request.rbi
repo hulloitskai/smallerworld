@@ -382,6 +382,9 @@ class JoinRequest
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def build_friend(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Invitation) }
+    def build_invitation(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
 
@@ -390,6 +393,12 @@ class JoinRequest
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Invitation) }
+    def create_invitation(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Invitation) }
+    def create_invitation!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user(*args, &blk); end
@@ -402,6 +411,12 @@ class JoinRequest
 
     sig { params(value: T.nilable(::Friend)).void }
     def friend=(value); end
+
+    sig { returns(T.nilable(::Invitation)) }
+    def invitation; end
+
+    sig { params(value: T.nilable(::Invitation)).void }
+    def invitation=(value); end
 
     sig { returns(T::Array[T.untyped]) }
     def notification_ids; end
@@ -420,11 +435,17 @@ class JoinRequest
     sig { returns(T.nilable(::Friend)) }
     def reload_friend; end
 
+    sig { returns(T.nilable(::Invitation)) }
+    def reload_invitation; end
+
     sig { returns(T.nilable(::User)) }
     def reload_user; end
 
     sig { void }
     def reset_friend; end
+
+    sig { void }
+    def reset_invitation; end
 
     sig { void }
     def reset_user; end

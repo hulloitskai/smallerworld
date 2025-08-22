@@ -1,12 +1,12 @@
 # typed: true
 # frozen_string_literal: true
 
-class ActivitiesController < ApplicationController
+class WorldActivitiesController < ApplicationController
   # == Filters
   before_action :authenticate_user!
 
   # == Actions
-  # GET /activities
+  # GET /world/activities
   def index
     current_user = authenticate_user!
     used_template_ids = current_user.activities.distinct.pluck(:template_id)
@@ -18,7 +18,7 @@ class ActivitiesController < ApplicationController
     })
   end
 
-  # POST /activities
+  # POST /world/activities
   def create
     current_user = authenticate_user!
     activity_params = params.expect(activity: %i[

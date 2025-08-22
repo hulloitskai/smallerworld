@@ -3,17 +3,17 @@ import { InputBase } from "@mantine/core";
 import { IMaskInput } from "react-imask";
 
 import { mustParsePhoneFromParts, parsePhoneFromParts } from "~/helpers/phone";
-import { type User } from "~/types";
+import { type Invitation, type User } from "~/types";
 
 export interface AcceptInvitationFormProps extends BoxProps {
   user: User;
-  inviteToken: string;
+  invitation: Invitation;
   onInvitationAccepted: () => void;
 }
 
 const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
   user,
-  inviteToken,
+  invitation,
   onInvitationAccepted,
   ...otherProps
 }) => {
@@ -22,14 +22,19 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
     national_phone_number: "",
   };
   type FormValues = typeof initialValues;
+  interface FormSubmission {
+    friend: {
+      phone_number: string;
+    };
+  }
   const { getInputProps, setFieldValue, submitting, submit } = useForm<
     {},
     FormValues,
-    (values: FormValues) => unknown
+    (values: FormValues) => FormSubmission
   >({
     action: routes.invitations.accept,
     params: {
-      invite_token: inviteToken,
+      id: invitation.id,
     },
     descriptor: "accept invitation",
     initialValues,

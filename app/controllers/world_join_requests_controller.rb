@@ -18,7 +18,7 @@ class WorldJoinRequestsController < ApplicationController
           .pending
           .reverse_chronological
         render(json: {
-          "joinRequests" => JoinRequestSerializer.many(join_requests),
+          "pendingJoinRequests" => JoinRequestSerializer.many(join_requests),
         })
       end
     end

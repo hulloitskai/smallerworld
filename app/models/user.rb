@@ -63,6 +63,7 @@ class User < ApplicationRecord
            inverse_of: :author,
            foreign_key: :author_id
   has_many :join_requests, dependent: :destroy
+  has_many :invitations, dependent: :destroy
   has_many :activities, dependent: :destroy
   has_many :activity_coupons, through: :activities, source: :coupons
 

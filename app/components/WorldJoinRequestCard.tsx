@@ -2,18 +2,23 @@ import { type CardProps, CopyButton } from "@mantine/core";
 
 import { type JoinRequest } from "~/types";
 
-import AddFriendButton from "./AddFriendButton";
+import CreateInvitationButton, {
+  type CreateInvitationButtonProps,
+} from "./CreateInvitationButton";
 import DeleteConfirmation from "./DeleteConfirmation";
 
-import classes from "./JoinRequestCard.module.css";
+import classes from "./WorldJoinRequestCard.module.css";
 
-interface JoinRequestCardProps extends CardProps {
+interface WorldJoinRequestCardProps
+  extends CardProps,
+    Pick<CreateInvitationButtonProps, "onInvitationCreated"> {
   joinRequest: JoinRequest;
 }
 
-const JoinRequestCard: FC<JoinRequestCardProps> = ({
+const WorldJoinRequestCard: FC<WorldJoinRequestCardProps> = ({
   joinRequest,
   className,
+  onInvitationCreated,
   ...otherProps
 }) => {
   const [deleteStarted, setDeleteStarted] = useState(false);
@@ -60,7 +65,10 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({
           </List.Item>
         </List>
         <Stack gap={4}>
-          <AddFriendButton fromJoinRequest={joinRequest} />
+          <CreateInvitationButton
+            fromJoinRequest={joinRequest}
+            {...{ onInvitationCreated }}
+          />
           <DeleteConfirmation
             label="really dismiss?"
             onConfirm={() => {
@@ -84,4 +92,4 @@ const JoinRequestCard: FC<JoinRequestCardProps> = ({
   );
 };
 
-export default JoinRequestCard;
+export default WorldJoinRequestCard;

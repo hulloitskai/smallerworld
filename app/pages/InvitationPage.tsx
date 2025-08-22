@@ -6,27 +6,25 @@ import AcceptInvitationForm from "~/components/AcceptInvitationForm";
 import AppLayout from "~/components/AppLayout";
 import HomescreenPreview from "~/components/HomescreenPreview";
 import PostCard from "~/components/PostCard";
-import { prettyName } from "~/helpers/friends";
-import { type FriendProfile, type Post, type User } from "~/types";
+import { prettyInviteeName } from "~/helpers/invitations";
+import { type Invitation, type Post, type User } from "~/types";
 
 export interface InvitationPageProps extends SharedPageProps {
   user: User;
-  friend: FriendProfile;
-  inviteToken: string;
+  invitation: Invitation;
   invitationAccepted: boolean;
   featuredPost: Post | null;
 }
 
 const InvitationPage: PageComponent<InvitationPageProps> = ({
   user,
-  friend,
-  inviteToken,
+  invitation,
   invitationAccepted,
   featuredPost,
 }) => (
   <Stack gap="lg" pb="xs">
     <Stack gap={4} maw={320} ta="center" style={{ alignSelf: "center" }}>
-      <Title order={3}>hi, {prettyName(friend)}!</Title>
+      <Title order={3}>hi, {prettyInviteeName(invitation)}!</Title>
       <Text size="sm">
         i&apos;m inviting you to my{" "}
         <span style={{ fontWeight: 600 }}>smaller world</span>, an exclusive
@@ -59,7 +57,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
         title="we've sent you a text!"
         styles={{ title: { fontWeight: 600 } }}
       >
-        check your messages for your personal link to my world world.
+        check your messages for your personal link to my world :)
       </Alert>
     ) : (
       <Card withBorder>
@@ -69,7 +67,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
             send you a private link you can use to access my world.
           </Text>
           <AcceptInvitationForm
-            {...{ user, inviteToken }}
+            {...{ user, invitation }}
             onInvitationAccepted={() => {
               router.reload({ async: true, only: ["invitationAccepted"] });
             }}

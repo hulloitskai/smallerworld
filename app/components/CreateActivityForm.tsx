@@ -23,16 +23,23 @@ const CreateActivityForm: FC<CreateActivityFormProps> = ({
     description: template.description,
     location_name: "",
   };
+  type FormValues = typeof initialValues;
+  interface FormSubmission {
+    activity: FormValues & { template_id: string };
+  }
   const { values, getInputProps, setFieldValue, submit, submitting } = useForm<
     { activity: Activity },
-    typeof initialValues
+    typeof initialValues,
+    (values: FormValues) => FormSubmission
   >({
-    action: routes.activities.create,
+    action: routes.worldActivities.create,
     descriptor: "set up activity",
     initialValues,
     transformValues: values => ({
-      template_id: template.id,
-      ...values,
+      activity: {
+        template_id: template.id,
+        ...values,
+      },
     }),
     onSuccess: ({ activity }) => {
       onCreated(activity);

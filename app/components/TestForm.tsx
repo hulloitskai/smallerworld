@@ -29,7 +29,7 @@ const TestForm: FC = () => {
             description={
               <>
                 The only server-permitted value is:{" "}
-                <Text span inherit style={{ textTransform: "none" }}>
+                <Text span inherit tt="none">
                   George
                 </Text>
               </>

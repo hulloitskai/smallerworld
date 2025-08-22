@@ -1,5 +1,5 @@
 import AppLayout from "~/components/AppLayout";
-import JoinRequestCard from "~/components/JoinRequestCard";
+import WorldJoinRequestCard from "~/components/WorldJoinRequestCard";
 import { type JoinRequest, type User } from "~/types";
 
 export interface WorldJoinRequestsPageProps extends SharedPageProps {
@@ -13,18 +13,18 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
   useUserTheme(currentUser.theme);
 
   // == Load join requests
-  const { data } = useRouteSWR<{ joinRequests: JoinRequest[] }>(
+  const { data } = useRouteSWR<{ pendingJoinRequests: JoinRequest[] }>(
     routes.worldJoinRequests.index,
     {
       descriptor: "load join requests",
     },
   );
-  const { joinRequests } = data ?? {};
+  const { pendingJoinRequests } = data ?? {};
 
   return (
     <Stack gap="lg">
       <Stack gap={4} align="center" ta="center">
-        <Box component={JoinRequestsIcon} fz="xl" />
+        <Box component={JoinRequestIcon} fz="xl" />
         <Title size="h2">your join requests</Title>
         <Button
           component={Link}
@@ -37,12 +37,12 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
         </Button>
       </Stack>
       <Stack gap="xs">
-        {joinRequests ? (
-          isEmpty(joinRequests) ? (
+        {pendingJoinRequests ? (
+          isEmpty(pendingJoinRequests) ? (
             <EmptyCard itemLabel="join requests" />
           ) : (
-            joinRequests.map(joinRequest => (
-              <JoinRequestCard key={joinRequest.id} {...{ joinRequest }} />
+            pendingJoinRequests.map(joinRequest => (
+              <WorldJoinRequestCard key={joinRequest.id} {...{ joinRequest }} />
             ))
           )
         ) : (

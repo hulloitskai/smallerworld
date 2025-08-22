@@ -4,12 +4,8 @@ import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
 import { prettyName } from "~/helpers/friends";
-import {
-  type Activity,
-  type ActivityCoupon,
-  type ActivityTemplate,
-  type WorldFriend,
-} from "~/types";
+import { useWorldActivities } from "~/helpers/world";
+import { type ActivityCoupon, type WorldFriend } from "~/types";
 
 import ActivityCard from "./ActivityCard";
 import Drawer, { type DrawerProps } from "./Drawer";
@@ -37,19 +33,13 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
     () => map(friend.active_activity_coupons, "activity_id"),
     [friend.active_activity_coupons],
   );
-  const { data } = useRouteSWR<{
-    activities: Activity[];
-    activityTemplates: ActivityTemplate[];
-  }>(routes.activities.index, {
-    descriptor: "load activities",
-    params: opened ? {} : null,
+  const {
+    data: activitiesData,
+    activities,
+    activitiesAndTemplates,
+  } = useWorldActivities({
     keepPreviousData: true,
   });
-  const { activities, activityTemplates } = data ?? {};
-  const activitiesAndTemplates = useMemo(
-    () => [...(activities ?? []), ...(activityTemplates ?? [])],
-    [activities, activityTemplates],
-  );
   const initialSlide = useMemo(() => {
     if (!activities) {
       return 0;
@@ -121,7 +111,7 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
             />
           </Carousel.Slide>
         ))}
-        {!data &&
+        {!activitiesData &&
           [...Array(3)].map((_, i) => (
             <Carousel.Slide key={i}>
               <AspectRatio ratio={512 / 262}>

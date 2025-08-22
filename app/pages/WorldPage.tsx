@@ -17,8 +17,8 @@ import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
-import AddFriendDrawer from "~/components/AddFriendDrawer";
 import AppLayout from "~/components/AppLayout";
+import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import WorldPageFeed from "~/components/WorldPageFeed";
@@ -248,7 +248,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             <Menu.Item
               component={Link}
               className={classes.joinRequestMenuItem}
-              leftSection={<JoinRequestsIcon />}
+              leftSection={<JoinRequestIcon />}
               href={routes.worldJoinRequests.index.path()}
               {...(pendingJoinRequests > 0 && {
                 rightSection: (
@@ -384,13 +384,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       {isStandalone && !outOfPWAScope && pushRegistration && (
         <WelcomeBackToast subject={currentUser} />
       )}
-      <AddFriendDrawer
+      <CreateInvitationDrawer
         opened={addFriendModalOpened}
         onClose={() => {
           setAddFriendModalOpened(false);
         }}
-        onFriendCreated={() => {
-          router.reload({ only: ["latestFriends"], async: true });
+        onInvitationCreated={() => {
+          router.reload({
+            only: ["latestFriends"],
+            async: true,
+          });
         }}
       />
     </>

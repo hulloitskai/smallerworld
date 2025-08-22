@@ -17,22 +17,26 @@
 #  subscribed_post_types         :string           not null, is an Array
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
-#  join_request_id               :uuid
+#  deprecated_join_request_id    :uuid
+#  invitation_id                 :uuid
 #  user_id                       :uuid             not null
 #
 # Indexes
 #
+#  index_friends_name_uniqueness                   (name,user_id) UNIQUE
 #  index_friends_on_access_token                   (access_token) UNIQUE
 #  index_friends_on_chosen_family                  (chosen_family)
-#  index_friends_on_join_request_id                (join_request_id)
+#  index_friends_on_deprecated_join_request_id     (deprecated_join_request_id)
+#  index_friends_on_invitation_id                  (invitation_id)
 #  index_friends_on_notifications_last_cleared_at  (notifications_last_cleared_at)
 #  index_friends_on_phone_number                   (phone_number)
 #  index_friends_on_user_id                        (user_id)
-#  index_friends_uniqueness                        (name,user_id) UNIQUE
+#  index_friends_phone_number_uniqueness           (user_id,phone_number) UNIQUE
 #
 # Foreign Keys
 #
-#  fk_rails_...  (join_request_id => join_requests.id)
+#  fk_rails_...  (deprecated_join_request_id => join_requests.id)
+#  fk_rails_...  (invitation_id => invitations.id)
 #  fk_rails_...  (user_id => users.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
@@ -62,12 +66,12 @@ class Friend < ApplicationRecord
   generates_token_for :invite
 
   sig { returns(String) }
-  def generate_invite_token
+  def generate_deprecated_invite_token
     generate_token_for(:invite)
   end
 
   sig { params(token: String).returns(Friend) }
-  def self.find_by_invite_token!(token)
+  def self.find_by_deprecated_invite_token!(token)
     find_by_token_for!(:invite, token)
   end
 
@@ -88,7 +92,10 @@ class Friend < ApplicationRecord
            through: :active_activity_coupons,
            source: :activity
 
-  belongs_to :join_request, optional: true
+  belongs_to :invitation, optional: true
+  has_one :join_request, through: :invitation
+
+  belongs_to :deprecated_join_request, class_name: "JoinRequest", optional: true
   has_many :post_reactions, dependent: :destroy
   has_many :post_reply_receipts, dependent: :destroy
   has_many :post_views, dependent: :destroy
@@ -107,6 +114,7 @@ class Friend < ApplicationRecord
   # == Validations
   validates :name, presence: true, uniqueness: { scope: :user }
   validates :emoji, emoji: true, allow_nil: true
+  validates :phone_number, uniqueness: { scope: :user }
 
   # == Scopes
   scope :active, -> { where(paused_since: nil) }
@@ -134,6 +142,7 @@ class Friend < ApplicationRecord
                   }
 
   # == Callbacks
+  after_create_commit :create_notification!
   after_commit :send_welcome_message
 
   # == Noticeable
@@ -147,12 +156,21 @@ class Friend < ApplicationRecord
       raise "Invalid recipient for #{self.class} notification: " \
         "#{recipient.inspect}"
     end
-    NotificationMessage.new(
-      title: "#{fun_name} joined your world!",
-      body: "#{name} installed your world on their phone :)",
-      target_url: Rails.application.routes.url_helpers
-        .world_friends_url(friend_id: id),
-    )
+    if push_registrations.exists?
+      NotificationMessage.new(
+        title: "#{fun_name} installed your world!",
+        body: "#{name} installed your world on their phone :)",
+        target_url: Rails.application.routes.url_helpers
+          .world_friends_url(friend_id: id),
+      )
+    else
+      NotificationMessage.new(
+        title: "#{fun_name} joined your world!",
+        body: "#{name} subscribed to text updates",
+        target_url: Rails.application.routes.url_helpers
+          .world_friends_url(friend_id: id),
+      )
+    end
   end
 
   sig do
@@ -204,12 +222,13 @@ class Friend < ApplicationRecord
       name = user.name
       name.end_with?("s") ? "#{name}'" : "#{name}'s"
     end
-    world_url = Rails.application.routes.url_helpers.user_url(
+    installation_url = Rails.application.routes.url_helpers.user_url(
       user,
       friend_token: access_token,
+      intent: "installation_instructions",
     )
     <<~EOF
-      hi, #{fun_name}! here's your secret link to #{user_possessive} world: #{world_url}
+      hi, #{fun_name}! here's your secret link to #{user_possessive} world: #{installation_url}
 
       we'll send you occasional text updates, but if you're a REAL ONE you can click the link and install #{user_possessive} world to your phone for realtime life updates.
     EOF

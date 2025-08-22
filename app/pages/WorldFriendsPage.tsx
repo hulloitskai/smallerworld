@@ -1,36 +1,33 @@
 import { Text } from "@mantine/core";
 
+import EnvelopeIcon from "~icons/heroicons/envelope-20-solid";
 import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
 import FriendsIcon from "~icons/heroicons/users-20-solid";
 
-import AddFriendButton from "~/components/AddFriendButton";
 import AppLayout from "~/components/AppLayout";
+import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
-import { useWorldFriends } from "~/helpers/friends";
-import { type Activity, type ActivityTemplate, type User } from "~/types";
+import { useWorldActivities, useWorldFriends } from "~/helpers/world";
+import { type User } from "~/types";
 
 export interface WorldFriendsPageProps extends SharedPageProps {
   currentUser: User;
+  pendingInvitationsCount: number;
 }
 
 const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   currentUser,
+  pendingInvitationsCount,
 }) => {
   // == User theme
   useUserTheme(currentUser.theme);
 
   // == Load friends
   const { allFriends, notifiableFriends, unnotifiableFriends } =
-    useWorldFriends();
+    useWorldFriends({ keepPreviousData: true });
 
   // == Load activities
-  const { data: activitiesData } = useRouteSWR<{
-    activities: Activity[];
-    activityTemplates: ActivityTemplate[];
-  }>(routes.activities.index, {
-    descriptor: "load activities",
-  });
-  const { activities } = activitiesData ?? {};
+  const { activities } = useWorldActivities({ keepPreviousData: true });
   const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
 
   return (
@@ -45,13 +42,44 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
           leftSection={<BackIcon />}
           radius="xl"
           href={routes.world.show.path()}
-          mt={2}
         >
           back to your world
         </Button>
       </Stack>
       <Stack gap="xs">
-        <AddFriendButton size="md" mih={54} />
+        <Stack gap={8}>
+          <CreateInvitationButton
+            variant="default"
+            size="md"
+            h="unset"
+            py="sm"
+            onInvitationCreated={() => {
+              router.reload({
+                only: ["pendingInvitationsCount"],
+                async: true,
+              });
+            }}
+          />
+          <Transition mounted={pendingInvitationsCount > 0}>
+            {style => (
+              <Badge
+                leftSection={<EnvelopeIcon />}
+                mb="xs"
+                style={{ alignSelf: "center", ...style }}
+              >
+                <Anchor
+                  component={Link}
+                  href={routes.worldInvitations.index.path()}
+                  inherit
+                  c="inherit"
+                >
+                  {pendingInvitationsCount} recently sent{" "}
+                  {inflect("invitations", pendingInvitationsCount)}
+                </Anchor>
+              </Badge>
+            )}
+          </Transition>
+        </Stack>
         {allFriends ? (
           isEmpty(allFriends) ? (
             <Card

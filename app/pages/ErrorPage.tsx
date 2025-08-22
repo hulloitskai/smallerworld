@@ -26,7 +26,7 @@ const ErrorPage: PageComponent<ErrorPageProps> = ({
       <Text c="dimmed">{description}</Text>
     </Stack>
     {!!error && (
-      <Code block style={{ alignSelf: "stretch", textTransform: "none" }}>
+      <Code block tt="none" style={{ alignSelf: "stretch" }}>
         error: {error}
       </Code>
     )}

@@ -15,6 +15,17 @@
         background-color: var(--mantine-color-dark-7);
       }
     }
+
+    &[data-variant="default"] {
+      @mixin dark-user-theme {
+        background-color: var(--mantine-color-body);
+        border-color: alpha(var(--mantine-color-white), 0.2);
+
+        @mixin hover {
+          background-color: lighten(var(--mantine-color-body), 0.1);
+        }
+      }
+    }
   }
 
   .buttonLabel {

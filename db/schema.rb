@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_13_150635) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_22_214652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,14 +88,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_150635) do
     t.datetime "paused_since", precision: nil
     t.string "subscribed_post_types", null: false, array: true
     t.boolean "chosen_family", null: false
-    t.uuid "join_request_id"
+    t.uuid "deprecated_join_request_id"
     t.datetime "notifications_last_cleared_at", precision: nil
+    t.uuid "invitation_id"
     t.index ["access_token"], name: "index_friends_on_access_token", unique: true
     t.index ["chosen_family"], name: "index_friends_on_chosen_family"
-    t.index ["join_request_id"], name: "index_friends_on_join_request_id"
-    t.index ["name", "user_id"], name: "index_friends_uniqueness", unique: true
+    t.index ["deprecated_join_request_id"], name: "index_friends_on_deprecated_join_request_id"
+    t.index ["invitation_id"], name: "index_friends_on_invitation_id"
+    t.index ["name", "user_id"], name: "index_friends_name_uniqueness", unique: true
     t.index ["notifications_last_cleared_at"], name: "index_friends_on_notifications_last_cleared_at"
     t.index ["phone_number"], name: "index_friends_on_phone_number"
+    t.index ["user_id", "phone_number"], name: "index_friends_phone_number_uniqueness", unique: true
     t.index ["user_id"], name: "index_friends_on_user_id"
   end
 
@@ -186,6 +189,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_150635) do
     t.index ["priority", "scheduled_at"], name: "index_good_jobs_on_priority_scheduled_at_unfinished_unlocked", where: "((finished_at IS NULL) AND (locked_by_id IS NULL))"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
+  end
+
+  create_table "invitations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "invitee_name", null: false
+    t.string "invitee_emoji"
+    t.uuid "offered_activity_ids", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "join_request_id"
+    t.index ["invitee_name", "user_id"], name: "index_invitations_invitee_name_uniqueness", unique: true
+    t.index ["join_request_id"], name: "index_invitations_on_join_request_id"
+    t.index ["user_id"], name: "index_invitations_on_user_id"
   end
 
   create_table "join_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -361,8 +377,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_150635) do
   add_foreign_key "activity_coupons", "activities"
   add_foreign_key "activity_coupons", "friends"
   add_foreign_key "encouragements", "friends"
-  add_foreign_key "friends", "join_requests"
+  add_foreign_key "friends", "invitations"
+  add_foreign_key "friends", "join_requests", column: "deprecated_join_request_id"
   add_foreign_key "friends", "users"
+  add_foreign_key "invitations", "users"
   add_foreign_key "join_requests", "users"
   add_foreign_key "post_reactions", "friends"
   add_foreign_key "post_reactions", "posts"

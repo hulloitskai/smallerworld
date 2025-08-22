@@ -10,7 +10,7 @@ module GeneratedUrlHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
-  def activities_url(*args); end
+  def accept_invitation_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def activity_coupons_url(*args); end
@@ -53,12 +53,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def friend_notification_settings_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def friend_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def friends_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def good_job_url(*args); end
@@ -109,7 +103,7 @@ module GeneratedUrlHelpersModule
   def new_session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pause_friend_url(*args); end
+  def pause_world_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def phone_verification_requests_url(*args); end
@@ -271,7 +265,7 @@ module GeneratedUrlHelpersModule
   def universe_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def unpause_friend_url(*args); end
+  def unpause_world_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unsubscribe_push_subscriptions_url(*args); end
@@ -295,7 +289,19 @@ module GeneratedUrlHelpersModule
   def visit_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def world_activities_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_friend_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def world_friends_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_invitation_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_invitations_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_join_requests_url(*args); end

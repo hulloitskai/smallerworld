@@ -10,7 +10,7 @@ module GeneratedPathHelpersModule
   include ::ActionDispatch::Routing::PolymorphicRoutes
 
   sig { params(args: T.untyped).returns(String) }
-  def activities_path(*args); end
+  def accept_invitation_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def activity_coupons_path(*args); end
@@ -53,12 +53,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def friend_notification_settings_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def friend_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def friends_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def good_job_path(*args); end
@@ -109,7 +103,7 @@ module GeneratedPathHelpersModule
   def new_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pause_friend_path(*args); end
+  def pause_world_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def phone_verification_requests_path(*args); end
@@ -271,7 +265,7 @@ module GeneratedPathHelpersModule
   def universe_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def unpause_friend_path(*args); end
+  def unpause_world_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unsubscribe_push_subscriptions_path(*args); end
@@ -295,7 +289,19 @@ module GeneratedPathHelpersModule
   def visit_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def world_activities_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_friend_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def world_friends_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_invitation_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def world_invitations_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_join_requests_path(*args); end

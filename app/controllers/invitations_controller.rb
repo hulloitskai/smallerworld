@@ -2,35 +2,35 @@
 # frozen_string_literal: true
 
 class InvitationsController < ApplicationController
-  # GET /invitations/:invite_token
+  # GET /invitations/:id
   def show
-    friend = find_friend_by_invite_token
-    user = friend.user!
+    invitation = find_invitation(scope: Invitation.includes(:user, :friend))
+    user = invitation.user!
     featured_post = user.posts.chronological.last
     render(inertia: "InvitationPage", props: {
       user: UserSerializer.one(user),
-      friend: FriendProfileSerializer.one(friend),
-      "inviteToken" => friend.generate_invite_token,
-      "invitationAccepted" => friend.phone_number?,
+      invitation: InvitationSerializer.one(invitation),
+      "invitationAccepted" => !!invitation.friend,
       "featuredPost" => PostSerializer.one_if(featured_post),
     })
   end
 
-  # POST /invitations/:invite_token/accept
+  # POST /invitations/:id/accept
   def accept
-    friend = find_friend_by_invite_token
-    if friend.phone_number?
-      raise "Invitation already accepted"
-    end
-
+    invitation = find_invitation
+    user = invitation.user!
     friend_params = params.expect(friend: [:phone_number])
-    if friend.update(**friend_params)
+    friend = user.friends.build(
+      invitation:,
+      emoji: invitation.invitee_emoji,
+      name: invitation.invitee_name,
+      offered_activity_ids: invitation.offered_activity_ids,
+    )
+    if friend.update(friend_params)
       render(json: {})
     else
       render(
-        json: {
-          errors: friend.form_errors,
-        },
+        json: { errors: friend.form_errors },
         status: :unprocessable_entity,
       )
     end
@@ -39,9 +39,8 @@ class InvitationsController < ApplicationController
   private
 
   # == Helpers
-  sig { returns(Friend) }
-  def find_friend_by_invite_token
-    invite_token = params.fetch(:invite_token)
-    Friend.find_by_invite_token!(invite_token)
+  sig { params(scope: Invitation::PrivateRelation).returns(Invitation) }
+  def find_invitation(scope: Invitation.all)
+    scope.find(params.fetch(:id))
   end
 end

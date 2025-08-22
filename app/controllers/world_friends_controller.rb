@@ -11,7 +11,10 @@ class WorldFriendsController < ApplicationController
     current_user = authenticate_user!
     respond_to do |format|
       format.html do
-        render(inertia: "WorldFriendsPage")
+        pending_invitations = current_user.invitations.pending.count
+        render(inertia: "WorldFriendsPage", props: {
+          "pendingInvitationsCount": pending_invitations,
+        })
       end
       format.json do
         friends = current_user.friends
@@ -32,30 +35,30 @@ class WorldFriendsController < ApplicationController
     end
   end
 
-  # POST /world/friends
-  def create
-    current_user = authenticate_user!
-    friend_params = params.expect(friend: [
-      :emoji,
-      :name,
-      :phone_number,
-      offered_activity_ids: [],
-    ])
-    friend = current_user.friends.build(**friend_params)
-    friend.join_request = current_user
-      .join_requests
-      .find_by({ phone_number: friend.phone_number })
-    if friend.save
-      render(json: {
-        friend: FriendSerializer.one(friend),
-      })
-    else
-      render(
-        json: { errors: friend.form_errors },
-        status: :unprocessable_entity,
-      )
-    end
-  end
+  # # POST /world/friends
+  # def create
+  #   current_user = authenticate_user!
+  #   friend_params = params.expect(friend: [
+  #     :emoji,
+  #     :name,
+  #     :phone_number,
+  #     offered_activity_ids: [],
+  #   ])
+  #   friend = current_user.friends.build(**friend_params)
+  #   friend.join_request = current_user
+  #     .join_requests
+  #     .find_by({ phone_number: friend.phone_number })
+  #   if friend.save
+  #     render(json: {
+  #       friend: FriendSerializer.one(friend),
+  #     })
+  #   else
+  #     render(
+  #       json: { errors: friend.form_errors },
+  #       status: :unprocessable_entity,
+  #     )
+  #   end
+  # end
 
   # PUT /world/friends/:id
   def update
@@ -108,6 +111,14 @@ class WorldFriendsController < ApplicationController
         status: :unprocessable_entity,
       )
     end
+  end
+
+  # DELETE /world/friends/:id
+  def destroy
+    friend = load_friend
+    authorize!(friend)
+    friend.destroy!
+    render(json: {})
   end
 
   private

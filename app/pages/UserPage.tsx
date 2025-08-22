@@ -253,12 +253,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
 
 UserPage.layout = page => (
   <AppLayout<UserPageProps>
-    title={({ user, currentFriend }, { url }) => {
-      const { intent } = queryParamsFromPath(url);
-      return currentFriend && intent === "join"
-        ? `you're invited to ${possessive(user.name)} world`
-        : `${possessive(user.name)} world`;
-    }}
+    title={({ user }) => `${possessive(user.name)} world`}
     manifestUrl={({ currentFriend, user }, { url }) => {
       const { manifest_icon_type } = queryParamsFromPath(url);
       return currentFriend
