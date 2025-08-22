@@ -12,7 +12,7 @@ import Drawer, { type DrawerProps } from "./Drawer";
 import EmojiPopover from "./EmojiPopover";
 import PlainQRCode from "./PlainQRCode";
 
-import classes from "./CreateInvitationDrawer.module.css";
+import classes from "./EditInvitationDrawer.module.css";
 import "@mantine/carousel/styles.layer.css";
 
 export interface EditInvitationDrawerProps

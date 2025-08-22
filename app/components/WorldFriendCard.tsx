@@ -69,9 +69,9 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
               <Badge
                 className={classes.badge}
                 color="gray"
-                leftSection={<NotificationIcon />}
+                leftSection={<PhoneIcon />}
               >
-                notifiable
+                installed
               </Badge>
             )}
             {friend.paused && (

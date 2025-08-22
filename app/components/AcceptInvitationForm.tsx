@@ -46,6 +46,9 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
         },
       };
     },
+    transformErrors: ({ phone_number }) => ({
+      national_phone_number: phone_number,
+    }),
     validate: {
       national_phone_number: (value, values) => {
         const phoneNumber = parsePhoneFromParts(values);

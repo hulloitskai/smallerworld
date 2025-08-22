@@ -1,24 +1,22 @@
 import { type CardProps, CopyButton } from "@mantine/core";
 
+import AddFriendIcon from "~icons/heroicons/user-plus-20-solid";
+
 import { type JoinRequest } from "~/types";
 
-import CreateInvitationButton, {
-  type CreateInvitationButtonProps,
-} from "./CreateInvitationButton";
 import DeleteConfirmation from "./DeleteConfirmation";
 
 import classes from "./WorldJoinRequestCard.module.css";
 
-interface WorldJoinRequestCardProps
-  extends CardProps,
-    Pick<CreateInvitationButtonProps, "onInvitationCreated"> {
+interface WorldJoinRequestCardProps extends CardProps {
   joinRequest: JoinRequest;
+  onSelectForInvitation: () => void;
 }
 
 const WorldJoinRequestCard: FC<WorldJoinRequestCardProps> = ({
   joinRequest,
+  onSelectForInvitation,
   className,
-  onInvitationCreated,
   ...otherProps
 }) => {
   const [deleteStarted, setDeleteStarted] = useState(false);
@@ -65,10 +63,12 @@ const WorldJoinRequestCard: FC<WorldJoinRequestCardProps> = ({
           </List.Item>
         </List>
         <Stack gap={4}>
-          <CreateInvitationButton
-            fromJoinRequest={joinRequest}
-            {...{ onInvitationCreated }}
-          />
+          <Button
+            leftSection={<AddFriendIcon />}
+            onClick={onSelectForInvitation}
+          >
+            invite to your world
+          </Button>
           <DeleteConfirmation
             label="really dismiss?"
             onConfirm={() => {

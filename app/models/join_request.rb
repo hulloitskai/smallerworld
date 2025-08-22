@@ -31,6 +31,11 @@ class JoinRequest < ApplicationRecord
   belongs_to :user
   has_one :invitation, dependent: :nullify
   has_one :friend, through: :invitation
+  has_one :deprecated_friend,
+          class_name: "Friend",
+          inverse_of: :deprecated_join_request,
+          foreign_key: :deprecated_join_request_id,
+          dependent: :nullify
 
   sig { returns(User) }
   def user!
@@ -46,8 +51,10 @@ class JoinRequest < ApplicationRecord
   validates :phone_number, uniqueness: { scope: :user }
 
   # == Scopes
-  scope :pending, -> { where.missing(:friend) }
-  scope :accepted, -> { where.associated(:friend) }
+  scope :pending, -> {
+    where.missing(:invitation)
+      .where.not(id: where.associated(:deprecated_friend))
+  }
 
   # == Callbacks
   after_create :create_notification!

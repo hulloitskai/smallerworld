@@ -44,55 +44,11 @@
   }
 }
 
-.activitiesContainer {
-  margin-inline: calc(var(--mantine-spacing-md) * -1);
-  background-color: light-dark(
-    lighten(var(--mantine-color-body), 0.4),
-    darken(var(--mantine-color-body), 0.3)
-  );
-  padding-block: var(--mantine-spacing-md);
-}
-
-.activitiesCarousel {
-  :global(.mantine-Carousel-viewport) {
-    padding-bottom: 4px;
-  }
-
-  :global(.mantine-Carousel-container) {
-    margin-inline: calc((100dvw - var(--carousel-slide-size)) / 2);
-
-    :global(.mantine-Modal-root) & {
-      @mixin larger-than $mantine-breakpoint-xs {
-        margin-inline: calc((var(--modal-size) - 320px) / 2);
-      }
-    }
-  }
-
-  :global(.mantine-Carousel-control) {
-    transition: opacity 150ms ease-in-out;
-
-    &[data-inactive] {
-      opacity: 0;
-      cursor: default;
-    }
-  }
-}
-
 .activityBadge {
   --badge-radius: var(--mantine-radius-md);
   padding-left: 4px;
 
   &[data-with-right-section] {
     padding-right: 1px;
-  }
-}
-
-.fromJoinRequestArrow {
-  width: 60px;
-  margin-left: -20px;
-  transform: rotate(-90deg);
-
-  @mixin dark {
-    filter: invert(1);
   }
 }

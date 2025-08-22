@@ -1,4 +1,5 @@
 import AppLayout from "~/components/AppLayout";
+import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
 import WorldJoinRequestCard from "~/components/WorldJoinRequestCard";
 import { type JoinRequest, type User } from "~/types";
 
@@ -17,39 +18,63 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
     routes.worldJoinRequests.index,
     {
       descriptor: "load join requests",
+      keepPreviousData: true,
     },
   );
   const { pendingJoinRequests } = data ?? {};
 
+  // == Create invitation from join request
+  const [drawerOpened, setDrawerOpened] = useState(false);
+  const [toInviteFromJoinRequest, setToInviteFromJoinRequest] =
+    useState<JoinRequest | null>(null);
+
   return (
-    <Stack gap="lg">
-      <Stack gap={4} align="center" ta="center">
-        <Box component={JoinRequestIcon} fz="xl" />
-        <Title size="h2">your join requests</Title>
-        <Button
-          component={Link}
-          leftSection={<BackIcon />}
-          radius="xl"
-          href={routes.world.show.path()}
-          mt={2}
-        >
-          back to your world
-        </Button>
-      </Stack>
-      <Stack gap="xs">
-        {pendingJoinRequests ? (
-          isEmpty(pendingJoinRequests) ? (
-            <EmptyCard itemLabel="join requests" />
+    <>
+      <Stack gap="lg">
+        <Stack gap={4} align="center" ta="center">
+          <Box component={JoinRequestIcon} fz="xl" />
+          <Title size="h2">your join requests</Title>
+          <Button
+            component={Link}
+            leftSection={<BackIcon />}
+            radius="xl"
+            href={routes.world.show.path()}
+            mt={2}
+          >
+            back to your world
+          </Button>
+        </Stack>
+        <Stack gap="xs">
+          {pendingJoinRequests ? (
+            isEmpty(pendingJoinRequests) ? (
+              <EmptyCard itemLabel="join requests" />
+            ) : (
+              pendingJoinRequests.map(joinRequest => (
+                <WorldJoinRequestCard
+                  key={joinRequest.id}
+                  {...{ joinRequest }}
+                  onSelectForInvitation={() => {
+                    setToInviteFromJoinRequest(joinRequest);
+                    setDrawerOpened(true);
+                  }}
+                />
+              ))
+            )
           ) : (
-            pendingJoinRequests.map(joinRequest => (
-              <WorldJoinRequestCard key={joinRequest.id} {...{ joinRequest }} />
-            ))
-          )
-        ) : (
-          [...new Array(3)].map((_, i) => <Skeleton key={i} h={96} />)
-        )}
+            [...new Array(3)].map((_, i) => <Skeleton key={i} h={96} />)
+          )}
+        </Stack>
       </Stack>
-    </Stack>
+      {toInviteFromJoinRequest && (
+        <CreateInvitationDrawer
+          fromJoinRequest={toInviteFromJoinRequest}
+          opened={drawerOpened}
+          onClose={() => {
+            setDrawerOpened(false);
+          }}
+        />
+      )}
+    </>
   );
 };
 

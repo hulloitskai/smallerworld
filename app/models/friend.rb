@@ -114,7 +114,8 @@ class Friend < ApplicationRecord
   # == Validations
   validates :name, presence: true, uniqueness: { scope: :user }
   validates :emoji, emoji: true, allow_nil: true
-  validates :phone_number, uniqueness: { scope: :user }
+  validates :phone_number,
+            uniqueness: { scope: :user, message: "already joined" }
 
   # == Scopes
   scope :active, -> { where(paused_since: nil) }

@@ -1,11 +1,13 @@
 import { Carousel } from "@mantine/carousel";
-import { CopyButton, Popover, Text } from "@mantine/core";
+import { CopyButton, Image, Popover, Text } from "@mantine/core";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
+
+import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
 import {
   formatInvitation,
@@ -99,6 +101,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
     initialValues,
     transformValues: ({ invitee_emoji, invitee_name, offered_activities }) => ({
       invitation: {
+        join_request_id: fromJoinRequest?.id ?? null,
         invitee_emoji: invitee_emoji || null,
         invitee_name: invitee_name.trim(),
         offered_activity_ids: map(offered_activities, "id"),
@@ -352,7 +355,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                 </Title>
                 <Text size="sm" c="dimmed" display="block">
                   {fromJoinRequest ? (
-                    <>send your friend the link below</>
+                    <>send your friend the invite link!</>
                   ) : (
                     <>
                       get your friend to scan this QR code,
@@ -364,24 +367,16 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
               </Box>
               <Stack gap="xs" align="center">
                 {fromJoinRequest ? (
-                  <Popover shadow="md">
-                    <Popover.Target>
-                      <Button
-                        component="a"
-                        variant="filled"
-                        leftSection={<PhoneIcon />}
-                        mx="xs"
-                      >
-                        send via sms
-                      </Button>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      <InviteViaSMSDropdownBody
-                        {...{ invitation }}
-                        phoneNumber={fromJoinRequest.phone_number}
-                      />
-                    </Popover.Dropdown>
-                  </Popover>
+                  <Stack gap={8} align="center">
+                    <Image
+                      src={bottomLeftArrowSrc}
+                      className={classes.fromJoinRequestArrow}
+                    />
+                    <SendInviteLinkViaJoinRequestButton
+                      {...{ invitation }}
+                      joinRequest={fromJoinRequest}
+                    />
+                  </Stack>
                 ) : (
                   <>
                     <InvitationQRCode {...{ invitation }} />
@@ -426,57 +421,6 @@ const InvitationQRCode: FC<InvitationQRCodeProps> = ({ invitation }) => {
   return <>{invitationUrl && <PlainQRCode value={invitationUrl} />}</>;
 };
 
-interface InviteViaSMSDropdownBodyProps {
-  invitation: Invitation;
-  phoneNumber: string;
-}
-
-const InviteViaSMSDropdownBody: FC<InviteViaSMSDropdownBodyProps> = ({
-  invitation,
-  phoneNumber,
-}) => {
-  const invitationUrl = useNormalizeUrl(
-    () => routes.invitations.show.path({ id: invitation.id }),
-    [invitation.id],
-  );
-  return (
-    <Stack gap="xs">
-      <Text ta="center" ff="heading" fw={500}>
-        send via:
-      </Text>
-      <Group justify="center" gap="sm">
-        {MESSAGING_PLATFORMS.map(platform => (
-          <Stack key={platform} gap={2} align="center" miw={60}>
-            <ActionIcon
-              component="a"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              variant="light"
-              size="lg"
-              {...(invitationUrl
-                ? {
-                    href: messageUri(
-                      phoneNumber,
-                      formatInvitation(invitationUrl),
-                      platform,
-                    ),
-                  }
-                : {
-                    disabled: true,
-                  })}
-            >
-              <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
-            </ActionIcon>
-            <Text size="xs" fw={500} ff="heading" c="dimmed">
-              {MESSAGING_PLATFORM_TO_LABEL[platform]}
-            </Text>
-          </Stack>
-        ))}
-      </Group>
-    </Stack>
-  );
-};
-
 interface SendInviteLinkButtonProps {
   invitation: Invitation;
 }
@@ -498,7 +442,7 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
           leftSection={<SendIcon />}
           disabled={!invitationUrl}
         >
-          send invite link
+          send invite link via...
         </Button>
       </Menu.Target>
       {!!invitationUrl && (
@@ -528,5 +472,70 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
         </Menu.Dropdown>
       )}
     </Menu>
+  );
+};
+
+interface SendInviteLinkViaJoinRequestButtonProps {
+  invitation: Invitation;
+  joinRequest: JoinRequest;
+}
+
+const SendInviteLinkViaJoinRequestButton: FC<
+  SendInviteLinkViaJoinRequestButtonProps
+> = ({ invitation, joinRequest }) => {
+  const vaulPortalTarget = useVaulPortalTarget();
+  const invitationUrl = useNormalizeUrl(
+    () => routes.invitations.show.path({ id: invitation.id }),
+    [invitation.id],
+  );
+  return (
+    <Popover shadow="md" portalProps={{ target: vaulPortalTarget }}>
+      <Popover.Target>
+        <Button
+          component="a"
+          variant="filled"
+          leftSection={<PhoneIcon />}
+          mx="xs"
+        >
+          send invite link via...
+        </Button>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <Stack gap="xs">
+          <Text ta="center" ff="heading" fw={500}>
+            send via:
+          </Text>
+          <Group justify="center" gap="sm">
+            {MESSAGING_PLATFORMS.map(platform => (
+              <Stack key={platform} gap={2} align="center" miw={60}>
+                <ActionIcon
+                  component="a"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  variant="light"
+                  size="lg"
+                  {...(invitationUrl
+                    ? {
+                        href: messageUri(
+                          joinRequest.phone_number,
+                          formatInvitation(invitationUrl),
+                          platform,
+                        ),
+                      }
+                    : {
+                        disabled: true,
+                      })}
+                >
+                  <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
+                </ActionIcon>
+                <Text size="xs" fw={500} ff="heading" c="dimmed">
+                  {MESSAGING_PLATFORM_TO_LABEL[platform]}
+                </Text>
+              </Stack>
+            ))}
+          </Group>
+        </Stack>
+      </Popover.Dropdown>
+    </Popover>
   );
 };

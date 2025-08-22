@@ -380,6 +380,9 @@ class JoinRequest
 
   module GeneratedAssociationMethods
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
+    def build_deprecated_friend(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def build_friend(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Invitation) }
@@ -387,6 +390,12 @@ class JoinRequest
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_user(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
+    def create_deprecated_friend(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
+    def create_deprecated_friend!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend(*args, &blk); end
@@ -405,6 +414,12 @@ class JoinRequest
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_user!(*args, &blk); end
+
+    sig { returns(T.nilable(::Friend)) }
+    def deprecated_friend; end
+
+    sig { params(value: T.nilable(::Friend)).void }
+    def deprecated_friend=(value); end
 
     sig { returns(T.nilable(::Friend)) }
     def friend; end
@@ -433,6 +448,9 @@ class JoinRequest
     def notifications=(value); end
 
     sig { returns(T.nilable(::Friend)) }
+    def reload_deprecated_friend; end
+
+    sig { returns(T.nilable(::Friend)) }
     def reload_friend; end
 
     sig { returns(T.nilable(::Invitation)) }
@@ -440,6 +458,9 @@ class JoinRequest
 
     sig { returns(T.nilable(::User)) }
     def reload_user; end
+
+    sig { void }
+    def reset_deprecated_friend; end
 
     sig { void }
     def reset_friend; end
@@ -464,9 +485,6 @@ class JoinRequest
   end
 
   module GeneratedAssociationRelationMethods
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def accepted(*args, &blk); end
-
     sig { returns(PrivateAssociationRelation) }
     def all; end
 
@@ -1022,9 +1040,6 @@ class JoinRequest
   end
 
   module GeneratedRelationMethods
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def accepted(*args, &blk); end
-
     sig { returns(PrivateRelation) }
     def all; end
 

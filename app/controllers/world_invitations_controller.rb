@@ -30,6 +30,7 @@ class WorldInvitationsController < ApplicationController
   def create
     current_user = authenticate_user!
     invitation_params = params.expect(invitation: [
+      :join_request_id,
       :invitee_name,
       :invitee_emoji,
       offered_activity_ids: [],

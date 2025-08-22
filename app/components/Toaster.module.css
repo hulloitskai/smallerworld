@@ -17,10 +17,6 @@
   [data-icon] {
     margin-top: 2px;
     font-size: var(--mantine-font-size-md);
-
-    @mixin dark {
-      color: var(--mantine-color-white);
-    }
   }
 
   [data-content] {
