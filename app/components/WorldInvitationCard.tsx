@@ -56,26 +56,17 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
             justify="space-between"
             className={classes.group}
           >
-            <Anchor
-              component="button"
-              onClick={() => {
-                setDrawerOpened(true);
-              }}
-            >
-              <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
-                {!!invitation.invitee_emoji && (
-                  <Box className={classes.emoji}>
-                    {invitation.invitee_emoji}
-                  </Box>
-                )}
-                <Text ff="heading" fw={600}>
-                  {invitation.invitee_name}
-                </Text>
-              </Group>
-            </Anchor>
+            <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
+              {!!invitation.invitee_emoji && (
+                <Box className={classes.emoji}>{invitation.invitee_emoji}</Box>
+              )}
+              <Text ff="heading" fw={600} lh={1.2}>
+                {invitation.invitee_name}
+              </Text>
+            </Group>
             <Group gap={2} style={{ flexShrink: 0 }}>
               <Text size="xs" c="dimmed">
-                invited at{" "}
+                invited on{" "}
                 <Time inherit format={DateTime.DATETIME_MED} tt="lowercase">
                   {invitation.created_at}
                 </Time>
@@ -124,20 +115,29 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
               </Menu>
             </Group>
           </Group>
-          {!isEmpty(offeredActivities) && (
-            <Group gap={8} wrap="wrap">
-              {offeredActivities.map(activity => (
-                <Badge
-                  className={classes.activityBadge}
-                  key={activity.id}
-                  variant="default"
-                  leftSection={activity.emoji ?? <CouponIcon />}
-                >
-                  {activity.name}
-                </Badge>
-              ))}
-            </Group>
-          )}
+          <Group gap={8} wrap="wrap">
+            <Button
+              leftSection={<InvitationIcon />}
+              size="compact-xs"
+              className={classes.detailsButton}
+              onClick={() => {
+                setDrawerOpened(true);
+              }}
+            >
+              open invitation
+            </Button>
+            {!isEmpty(offeredActivities) && <Divider orientation="vertical" />}
+            {offeredActivities.map(activity => (
+              <Badge
+                className={classes.activityBadge}
+                key={activity.id}
+                variant="default"
+                leftSection={activity.emoji ?? <CouponIcon />}
+              >
+                {activity.name}
+              </Badge>
+            ))}
+          </Group>
         </Stack>
         <LoadingOverlay
           visible={deletingInvitation}

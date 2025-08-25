@@ -43,7 +43,7 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
         </Button>
       </Stack>
       <Stack gap="xs">
-        <CreateInvitationButton variant="default" size="md" h="unset" py="sm" />
+        <CreateInvitationButton variant="default" size="md" h="unset" py="md" />
         {pendingInvitations ? (
           isEmpty(pendingInvitations) ? (
             <EmptyCard itemLabel="join requests" />

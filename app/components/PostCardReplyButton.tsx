@@ -101,8 +101,6 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
                 <Stack key={platform} gap={2} align="center" miw={60}>
                   <ActionIcon
                     component="a"
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
                     variant="light"
                     size="lg"
                     href={messageUri(

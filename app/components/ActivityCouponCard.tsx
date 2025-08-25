@@ -160,8 +160,6 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
                       `I'd like to do ${activity.name} with you :) when r u free for this?`,
                       platform,
                     )}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
                     variant="light"
                     size="lg"
                   >

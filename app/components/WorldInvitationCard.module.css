@@ -32,6 +32,7 @@
 
 .activityBadge {
   padding-inline: 4px;
+  background-color: transparent;
   --badge-radius: var(--mantine-radius-md);
 
   :global(.mantine-Badge-section)[data-position="left"] {
@@ -50,6 +51,12 @@
 .activityCouponButton {
   --button-radius: var(--mantine-radius-md);
 
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: 6px;
+  }
+}
+
+.detailsButton {
   :global(.mantine-Button-section)[data-position="left"] {
     margin-right: 6px;
   }

@@ -77,7 +77,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
     }),
     [fromJoinRequest],
   );
-  const [invitation, setInvitation] = useState<Invitation>();
+  const [invitation, setInvitation] = useState<Invitation | null>(null);
   const {
     getInputProps,
     submit,
@@ -86,6 +86,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
     values,
     setFieldValue,
     isDirty,
+    setInitialValues,
     reset,
   } = useForm<FormData, FormValues, (values: FormValues) => FormSubmission>({
     ...(invitation
@@ -121,6 +122,8 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
   });
   useDidUpdate(() => {
     if (!opened && submitted) {
+      setInitialValues(initialValues);
+      setInvitation(null);
       reset();
     }
   }, [opened]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -510,8 +513,6 @@ const SendInviteLinkViaJoinRequestButton: FC<
               <Stack key={platform} gap={2} align="center" miw={60}>
                 <ActionIcon
                   component="a"
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
                   variant="light"
                   size="lg"
                   {...(invitationUrl

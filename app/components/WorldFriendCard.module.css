@@ -24,7 +24,7 @@
   }
 }
 
-.badge {
+.statusBadge {
   :global(.mantine-Badge-label) {
     text-transform: none;
   }
@@ -32,6 +32,7 @@
 
 .activityBadge {
   padding-inline: 4px;
+  background-color: transparent;
   --badge-radius: var(--mantine-radius-md);
 
   :global(.mantine-Badge-section)[data-position="left"] {

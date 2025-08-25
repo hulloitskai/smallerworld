@@ -52,7 +52,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
             variant="default"
             size="md"
             h="unset"
-            py="sm"
+            py="md"
             onInvitationCreated={() => {
               router.reload({
                 only: ["pendingInvitationsCount"],

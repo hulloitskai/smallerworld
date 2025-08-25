@@ -45,12 +45,6 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   );
   const { ref, inViewport } = useInViewport();
 
-  // == UI
-  const [followUpDrawerModalOpened, setFollowUpModalDrawerOpened] =
-    useState(false);
-  const [followUpDrawerModalExiting, setFollowUpModalDrawerExiting] =
-    useState(false);
-
   // == Load post stats
   const { data: statsData } = useRouteSWR<{
     notifiedFriends: number;
@@ -97,6 +91,10 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     },
   );
 
+  const [followUpDrawerModalOpened, setFollowUpModalDrawerOpened] =
+    useState(false);
+  const [followUpDrawerModalExiting, setFollowUpModalDrawerExiting] =
+    useState(false);
   return (
     <>
       <Group {...{ ref }} align="start" gap={3}>

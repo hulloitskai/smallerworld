@@ -67,7 +67,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
           <Group gap={2} style={{ flexShrink: 0 }}>
             {friend.notifiable && !friend.paused && (
               <Badge
-                className={classes.badge}
+                className={classes.statusBadge}
                 color="gray"
                 leftSection={<PhoneIcon />}
               >
@@ -81,7 +81,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                 }
               >
                 <Badge
-                  className={classes.badge}
+                  className={classes.statusBadge}
                   color="red"
                   leftSection={<PauseIcon />}
                 >
@@ -179,7 +179,6 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
           ))}
           <Button
             className={classes.activityCouponButton}
-            variant="subtle"
             size="compact-xs"
             leftSection={<CouponIcon />}
             disabled={activitiesDrawerOpened}

@@ -12,8 +12,11 @@
 }
 
 .menuDropdown {
+  pointer-events: auto;
+
   @mixin dark-user-theme {
     background-color: alpha(var(--mantine-color-black), 0.7);
+    backdrop-filter: blur(rem(4px));
   }
 }
 

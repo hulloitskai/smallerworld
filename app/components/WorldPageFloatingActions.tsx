@@ -16,7 +16,7 @@ import {
 import { useSavedDraftType } from "~/helpers/posts/form";
 import { useWebPush } from "~/helpers/webPush";
 import { type WorldPageProps } from "~/pages/WorldPage";
-import { type Encouragement, type PostType, type WorldPost } from "~/types";
+import { type Encouragement, type WorldPost } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
@@ -43,9 +43,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   const { isStandalone } = usePWA();
   const { pushRegistration } = useWebPush();
   const { modals } = useModals();
-
-  // == Post type
-  const [postType, setPostType] = useState<PostType | null>(null);
 
   // == Load encouragements
   const { data: encouragementsData } = useRouteSWR<{
@@ -77,7 +74,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   const actionsVisible =
     (isStandalone === false || pushRegistration !== null) &&
     isEmpty(modals) &&
-    !postType &&
     !pinnedPostsDrawerModalOpened;
   return (
     <>
@@ -167,14 +163,14 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                     </Box>
                   </Indicator>
                 </Menu.Target>
-                <Menu.Dropdown style={{ pointerEvents: "auto" }}>
-                  {POST_TYPES.map(type => (
+                <Menu.Dropdown>
+                  {POST_TYPES.map(postType => (
                     <Menu.Item
-                      key={type}
+                      key={postType}
                       leftSection={
-                        <Box component={POST_TYPE_TO_ICON[type]} fz="md" />
+                        <Box component={POST_TYPE_TO_ICON[postType]} fz="md" />
                       }
-                      {...(type === newPostDraftType && {
+                      {...(postType === newPostDraftType && {
                         rightSection: (
                           <Box
                             component={DraftCircleIcon}
@@ -183,10 +179,24 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                         ),
                       })}
                       onClick={() => {
-                        setPostType(type);
+                        openModal({
+                          title: `new ${POST_TYPE_TO_LABEL[postType]}`,
+                          size: "var(--container-size-xs)",
+                          children: (
+                            <PostForm
+                              newPostType={postType}
+                              encouragement={latestEncouragement}
+                              {...{
+                                pausedFriendIds,
+                                recentlyPausedFriendIds,
+                                onPostCreated,
+                              }}
+                            />
+                          ),
+                        });
                       }}
                     >
-                      new {POST_TYPE_TO_LABEL[type]}
+                      new {POST_TYPE_TO_LABEL[postType]}
                     </Menu.Item>
                   ))}
                 </Menu.Dropdown>
@@ -223,38 +233,8 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
         </Transition>
       </Affix>
       <DrawerModal
-        title={
-          <>
-            new{" "}
-            {postType ? (
-              POST_TYPE_TO_LABEL[postType]
-            ) : (
-              <Skeleton>placeholder</Skeleton>
-            )}
-          </>
-        }
-        opened={!!postType}
-        onClose={() => {
-          setPostType(null);
-        }}
-      >
-        <PostForm
-          key={postType}
-          newPostType={postType}
-          encouragement={latestEncouragement}
-          {...{
-            pausedFriendIds,
-            recentlyPausedFriendIds,
-          }}
-          onPostCreated={() => {
-            setPostType(null);
-            onPostCreated?.();
-          }}
-        />
-      </DrawerModal>
-      <DrawerModal
         title="your invitations to your friends"
-        opened={!postType && pinnedPostsDrawerModalOpened}
+        opened={pinnedPostsDrawerModalOpened}
         onClose={() => {
           setPinnedPostsDrawerModalOpened(false);
         }}
