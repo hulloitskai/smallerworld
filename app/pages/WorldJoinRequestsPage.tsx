@@ -41,7 +41,7 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
             leftSection={<BackIcon />}
             radius="xl"
             href={routes.world.show.path()}
-            mt={2}
+            mt={4}
           >
             back to your world
           </Button>

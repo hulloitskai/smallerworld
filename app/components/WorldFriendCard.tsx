@@ -4,12 +4,14 @@ import { openConfirmModal } from "@mantine/modals";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 import PauseIcon from "~icons/heroicons/pause-20-solid";
 import ResumeIcon from "~icons/heroicons/play-20-solid";
+import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 
-import { prettyName } from "~/helpers/friends";
+import { prettyFriendName } from "~/helpers/friends";
 import { type Activity, type WorldFriend } from "~/types";
 
 import ActivityCouponDrawer from "./ActivityCouponDrawer";
 import EditFriendForm from "./EditFriendForm";
+import WorldFriendInviteDrawer from "./WorldFriendInviteDrawer";
 
 import classes from "./WorldFriendCard.module.css";
 
@@ -23,9 +25,10 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
   friend,
 }) => {
   const [menuOpened, setMenuOpened] = useState(false);
-
-  // == Activities drawer
   const [activitiesDrawerOpened, setActivitiesDrawerOpened] = useState(false);
+  const [inviteDrawerOpened, setInviteDrawerOpened] = useState(false);
+
+  // == Offered activities
   const offeredActivities = useMemo(() => {
     const activities: Activity[] = [];
     friend.active_activity_coupons.forEach(coupon => {
@@ -77,7 +80,9 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
             {friend.paused && (
               <Tooltip
                 label={
-                  <>{prettyName(friend)} will not see new posts you create</>
+                  <>
+                    {prettyFriendName(friend)} will not see new posts you create
+                  </>
                 }
               >
                 <Badge
@@ -162,6 +167,14 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                     }}
                   />
                 )}
+                <Menu.Item
+                  leftSection={<QRCodeIcon />}
+                  onClick={() => {
+                    setInviteDrawerOpened(true);
+                  }}
+                >
+                  re-invite friend
+                </Menu.Item>
               </Menu.Dropdown>
             </Menu>
           </Group>
@@ -198,6 +211,13 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
           setActivitiesDrawerOpened(false);
         }}
       />
+      <WorldFriendInviteDrawer
+        {...{ friend }}
+        opened={inviteDrawerOpened}
+        onClose={() => {
+          setInviteDrawerOpened(false);
+        }}
+      />
     </>
   );
 };
@@ -220,7 +240,7 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
     descriptor: "pause friend",
     onSuccess: () => {
       void mutateRoute(routes.worldFriends.index);
-      toast.success(`${prettyName(friend)} was paused`, {
+      toast.success(`${prettyFriendName(friend)} was paused`, {
         description: `they will not see new posts you create until you unpause them`,
       });
       onFriendPaused();
@@ -254,7 +274,7 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
     descriptor: "unpause friend",
     onSuccess: () => {
       void mutateRoute(routes.worldFriends.index);
-      toast.success(`${prettyName(friend)} was unpaused`, {
+      toast.success(`${prettyFriendName(friend)} was unpaused`, {
         description: `they will see new posts you create`,
       });
       onFriendUnpaused();

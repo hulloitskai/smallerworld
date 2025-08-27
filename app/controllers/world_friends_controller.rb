@@ -121,6 +121,34 @@ class WorldFriendsController < ApplicationController
     render(json: {})
   end
 
+  # GET /world/friends/:id/invite_url
+  def invite_url
+    friend = load_friend
+    authorize!(friend)
+    invitation = friend.invitation || scoped do
+      created_at = friend.created_at
+      friend.transaction do |invitation|
+        invitation = friend.create_invitation!(
+          user: friend.user!,
+          invitee_name: friend.name,
+          invitee_emoji: friend.emoji,
+          created_at:,
+          updated_at: created_at,
+          join_request_id: friend.deprecated_join_request_id,
+        )
+        friend.save!
+        invitation
+      end
+    end
+    invite_url = invitation_url(
+      invitation,
+      **ShortlinkService.shortlink_url_options,
+    )
+    render(json: {
+      "inviteUrl" => invite_url,
+    })
+  end
+
   private
 
   # == Helpers

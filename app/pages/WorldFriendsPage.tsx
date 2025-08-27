@@ -42,6 +42,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
           leftSection={<BackIcon />}
           radius="xl"
           href={routes.world.show.path()}
+          mt={4}
         >
           back to your world
         </Button>

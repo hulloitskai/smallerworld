@@ -44,18 +44,24 @@ class Invitation < ApplicationRecord
             presence: true,
             uniqueness: { scope: :user, name: "already invited" }
   validates :invitee_emoji, emoji: true, allow_nil: true
-  validate :validate_not_existing_friend_name
+  validate :validate_not_existing_friend_name, unless: :existing_friend?
 
   # == Scopes
   scope :pending, -> { where.missing(:friend) }
 
   private
 
+  # == Helpers
+  sig { returns(T::Boolean) }
+  def existing_friend?
+    !!friend
+  end
+
   # == Validators
   sig { void }
   def validate_not_existing_friend_name
     if user_friends.exists?(name: invitee_name)
-      errors.add(:name, :uniqueness, message: "already registered")
+      errors.add(:invitee_name, :uniqueness, message: "already registered")
     end
   end
 end

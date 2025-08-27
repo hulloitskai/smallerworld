@@ -9,7 +9,7 @@ import QuietIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
 
-import { prettyName } from "~/helpers/friends";
+import { prettyFriendName } from "~/helpers/friends";
 import {
   mutateWorldPosts,
   NONPRIVATE_POST_VISIBILITIES,
@@ -300,7 +300,7 @@ const PostForm: FC<PostFormProps> = props => {
                   <Stack gap={2} style={{ alignSelf: "center" }}>
                     <Text size="sm">&ldquo;{encouragement.message}&rdquo;</Text>
                     <Text size="xs" c="dimmed" style={{ alignSelf: "end" }}>
-                      — {prettyName(encouragement.friend)}
+                      — {prettyFriendName(encouragement.friend)}
                     </Text>
                   </Stack>
                 </Card>

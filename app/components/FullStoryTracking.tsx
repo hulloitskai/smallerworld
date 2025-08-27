@@ -1,6 +1,6 @@
 import { FullStory } from "@fullstory/browser";
 
-import { prettyName } from "~/helpers/friends";
+import { prettyFriendName } from "~/helpers/friends";
 
 const FullStoryTracking: FC = () => {
   const {
@@ -16,7 +16,10 @@ const FullStoryTracking: FC = () => {
     if (currentFriend) {
       void FullStory("setIdentityAsync", {
         uid: currentFriend.id,
-        properties: { displayName: prettyName(currentFriend), type: "friend" },
+        properties: {
+          displayName: prettyFriendName(currentFriend),
+          type: "friend",
+        },
         schema: {
           properties: {
             type: "string",

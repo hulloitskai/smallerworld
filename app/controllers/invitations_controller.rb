@@ -10,7 +10,7 @@ class InvitationsController < ApplicationController
     render(inertia: "InvitationPage", props: {
       user: UserSerializer.one(user),
       invitation: InvitationSerializer.one(invitation),
-      "invitationAccepted" => !!invitation.friend,
+      friend: FriendProfileSerializer.one_if(invitation.friend),
       "featuredPost" => PostSerializer.one_if(featured_post),
     })
   end

@@ -1,7 +1,7 @@
 import { Chip, Popover, type PopoverProps } from "@mantine/core";
 import { difference, map } from "lodash-es";
 
-import { prettyName } from "~/helpers/friends";
+import { prettyFriendName } from "~/helpers/friends";
 import { useWorldFriends } from "~/helpers/world";
 import { type WorldFriend } from "~/types";
 
@@ -99,7 +99,7 @@ const PostFormHiddenFromIdsPicker: FC<PostFormHiddenFromIdsPickerProps> = ({
                   className={classes.chip}
                   mod={{ unnotifiable: !friend.notifiable }}
                 >
-                  {prettyName(friend)}
+                  {prettyFriendName(friend)}
                 </Chip>
               ))}
             </Group>

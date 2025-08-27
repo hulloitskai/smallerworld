@@ -3,7 +3,7 @@ import { AspectRatio, Text } from "@mantine/core";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
-import { prettyName } from "~/helpers/friends";
+import { prettyFriendName } from "~/helpers/friends";
 import { useWorldActivities } from "~/helpers/world";
 import { type ActivityCoupon, type WorldFriend } from "~/types";
 
@@ -61,7 +61,7 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
     serializeData: attributes => ({ activity_coupon: attributes }),
     onSuccess: ({ activityCoupon: { activity } }) => {
       onClose?.();
-      toast.success(`you gave ${prettyName(friend)} a coupon!`, {
+      toast.success(`you gave ${prettyFriendName(friend)} a coupon!`, {
         ...(activity.emoji && { icon: activity.emoji }),
       });
       void mutateRoute(routes.worldFriends.index);

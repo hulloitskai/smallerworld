@@ -98,6 +98,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
               variant="white"
               leftSection={<BackIcon />}
               style={{ flexShrink: 0 }}
+              mt={4}
             >
               back to your world
             </Button>

@@ -104,6 +104,7 @@ Rails.application.routes.draw do
     export: true,
   ) do
     member do
+      get :invite_url
       post :pause
       post :unpause
     end

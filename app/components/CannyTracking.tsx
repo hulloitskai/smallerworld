@@ -1,4 +1,4 @@
-import { prettyName } from "~/helpers/friends";
+import { prettyFriendName } from "~/helpers/friends";
 
 const CannyTracking: FC = () => {
   const { currentUser, currentFriend } = usePageProps();
@@ -13,7 +13,7 @@ const CannyTracking: FC = () => {
     if (currentFriend) {
       const user = {
         id: currentFriend.id,
-        name: prettyName(currentFriend),
+        name: prettyFriendName(currentFriend),
         email: fakeEmail("friend", currentFriend.id),
         created: currentFriend.created_at,
       };
