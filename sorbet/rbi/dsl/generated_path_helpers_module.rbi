@@ -109,16 +109,13 @@ module GeneratedPathHelpersModule
   def phone_verification_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pinned_posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def pinned_user_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def policies_path(*args); end
+  def pinned_world_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def post_path(*args); end
+  def policies_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def post_reaction_path(*args); end
@@ -134,9 +131,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def post_stickers_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_path(*args); end
@@ -247,7 +241,7 @@ module GeneratedPathHelpersModule
   def start_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def stats_post_path(*args); end
+  def stats_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def submit_test_path(*args); end
@@ -310,7 +304,7 @@ module GeneratedPathHelpersModule
   def world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def world_post_pinned_path(*args); end
+  def world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_posts_path(*args); end

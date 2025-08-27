@@ -26,50 +26,35 @@ end
 #
 # source://inertia_rails//lib/inertia_rails/base_prop.rb#3
 module InertiaRails
-  # source://activesupport/7.1.5/lib/active_support/core_ext/module/attribute_accessors_per_thread.rb#74
-  def threadsafe_page; end
-
-  # source://activesupport/7.1.5/lib/active_support/core_ext/module/attribute_accessors_per_thread.rb#116
-  def threadsafe_page=(obj); end
-
   class << self
-    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#30
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#33
     def always(&block); end
 
-    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#18
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#21
     def configuration; end
 
     # @yield [CONFIGURATION]
     #
-    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#14
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#17
     def configure; end
 
-    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#38
-    def defer(group: T.unsafe(nil), merge: T.unsafe(nil), &block); end
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#41
+    def deep_merge(match_on: T.unsafe(nil), &block); end
 
-    # source://inertia_rails//lib/inertia_rails.rb#27
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#45
+    def defer(group: T.unsafe(nil), merge: T.unsafe(nil), deep_merge: T.unsafe(nil), match_on: T.unsafe(nil), &block); end
+
+    # source://inertia_rails//lib/inertia_rails.rb#25
     def deprecator; end
 
-    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#22
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#25
     def lazy(value = T.unsafe(nil), &block); end
 
-    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#34
-    def merge(&block); end
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#37
+    def merge(match_on: T.unsafe(nil), &block); end
 
-    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#26
+    # source://inertia_rails//lib/inertia_rails/inertia_rails.rb#29
     def optional(&block); end
-
-    sig { returns(T.nilable(T::Hash[::Symbol, T.untyped])) }
-    def page; end
-
-    sig { params(page: T.nilable(T::Hash[::Symbol, T.untyped])).returns(T.nilable(T::Hash[::Symbol, T.untyped])) }
-    def page=(page); end
-
-    # source://activesupport/7.1.5/lib/active_support/core_ext/module/attribute_accessors_per_thread.rb#49
-    def threadsafe_page; end
-
-    # source://activesupport/7.1.5/lib/active_support/core_ext/module/attribute_accessors_per_thread.rb#108
-    def threadsafe_page=(obj); end
   end
 end
 
@@ -104,187 +89,208 @@ end
 
 # source://inertia_rails//lib/inertia_rails/configuration.rb#4
 class InertiaRails::Configuration
+  # @raise [ArgumentError]
   # @return [Configuration] a new instance of Configuration
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#35
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#55
   def initialize(controller: T.unsafe(nil), **attrs); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#44
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#64
   def bind_controller(controller); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#68
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#88
   def component_path_resolver(path:, action:); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def component_path_resolver=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def deep_merge_shared_data; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def deep_merge_shared_data=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def default_render; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def default_render=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def encrypt_history; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def encrypt_history=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#48
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#68
   def freeze; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def layout; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def layout=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#58
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#78
   def merge(config); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#53
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
   def merge!(config); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
+  def parent_controller; end
+
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
+  def parent_controller=(value); end
+
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def ssr_enabled; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def ssr_enabled=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def ssr_url; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def ssr_url=(value); end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#73
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#94
   def version; end
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#76
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#98
   def version=(value); end
 
   # Internal: Finalizes the configuration for a specific controller.
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#63
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#83
   def with_defaults(config); end
 
   protected
 
   # Returns the value of attribute controller.
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#32
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#52
   def controller; end
 
   # Returns the value of attribute options.
   #
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#33
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#53
   def options; end
 
   private
 
-  # source://inertia_rails//lib/inertia_rails/configuration.rb#87
+  # source://inertia_rails//lib/inertia_rails/configuration.rb#105
   def evaluate_option(value); end
 
   class << self
-    # source://inertia_rails//lib/inertia_rails/configuration.rb#81
+    # source://inertia_rails//lib/inertia_rails/configuration.rb#36
     def default; end
+
+    private
+
+    # source://inertia_rails//lib/inertia_rails/configuration.rb#42
+    def env_options; end
   end
 end
 
 # source://inertia_rails//lib/inertia_rails/configuration.rb#5
 InertiaRails::Configuration::DEFAULTS = T.let(T.unsafe(nil), Hash)
 
-# source://inertia_rails//lib/inertia_rails/configuration.rb#30
+# source://inertia_rails//lib/inertia_rails/configuration.rb#33
 InertiaRails::Configuration::OPTION_NAMES = T.let(T.unsafe(nil), Array)
 
-# source://inertia_rails//lib/inertia_rails/controller.rb#6
+# source://inertia_rails//lib/inertia_rails/controller.rb#7
 module InertiaRails::Controller
-  extend ::ActiveSupport::Concern
-
   requires_ancestor { ActionController::Base }
 
   mixes_in_class_methods ::InertiaRails::Controller::ClassMethods
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#117
+  # source://inertia_rails//lib/inertia_rails/controller.rb#118
   def default_render; end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#125
+  # source://inertia_rails//lib/inertia_rails/controller.rb#131
+  def inertia_meta; end
+
+  # source://inertia_rails//lib/inertia_rails/controller.rb#126
   def redirect_to(options = T.unsafe(nil), response_options = T.unsafe(nil)); end
 
   private
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#158
+  # source://inertia_rails//lib/inertia_rails/controller.rb#163
   def capture_inertia_session_options(options); end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#137
+  # source://inertia_rails//lib/inertia_rails/controller.rb#142
   def inertia_configuration; end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#153
+  # source://inertia_rails//lib/inertia_rails/controller.rb#158
   def inertia_location(url); end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#141
+  # source://inertia_rails//lib/inertia_rails/controller.rb#146
   def inertia_shared_data; end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#132
+  # source://inertia_rails//lib/inertia_rails/controller.rb#137
   def inertia_view_assigns; end
-
-  sig { void }
-  def prepare_instance_variables; end
 end
 
-# source://inertia_rails//lib/inertia_rails/controller.rb#17
+# source://inertia_rails//lib/inertia_rails/controller.rb#18
 module InertiaRails::Controller::ClassMethods
-  # source://inertia_rails//lib/inertia_rails/controller.rb#50
+  # source://inertia_rails//lib/inertia_rails/controller.rb#51
   def _inertia_configuration; end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#57
+  # source://inertia_rails//lib/inertia_rails/controller.rb#58
   def _inertia_shared_data; end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#33
+  # source://inertia_rails//lib/inertia_rails/controller.rb#34
   def inertia_config(**attrs); end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#18
+  # source://inertia_rails//lib/inertia_rails/controller.rb#19
   def inertia_share(hash = T.unsafe(nil), **props, &block); end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#43
+  # source://inertia_rails//lib/inertia_rails/controller.rb#44
   def use_inertia_instance_props; end
 
   private
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#77
+  # source://inertia_rails//lib/inertia_rails/controller.rb#78
   def extract_inertia_share_options(props); end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#103
+  # source://inertia_rails//lib/inertia_rails/controller.rb#104
   def filter_to_proc(filter); end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#71
+  # source://inertia_rails//lib/inertia_rails/controller.rb#72
   def push_to_inertia_share(**attrs, &block); end
 
-  # source://inertia_rails//lib/inertia_rails/controller.rb#96
+  # source://inertia_rails//lib/inertia_rails/controller.rb#97
   def transform_inertia_share_option(options, from, to); end
 end
 
 # source://inertia_rails//lib/inertia_rails/defer_prop.rb#4
 class InertiaRails::DeferProp < ::InertiaRails::IgnoreOnFirstLoadProp
+  # @raise [ArgumentError]
   # @return [DeferProp] a new instance of DeferProp
   #
   # source://inertia_rails//lib/inertia_rails/defer_prop.rb#9
-  def initialize(group: T.unsafe(nil), merge: T.unsafe(nil), &block); end
+  def initialize(group: T.unsafe(nil), merge: T.unsafe(nil), deep_merge: T.unsafe(nil), match_on: T.unsafe(nil), &block); end
+
+  # @return [Boolean]
+  #
+  # source://inertia_rails//lib/inertia_rails/defer_prop.rb#24
+  def deep_merge?; end
 
   # Returns the value of attribute group.
   #
   # source://inertia_rails//lib/inertia_rails/defer_prop.rb#7
   def group; end
 
+  # Returns the value of attribute match_on.
+  #
+  # source://inertia_rails//lib/inertia_rails/defer_prop.rb#7
+  def match_on; end
+
   # @return [Boolean]
   #
-  # source://inertia_rails//lib/inertia_rails/defer_prop.rb#17
+  # source://inertia_rails//lib/inertia_rails/defer_prop.rb#20
   def merge?; end
 end
 
@@ -292,20 +298,26 @@ end
 InertiaRails::DeferProp::DEFAULT_GROUP = T.let(T.unsafe(nil), String)
 
 # source://inertia_rails//lib/inertia_rails/engine.rb#5
-class InertiaRails::Engine < ::Rails::Engine
-  class << self
-    # source://activesupport/7.1.5/lib/active_support/callbacks.rb#70
-    def __callbacks; end
-  end
-end
+class InertiaRails::Engine < ::Rails::Engine; end
 
-# source://inertia_rails//lib/inertia_rails.rb#25
+# source://inertia_rails//lib/inertia_rails.rb#23
 class InertiaRails::Error < ::StandardError; end
 
 # source://inertia_rails//lib/inertia_rails/helper.rb#3
 module InertiaRails::Helper
   # source://inertia_rails//lib/inertia_rails/helper.rb#8
   def inertia_headers; end
+
+  # source://inertia_rails//lib/inertia_rails/helper.rb#23
+  def inertia_meta_tags; end
+
+  # source://inertia_rails//lib/inertia_rails/helper.rb#19
+  def inertia_page; end
+
+  # @return [Boolean]
+  #
+  # source://inertia_rails//lib/inertia_rails/helper.rb#15
+  def inertia_rendering?; end
 
   # source://inertia_rails//lib/inertia_rails/helper.rb#4
   def inertia_ssr_head; end
@@ -331,7 +343,12 @@ end
 # source://inertia_rails//lib/patches/mapper.rb#2
 module InertiaRails::InertiaMapper
   # source://inertia_rails//lib/patches/mapper.rb#3
-  def inertia(args, &block); end
+  def inertia(*args, **options); end
+
+  private
+
+  # source://inertia_rails//lib/patches/mapper.rb#11
+  def extract_route_and_component(path); end
 end
 
 # source://inertia_rails//lib/patches/request.rb#2
@@ -366,13 +383,103 @@ end
 class InertiaRails::MergeProp < ::InertiaRails::BaseProp
   # @return [MergeProp] a new instance of MergeProp
   #
-  # source://inertia_rails//lib/inertia_rails/merge_prop.rb#5
-  def initialize(*_arg0); end
+  # source://inertia_rails//lib/inertia_rails/merge_prop.rb#7
+  def initialize(deep_merge: T.unsafe(nil), match_on: T.unsafe(nil), &block); end
 
   # @return [Boolean]
   #
-  # source://inertia_rails//lib/inertia_rails/merge_prop.rb#10
+  # source://inertia_rails//lib/inertia_rails/merge_prop.rb#17
+  def deep_merge?; end
+
+  # Returns the value of attribute match_on.
+  #
+  # source://inertia_rails//lib/inertia_rails/merge_prop.rb#5
+  def match_on; end
+
+  # @return [Boolean]
+  #
+  # source://inertia_rails//lib/inertia_rails/merge_prop.rb#13
   def merge?; end
+end
+
+# source://inertia_rails//lib/inertia_rails/meta_tag.rb#4
+class InertiaRails::MetaTag
+  # @return [MetaTag] a new instance of MetaTag
+  #
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#15
+  def initialize(tag_name: T.unsafe(nil), head_key: T.unsafe(nil), allow_duplicates: T.unsafe(nil), type: T.unsafe(nil), **tag_data); end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#56
+  def [](key); end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#28
+  def as_json(_options = T.unsafe(nil)); end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#39
+  def to_tag(tag_helper); end
+
+  private
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#80
+  def determine_tag_type(type); end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#86
+  def generate_head_key; end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#95
+  def generate_meta_head_key; end
+
+  # @return [Boolean]
+  #
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#76
+  def shortened_title_tag?(tag_name, tag_data); end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#90
+  def tag_digest; end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag.rb#67
+  def tag_script_inner_content(content); end
+end
+
+# source://inertia_rails//lib/inertia_rails/meta_tag.rb#11
+InertiaRails::MetaTag::DEFAULT_SCRIPT_TYPE = T.let(T.unsafe(nil), String)
+
+# source://inertia_rails//lib/inertia_rails/meta_tag.rb#13
+InertiaRails::MetaTag::GENERATABLE_HEAD_KEY_PROPERTIES = T.let(T.unsafe(nil), Array)
+
+# source://inertia_rails//lib/inertia_rails/meta_tag.rb#10
+InertiaRails::MetaTag::LD_JSON_TYPE = T.let(T.unsafe(nil), String)
+
+# See https://github.com/rails/rails/blob/v8.0.0/actionview/lib/action_view/helpers/tag_helper.rb#L84-L97
+#
+# source://inertia_rails//lib/inertia_rails/meta_tag.rb#6
+InertiaRails::MetaTag::UNARY_TAGS = T.let(T.unsafe(nil), Array)
+
+# source://inertia_rails//lib/inertia_rails/meta_tag_builder.rb#4
+class InertiaRails::MetaTagBuilder
+  # @return [MetaTagBuilder] a new instance of MetaTagBuilder
+  #
+  # source://inertia_rails//lib/inertia_rails/meta_tag_builder.rb#5
+  def initialize(controller); end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag_builder.rb#14
+  def add(meta_tag); end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag_builder.rb#39
+  def clear; end
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag_builder.rb#10
+  def meta_tags; end
+
+  # @raise [ArgumentError]
+  #
+  # source://inertia_rails//lib/inertia_rails/meta_tag_builder.rb#26
+  def remove(head_key = T.unsafe(nil), &block); end
+
+  private
+
+  # source://inertia_rails//lib/inertia_rails/meta_tag_builder.rb#47
+  def add_new_tag(new_tag_data); end
 end
 
 # source://inertia_rails//lib/inertia_rails/middleware.rb#4
@@ -471,73 +578,78 @@ class InertiaRails::OptionalProp < ::InertiaRails::IgnoreOnFirstLoadProp; end
 # source://inertia_rails//lib/inertia_rails/renderer.rb#8
 class InertiaRails::Renderer
   # @return [Renderer] a new instance of Renderer
-  def initialize(*_arg0, **_arg1, &_arg2); end
+  #
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#19
+  def initialize(component, controller, request, response, render_method, **options); end
 
   # Returns the value of attribute clear_history.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#12
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#9
   def clear_history; end
 
   # Returns the value of attribute component.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#12
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#9
   def component; end
 
   # Returns the value of attribute configuration.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#12
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#9
   def configuration; end
 
   # Returns the value of attribute controller.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#12
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#9
   def controller; end
 
   # Returns the value of attribute encrypt_history.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#12
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#9
   def encrypt_history; end
 
   # Returns the value of attribute props.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#12
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#9
   def props; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#36
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#40
   def render; end
 
   # Returns the value of attribute view_data.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#12
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#9
   def view_data; end
 
   private
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#83
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#156
+  def all_merge_props; end
+
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#92
   def computed_props; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#121
-  def deep_transform_props(props, parent_path = T.unsafe(nil), &block); end
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#127
+  def deep_transform_props(props, parent_path = T.unsafe(nil)); end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#137
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#148
   def deferred_props_keys; end
 
   # @return [Boolean]
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#198
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#218
   def excluded_by_except_partial_keys?(path_with_prefixes); end
 
   # @return [Boolean]
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#194
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#214
   def excluded_by_only_partial_keys?(path_with_prefixes); end
 
   # @return [Boolean]
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#173
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#193
   def keep_prop?(prop, path); end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#61
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#70
   def layout; end
 
   # Cast props to symbol keyed hash before merging so that we have a consistent data structure and
@@ -546,44 +658,57 @@ class InertiaRails::Renderer
   # Functionally, this permits using either string or symbol keys in the controller. Since the results
   # is cast to json, we should treat string/symbol keys as identical.
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#75
-  def merge_props(shared_data, props); end
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#84
+  def merge_props(shared_props, props); end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#145
-  def merge_props_keys; end
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#222
+  def meta_tags; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#102
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#99
   def page; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#159
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#177
   def partial_except_keys; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#151
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#169
   def partial_keys; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#188
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#208
   def path_prefixes(parts); end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#53
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#62
   def render_ssr; end
 
   # @return [Boolean]
   #
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#163
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#181
   def rendering_partial_component?; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#155
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#173
   def reset_keys; end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#167
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#185
   def resolve_component(component); end
 
-  # source://inertia_rails//lib/inertia_rails/renderer.rb#66
+  # source://inertia_rails//lib/inertia_rails/renderer.rb#75
   def shared_data; end
 end
 
-# source://inertia_rails//lib/inertia_rails/renderer.rb#10
-InertiaRails::Renderer::DONT_KEEP_PROP = T.let(T.unsafe(nil), Symbol)
+class InertiaRails::StaticController < ::ApplicationController
+  def static; end
 
-# source://inertia_rails//lib/inertia_rails/renderer.rb#9
-InertiaRails::Renderer::KEEP_PROP = T.let(T.unsafe(nil), Symbol)
+  private
+
+  def _layout(lookup_context, formats, keys); end
+
+  class << self
+    private
+
+    def __class_attr__wrapper_options; end
+    def __class_attr__wrapper_options=(new_value); end
+    def __class_attr_helpers_path; end
+    def __class_attr_helpers_path=(new_value); end
+    def __class_attr_middleware_stack; end
+    def __class_attr_middleware_stack=(new_value); end
+  end
+end

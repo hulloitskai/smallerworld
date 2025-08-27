@@ -34,7 +34,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
     <Stack gap="lg">
       <Stack gap={4} align="center">
         <Box component={FriendsIcon} fz="xl" />
-        <Title size="h2" ta="center">
+        <Title size="h2" lh={1.2} ta="center">
           your friends
         </Title>
         <Button

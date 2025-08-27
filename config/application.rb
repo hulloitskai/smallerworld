@@ -25,6 +25,7 @@ module SmallerWorld
     require "pg_search_ext"
     require "better_errors_ext"
     require "vite_ruby_ext"
+    require "vite_rails_ext"
     require "inertia_rails_ext"
     require "premailer_ext"
     require "friendly_id_ext"

@@ -31,9 +31,11 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
   return (
     <>
       <Stack gap="lg">
-        <Stack gap={4} align="center" ta="center">
+        <Stack gap={4} align="center">
           <Box component={JoinRequestIcon} fz="xl" />
-          <Title size="h2">your join requests</Title>
+          <Title size="h2" lh={1.2} ta="center">
+            your join requests
+          </Title>
           <Button
             component={Link}
             leftSection={<BackIcon />}

@@ -113,7 +113,7 @@ gem "action_policy", "~> 0.6.5"
 gem "vite_rails", "~> 3.0"
 
 # Use Inertia framework for server-driven SPAs
-gem "inertia_rails", "~> 3.6.0"
+gem "inertia_rails", "~> 3.10.0"
 
 # Use Premailer to inline CSS into email templates
 gem "premailer-rails", "~> 1.12"
@@ -194,7 +194,7 @@ group :development, :test do
   gem "rubocop-sorbet", require: false
   gem "rubocop-capybara", require: false
   gem "ruby-lsp", require: false
-  gem "rbs", "~> 3.5.3", require: false
+  gem "rbs", require: false
 end
 
 group :development do
@@ -216,7 +216,7 @@ group :development do
   # Typecheck code
   gem "sorbet", require: false
   gem "spoom", require: false
-  gem "tapioca", "~> 0.16.11", require: false
+  gem "tapioca", "~> 0.17.7", require: false
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"

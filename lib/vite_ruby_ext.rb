@@ -50,7 +50,7 @@ class ViteRuby
 
     sig { returns(T::Boolean) }
     def dev_server_running?
-      !dev_server_disabled? && super
+      !ViteRuby.dev_server_disabled? && super
     end
   end
   prepend DisableDevServerSupport
@@ -64,9 +64,36 @@ class ViteRuby
       requires_ancestor { DevServerProxy }
 
       # == Methods
+      sig { params(env: T::Hash[String, T.untyped]).returns(T::Boolean) }
+      def vite_should_handle?(env)
+        !url_or_referrer_forces_ssr?(env) && !!super
+      end
+
       sig { returns(T::Boolean) }
       def dev_server_running?
         !ViteRuby.dev_server_disabled? && super
+      end
+
+      private
+
+      sig { params(uri: String).returns(T::Boolean) }
+      def uri_forces_ssr?(uri)
+        if (query = Addressable::URI.parse(uri).query_values)
+          query["ssr"].truthy?
+        else
+          false
+        end
+      end
+
+      sig { params(env: T::Hash[String, T.untyped]).returns(T::Boolean) }
+      def url_or_referrer_forces_ssr?(env)
+        return true if uri_forces_ssr?(env["REQUEST_URI"])
+
+        if (referrer = env["HTTP_REFERER"])
+          uri_forces_ssr?(referrer)
+        else
+          false
+        end
       end
     end
     prepend DisableDevServerSupport

@@ -1,13 +1,18 @@
-import { Text } from "@mantine/core";
+import { Image, Text } from "@mantine/core";
 
 import TextIcon from "~icons/heroicons/chat-bubble-bottom-center-text-20-solid";
+
+import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
 import AcceptInvitationForm from "~/components/AcceptInvitationForm";
 import AppLayout from "~/components/AppLayout";
 import HomescreenPreview from "~/components/HomescreenPreview";
 import PostCard from "~/components/PostCard";
 import { prettyInviteeName } from "~/helpers/invitations";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type Invitation, type Post, type User } from "~/types";
+
+import classes from "./InvitationPage.module.css";
 
 export interface InvitationPageProps extends SharedPageProps {
   user: User;
@@ -16,6 +21,8 @@ export interface InvitationPageProps extends SharedPageProps {
   featuredPost: Post | null;
 }
 
+const ICON_SIZE = 96;
+
 const InvitationPage: PageComponent<InvitationPageProps> = ({
   user,
   invitation,
@@ -23,8 +30,33 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
   featuredPost,
 }) => (
   <Stack gap="lg" pb="xs">
+    <Stack gap="sm">
+      <Box pos="relative" style={{ alignSelf: "center" }}>
+        <Image
+          className={classes.pageIcon}
+          src={user.page_icon.src}
+          srcSet={user.page_icon.srcset ?? undefined}
+          w={ICON_SIZE}
+          h={ICON_SIZE}
+          radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
+          onClick={() => {
+            const pageUrl = normalizeUrl(routes.world.show.path());
+            void navigator.clipboard.writeText(pageUrl).then(() => {
+              toast.success("page url copied");
+            });
+          }}
+        />
+        <Image src={bottomLeftArrowSrc} className={classes.pageArrow} />
+      </Box>
+      <Title className={classes.pageTitle} size="h2">
+        <span style={{ fontWeight: 500 }}>you&apos;re invited to</span>{" "}
+        {possessive(user.name)} world<span style={{ fontWeight: 500 }}>!</span>
+      </Title>
+    </Stack>
     <Stack gap={4} maw={320} ta="center" style={{ alignSelf: "center" }}>
-      <Title order={3}>hi, {prettyInviteeName(invitation)}!</Title>
+      <Text ff="heading" fw={500}>
+        hi, {prettyInviteeName(invitation)}—
+      </Text>
       <Text size="sm">
         i&apos;m inviting you to my{" "}
         <span style={{ fontWeight: 600 }}>smaller world</span>, an exclusive

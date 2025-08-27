@@ -1,0 +1,22 @@
+.pageIcon {
+  object-fit: cover;
+  flex: unset;
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+.pageTitle {
+  line-height: 1.2;
+  text-align: center;
+}
+
+.pageArrow {
+  position: absolute;
+  bottom: 0px;
+  right: -80px;
+  transform: scaleY(-1);
+  width: 60px;
+
+  @mixin dark {
+    filter: invert(1);
+  }
+}

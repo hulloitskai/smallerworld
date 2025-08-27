@@ -109,10 +109,10 @@ module GeneratedUrlHelpersModule
   def phone_verification_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pinned_posts_url(*args); end
+  def pinned_user_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def pinned_user_posts_url(*args); end
+  def pinned_world_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def policies_url(*args); end
@@ -131,12 +131,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def post_stickers_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def post_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_url(*args); end
@@ -247,7 +241,7 @@ module GeneratedUrlHelpersModule
   def start_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def stats_post_url(*args); end
+  def stats_world_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def submit_test_url(*args); end
@@ -307,7 +301,7 @@ module GeneratedUrlHelpersModule
   def world_join_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def world_post_pinned_url(*args); end
+  def world_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_posts_url(*args); end

@@ -21,15 +21,6 @@ module Dry
     #
     # source://dry-cli//lib/dry/cli.rb#224
     def CLI(registry_or_command = T.unsafe(nil), &block); end
-
-    # source://dry-core/1.0.1/lib/dry/core.rb#52
-    def Equalizer(*keys, **options); end
-
-    # source://dry-struct/1.6.0/lib/dry/struct.rb#30
-    def Struct(attributes = T.unsafe(nil), &block); end
-
-    # source://dry-types/1.7.2/lib/dry/types.rb#253
-    def Types(*namespaces, default: T.unsafe(nil), **aliases); end
   end
 end
 
@@ -294,31 +285,31 @@ end
 class Dry::CLI::Command
   extend ::Forwardable
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def arguments(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def default_params(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def description(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def examples(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def optional_arguments(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def options(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def params(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def required_arguments(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://dry-cli//lib/dry/cli/command.rb#371
   def subcommands(*args, **_arg1, &block); end
 
   class << self
@@ -1427,20 +1418,20 @@ class Dry::CLI::Registry::Prefix
   # @since 0.1.0
   #
   # source://dry-cli//lib/dry/cli/registry.rb#321
-  def register(name, command, aliases: T.unsafe(nil), hidden: T.unsafe(nil)); end
+  def register(name, command = T.unsafe(nil), aliases: T.unsafe(nil), hidden: T.unsafe(nil), &block); end
 
   private
 
   # @api private
   # @since 0.1.0
   #
-  # source://dry-cli//lib/dry/cli/registry.rb#334
+  # source://dry-cli//lib/dry/cli/registry.rb#343
   def prefix; end
 
   # @api private
   # @since 0.1.0
   #
-  # source://dry-cli//lib/dry/cli/registry.rb#330
+  # source://dry-cli//lib/dry/cli/registry.rb#339
   def registry; end
 end
 

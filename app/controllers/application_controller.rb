@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
 
   # == Filters
   around_action :with_error_context
-  if !InertiaRails.configuration.ssr_enabled && Rails.env.development?
+  if Rails.env.development? && !InertiaRails.configuration.ssr_enabled
     around_action :with_ssr
   end
 
@@ -106,16 +106,7 @@ class ApplicationController < ActionController::Base
   sig { params(block: T.proc.returns(T.untyped)).void }
   def with_ssr(&block)
     if params[:ssr].truthy?
-      vite_dev_server_disabled = ViteRuby.dev_server_disabled?
-      inertia_ssr_enabled = InertiaRails.configuration.ssr_enabled
-      begin
-        ViteRuby.dev_server_disabled = true
-        InertiaRails.configuration.ssr_enabled = true
-        yield
-      ensure
-        InertiaRails.configuration.ssr_enabled = inertia_ssr_enabled
-        ViteRuby.dev_server_disabled = vite_dev_server_disabled
-      end
+      InertiaRails.with_ssr(&block)
     else
       yield
     end

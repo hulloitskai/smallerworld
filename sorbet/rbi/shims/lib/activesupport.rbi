@@ -89,7 +89,7 @@ module ActiveSupport
         .params(
           args: T.untyped,
           kwargs: T.untyped,
-          block: T.proc.params(arg0: T.self_type).returns(T.type_parameter(:U)),
+          block: T.proc.params(arg0: T.untyped).returns(T.type_parameter(:U)),
         )
         .returns(T.nilable(T.type_parameter(:U)))
     end

@@ -29,9 +29,11 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
 
   return (
     <Stack gap="lg">
-      <Stack gap={4} align="center" ta="center">
+      <Stack gap={4} align="center">
         <Box component={InvitationIcon} fz="xl" />
-        <Title size="h2">recently sent invitations</Title>
+        <Title size="h2" lh={1.2} ta="center">
+          recently sent invitations
+        </Title>
         <Button
           component={Link}
           leftSection={<BackIcon />}
