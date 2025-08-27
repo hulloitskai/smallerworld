@@ -6,6 +6,7 @@ import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { useInvitationShareData } from "~/helpers/invitations";
+import { useShortlink } from "~/helpers/shortlinks";
 import { type Activity, type Invitation } from "~/types";
 
 import Drawer, { type DrawerProps } from "./Drawer";
@@ -229,11 +230,11 @@ interface InvitationQRCodeProps {
 }
 
 const InvitationQRCode: FC<InvitationQRCodeProps> = ({ invitation }) => {
-  const invitationUrl = useNormalizeUrl(
+  const shortlink = useShortlink(
     () => routes.invitations.show.path({ id: invitation.id }),
     [invitation.id],
   );
-  return <>{invitationUrl && <PlainQRCode value={invitationUrl} />}</>;
+  return <>{shortlink && <PlainQRCode value={shortlink} />}</>;
 };
 
 interface SendInviteLinkButtonProps {

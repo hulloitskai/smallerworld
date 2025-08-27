@@ -19,6 +19,7 @@ import {
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
+import { useShortlink } from "~/helpers/shortlinks";
 import { useWorldActivities } from "~/helpers/world";
 import { type Activity, type Invitation, type JoinRequest } from "~/types";
 
@@ -417,11 +418,11 @@ interface InvitationQRCodeProps {
 }
 
 const InvitationQRCode: FC<InvitationQRCodeProps> = ({ invitation }) => {
-  const invitationUrl = useNormalizeUrl(
+  const shortlink = useShortlink(
     () => routes.invitations.show.path({ id: invitation.id }),
     [invitation.id],
   );
-  return <>{invitationUrl && <PlainQRCode value={invitationUrl} />}</>;
+  return <>{shortlink && <PlainQRCode value={shortlink} />}</>;
 };
 
 interface SendInviteLinkButtonProps {

@@ -12,9 +12,9 @@
 .pageArrow {
   position: absolute;
   bottom: 0px;
-  right: -80px;
+  right: -70px;
   transform: scaleY(-1);
-  width: 60px;
+  width: 50px;
 
   @mixin dark {
     filter: invert(1);

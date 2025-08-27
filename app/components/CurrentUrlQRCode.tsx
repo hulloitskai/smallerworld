@@ -1,5 +1,7 @@
 import { type QRCodeProps } from "react-qr-code";
 
+import { shortlinkIfAvailable } from "~/helpers/shortlinks";
+
 import PlainQRCode from "./PlainQRCode";
 
 export interface CurrentUrlQRCodeProps extends Omit<QRCodeProps, "value"> {
@@ -18,6 +20,7 @@ const CurrentUrlQRCode: FC<CurrentUrlQRCodeProps> = ({
         url.searchParams.set(key, value);
       });
     }
+    shortlinkIfAvailable(url);
     setCurrentUrl(url.toString());
   }, [queryParams]);
   return (
