@@ -11,7 +11,7 @@ import ImageIcon from "~icons/heroicons/photo-20-solid";
 
 import { prettyName } from "~/helpers/friends";
 import {
-  mutatePosts,
+  mutateWorldPosts,
   NONPRIVATE_POST_VISIBILITIES,
   POST_VISIBILITIES,
   POST_VISIBILITY_TO_ICON,
@@ -149,7 +149,7 @@ const PostForm: FC<PostFormProps> = props => {
   >({
     ...(post
       ? {
-          action: routes.posts.update,
+          action: routes.worldPosts.update,
           params: { id: post.id },
           descriptor: "update post",
           transformValues: ({
@@ -171,7 +171,7 @@ const PostForm: FC<PostFormProps> = props => {
           }),
         }
       : {
-          action: routes.posts.create,
+          action: routes.worldPosts.create,
           descriptor: "create post",
           transformValues: ({
             emoji,
@@ -222,8 +222,8 @@ const PostForm: FC<PostFormProps> = props => {
         editorRef.current?.commands.clearContent();
         clearDraft();
       }
-      void mutatePosts();
-      void mutateRoute(routes.posts.pinned);
+      void mutateWorldPosts();
+      void mutateRoute(routes.worldPosts.pinned);
       void mutateRoute(routes.encouragements.index);
       if ("onPostCreated" in props) {
         props.onPostCreated?.(post);

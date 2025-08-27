@@ -56,7 +56,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
 
   // == Load pinned posts
   const { data: pinnedPostsData } = useRouteSWR<{ posts: WorldPost[] }>(
-    routes.posts.pinned,
+    routes.worldPosts.pinned,
     {
       descriptor: "load pinned posts",
       keepPreviousData: true,

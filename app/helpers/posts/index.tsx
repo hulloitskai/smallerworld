@@ -59,17 +59,19 @@ export const POST_VISIBILITY_TO_ICON: Record<
   only_me: LockIcon,
 };
 
-export interface PostsData {
+export interface WorldPostsData {
   posts: WorldPost[];
   pagination: { next: string | number | null };
 }
 
-interface PostParams {
+interface WorldPostParams {
   type?: PostType | null;
   searchQuery?: string;
 }
 
-const postsGetKey = (params?: PostParams): SWRInfiniteKeyLoader<PostsData> => {
+const worldPostsGetKey = (
+  params?: WorldPostParams,
+): SWRInfiniteKeyLoader<WorldPostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = {};
     if (params?.type) {
@@ -85,21 +87,22 @@ const postsGetKey = (params?: PostParams): SWRInfiniteKeyLoader<PostsData> => {
       }
       query.page = next;
     }
-    return routes.posts.index.path({ query });
+    return routes.worldPosts.index.path({ query });
   };
 };
 
-export interface PostsOptions extends SWRInfiniteConfiguration<PostsData> {
+export interface WorldPostsOptions
+  extends SWRInfiniteConfiguration<WorldPostsData> {
   type?: PostType | null;
   searchQuery?: string;
   limit?: number;
 }
 
-export const usePosts = (options?: PostsOptions) => {
+export const useWorldPosts = (options?: WorldPostsOptions) => {
   const { online } = useNetwork();
   const { ...swrConfiguration } = options ?? {};
-  const { data, ...swrResponse } = useSWRInfinite<PostsData>(
-    postsGetKey(options),
+  const { data, ...swrResponse } = useSWRInfinite<WorldPostsData>(
+    worldPostsGetKey(options),
     (url: string) => fetchRoute(url, { descriptor: "load posts" }),
     {
       keepPreviousData: true,
@@ -118,8 +121,8 @@ export const usePosts = (options?: PostsOptions) => {
 };
 
 // TODO: Account for type param
-export const mutatePosts = async (): Promise<void> => {
-  const postsPath = routes.posts.index.path();
+export const mutateWorldPosts = async (): Promise<void> => {
+  const postsPath = routes.worldPosts.index.path();
   const searchQueries = new Set<string>();
   for (const path of cache.keys()) {
     const url = hrefToUrl(path);
@@ -131,7 +134,9 @@ export const mutatePosts = async (): Promise<void> => {
     }
   }
   const mutations = [undefined, ...searchQueries].map(searchQuery =>
-    mutate<PostsData>(unstable_serialize(postsGetKey({ searchQuery }))),
+    mutate<WorldPostsData>(
+      unstable_serialize(worldPostsGetKey({ searchQuery })),
+    ),
   );
   await Promise.all(mutations);
 };

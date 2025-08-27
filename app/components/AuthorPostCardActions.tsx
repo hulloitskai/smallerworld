@@ -7,7 +7,7 @@ import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
-import { mutatePosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
+import { mutateWorldPosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type PostReaction, type User, type WorldPost } from "~/types";
 
 import DrawerModal from "./DrawerModal";
@@ -50,7 +50,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     notifiedFriends: number;
     viewers: number;
     repliers: number;
-  }>(routes.posts.stats, {
+  }>(routes.worldPosts.stats, {
     descriptor: "load post stats",
     params: !hideStats && inViewport ? { id: post.id } : null,
     keepPreviousData: true,
@@ -77,15 +77,15 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
 
   // == Delete post
   const { trigger: deletePost, mutating: deletingPost } = useRouteMutation(
-    routes.posts.destroy,
+    routes.worldPosts.destroy,
     {
       params: {
         id: post.id,
       },
       descriptor: "delete post",
       onSuccess: () => {
-        void mutatePosts();
-        void mutateRoute(routes.posts.pinned);
+        void mutateWorldPosts();
+        void mutateRoute(routes.worldPosts.pinned);
         void mutateRoute(routes.encouragements.index);
       },
     },

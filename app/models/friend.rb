@@ -223,8 +223,7 @@ class Friend < ApplicationRecord
       name = user.name
       name.end_with?("s") ? "#{name}'" : "#{name}'s"
     end
-    installation_url = Rails.application.routes.url_helpers.user_url(
-      user,
+    installation_url = user.shortlink_url(
       friend_token: access_token,
       intent: "installation_instructions",
     )

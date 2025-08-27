@@ -194,6 +194,12 @@ class User < ApplicationRecord
     )
   end
 
+  sig { params(params: T.untyped).returns(String) }
+  def shortlink_url(**params)
+    options = ShortlinkService.shortlink_url_options
+    Rails.application.routes.url_helpers.user_url(self, **options, **params)
+  end
+
   # == Helpers
   sig { params(phone_number: String).returns(T.nilable(User)) }
   def self.find_by_phone_number(phone_number)

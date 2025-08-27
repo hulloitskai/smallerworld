@@ -84,8 +84,18 @@ Rails.application.routes.draw do
   resource :world, only: %i[show edit update], export: { namespace: "world" } do
     get "manifest.webmanifest" => :manifest, constraints: { format: "" }
   end
-  resources :world_posts, path: "/world/posts", only: :index, export: true do
-    get :pinned
+  resources(
+    :world_posts,
+    path: "/world/posts",
+    only: %i[index create update destroy],
+    export: true,
+  ) do
+    collection do
+      get :pinned
+    end
+    member do
+      get :stats
+    end
   end
   resources(
     :world_friends,
@@ -126,12 +136,8 @@ Rails.application.routes.draw do
   end
 
   # == Posts
-  resources :posts, only: %i[index create update destroy], export: true do
-    collection do
-      get :pinned
-    end
+  resources :posts, only: [], export: true do
     member do
-      get :stats
       post :share
       post :mark_seen
       post :mark_replied

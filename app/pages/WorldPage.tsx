@@ -27,7 +27,7 @@ import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPa
 import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
-import { usePosts } from "~/helpers/posts";
+import { useWorldPosts } from "~/helpers/posts";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
 import { type User } from "~/types";
@@ -103,7 +103,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   }, [isStandalone, browserDetection, installPWA]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Posts
-  const { posts } = usePosts();
+  const { posts } = useWorldPosts();
   const hasOneUserCreatedPost = useMemo<boolean | undefined>(() => {
     if (posts) {
       const accountCreatedAt = DateTime.fromISO(currentUser.created_at);

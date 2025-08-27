@@ -8,7 +8,7 @@ import CloseOutlineIcon from "~icons/heroicons/x-mark-20-solid";
 import {
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
-  usePosts,
+  useWorldPosts,
 } from "~/helpers/posts";
 import { type WorldPageProps } from "~/pages/WorldPage";
 import { type PostType } from "~/types";
@@ -40,7 +40,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
   const [postType, setPostType] = useState<PostType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
-  const { posts, setSize, hasMorePosts, isValidating } = usePosts({
+  const { posts, setSize, hasMorePosts, isValidating } = useWorldPosts({
     searchQuery: debouncedSearchQuery,
     type: postType,
   });
