@@ -25,8 +25,7 @@ export interface InvitationPageProps extends SharedPageProps {
   invitation: Invitation;
   featuredPost: Post | null;
   existingFriend: FriendProfile | null;
-  previouslyInvitedPhoneNumber: string | null;
-  currentUserPhoneNumber: string | null;
+  autofillPhoneNumber: string | null;
 }
 
 const ICON_SIZE = 96;
@@ -36,8 +35,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
   invitation,
   featuredPost,
   existingFriend,
-  previouslyInvitedPhoneNumber,
-  currentUserPhoneNumber,
+  autofillPhoneNumber,
 }) => {
   const [invitationSent, setInvitationSent] = useState(false);
   return (
@@ -119,9 +117,8 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
               {...{
                 user,
                 invitation,
-                previouslyInvitedPhoneNumber,
-                currentUserPhoneNumber,
               }}
+              initialPhoneNumber={autofillPhoneNumber}
               onInvitationAccepted={() => {
                 setInvitationSent(true);
               }}

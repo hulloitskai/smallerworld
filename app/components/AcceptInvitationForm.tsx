@@ -9,22 +9,19 @@ import { type Invitation, type User } from "~/types";
 export interface AcceptInvitationFormProps extends BoxProps {
   user: User;
   invitation: Invitation;
-  previouslyInvitedPhoneNumber: string | null;
-  currentUserPhoneNumber: string | null;
+  initialPhoneNumber?: string | null;
   onInvitationAccepted: () => void;
 }
 
 const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
   user,
   invitation,
-  previouslyInvitedPhoneNumber,
-  currentUserPhoneNumber,
+  initialPhoneNumber,
   onInvitationAccepted,
   ...otherProps
 }) => {
   const initialValues = useMemo(() => {
-    const existingPhoneNumber =
-      previouslyInvitedPhoneNumber ?? currentUserPhoneNumber;
+    const existingPhoneNumber = initialPhoneNumber;
     if (existingPhoneNumber) {
       const { countryCode, phoneNumber } = parsePhone(existingPhoneNumber);
       let nationalPhoneNumber = phoneNumber ?? "";
@@ -40,7 +37,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
       country_code: "+1",
       national_phone_number: "",
     };
-  }, [previouslyInvitedPhoneNumber, currentUserPhoneNumber]);
+  }, [initialPhoneNumber]);
   type FormValues = typeof initialValues;
   interface FormSubmission {
     friend: {
@@ -99,7 +96,6 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
           }}
           required
           withAsterisk={false}
-          disabled={!!previouslyInvitedPhoneNumber}
           styles={{
             label: { marginBottom: rem(4) },
             wrapper: { flexGrow: 1 },
@@ -116,7 +112,6 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
                 variant="default"
                 required
                 withAsterisk={false}
-                disabled={!!previouslyInvitedPhoneNumber}
                 w={60}
               />
               {children}

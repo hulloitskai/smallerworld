@@ -8,14 +8,14 @@ class InvitationsController < ApplicationController
     user = invitation.user!
     featured_post = user.posts.chronological.last
     friend = invitation.friend
+    autofill_phone_number = friend&.phone_number || current_user&.phone_number
     render(inertia: "InvitationPage", props: {
       user: UserSerializer.one(user),
       invitation: InvitationSerializer.one(invitation),
       friend: FriendProfileSerializer.one_if(friend),
       "featuredPost" => PostSerializer.one_if(featured_post),
       "existingFriend" => FriendProfileSerializer.one_if(friend),
-      "previouslyInvitedPhoneNumber" => friend&.phone_number,
-      "currentUserPhoneNumber" => current_user&.phone_number,
+      "autofillPhoneNumber" => autofill_phone_number,
     })
   end
 
