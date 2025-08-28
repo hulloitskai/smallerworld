@@ -23,8 +23,9 @@ import classes from "./InvitationPage.module.css";
 export interface InvitationPageProps extends SharedPageProps {
   user: User;
   invitation: Invitation;
-  friend: FriendProfile | null;
   featuredPost: Post | null;
+  existingFriend: FriendProfile | null;
+  existingPhoneNumber: string | null;
 }
 
 const ICON_SIZE = 96;
@@ -32,8 +33,9 @@ const ICON_SIZE = 96;
 const InvitationPage: PageComponent<InvitationPageProps> = ({
   user,
   invitation,
-  friend,
   featuredPost,
+  existingFriend,
+  existingPhoneNumber,
 }) => {
   const [invitationSent, setInvitationSent] = useState(false);
   return (
@@ -65,7 +67,10 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
       <Stack gap={4} maw={320} ta="center" style={{ alignSelf: "center" }}>
         <Text ff="heading" fw={500}>
           hi,{" "}
-          {friend ? prettyFriendName(friend) : prettyInviteeName(invitation)}—
+          {existingFriend
+            ? prettyFriendName(existingFriend)
+            : prettyInviteeName(invitation)}
+          —
         </Text>
         <Text size="sm">
           i&apos;m inviting you to my{" "}
@@ -109,7 +114,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
               send you a private link you can use to access my world.
             </Text>
             <AcceptInvitationForm
-              {...{ user, invitation }}
+              {...{ user, invitation, existingPhoneNumber }}
               onInvitationAccepted={() => {
                 setInvitationSent(true);
               }}

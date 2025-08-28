@@ -7,11 +7,14 @@ class InvitationsController < ApplicationController
     invitation = find_invitation(scope: Invitation.includes(:user, :friend))
     user = invitation.user!
     featured_post = user.posts.chronological.last
+    friend = invitation.friend
     render(inertia: "InvitationPage", props: {
       user: UserSerializer.one(user),
       invitation: InvitationSerializer.one(invitation),
-      friend: FriendProfileSerializer.one_if(invitation.friend),
+      friend: FriendProfileSerializer.one_if(friend),
       "featuredPost" => PostSerializer.one_if(featured_post),
+      "existingFriend" => FriendProfileSerializer.one_if(friend),
+      "existingPhoneNumber" => friend&.phone_number,
     })
   end
 
@@ -20,13 +23,14 @@ class InvitationsController < ApplicationController
     invitation = find_invitation
     user = invitation.user!
     friend_params = params.expect(friend: [:phone_number])
-    friend = user.friends.build(
-      invitation:,
-      emoji: invitation.invitee_emoji,
-      name: invitation.invitee_name,
-      offered_activity_ids: invitation.offered_activity_ids,
-    )
-    if friend.update(friend_params)
+    friend = user.friends.find_or_initialize_by(invitation:) do |f|
+      f.emoji = invitation.invitee_emoji
+      f.name = invitation.invitee_name
+      f.offered_activity_ids = invitation.offered_activity_ids
+    end
+    friend.attributes = friend_params unless friend.phone_number?
+    if friend.save
+      friend.send_installation_message!
       render(json: {})
     else
       render(

@@ -1,5 +1,6 @@
 import { Text } from "@mantine/core";
 import { InputBase } from "@mantine/core";
+import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
 
 import { mustParsePhoneFromParts, parsePhoneFromParts } from "~/helpers/phone";
@@ -8,19 +9,34 @@ import { type Invitation, type User } from "~/types";
 export interface AcceptInvitationFormProps extends BoxProps {
   user: User;
   invitation: Invitation;
+  existingPhoneNumber: string | null;
   onInvitationAccepted: () => void;
 }
 
 const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
   user,
   invitation,
+  existingPhoneNumber,
   onInvitationAccepted,
   ...otherProps
 }) => {
-  const initialValues = {
-    country_code: "+1",
-    national_phone_number: "",
-  };
+  const initialValues = useMemo(() => {
+    if (existingPhoneNumber) {
+      const { countryCode, phoneNumber } = parsePhone(existingPhoneNumber);
+      let nationalPhoneNumber = phoneNumber ?? "";
+      if (countryCode && nationalPhoneNumber.startsWith(countryCode)) {
+        nationalPhoneNumber = nationalPhoneNumber.slice(countryCode.length);
+      }
+      return {
+        country_code: countryCode ?? "+1",
+        national_phone_number: nationalPhoneNumber,
+      };
+    }
+    return {
+      country_code: "+1",
+      national_phone_number: "",
+    };
+  }, [existingPhoneNumber]);
   type FormValues = typeof initialValues;
   interface FormSubmission {
     friend: {
@@ -79,6 +95,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
           }}
           required
           withAsterisk={false}
+          disabled={!!existingPhoneNumber}
           styles={{
             label: { marginBottom: rem(4) },
             wrapper: { flexGrow: 1 },
@@ -95,6 +112,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
                 variant="default"
                 required
                 withAsterisk={false}
+                disabled={!!existingPhoneNumber}
                 w={60}
               />
               {children}

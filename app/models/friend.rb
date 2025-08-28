@@ -145,7 +145,6 @@ class Friend < ApplicationRecord
 
   # == Callbacks
   after_create_commit :create_notification!
-  after_commit :send_welcome_message
 
   # == Noticeable
   sig do
@@ -185,6 +184,34 @@ class Friend < ApplicationRecord
     LegacyFriendNotificationPayloadSerializer.one(payload)
   end
 
+  # == Installation
+  sig { returns(String) }
+  def installation_message
+    user = user!
+    user_possessive = scoped do
+      name = user.name
+      name.end_with?("s") ? "#{name}'" : "#{name}'s"
+    end
+    installation_url = user.shortlink_url(
+      friend_token: access_token,
+      intent: "installation_instructions",
+    )
+    <<~EOF
+      hi, #{fun_name}! here's your secret link to #{user_possessive} world: #{installation_url}
+
+      we'll send you occasional text updates, but if you're a REAL ONE you can click the link to install #{user_possessive} world for real-time life updates.
+    EOF
+  end
+
+  sig { void }
+  def send_installation_message!
+    to = phone_number or raise "Missing phone number"
+    TwilioService.instance.send_message(
+      to:,
+      body: installation_message,
+    )
+  end
+
   # == Methods
   sig { returns(ActiveSupport::TimeWithZone) }
   def last_active_at
@@ -215,35 +242,5 @@ class Friend < ApplicationRecord
   sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
   def latest_user_post_created_at
     user_posts.reverse_chronological.pick(:created_at)
-  end
-
-  sig { returns(String) }
-  def welcome_message
-    user = user!
-    user_possessive = scoped do
-      name = user.name
-      name.end_with?("s") ? "#{name}'" : "#{name}'s"
-    end
-    installation_url = user.shortlink_url(
-      friend_token: access_token,
-      intent: "installation_instructions",
-    )
-    <<~EOF
-      hi, #{fun_name}! here's your secret link to #{user_possessive} world: #{installation_url}
-
-      we'll send you occasional text updates, but if you're a REAL ONE you can click the link and install #{user_possessive} world to your phone for realtime life updates.
-    EOF
-  end
-
-  # == Callbacks
-  sig { void }
-  def send_welcome_message
-    past_number, new_number = phone_number_previous_change
-    if past_number.nil? && new_number.present?
-      TwilioService.instance.send_message(
-        to: new_number,
-        body: welcome_message,
-      )
-    end
   end
 end

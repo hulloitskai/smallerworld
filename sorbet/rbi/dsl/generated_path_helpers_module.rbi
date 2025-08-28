@@ -67,6 +67,9 @@ module GeneratedPathHelpersModule
   def invitation_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def invite_url_world_friend_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def join_request_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
