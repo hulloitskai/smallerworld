@@ -29,7 +29,7 @@ class InvitationsController < ApplicationController
       f.name = invitation.invitee_name
       f.offered_activity_ids = invitation.offered_activity_ids
     end
-    friend.attributes = friend_params unless friend.phone_number?
+    friend.attributes = friend_params
     if friend.save
       friend.send_installation_message!
       render(json: {})

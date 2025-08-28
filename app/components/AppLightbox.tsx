@@ -4,6 +4,7 @@ import Lightbox, {
   type LightboxExternalProps,
   type Plugin,
   type SlideImage,
+  useController,
 } from "yet-another-react-lightbox";
 import DownloadPlugin from "yet-another-react-lightbox/plugins/download";
 import LightboxZoomPlugin from "yet-another-react-lightbox/plugins/zoom";
@@ -63,15 +64,7 @@ const AppLightbox: FC<AppLightboxProps> = ({
         closeOnPullUp: true,
       }}
       render={{
-        buttonClose: () => (
-          <CloseButton
-            key="close"
-            className={classes.closeButton}
-            variant="transparent"
-            size="lg"
-            onClick={close}
-          />
-        ),
+        buttonClose: () => <LightboxCloseButton />,
         buttonZoom: ({ zoomIn, zoomOut, zoom, maxZoom }) => (
           <Group key="zoom" gap={0} className={classes.zoomButtons}>
             <ActionIcon
@@ -147,4 +140,19 @@ const slideImageOptionsFromDimensions = (
         })
       : undefined,
   };
+};
+
+const LightboxCloseButton: FC = () => {
+  const controller = useController();
+  return (
+    <CloseButton
+      key="close"
+      className={classes.closeButton}
+      variant="transparent"
+      size="lg"
+      onClick={() => {
+        controller.close();
+      }}
+    />
+  );
 };
