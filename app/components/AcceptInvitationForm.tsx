@@ -116,7 +116,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
                 variant="default"
                 required
                 withAsterisk={false}
-                disabled={!!currentUserPhoneNumber}
+                disabled={!!previouslyInvitedPhoneNumber}
                 w={60}
               />
               {children}

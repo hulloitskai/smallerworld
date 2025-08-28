@@ -15,7 +15,7 @@ class InvitationsController < ApplicationController
       "featuredPost" => PostSerializer.one_if(featured_post),
       "existingFriend" => FriendProfileSerializer.one_if(friend),
       "previouslyInvitedPhoneNumber" => friend&.phone_number,
-      "currentUserPhoneNumber" => user.phone_number,
+      "currentUserPhoneNumber" => current_user&.phone_number,
     })
   end
 
