@@ -14,7 +14,7 @@ import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
 import { enable as enableNavigationPreload } from "workbox-navigation-preload";
-import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
+import { PrecacheController } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { CacheFirst, NetworkOnly } from "workbox-strategies";
 
@@ -59,12 +59,27 @@ self.addEventListener("fetch", event => {
 });
 
 // == Setup
+const precacheController = new PrecacheController();
 setupRoutes();
 enableNavigationPreload();
 if (!isEmpty(MANIFEST)) {
-  console.info("Precaching routes", MANIFEST);
-  precacheAndRoute(MANIFEST, { cleanURLs: false });
+  console.info("Adding routes to precache list", MANIFEST);
+  precacheController.addToCacheList(MANIFEST);
 }
+registerRoute(
+  ({ url }) => precacheController.getCacheKeyForURL(url.href),
+  async ({ request }) => {
+    const cache = await caches.open(precacheController.strategy.cacheName);
+    const cached = await cache.match(request);
+    if (cached) {
+      return cached;
+    } else {
+      const response = await fetch(request);
+      await cache.put(request, response.clone());
+      return response;
+    }
+  },
+);
 registerRoute(
   ({ request }) => ["", "document"].includes(request.destination),
   new NetworkOnly(),
@@ -83,7 +98,22 @@ registerRoute(
     url.pathname.startsWith("/storage/v1/object/public/emoji-stickers/"),
   new CacheFirst({ cacheName: "emoji-stickers" }),
 );
-cleanupOutdatedCaches();
+
+// == Precaching
+const precache = async (): Promise<void> => {
+  try {
+    const fakeInstallEvent = new ExtendableEvent("install");
+    fakeInstallEvent.waitUntil = (_: Promise<any>): void => {}; // shim
+    const fakeActivateEvent = new ExtendableEvent("activate");
+    fakeActivateEvent.waitUntil = (_: Promise<any>): void => {}; // shim
+    const installResult = await precacheController.install(fakeInstallEvent);
+    const cleanupResult = await precacheController.activate(fakeActivateEvent);
+    console.info("Precaching completed", { installResult, cleanupResult });
+  } catch (error) {
+    console.error("Precaching failed", error);
+    throw error;
+  }
+};
 
 // == Lifecycle
 self.addEventListener("install", event => {
@@ -114,10 +144,11 @@ self.addEventListener("activate", event => {
       },
       reason => {
         console.error("Claiming clients failed", reason);
-        throw reason; // Re-throw to fail activation
+        throw reason; // re-throw to fail activation
       },
     ),
   );
+  void precache();
 });
 
 // == Helpers
@@ -416,6 +447,9 @@ const processCommand = async (
     case "getMetadata": {
       const metadata = await processGetMetadata();
       return { metadata };
+    }
+    case "precache": {
+      return precache();
     }
   }
 };

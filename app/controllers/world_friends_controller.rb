@@ -35,31 +35,6 @@ class WorldFriendsController < ApplicationController
     end
   end
 
-  # # POST /world/friends
-  # def create
-  #   current_user = authenticate_user!
-  #   friend_params = params.expect(friend: [
-  #     :emoji,
-  #     :name,
-  #     :phone_number,
-  #     offered_activity_ids: [],
-  #   ])
-  #   friend = current_user.friends.build(**friend_params)
-  #   friend.join_request = current_user
-  #     .join_requests
-  #     .find_by({ phone_number: friend.phone_number })
-  #   if friend.save
-  #     render(json: {
-  #       friend: FriendSerializer.one(friend),
-  #     })
-  #   else
-  #     render(
-  #       json: { errors: friend.form_errors },
-  #       status: :unprocessable_entity,
-  #     )
-  #   end
-  # end
-
   # PUT /world/friends/:id
   def update
     friend = load_friend
@@ -140,10 +115,7 @@ class WorldFriendsController < ApplicationController
         invitation
       end
     end
-    invite_url = invitation_url(
-      invitation,
-      **ShortlinkService.shortlink_url_options,
-    )
+    invite_url = ShortlinkService.url_helpers.invitation_url(invitation)
     render(json: {
       "inviteUrl" => invite_url,
     })

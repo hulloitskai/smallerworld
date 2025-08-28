@@ -22,6 +22,7 @@ import { setupLuxon } from "~/helpers/luxon";
 import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";
 import {
+  handlePrecaching,
   handleServiceWorkerNavigation,
   registerServiceWorker,
   unregisterOutdatedServiceWorkers,
@@ -46,6 +47,7 @@ requestIdleCallback(() => {
 // == Service worker
 if ("serviceWorker" in navigator && matchMedia("(display-mode: standalone)")) {
   handleServiceWorkerNavigation();
+  handlePrecaching();
   void unregisterOutdatedServiceWorkers();
   void registerServiceWorker();
 }

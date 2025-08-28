@@ -196,8 +196,7 @@ class User < ApplicationRecord
 
   sig { params(params: T.untyped).returns(String) }
   def shortlink_url(**params)
-    options = ShortlinkService.shortlink_url_options
-    Rails.application.routes.url_helpers.user_url(self, **options, **params)
+    ShortlinkService.url_helpers.user_url(self, **params)
   end
 
   # == Helpers

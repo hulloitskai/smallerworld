@@ -106,6 +106,7 @@ export const registerServiceWorker = async (): Promise<void> => {
     }
     void updateServiceWorkerIfScriptIsReachable(registration);
   }, SERVICE_WORKER_UPDATE_INTERVAL);
+
   void updateServiceWorkerIfScriptIsReachable(registration);
 };
 
@@ -284,6 +285,16 @@ const sendSkipWaiting = (serviceWorker: ServiceWorker): Promise<void> =>
     },
   );
 
+const sendPrecache = (serviceWorker: ServiceWorker): Promise<void> =>
+  sendCommand(serviceWorker, { command: "precache" }).then(
+    () => {
+      console.info("Precaching started");
+    },
+    reason => {
+      console.error("Failed to precache", reason);
+    },
+  );
+
 const sendGetMetadata = async (
   serviceWorker: ServiceWorker,
 ): Promise<ServiceWorkerMetadata> => {
@@ -324,4 +335,14 @@ export const useServiceWorkerMetadata = ():
     }
   }, [serviceWorker]);
   return metadata;
+};
+
+export const handlePrecaching = (): void => {
+  void navigator.serviceWorker.ready.then(({ active }) => {
+    if (active) {
+      void sendPrecache(active);
+    } else {
+      console.warn("No active service worker found; skipping precaching");
+    }
+  });
 };

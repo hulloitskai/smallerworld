@@ -21,4 +21,7 @@ export type ServiceWorkerCommandMessage =
   | {
       command: "initSentry";
       options: BrowserOptions;
+    }
+  | {
+      command: "precache";
     };
