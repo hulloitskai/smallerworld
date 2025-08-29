@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_22_214652) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_134723) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -351,6 +351,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_214652) do
     t.string "version", null: false
   end
 
+  create_table "text_blasts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "post_id", null: false
+    t.uuid "friend_id", null: false
+    t.string "phone_number", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "sent_at", precision: nil
+    t.index ["friend_id"], name: "index_text_blasts_on_friend_id"
+    t.index ["post_id"], name: "index_text_blasts_on_post_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "handle", null: false
@@ -396,4 +406,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_22_214652) do
   add_foreign_key "posts", "users", column: "author_id"
   add_foreign_key "push_registrations", "push_subscriptions"
   add_foreign_key "sessions", "users"
+  add_foreign_key "text_blasts", "friends"
+  add_foreign_key "text_blasts", "posts"
 end

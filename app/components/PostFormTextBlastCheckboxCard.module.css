@@ -1,0 +1,13 @@
+.card {
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+
+  &[data-checked] {
+    border-color: var(--mantine-color-primary-outline);
+  }
+
+  &:not([data-checked]) {
+    @mixin hover {
+      border-color: alpha(var(--mantine-color-primary-outline), 0.5);
+    }
+  }
+}

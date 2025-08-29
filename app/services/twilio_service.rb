@@ -8,22 +8,15 @@ class TwilioService < ApplicationService
     Twilio.account_sid.present? && Twilio.auth_token.present?
   end
 
-  # == Initialization
-  sig { void }
-  def initialize
-    super
-    @client = Twilio::REST::Client.new
-  end
-
   # == Methods
   sig { params(to: String, body: String).returns(T.untyped) }
-  def send_message(to:, body:)
-    @client.messages.create(from: sender_number, to:, body:)
+  def self.send_message(to:, body:)
+    twilio_client.messages.create(from: sender_number, to:, body:)
   end
 
   # == Helpers
   sig { returns(String) }
-  def sender_number
+  def self.sender_number
     twilio_credentials.sender_number!
   end
 
@@ -31,7 +24,12 @@ class TwilioService < ApplicationService
 
   # == Helpers
   sig { returns(T.untyped) }
-  def twilio_credentials
+  private_class_method def self.twilio_credentials
     Rails.application.credentials.twilio!
+  end
+
+  sig { returns(T.untyped) }
+  private_class_method def self.twilio_client
+    @client ||= Twilio::REST::Client.new
   end
 end

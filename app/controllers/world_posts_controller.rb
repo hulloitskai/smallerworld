@@ -71,6 +71,7 @@ class WorldPostsController < ApplicationController
       :encouragement_id,
       :quoted_post_id,
       :quiet,
+      :text_blast,
       images: [],
       hidden_from_ids: [],
     ])

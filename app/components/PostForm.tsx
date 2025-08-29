@@ -30,6 +30,7 @@ import EmojiPopover from "./EmojiPopover";
 import ImageInput, { type ImageInputProps } from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
 import PostFormHiddenFromIdsPicker from "./PostFormHiddenFromIdsPicker";
+import PostFormTextBlastCheckboxCard from "./PostFormTextBlastCheckboxCard";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostForm.module.css";
@@ -123,6 +124,7 @@ const PostForm: FC<PostFormProps> = props => {
       visibility: visibility ?? "friends",
       pinned_until: pinned_until ?? "",
       quiet: !!post,
+      text_blast: false,
       hidden_from_ids: hidden_from_ids ?? pausedFriendIds ?? [],
     };
   }, [post, pausedFriendIds]);
@@ -544,6 +546,9 @@ const PostForm: FC<PostFormProps> = props => {
                 )}
               </>
             )}
+            <PostFormTextBlastCheckboxCard
+              {...getInputProps("text_blast", { type: "checkbox" })}
+            />
             <Group justify="end" mt="xs">
               <PostFormHiddenFromIdsPicker
                 {...{ recentlyPausedFriendIds }}

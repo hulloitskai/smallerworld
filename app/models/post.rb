@@ -44,7 +44,7 @@ class Post < ApplicationRecord
   include PgSearch::Model
 
   # == Constants
-  NOTIFICATION_PUSH_DELAY = T.let(
+  NOTIFICATION_DELAY = T.let(
     Rails.env.production? ? 1.minute : 5.seconds,
     ActiveSupport::Duration,
   )
@@ -63,6 +63,14 @@ class Post < ApplicationRecord
 
   sig { returns(T::Boolean) }
   def quiet? = !!quiet
+
+  sig { returns(T.nilable(T::Boolean)) }
+  attr_accessor :text_blast
+
+  sig { returns(T::Boolean) }
+  def text_blast? = !!text_blast
+
+  alias_method :send_text_blasts?, :text_blast?
 
   sig { returns(String) }
   def body_text
@@ -143,6 +151,7 @@ class Post < ApplicationRecord
   has_many :reply_receipts, class_name: "PostReplyReceipt", dependent: :destroy
   has_many :views, class_name: "PostView", dependent: :destroy
   has_many :shares, class_name: "PostShare", dependent: :destroy
+  has_many :text_blasts, dependent: :destroy
 
   sig { returns(User) }
   def author!
@@ -170,6 +179,7 @@ class Post < ApplicationRecord
 
   # == Callbacks
   after_create :create_notifications_later, if: :send_notifications?
+  after_create :create_text_blasts!, if: :send_text_blasts?
   after_save :save_images_ids!, if: :images_changed?
 
   # == Scopes
@@ -233,6 +243,24 @@ class Post < ApplicationRecord
         post_id: id,
       ),
     )
+  end
+
+  sig { params(recipient: Friend).returns(String) }
+  def text_message(recipient)
+    author = author!
+    title = "new #{type.humanize(capitalize: false)} from #{author.name}..."
+    body = ""
+    if (emoji = self.emoji)
+      body += "#{emoji} "
+    end
+    body += if (post_title = self.title)
+      post_title.strip + "\n" + truncated_body_text
+    else
+      truncated_body_text
+    end
+    post_shortlink = ShortlinkService.url_helpers.user_url(author, post_id: id)
+    cta = "see full post: #{post_shortlink}"
+    [title, body, cta].compact.join("\n\n")
   end
 
   sig do
@@ -344,17 +372,24 @@ class Post < ApplicationRecord
   end
 
   sig { void }
+  def create_text_blasts!
+    author_friends.text_only.find_each do |friend|
+      text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
+    end
+  end
+
+  sig { void }
   def create_notifications!
     return if visibility == :only_me
 
     friends_to_notify.select(:id).find_each do |friend|
       notifications.create!(
         recipient: friend,
-        push_delay: NOTIFICATION_PUSH_DELAY,
+        push_delay: NOTIFICATION_DELAY,
       )
     end
     if visibility == :public
-      notifications.create!(recipient: nil, push_delay: NOTIFICATION_PUSH_DELAY)
+      notifications.create!(recipient: nil, push_delay: NOTIFICATION_DELAY)
     end
   end
 

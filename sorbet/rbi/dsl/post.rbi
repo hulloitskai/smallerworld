@@ -547,6 +547,20 @@ class Post
     def stickers=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def text_blast_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def text_blast_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :text_blasts`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::TextBlast::PrivateCollectionProxy) }
+    def text_blasts; end
+
+    sig { params(value: T::Enumerable[::TextBlast]).void }
+    def text_blasts=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def view_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }

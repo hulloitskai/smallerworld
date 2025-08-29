@@ -100,6 +100,7 @@ class Friend < ApplicationRecord
   has_many :post_reply_receipts, dependent: :destroy
   has_many :post_views, dependent: :destroy
   has_many :encouragements, dependent: :destroy
+  has_many :text_blasts, dependent: :destroy
 
   sig { returns(User) }
   def user!
@@ -115,6 +116,7 @@ class Friend < ApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :user }
   validates :emoji, emoji: true, allow_nil: true
   validates :phone_number,
+            phone: { possible: true, types: :mobile, extensions: false },
             uniqueness: { scope: :user, message: "already joined" },
             allow_nil: true
 
@@ -135,6 +137,10 @@ class Friend < ApplicationRecord
   }
   scope :with_push_registrations, -> {
     includes(:push_registrations)
+  }
+  scope :text_only, -> {
+    where.missing(:push_registrations)
+      .where.not(phone_number: nil)
   }
 
   # == Search
@@ -209,10 +215,7 @@ class Friend < ApplicationRecord
   sig { void }
   def send_installation_message!
     to = phone_number or raise "Missing phone number"
-    TwilioService.instance.send_message(
-      to:,
-      body: installation_message,
-    )
+    TwilioService.send_message(to:, body: installation_message)
   end
 
   # == Methods

@@ -27,7 +27,7 @@ import SleepyNeko from "./SleepyNeko";
 import classes from "./WorldPageFloatingActions.module.css";
 
 export interface WorldPageFloatingActionsProps {
-  onPostCreated?: () => void;
+  onPostCreated?: (post: WorldPost) => void;
 }
 
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
@@ -186,10 +186,13 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                             <PostForm
                               newPostType={postType}
                               encouragement={latestEncouragement}
+                              onPostCreated={post => {
+                                closeAllModals();
+                                onPostCreated?.(post);
+                              }}
                               {...{
                                 pausedFriendIds,
                                 recentlyPausedFriendIds,
-                                onPostCreated,
                               }}
                             />
                           ),

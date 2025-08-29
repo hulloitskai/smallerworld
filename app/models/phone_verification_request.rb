@@ -19,6 +19,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PhoneVerificationRequest < ApplicationRecord
+  include NormalizesPhoneNumber
+
   # == Constants
   EXPIRATION_DURATION = 5.minutes
 
@@ -31,15 +33,13 @@ class PhoneVerificationRequest < ApplicationRecord
   # == Tokens
   generates_token_for :registration
 
+  # == Normalizations
+  normalizes_phone_number :phone_number
+
   # == Validations
   validates :phone_number,
+            presence: true,
             phone: { possible: true, types: :mobile, extensions: false }
-
-  # == Normalizations
-  normalizes :phone_number, with: ->(number) {
-    phone = Phonelib.parse(number)
-    phone.to_s
-  }
 
   # == Callbacks
   before_create :deliver_verification_code,
@@ -69,7 +69,7 @@ class PhoneVerificationRequest < ApplicationRecord
 
   sig { void }
   def deliver_verification_code
-    TwilioService.instance.send_message(
+    TwilioService.send_message(
       to: phone_number,
       body: verification_code_message,
     )

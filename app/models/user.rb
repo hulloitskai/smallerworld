@@ -96,10 +96,12 @@ class User < ApplicationRecord
   # == Validations
   validates :name,
             :handle,
-            :phone_number,
             :page_icon,
             :time_zone_name,
             presence: true
+  validates :phone_number,
+            presence: true,
+            phone: { possible: true, types: :mobile, extensions: false }
   validates :name, length: { maximum: 30 }
   validates :handle,
             length: { minimum: 2 },

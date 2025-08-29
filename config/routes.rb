@@ -103,6 +103,9 @@ Rails.application.routes.draw do
     only: %i[create index update destroy],
     export: true,
   ) do
+    collection do
+      get :text_subscribers
+    end
     member do
       get :invite_url
       post :pause

@@ -256,6 +256,9 @@ module GeneratedPathHelpersModule
   def test_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def text_subscribers_world_friends_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

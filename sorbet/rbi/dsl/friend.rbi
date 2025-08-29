@@ -586,6 +586,20 @@ class Friend
     sig { void }
     def reset_user; end
 
+    sig { returns(T::Array[T.untyped]) }
+    def text_blast_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def text_blast_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Friend` class because it declared `has_many :text_blasts`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::TextBlast::PrivateCollectionProxy) }
+    def text_blasts; end
+
+    sig { params(value: T::Enumerable[::TextBlast]).void }
+    def text_blasts=(value); end
+
     sig { returns(T.nilable(::User)) }
     def user; end
 
@@ -764,6 +778,9 @@ class Friend
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def subscribed_to(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def text_only(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def uniq!(*args, &blk); end
@@ -1802,6 +1819,9 @@ class Friend
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def subscribed_to(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def text_only(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def uniq!(*args, &blk); end
