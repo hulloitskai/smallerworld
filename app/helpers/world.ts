@@ -45,7 +45,7 @@ export const useWorldFriends = (
   );
   const { friends: allFriends } = data ?? {};
   const [notifiableFriends, unnotifiableFriends] = useMemo(
-    () => partition(allFriends, friend => friend.notifiable),
+    () => partition(allFriends, friend => !!friend.notifiable),
     [allFriends],
   );
   return {

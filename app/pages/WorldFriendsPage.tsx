@@ -59,7 +59,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   const { activities } = useWorldActivities({ keepPreviousData: true });
   const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
 
-  // == Search
+  // == Search friends
   const [showSearch, setShowSearch] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -145,7 +145,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
             allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
             !showSearch
           }
-          enterDelay={200}
+          enterDelay={250}
         >
           {style => (
             <Badge
@@ -209,6 +209,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
                 </Tooltip>
               }
               placeholder="search your friends"
+              autoFocus
               value={searchQuery}
               onChange={({ currentTarget }) =>
                 setSearchQuery(currentTarget.value)

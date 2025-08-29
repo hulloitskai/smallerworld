@@ -80,6 +80,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
               )
             }
             placeholder="search your posts"
+            autoFocus
             value={searchQuery}
             onChange={({ currentTarget }) =>
               setSearchQuery(currentTarget.value)

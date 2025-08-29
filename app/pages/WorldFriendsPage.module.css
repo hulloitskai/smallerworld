@@ -1,9 +1,14 @@
 .searchBadge {
-  opacity: 0.7 !important;
+  opacity: light-dark(0.6, 0.7) !important;
   align-self: center;
   cursor: pointer;
 
   @mixin hover {
     opacity: 1 !important;
+  }
+
+  :global(.mantine-Badge-label) {
+    font-weight: 500;
+    color: alpha(var(--badge-color), 0.8);
   }
 }

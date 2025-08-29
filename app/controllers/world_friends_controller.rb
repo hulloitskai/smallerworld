@@ -19,17 +19,10 @@ class WorldFriendsController < ApplicationController
       format.json do
         friends = current_user.friends
           .with_active_activity_coupons
+          .with_push_registrations
           .reverse_chronological
-        notifiable_friend_ids = PushRegistration
-          .where(owner: friends)
-          .pluck(:owner_id)
-          .to_set
-        world_friends = friends.map do |friend|
-          notifiable = notifiable_friend_ids.include?(friend.id)
-          WorldFriend.new(friend:, notifiable:)
-        end
         render(json: {
-          friends: WorldFriendSerializer.many(world_friends),
+          friends: WorldFriendSerializer.many(friends),
         })
       end
     end

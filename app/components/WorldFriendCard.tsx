@@ -1,7 +1,9 @@
 import { Loader, MenuItem, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
+import SMSIcon from "~icons/heroicons/chat-bubble-left-ellipsis-20-solid";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
+import FrownIcon from "~icons/heroicons/face-frown-20-solid";
 import PauseIcon from "~icons/heroicons/pause-20-solid";
 import ResumeIcon from "~icons/heroicons/play-20-solid";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
@@ -68,16 +70,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
             </Text>
           </Group>
           <Group gap={2} style={{ flexShrink: 0 }}>
-            {friend.notifiable && !friend.paused && (
-              <Badge
-                className={classes.statusBadge}
-                color="gray"
-                leftSection={<PhoneIcon />}
-              >
-                installed
-              </Badge>
-            )}
-            {friend.paused && (
+            {friend.paused ? (
               <Tooltip
                 label={
                   <>
@@ -93,6 +86,31 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                   paused
                 </Badge>
               </Tooltip>
+            ) : (
+              <Badge
+                className={classes.statusBadge}
+                color={friend.notifiable ? "gray" : "red"}
+                leftSection={
+                  friend.notifiable ? (
+                    friend.notifiable === "sms" ? (
+                      <SMSIcon />
+                    ) : (
+                      <PhoneIcon />
+                    )
+                  ) : (
+                    <FrownIcon />
+                  )
+                }
+                {...((!friend.notifiable || friend.notifiable === "push") && {
+                  pl: 8,
+                })}
+              >
+                {friend.notifiable
+                  ? friend.notifiable === "sms"
+                    ? "texts only"
+                    : "installed"
+                  : "can't notify"}
+              </Badge>
             )}
             <Menu
               width={180}

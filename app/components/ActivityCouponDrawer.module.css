@@ -1,4 +1,6 @@
 .carousel {
+  margin-inline: calc(var(--mantine-spacing-md) * -1);
+
   :global(.mantine-Carousel-viewport) {
     padding-bottom: 4px;
   }

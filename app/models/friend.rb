@@ -133,6 +133,9 @@ class Friend < ApplicationRecord
   scope :with_active_activity_coupons, -> {
     includes(:active_activity_coupons)
   }
+  scope :with_push_registrations, -> {
+    includes(:push_registrations)
+  }
 
   # == Search
   pg_search_scope :search,
