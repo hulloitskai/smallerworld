@@ -360,22 +360,18 @@ class Post < ApplicationRecord
   def send_notifications? = user_created? && !quiet?
 
   sig { returns(Friend::PrivateAssociationRelation) }
+  def audience
+    author_friends.where.not(id: hidden_from_ids)
+  end
+
+  sig { returns(Friend::PrivateAssociationRelation) }
   def friends_to_notify
     subscribed_type = quoted_post&.type || type
-    friends = author_friends
-      .subscribed_to(subscribed_type)
-      .where.not(id: hidden_from_ids)
+    friends = audience.subscribed_to(subscribed_type)
     if visibility == :chosen_family
       friends = friends.chosen_family
     end
     friends
-  end
-
-  sig { void }
-  def create_text_blasts!
-    author_friends.text_only.find_each do |friend|
-      text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
-    end
   end
 
   sig { void }
@@ -416,6 +412,14 @@ class Post < ApplicationRecord
         redelivered_notifications_count += 1
       end
     redelivered_notifications_count
+  end
+
+  # == Text blasts
+  sig { void }
+  def create_text_blasts!
+    audience.text_only.find_each do |friend|
+      text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
+    end
   end
 
   private
