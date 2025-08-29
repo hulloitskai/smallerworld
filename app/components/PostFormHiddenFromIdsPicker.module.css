@@ -9,6 +9,6 @@
 
 .content {
   padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
-  max-height: min(440px, 80dvh);
+  max-height: min(440px, 50dvh);
   overflow-y: auto;
 }

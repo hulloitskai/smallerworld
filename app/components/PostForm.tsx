@@ -460,7 +460,6 @@ const PostForm: FC<PostFormProps> = props => {
                   portalProps: {
                     target: vaulPortalTarget,
                   },
-                  position: "bottom",
                 }}
                 data-vaul-no-drag
               />
