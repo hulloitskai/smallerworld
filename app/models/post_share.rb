@@ -60,11 +60,7 @@ class PostShare < ApplicationRecord
   # == Methods
   sig { returns(String) }
   def share_snippet
-    post!.snippet + "\n> \n> (see full post) [#{shortlink_url}]\n\n"
-  end
-
-  sig { params(params: T.untyped).returns(String) }
-  def shortlink_url(**params)
-    ShortlinkService.url_helpers.post_share_url(self, **params)
+    shortlink = ShortlinkService.url_helpers.post_share_url(self)
+    post!.snippet + "\n> \n> (see full post) [#{shortlink}]\n\n"
   end
 end

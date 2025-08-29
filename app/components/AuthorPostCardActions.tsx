@@ -1,4 +1,4 @@
-import { CopyButton, HoverCard, Text } from "@mantine/core";
+import { HoverCard, Loader, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
@@ -6,9 +6,10 @@ import { groupBy } from "lodash-es";
 import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
+import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { mutateWorldPosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type PostReaction, type User, type WorldPost } from "~/types";
+import { type PostReaction, type PostShare, type WorldPost } from "~/types";
 
 import DrawerModal from "./DrawerModal";
 import PostForm from "./PostForm";
@@ -17,7 +18,6 @@ import classes from "./AuthorPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
 export interface AuthorPostCardActionsProps {
-  user: User;
   post: WorldPost;
   pausedFriendIds: string[];
   recentlyPausedFriendIds: string[];
@@ -26,23 +26,12 @@ export interface AuthorPostCardActionsProps {
 }
 
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
-  user,
   post,
   pausedFriendIds,
   recentlyPausedFriendIds,
   hideStats,
   onFollowUpDrawerModalOpened,
 }) => {
-  const postUrl = useNormalizeUrl(
-    () =>
-      routes.users.show.path({
-        id: user.handle,
-        query: {
-          post_id: post.id,
-        },
-      }),
-    [user.handle, post.id],
-  );
   const { ref, inViewport } = useInViewport();
 
   // == Load post stats
@@ -215,6 +204,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             >
               delete post
             </Menu.Item>
+            <ShareMenuItem {...{ post }} />
             <Menu.Divider />
             <Menu.Item
               leftSection={<FollowUpIcon />}
@@ -226,20 +216,6 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             >
               follow-up
             </Menu.Item>
-            <CopyButton value={postUrl ?? ""}>
-              {({ copied, copy }) => (
-                <Menu.Item
-                  leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                  disabled={!postUrl}
-                  closeMenuOnClick={false}
-                  onClick={() => {
-                    copy();
-                  }}
-                >
-                  {copied ? "link copied!" : "copy link"}
-                </Menu.Item>
-              )}
-            </CopyButton>
           </Menu.Dropdown>
         </Menu>
       </Group>
@@ -270,3 +246,53 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
 };
 
 export default AuthorPostCardActions;
+
+interface ShareMenuItemProps {
+  post: WorldPost;
+}
+
+const ShareMenuItem: FC<ShareMenuItemProps> = ({ post }) => {
+  const [copied, setCopied] = useState(false);
+  const { trigger, mutating } = useRouteMutation<{ share: PostShare }>(
+    routes.worldPosts.share,
+    {
+      params: {
+        id: post.id,
+      },
+      descriptor: "share post",
+      onSuccess: ({ share }) => {
+        const shareData: ShareData = {
+          text: share.share_snippet,
+        };
+        if (navigator.canShare(shareData)) {
+          void navigator.share(shareData);
+        } else {
+          void navigator.clipboard.writeText(share.share_snippet).then(() => {
+            setCopied(true);
+            toast.success("copied post snippet");
+          });
+        }
+      },
+    },
+  );
+
+  return (
+    <Menu.Item
+      leftSection={
+        mutating ? (
+          <Loader size="xs" />
+        ) : copied ? (
+          <CopiedIcon />
+        ) : (
+          <ShareIcon />
+        )
+      }
+      closeMenuOnClick={false}
+      onClick={() => {
+        void trigger();
+      }}
+    >
+      share post
+    </Menu.Item>
+  );
+};

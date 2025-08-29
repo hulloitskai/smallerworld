@@ -12,10 +12,11 @@ class PostSharesController < ApplicationController
       .distinct
       .count(:friend_id)
     user_post = UserPost.new(post:, seen: false, replied: false, repliers:)
+    sharer = share.sharer!
     render(inertia: "PostSharePage", props: {
       user: UserSerializer.one(share.post_author!),
       post: UserPostSerializer.one(user_post),
-      sharer: FriendProfileSerializer.one(share.sharer!),
+      sharer: (FriendProfileSerializer.one(sharer) if sharer.is_a?(Friend)),
     })
   end
 

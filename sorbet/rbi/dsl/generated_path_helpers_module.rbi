@@ -238,6 +238,9 @@ module GeneratedPathHelpersModule
   def share_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def share_world_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

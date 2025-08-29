@@ -148,7 +148,6 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                 focus={queryParams.post_id === post.id}
                 actions={
                   <AuthorPostCardActions
-                    user={currentUser}
                     {...{
                       post,
                       hideStats,

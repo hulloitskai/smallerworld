@@ -95,6 +95,7 @@ Rails.application.routes.draw do
     end
     member do
       get :stats
+      post :share
     end
   end
   resources(

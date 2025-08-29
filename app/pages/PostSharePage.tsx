@@ -16,7 +16,7 @@ import userPageClasses from "./UserPage.module.css";
 export interface PostSharePageProps extends SharedPageProps {
   user: User;
   post: UserPost;
-  sharer: FriendProfile;
+  sharer: FriendProfile | null;
 }
 
 const ICON_SIZE = 96;
@@ -110,12 +110,16 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
       </Box>
       <Alert className={classes.sharerAlert} icon={<MailIcon />}>
         <Text inherit span fw={600}>
-          {sharer.name}
+          {(sharer ?? user).name}
         </Text>{" "}
         shared{" "}
-        <Text inherit span fw={600}>
-          {possessive(user.name)}
-        </Text>{" "}
+        {sharer ? (
+          <Text inherit span fw={600}>
+            {possessive(user.name)}
+          </Text>
+        ) : (
+          "a"
+        )}{" "}
         post with you.
       </Alert>
       <PostCard

@@ -123,6 +123,17 @@ class WorldPostsController < ApplicationController
     end
   end
 
+  # POST /world/posts/:id/share
+  def share
+    current_user = authenticate_user!
+    post = load_post
+    authorize!(post)
+    share = post.shares.find_or_create_by!(sharer: current_user)
+    render(json: {
+      share: PostShareSerializer.one(share),
+    })
+  end
+
   private
 
   sig { params(scope: Post::PrivateRelation).returns(Post) }

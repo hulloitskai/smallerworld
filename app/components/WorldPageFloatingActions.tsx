@@ -249,7 +249,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
               {...{ post }}
               actions={
                 <AuthorPostCardActions
-                  user={currentUser}
                   {...{
                     post,
                     hideStats,
