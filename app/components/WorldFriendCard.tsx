@@ -1,4 +1,4 @@
-import { Loader, MenuItem, Text } from "@mantine/core";
+import { Loader, MenuItem, Overlay, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
 import SMSIcon from "~icons/heroicons/chat-bubble-left-ellipsis-20-solid";
@@ -221,6 +221,53 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
           </Button>
         </Group>
         <LoadingOverlay visible={deletingFriend} />
+        {!friend.notifiable && (
+          <Overlay
+            blur={4}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: rem(8),
+            }}
+          >
+            <Group gap={6} c="white">
+              <Text size="sm">
+                <span style={{ fontWeight: 700 }}>
+                  {prettyFriendName(friend)}
+                </span>{" "}
+                didn&apos;t join your world{" "}
+                <span
+                  style={{
+                    marginLeft: rem(1),
+                    fontFamily: "var(--font-family-emoji)",
+                  }}
+                >
+                  😔
+                </span>
+              </Text>
+            </Group>
+            <Button
+              variant="white"
+              size="compact-xs"
+              leftSection={<QRCodeIcon />}
+              onClick={() => {
+                setInviteDrawerOpened(true);
+              }}
+            >
+              give them another chance{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-family-emoji)",
+                  marginLeft: rem(4),
+                }}
+              >
+                💞
+              </span>
+            </Button>
+          </Overlay>
+        )}
       </Card>
       <ActivityCouponDrawer
         {...{ friend }}
