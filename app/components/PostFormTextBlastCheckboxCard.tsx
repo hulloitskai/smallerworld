@@ -9,6 +9,7 @@ export type PostFormTextBlastCheckboxCardProps = CheckboxCardProps;
 
 const PostFormTextBlastCheckboxCard: FC<PostFormTextBlastCheckboxCardProps> = ({
   className,
+  disabled,
   style,
   ...otherProps
 }) => {
@@ -53,7 +54,7 @@ const PostFormTextBlastCheckboxCard: FC<PostFormTextBlastCheckboxCardProps> = ({
   }, [data]);
 
   return (
-    <Transition transition="pop" mounted={!!friendsDescriptor}>
+    <Transition transition="fade" mounted={!!friendsDescriptor && !disabled}>
       {transitionStyle => (
         <Checkbox.Card
           className={cn(

@@ -159,6 +159,9 @@ const PostForm: FC<PostFormProps> = props => {
             title,
             images_uploads,
             pinned_until,
+            text_blast,
+            visibility,
+            hidden_from_ids,
             ...values
           }) => ({
             post: {
@@ -169,6 +172,8 @@ const PostForm: FC<PostFormProps> = props => {
               pinned_until: pinned_until
                 ? formatDateString(pinned_until)
                 : null,
+              text_blast: visibility === "only_me" ? false : text_blast,
+              hidden_from_ids: visibility === "only_me" ? [] : hidden_from_ids,
             },
           }),
         }
@@ -547,6 +552,7 @@ const PostForm: FC<PostFormProps> = props => {
             )}
             <PostFormTextBlastCheckboxCard
               {...getInputProps("text_blast", { type: "checkbox" })}
+              disabled={values.visibility === "only_me"}
             />
             <Group justify="end" mt="xs">
               <PostFormHiddenFromIdsPicker
@@ -559,6 +565,11 @@ const PostForm: FC<PostFormProps> = props => {
                   size="xs"
                   underline="always"
                   c="dimmed"
+                  style={{
+                    ...(values.visibility === "only_me" && {
+                      visibility: "hidden",
+                    }),
+                  }}
                 >
                   {isEmpty(values.hidden_from_ids) ? (
                     "visible to all friends"

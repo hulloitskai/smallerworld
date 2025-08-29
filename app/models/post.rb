@@ -354,19 +354,19 @@ class Post < ApplicationRecord
     reply_receipts.select(:friend_id).distinct
   end
 
-  sig { returns(Friend::PrivateRelation) }
+  sig { returns(Friend::PrivateAssociationRelation) }
   def hidden_from
-    Friend.where(id: hidden_from_ids)
+    author_friends.where(id: hidden_from_ids)
   end
-
-  # == Notifications
-  sig { returns(T::Boolean) }
-  def send_notifications? = user_created? && !quiet?
 
   sig { returns(Friend::PrivateAssociationRelation) }
   def audience
     author_friends.where.not(id: hidden_from_ids)
   end
+
+  # == Notifications
+  sig { returns(T::Boolean) }
+  def send_notifications? = user_created? && !quiet?
 
   sig { returns(Friend::PrivateAssociationRelation) }
   def friends_to_notify
@@ -419,9 +419,16 @@ class Post < ApplicationRecord
   end
 
   # == Text blasts
+  sig { returns(Friend::PrivateAssociationRelation) }
+  def friends_to_text_blast
+    audience.text_only
+  end
+
   sig { void }
   def create_text_blasts!
-    audience.text_only.find_each do |friend|
+    return if visibility == :only_me
+
+    friends_to_text_blast.find_each do |friend|
       text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
     end
   end
