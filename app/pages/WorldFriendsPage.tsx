@@ -10,7 +10,11 @@ import CloseIcon from "~icons/heroicons/x-mark";
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
-import { useWorldActivities, useWorldFriends } from "~/helpers/world";
+import {
+  useFriendsByNotifiable,
+  useWorldActivities,
+  useWorldFriends,
+} from "~/helpers/world";
 import { type User, type WorldFriend } from "~/types";
 
 import classes from "./WorldFriendsPage.module.css";
@@ -46,13 +50,13 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   );
 
   // == Load friends
-  const { allFriends, notifiableFriends, unnotifiableFriends } =
-    useWorldFriends({
-      keepPreviousData: true,
-      onSuccess: ({ friends }) => {
-        reindexMiniSearch(friends);
-      },
-    });
+  const { allFriends } = useWorldFriends({
+    keepPreviousData: true,
+    onSuccess: ({ friends }) => {
+      reindexMiniSearch(friends);
+    },
+  });
+  const friendsByNotifiable = useFriendsByNotifiable(allFriends);
   const friendsById = useMemo(() => keyBy(allFriends, "id"), [allFriends]);
 
   // == Load activities
@@ -66,7 +70,12 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
 
   const displayedFriends = useMemo<WorldFriend[]>(() => {
     if (!searchQuery.trim() || !miniSearchReady) {
-      return [...notifiableFriends, ...unnotifiableFriends];
+      const {
+        push: pushNotifiable = [],
+        sms: smsNotifiable = [],
+        false: notNotifiable = [],
+      } = friendsByNotifiable;
+      return [...pushNotifiable, ...smsNotifiable, ...notNotifiable];
     }
     const results: WorldFriend[] = [];
     miniSearch
@@ -81,8 +90,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
     return results;
   }, [
     friendsById,
-    notifiableFriends,
-    unnotifiableFriends,
+    friendsByNotifiable,
     miniSearch,
     miniSearchReady,
     searchQuery,

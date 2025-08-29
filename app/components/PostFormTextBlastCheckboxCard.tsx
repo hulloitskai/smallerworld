@@ -73,8 +73,8 @@ const PostFormTextBlastCheckboxCard: FC<PostFormTextBlastCheckboxCardProps> = ({
               {!!friendsDescriptor && (
                 <Text size="xs" c="dimmed" lh={1.2}>
                   {friendsDescriptor}{" "}
-                  {inflect("don't", textSubscribersCount, "doesn't")} have your
-                  world, but {inflect("are", textSubscribersCount, "is")}{" "}
+                  {textSubscribersCount === 1 ? "doesn't" : "don't"} have your
+                  world, but {textSubscribersCount === 1 ? "is" : "are"}{" "}
                   subscribed to sms updates
                 </Text>
               )}

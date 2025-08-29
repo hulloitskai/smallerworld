@@ -1,4 +1,4 @@
-import { partition } from "lodash-es";
+import { groupBy } from "lodash-es";
 import { type SWRConfiguration } from "swr";
 
 import {
@@ -44,15 +44,12 @@ export const useWorldFriends = (
     },
   );
   const { friends: allFriends } = data ?? {};
-  const [notifiableFriends, unnotifiableFriends] = useMemo(
-    () => partition(allFriends, friend => !!friend.notifiable),
-    [allFriends],
-  );
   return {
     data,
     allFriends,
-    notifiableFriends,
-    unnotifiableFriends,
     ...swrResponse,
   };
 };
+
+export const useFriendsByNotifiable = (friends: WorldFriend[] | undefined) =>
+  groupBy(friends, "notifiable");

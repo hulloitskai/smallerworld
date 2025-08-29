@@ -2,7 +2,7 @@ import { Chip, Popover, type PopoverProps } from "@mantine/core";
 import { difference, map } from "lodash-es";
 
 import { prettyFriendName } from "~/helpers/friends";
-import { useWorldFriends } from "~/helpers/world";
+import { useFriendsByNotifiable, useWorldFriends } from "~/helpers/world";
 import { type WorldFriend } from "~/types";
 
 import classes from "./PostFormHiddenFromIdsPicker.module.css";
@@ -28,8 +28,8 @@ const PostFormHiddenFromIdsPicker: FC<PostFormHiddenFromIdsPickerProps> = ({
   const vaulPortalTarget = useVaulPortalTarget();
 
   // == Load friends
-  const { allFriends, notifiableFriends, unnotifiableFriends } =
-    useWorldFriends({ keepPreviousData: true });
+  const { allFriends } = useWorldFriends({ keepPreviousData: true });
+  const friendsByNotifiable = useFriendsByNotifiable(allFriends);
   const allFriendIds = useMemo(() => map(allFriends, "id"), [allFriends]);
   const invertedValue = useMemo(
     () => difference(allFriendIds, value),
@@ -40,7 +40,12 @@ const PostFormHiddenFromIdsPicker: FC<PostFormHiddenFromIdsPickerProps> = ({
     const hiddenFrom: WorldFriend[] = [];
     const recentlyHiddenFrom: WorldFriend[] = [];
     const visibleTo: WorldFriend[] = [];
-    [...notifiableFriends, ...unnotifiableFriends].forEach(friend => {
+    const {
+      push: pushNotifiable = [],
+      sms: smsNotifiable = [],
+      false: notNotifiable = [],
+    } = friendsByNotifiable;
+    [...pushNotifiable, ...smsNotifiable, ...notNotifiable].forEach(friend => {
       if (initialValue.includes(friend.id)) {
         hiddenFrom.push(friend);
       } else if (recentlyPausedFriendIds?.includes(friend.id)) {
@@ -50,12 +55,7 @@ const PostFormHiddenFromIdsPicker: FC<PostFormHiddenFromIdsPickerProps> = ({
       }
     });
     return [...hiddenFrom, ...recentlyHiddenFrom, ...visibleTo];
-  }, [
-    initialValue,
-    recentlyPausedFriendIds,
-    notifiableFriends,
-    unnotifiableFriends,
-  ]);
+  }, [initialValue, recentlyPausedFriendIds, friendsByNotifiable]);
 
   return (
     <Popover
