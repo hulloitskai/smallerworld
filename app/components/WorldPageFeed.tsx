@@ -29,7 +29,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
   hideSearch,
   ...otherProps
 }) => {
-  const { currentUser, hideStats, pausedFriendIds, recentlyPausedFriendIds } =
+  const { hideStats, pausedFriendIds, recentlyPausedFriendIds } =
     usePageProps<WorldPageProps>();
   const queryParams = useQueryParams();
 
@@ -48,7 +48,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
   return (
     <Stack {...otherProps}>
       <Transition transition="slide-down" mounted={showSearch}>
-        {style => (
+        {transitionStyle => (
           <TextInput
             ref={inputRef}
             leftSection={<SearchIcon />}
@@ -72,7 +72,6 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                       : {
                           onClick: hideSearch,
                         })}
-                    {...{ style }}
                   >
                     {searchQuery ? <CloseIcon /> : <HideIcon />}
                   </ActionIcon>
@@ -82,6 +81,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
             placeholder="search your posts"
             autoFocus
             value={searchQuery}
+            style={transitionStyle}
             onChange={({ currentTarget }) =>
               setSearchQuery(currentTarget.value)
             }
@@ -90,7 +90,6 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                 hideSearch();
               }
             }}
-            {...{ style }}
           />
         )}
       </Transition>

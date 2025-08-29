@@ -177,8 +177,8 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                   transition="pop"
                   mounted={!isEmpty(values.offered_activities)}
                 >
-                  {style => (
-                    <Group gap={8} wrap="wrap" {...{ style }}>
+                  {transitionStyle => (
+                    <Group gap={8} wrap="wrap" style={transitionStyle}>
                       {values.offered_activities.map(activity => (
                         <Badge
                           className={classes.activityBadge}
@@ -223,11 +223,11 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                 !invitation
               }
             >
-              {style => (
+              {transitionStyle => (
                 <Button
                   size="compact-sm"
                   leftSection={<CouponIcon />}
-                  style={[style, { alignSelf: "center" }]}
+                  style={[transitionStyle, { alignSelf: "center" }]}
                   onClick={() => {
                     setShowActivities(show => !show);
                   }}
@@ -242,11 +242,11 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                 mounted={showActivities}
                 enterDelay={250}
               >
-                {style => (
+                {transitionStyle => (
                   <Stack
                     className={classes.activitiesContainer}
                     gap="sm"
-                    {...{ style }}
+                    style={transitionStyle}
                   >
                     <Box ta="center">
                       <Title order={3} size="h4">
@@ -305,7 +305,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
               </Transition>
             )}
             <Transition transition="pop" mounted={!invitation || isDirty()}>
-              {style => (
+              {transitionStyle => (
                 <Button
                   type="submit"
                   variant="filled"
@@ -313,7 +313,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                   disabled={!values.invitee_name.trim()}
                   loading={submitting}
                   className={classes.addButton}
-                  {...{ style }}
+                  style={transitionStyle}
                 >
                   {invitation ? "save friend details" : "create invite link"}
                 </Button>
@@ -392,12 +392,12 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                 )}
               </Stack>
               <Transition transition="fade-up" mounted={revealBackToHomeButton}>
-                {style => (
+                {transitionStyle => (
                   <Button
                     component={Link}
                     href={routes.world.show.path()}
                     leftSection={<BackIcon />}
-                    {...{ style }}
+                    style={transitionStyle}
                   >
                     back to your world
                   </Button>

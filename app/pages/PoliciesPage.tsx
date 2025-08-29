@@ -20,13 +20,13 @@ const PolicyPage: PageComponent<PolicyPageProps> = () => {
   return (
     <Stack gap="lg">
       <Transition transition="pop" mounted={!!prevPageName}>
-        {style => (
+        {transitionStyle => (
           <Button
             leftSection={<BackIcon />}
             onClick={() => {
               history.back();
             }}
-            style={[{ alignSelf: "center" }, style]}
+            style={[{ alignSelf: "center" }, transitionStyle]}
           >
             back to {prevPageName}
           </Button>

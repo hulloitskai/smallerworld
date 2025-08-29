@@ -35,7 +35,7 @@ const FriendNotificationSettingsForm: FC<
       <Stack gap="xs">
         <FriendNotificationSettingsFormInputs {...{ form }} />
         <Transition transition="fade" mounted={isDirty()}>
-          {style => (
+          {transitionStyle => (
             <Button
               type="submit"
               variant="filled"
@@ -43,7 +43,7 @@ const FriendNotificationSettingsForm: FC<
               leftSection={<SaveIcon />}
               loading={submitting}
               disabled={!isDirty()}
-              style={[style, { alignSelf: "center" }]}
+              style={[{ alignSelf: "center" }, transitionStyle]}
             >
               save preferences
             </Button>

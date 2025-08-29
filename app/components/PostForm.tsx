@@ -301,8 +301,8 @@ const PostForm: FC<PostFormProps> = props => {
       <Stack>
         {encouragement && (
           <Transition transition="pop" mounted={includedEncouragement}>
-            {style => (
-              <Stack gap={4} mx="md" {...{ style }}>
+            {transitionStyle => (
+              <Stack gap={4} mx="md" style={transitionStyle}>
                 <Card withBorder className={classes.encouragementCard}>
                   <Stack gap={2} style={{ alignSelf: "center" }}>
                     <Text size="sm">&ldquo;{encouragement.message}&rdquo;</Text>

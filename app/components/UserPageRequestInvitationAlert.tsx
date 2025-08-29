@@ -40,7 +40,7 @@ export const UserPageRequestInvitationAlert: FC<
           mounted={isEmpty(modals) && !pageDialogOpened}
           enterDelay={100}
         >
-          {style => (
+          {transitionStyle => (
             <Alert
               variant="filled"
               icon={<NotificationIcon />}
@@ -52,7 +52,7 @@ export const UserPageRequestInvitationAlert: FC<
                 </>
               }
               className={classes.alert}
-              {...{ style }}
+              style={transitionStyle}
             >
               <Stack gap={8} align="start">
                 <Text inherit>

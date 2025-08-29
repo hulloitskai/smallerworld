@@ -141,8 +141,8 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
                   transition="pop"
                   mounted={!isEmpty(values.offered_activities)}
                 >
-                  {style => (
-                    <Group gap={8} wrap="wrap" {...{ style }}>
+                  {transitionStyle => (
+                    <Group gap={8} wrap="wrap" style={transitionStyle}>
                       {values.offered_activities.map(activity => (
                         <Badge
                           className={classes.activityBadge}
@@ -178,7 +178,7 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
                   )}
                 </Transition>
                 <Transition transition="pop" mounted={!invitation || isDirty()}>
-                  {style => (
+                  {transitionStyle => (
                     <Button
                       type="submit"
                       variant="filled"
@@ -186,7 +186,7 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
                       disabled={!values.invitee_name.trim()}
                       loading={submitting}
                       className={classes.addButton}
-                      {...{ style }}
+                      style={transitionStyle}
                     >
                       {invitation
                         ? "save friend details"

@@ -127,11 +127,11 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
             }}
           />
           <Transition mounted={pendingInvitationsCount > 0}>
-            {style => (
+            {transitionStyle => (
               <Badge
                 leftSection={<EnvelopeIcon />}
                 mb="xs"
-                style={{ alignSelf: "center", ...style }}
+                style={[{ alignSelf: "center" }, transitionStyle]}
               >
                 <Anchor
                   component={Link}
@@ -155,12 +155,12 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
           }
           enterDelay={250}
         >
-          {style => (
+          {transitionStyle => (
             <Badge
               variant="default"
               className={classes.searchBadge}
               leftSection={<SearchIcon />}
-              {...{ style }}
+              style={transitionStyle}
               onClick={() => {
                 setShowSearch(true);
               }}
@@ -176,9 +176,9 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
             allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
             showSearch
           }
-          enterDelay={200}
+          enterDelay={250}
         >
-          {style => (
+          {transitionStyle => (
             <TextInput
               ref={searchInputRef}
               inputContainer={children => (
@@ -210,7 +210,6 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
                             setShowSearch(false);
                           },
                         })}
-                    {...{ style }}
                   >
                     {searchQuery ? <CloseIcon /> : <HideIcon />}
                   </ActionIcon>
@@ -219,6 +218,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
               placeholder="search your friends"
               autoFocus
               value={searchQuery}
+              style={transitionStyle}
               onChange={({ currentTarget }) =>
                 setSearchQuery(currentTarget.value)
               }
@@ -227,7 +227,6 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
                   setShowSearch(false);
                 }
               }}
-              {...{ style }}
             />
           )}
         </Transition>

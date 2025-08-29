@@ -29,13 +29,13 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
   return (
     <Affix className={classes.affix} position={{}} zIndex={180}>
       <Transition transition="pop" mounted={isEmpty(modals)} enterDelay={100}>
-        {style => (
+        {transitionStyle => (
           <Alert
             variant="filled"
             icon={<NotificationIcon />}
             title="install me on your phone!"
             className={classes.alert}
-            {...{ style }}
+            style={transitionStyle}
           >
             <Stack gap={8} align="start">
               <Text inherit>

@@ -151,11 +151,11 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   !showSearch
                 }
               >
-                {style => (
+                {transitionStyle => (
                   <ActionIcon
                     size="lg"
                     variant="light"
-                    {...{ style }}
+                    style={transitionStyle}
                     onClick={() => {
                       setShowSearch(true);
                     }}

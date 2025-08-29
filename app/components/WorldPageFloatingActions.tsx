@@ -33,13 +33,8 @@ export interface WorldPageFloatingActionsProps {
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   onPostCreated,
 }) => {
-  const {
-    currentUser,
-    hideStats,
-    hideNeko,
-    pausedFriendIds,
-    recentlyPausedFriendIds,
-  } = usePageProps<WorldPageProps>();
+  const { hideStats, hideNeko, pausedFriendIds, recentlyPausedFriendIds } =
+    usePageProps<WorldPageProps>();
   const { isStandalone } = usePWA();
   const { pushRegistration } = useWebPush();
   const { modals } = useModals();
@@ -80,12 +75,12 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
       <Space className={classes.space} />
       <Affix className={classes.affix} position={{}} zIndex={180}>
         <Transition transition="pop" mounted={actionsVisible} enterDelay={100}>
-          {style => (
+          {transitionStyle => (
             <Group
               align="end"
               justify="center"
               gap={8}
-              style={[{ pointerEvents: "none" }, style]}
+              style={[{ pointerEvents: "none" }, transitionStyle]}
             >
               {!isEmpty(encouragements) && (
                 <Center mih={42} maw={176}>
@@ -209,13 +204,13 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                 mounted={!isEmpty(pinnedPosts)}
                 enterDelay={100}
               >
-                {style => (
+                {transitionStyle => (
                   <ActionIcon
                     className={classes.pinnedPostsButton}
                     variant="outline"
                     size={42}
                     radius="xl"
-                    {...{ style }}
+                    style={transitionStyle}
                     onClick={() => {
                       setPinnedPostsDrawerModalOpened(true);
                     }}

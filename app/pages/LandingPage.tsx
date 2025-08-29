@@ -88,12 +88,12 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
             />
           </Box>
           <Transition transition="fade" mounted={!videoPlaying}>
-            {style => (
+            {transitionStyle => (
               <Overlay
                 backgroundOpacity={0}
                 blur={3}
                 radius="lg"
-                {...{ style }}
+                style={transitionStyle}
               >
                 <Center h="100%">
                   <Button

@@ -44,13 +44,13 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
         mounted={isEmpty(modals) && !pageDialogOpened}
         enterDelay={100}
       >
-        {style => (
+        {transitionStyle => (
           <Alert
             variant="filled"
             icon={<NotificationIcon />}
             title="install me on your phone!"
             className={classes.alert}
-            {...{ style }}
+            style={transitionStyle}
           >
             <Stack gap={8} align="start">
               <Text inherit>

@@ -187,11 +187,11 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               )}
             />
             <Transition transition="pop" mounted={showVerificationCodeInput}>
-              {style => (
+              {transitionStyle => (
                 <Input.Wrapper
                   label="login code"
                   description="enter the code sent to your phone"
-                  {...{ style }}
+                  style={transitionStyle}
                 >
                   <PinInput
                     {...getInputProps("verification_code")}
