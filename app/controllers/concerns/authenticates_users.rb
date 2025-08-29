@@ -108,7 +108,7 @@ module AuthenticatesUsers
   sig { returns(T::Boolean) }
   def valid_registration_token?
     registration_token = session[:registration_token] or return false
-    PhoneVerificationRequest
+    LoginRequest
       .find_by_registration_token(registration_token)
       .present?
   end

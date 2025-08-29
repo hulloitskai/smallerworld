@@ -5,41 +5,36 @@ import { IMaskInput } from "react-imask";
 import AppLayout from "~/components/AppLayout";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { mustParsePhoneFromParts, parsePhoneFromParts } from "~/helpers/phone";
-import { type PhoneVerificationRequest } from "~/types";
+import { type LoginRequest } from "~/types";
 
 export interface LoginPageProps extends SharedPageProps {}
 
 const LoginPage: PageComponent<LoginPageProps> = () => {
   const { url: pageUrl } = usePage();
-  const [showVerificationCodeInput, setShowVerificationCodeInput] =
-    useState(false);
+  const [showLoginCodeInput, setShowLoginCodeInput] = useState(false);
 
   // == Form
   const initialValues = {
     country_code: "+1",
     national_phone_number: "",
-    verification_code: "",
+    login_code: "",
   };
   type FormValues = typeof initialValues;
-  interface CreatePhoneVerificationRequestFormSubmission {
-    verification_request: {
+  interface CreateLoginRequestFormSubmission {
+    login_request: {
       phone_number: string;
     };
   }
   interface CreateSessionFormSubmission {
     login: {
       phone_number: string;
-      verification_code: string;
+      login_code: string;
     };
   }
-  type FormData =
-    | { verificationRequest?: PhoneVerificationRequest }
-    | { registered: boolean };
+  type FormData = { loginRequest?: LoginRequest } | { registered: boolean };
   type TransformValues = (
     values: FormValues,
-  ) =>
-    | CreatePhoneVerificationRequestFormSubmission
-    | CreateSessionFormSubmission;
+  ) => CreateLoginRequestFormSubmission | CreateSessionFormSubmission;
   const { values, getInputProps, submitting, setFieldValue, submit } = useForm<
     FormData,
     FormValues,
@@ -54,32 +49,32 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
         }
       },
     },
-    ...(showVerificationCodeInput
+    ...(showLoginCodeInput
       ? {
           action: routes.session.create,
           descriptor: "sign in",
-          transformValues: ({ verification_code, ...phonePartsValues }) => {
+          transformValues: ({ login_code, ...phonePartsValues }) => {
             const phoneNumber = mustParsePhoneFromParts(phonePartsValues);
             return {
               login: {
                 phone_number: phoneNumber,
-                verification_code,
+                login_code,
               },
             };
           },
         }
       : {
-          action: routes.phoneVerificationRequests.create,
+          action: routes.loginRequests.create,
           descriptor: "send login code",
           transformValues: values => {
             const phoneNumber = mustParsePhoneFromParts(values);
             return {
-              verification_request: { phone_number: phoneNumber },
+              login_request: { phone_number: phoneNumber },
             };
           },
         }),
     onSuccess: data => {
-      if (showVerificationCodeInput) {
+      if (showLoginCodeInput) {
         invariant(
           "registered" in data,
           "Missing registration status after sign in",
@@ -95,50 +90,42 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
           router.visit(registrationPath);
         }
       } else {
-        setShowVerificationCodeInput(true);
-        if ("verificationRequest" in data && data.verificationRequest) {
-          const { verificationRequest } = data;
+        setShowLoginCodeInput(true);
+        if ("loginRequest" in data && data.loginRequest) {
+          const { loginRequest } = data;
           const toastId = randomId();
-          toast.success(
-            "simulating verification code delivery in development",
-            {
-              id: toastId,
-              description: (
-                <Stack align="start" gap={8}>
-                  <Box>
-                    &quot;{verificationRequest.verification_code_message}&quot;
-                  </Box>
-                  <Button
-                    size="compact-sm"
-                    onClick={() => {
-                      setFieldValue(
-                        "verification_code",
-                        verificationRequest.verification_code,
-                      );
-                      toast.dismiss(toastId);
-                    }}
-                  >
-                    auto-fill code
-                  </Button>
-                </Stack>
-              ),
-            },
-          );
+          toast.success("simulating login code delivery in development", {
+            id: toastId,
+            description: (
+              <Stack align="start" gap={8}>
+                <Box>&quot;{loginRequest.login_code_message}&quot;</Box>
+                <Button
+                  size="compact-sm"
+                  onClick={() => {
+                    setFieldValue("login_code", loginRequest.login_code);
+                    toast.dismiss(toastId);
+                  }}
+                >
+                  auto-fill code
+                </Button>
+              </Stack>
+            ),
+          });
         }
       }
     },
   });
 
   const stepComplete = useMemo(() => {
-    const { national_phone_number, country_code, verification_code } = values;
+    const { national_phone_number, country_code, login_code } = values;
     const phoneNumber = [country_code, national_phone_number]
       .filter(Boolean)
       .join(" ");
-    if (showVerificationCodeInput) {
-      return !!phoneNumber && !!verification_code;
+    if (showLoginCodeInput) {
+      return !!phoneNumber && !!login_code;
     }
     return !!phoneNumber;
-  }, [showVerificationCodeInput, values]);
+  }, [showLoginCodeInput, values]);
 
   return (
     <Card w="100%" maw={380} withBorder>
@@ -186,7 +173,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                 </Group>
               )}
             />
-            <Transition transition="pop" mounted={showVerificationCodeInput}>
+            <Transition transition="pop" mounted={showLoginCodeInput}>
               {transitionStyle => (
                 <Input.Wrapper
                   label="login code"
@@ -194,7 +181,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                   style={transitionStyle}
                 >
                   <PinInput
-                    {...getInputProps("verification_code")}
+                    {...getInputProps("login_code")}
                     type="number"
                     length={6}
                     autoFocus
@@ -207,12 +194,12 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               <Button
                 type="submit"
                 leftSection={
-                  showVerificationCodeInput ? <SignInIcon /> : <PhoneIcon />
+                  showLoginCodeInput ? <SignInIcon /> : <PhoneIcon />
                 }
                 disabled={!stepComplete}
                 loading={submitting}
               >
-                {showVerificationCodeInput ? "sign in" : "send login code"}
+                {showLoginCodeInput ? "sign in" : "send login code"}
               </Button>
               <Text
                 size="xs"

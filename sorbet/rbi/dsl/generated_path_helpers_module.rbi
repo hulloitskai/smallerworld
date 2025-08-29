@@ -73,6 +73,9 @@ module GeneratedPathHelpersModule
   def join_request_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def login_requests_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def logout_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -107,9 +110,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def pause_world_friend_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def phone_verification_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pinned_user_posts_path(*args); end

@@ -18,27 +18,23 @@ class SessionsController < ApplicationController
 
   # POST /login
   def create
-    login_params = params.expect(login: %i[phone_number verification_code])
-    phone_number, verification_code = login_params
-      .values_at(:phone_number, :verification_code)
-    if (verification_request = PhoneVerificationRequest.find_valid(
-      phone_number:,
-      verification_code:,
-    ))
+    login_params = params.expect(login: %i[phone_number login_code])
+    phone_number, login_code = login_params
+      .values_at(:phone_number, :login_code)
+    if (login_request = LoginRequest.find_valid(phone_number:, login_code:))
       registered = if (user = User.find_by_phone_number(phone_number))
         start_new_session_for!(user)
         true
       else
-        self.registration_token =
-          verification_request.generate_registration_token
+        self.registration_token = login_request.generate_registration_token
         false
       end
-      verification_request.mark_as_verified!
+      login_request.mark_as_completed!
       render(json: { registered: })
     else
       render(
         json: {
-          errors: { verification_code: "Invalid verification code" },
+          errors: { login_code: "Invalid login code" },
         },
         status: :unprocessable_entity,
       )

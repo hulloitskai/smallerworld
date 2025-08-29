@@ -21,9 +21,9 @@ class RegistrationsController < ApplicationController
   def create
     registration_token = self.registration_token or
       raise "Missing registration token"
-    verification_request = PhoneVerificationRequest
+    login_request = LoginRequest
       .find_by_registration_token!(registration_token)
-    verified_phone_number = verification_request.verified_phone_number
+    verified_phone_number = login_request.verified_phone_number
     unless verified_phone_number
       self.registration_token = nil
       raise "Phone number not verified"

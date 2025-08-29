@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_29_134723) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_195901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -214,6 +214,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_134723) do
     t.index ["user_id"], name: "index_join_requests_on_user_id"
   end
 
+  create_table "login_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "phone_number", null: false
+    t.string "login_code", null: false
+    t.datetime "completed_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["completed_at"], name: "index_login_requests_on_completed_at"
+  end
+
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "delivered_at", precision: nil
     t.string "deprecated_delivery_token"
@@ -227,15 +236,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_134723) do
     t.index ["deprecated_delivery_token"], name: "index_notifications_on_deprecated_delivery_token", unique: true
     t.index ["noticeable_type", "noticeable_id"], name: "index_notifications_on_noticeable"
     t.index ["recipient_type", "recipient_id"], name: "index_notifications_on_recipient"
-  end
-
-  create_table "phone_verification_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "phone_number", null: false
-    t.string "verification_code", null: false
-    t.datetime "verified_at", precision: nil
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["verified_at"], name: "index_phone_verification_requests_on_verified_at"
   end
 
   create_table "post_reactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -73,6 +73,9 @@ module GeneratedUrlHelpersModule
   def join_request_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def login_requests_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def logout_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -107,9 +110,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def pause_world_friend_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def phone_verification_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pinned_user_posts_url(*args); end

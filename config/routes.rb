@@ -59,8 +59,8 @@ Rails.application.routes.draw do
   # == Visits
   post "/visit" => "visits#track", export: true
 
-  # == Phone verification requests
-  resources :phone_verification_requests, only: :create, export: true
+  # == Login requests
+  resources :login_requests, only: :create, export: true
 
   # == Sessions
   resource :session,
