@@ -89,7 +89,6 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                 hideSearch();
               }
             }}
-            autoFocus
             {...{ style }}
           />
         )}

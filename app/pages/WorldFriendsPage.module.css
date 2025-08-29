@@ -1,0 +1,9 @@
+.searchBadge {
+  opacity: 0.7 !important;
+  align-self: center;
+  cursor: pointer;
+
+  @mixin hover {
+    opacity: 1 !important;
+  }
+}

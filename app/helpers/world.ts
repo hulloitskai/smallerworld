@@ -29,8 +29,14 @@ export const useWorldActivities = (options?: SWRConfiguration) => {
   };
 };
 
-export const useWorldFriends = (options?: SWRConfiguration) => {
-  const { data, ...swrResponse } = useRouteSWR<{ friends: WorldFriend[] }>(
+interface WorldFriendsData {
+  friends: WorldFriend[];
+}
+
+export const useWorldFriends = (
+  options?: SWRConfiguration<WorldFriendsData>,
+) => {
+  const { data, ...swrResponse } = useRouteSWR<WorldFriendsData>(
     routes.worldFriends.index,
     {
       descriptor: "load friends",

@@ -1,19 +1,26 @@
 import { Text } from "@mantine/core";
+import MiniSearch from "minisearch";
 
+import HideIcon from "~icons/heroicons/chevron-up-20-solid";
 import EnvelopeIcon from "~icons/heroicons/envelope-20-solid";
 import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
 import FriendsIcon from "~icons/heroicons/users-20-solid";
+import CloseIcon from "~icons/heroicons/x-mark";
 
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
 import { useWorldActivities, useWorldFriends } from "~/helpers/world";
-import { type User } from "~/types";
+import { type User, type WorldFriend } from "~/types";
+
+import classes from "./WorldFriendsPage.module.css";
 
 export interface WorldFriendsPageProps extends SharedPageProps {
   currentUser: User;
   pendingInvitationsCount: number;
 }
+
+const MIN_FRIENDS_FOR_SEARCH = 10;
 
 const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   currentUser,
@@ -22,14 +29,64 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   // == User theme
   useUserTheme(currentUser.theme);
 
+  // == MiniSearch
+  const [miniSearch] = useState(
+    () => new MiniSearch<WorldFriend>({ fields: ["name", "emoji"] }),
+  );
+  const [miniSearchReady, setMiniSearchReady] = useState(false);
+  const reindexMiniSearch = useCallback(
+    (friends: WorldFriend[]) => {
+      setMiniSearchReady(false);
+      miniSearch.removeAll();
+      void miniSearch.addAllAsync(friends).then(() => {
+        setMiniSearchReady(true);
+      });
+    },
+    [miniSearch],
+  );
+
   // == Load friends
   const { allFriends, notifiableFriends, unnotifiableFriends } =
-    useWorldFriends({ keepPreviousData: true });
+    useWorldFriends({
+      keepPreviousData: true,
+      onSuccess: ({ friends }) => {
+        reindexMiniSearch(friends);
+      },
+    });
+  const friendsById = useMemo(() => keyBy(allFriends, "id"), [allFriends]);
 
   // == Load activities
   const { activities } = useWorldActivities({ keepPreviousData: true });
   const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
 
+  // == Search
+  const [showSearch, setShowSearch] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const displayedFriends = useMemo<WorldFriend[]>(() => {
+    if (!searchQuery.trim() || !miniSearchReady) {
+      return [...notifiableFriends, ...unnotifiableFriends];
+    }
+    const results: WorldFriend[] = [];
+    miniSearch
+      .search(searchQuery, { prefix: true, fuzzy: 0.2 })
+      .forEach(result => {
+        invariant(typeof result.id === "string");
+        const friend = friendsById[result.id];
+        if (friend) {
+          results.push(friend);
+        }
+      });
+    return results;
+  }, [
+    friendsById,
+    notifiableFriends,
+    unnotifiableFriends,
+    miniSearch,
+    miniSearchReady,
+    searchQuery,
+  ]);
   return (
     <Stack gap="lg">
       <Stack gap={4} align="center">
@@ -81,6 +138,90 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
             )}
           </Transition>
         </Stack>
+        <Transition
+          transition="fade"
+          mounted={
+            !!allFriends &&
+            allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
+            !showSearch
+          }
+          enterDelay={200}
+        >
+          {style => (
+            <Badge
+              variant="default"
+              className={classes.searchBadge}
+              leftSection={<SearchIcon />}
+              {...{ style }}
+              onClick={() => {
+                setShowSearch(true);
+              }}
+            >
+              search friends
+            </Badge>
+          )}
+        </Transition>
+        <Transition
+          transition="pop"
+          mounted={
+            !!allFriends &&
+            allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
+            showSearch
+          }
+          enterDelay={200}
+        >
+          {style => (
+            <TextInput
+              ref={searchInputRef}
+              inputContainer={children => (
+                <>
+                  {children}
+                  <LoadingOverlay
+                    visible={!miniSearchReady}
+                    overlayProps={{ radius: "xl", blur: 8 }}
+                  />
+                </>
+              )}
+              leftSection={<SearchIcon />}
+              rightSection={
+                <Tooltip
+                  label={searchQuery ? "clear search" : "hide search"}
+                  openDelay={600}
+                >
+                  <ActionIcon
+                    {...(searchQuery
+                      ? {
+                          color: "red",
+                          onClick: () => {
+                            setSearchQuery("");
+                            searchInputRef.current?.focus();
+                          },
+                        }
+                      : {
+                          onClick: () => {
+                            setShowSearch(false);
+                          },
+                        })}
+                    {...{ style }}
+                  >
+                    {searchQuery ? <CloseIcon /> : <HideIcon />}
+                  </ActionIcon>
+                </Tooltip>
+              }
+              placeholder="search your friends"
+              value={searchQuery}
+              onChange={({ currentTarget }) =>
+                setSearchQuery(currentTarget.value)
+              }
+              onBlur={({ currentTarget }) => {
+                if (currentTarget.value.trim() === "") {
+                  setShowSearch(false);
+                }
+              }}
+              {...{ style }}
+            />
+          )}
+        </Transition>
         {allFriends ? (
           isEmpty(allFriends) ? (
             <Card
@@ -96,8 +237,10 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
                 </Text>
               </Stack>
             </Card>
+          ) : isEmpty(displayedFriends) ? (
+            <EmptyCard itemLabel="results" />
           ) : (
-            [...notifiableFriends, ...unnotifiableFriends].map(friend => (
+            displayedFriends.map(friend => (
               <WorldFriendCard
                 key={friend.id}
                 {...{ activitiesById, friend }}

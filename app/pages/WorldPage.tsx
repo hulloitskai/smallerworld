@@ -143,7 +143,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             <Title className={classes.pageTitle} size="h2">
               {possessive(currentUser.name)} world
             </Title>
-            <Group gap={8} justify="center">
+            <Group gap="xs" justify="center">
               <Transition
                 transition="slide-up"
                 mounted={
