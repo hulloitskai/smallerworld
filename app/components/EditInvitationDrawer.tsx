@@ -82,9 +82,9 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
       },
     }),
     onSuccess: ({ invitation }, { resetDirty }) => {
+      resetDirty();
       void mutateRoute(routes.worldInvitations.index);
       onInvitationUpdated?.(invitation);
-      resetDirty();
     },
   });
   useDidUpdate(() => {
@@ -188,9 +188,7 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
                       className={classes.addButton}
                       style={transitionStyle}
                     >
-                      {invitation
-                        ? "save friend details"
-                        : "create invite link"}
+                      save friend details
                     </Button>
                   )}
                 </Transition>

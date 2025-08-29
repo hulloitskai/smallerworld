@@ -59,7 +59,7 @@ class PhoneVerificationRequest < ApplicationRecord
 
   sig { returns(String) }
   def verification_code_message
-    "your smaller world code is: #{verification_code}"
+    "your smaller world login code is: #{verification_code}"
   end
 
   sig { void }

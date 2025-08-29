@@ -56,7 +56,7 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
             justify="space-between"
             className={classes.group}
           >
-            <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
+            <Group align="start" gap={8} style={{ flexGrow: 1 }}>
               {!!invitation.invitee_emoji && (
                 <Box className={classes.emoji}>{invitation.invitee_emoji}</Box>
               )}
@@ -64,7 +64,7 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
                 {invitation.invitee_name}
               </Text>
             </Group>
-            <Group gap={2} style={{ flexShrink: 0 }}>
+            <Group gap={2} miw={0} style={{ flexShrink: 1 }}>
               <Text size="xs" c="dimmed">
                 invited on{" "}
                 <Time inherit format={DateTime.DATETIME_MED} tt="lowercase">

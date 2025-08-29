@@ -57,8 +57,8 @@ class WorldInvitationsController < ApplicationController
   def update
     invitation = find_invitation
     invitation_params = params.expect(invitation: [
-      :name,
-      :emoji,
+      :invitee_name,
+      :invitee_emoji,
       offered_activity_ids: [],
     ])
     if invitation.update(**invitation_params)

@@ -19,6 +19,7 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
     routes.worldInvitations.index,
     {
       descriptor: "load pending invitations",
+      keepPreviousData: true,
     },
   );
   const { pendingInvitations } = data ?? {};

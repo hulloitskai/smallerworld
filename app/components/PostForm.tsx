@@ -553,7 +553,7 @@ const PostForm: FC<PostFormProps> = props => {
             {!post && (
               <PostFormTextBlastCheckboxCard
                 {...getInputProps("text_blast", { type: "checkbox" })}
-                disabled={values.visibility === "only_me"}
+                disabled={values.quiet || values.visibility === "only_me"}
               />
             )}
             <Group justify="end" mt="xs">
