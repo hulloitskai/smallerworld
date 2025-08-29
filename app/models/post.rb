@@ -258,7 +258,11 @@ class Post < ApplicationRecord
     else
       truncated_body_text
     end
-    post_shortlink = ShortlinkService.url_helpers.user_url(author, post_id: id)
+    post_shortlink = ShortlinkService.url_helpers.user_url(
+      author,
+      post_id: id,
+      friend_token: recipient.access_token,
+    )
     cta = "see full post: #{post_shortlink}"
     [title, body, cta].compact.join("\n\n")
   end
