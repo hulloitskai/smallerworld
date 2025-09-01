@@ -71,6 +71,11 @@ const ImageInput: FC<ImageInputProps> = ({
   }>(routes.images.show, {
     descriptor: "load preview image",
     params: resolvedValue ? { signed_id: resolvedValue.signedId } : null,
+    onSuccess: ({ image }) => {
+      if (!image) {
+        onChange?.(null);
+      }
+    },
   });
   const { image } = data ?? {};
   useDidUpdate(() => {
