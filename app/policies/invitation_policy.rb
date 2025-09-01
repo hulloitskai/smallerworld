@@ -4,7 +4,7 @@
 class InvitationPolicy < ApplicationPolicy
   # == Rules
   def manage?
-    friend = T.let(record, Friend)
-    friend.user == user!
+    invitation = T.let(record, Invitation)
+    invitation.user! == user!
   end
 end

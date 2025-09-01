@@ -6,7 +6,6 @@ class WorldInvitationsController < ApplicationController
   before_action :authenticate_user!
 
   # == Actions
-
   # GET /world/invitations
   def index
     current_user = authenticate_user!
@@ -56,6 +55,7 @@ class WorldInvitationsController < ApplicationController
   # PUT/PATCH /world/invitations/:id
   def update
     invitation = find_invitation
+    authorize!(invitation)
     invitation_params = params.expect(invitation: [
       :invitee_name,
       :invitee_emoji,
