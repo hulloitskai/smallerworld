@@ -4,19 +4,25 @@
 class InvitationsController < ApplicationController
   # GET /invitations/:id
   def show
-    invitation = find_invitation(scope: Invitation.includes(:user, :friend))
-    user = invitation.user!
-    featured_post = user.posts.chronological.last
-    friend = invitation.friend
-    autofill_phone_number = friend&.phone_number || current_user&.phone_number
-    render(inertia: "InvitationPage", props: {
-      user: UserSerializer.one(user),
-      invitation: InvitationSerializer.one(invitation),
-      friend: FriendProfileSerializer.one_if(friend),
-      "featuredPost" => PostSerializer.one_if(featured_post),
-      "existingFriend" => FriendProfileSerializer.one_if(friend),
-      "autofillPhoneNumber" => autofill_phone_number,
-    })
+    invitation = maybe_find_invitation(
+      scope: Invitation.includes(:user, :friend),
+    )
+    if invitation
+      user = invitation.user!
+      featured_post = user.posts.chronological.last
+      friend = invitation.friend
+      autofill_phone_number = friend&.phone_number || current_user&.phone_number
+      render(inertia: "InvitationPage", props: {
+        user: UserSerializer.one(user),
+        invitation: InvitationSerializer.one(invitation),
+        friend: FriendProfileSerializer.one_if(friend),
+        "featuredPost" => PostSerializer.one_if(featured_post),
+        "existingFriend" => FriendProfileSerializer.one_if(friend),
+        "autofillPhoneNumber" => autofill_phone_number,
+      })
+    else
+      render(inertia: "InvalidInvitationPage")
+    end
   end
 
   # POST /invitations/:id/accept
@@ -47,5 +53,12 @@ class InvitationsController < ApplicationController
   sig { params(scope: Invitation::PrivateRelation).returns(Invitation) }
   def find_invitation(scope: Invitation.all)
     scope.find(params.fetch(:id))
+  end
+
+  sig do
+    params(scope: Invitation::PrivateRelation).returns(T.nilable(Invitation))
+  end
+  def maybe_find_invitation(scope: Invitation.all)
+    scope.find_by(id: params.fetch(:id))
   end
 end
