@@ -4,6 +4,7 @@ kill_signal = "SIGINT"
 swap_size_mb = 1024
 
 [deploy]
+  strategy = "canary"
   release_command = "bin/deploy"
 
 [[services]]
