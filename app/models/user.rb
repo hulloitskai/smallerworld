@@ -102,6 +102,9 @@ class User < ApplicationRecord
   validates :phone_number,
             presence: true,
             phone: { possible: true, types: :mobile, extensions: false }
+  validates :reply_to_number,
+            phone: { possible: true, types: :mobile, extensions: false },
+            allow_nil: true
   validates :name, length: { maximum: 30 }
   validates :handle,
             length: { minimum: 2 },
