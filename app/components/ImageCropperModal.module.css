@@ -1,0 +1,5 @@
+.cropper {
+  :global(.ReactCrop__crop-selection):focus {
+    outline: none;
+  }
+}

@@ -174,6 +174,7 @@ const createTheme = (
       }),
       Modal: Modal.extend({
         classNames: {
+          root: classes.modal,
           header: classes.modalHeader,
           inner: classes.modalInner,
           content: classes.modalContent,

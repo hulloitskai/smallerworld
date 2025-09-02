@@ -3,12 +3,8 @@ primary_region = "yyz"
 kill_signal = "SIGINT"
 swap_size_mb = 1024
 
-[experimental]
-  auto_rollback = true
-
 [deploy]
   release_command = "bin/deploy"
-  strategy = "bluegreen"
 
 [[services]]
   protocol = "tcp"

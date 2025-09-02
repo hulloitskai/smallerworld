@@ -111,6 +111,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
                 />
                 <ImageInput
                   {...getInputProps("page_icon_upload")}
+                  cropToAspect={1}
                   label="your page icon"
                   center
                   h={ICON_IMAGE_INPUT_SIZE}

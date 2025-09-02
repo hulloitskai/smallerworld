@@ -11,11 +11,19 @@ import { useId } from "react";
 
 import PhotoIcon from "~icons/heroicons/photo-20-solid";
 
+import { IMAGE_CROP_CANCELLED_ERROR, maybeCropImage } from "~/helpers/images";
 import { upload } from "~/helpers/upload";
 import { type Image as ImageType, type Upload } from "~/types";
 
 import classes from "./ImageInput.module.css";
 import "@mantine/dropzone/styles.layer.css";
+
+const ACCEPTED_IMAGE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/gif",
+];
 
 export interface ImageInputProps
   extends Omit<
@@ -37,6 +45,7 @@ export interface ImageInputProps
   onPreviewChange?: (image: ImageType | null) => void;
   center?: boolean;
   showRemoveButton?: boolean;
+  cropToAspect?: number;
 }
 
 const ImageInput: FC<ImageInputProps> = ({
@@ -56,6 +65,7 @@ const ImageInput: FC<ImageInputProps> = ({
   style,
   value,
   showRemoveButton = true,
+  cropToAspect,
   ...otherProps
 }) => {
   // == Controlled input
@@ -114,28 +124,41 @@ const ImageInput: FC<ImageInputProps> = ({
         />
         <Dropzone
           className={classes.dropzone}
-          accept={["image/png", "image/jpeg", "image/webp", "image/gif"]}
+          accept={ACCEPTED_IMAGE_TYPES}
           multiple={false}
           onDrop={files => {
             const file = first(files);
             if (file) {
-              setUploading(true);
-              upload(file)
-                .then(blob => {
-                  const value = { signedId: blob.signed_id };
-                  handleChange(value);
-                })
-                .catch(reason => {
-                  console.error("Failed to upload image", reason);
+              void maybeCropImage(file, cropToAspect).then(
+                async file => {
+                  setUploading(true);
+                  try {
+                    const blob = await upload(file);
+                    const value = { signedId: blob.signed_id };
+                    handleChange(value);
+                  } catch (reason) {
+                    console.error("Failed to upload image", reason);
+                    if (reason instanceof Error) {
+                      toast.error("failed to upload image", {
+                        description: reason.message,
+                      });
+                    }
+                  } finally {
+                    setUploading(false);
+                  }
+                },
+                reason => {
+                  if (reason === IMAGE_CROP_CANCELLED_ERROR) {
+                    return;
+                  }
+                  console.error("Failed to crop image", reason);
                   if (reason instanceof Error) {
-                    toast.error("failed to upload image", {
+                    toast.error("failed to crop image", {
                       description: reason.message,
                     });
                   }
-                })
-                .finally(() => {
-                  setUploading(false);
-                });
+                },
+              );
             }
           }}
           {...{ radius }}
