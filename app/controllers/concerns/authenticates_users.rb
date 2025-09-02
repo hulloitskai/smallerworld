@@ -7,7 +7,6 @@ module AuthenticatesUsers
   extend ActiveSupport::Concern
 
   include RendersJsonException
-  include SupabaseAuthentication
 
   requires_ancestor { ActionController::Base }
 
@@ -50,16 +49,6 @@ module AuthenticatesUsers
   def find_session_by_cookie
     if (id = cookies.signed[:session_id])
       Session.with_user.merge(User.with_page_icon).find_by(id:)
-    end
-  end
-
-  sig { returns(T.nilable(Session)) }
-  def start_session_from_supabase_authentication
-    if (claims = supabase_auth_claims) &&
-        claims["role"] == "authenticated" &&
-        (id = claims["sub"]) &&
-        (user = User.find_by(id:))
-      start_new_session_for!(user)
     end
   end
 
@@ -116,8 +105,7 @@ module AuthenticatesUsers
   # == Filter handlers
   sig { returns(T.nilable(Session)) }
   def resume_session
-    Current.session ||=
-      find_session_by_cookie || start_session_from_supabase_authentication
+    Current.session ||= find_session_by_cookie
   end
 
   # == Rescue handlers

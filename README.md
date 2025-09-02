@@ -41,7 +41,6 @@ bin/setup
 - [ ] emoji picker search sucks
 - [ ] user-page-specific splash screens for Android / iOS
 - [ ] fix iOS text selection in Vaul drawers
-- [ ] remove old supabase auth code
 
 ## archived todos
 
@@ -91,3 +90,4 @@ bin/setup
 - [x] add android/ios chrome add-to-homescreen instructions
 - [x] service worker versioning
 - [x] you can download your own images from lightbox mode
+- [x] remove old supabase auth code

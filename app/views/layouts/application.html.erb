@@ -35,13 +35,6 @@
       <meta name="active-storage-direct-uploads-size-limit" content="<%= direct_uploads_size_limit %>">
     <% end %>
 
-    <%# == Supabase %>
-    <% scoped do %>
-      <% settings = Supabase.settings %>
-      <meta name="supabase-project-id" content="<%= settings.project_id %>">
-      <meta name="supabase-public-key" content="<%= settings.public_key %>">
-    <% end %>
-
     <%# == Sentry %>
     <% if Sentry.initialized? %>
       <% config = Sentry.configuration %>

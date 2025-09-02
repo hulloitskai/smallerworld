@@ -455,10 +455,7 @@ const LogoutItem: FC<LogoutItemProps> = ({ ...otherProps }) => {
   const { trigger, mutating } = useRouteMutation(routes.sessions.destroy, {
     descriptor: "sign out",
     onSuccess: () => {
-      // TODO: Remove after May 1st
-      document.cookie =
-        "supabase_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      router.visit(routes.world.show.path());
+      location.href = routes.world.show.path();
     },
   });
 
