@@ -9,9 +9,9 @@ import { type UserPost } from "~/types";
 
 import EncouragementCard from "./EncouragementCard";
 import FriendPostCardActions from "./FriendPostCardActions";
+import HelpfulSleepyNeko from "./HelpfulSleepyNeko";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
-import SleepyNeko from "./SleepyNeko";
 
 export interface UserPageFeedProps extends BoxProps {}
 
@@ -94,7 +94,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                     !!pushRegistration &&
                     !showEncouragementCard &&
                     index === 0 && (
-                      <SleepyNeko
+                      <HelpfulSleepyNeko
                         pos="absolute"
                         top={3 - NEKO_SIZE}
                         right="var(--mantine-spacing-lg)"

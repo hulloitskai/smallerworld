@@ -213,6 +213,9 @@ Rails.application.routes.draw do
   resources :api_posts, path: "/api/posts", only: :create
   post "/api/post" => "api_posts#create"
 
+  # == Canny
+  post "/canny/sso_token" => "canny#sso_token", export: true
+
   # == Policies
   get "/policies" => "policies#show", export: true
 

@@ -28,6 +28,9 @@ module GeneratedPathHelpersModule
   def api_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def canny_sso_token_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def change_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

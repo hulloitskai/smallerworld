@@ -20,9 +20,9 @@ import { type Encouragement, type WorldPost } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
+import HelpfulSleepyNeko from "./HelpfulSleepyNeko";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
-import SleepyNeko from "./SleepyNeko";
 
 import classes from "./WorldPageFloatingActions.module.css";
 
@@ -119,25 +119,25 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                   </Badge>
                 </Center>
               )}
-              <Menu
-                width={220}
-                shadow="sm"
-                classNames={{
-                  dropdown: classes.menuDropdown,
-                  itemLabel: classes.menuItemLabel,
-                  itemSection: classes.menuItemSection,
-                }}
-              >
-                <Menu.Target>
-                  <Indicator
-                    className={classes.newPostDraftIndicator}
-                    color="white"
-                    label={<DraftIcon />}
-                    size={16}
-                    offset={4}
-                    disabled={!newPostDraftType}
-                  >
-                    <Box pos="relative">
+              <Box pos="relative">
+                <Menu
+                  width={220}
+                  shadow="sm"
+                  classNames={{
+                    dropdown: classes.menuDropdown,
+                    itemLabel: classes.menuItemLabel,
+                    itemSection: classes.menuItemSection,
+                  }}
+                >
+                  <Menu.Target>
+                    <Indicator
+                      className={classes.newPostDraftIndicator}
+                      color="white"
+                      label={<DraftIcon />}
+                      size={16}
+                      offset={4}
+                      disabled={!newPostDraftType}
+                    >
                       <Button
                         id="new-post"
                         size="md"
@@ -148,57 +148,60 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                       >
                         new post
                       </Button>
-                      {!hideNeko && !!pushRegistration && (
-                        <SleepyNeko
-                          pos="absolute"
-                          top={3 - NEKO_SIZE}
-                          right="var(--mantine-spacing-lg)"
-                        />
-                      )}
-                    </Box>
-                  </Indicator>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  {POST_TYPES.map(postType => (
-                    <Menu.Item
-                      key={postType}
-                      leftSection={
-                        <Box component={POST_TYPE_TO_ICON[postType]} fz="md" />
-                      }
-                      {...(postType === newPostDraftType && {
-                        rightSection: (
+                    </Indicator>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {POST_TYPES.map(postType => (
+                      <Menu.Item
+                        key={postType}
+                        leftSection={
                           <Box
-                            component={DraftCircleIcon}
-                            className={classes.menuItemDraftIcon}
+                            component={POST_TYPE_TO_ICON[postType]}
+                            fz="md"
                           />
-                        ),
-                      })}
-                      onClick={() => {
-                        openModal({
-                          title: `new ${POST_TYPE_TO_LABEL[postType]}`,
-                          size: "var(--container-size-xs)",
-                          children: (
-                            <PostForm
-                              newPostType={postType}
-                              encouragement={latestEncouragement}
-                              onPostCreated={post => {
-                                closeAllModals();
-                                onPostCreated?.(post);
-                              }}
-                              {...{
-                                pausedFriendIds,
-                                recentlyPausedFriendIds,
-                              }}
+                        }
+                        {...(postType === newPostDraftType && {
+                          rightSection: (
+                            <Box
+                              component={DraftCircleIcon}
+                              className={classes.menuItemDraftIcon}
                             />
                           ),
-                        });
-                      }}
-                    >
-                      new {POST_TYPE_TO_LABEL[postType]}
-                    </Menu.Item>
-                  ))}
-                </Menu.Dropdown>
-              </Menu>
+                        })}
+                        onClick={() => {
+                          openModal({
+                            title: `new ${POST_TYPE_TO_LABEL[postType]}`,
+                            size: "var(--container-size-xs)",
+                            children: (
+                              <PostForm
+                                newPostType={postType}
+                                encouragement={latestEncouragement}
+                                onPostCreated={post => {
+                                  closeAllModals();
+                                  onPostCreated?.(post);
+                                }}
+                                {...{
+                                  pausedFriendIds,
+                                  recentlyPausedFriendIds,
+                                }}
+                              />
+                            ),
+                          });
+                        }}
+                      >
+                        new {POST_TYPE_TO_LABEL[postType]}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Dropdown>
+                </Menu>
+                {!hideNeko && !!pushRegistration && (
+                  <HelpfulSleepyNeko
+                    pos="absolute"
+                    top={3 - NEKO_SIZE}
+                    right="var(--mantine-spacing-lg)"
+                  />
+                )}
+              </Box>
               <Transition
                 transition="pop"
                 mounted={!isEmpty(pinnedPosts)}

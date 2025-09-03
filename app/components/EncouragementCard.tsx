@@ -4,7 +4,7 @@ import { NEKO_SIZE } from "~/helpers/neko";
 import { confetti, particlePositionFor } from "~/helpers/particles";
 import { type Encouragement, type Friend, type User } from "~/types";
 
-import SleepyNeko from "./SleepyNeko";
+import HelpfulSleepyNeko from "./HelpfulSleepyNeko";
 
 import classes from "./EncouragementCard.module.css";
 
@@ -107,7 +107,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
         </Stack>
       )}
       {showNeko && (
-        <SleepyNeko
+        <HelpfulSleepyNeko
           pos="absolute"
           top={2 - NEKO_SIZE}
           right="var(--mantine-spacing-lg)"

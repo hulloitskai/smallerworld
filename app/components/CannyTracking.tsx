@@ -1,3 +1,5 @@
+import { pluralize } from "inflection";
+
 import { prettyFriendName } from "~/helpers/friends";
 
 const CannyTracking: FC = () => {
@@ -14,7 +16,7 @@ const CannyTracking: FC = () => {
       const user = {
         id: currentFriend.id,
         name: prettyFriendName(currentFriend),
-        email: fakeEmail("friend", currentFriend.id),
+        email: cannyEmail("friend", currentFriend.id),
         created: currentFriend.created_at,
       };
       Canny(
@@ -33,7 +35,7 @@ const CannyTracking: FC = () => {
       const user = {
         id,
         name,
-        email: fakeEmail("user", id),
+        email: cannyEmail("user", id),
         created: currentUser.created_at,
         avatarURL: page_icon.src,
       };
@@ -57,5 +59,5 @@ const CannyTracking: FC = () => {
 
 export default CannyTracking;
 
-const fakeEmail = (type: "friend" | "user", id: string) =>
-  `${id}@${type}.smallerworld.club`;
+const cannyEmail = (type: "friend" | "user", id: string) =>
+  `${id}@${pluralize(type)}.smallerworld.club`;

@@ -43,83 +43,80 @@ const DEFAULT_ANIMATION_INTERVAL = 200; // milliseconds between frame changes
 /**
  * Neko component that renders a cat sprite with automatic frame management
  */
-const Neko: FC<NekoProps> = ({
-  animation,
-  animationSpeed = 1,
-  className,
-  style,
-  ...otherProps
-}) => {
-  const [currentFrame, setCurrentFrame] = useState(0);
-  const animationRef = useRef<number>();
-  const lastFrameTimeRef = useRef<number>();
-  const prevAnimationRef = useRef<Animation>();
+const Neko = forwardRef<HTMLDivElement, NekoProps>(
+  ({ animation, animationSpeed = 1, className, style, ...otherProps }, ref) => {
+    const [currentFrame, setCurrentFrame] = useState(0);
+    const animationRef = useRef<number>();
+    const lastFrameTimeRef = useRef<number>();
+    const prevAnimationRef = useRef<Animation>();
 
-  // Calculate animation interval based on speed multiplier
-  const animationInterval = DEFAULT_ANIMATION_INTERVAL / animationSpeed;
+    // Calculate animation interval based on speed multiplier
+    const animationInterval = DEFAULT_ANIMATION_INTERVAL / animationSpeed;
 
-  // Reset frame when animation changes
-  useEffect(() => {
-    if (prevAnimationRef.current !== animation) {
-      setCurrentFrame(0);
-      prevAnimationRef.current = animation;
-    }
-  }, [animation]);
+    // Reset frame when animation changes
+    useEffect(() => {
+      if (prevAnimationRef.current !== animation) {
+        setCurrentFrame(0);
+        prevAnimationRef.current = animation;
+      }
+    }, [animation]);
 
-  // Handle frame progression
-  useEffect(() => {
-    const currentAnimation = SPRITE_SETS[animation];
+    // Handle frame progression
+    useEffect(() => {
+      const currentAnimation = SPRITE_SETS[animation];
 
-    // Don't animate single-frame animations
-    if (!currentAnimation || currentAnimation.length <= 1) {
-      return;
-    }
-
-    const animate = (timestamp: number): void => {
-      if (!lastFrameTimeRef.current) {
-        lastFrameTimeRef.current = timestamp;
+      // Don't animate single-frame animations
+      if (!currentAnimation || currentAnimation.length <= 1) {
+        return;
       }
 
-      if (timestamp - lastFrameTimeRef.current >= animationInterval) {
-        setCurrentFrame(prev => (prev + 1) % currentAnimation.length);
-        lastFrameTimeRef.current = timestamp;
-      }
+      const animate = (timestamp: number): void => {
+        if (!lastFrameTimeRef.current) {
+          lastFrameTimeRef.current = timestamp;
+        }
+
+        if (timestamp - lastFrameTimeRef.current >= animationInterval) {
+          setCurrentFrame(prev => (prev + 1) % currentAnimation.length);
+          lastFrameTimeRef.current = timestamp;
+        }
+
+        animationRef.current = requestAnimationFrame(animate);
+      };
 
       animationRef.current = requestAnimationFrame(animate);
-    };
 
-    animationRef.current = requestAnimationFrame(animate);
+      return () => {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+        lastFrameTimeRef.current = undefined;
+      };
+    }, [animation, animationInterval]);
 
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      lastFrameTimeRef.current = undefined;
-    };
-  }, [animation, animationInterval]);
+    const backgroundPosition = useMemo(
+      () => getSpriteBackgroundPosition(animation, currentFrame),
+      [animation, currentFrame],
+    );
 
-  const backgroundPosition = useMemo(
-    () => getSpriteBackgroundPosition(animation, currentFrame),
-    [animation, currentFrame],
-  );
-
-  return (
-    <Box
-      className={cn("Neko", className)}
-      w={NEKO_SIZE}
-      h={NEKO_SIZE}
-      style={[
-        {
-          backgroundImage: `url(${spriteSrc})`,
-          backgroundPosition,
-          backgroundRepeat: "no-repeat",
-        },
-        style,
-      ]}
-      aria-hidden="true"
-      {...otherProps}
-    />
-  );
-};
+    return (
+      <Box
+        {...{ ref }}
+        className={cn("Neko", className)}
+        w={NEKO_SIZE}
+        h={NEKO_SIZE}
+        style={[
+          {
+            backgroundImage: `url(${spriteSrc})`,
+            backgroundPosition,
+            backgroundRepeat: "no-repeat",
+          },
+          style,
+        ]}
+        aria-hidden="true"
+        {...otherProps}
+      />
+    );
+  },
+);
 
 export default Neko;

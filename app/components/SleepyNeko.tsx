@@ -6,11 +6,13 @@
  */
 
 import { useWindowEvent } from "@mantine/hooks";
+import { type ComponentPropsWithoutRef } from "react";
 
 import Neko, { type NekoProps } from "~/components/Neko";
 
 export interface SleepyNekoProps
-  extends Omit<NekoProps, "animation" | "animationSpeed"> {}
+  extends Omit<NekoProps, "animation" | "animationSpeed">,
+    Omit<ComponentPropsWithoutRef<"div">, "style"> {}
 
 type NekoState = "idle" | "alert" | "scratch-self" | "tired" | "sleeping";
 
@@ -20,7 +22,7 @@ const SCRATCH_INTERVAL_RANGE: [number, number] = [4000, 7000]; // 4-7 seconds
 /**
  * SleepyNeko component that manages behavioral states and animations
  */
-const SleepyNeko: FC<SleepyNekoProps> = ({ ...otherProps }) => {
+const SleepyNeko = forwardRef<HTMLDivElement, SleepyNekoProps>((props, ref) => {
   const [state, setState] = useState<NekoState>("sleeping");
 
   // == Tiredness
@@ -90,12 +92,13 @@ const SleepyNeko: FC<SleepyNekoProps> = ({ ...otherProps }) => {
 
   return (
     <Neko
+      {...{ ref }}
       animation={state}
       animationSpeed={state === "sleeping" ? 0.5 : 1}
-      {...otherProps}
+      {...props}
     />
   );
-};
+});
 
 export default SleepyNeko;
 

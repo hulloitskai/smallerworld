@@ -7,7 +7,7 @@ export interface InvalidInvitationPageProps extends SharedPageProps {}
 const InvalidInvitationPage: PageComponent<InvalidInvitationPageProps> = () => {
   return (
     <Stack gap={4} align="center">
-      <Box component={InvitationIcon} c="primary" fz={24} />
+      <Box component={InvitationIcon} fz="xl" />
       <Title size="h2" lh="xs" ta="center">
         this invite link is no longer valid :(
       </Title>

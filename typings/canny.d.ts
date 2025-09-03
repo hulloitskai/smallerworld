@@ -6,6 +6,7 @@
  */
 
 // Based on https://developers.canny.io/install
+// Web widget render API: https://developers.canny.io/install/widget/web
 
 /**
  * This allows for custom fields to be added to user and company objects.
@@ -51,6 +52,17 @@ interface CannyIdentifyOptions {
 }
 
 /**
+ * Options for the 'render' command (Web Widget).
+ * @see https://developers.canny.io/install/widget/web
+ */
+interface CannyRenderOptions {
+  boardToken: string;
+  basePath?: string | null;
+  ssoToken?: string | null;
+  theme?: "light" | "dark" | "auto";
+}
+
+/**
  * Callback function for the identify command.
  * Called when identification completes (regardless of success or failure).
  * @see https://developers.canny.io/install/advanced
@@ -63,6 +75,7 @@ type CannyIdentifyCallback = () => void;
 type CannyCommandArgs =
   | ["identify", CannyIdentifyOptions]
   | ["identify", CannyIdentifyOptions, CannyIdentifyCallback]
+  | ["render", CannyRenderOptions]
   | ["authenticateCannyLink", string];
 
 /**

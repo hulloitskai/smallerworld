@@ -88,6 +88,8 @@
     <%# == Canny %>
     <% if (settings = Canny.settings) %>
       <meta name="canny-app-id" content="<%= settings.app_id %>">
+      <meta name="canny-feature-requests-board-token" content="<%= settings.feature_requests_board_token %>">
+      <meta name="canny-bugs-board-token" content="<%= settings.bugs_board_token %>">
     <% end %>
     <script>!function(w,d,i,s){function l(){if(!d.getElementById(i)){var f=d.getElementsByTagName(s)[0],e=d.createElement(s);e.type="text/javascript",e.async=!0,e.src="https://canny.io/sdk.js",f.parentNode.insertBefore(e,f)}}if("function"!=typeof w.Canny){var c=function(){c.q.push(arguments)};c.q=[],w.Canny=c,"complete"===d.readyState?l():w.attachEvent?w.attachEvent("onload",l):w.addEventListener("load",l,!1)}}(window,document,"canny-jssdk","script");</script>
   </head>

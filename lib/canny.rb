@@ -11,6 +11,9 @@ module Canny
 
     # == Properties
     const :app_id, String
+    const :private_key, String
+    const :feature_requests_board_token, String
+    const :bugs_board_token, String
   end
 
   # == Methods
@@ -19,7 +22,12 @@ module Canny
     return @_settings if defined?(@_settings)
 
     @_settings = if (credentials = self.credentials)
-      Settings.new(app_id: credentials.app_id!)
+      Settings.new(
+        app_id: credentials.app_id!,
+        private_key: credentials.private_key!,
+        feature_requests_board_token: credentials.feature_requests_board_token!,
+        bugs_board_token: credentials.bugs_board_token!,
+      )
     end
   end
 

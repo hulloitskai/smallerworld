@@ -1,3 +1,4 @@
+import { count } from "@wordpress/wordcount";
 import { type DependencyList } from "react";
 
 const TRUTHY_VALUES = ["1", "true", "t"];
@@ -32,4 +33,9 @@ export const useNormalizeUrl = (
     deps, // eslint-disable-line react-hooks/exhaustive-deps
   );
   return url;
+};
+
+export const readingTimeFor = (text: string, wpm = 150) => {
+  const wordCount = count(text, "words");
+  return (wordCount / wpm) * 60 * 1000;
 };

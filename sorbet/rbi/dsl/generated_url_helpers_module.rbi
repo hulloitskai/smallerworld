@@ -28,6 +28,9 @@ module GeneratedUrlHelpersModule
   def api_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def canny_sso_token_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def change_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
