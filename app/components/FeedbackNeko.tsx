@@ -1,8 +1,11 @@
+import { Loader } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
+import ChatIcon from "~icons/heroicons/chat-bubble-left-right-20-solid";
 import ReportIcon from "~icons/heroicons/hand-raised-20-solid";
 import FeedbackIcon from "~icons/heroicons/megaphone-20-solid";
 
+import { useContact } from "~/helpers/contact";
 import { readingTimeFor } from "~/helpers/utils";
 
 import SingleDayFontHead from "./SingleDayFontHead";
@@ -31,7 +34,7 @@ const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
         clearTimeout(timeout);
       };
     } else if (text) {
-      const readingTime = readingTimeFor(text, 100);
+      const readingTime = readingTimeFor(text, 125);
       const timeout = setTimeout(() => {
         setIndex(index + 1);
       }, readingTime);
@@ -103,6 +106,13 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
   });
   const { ssoToken } = data ?? {};
 
+  // == Contact
+  const [contact, { loading: contacting }] = useContact({
+    type: "sms",
+    body: "about smaller world: ",
+  });
+
+  // == Render canny board
   const [board, setBoard] = useState<"feature-requests" | "bugs" | null>(null);
   useEffect(() => {
     if (!board || !ssoToken) {
@@ -118,7 +128,19 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
   }, [ssoToken, board, featureRequestsBoardToken, bugsBoardToken]);
 
   if (board) {
-    return <div data-canny />;
+    return (
+      <Box data-canny pos="relative">
+        <Center
+          pos="absolute"
+          left={0}
+          top={54}
+          right={0}
+          style={{ zIndex: -1 }}
+        >
+          <Loader />
+        </Center>
+      </Box>
+    );
   }
   return (
     <Stack gap="xs">
@@ -143,6 +165,18 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
         }}
       >
         i&apos;m reporting a bug
+      </Button>
+      <Divider label="or" />
+      <Button
+        size="md"
+        leftSection={<ChatIcon />}
+        loading={contacting}
+        className={classes.button}
+        onClick={() => {
+          contact();
+        }}
+      >
+        contact the developer
       </Button>
     </Stack>
   );
