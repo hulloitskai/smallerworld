@@ -1,0 +1,8 @@
+.button {
+  height: unset;
+  padding-block: var(--mantine-spacing-md);
+
+  :global(.mantine-Button-section)[data-position="left"] {
+    color: var(--mantine-color-primary-filled);
+  }
+}

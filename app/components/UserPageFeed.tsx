@@ -8,8 +8,8 @@ import { type UserPageProps } from "~/pages/UserPage";
 import { type UserPost } from "~/types";
 
 import EncouragementCard from "./EncouragementCard";
+import FeedbackNeko from "./FeedbackNeko";
 import FriendPostCardActions from "./FriendPostCardActions";
-import HelpfulSleepyNeko from "./HelpfulSleepyNeko";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 
@@ -94,7 +94,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                     !!pushRegistration &&
                     !showEncouragementCard &&
                     index === 0 && (
-                      <HelpfulSleepyNeko
+                      <FeedbackNeko
                         pos="absolute"
                         top={3 - NEKO_SIZE}
                         right="var(--mantine-spacing-lg)"

@@ -8,18 +8,16 @@ import { readingTimeFor } from "~/helpers/utils";
 import SingleDayFontHead from "./SingleDayFontHead";
 import SleepyNeko, { type SleepyNekoProps } from "./SleepyNeko";
 
-export interface HelpfulSleepyNekoProps
-  extends Omit<SleepyNekoProps, "onClick"> {}
+import classes from "./FeedbackNeko.module.css";
+
+export interface FeedbackNekoProps extends Omit<SleepyNekoProps, "onClick"> {}
 
 const LINES = [
   "it's me, neko, the feedback cat...",
   "tap on me to give feedback :)",
 ];
 
-const HelpfulSleepyNeko: FC<HelpfulSleepyNekoProps> = ({
-  style,
-  ...otherProps
-}) => {
+const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
   const { modals } = useModals();
   const [index, setIndex] = useState(-1);
   const line = LINES[index];
@@ -80,7 +78,7 @@ const HelpfulSleepyNeko: FC<HelpfulSleepyNekoProps> = ({
   );
 };
 
-export default HelpfulSleepyNeko;
+export default FeedbackNeko;
 
 interface FeedbackModalBodyProps {
   featureRequestsBoardToken: string;
@@ -126,7 +124,9 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
     <Stack gap="xs">
       <Button
         size="md"
+        variant="default"
         leftSection={<FeedbackIcon />}
+        className={classes.button}
         onClick={() => {
           setBoard("feature-requests");
         }}
@@ -135,7 +135,9 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
       </Button>
       <Button
         size="md"
+        variant="default"
         leftSection={<ReportIcon />}
+        className={classes.button}
         onClick={() => {
           setBoard("bugs");
         }}

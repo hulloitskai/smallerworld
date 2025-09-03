@@ -20,7 +20,7 @@ import { type Encouragement, type WorldPost } from "~/types";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
-import HelpfulSleepyNeko from "./HelpfulSleepyNeko";
+import FeedbackNeko from "./FeedbackNeko";
 import PostCard from "./PostCard";
 import PostForm from "./PostForm";
 
@@ -195,7 +195,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                   </Menu.Dropdown>
                 </Menu>
                 {!hideNeko && !!pushRegistration && (
-                  <HelpfulSleepyNeko
+                  <FeedbackNeko
                     pos="absolute"
                     top={3 - NEKO_SIZE}
                     right="var(--mantine-spacing-lg)"
