@@ -1,3 +1,5 @@
+import { useModals } from "@mantine/modals";
+
 import ReportIcon from "~icons/heroicons/hand-raised-20-solid";
 import FeedbackIcon from "~icons/heroicons/megaphone-20-solid";
 
@@ -18,6 +20,7 @@ const HelpfulSleepyNeko: FC<HelpfulSleepyNekoProps> = ({
   style,
   ...otherProps
 }) => {
+  const { modals } = useModals();
   const [index, setIndex] = useState(-1);
   const line = LINES[index];
   useEffect(() => {
@@ -46,7 +49,7 @@ const HelpfulSleepyNeko: FC<HelpfulSleepyNekoProps> = ({
         withArrow
         label={line}
         opened={!!line}
-        disabled={!line}
+        disabled={!line || !isEmpty(modals)}
         styles={{
           tooltip: {
             fontFamily: '"Single Day", Manrope, cursive',

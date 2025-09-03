@@ -41,11 +41,7 @@ const CannyTracking: FC = () => {
       };
       Canny(
         "identify",
-        {
-          appID: appId,
-          user,
-          authenticateLinks: false,
-        },
+        { appID: appId, user, authenticateLinks: false },
         () => {
           console.info("Identified Canny user", user);
         },
