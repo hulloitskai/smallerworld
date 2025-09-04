@@ -92,15 +92,21 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
   featureRequestsBoardToken,
   bugsBoardToken,
 }) => {
+  const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
 
   // == Canny SSO token
   const { data } = useRouteSWR<{ ssoToken: string }>(routes.canny.ssoToken, {
-    params: {
-      ...(currentFriend && {
-        friend_token: currentFriend.access_token,
-      }),
-    },
+    params:
+      currentFriend || currentUser
+        ? {
+            ...(currentFriend && {
+              query: {
+                friend_token: currentFriend.access_token,
+              },
+            }),
+          }
+        : null,
     descriptor: "load Canny SSO token",
     revalidateIfStale: false,
   });
@@ -115,7 +121,7 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
   // == Render canny board
   const [board, setBoard] = useState<"feature-requests" | "bugs" | null>(null);
   useEffect(() => {
-    if (!board || !ssoToken) {
+    if (!board) {
       return;
     }
     Canny("render", {
