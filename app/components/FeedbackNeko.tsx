@@ -66,7 +66,6 @@ const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
             const bugsBoardToken = requireMeta("canny-bugs-board-token");
             openModal({
               title: "give feedback <3",
-              fullScreen: true,
               children: (
                 <FeedbackModalBody
                   {...{ featureRequestsBoardToken, bugsBoardToken }}

@@ -44,3 +44,23 @@ module ActionController
     include CorrectMessageCapitalization
   end
 end
+
+module ActiveStorage
+  class Analyzer::ImageAnalyzer::Vips
+    module CorrectImageDimensions
+      extend T::Sig
+      extend T::Helpers
+
+      requires_ancestor { Kernel }
+
+      sig { params(image: Vips::Image).returns(T::Boolean) }
+      def rotated_image?(image)
+        orientation = image.get("exif-ifd0-Orientation").to_i
+        orientation.between?(5, 8)
+      rescue ::Vips::Error
+        false
+      end
+    end
+    prepend CorrectImageDimensions
+  end
+end

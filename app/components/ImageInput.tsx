@@ -18,12 +18,14 @@ import { type Image as ImageType, type Upload } from "~/types";
 import classes from "./ImageInput.module.css";
 import "@mantine/dropzone/styles.layer.css";
 
-const ACCEPTED_IMAGE_TYPES = [
+const CROPPABLE_IMAGE_TYPES = [
   "image/png",
   "image/jpeg",
   "image/jpg",
   "image/gif",
 ];
+
+const UNCROPPABLE_IMAGE_TYPES = ["image/webp"];
 
 export interface ImageInputProps
   extends Omit<
@@ -100,6 +102,12 @@ const ImageInput: FC<ImageInputProps> = ({
   const loading: boolean = uploading || (!!value && !image);
 
   const inputId = useId();
+  const accept = useMemo(() => {
+    if (cropToAspect) {
+      return CROPPABLE_IMAGE_TYPES;
+    }
+    return [...CROPPABLE_IMAGE_TYPES, ...UNCROPPABLE_IMAGE_TYPES];
+  }, [cropToAspect]);
   const {
     className: previewClassName,
     style: previewStyle,
@@ -124,7 +132,7 @@ const ImageInput: FC<ImageInputProps> = ({
         />
         <Dropzone
           className={classes.dropzone}
-          accept={ACCEPTED_IMAGE_TYPES}
+          {...{ accept }}
           multiple={false}
           onDrop={files => {
             const file = first(files);
