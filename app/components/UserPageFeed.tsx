@@ -96,7 +96,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                     index === 0 && (
                       <FeedbackNeko
                         pos="absolute"
-                        top={3 - NEKO_SIZE}
+                        top={(post.encouragement ? 36 : 3) - NEKO_SIZE}
                         right="var(--mantine-spacing-lg)"
                       />
                     )}

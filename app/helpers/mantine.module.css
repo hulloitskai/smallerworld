@@ -78,8 +78,22 @@
     }
   }
 
-  .modal[data-full-screen],
+  .modal[data-full-screen] {
+    .modalHeader {
+      padding-top: calc(
+        var(--mb-padding, var(--mantine-spacing-md)) +
+          var(--safe-area-inset-top, 0px)
+      );
+    }
+
+    .modalContent {
+      padding-bottom: var(--safe-area-inset-bottom, 0px);
+    }
+  }
+
   .modal:not([data-disable-auto-fullscreen]) {
+    --modal-border-radius: 0 !important;
+
     .modalHeader {
       @mixin smaller-than $mantine-breakpoint-xs {
         padding-top: calc(
@@ -102,8 +116,6 @@
         --modal-content-max-height: auto;
         --modal-content-height: 100dvh;
 
-        border-radius: 0px;
-        padding-top: var(--safe-area-inset-top, 0px);
         padding-bottom: var(--safe-area-inset-bottom, 0px);
       }
     }
