@@ -78,34 +78,33 @@
     }
   }
 
+  .modal[data-full-screen],
   .modal:not([data-disable-auto-fullscreen]) {
     .modalHeader {
       @mixin smaller-than $mantine-breakpoint-xs {
         padding-top: calc(
-          var(--mantine-spacing-sm) + var(--safe-area-inset-top, 0px)
+          var(--mb-padding, var(--mantine-spacing-md)) +
+            var(--safe-area-inset-top, 0px)
         );
       }
+    }
 
-      @mixin larger-than $mantine-breakpoint-xs {
-        padding-top: var(--mantine-spacing-sm);
+    .modalInner {
+      @mixin smaller-than $mantine-breakpoint-xs {
+        --modal-inner-y-offset: 0px;
+        --modal-inner-x-offset: 0px;
       }
+    }
 
-      .modalInner {
-        background: pink;
-        @mixin smaller-than $mantine-breakpoint-xs {
-          --modal-inner-y-offset: 0px;
-          --modal-inner-x-offset: 0px;
-        }
-      }
+    .modalContent {
+      @mixin smaller-than $mantine-breakpoint-xs {
+        --modal-content-flex: 0 0 100%;
+        --modal-content-max-height: auto;
+        --modal-content-height: 100dvh;
 
-      .modalContent {
-        @mixin smaller-than $mantine-breakpoint-xs {
-          --modal-content-flex: 0 0 100%;
-          --modal-content-max-height: auto;
-          --modal-content-height: 100dvh;
-
-          border-radius: 0px;
-        }
+        border-radius: 0px;
+        padding-top: var(--safe-area-inset-top, 0px);
+        padding-bottom: var(--safe-area-inset-bottom, 0px);
       }
     }
   }
