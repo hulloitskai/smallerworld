@@ -1,4 +1,4 @@
-import { Loader } from "@mantine/core";
+import { Loader, useComputedColorScheme } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import ChatIcon from "~icons/heroicons/chat-bubble-left-right-20-solid";
@@ -117,8 +117,9 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
     body: "about smaller world: ",
   });
 
-  // == Render canny board
+  // == Render Canny board
   const [board, setBoard] = useState<"feature-requests" | "bugs" | null>(null);
+  const colorScheme = useComputedColorScheme();
   useEffect(() => {
     if (!board) {
       return;
@@ -129,8 +130,9 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
           ? featureRequestsBoardToken
           : bugsBoardToken,
       ssoToken,
+      theme: colorScheme,
     });
-  }, [ssoToken, board, featureRequestsBoardToken, bugsBoardToken]);
+  }, [ssoToken, board, featureRequestsBoardToken, bugsBoardToken, colorScheme]);
 
   if (board) {
     return (
