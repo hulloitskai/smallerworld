@@ -1,12 +1,11 @@
-import { Affix, Text } from "@mantine/core";
+import { Affix } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
-import RequestInvitationIcon from "~icons/heroicons/hand-raised-20-solid";
-
+import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { useUserPageDialogOpened } from "~/helpers/userPages";
 import { type UserPageProps } from "~/pages/UserPage";
 
-import RequestInvitationDrawerModal from "./RequestInvitationDrawerModal";
+import RequestInvitationAlert from "./RequestInvitationAlert";
 
 import classes from "./UserPageRequestInvitationAlert.module.css";
 
@@ -18,76 +17,24 @@ export const UserPageRequestInvitationAlert: FC<
   const { user, invitationRequested } = usePageProps<UserPageProps>();
   const { modals } = useModals();
 
-  // == Drawer modal
-  const [showDrawerModal, setShowDrawerModal] = useState(false);
-
-  // == Auto-open modal
-  const queryParams = useQueryParams();
-  useEffect(() => {
-    if (queryParams.intent === "join" && !invitationRequested) {
-      setShowDrawerModal(true);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // == Page modal state
-  const pageDialogOpened = useUserPageDialogOpened(showDrawerModal);
+  const pageDialogOpened = useUserPageDialogOpened();
 
   return (
-    <>
-      <Affix className={classes.affix} position={{}} zIndex={180}>
-        <Transition
-          transition="pop"
-          mounted={isEmpty(modals) && !pageDialogOpened}
-          enterDelay={100}
-        >
-          {transitionStyle => (
-            <Alert
-              variant="filled"
-              icon={<NotificationIcon />}
-              title={
-                <>
-                  hear about what&apos;s *
-                  <span style={{ fontWeight: 900 }}>actually</span>* going on in
-                  my life :)
-                </>
-              }
-              className={classes.alert}
-              style={transitionStyle}
-            >
-              <Stack gap={8} align="start">
-                <Text inherit>
-                  get notified about my thoughts, ideas, and invitations to
-                  events i&apos;m going to.
-                </Text>
-                <Button
-                  className={classes.button}
-                  variant="white"
-                  size="compact-sm"
-                  leftSection={<RequestInvitationIcon />}
-                  disabled={invitationRequested}
-                  onClick={() => {
-                    setShowDrawerModal(true);
-                  }}
-                >
-                  {invitationRequested
-                    ? "invitation requested"
-                    : "request invitation"}
-                </Button>
-              </Stack>
-            </Alert>
-          )}
-        </Transition>
-      </Affix>
-      <RequestInvitationDrawerModal
-        opened={showDrawerModal}
-        onClose={() => {
-          setShowDrawerModal(false);
-        }}
-        onJoinRequestCreated={() => {
-          router.reload({ only: ["invitationRequested"], async: true });
-        }}
-        {...{ user }}
-      />
-    </>
+    <Affix className={classes.affix} position={{}} zIndex={180}>
+      <Transition
+        transition="pop"
+        mounted={isEmpty(modals) && !pageDialogOpened}
+        enterDelay={100}
+      >
+        {transitionStyle => (
+          <RequestInvitationAlert
+            {...{ user, invitationRequested }}
+            className={classes.alert}
+            style={transitionStyle}
+          />
+        )}
+      </Transition>
+    </Affix>
   );
 };

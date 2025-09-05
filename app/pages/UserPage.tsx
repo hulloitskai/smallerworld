@@ -20,12 +20,12 @@ import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type Encouragement, type User } from "~/types";
+import { type Encouragement, type UserProfile } from "~/types";
 
 import classes from "./UserPage.module.css";
 
 export interface UserPageProps extends SharedPageProps {
-  user: User;
+  user: UserProfile;
   replyToNumber: string | null;
   lastSentEncouragement: Encouragement | null;
   invitationRequested: boolean;
@@ -63,7 +63,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   // == User theme
   useUserTheme(user.theme);
 
-  // == Auto-open join modal
+  // == Installation instructions modal
   const queryParams = useQueryParams();
   const { modals } = useModals();
   useEffect(() => {

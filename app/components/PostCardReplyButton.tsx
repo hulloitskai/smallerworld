@@ -7,12 +7,12 @@ import {
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
 import { mutateUserPagePosts } from "~/helpers/userPages";
-import { type User, type UserPost } from "~/types";
+import { type UserPost, type UserProfile } from "~/types";
 
 import classes from "./PostCardReplyButton.module.css";
 
 export interface PostCardReplyButtonProps extends ButtonProps {
-  user: User;
+  user: UserProfile;
   post: UserPost;
   replyToNumber?: string | null;
 }

@@ -1,4 +1,5 @@
 import { Image, Popover, Text } from "@mantine/core";
+import { truncate } from "lodash-es";
 
 import MailIcon from "~icons/heroicons/envelope-open-20-solid";
 
@@ -7,16 +8,18 @@ import logoSrc from "~/assets/images/logo.png";
 import AppLayout from "~/components/AppLayout";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
 import PostCard from "~/components/PostCard";
+import RequestInvitationAlert from "~/components/RequestInvitationAlert";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { type FriendProfile, type User, type UserPost } from "~/types";
+import { type FriendProfile, type UserPost, type UserProfile } from "~/types";
 
 import classes from "./PostSharePage.module.css";
 import userPageClasses from "./UserPage.module.css";
 
 export interface PostSharePageProps extends SharedPageProps {
-  user: User;
+  user: UserProfile;
   post: UserPost;
   sharer: FriendProfile | null;
+  invitationRequested: boolean;
 }
 
 const ICON_SIZE = 96;
@@ -25,6 +28,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
   user,
   post,
   sharer,
+  invitationRequested,
 }) => {
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -124,7 +128,12 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
       </Alert>
       <PostCard
         {...{ post }}
+        expanded
         actions={<FriendPostCardActions {...{ user, post }} />}
+      />
+      <RequestInvitationAlert
+        title="join my world to keep seeing posts like this one :)"
+        {...{ user, invitationRequested }}
       />
     </Stack>
   );
@@ -132,7 +141,10 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
 
 PostSharePage.layout = page => (
   <AppLayout<PostSharePageProps>
-    title={({ user }) => `${possessive(user.name)} world`}
+    title={({ post, user }) => [
+      `${possessive(user.name)} world`,
+      postTitleSnippet(post),
+    ]}
     withContainer
     containerSize="xs"
     withGutter
@@ -142,3 +154,6 @@ PostSharePage.layout = page => (
 );
 
 export default PostSharePage;
+
+const postTitleSnippet = (post: UserPost) =>
+  truncate(post.title ?? post.snippet, { length: 24 });

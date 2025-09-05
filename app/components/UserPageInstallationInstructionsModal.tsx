@@ -1,9 +1,9 @@
-import { type User } from "~/types";
+import { type UserProfile } from "~/types";
 
 import { openInstallationInstructionsModal } from "./InstallationInstructionsModal";
 
 export interface UserPageInstallationInstructionsModalProps {
-  user: User;
+  user: UserProfile;
 }
 
 export const openUserPageInstallationInstructionsModal = ({

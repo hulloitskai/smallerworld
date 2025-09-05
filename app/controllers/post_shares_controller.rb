@@ -6,6 +6,7 @@ class PostSharesController < ApplicationController
   # GET /post_shares/:id
   def show
     share = load_share(scope: PostShare.includes(:post, :post_author, :sharer))
+    user = share.post_author!
     post = share.post!
     repliers = PostReplyReceipt
       .where(post:)
@@ -13,10 +14,16 @@ class PostSharesController < ApplicationController
       .count(:friend_id)
     user_post = UserPost.new(post:, seen: false, replied: false, repliers:)
     sharer = share.sharer!
+    if (current_user = self.current_user)
+      invitation_requested = user
+        .join_requests
+        .exists?(phone_number: current_user.phone_number)
+    end
     render(inertia: "PostSharePage", props: {
-      user: UserSerializer.one(share.post_author!),
+      user: UserSerializer.one(user),
       post: UserPostSerializer.one(user_post),
       sharer: (FriendProfileSerializer.one(sharer) if sharer.is_a?(Friend)),
+      "invitationRequested" => invitation_requested || false,
     })
   end
 

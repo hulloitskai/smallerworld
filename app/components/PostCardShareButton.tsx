@@ -2,12 +2,12 @@ import { type ActionIconProps } from "@mantine/core";
 
 import ShareIcon from "~icons/heroicons/arrow-up-on-square-20-solid";
 
-import { type PostShare, type User, type UserPost } from "~/types";
+import { type PostShare, type UserPost, type UserProfile } from "~/types";
 
 import classes from "./PostCardShareButton.module.css";
 
 export interface PostCardShareButtonProps extends ActionIconProps {
-  user: User;
+  user: UserProfile;
   post: UserPost;
 }
 

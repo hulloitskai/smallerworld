@@ -1,9 +1,12 @@
 import { Text } from "@mantine/core";
 import { InputBase } from "@mantine/core";
-import parsePhone from "phone";
 import { IMaskInput } from "react-imask";
 
-import { mustParsePhoneFromParts, parsePhoneFromParts } from "~/helpers/phone";
+import {
+  mustParsePhoneFromParts,
+  parsePhoneFromParts,
+  parsePhoneIntoParts,
+} from "~/helpers/phone";
 import { type Invitation, type User } from "~/types";
 
 export interface AcceptInvitationFormProps extends BoxProps {
@@ -21,17 +24,8 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
   ...otherProps
 }) => {
   const initialValues = useMemo(() => {
-    const existingPhoneNumber = initialPhoneNumber;
-    if (existingPhoneNumber) {
-      const { countryCode, phoneNumber } = parsePhone(existingPhoneNumber);
-      let nationalPhoneNumber = phoneNumber ?? "";
-      if (countryCode && nationalPhoneNumber.startsWith(countryCode)) {
-        nationalPhoneNumber = nationalPhoneNumber.slice(countryCode.length);
-      }
-      return {
-        country_code: countryCode ?? "+1",
-        national_phone_number: nationalPhoneNumber,
-      };
+    if (initialPhoneNumber) {
+      return parsePhoneIntoParts(initialPhoneNumber);
     }
     return {
       country_code: "+1",

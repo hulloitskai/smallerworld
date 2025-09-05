@@ -65,7 +65,9 @@ class WorldsController < ApplicationController
       allow_friend_sharing
     ])
     if current_user.update(**user_params)
-      render(json: { user: UserSerializer.one(current_user) })
+      render(json: {
+        user: UserSerializer.one(current_user),
+      })
     else
       render(
         json: { errors: current_user.form_errors },

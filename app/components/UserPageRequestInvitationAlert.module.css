@@ -6,26 +6,6 @@
 }
 
 .alert {
-  box-shadow: var(--mantine-shadow-md);
   max-width: var(--modal-size-md);
   margin-inline: auto;
-
-  :global(.mantine-Alert-icon) {
-    margin-right: 8px;
-  }
-
-  :global(.mantine-Alert-title) {
-    font-weight: 600 !important;
-  }
-}
-
-.button {
-  flex-shrink: 0;
-  margin-bottom: 1px;
-
-  :global(.mantine-Button-section) {
-    &[data-position="left"] {
-      margin-right: rem(6);
-    }
-  }
 }

@@ -4,10 +4,11 @@ import { IMaskInput } from "react-imask";
 
 import RequestInvitationIcon from "~icons/heroicons/hand-raised-20-solid";
 
-import { type JoinRequest, type User } from "~/types";
+import { parsePhoneIntoParts } from "~/helpers/phone";
+import { type JoinRequest, type UserProfile } from "~/types";
 
 export interface RequestInvitationFormProps extends BoxProps {
-  user: User;
+  user: UserProfile;
   onJoinRequestCreated?: (joinRequest: JoinRequest) => void;
 }
 
@@ -16,39 +17,65 @@ const RequestInvitationForm: FC<RequestInvitationFormProps> = ({
   onJoinRequestCreated,
   ...otherProps
 }) => {
-  const { submit, getInputProps, setFieldValue, values, submitting, data } =
-    useForm({
-      action: routes.users.requestInvitation,
-      params: { id: user.id },
-      descriptor: "submit invitation request",
-      initialValues: {
-        name: "",
-        country_code: "+1",
-        phone_without_country_code: "",
-      },
-      transformValues: ({ name, country_code, phone_without_country_code }) => {
-        const { phoneNumber } = parsePhone(
-          [country_code, phone_without_country_code].join(" "),
-        );
-        return {
-          join_request: {
-            name,
-            phone_number: phoneNumber,
-          },
-        };
-      },
-      onSuccess: ({ joinRequest }: { joinRequest: JoinRequest }) => {
-        toast.success("invitation request sent!", {
-          description: "we'll text you when you're invited :)",
-        });
-        onJoinRequestCreated?.(joinRequest);
-      },
-    });
+  const currentUser = useCurrentUser();
+  const initialValues = useMemo(() => {
+    if (currentUser) {
+      const { name, phone_number } = currentUser;
+      const { country_code, national_phone_number } =
+        parsePhoneIntoParts(phone_number);
+      return {
+        name,
+        country_code,
+        national_phone_number,
+      };
+    }
+    return {
+      name: "",
+      country_code: "+1",
+      national_phone_number: "",
+    };
+  }, [currentUser]);
+  const {
+    submit,
+    getInputProps,
+    setFieldValue,
+    values,
+    submitting,
+    data,
+    setInitialValues,
+    reset,
+  } = useForm({
+    action: routes.users.requestInvitation,
+    params: { id: user.id },
+    descriptor: "submit invitation request",
+    initialValues,
+    transformValues: ({ name, country_code, national_phone_number }) => {
+      const { phoneNumber } = parsePhone(
+        [country_code, national_phone_number].join(" "),
+      );
+      return {
+        join_request: {
+          name,
+          phone_number: phoneNumber,
+        },
+      };
+    },
+    onSuccess: ({ joinRequest }: { joinRequest: JoinRequest }) => {
+      toast.success("invitation request sent!", {
+        description: "we'll text you when you're invited :)",
+      });
+      onJoinRequestCreated?.(joinRequest);
+    },
+  });
+  useDidUpdate(() => {
+    setInitialValues(initialValues);
+    reset();
+  }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
   const filled = useFieldsFilled(
     values,
     "name",
     "country_code",
-    "phone_without_country_code",
+    "national_phone_number",
   );
   const { joinRequest } = data ?? {};
 
@@ -59,7 +86,7 @@ const RequestInvitationForm: FC<RequestInvitationFormProps> = ({
           <Stack gap={8}>
             <TextInput label="your name" {...getInputProps("name")} />
             <InputBase
-              {...getInputProps("phone_without_country_code")}
+              {...getInputProps("national_phone_number")}
               component={IMaskInput}
               mask="(000) 000-0000"
               type="tel"
@@ -67,7 +94,7 @@ const RequestInvitationForm: FC<RequestInvitationFormProps> = ({
               placeholder="(___) ___ ____"
               autoComplete="mobile tel-national"
               onAccept={value => {
-                setFieldValue("phone_without_country_code", value);
+                setFieldValue("national_phone_number", value);
               }}
               required
               disabled={!!joinRequest}

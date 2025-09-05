@@ -23,3 +23,16 @@ export const mustParsePhoneFromParts = (
   }
   return phoneNumber;
 };
+
+export const parsePhoneIntoParts = (phoneNumber: string): PhoneParts => {
+  const { countryCode, phoneNumber: formattedPhoneNumber } =
+    parsePhone(phoneNumber);
+  let nationalPhoneNumber = formattedPhoneNumber ?? "";
+  if (countryCode && nationalPhoneNumber.startsWith(countryCode)) {
+    nationalPhoneNumber = nationalPhoneNumber.slice(countryCode.length);
+  }
+  return {
+    country_code: countryCode ?? "+1",
+    national_phone_number: nationalPhoneNumber,
+  };
+};

@@ -12,7 +12,7 @@ import {
   isMobileChrome,
   useBrowserDetection,
 } from "~/helpers/browsers";
-import { type User } from "~/types";
+import { type UserProfile } from "~/types";
 
 import CurrentUrlQRCode from "./CurrentUrlQRCode";
 import HomescreenPreviewWithIconCustomization, {
@@ -44,7 +44,7 @@ interface ModalBodyProps
     "pageName" | "pageIcon"
   > {
   modalId: string;
-  user?: User;
+  user?: UserProfile;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

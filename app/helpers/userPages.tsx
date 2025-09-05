@@ -7,7 +7,7 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
-import { type Friend, type User, type UserPost } from "~/types";
+import { type Friend, type UserPost, type UserProfile } from "~/types";
 
 import { openUrlInMobileSafari } from "./browsers";
 import { queryParamsFromPath } from "./inertia/routing";
@@ -109,7 +109,7 @@ export const useUserPageDialogOpened = (opened?: boolean): boolean => {
 };
 
 export const openUserPageInstallationInstructionsInMobileSafari = (
-  user: User,
+  user: UserProfile,
   currentFriend: Friend,
 ) => {
   const instructionsQuery: Record<string, string> = {

@@ -22,11 +22,11 @@ class UsersController < ApplicationController
       last_sent_encouragement = friend.latest_visible_encouragement
     end
     props = {
-      user: UserSerializer.one(user),
+      user: UserProfileSerializer.one(user),
       "replyToNumber" => reply_to_number,
       "lastSentEncouragement" => EncouragementSerializer
         .one_if(last_sent_encouragement),
-      "invitationRequested" => invitation_requested,
+      "invitationRequested" => invitation_requested || false,
       "hideNeko" => user.hide_neko,
       "allowFriendSharing" => user.allow_friend_sharing,
     }

@@ -1,15 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class UserSerializer < ApplicationSerializer
+class UserSerializer < UserProfileSerializer
   # == Attributes
-  identifier
-  attributes :created_at,
-             :name,
-             :handle,
-             theme: { type: "UserTheme", nullable: true },
-             supported_features: { type: "Feature[]" }
-
-  # == Associations
-  has_one :page_icon_image, as: :page_icon, serializer: ImageSerializer
+  attributes :created_at, :phone_number
 end

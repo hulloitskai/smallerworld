@@ -2,7 +2,7 @@ import { Popover, Text } from "@mantine/core";
 
 import { NEKO_SIZE } from "~/helpers/neko";
 import { confetti, particlePositionFor } from "~/helpers/particles";
-import { type Encouragement, type Friend, type User } from "~/types";
+import { type Encouragement, type Friend, type UserProfile } from "~/types";
 
 import FeedbackNeko from "./FeedbackNeko";
 
@@ -12,7 +12,7 @@ export interface EncouragementCardProps
   extends BoxProps,
     Pick<EncouragementPopoverProps, "onEncouragementCreated"> {
   currentFriend: Friend;
-  user: User;
+  user: UserProfile;
   lastSentEncouragement: Encouragement | null;
   showNeko?: boolean;
 }

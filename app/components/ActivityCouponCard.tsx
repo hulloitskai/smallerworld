@@ -9,7 +9,7 @@ import {
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
 import { confetti } from "~/helpers/particles";
-import { type ActivityCoupon, type Friend, type User } from "~/types";
+import { type ActivityCoupon, type Friend, type UserProfile } from "~/types";
 
 import activityCardClasses from "./ActivityCard.module.css";
 import classes from "./ActivityCouponCard.module.css";
@@ -17,7 +17,7 @@ import classes from "./ActivityCouponCard.module.css";
 export interface ActivityCouponCardProps extends BoxProps {
   currentFriend: Friend;
   replyToNumber: string;
-  user: User;
+  user: UserProfile;
   coupon: ActivityCoupon;
   onCouponRedeemed: () => void;
 }

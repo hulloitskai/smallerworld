@@ -21,6 +21,7 @@ export interface PostCardProps extends BoxProps {
   blurContent?: boolean;
   hideEncouragement?: boolean;
   focus?: boolean;
+  expanded?: boolean;
   highlightType?: boolean;
   onTypeClick?: () => void;
 }
@@ -35,6 +36,7 @@ const PostCard: FC<PostCardProps> = ({
   blurContent,
   hideEncouragement,
   focus,
+  expanded: forceExpanded = false,
   highlightType,
   onTypeClick,
   className,
@@ -66,7 +68,7 @@ const PostCard: FC<PostCardProps> = ({
   }, [focus, isStandalone, outOfPWAScope, pushRegistration]);
 
   // == Spoiler
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(forceExpanded);
 
   return (
     <Stack className={cn("PostCard", className)} gap={6} {...otherProps}>
