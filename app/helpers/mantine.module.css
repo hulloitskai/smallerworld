@@ -92,8 +92,6 @@
   }
 
   .modal:not([data-disable-auto-fullscreen]) {
-    --modal-border-radius: 0 !important;
-
     .modalHeader {
       @mixin smaller-than $mantine-breakpoint-xs {
         padding-top: calc(
@@ -116,6 +114,7 @@
         --modal-content-max-height: auto;
         --modal-content-height: 100dvh;
 
+        border-radius: 0px;
         padding-bottom: var(--safe-area-inset-bottom, 0px);
       }
     }
