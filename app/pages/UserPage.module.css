@@ -10,6 +10,15 @@
   box-shadow: var(--mantine-shadow-lg);
 }
 
+.publicProfileAlert {
+  margin-bottom: var(--mantine-spacing-xl);
+  align-self: stretch;
+
+  :global(.mantine-Alert-body) {
+    row-gap: 4px;
+  }
+}
+
 .installModal {
   :global(.mantine-Modal-header) {
     min-height: rem(40);

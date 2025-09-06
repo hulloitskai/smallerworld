@@ -78,13 +78,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const body = (
     <Stack>
       {currentUser?.id === user.id && !queryParams.friend_token && (
-        <Alert
-          mb="xl"
-          styles={{
-            root: { alignSelf: "stretch" },
-            body: { rowGap: rem(4) },
-          }}
-        >
+        <Alert className={classes.publicProfileAlert}>
           <Group gap="xs" justify="space-between">
             <Group align="start" gap={8}>
               <Box component={PublicIcon} style={{ flexShrink: 0 }} mt={4} />
@@ -131,7 +125,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             })}
           />
           <Stack gap={4}>
-            <Title className={classes.pageTitle} size="h2">
+            <Title size="h2" className={classes.pageTitle}>
               {possessive(user.name)} world
             </Title>
             {isStandalone && !outOfPWAScope ? (

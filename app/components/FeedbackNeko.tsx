@@ -66,10 +66,6 @@ const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
             const bugsBoardToken = requireMeta("canny-bugs-board-token");
             openModal({
               title: "give feedback <3",
-              classNames: {
-                content: classes.modalContent,
-                body: classes.modalBody,
-              },
               children: (
                 <FeedbackModalBody
                   {...{ featureRequestsBoardToken, bugsBoardToken }}
@@ -139,19 +135,7 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
   }, [ssoToken, board, featureRequestsBoardToken, bugsBoardToken, colorScheme]);
 
   if (board) {
-    return (
-      <Box data-canny className={classes.cannyContainer}>
-        <Center
-          pos="absolute"
-          left={0}
-          top={54}
-          right={0}
-          style={{ zIndex: -1 }}
-        >
-          <Loader />
-        </Center>
-      </Box>
-    );
+    return <div data-canny className={classes.cannyContainer} />;
   }
   return (
     <Stack gap="xs">
