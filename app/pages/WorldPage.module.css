@@ -137,3 +137,14 @@
   border-radius: var(--mantine-radius-xl);
   display: block;
 }
+
+.pushNotificationsDisabledAlert {
+  :global(.mantine-Alert-icon) {
+    font-family: var(--font-family-emoji);
+    margin-right: 8px;
+  }
+
+  :global(.mantine-Alert-title) {
+    font-weight: 600 !important;
+  }
+}

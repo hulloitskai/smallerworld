@@ -29,6 +29,7 @@ const UserPageNotificationsButtonCard: FC<
     subscribe,
     subscribing,
     supported: webPushSupported,
+    permission: webPushPermission,
     loading,
     subscribeError,
   } = useWebPush();
@@ -49,7 +50,8 @@ const UserPageNotificationsButtonCard: FC<
 
   return (
     <>
-      {webPushSupported === false ? null : pushSubscription === undefined ||
+      {webPushSupported === false ||
+      webPushPermission === "denied" ? null : pushSubscription === undefined ||
         pushRegistration === undefined ? (
         <Button loading>Placeholder button</Button>
       ) : pushSubscription === null || pushRegistration === null ? (

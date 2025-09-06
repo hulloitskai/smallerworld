@@ -16,12 +16,14 @@ const WorldPageNotificationsButton: FC = () => {
     subscribing,
     subscribeError = new Error("meow meow meow"),
     supported: webPushSupported,
+    permission: webPushPermission,
     loading,
   } = useWebPush();
 
   return (
     <>
-      {webPushSupported === false ? null : pushSubscription === undefined ||
+      {webPushSupported === false ||
+      webPushPermission === "denied" ? null : pushSubscription === undefined ||
         pushRegistration === undefined ? (
         <ActionIcon size="lg" variant="light" loading>
           <NotificationIcon />

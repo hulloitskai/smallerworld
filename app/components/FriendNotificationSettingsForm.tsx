@@ -89,7 +89,7 @@ export const FriendNotificationSettingsFormInputs: FC<
       {...otherProps}
     >
       <Chip.Group multiple {...getInputProps("subscribed_post_types")}>
-        <Group justify="center" gap={4} wrap="wrap">
+        <Group justify="center" gap={6} wrap="wrap" maw={340} mx="auto">
           {POST_TYPES.map(postType => (
             <Chip key={postType} value={postType} className={classes.chip}>
               <Box

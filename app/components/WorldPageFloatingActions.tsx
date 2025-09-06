@@ -35,8 +35,8 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
 }) => {
   const { hideStats, hideNeko, pausedFriendIds, recentlyPausedFriendIds } =
     usePageProps<WorldPageProps>();
-  const { isStandalone } = usePWA();
-  const { pushRegistration } = useWebPush();
+  const { isStandalone, outOfPWAScope } = usePWA();
+  const { pushRegistration, permission: webPushPermission } = useWebPush();
   const { modals } = useModals();
 
   // == Load encouragements
@@ -67,7 +67,10 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   const newPostDraftType = useSavedDraftType();
 
   const actionsVisible =
-    (isStandalone === false || pushRegistration !== null) &&
+    (isStandalone === false ||
+      outOfPWAScope ||
+      !!pushRegistration ||
+      webPushPermission === "denied") &&
     isEmpty(modals) &&
     !pinnedPostsDrawerModalOpened;
   return (

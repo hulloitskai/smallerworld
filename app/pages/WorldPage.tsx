@@ -52,7 +52,11 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   pendingJoinRequests,
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
-  const { pushRegistration, supported: webPushSupported } = useWebPush();
+  const {
+    pushRegistration,
+    supported: webPushSupported,
+    permission: webPushPermission,
+  } = useWebPush();
 
   // == Reload page props on window focus
   useWindowEvent("focus", () => {
@@ -116,7 +120,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   }, [posts]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Search
-  const [showSearch, setShowSearch] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
 
   // == Add friend modal
   const [addFriendModalOpened, setAddFriendModalOpened] = useState(false);
@@ -144,65 +148,70 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               {possessive(currentUser.name)} world
             </Title>
             <Group gap="xs" justify="center">
-              <Transition
-                transition="slide-up"
-                mounted={
-                  currentUser.supported_features.includes("search") &&
-                  !showSearch
-                }
-              >
-                {transitionStyle => (
-                  <ActionIcon
-                    size="lg"
-                    variant="light"
-                    style={transitionStyle}
-                    onClick={() => {
-                      setShowSearch(true);
-                    }}
-                  >
-                    <SearchIcon />
-                  </ActionIcon>
-                )}
-              </Transition>
               {(!isStandalone ||
                 outOfPWAScope ||
-                !pushRegistration ||
-                webPushSupported === false) && (
-                <Button
-                  component={Link}
-                  href={routes.worldFriends.index.path()}
-                  className={classes.friendButton}
-                  leftSection={
-                    !isEmpty(latestFriendEmojis) ? (
-                      <Avatar.Group className={classes.avatarGroup}>
-                        {latestFriendEmojis.map((emoji, index) => (
-                          <Avatar key={index} size="sm">
-                            {emoji ? (
-                              <Box className={classes.friendEmoji}>{emoji}</Box>
-                            ) : (
-                              <Box
-                                component={UserIcon}
-                                className={classes.friendIcon}
-                              />
-                            )}
-                          </Avatar>
-                        ))}
-                      </Avatar.Group>
-                    ) : (
-                      <FriendsIcon />
-                    )
-                  }
-                  onClick={event => {
-                    if (isEmpty(latestFriendEmojis)) {
-                      event.preventDefault();
-                      setAddFriendModalOpened(true);
+                pushRegistration !== null ||
+                webPushSupported === false ||
+                webPushPermission === "denied") && (
+                <>
+                  <Transition
+                    transition="slide-up"
+                    mounted={
+                      currentUser.supported_features.includes("search") &&
+                      !searchActive
                     }
-                  }}
-                >
-                  {!isEmpty(latestFriendEmojis)
-                    ? "your friends"
-                    : "invite a friend!"}
-                </Button>
+                  >
+                    {transitionStyle => (
+                      <ActionIcon
+                        size="lg"
+                        variant="light"
+                        style={transitionStyle}
+                        onClick={() => {
+                          setSearchActive(true);
+                        }}
+                      >
+                        <SearchIcon />
+                      </ActionIcon>
+                    )}
+                  </Transition>
+                  <Button
+                    component={Link}
+                    href={routes.worldFriends.index.path()}
+                    className={classes.friendButton}
+                    leftSection={
+                      !isEmpty(latestFriendEmojis) ? (
+                        <Avatar.Group className={classes.avatarGroup}>
+                          {latestFriendEmojis.map((emoji, index) => (
+                            <Avatar key={index} size="sm">
+                              {emoji ? (
+                                <Box className={classes.friendEmoji}>
+                                  {emoji}
+                                </Box>
+                              ) : (
+                                <Box
+                                  component={UserIcon}
+                                  className={classes.friendIcon}
+                                />
+                              )}
+                            </Avatar>
+                          ))}
+                        </Avatar.Group>
+                      ) : (
+                        <FriendsIcon />
+                      )
+                    }
+                    onClick={event => {
+                      if (isEmpty(latestFriendEmojis)) {
+                        event.preventDefault();
+                        setAddFriendModalOpened(true);
+                      }
+                    }}
+                  >
+                    {!isEmpty(latestFriendEmojis)
+                      ? "your friends"
+                      : "invite a friend!"}
+                  </Button>
+                </>
               )}
               {isStandalone && !outOfPWAScope && (
                 <WorldPageNotificationsButton />
@@ -282,7 +291,40 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           </Menu.Dropdown>
         </Menu>
       </Box>
-      {(!isStandalone || outOfPWAScope || pushRegistration !== null) &&
+      {isStandalone && webPushPermission === "denied" && (
+        <Alert
+          icon="💔"
+          title={
+            <>
+              you&apos;re using smaller world with push notifications disabled
+            </>
+          }
+          className={classes.pushNotificationsDisabledAlert}
+        >
+          <Stack gap={2} lh={1.3}>
+            <Text inherit>
+              you won&apos;t know when friends send you writing prompts or react
+              to your posts{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-family-emoji)",
+                  marginLeft: rem(2),
+                }}
+              >
+                😢
+              </span>
+            </Text>
+            <Text inherit fz="xs" c="dimmed">
+              to enable push notifications, please go to your device settings
+              and enable notifications for smaller world.
+            </Text>
+          </Stack>
+        </Alert>
+      )}
+      {(!isStandalone ||
+        outOfPWAScope ||
+        pushRegistration !== null ||
+        webPushPermission === "denied") &&
         (hasOneUserCreatedPost === false ||
           (!!latestFriendEmojis && latestFriendEmojis.length < 3)) && (
           <Alert
@@ -341,15 +383,16 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         )}
       <Box pos="relative">
         <WorldPageFeed
-          {...{ showSearch }}
+          {...{ showSearch: searchActive }}
           hideSearch={() => {
-            setShowSearch(false);
+            setSearchActive(false);
           }}
         />
         {isStandalone &&
           !outOfPWAScope &&
           !pushRegistration &&
-          webPushSupported !== false && (
+          webPushSupported !== false &&
+          webPushPermission !== "denied" && (
             <>
               <SingleDayFontHead />
               <Overlay backgroundOpacity={0} blur={3}>
@@ -375,7 +418,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           isStandalone &&
           !outOfPWAScope &&
           !pushRegistration &&
-          webPushSupported !== false
+          webPushSupported !== false &&
+          webPushPermission !== "denied"
         }
       >
         {body}

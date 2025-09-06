@@ -16,6 +16,7 @@ export interface WebPushProviderProps extends PropsWithChildren {}
 
 const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
   const supported = useWebPushSupported();
+  const permission = useWebPushPermission();
   const [pushSubscription, setPushSubscription] = useState<
     PushSubscription | undefined | null
   >();
@@ -61,6 +62,7 @@ const WebPushProvider: FC<WebPushProviderProps> = ({ children }) => {
     <WebPushContext.Provider
       value={{
         supported,
+        permission,
         pushSubscription: pushSubscriptionIfSupported,
         pushRegistration,
         subscribe,
@@ -82,31 +84,37 @@ export default WebPushProvider;
 const useWebPushSupported = (): boolean | undefined => {
   const [supported, setSupported] = useState<boolean | undefined>();
   useEffect(() => {
-    setSupported(
-      "Notification" in window && Notification.permission !== "denied",
-    );
-    if ("Notification" in window) {
-      const handlePermissionChange = () => {
-        setSupported(Notification.permission === "granted");
-      };
-      const permissionRef: { current: PermissionStatus | null } = {
-        current: null,
-      };
-      void navigator.permissions
-        .query({ name: "notifications" })
-        .then(permission => {
-          permissionRef.current = permission;
-          permission.addEventListener("change", handlePermissionChange);
-        });
-      return () => {
-        const permission = permissionRef.current;
-        if (permission) {
-          permission.removeEventListener("change", handlePermissionChange);
-        }
-      };
-    }
+    setSupported("Notification" in window);
   }, []);
   return supported;
+};
+
+const useWebPushPermission = (): NotificationPermission | undefined => {
+  const [permission, setPermission] = useState<
+    NotificationPermission | undefined
+  >(undefined);
+  useEffect(() => {
+    setPermission(Notification.permission);
+    const permissionRef: { current: PermissionStatus | null } = {
+      current: null,
+    };
+    const handlePermissionChange = () => {
+      setPermission(Notification.permission);
+    };
+    void navigator.permissions
+      .query({ name: "notifications" })
+      .then(permission => {
+        permissionRef.current = permission;
+        permission.addEventListener("change", handlePermissionChange);
+      });
+    return () => {
+      const permission = permissionRef.current;
+      if (permission) {
+        permission.removeEventListener("change", handlePermissionChange);
+      }
+    };
+  }, []);
+  return permission;
 };
 
 const getPushManager = async (): Promise<PushManager> => {

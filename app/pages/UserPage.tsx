@@ -39,7 +39,11 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
-  const { pushRegistration, supported: webPushSupported } = useWebPush();
+  const {
+    pushRegistration,
+    supported: webPushSupported,
+    permission: webPushPermission,
+  } = useWebPush();
 
   // == Reload page props on window focus
   useWindowEvent("focus", () => {
@@ -128,25 +132,22 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             <Title size="h2" className={classes.pageTitle}>
               {possessive(user.name)} world
             </Title>
-            {isStandalone && !outOfPWAScope ? (
-              <>
-                {currentFriend && (
-                  <Group gap="xs" justify="center">
-                    <UserPageNotificationsButtonCard {...{ currentFriend }} />
-                    {pushRegistration && (
-                      <UserPageRefreshButton userId={user.id} />
-                    )}
-                  </Group>
-                )}
-              </>
-            ) : isStandalone === false || outOfPWAScope ? (
-              <Group justify="center" gap={8}>
-                <UserPageInvitationsButton />
-              </Group>
-            ) : (
+            {!currentFriend ? null : isStandalone === undefined ? (
               <Skeleton style={{ alignSelf: "center", width: "unset" }}>
                 <Button>some placeholder</Button>
               </Skeleton>
+            ) : isStandalone &&
+              !outOfPWAScope &&
+              webPushPermission !== "denied" ? (
+              <Group gap="xs" justify="center">
+                <UserPageNotificationsButtonCard {...{ currentFriend }} />
+                {pushRegistration && <UserPageRefreshButton userId={user.id} />}
+              </Group>
+            ) : (
+              <Group gap="xs" justify="center">
+                <UserPageInvitationsButton />
+                {isStandalone && <UserPageRefreshButton userId={user.id} />}
+              </Group>
             )}
           </Stack>
         </Stack>
@@ -195,12 +196,43 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
           </Popover>
         )}
       </Box>
+      {isStandalone && webPushPermission === "denied" && (
+        <Alert
+          icon="💔"
+          title={
+            <>
+              you&apos;re using smaller world with push notifications disabled
+            </>
+          }
+          className={classes.pushNotificationsDisabledAlert}
+        >
+          <Stack gap={2} lh={1.3}>
+            <Text inherit>
+              enable notifications to be a part of {possessive(user.name)}{" "}
+              support system, and receive timely hangout invitations{" "}
+              <span
+                style={{
+                  fontFamily: "var(--font-family-emoji)",
+                  marginLeft: rem(2),
+                }}
+              >
+                😎
+              </span>
+            </Text>
+            <Text inherit fz="xs" c="dimmed">
+              to enable push notifications, please go to your device settings
+              and enable notifications for smaller world.
+            </Text>
+          </Stack>
+        </Alert>
+      )}
       <Box pos="relative">
         <UserPageFeed />
         {isStandalone &&
           !outOfPWAScope &&
           !pushRegistration &&
-          webPushSupported !== false && (
+          webPushSupported !== false &&
+          webPushPermission !== "denied" && (
             <>
               <SingleDayFontHead />
               <Overlay backgroundOpacity={0} blur={3}>
@@ -226,7 +258,8 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
           isStandalone &&
           !outOfPWAScope &&
           !pushRegistration &&
-          webPushSupported !== false
+          webPushSupported !== false &&
+          webPushPermission !== "denied"
         }
       >
         {body}

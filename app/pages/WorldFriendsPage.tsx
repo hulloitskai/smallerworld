@@ -64,7 +64,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
 
   // == Search friends
-  const [showSearch, setShowSearch] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -151,7 +151,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
           mounted={
             !!allFriends &&
             allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
-            !showSearch
+            !searchActive
           }
           enterDelay={250}
         >
@@ -162,7 +162,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
               leftSection={<SearchIcon />}
               style={transitionStyle}
               onClick={() => {
-                setShowSearch(true);
+                setSearchActive(true);
               }}
             >
               search friends
@@ -174,7 +174,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
           mounted={
             !!allFriends &&
             allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
-            showSearch
+            searchActive
           }
           enterDelay={250}
         >
@@ -207,7 +207,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
                         }
                       : {
                           onClick: () => {
-                            setShowSearch(false);
+                            setSearchActive(false);
                           },
                         })}
                   >
@@ -224,7 +224,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
               }
               onBlur={({ currentTarget }) => {
                 if (currentTarget.value.trim() === "") {
-                  setShowSearch(false);
+                  setSearchActive(false);
                 }
               }}
             />
