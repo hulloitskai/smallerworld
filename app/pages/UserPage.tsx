@@ -197,22 +197,25 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
       </Box>
       <Box pos="relative">
         <UserPageFeed />
-        {isStandalone && !outOfPWAScope && pushRegistration === null && (
-          <>
-            <SingleDayFontHead />
-            <Overlay backgroundOpacity={0} blur={3}>
-              <Group justify="center" align="end" gap="xs">
-                <Text className={classes.notificationsRequiredIndicatorText}>
-                  help {user.name} stay connected with you 🫶
-                </Text>
-                <Image
-                  src={swirlyUpArrowSrc}
-                  className={classes.notificationsRequiredIndicatorArrow}
-                />
-              </Group>
-            </Overlay>
-          </>
-        )}
+        {isStandalone &&
+          !outOfPWAScope &&
+          !pushRegistration &&
+          webPushSupported !== false && (
+            <>
+              <SingleDayFontHead />
+              <Overlay backgroundOpacity={0} blur={3}>
+                <Group justify="center" align="end" gap="xs">
+                  <Text className={classes.notificationsRequiredIndicatorText}>
+                    help {user.name} stay connected with you 🫶
+                  </Text>
+                  <Image
+                    src={swirlyUpArrowSrc}
+                    className={classes.notificationsRequiredIndicatorArrow}
+                  />
+                </Group>
+              </Overlay>
+            </>
+          )}
       </Box>
     </Stack>
   );

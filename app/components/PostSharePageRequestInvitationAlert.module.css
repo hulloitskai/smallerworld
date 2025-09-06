@@ -1,0 +1,7 @@
+.alert {
+  box-shadow: var(--mantine-shadow-md);
+
+  :global(.mantine-Alert-icon) {
+    margin-right: var(--mantine-spacing-xs);
+  }
+}

@@ -221,6 +221,15 @@
     }
   }
 
+  .alert {
+    &[data-variant="default"] {
+      @mixin dark-user-theme {
+        background-color: var(--mantine-color-body);
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
+  }
+
   .alertBody {
     row-gap: 0px;
   }

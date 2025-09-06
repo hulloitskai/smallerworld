@@ -1,0 +1,15 @@
+.chip {
+  :global(.mantine-Chip-label) {
+    @mixin dark-user-theme {
+      background-color: var(--mantine-color-body);
+
+      &:not([data-checked]) {
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+
+      @mixin hover {
+        background-color: lighten(var(--mantine-color-body), 0.1);
+      }
+    }
+  }
+}

@@ -90,7 +90,7 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
     }
   }, []);
 
-  // == Page dialog state
+  // == Page dialog
   useUserPageDialogOpened(drawerModalOpened);
 
   const invitationCount = pinnedPosts.length + activityCoupons.length;

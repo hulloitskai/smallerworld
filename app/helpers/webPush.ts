@@ -5,6 +5,10 @@ import { type PushRegistration } from "~/types";
 import { useDeviceFingerprint } from "./fingerprinting";
 import { useServiceWorkerMetadata } from "./serviceWorker/client";
 
+export const PUSH_PERMISSION_NOT_GRANTED = new Error(
+  "Push notification permission not granted",
+);
+
 export interface WebPushSubscribeOptions {
   forceNewSubscription?: boolean;
 }

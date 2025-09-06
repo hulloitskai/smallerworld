@@ -8,7 +8,7 @@ import logoSrc from "~/assets/images/logo.png";
 import AppLayout from "~/components/AppLayout";
 import FriendPostCardActions from "~/components/FriendPostCardActions";
 import PostCard from "~/components/PostCard";
-import RequestInvitationAlert from "~/components/RequestInvitationAlert";
+import PostSharePageRequestInvitationAlert from "~/components/PostSharePageRequestInvitationAlert";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type FriendProfile, type UserPost, type UserProfile } from "~/types";
 
@@ -131,10 +131,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
         expanded
         actions={<FriendPostCardActions {...{ user, post }} />}
       />
-      <RequestInvitationAlert
-        title="join my world to keep seeing posts like this one :)"
-        {...{ user, invitationRequested }}
-      />
+      <PostSharePageRequestInvitationAlert />
     </Stack>
   );
 };

@@ -106,6 +106,7 @@ const createTheme = (
           },
         },
         classNames: {
+          root: classes.alert,
           title: classes.alertTitle,
           body: classes.alertBody,
         },

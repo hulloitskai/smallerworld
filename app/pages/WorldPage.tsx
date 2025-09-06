@@ -166,7 +166,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               </Transition>
               {(!isStandalone ||
                 outOfPWAScope ||
-                pushRegistration !== null) && (
+                !pushRegistration ||
+                webPushSupported === false) && (
                 <Button
                   component={Link}
                   href={routes.worldFriends.index.path()}
@@ -345,22 +346,25 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             setShowSearch(false);
           }}
         />
-        {isStandalone && !outOfPWAScope && pushRegistration === null && (
-          <>
-            <SingleDayFontHead />
-            <Overlay backgroundOpacity={0} blur={3}>
-              <Group justify="center" align="end" gap="xs">
-                <Text className={classes.notificationsRequiredIndicatorText}>
-                  pretty&nbsp;please? 👉&#8288;👈
-                </Text>
-                <Image
-                  src={swirlyUpArrowSrc}
-                  className={classes.notificationsRequiredIndicatorArrow}
-                />
-              </Group>
-            </Overlay>
-          </>
-        )}
+        {isStandalone &&
+          !outOfPWAScope &&
+          !pushRegistration &&
+          webPushSupported !== false && (
+            <>
+              <SingleDayFontHead />
+              <Overlay backgroundOpacity={0} blur={3}>
+                <Group justify="center" align="end" gap="xs">
+                  <Text className={classes.notificationsRequiredIndicatorText}>
+                    pretty&nbsp;please? 👉&#8288;👈
+                  </Text>
+                  <Image
+                    src={swirlyUpArrowSrc}
+                    className={classes.notificationsRequiredIndicatorArrow}
+                  />
+                </Group>
+              </Overlay>
+            </>
+          )}
       </Box>
     </Stack>
   );

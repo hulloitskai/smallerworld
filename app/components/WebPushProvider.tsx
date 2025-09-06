@@ -6,6 +6,7 @@ import {
 import { type ServiceWorkerMetadata } from "~/helpers/serviceWorker";
 import { getServiceWorkerMetadata } from "~/helpers/serviceWorker/client";
 import {
+  PUSH_PERMISSION_NOT_GRANTED,
   WebPushContext,
   type WebPushSubscribeOptions,
 } from "~/helpers/webPush";
@@ -81,7 +82,29 @@ export default WebPushProvider;
 const useWebPushSupported = (): boolean | undefined => {
   const [supported, setSupported] = useState<boolean | undefined>();
   useEffect(() => {
-    setSupported("Notification" in window);
+    setSupported(
+      "Notification" in window && Notification.permission !== "denied",
+    );
+    if ("Notification" in window) {
+      const handlePermissionChange = () => {
+        setSupported(Notification.permission === "granted");
+      };
+      const permissionRef: { current: PermissionStatus | null } = {
+        current: null,
+      };
+      void navigator.permissions
+        .query({ name: "notifications" })
+        .then(permission => {
+          permissionRef.current = permission;
+          permission.addEventListener("change", handlePermissionChange);
+        });
+      return () => {
+        const permission = permissionRef.current;
+        if (permission) {
+          permission.removeEventListener("change", handlePermissionChange);
+        }
+      };
+    }
   }, []);
   return supported;
 };
@@ -239,7 +262,7 @@ const useWebPushSubscribe = ({
       return Notification.requestPermission()
         .then(async permission => {
           if (permission !== "granted") {
-            const error = new Error("Push notification permission not granted");
+            const error = PUSH_PERMISSION_NOT_GRANTED;
             setSubscribeError(error);
             throw error;
           }
