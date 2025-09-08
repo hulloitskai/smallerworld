@@ -15,7 +15,7 @@ export interface WebPushSubscribeOptions {
 
 export interface WebPush {
   supported: boolean | undefined;
-  permission: NotificationPermission | undefined;
+  permission: NotificationPermission | null | undefined;
   pushSubscription: PushSubscription | undefined | null;
   pushRegistration: PushRegistration | undefined | null;
   subscribe: (options?: WebPushSubscribeOptions) => Promise<PushSubscription>;

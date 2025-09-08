@@ -89,30 +89,34 @@ const useWebPushSupported = (): boolean | undefined => {
   return supported;
 };
 
-const useWebPushPermission = (): NotificationPermission | undefined => {
+const useWebPushPermission = (): NotificationPermission | null | undefined => {
   const [permission, setPermission] = useState<
-    NotificationPermission | undefined
+    NotificationPermission | null | undefined
   >(undefined);
   useEffect(() => {
-    setPermission(Notification.permission);
-    const permissionRef: { current: PermissionStatus | null } = {
-      current: null,
-    };
-    const handlePermissionChange = () => {
+    if ("Notification" in window) {
       setPermission(Notification.permission);
-    };
-    void navigator.permissions
-      .query({ name: "notifications" })
-      .then(permission => {
-        permissionRef.current = permission;
-        permission.addEventListener("change", handlePermissionChange);
-      });
-    return () => {
-      const permission = permissionRef.current;
-      if (permission) {
-        permission.removeEventListener("change", handlePermissionChange);
-      }
-    };
+      const permissionRef: { current: PermissionStatus | null } = {
+        current: null,
+      };
+      const handlePermissionChange = () => {
+        setPermission(Notification.permission);
+      };
+      void navigator.permissions
+        .query({ name: "notifications" })
+        .then(permission => {
+          permissionRef.current = permission;
+          permission.addEventListener("change", handlePermissionChange);
+        });
+      return () => {
+        const permission = permissionRef.current;
+        if (permission) {
+          permission.removeEventListener("change", handlePermissionChange);
+        }
+      };
+    } else {
+      setPermission(null);
+    }
   }, []);
   return permission;
 };
