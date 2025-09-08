@@ -13,7 +13,7 @@ class WorldJoinRequestsController < ApplicationController
       format.html do
         render(inertia: "WorldJoinRequestsPage")
       end
-      format.any do
+      format.json do
         join_requests = current_user.join_requests
           .pending
           .reverse_chronological
@@ -22,5 +22,21 @@ class WorldJoinRequestsController < ApplicationController
         })
       end
     end
+  end
+
+  # DELETE /world/join_requests/:id
+  def destroy
+    join_request = load_join_request
+    authorize!(join_request)
+    join_request.destroy!
+    render(json: {})
+  end
+
+  private
+
+  # == Helpers
+  sig { params(scope: JoinRequest::PrivateRelation).returns(JoinRequest) }
+  def load_join_request(scope: JoinRequest.all)
+    scope.find(params.fetch(:id))
   end
 end

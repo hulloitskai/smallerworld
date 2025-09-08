@@ -8,7 +8,7 @@ class StartController < ApplicationController
     next_path = if signed_in?
       world_path
     elsif valid_registration_token?
-      new_registration_path
+      signup_path
     else
       root_path
     end

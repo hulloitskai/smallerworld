@@ -22,9 +22,6 @@ module GeneratedUrlHelpersModule
   def analytics_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def api_post_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def api_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -61,9 +58,6 @@ module GeneratedUrlHelpersModule
   def good_job_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def home_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -73,10 +67,10 @@ module GeneratedUrlHelpersModule
   def invite_url_world_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def join_request_url(*args); end
+  def login_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def login_requests_url(*args); end
+  def login_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def logout_url(*args); end
@@ -104,12 +98,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def new_registration_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def new_session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pause_world_friend_url(*args); end
@@ -223,9 +211,6 @@ module GeneratedUrlHelpersModule
   def rails_storage_redirect_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def registration_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def request_invitation_user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -235,13 +220,13 @@ module GeneratedUrlHelpersModule
   def sentry_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def session_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def share_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def share_world_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def signup_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_url(*args); end
@@ -253,10 +238,10 @@ module GeneratedUrlHelpersModule
   def stats_world_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def submit_test_url(*args); end
+  def test_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def test_push_subscriptions_url(*args); end
+  def test_submit_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_url(*args); end
@@ -269,6 +254,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def universe_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def universe_worlds_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unpause_world_friend_url(*args); end
@@ -310,6 +298,9 @@ module GeneratedUrlHelpersModule
   def world_invitations_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def world_join_request_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def world_join_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -320,7 +311,4 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def world_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def worlds_universe_url(*args); end
 end

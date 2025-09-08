@@ -500,7 +500,7 @@ interface LogoutItemProps extends BoxProps {}
 
 const LogoutItem: FC<LogoutItemProps> = ({ ...otherProps }) => {
   // == Logout
-  const { trigger, mutating } = useRouteMutation(routes.sessions.destroy, {
+  const { trigger, mutating } = useRouteMutation(routes.session.destroy, {
     descriptor: "sign out",
     onSuccess: () => {
       location.href = routes.world.show.path();

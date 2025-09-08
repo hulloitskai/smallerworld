@@ -22,9 +22,6 @@ module GeneratedPathHelpersModule
   def analytics_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def api_post_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def api_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -61,9 +58,6 @@ module GeneratedPathHelpersModule
   def good_job_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def home_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -73,7 +67,7 @@ module GeneratedPathHelpersModule
   def invite_url_world_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def join_request_path(*args); end
+  def login_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def login_requests_path(*args); end
@@ -104,12 +98,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def new_registration_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def new_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pause_world_friend_path(*args); end
@@ -223,9 +211,6 @@ module GeneratedPathHelpersModule
   def rails_storage_redirect_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def registration_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def request_invitation_user_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -235,13 +220,13 @@ module GeneratedPathHelpersModule
   def sentry_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def session_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def share_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def share_world_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def signup_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end
@@ -253,13 +238,13 @@ module GeneratedPathHelpersModule
   def stats_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def submit_test_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def test_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_push_subscriptions_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def test_submit_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def text_subscribers_world_friends_path(*args); end
@@ -269,6 +254,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def universe_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def universe_worlds_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unpause_world_friend_path(*args); end
@@ -310,6 +298,9 @@ module GeneratedPathHelpersModule
   def world_invitations_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def world_join_request_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def world_join_requests_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -320,7 +311,4 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def world_posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def worlds_universe_path(*args); end
 end

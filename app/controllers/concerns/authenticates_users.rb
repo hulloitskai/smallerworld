@@ -114,7 +114,7 @@ module AuthenticatesUsers
     respond_to do |format|
       format.html do
         session[:return_to_after_authenticating] = request.url
-        redirect_to(new_session_path, alert: "please sign in to continue.")
+        redirect_to(login_path, alert: "please sign in to continue.")
       end
       format.json do
         render(json: { error: error.message }, status: :unauthorized)

@@ -8,7 +8,7 @@ class PostingTest < ApplicationSystemTestCase
   test "can post a journal entry" do
     # Sign in as Testy
     testy = users(:testy)
-    visit new_session_url
+    visit login_path
 
     phone = testy.phone
     fill_in "country_code", with: phone.country_code

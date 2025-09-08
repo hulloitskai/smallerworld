@@ -7,14 +7,14 @@ class RegistrationsTest < ApplicationSystemTestCase
   # == Tests
   test "can create an account" do
     # Sign in
-    visit new_session_url
+    visit login_path
     fill_in "national_phone_number", with: "4167005432"
     click_link_or_button "send login code"
     click_link_or_button "auto-fill code", wait: 4.seconds
     click_link_or_button "sign in"
 
     # Assert on registration page
-    assert_current_path new_registration_path
+    assert_current_path signup_path
 
     # Fill in the name field
     fill_in "name", with: "Test"
