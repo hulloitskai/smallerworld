@@ -390,7 +390,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         />
         {isStandalone &&
           !outOfPWAScope &&
-          !pushRegistration &&
+          pushRegistration === null &&
           webPushSupported !== false &&
           webPushPermission !== "denied" && (
             <>

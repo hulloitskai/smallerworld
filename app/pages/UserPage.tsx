@@ -230,7 +230,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
         <UserPageFeed />
         {isStandalone &&
           !outOfPWAScope &&
-          !pushRegistration &&
+          pushRegistration === null &&
           webPushSupported !== false &&
           webPushPermission !== "denied" && (
             <>
