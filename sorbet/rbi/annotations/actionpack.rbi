@@ -53,7 +53,7 @@ class ActionController::Parameters
   sig { params(key: T.any(String, Symbol), block: T.untyped).returns(T.untyped) }
   def delete(key, &block); end
 
-  sig { params(keys: T.any(String, Symbol, Integer)).returns(T.untyped) }
+  sig { params(keys: T.any(String, Symbol)).returns(T.untyped) }
   def dig(*keys); end
 
   sig { params(block: T.untyped).returns(T.untyped) }
@@ -110,13 +110,13 @@ class ActionController::Parameters
   sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
   def [](key); end
 
-  sig { params(key: T.any(String, Symbol)).returns(ActionController::Parameters) }
-  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[ActionController::Parameters]) }
+  sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
+  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[T.untyped]) }
   def require(key); end
 
   # required is an alias of require
-  sig { params(key: T.any(String, Symbol)).returns(ActionController::Parameters) }
-  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[ActionController::Parameters]) }
+  sig { params(key: T.any(String, Symbol)).returns(T.untyped) }
+  sig { params(key: T::Array[T.any(String, Symbol)]).returns(T::Array[T.untyped]) }
   def required(key); end
 
   sig { params(other_hash: T.untyped).returns(ActionController::Parameters) }
