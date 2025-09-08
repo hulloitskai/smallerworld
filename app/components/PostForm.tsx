@@ -18,6 +18,7 @@ import {
   POST_VISIBILITY_TO_LABEL,
 } from "~/helpers/posts";
 import { type PostFormValues, usePostDraftValues } from "~/helpers/posts/form";
+import { useWorldFriends } from "~/helpers/world";
 import {
   type Encouragement,
   type Post,
@@ -296,6 +297,9 @@ const PostForm: FC<PostFormProps> = props => {
   );
   const [newImageInputKey, setNewImageInputKey] = useState(0);
 
+  // == Friends
+  const { allFriends } = useWorldFriends({ keepPreviousData: true });
+
   return (
     <form onSubmit={submit}>
       <Stack>
@@ -557,32 +561,37 @@ const PostForm: FC<PostFormProps> = props => {
               />
             )}
             <Group justify="end" mt="xs">
-              <PostFormHiddenFromIdsPicker
-                {...{ recentlyPausedFriendIds }}
-                {...getInputProps("hidden_from_ids")}
+              <Transition
+                transition="fade"
+                mounted={
+                  !isEmpty(allFriends) && values.visibility !== "only_me"
+                }
               >
-                <Anchor
-                  component="button"
-                  type="button"
-                  size="xs"
-                  underline="always"
-                  c="dimmed"
-                  style={{
-                    ...(values.visibility === "only_me" && {
-                      visibility: "hidden",
-                    }),
-                  }}
-                >
-                  {isEmpty(values.hidden_from_ids) ? (
-                    "visible to all friends"
-                  ) : (
-                    <>
-                      hidden from {values.hidden_from_ids.length}{" "}
-                      {inflect("friend", values.hidden_from_ids.length)}
-                    </>
-                  )}
-                </Anchor>
-              </PostFormHiddenFromIdsPicker>
+                {transitionStyle => (
+                  <PostFormHiddenFromIdsPicker
+                    {...{ recentlyPausedFriendIds }}
+                    {...getInputProps("hidden_from_ids")}
+                  >
+                    <Anchor
+                      component="button"
+                      type="button"
+                      size="xs"
+                      underline="always"
+                      c="dimmed"
+                      style={transitionStyle}
+                    >
+                      {isEmpty(values.hidden_from_ids) ? (
+                        "visible to all friends"
+                      ) : (
+                        <>
+                          hidden from {values.hidden_from_ids.length}{" "}
+                          {inflect("friend", values.hidden_from_ids.length)}
+                        </>
+                      )}
+                    </Anchor>
+                  </PostFormHiddenFromIdsPicker>
+                )}
+              </Transition>
               <Button
                 type="submit"
                 variant="filled"
