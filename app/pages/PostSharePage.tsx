@@ -28,7 +28,6 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
   user,
   post,
   sharer,
-  invitationRequested,
 }) => {
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();

@@ -1,4 +1,4 @@
-import { Loader, useComputedColorScheme } from "@mantine/core";
+import { useComputedColorScheme } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import ChatIcon from "~icons/heroicons/chat-bubble-left-right-20-solid";

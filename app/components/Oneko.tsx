@@ -178,9 +178,7 @@ const Oneko: FC<OnekoProps> = ({ speed = 10, targetSelector }) => {
           return;
         }
 
-        if (!state.lastFrameTimestamp) {
-          state.lastFrameTimestamp = timestamp;
-        }
+        state.lastFrameTimestamp ??= timestamp;
 
         // Limit to ~10 FPS
         if (timestamp - state.lastFrameTimestamp > ANIMATION_INTERVAL) {

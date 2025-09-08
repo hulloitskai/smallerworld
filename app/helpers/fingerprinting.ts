@@ -16,9 +16,7 @@ export const preloadFingerprintJs = (): void => {
 };
 
 export const fingerprintJs = (): Promise<GetResult> => {
-  if (!fingerprintJsAgent) {
-    fingerprintJsAgent = loadFingerprintJs();
-  }
+  fingerprintJsAgent ??= loadFingerprintJs();
   return fingerprintJsAgent.then(agent => agent.get());
 };
 

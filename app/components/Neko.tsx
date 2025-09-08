@@ -71,9 +71,7 @@ const Neko = forwardRef<HTMLDivElement, NekoProps>(
       }
 
       const animate = (timestamp: number): void => {
-        if (!lastFrameTimeRef.current) {
-          lastFrameTimeRef.current = timestamp;
-        }
+        lastFrameTimeRef.current ??= timestamp;
 
         if (timestamp - lastFrameTimeRef.current >= animationInterval) {
           setCurrentFrame(prev => (prev + 1) % currentAnimation.length);
