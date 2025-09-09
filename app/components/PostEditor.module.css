@@ -3,6 +3,7 @@
 }
 
 .content {
+  overflow-y: auto;
   border-radius: var(--editor-radius, var(--mantine-radius-default));
 
   div[tabindex="0"] {
@@ -11,7 +12,6 @@
 }
 
 .contentEditable {
-  min-height: var(--editor-content-editable-min-height, 144px);
   padding-inline: var(--mantine-spacing-sm);
   padding-block: var(--mantine-spacing-xs);
 }

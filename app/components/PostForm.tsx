@@ -1,6 +1,6 @@
 import { Input, ScrollArea, SegmentedControl, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { useLongPress, useMergedRef } from "@mantine/hooks";
+import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { type DraggableProps, motion, Reorder } from "motion/react";
 
@@ -9,6 +9,7 @@ import QuietIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
 
+import { isAndroid, isIos, useBrowserDetection } from "~/helpers/browsers";
 import { prettyFriendName } from "~/helpers/friends";
 import {
   mutateWorldPosts,
@@ -95,6 +96,10 @@ const PostForm: FC<PostFormProps> = props => {
   const editorRef = useRef<Editor | null>();
   const [editorMounted, setEditorMounted] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
+
+  // == Viewport height
+  const { height: viewportHeight } = useViewportSize();
+  const browserDetection = useBrowserDetection();
 
   // == Draft values
   const [loadDraftValues, saveDraftValues, clearDraft] =
@@ -439,6 +444,14 @@ const PostForm: FC<PostFormProps> = props => {
                 key={editorKey}
                 initialValue={values.body_html}
                 placeholder={bodyPlaceholder}
+                contentProps={{
+                  mih: 144,
+                  ...(browserDetection &&
+                    (isIos(browserDetection) ||
+                      isAndroid(browserDetection)) && {
+                      mah: viewportHeight * 0.4,
+                    }),
+                }}
                 onEditorCreated={editor => {
                   editorRef.current = editor;
                   setEditorMounted(true);

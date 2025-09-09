@@ -1,5 +1,9 @@
 import { getRadius, type MantineRadius } from "@mantine/core";
-import { RichTextEditor, type RichTextEditorProps } from "@mantine/tiptap";
+import {
+  RichTextEditor,
+  type RichTextEditorContentProps,
+  type RichTextEditorProps,
+} from "@mantine/tiptap";
 import PlaceholderExtension from "@tiptap/extension-placeholder";
 import { type Editor, type EditorOptions, useEditor } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
@@ -16,7 +20,7 @@ export interface PostEditorProps
   onChange?: (value: string) => void;
   onEditorCreated?: (editor: Editor) => void;
   radius?: MantineRadius;
-  contentEditableMinHeight?: number;
+  contentProps?: RichTextEditorContentProps;
 }
 
 const PostEditor: FC<PostEditorProps> = ({
@@ -26,7 +30,7 @@ const PostEditor: FC<PostEditorProps> = ({
   onUpdate,
   onEditorCreated,
   radius,
-  contentEditableMinHeight,
+  contentProps,
   ...otherProps
 }) => {
   // == Editor
@@ -49,6 +53,7 @@ const PostEditor: FC<PostEditorProps> = ({
       },
       content: initialValue,
       autofocus: true,
+      immediatelyRender: !import.meta.env.SSR,
       onCreate: ({ editor }) => {
         editor.commands.focus("end");
         if (!!html && editor.getHTML() !== html) {
@@ -57,9 +62,10 @@ const PostEditor: FC<PostEditorProps> = ({
         onEditorCreated?.(editor);
       },
       onUpdate: props => {
-        setHtml(props.editor.getHTML());
+        const { editor } = props;
+        setHtml(editor.getHTML());
         onUpdate?.(props);
-        onChange?.(props.editor.getHTML());
+        onChange?.(editor.getHTML());
       },
       onSelectionUpdate: ({ editor }) => {
         const attributes = editor.getAttributes("link");
@@ -83,9 +89,6 @@ const PostEditor: FC<PostEditorProps> = ({
       style={{
         ...(radius && {
           "--editor-radius": getRadius(radius),
-        }),
-        ...(contentEditableMinHeight && {
-          "--editor-content-editable-min-height": rem(contentEditableMinHeight),
         }),
       }}
       data-vaul-no-drag
@@ -132,7 +135,7 @@ const PostEditor: FC<PostEditorProps> = ({
           {showUnlink && <RichTextEditor.Unlink />}
         </RichTextEditor.ControlsGroup>
       </BubbleMenu>
-      <RichTextEditor.Content />
+      <RichTextEditor.Content {...contentProps} />
     </RichTextEditor>
   );
 };
