@@ -54,13 +54,11 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
       )}
       <Stack align="center">
         <Title className={classes.title}>
-          you have thoughts you want to share—
-          <br />
-          <span className={classes.emph}>but not with the whole internet.</span>
+          your new secret blog, for{" "}
+          <span className={classes.emph}>close friends only</span>
         </Title>
         <Text className={classes.subtitle}>
-          smaller world is a private space to just be yourself—with your close
-          friends.
+          a direct connection to your people, without a feed in the way.
         </Text>
       </Stack>
       <Box pos="relative">
