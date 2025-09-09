@@ -37,8 +37,8 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         >
           <Group gap="xs" justify="space-between">
             <Text ff="heading" fw={700}>
-              welcome back, {currentUser.name}
-              <span style={{ marginLeft: rem(6) }}>➡️</span>
+              welcome back, {currentUser.name}{" "}
+              <span style={{ marginLeft: rem(4) }}>➡️</span>
             </Text>
             <Button
               component={Link}

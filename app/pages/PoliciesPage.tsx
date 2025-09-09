@@ -42,12 +42,12 @@ const PolicyPage: PageComponent<PolicyPageProps> = () => {
         <Center style={{ flex: 1 }}>
           <Badge variant="default" size="lg">
             Spoken like a human bean{" "}
-            <span style={{ marginLeft: rem(3) }}>🫘</span>
+            <span style={{ marginLeft: rem(4) }}>🫘</span>
           </Badge>
         </Center>
         <Center style={{ flex: 1 }}>
           <Badge variant="default" size="lg">
-            Legal Version <span style={{ marginLeft: rem(3) }}>⚖️</span>
+            Legal Version <span style={{ marginLeft: rem(4) }}>⚖️</span>
           </Badge>
         </Center>
       </Group>

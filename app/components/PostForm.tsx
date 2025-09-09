@@ -314,7 +314,17 @@ const PostForm: FC<PostFormProps> = props => {
               <Stack gap={4} mx="md" style={transitionStyle}>
                 <Card withBorder className={classes.encouragementCard}>
                   <Stack gap={2} style={{ alignSelf: "center" }}>
-                    <Text size="sm">&ldquo;{encouragement.message}&rdquo;</Text>
+                    <Text size="sm">
+                      <span
+                        style={{
+                          fontFamily: "var(--font-family-emoji)",
+                          marginRight: rem(3),
+                        }}
+                      >
+                        {encouragement.emoji}
+                      </span>{" "}
+                      &ldquo;{encouragement.message}&rdquo;
+                    </Text>
                     <Text size="xs" c="dimmed" style={{ alignSelf: "end" }}>
                       — {prettyFriendName(encouragement.friend)}
                     </Text>

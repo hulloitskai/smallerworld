@@ -240,7 +240,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                 didn&apos;t join your world{" "}
                 <span
                   style={{
-                    marginLeft: rem(1),
+                    marginLeft: rem(2),
                     fontFamily: "var(--font-family-emoji)",
                   }}
                 >
