@@ -284,11 +284,12 @@ Rails.application.routes.draw do
 
   # == Universe
   scope export: { namespace: "universe" } do
-    get "/universe" => "universe#show",
-        constraints: { format: "html" }
-    get "/universe/worlds" => "universe#worlds",
+    get "/universe", to: "universe#show", constraints: { format: "html" }
+    get "/universe/worlds",
+        to: "universe#worlds",
         constraints: { format: "json" }
-    get "/universe/manifest.webmanifest" => "universe#manifest",
+    get "/universe/manifest.webmanifest",
+        to: "universe#manifest",
         constraints: { format: "" }
   end
   resources :universe_posts,

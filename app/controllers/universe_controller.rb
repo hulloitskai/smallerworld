@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class UniversesController < ApplicationController
+class UniverseController < ApplicationController
   include GeneratesManifest
 
   # == Actions
