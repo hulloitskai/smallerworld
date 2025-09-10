@@ -5,7 +5,7 @@ import { type WorldFriend } from "~/types";
 
 import classes from "./PostFormTextBlastCheckboxCard.module.css";
 
-export type PostFormTextBlastCheckboxCardProps = CheckboxCardProps;
+export interface PostFormTextBlastCheckboxCardProps extends CheckboxCardProps {}
 
 const PostFormTextBlastCheckboxCard: FC<PostFormTextBlastCheckboxCardProps> = ({
   className,
@@ -18,6 +18,7 @@ const PostFormTextBlastCheckboxCard: FC<PostFormTextBlastCheckboxCardProps> = ({
     textSubscribersCount: number;
   }>(routes.worldFriends.textSubscribers, {
     descriptor: "load text subscribers",
+    keepPreviousData: true,
   });
   const { textSubscribersCount = 0 } = data ?? {};
   const friendsDescriptor = useMemo(() => {
@@ -25,32 +26,7 @@ const PostFormTextBlastCheckboxCard: FC<PostFormTextBlastCheckboxCardProps> = ({
       return null;
     }
     const { friends, textSubscribersCount } = data;
-    const friendNames = map(friends, "name");
-    const remainingSubscribersCount = textSubscribersCount - friends.length;
-    if (remainingSubscribersCount === 0) {
-      const [firstFriendName, secondFriendName] = friendNames;
-      if (firstFriendName && secondFriendName) {
-        return (
-          <>
-            {boldFriendName(firstFriendName)} and{" "}
-            {boldFriendName(secondFriendName)}
-          </>
-        );
-      } else if (firstFriendName) {
-        return boldFriendName(firstFriendName);
-      }
-      return null;
-    }
-    const [firstFriendName, secondFriendName] = friendNames;
-    invariant(firstFriendName);
-    invariant(secondFriendName);
-    return (
-      <>
-        {boldFriendName(firstFriendName)}, {boldFriendName(secondFriendName)}
-        {remainingSubscribersCount > 0 &&
-          ` and ${remainingSubscribersCount} others`}
-      </>
-    );
+    return formatFriendsDescriptor(friends, textSubscribersCount);
   }, [data]);
 
   return (
@@ -88,6 +64,36 @@ const PostFormTextBlastCheckboxCard: FC<PostFormTextBlastCheckboxCardProps> = ({
 };
 
 export default PostFormTextBlastCheckboxCard;
+
+const formatFriendsDescriptor = (
+  friends: WorldFriend[],
+  textSubscribersCount: number,
+): ReactNode => {
+  const friendNames = map(friends, "name");
+  const remainingSubscribersCount = textSubscribersCount - friends.length;
+  if (remainingSubscribersCount === 0) {
+    const [firstFriendName, secondFriendName] = friendNames;
+    if (firstFriendName && secondFriendName) {
+      return (
+        <>
+          {boldFriendName(firstFriendName)} and{" "}
+          {boldFriendName(secondFriendName)}
+        </>
+      );
+    } else if (firstFriendName) {
+      return boldFriendName(firstFriendName);
+    }
+    return null;
+  }
+  const [firstFriendName, secondFriendName] = friendNames as [string, string];
+  return (
+    <>
+      {boldFriendName(firstFriendName)}, {boldFriendName(secondFriendName)}
+      {remainingSubscribersCount > 0 &&
+        ` and ${remainingSubscribersCount} others`}
+    </>
+  );
+};
 
 const boldFriendName = (friendName: string): ReactNode => (
   <span
