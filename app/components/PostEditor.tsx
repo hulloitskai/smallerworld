@@ -47,8 +47,7 @@ const PostEditor: FC<PostEditorProps> = ({
       ],
       editorProps: {
         attributes: {
-          class: classes.contentEditable!,
-          "data-vaul-no-drag": "true",
+          class: cn(classes.contentEditable),
         },
       },
       content: initialValue,
@@ -91,7 +90,6 @@ const PostEditor: FC<PostEditorProps> = ({
           "--editor-radius": getRadius(radius),
         }),
       }}
-      data-vaul-no-drag
       {...otherProps}
     >
       <BubbleMenu
@@ -141,11 +139,3 @@ const PostEditor: FC<PostEditorProps> = ({
 };
 
 export default PostEditor;
-
-// const findPortalParent = (ref: Element): Element | null => {
-//   let portalParent: Element | null = ref;
-//   while (portalParent instanceof HTMLElement && !portalParent.dataset.portal) {
-//     portalParent = portalParent.parentElement;
-//   }
-//   return portalParent;
-// };
