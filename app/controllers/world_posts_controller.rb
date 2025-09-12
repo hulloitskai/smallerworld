@@ -96,6 +96,7 @@ class WorldPostsController < ApplicationController
       :emoji,
       :visibility,
       :pinned_until,
+      :encouragement_id,
       images: [],
       hidden_from_ids: [],
     ])

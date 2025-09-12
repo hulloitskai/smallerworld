@@ -12,6 +12,7 @@ export interface PostFormValues {
   quiet: boolean;
   text_blast: boolean;
   hidden_from_ids: string[];
+  encouragement_id: string | null;
 }
 
 interface PostDraft {

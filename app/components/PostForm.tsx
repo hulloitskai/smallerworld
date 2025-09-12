@@ -75,7 +75,12 @@ const PostForm: FC<PostFormProps> = props => {
   const newPostType = "newPostType" in props ? props.newPostType : undefined;
   const postType = "newPostType" in props ? props.newPostType : props.post.type;
   const post = "post" in props ? props.post : null;
-  const encouragement = "encouragement" in props ? props.encouragement : null;
+  const encouragement =
+    "encouragement" in props
+      ? props.encouragement
+      : "post" in props
+        ? props.post.encouragement
+        : undefined;
   const quotedPost =
     "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
   const pausedFriendIds =
@@ -105,10 +110,6 @@ const PostForm: FC<PostFormProps> = props => {
   const [loadDraftValues, saveDraftValues, clearDraft] =
     usePostDraftValues(newPostType);
 
-  // == Encouragement
-  const [includedEncouragement, setIncludeEncouragement] =
-    useState<boolean>(true);
-
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
     const {
@@ -132,8 +133,9 @@ const PostForm: FC<PostFormProps> = props => {
       quiet: !!post,
       text_blast: false,
       hidden_from_ids: hidden_from_ids ?? pausedFriendIds ?? [],
+      encouragement_id: encouragement?.id ?? post?.encouragement?.id ?? null,
     };
-  }, [post, pausedFriendIds]);
+  }, [post, encouragement, pausedFriendIds]);
   const {
     setFieldValue,
     insertListItem,
@@ -203,10 +205,6 @@ const PostForm: FC<PostFormProps> = props => {
                   ? title || null
                   : null,
                 images: images_uploads.map(upload => upload.signedId),
-                encouragement_id:
-                  encouragement && includedEncouragement
-                    ? encouragement.id
-                    : null,
                 quoted_post_id: quotedPost?.id ?? null,
                 pinned_until: pinned_until
                   ? formatDateString(pinned_until)
@@ -309,7 +307,7 @@ const PostForm: FC<PostFormProps> = props => {
     <form onSubmit={submit}>
       <Stack>
         {encouragement && (
-          <Transition transition="pop" mounted={includedEncouragement}>
+          <Transition transition="pop" mounted={!!values.encouragement_id}>
             {transitionStyle => (
               <Stack gap={4} mx="md" style={transitionStyle}>
                 <Card withBorder className={classes.encouragementCard}>
@@ -335,14 +333,14 @@ const PostForm: FC<PostFormProps> = props => {
                   <Text span inherit fw={600}>
                     {encouragement.friend.name}
                   </Text>{" "}
-                  will be attached.{" "}
+                  {post ? "is" : "will be"} attached.{" "}
                   <Anchor
                     component="button"
                     type="button"
                     size="xs"
                     fw={600}
                     onClick={() => {
-                      setIncludeEncouragement(false);
+                      setFieldValue("encouragement_id", null);
                     }}
                   >
                     remove?
