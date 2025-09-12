@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_29_195901) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_10_173816) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,6 +68,33 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_195901) do
     t.index ["redeemed_at"], name: "index_activity_coupons_on_redeemed_at"
   end
 
+  create_table "communities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "handle", null: false
+    t.text "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["handle"], name: "index_communities_on_handle", unique: true
+  end
+
+  create_table "community_links", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "community_id", null: false
+    t.string "type", null: false
+    t.string "url", null: false
+    t.string "label"
+    t.index ["community_id"], name: "index_community_links_on_community_id"
+  end
+
+  create_table "community_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "member_id", null: false
+    t.uuid "community_id", null: false
+    t.string "role", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["community_id"], name: "index_community_memberships_on_community_id"
+    t.index ["member_id"], name: "index_community_memberships_on_member_id"
+  end
+
   create_table "encouragements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "friend_id", null: false
     t.string "emoji", null: false
@@ -75,6 +102,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_195901) do
     t.datetime "created_at", precision: nil, null: false
     t.index ["created_at"], name: "index_encouragements_on_created_at"
     t.index ["friend_id"], name: "index_encouragements_on_friend_id"
+  end
+
+  create_table "event_shares", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "sharer_id", null: false
+    t.uuid "event_id", null: false
+    t.string "emoji", null: false
+    t.text "comment", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_shares_on_event_id"
+    t.index ["sharer_id"], name: "index_event_shares_on_sharer_id"
+  end
+
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "community_id"
+    t.string "registration_url", null: false
+    t.datetime "starts_at", precision: nil, null: false
+    t.datetime "ends_at", precision: nil
+    t.string "name", null: false
+    t.text "description", null: false
+    t.uuid "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["community_id"], name: "index_events_on_community_id"
+    t.index ["created_by_id"], name: "index_events_on_created_by_id"
   end
 
   create_table "friends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -386,7 +438,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_195901) do
   add_foreign_key "activities", "users"
   add_foreign_key "activity_coupons", "activities"
   add_foreign_key "activity_coupons", "friends"
+  add_foreign_key "community_links", "communities"
+  add_foreign_key "community_memberships", "communities"
+  add_foreign_key "community_memberships", "users", column: "member_id"
   add_foreign_key "encouragements", "friends"
+  add_foreign_key "event_shares", "events"
+  add_foreign_key "event_shares", "users", column: "sharer_id"
+  add_foreign_key "events", "communities"
+  add_foreign_key "events", "users", column: "created_by_id"
   add_foreign_key "friends", "invitations"
   add_foreign_key "friends", "join_requests", column: "deprecated_join_request_id"
   add_foreign_key "friends", "users"

@@ -49,9 +49,15 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
     [miniSearch],
   );
 
+  // == Search friends
+  const [searchActive, setSearchActive] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
   // == Load friends
   const { allFriends } = useWorldFriends({
     keepPreviousData: true,
+    revalidateOnFocus: !searchQuery.trim(),
     onSuccess: ({ friends }) => {
       reindexMiniSearch(friends);
     },
@@ -62,11 +68,6 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   // == Load activities
   const { activities } = useWorldActivities({ keepPreviousData: true });
   const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
-
-  // == Search friends
-  const [searchActive, setSearchActive] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const displayedFriends = useMemo<WorldFriend[]>(() => {
     if (!searchQuery.trim() || !miniSearchReady) {

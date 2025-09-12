@@ -1,11 +1,12 @@
 # typed: true
 # frozen_string_literal: true
 
-# Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+# Define your application routes per the DSL in
+# https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
   # == Redirects
   constraints SubdomainConstraint do
-    get "(*any)" => redirect(subdomain: "", status: 302)
+    get "(*any)", to: redirect(subdomain: "", status: 302)
   end
 
   # == Errors
@@ -22,7 +23,7 @@ Rails.application.routes.draw do
   end
 
   # == Good Job
-  mount GoodJob::Engine => "/good_job"
+  mount GoodJob::Engine, at: "/good_job"
 
   # == Attachments
   resources :files,
@@ -30,17 +31,12 @@ Rails.application.routes.draw do
             param: :signed_id,
             constraints: { format: "json" },
             export: true
-  resources(
-    :images,
-    only: :show,
-    param: :signed_id,
-    constraints: { format: "json" },
-    export: true,
-  ) do
-    member do
-      get :download
-    end
-  end
+  resources :images,
+            only: :show,
+            param: :signed_id,
+            constraints: { format: "json" },
+            export: true
+  get "/images/:signed_id/download", to: "images#download", export: true
 
   # == Contact
   resource :contact_url,
@@ -80,7 +76,10 @@ Rails.application.routes.draw do
   end
 
   # == Visits
-  post "/visit" => "visits#track", constraints: { format: "json" }, export: true
+  post "/visit",
+       to: "visits#track",
+       constraints: { format: "json" },
+       export: true
 
   # == Login requests
   resources :login_requests,
@@ -89,22 +88,23 @@ Rails.application.routes.draw do
             export: true
 
   # == Sessions
-  scope export: { namespace: "session" } do
-    get "/login" => "sessions#new", constraints: { format: "html" }
+  scope controller: :sessions, export: { namespace: "session" } do
+    get "/login", action: :new, constraints: { format: "html" }
     scope constraints: { format: "json" } do
-      post "/login" => "sessions#create"
-      post "/logout" => "sessions#destroy"
+      post "/login", action: :create
+      post "/logout", action: :destroy
     end
   end
 
   # == Registrations
-  scope export: { namespace: "registration" } do
-    get "/signup" => "registrations#new", constraints: { format: "html" }
-    post "/signup" => "registrations#create", constraints: { format: "json" }
+  scope controller: :registrations, export: { namespace: "registration" } do
+    get "/signup", action: :new, constraints: { format: "html" }
+    post "/signup", action: :create, constraints: { format: "json" }
   end
 
   # == Start
-  get "/start" => "start#redirect",
+  get "/start",
+      to: "start#redirect",
       constraints: { format: :html },
       export: { namespace: "start" }
 
@@ -112,10 +112,11 @@ Rails.application.routes.draw do
   scope export: { namespace: "world" } do
     resource :world, only: %i[show edit], constraints: { format: "html" }
     resource :world, only: :update, constraints: { format: "json" } do
-      get "manifest.webmanifest" => :manifest, constraints: { format: "" }
+      get "manifest.webmanifest", action: :manifest, constraints: { format: "" }
     end
   end
-  get "/world/posts" => "world_posts#index",
+  get "/world/posts",
+      to: "world_posts#index",
       constraints: { format: "html" },
       export: true
   resources(
@@ -133,7 +134,8 @@ Rails.application.routes.draw do
       post :share
     end
   end
-  get "/world/friends" => "world_friends#index",
+  get "/world/friends",
+      to: "world_friends#index",
       constraints: { format: "html" },
       export: true
   resources(
@@ -152,7 +154,8 @@ Rails.application.routes.draw do
       post :unpause
     end
   end
-  get "/world/join_requests" => "world_join_requests#index",
+  get "/world/join_requests",
+      to: "world_join_requests#index",
       constraints: { format: %w[html json] },
       export: true
   resources :world_join_requests,
@@ -160,7 +163,8 @@ Rails.application.routes.draw do
             only: :destroy,
             constraints: { format: "json" },
             export: true
-  get "/world/invitations" => "world_invitations#index",
+  get "/world/invitations",
+      to: "world_invitations#index",
       constraints: { format: %w[html json] },
       export: true
   resources :world_invitations,
@@ -209,14 +213,13 @@ Rails.application.routes.draw do
   resources :users, only: [], export: true do
     member do
       post :request_invitation, constraints: { format: "json" }
-      get "manifest.webmanifest" => :manifest, constraints: { format: "" }
+      get "manifest.webmanifest", action: :manifest, constraints: { format: "" }
     end
   end
-  get "/@:id" => "users#show",
-      as: :user,
-      constraints: { format: "html" },
-      export: true
-  get "/@:id/join" => "users#join", constraints: { format: "html" }
+  scope controller: :users, constraints: { format: "html" } do
+    get "/@:id", action: :show, as: :user, export: true
+    get "/@:id/join", action: :join
+  end
   resources(
     :user_posts,
     path: "/users/:user_id/posts",
@@ -283,13 +286,13 @@ Rails.application.routes.draw do
   end
 
   # == Universe
-  scope export: { namespace: "universe" } do
-    get "/universe", to: "universe#show", constraints: { format: "html" }
+  scope controller: :universe, export: { namespace: "universe" } do
+    get "/universe", action: :show, constraints: { format: "html" }
     get "/universe/worlds",
-        to: "universe#worlds",
+        action: :worlds,
         constraints: { format: "json" }
     get "/universe/manifest.webmanifest",
-        to: "universe#manifest",
+        action: :manifest,
         constraints: { format: "" }
   end
   resources :universe_posts,

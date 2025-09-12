@@ -56,16 +56,21 @@ class User < ApplicationRecord
 
   # == Associations
   has_many :sessions, dependent: :destroy
-  has_many :friends, dependent: :destroy
-  has_many :encouragements, through: :friends, dependent: :destroy
   has_many :posts,
            dependent: :destroy,
            inverse_of: :author,
            foreign_key: :author_id
   has_many :join_requests, dependent: :destroy
   has_many :invitations, dependent: :destroy
+
+  has_many :friends, dependent: :destroy
+  has_many :encouragements, through: :friends, dependent: :destroy
+
   has_many :activities, dependent: :destroy
   has_many :activity_coupons, through: :activities, source: :coupons
+
+  has_many :community_memberships, dependent: :destroy
+  has_many :communities, through: :community_memberships
 
   # == Attachments
   has_one_attached :page_icon
