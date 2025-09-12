@@ -173,6 +173,11 @@ Rails.application.routes.draw do
             only: %i[index create],
             constraints: { format: "json" },
             export: true
+  resources :world_encouragements,
+            path: "/world/encouragements",
+            only: :index,
+            constraints: { format: "json" },
+            export: true
 
   # == Friend notification settings
   resource :friend_notification_settings,
@@ -266,7 +271,7 @@ Rails.application.routes.draw do
 
   # == Encouragements
   resources :encouragements,
-            only: %i[index create],
+            only: :create,
             constraints: { format: "json" },
             export: true
 

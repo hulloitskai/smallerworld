@@ -232,10 +232,10 @@ const PostForm: FC<PostFormProps> = props => {
         setShowImageInput(false);
         editorRef.current?.commands.clearContent();
         clearDraft();
+        void mutateRoute(routes.worldEncouragements.index);
       }
       void mutateWorldPosts();
       void mutateRoute(routes.worldPosts.pinned);
-      void mutateRoute(routes.encouragements.index);
       if ("onPostCreated" in props) {
         props.onPostCreated?.(post);
       } else if ("onPostUpdated" in props) {

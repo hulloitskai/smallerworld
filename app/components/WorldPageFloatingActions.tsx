@@ -42,7 +42,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   // == Load encouragements
   const { data: encouragementsData } = useRouteSWR<{
     encouragements: Encouragement[];
-  }>(routes.encouragements.index, {
+  }>(routes.worldEncouragements.index, {
     descriptor: "load encouragements",
     keepPreviousData: true,
   });

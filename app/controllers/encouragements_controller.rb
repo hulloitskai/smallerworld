@@ -3,18 +3,7 @@
 
 class EncouragementsController < ApplicationController
   # == Filters
-  before_action :authenticate_user!, only: :index
-  before_action :authenticate_friend!, only: :create
-
-  # == Actions
-  # GET /encouragements
-  def index
-    user = authenticate_user!
-    encouragements = user.encouragements_since_last_poem_or_journal_entry
-    render(json: {
-      encouragements: EncouragementSerializer.many(encouragements),
-    })
-  end
+  before_action :authenticate_friend!
 
   # POST /encouragements?friend_token=...
   def create

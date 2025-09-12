@@ -75,7 +75,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
       onSuccess: () => {
         void mutateWorldPosts();
         void mutateRoute(routes.worldPosts.pinned);
-        void mutateRoute(routes.encouragements.index);
+        void mutateRoute(routes.worldEncouragements.index);
       },
     },
   );
