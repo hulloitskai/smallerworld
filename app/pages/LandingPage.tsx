@@ -4,6 +4,7 @@ import PlayIcon from "~icons/heroicons/play-20-solid";
 
 import inviteCloseFriendsSrc from "~/assets/images/invite-close-friends.png";
 import logoSrc from "~/assets/images/logo.png";
+import realtalkPlaceholderSrc from "~/assets/images/realtalk-placeholder.png";
 import shareRealStuffSrc from "~/assets/images/share-real-stuff.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
@@ -71,6 +72,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
             preload="auto"
             disablePictureInPicture
             disableRemotePlayback
+            poster={realtalkPlaceholderSrc}
             className={classes.video}
             onPlaying={updateVideoPlaying}
             onPause={updateVideoPlaying}
@@ -91,7 +93,14 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
                 backgroundOpacity={0}
                 blur={3}
                 radius="lg"
-                style={transitionStyle}
+                style={[
+                  transitionStyle,
+                  {
+                    ...(videoPlaying && {
+                      pointerEvents: "none",
+                    }),
+                  },
+                ]}
               >
                 <Center h="100%">
                   <Button

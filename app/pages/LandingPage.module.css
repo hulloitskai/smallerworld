@@ -27,7 +27,7 @@
   position: relative;
 
   @mixin smaller-than 680px {
-    margin-top: var(--mantine-spacing-xl);
+    margin-top: 36px;
   }
 }
 
@@ -40,6 +40,7 @@
   position: absolute;
   top: 0;
   right: -180px;
+  width: fit-content;
 
   @mixin smaller-than 680px {
     top: 0px;
