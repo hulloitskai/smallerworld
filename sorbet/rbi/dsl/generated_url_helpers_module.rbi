@@ -94,6 +94,9 @@ module GeneratedUrlHelpersModule
   def mark_seen_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def marsha_puzzle_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
