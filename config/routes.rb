@@ -333,6 +333,7 @@ Rails.application.routes.draw do
       "https://app.amplitude.com/analytics/smallerworld/home",
       status: 302,
     )
+    inertia "/marsha_puzzle" => "MarshaPuzzlePage"
   end
 
   # == Devtools
