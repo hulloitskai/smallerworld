@@ -10,7 +10,8 @@ import ShareIcon from "~icons/heroicons/share-20-solid";
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
 import {
-  formatInvitation,
+  formatInvitationMessage,
+  useInvitationMessage,
   useInvitationShareData,
 } from "~/helpers/invitations";
 import {
@@ -433,10 +434,7 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
   invitation,
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
-  const invitationUrl = useNormalizeUrl(
-    () => routes.invitations.show.path({ id: invitation.id }),
-    [invitation.id],
-  );
+  const invitationMessage = useInvitationMessage(invitation);
   const invitationShareData = useInvitationShareData(invitation);
   return (
     <Menu width={140} portalProps={{ target: vaulPortalTarget }}>
@@ -444,14 +442,14 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
         <Button
           variant="filled"
           leftSection={<SendIcon />}
-          disabled={!invitationUrl}
+          disabled={!invitationMessage}
         >
           send invite link via...
         </Button>
       </Menu.Target>
-      {!!invitationUrl && (
+      {!!invitationMessage && (
         <Menu.Dropdown>
-          <CopyButton value={invitationUrl}>
+          <CopyButton value={invitationMessage}>
             {({ copied, copy }) => (
               <Menu.Item
                 leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
@@ -520,7 +518,7 @@ const SendInviteLinkViaJoinRequestButton: FC<
                     ? {
                         href: messageUri(
                           joinRequest.phone_number,
-                          formatInvitation(invitationUrl),
+                          formatInvitationMessage(invitationUrl),
                           platform,
                         ),
                       }

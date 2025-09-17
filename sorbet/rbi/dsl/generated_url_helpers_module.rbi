@@ -286,6 +286,9 @@ module GeneratedUrlHelpersModule
   def world_activities_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def world_encouragements_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def world_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

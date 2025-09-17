@@ -1,9 +1,22 @@
 import { type Invitation } from "~/types";
 
-const INVITE_MESSAGE = "you're invited to join my smaller world";
+const INVITE_MESSAGE =
+  "you're invited to join my smaller world (a secret blog just for friends)";
 
-export const formatInvitation = (invitationUrl: string): string =>
+export const formatInvitationMessage = (invitationUrl: string): string =>
   `${INVITE_MESSAGE}: ${invitationUrl}`;
+
+export const useInvitationMessage = (
+  invitation: Invitation,
+): string | undefined => {
+  const [invitationMessage, setInvitationMessage] = useState<string>();
+  useEffect(() => {
+    const invitePath = routes.invitations.show.path({ id: invitation.id });
+    const inviteUrl = normalizeUrl(invitePath);
+    setInvitationMessage(formatInvitationMessage(inviteUrl));
+  }, [invitation.id]);
+  return invitationMessage;
+};
 
 export const useInvitationShareData = (
   invitation: Invitation,
@@ -17,8 +30,7 @@ export const useInvitationShareData = (
       return;
     }
     const shareData: ShareData = {
-      text: INVITE_MESSAGE,
-      url: invitationUrl,
+      text: formatInvitationMessage(invitationUrl),
     };
     if (navigator.canShare(shareData)) {
       return shareData;

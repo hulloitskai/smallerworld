@@ -286,6 +286,9 @@ module GeneratedPathHelpersModule
   def world_activities_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def world_encouragements_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def world_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -289,12 +289,10 @@ Rails.application.routes.draw do
 
   # == Universe
   scope export: { namespace: "universe" } do
-    get "/universe", to: "universe#show", constraints: { format: "html" }
-    get "/universe/worlds",
-        to: "universe#worlds",
+    get "/universe" => "universe#show", constraints: { format: "html" }
+    get "/universe/worlds" => "universe#worlds",
         constraints: { format: "json" }
-    get "/universe/manifest.webmanifest",
-        to: "universe#manifest",
+    get "/universe/manifest.webmanifest" => "universe#manifest",
         constraints: { format: "" }
   end
   resources :universe_posts,
@@ -310,42 +308,40 @@ Rails.application.routes.draw do
             constraints: { format: "json" }
 
   # == Canny
-  post "/canny/sso_token",
-       to: "canny#sso_token",
+  post "/canny/sso_token" => "canny#sso_token",
        constraints: { format: "json" },
        export: true
 
   # == Policies
-  get "/policies",
-      to: "policies#show",
+  get "/policies" => "policies#show",
       constraints: { format: "html" },
       export: true
 
   # == Pages
   root "landing#show", export: true
   scope constraints: { format: "html" } do
-    get "/src",
-        to: redirect("https://github.com/hulloitskai/smallerworld", status: 302)
-    get "/sentry",
-        to: redirect("https://smallerworld.sentry.io/issues/", status: 302)
-    get "/feedback",
-        to: "feedback#redirect",
-        export: true
-    get "/analytics",
-        to: redirect(
-          "https://app.amplitude.com/analytics/smallerworld/home",
-          status: 302,
-        )
+    get "/src" => redirect(
+      "https://github.com/hulloitskai/smallerworld",
+      status: 302,
+    )
+    get "/sentry" => redirect(
+      "https://smallerworld.sentry.io/issues/",
+      status: 302,
+    )
+    get "/feedback" =>  "feedback#redirect", export: true
+    get "/analytics" => redirect(
+      "https://app.amplitude.com/analytics/smallerworld/home",
+      status: 302,
+    )
   end
 
   # == Devtools
   if Rails.env.development?
     scope export: { namespace: "test" } do
-      get "/test", to: "test#show", constraints: { format: "html" }
-      post "/test/submit", to: "test#submit", constraints: { format: "json" }
+      get "/test" => "test#show", constraints: { format: "html" }
+      post "/test/submit" => "test#submit", constraints: { format: "json" }
     end
-    get "/mailcatcher",
-        to: redirect("//localhost:1080", status: 302),
+    get "/mailcatcher" => redirect("//localhost:1080", status: 302),
         constraints: { format: "html" }
   end
 end
