@@ -20,6 +20,8 @@ interface ParsedPath {
   data: string;
   fill?: string;
   fillPattern?: string;
+  fillPatternScale?: { x: number; y: number };
+  fillPatternOffset?: { x: number; y: number };
   stroke?: string;
   strokeWidth?: number;
   transform: string | null;
@@ -29,7 +31,16 @@ interface ParsedPath {
 
 interface ParsedSVGData {
   paths: ParsedPath[];
-  patterns: Record<string, string>;
+  patterns: Record<
+    string,
+    {
+      href: string;
+      scaleX: number;
+      scaleY: number;
+      translateX: number;
+      translateY: number;
+    }
+  >;
   svgWidth: number;
   svgHeight: number;
 }
@@ -54,16 +65,27 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
     const svgWidth = parseFloat(viewBox[2]);
     const svgHeight = parseFloat(viewBox[3]);
 
-    // Extract pattern definitions
-    const patterns: Record<string, string> = {};
+    // Extract pattern definitions with transforms
+    const patterns: Record<
+      string,
+      {
+        href: string;
+        scaleX: number;
+        scaleY: number;
+        translateX: number;
+        translateY: number;
+      }
+    > = {};
+
     svgDoc.querySelectorAll("pattern").forEach(pattern => {
       const id = pattern.getAttribute("id");
       const useElement = pattern.querySelector("use");
-      const imageRef = useElement?.getAttribute("xlink:href"); // Gets "#image0_1_6"
+      const imageRef = useElement?.getAttribute("xlink:href");
+      const transformAttr = useElement?.getAttribute("transform");
 
       if (id && imageRef) {
         // Remove the "#" and find the actual image element
-        const imageId = imageRef.substring(1); // "image0_1_6"
+        const imageId = imageRef.substring(1);
         const imageElement = svgDoc.querySelector(`image[id="${imageId}"]`);
         const href =
           imageElement?.getAttribute("xlink:href") ??
@@ -71,10 +93,44 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
 
         if (href?.startsWith("data:")) {
           invariant(href, `Pattern ${id} missing image data`);
-          patterns[id] = href;
+
+          // Parse matrix transform: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
+          let scaleX = 1,
+            scaleY = 1,
+            translateX = 0,
+            translateY = 0;
+
+          if (transformAttr) {
+            const matrixMatch = transformAttr.match(/matrix\(([^)]+)\)/);
+            if (matrixMatch?.[1]) {
+              const values = matrixMatch[1]
+                .split(/[,\s]+/)
+                .map(Number)
+                .filter(v => !isNaN(v));
+              if (values.length >= 6) {
+                scaleX = values[0] ?? 1;
+                scaleY = values[3] ?? 1;
+                translateX = values[4] ?? 0;
+                translateY = values[5] ?? 0;
+              }
+            }
+          }
+
+          patterns[id] = { href, scaleX, scaleY, translateX, translateY };
+          console.log(`Pattern ${id}:`, {
+            scaleX,
+            scaleY,
+            translateX,
+            translateY,
+          });
         }
       }
     });
+
+    console.log(
+      `Found ${Object.keys(patterns).length} patterns:`,
+      Object.keys(patterns),
+    );
 
     const pathElements = svgDoc.querySelectorAll("path");
     const paths = Array.from(pathElements).map<ParsedPath>(
@@ -87,16 +143,49 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
         const strokeWidth = parseStrokeWidth(pathElement);
         const transform = pathElement.getAttribute("transform");
 
+        // Get the bounding box first for coordinate conversion
+        const bbox = pathElement.getBBox();
+
         let fillPattern: string | undefined;
+        let fillPatternScale: { x: number; y: number } | undefined;
+        let fillPatternOffset: { x: number; y: number } | undefined;
         if (fill?.startsWith("url(#")) {
           const patternId = fill.match(/url\(#([^)]+)\)/)?.[1];
           if (patternId && patterns[patternId]) {
-            fillPattern = patterns[patternId];
+            const pattern = patterns[patternId];
+            fillPattern = pattern.href;
+
+            // Try using SVG dimensions for scale calculation like we did for offset
+            fillPatternScale = {
+              x: pattern.scaleX * svgWidth,
+              y: pattern.scaleY * svgHeight,
+            };
+            // Use SVG dimensions instead of bbox since bbox is often 0x0
+            fillPatternOffset = {
+              x: pattern.translateX * svgWidth,
+              y: pattern.translateY * svgHeight,
+            };
+
+            console.log(`Path ${index} with pattern ${patternId}:`);
+            console.log(`  bbox: ${bbox.width}x${bbox.height}`);
+            console.log(
+              `  original scaleX: ${pattern.scaleX}, scaleY: ${pattern.scaleY}`,
+            );
+            console.log(
+              `  original translateX: ${pattern.translateX}, translateY: ${pattern.translateY}`,
+            );
+            console.log(
+              `  inverse scales would be: ${1 / pattern.scaleX}, ${1 / pattern.scaleY}`,
+            );
+            console.log(
+              `  fillPatternScale: ${fillPatternScale ? `${fillPatternScale.x.toFixed(2)}, ${fillPatternScale.y.toFixed(2)}` : "undefined"}`,
+            );
+            console.log(
+              `  fillPatternOffset: ${fillPatternOffset ? `${fillPatternOffset.x.toFixed(2)}, ${fillPatternOffset.y.toFixed(2)}` : "undefined"}`,
+            );
+            console.log(`  svgDimensions: ${svgWidth}x${svgHeight}`);
           }
         }
-
-        // Get the bounding box to determine initial position
-        const { x, y } = pathElement.getBBox();
         return {
           id: `path-${index}`,
           data,
@@ -105,8 +194,10 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
           strokeWidth,
           transform,
           fillPattern,
-          x,
-          y,
+          fillPatternScale,
+          fillPatternOffset,
+          x: bbox.x,
+          y: bbox.y,
         };
       },
     );
@@ -179,7 +270,12 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
             },
           };
           return path.fillPattern ? (
-            <ImagePath {...props} fillPattern={path.fillPattern} />
+            <ImagePath
+              {...props}
+              fillPattern={path.fillPattern}
+              fillPatternScale={path.fillPatternScale}
+              fillPatternOffset={path.fillPatternOffset}
+            />
           ) : (
             <Path {...props} fill={path.fill} />
           );
@@ -198,11 +294,42 @@ const parseStrokeWidth = (pathElement: SVGPathElement): number | undefined => {
   }
 };
 
-interface ImagePathProps extends Omit<Konva.PathConfig, "fillPatternImage"> {
+interface ImagePathProps
+  extends Omit<
+    Konva.PathConfig,
+    "fillPatternImage" | "fillPatternScale" | "fillPatternOffset"
+  > {
   fillPattern: string;
+  fillPatternScale?: { x: number; y: number };
+  fillPatternOffset?: { x: number; y: number };
 }
 
-const ImagePath: FC<ImagePathProps> = ({ fillPattern, ...otherProps }) => {
-  const [image] = useImage(fillPattern);
-  return <Path {...otherProps} fillPatternImage={image} />;
+const ImagePath: FC<ImagePathProps> = ({
+  fillPattern,
+  fillPatternScale,
+  fillPatternOffset,
+  ...otherProps
+}) => {
+  const [image, status] = useImage(fillPattern);
+
+  console.log("ImagePath rendering:");
+  console.log(`  image loaded: ${!!image}, status: ${status}`);
+  console.log(
+    `  image size: ${image ? `${image.width}x${image.height}` : "null"}`,
+  );
+  console.log(
+    `  fillPatternScale: ${fillPatternScale ? `${fillPatternScale.x}, ${fillPatternScale.y}` : "undefined"}`,
+  );
+  console.log(
+    `  fillPatternOffset: ${fillPatternOffset ? `${fillPatternOffset.x}, ${fillPatternOffset.y}` : "undefined"}`,
+  );
+
+  return (
+    <Path
+      {...otherProps}
+      fillPatternImage={image}
+      fillPatternScale={fillPatternScale}
+      fillPatternOffset={fillPatternOffset}
+    />
+  );
 };
