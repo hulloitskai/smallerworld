@@ -1,0 +1,81 @@
+@keyframes jiggle {
+  0% {
+    transform: rotate(0deg) translateX(0px);
+  }
+  2% {
+    transform: rotate(-3.2deg) translateX(-1.6px);
+  }
+  4% {
+    transform: rotate(3.2deg) translateX(1.6px);
+  }
+  6% {
+    transform: rotate(-2.4deg) translateX(-1.2px);
+  }
+  8% {
+    transform: rotate(2.4deg) translateX(1.2px);
+  }
+  10% {
+    transform: rotate(-1.6deg) translateX(-0.8px);
+  }
+  12% {
+    transform: rotate(1.6deg) translateX(0.8px);
+  }
+  14% {
+    transform: rotate(-0.8deg) translateX(-0.4px);
+  }
+  16% {
+    transform: rotate(0.8deg) translateX(0.4px);
+  }
+  18% {
+    transform: rotate(-0.4deg) translateX(-0.16px);
+  }
+  20% {
+    transform: rotate(0deg) translateX(0px);
+  }
+  100% {
+    transform: rotate(0deg) translateX(0px);
+  }
+}
+
+.statsBadge {
+  width: max-content;
+  margin-bottom: 40px;
+}
+
+.modalVideo {
+  --modal-header-height: rem(50px);
+
+  display: block;
+  height: calc(90dvh - var(--modal-header-height));
+  padding-bottom: var(--mantine-spacing-md);
+  margin-inline: auto;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    height: calc(100dvh - var(--modal-header-height));
+    padding-bottom: 0px;
+  }
+}
+
+.nekoImage {
+  max-width: 200px;
+  cursor: pointer;
+  animation: jiggle 4s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+
+  @mixin hover {
+    opacity: 0.8;
+  }
+}
+
+.red {
+  color: light-dark(var(--mantine-color-red-8), var(--mantine-color-red-4));
+
+  &:not(:global(.mantine-Title-root)) {
+    font-weight: 600;
+  }
+}
+
+.question {
+  line-height: var(--mantine-line-height-xs);
+  font-style: italic;
+  text-align: center;
+}

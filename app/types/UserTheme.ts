@@ -12,6 +12,7 @@ type UserTheme =
   | "aquatica"
   | "toile"
   | "rush"
-  | "phantom";
+  | "phantom"
+  | "meadows";
 
 export default UserTheme;

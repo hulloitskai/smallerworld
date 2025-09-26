@@ -17,6 +17,7 @@ export const USER_THEMES: UserTheme[] = [
   "aquatica",
   "rush",
   "phantom",
+  "meadows",
 ];
 
 export const isUserTheme = (theme: string): theme is UserTheme =>
@@ -58,6 +59,7 @@ export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   aquatica: "rgb(11, 32, 100)",
   rush: "rgb(147, 26, 1)",
   phantom: "rgb(15, 13, 14)",
+  meadows: "rgb(197, 219, 118)",
 };
 
 export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {
@@ -87,6 +89,8 @@ export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {
   rush: "linear-gradient(90deg, rgb(147, 14, 4) 0%, rgb(147, 27, 2) 46%, rgb(188, 124, 73) 76%, rgb(2, 36, 38) 100%)",
   phantom:
     "linear-gradient(90deg, rgb(15, 13, 14) 0%, rgb(22, 22, 25) 70%, rgb(39, 41, 44) 100%)",
+  meadows:
+    "linear-gradient(90deg, rgb(246, 225, 130) 0%, rgb(180, 192, 87) 50%, rgb(153, 178, 75) 80%)",
 };
 
 export interface UserThemeContext {
