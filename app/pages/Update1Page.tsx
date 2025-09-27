@@ -338,9 +338,8 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
               <Image src={anotherChanceSrc} maw={300} />
               <Text ta="center" maw={360}>
                 there are a few steps to downloading your world, and sometimes
-                people don&apos;t finish the process. it&apos;s not personal
-                (who HASN&apos;T forgotten to open a random link their friend
-                sent them?).
+                people don&apos;t finish the process (who HASN&apos;T forgotten
+                to open a random link their friend sent them?).
               </Text>
               <Text ta="center" maw={360}>
                 try giving them another chance by re-sending the invite link.
@@ -507,8 +506,15 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
           <Text ta="center" maw={400} mt={8}>
             (nudges and prompts V2: we&apos;re currently expanding the
-            possibilities with nudges and prompts, and we&apos;d love your
-            feedback or input on it.)
+            possibilities with nudges and prompts, and{" "}
+            <ContactLink
+              type="sms"
+              body="feedback on nudges and prompts: "
+              fw={600}
+            >
+              we&apos;d love your feedback or input on it
+            </ContactLink>
+            .)
           </Text>
         </Stack>
         <Stack gap={4} align="center">
