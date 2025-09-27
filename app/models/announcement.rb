@@ -13,6 +13,11 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Announcement < ApplicationRecord
+  include NormalizesPhoneNumber
+
+  # == Normalizations
+  normalizes_phone_number :test_recipient_phone_number
+
   # == Validations
   validates :message, presence: true
   validates :test_recipient_phone_number,

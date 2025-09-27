@@ -67,31 +67,34 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </span>
         </StatsBadge>
       </Marquee>
-      <Stack gap={40} data-container>
-        <Image src={coverSrc} />
-        <Text>
-          hi. first off - thanks for being a part of this journey with us - we
-          &lt;3 you all.
-          <br />
-          <br />
-          SO - we&apos;ve been talking with you, just trying to understand what
-          you love about your smaller world, and what you wish could be
-          improved. thanks for your honesty and time - those are two rare gifts
-          we don&apos;t take for granted.
-          <br />
-          <br />
-          we&apos;ve made this page to let you in on the new features and
-          changes we been making, along with some of the existing things you may
-          not have known about too! (kai is one sneaky dev).
-          <br />
-          <br />
-          don&apos;t hesitate to reach out to us anytime with any feedback, or
-          if you just want to chat :)
-          <br />
-          <Text inherit ta="end">
-            — adam & kai
+      <Stack gap={60} data-container>
+        <Stack gap="xl">
+          <Image src={coverSrc} />
+          <Text>
+            hi. first off - thanks for being a part of this journey with us - we{" "}
+            <span style={{ fontFamily: "var(--font-family-emoji)" }}>❤️</span>{" "}
+            you all.
+            <br />
+            <br />
+            SO - we&apos;ve been talking with you, just trying to understand
+            what you love about your smaller world, and what you wish could be
+            improved. thanks for your honesty and time - those are two rare
+            gifts we don&apos;t take for granted.
+            <br />
+            <br />
+            we&apos;ve made this page to let you in on the new features and
+            changes we been making, along with some of the existing things you
+            may not have known about too! (kai is one sneaky dev).
+            <br />
+            <br />
+            don&apos;t hesitate to reach out to us anytime with any feedback, or
+            if you just want to chat :)
+            <br />
+            <Text inherit ta="end">
+              — adam & kai
+            </Text>
           </Text>
-        </Text>
+        </Stack>
         <Divider />
         <Stack gap="xs">
           <Group justify="space-between">
