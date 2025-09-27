@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_12_004352) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_26_173021) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -66,6 +66,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_12_004352) do
     t.index ["expires_at"], name: "index_activity_coupons_on_expires_at"
     t.index ["friend_id"], name: "index_activity_coupons_on_friend_id"
     t.index ["redeemed_at"], name: "index_activity_coupons_on_redeemed_at"
+  end
+
+  create_table "announcements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "message", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.string "test_recipient_phone_number"
   end
 
   create_table "encouragements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -60,8 +60,6 @@ class TextBlast < ApplicationRecord
 
   # == Callbacks
   before_validation :set_phone_number_from_friend, if: :friend_changed?
-  # == Callbacks
-  before_validation :set_phone_number_from_friend, if: :friend_changed?
   after_create :send_later, unless: :sent?
 
   # == Methods

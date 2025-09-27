@@ -22,6 +22,9 @@ module GeneratedUrlHelpersModule
   def analytics_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def announcements_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def api_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

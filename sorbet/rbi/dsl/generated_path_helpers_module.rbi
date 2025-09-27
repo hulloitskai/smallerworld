@@ -22,6 +22,9 @@ module GeneratedPathHelpersModule
   def analytics_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def announcements_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def api_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

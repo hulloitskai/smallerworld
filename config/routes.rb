@@ -317,6 +317,16 @@ Rails.application.routes.draw do
       constraints: { format: "html" },
       export: true
 
+  # == Announcements
+  resources :announcements,
+            only: :index,
+            constraints: { format: %w[html json] },
+            export: true
+  resources :announcements,
+            only: :create,
+            constraints: { format: "json" },
+            export: true
+
   # == Pages
   root "landing#show", export: true
   scope constraints: { format: "html" } do

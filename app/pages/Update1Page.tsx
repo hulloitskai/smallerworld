@@ -1,5 +1,11 @@
 import { Marquee } from "@gfazioli/mantine-marquee";
-import { type BadgeProps, Code, Image, Text } from "@mantine/core";
+import {
+  type BadgeProps,
+  Code,
+  Image,
+  TableOfContents,
+  Text,
+} from "@mantine/core";
 
 import activityCouponSrc from "~/assets/images/update1/activity-coupon.apng";
 import activityCouponToFriendSrc from "~/assets/images/update1/activity-coupon-to-friend.png";
@@ -61,7 +67,7 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </span>
         </StatsBadge>
       </Marquee>
-      <Stack gap="xl" data-container>
+      <Stack gap={40} data-container>
         <Image src={coverSrc} />
         <Text>
           hi. first off - thanks for being a part of this journey with us - we
@@ -87,15 +93,32 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Text>
         </Text>
         <Divider />
-        <Group justify="space-between">
-          <Title order={2}>your questions</Title>
-          <Text>
-            (<span className={classes.red}>*red*</span> = new features)
-          </Text>
-        </Group>
+        <Stack gap="xs">
+          <Group justify="space-between">
+            <Title order={2}>your questions</Title>
+            <Text>
+              (p.s. <span className={classes.red}>*red*</span> = new features)
+            </Text>
+          </Group>
+          <TableOfContents
+            scrollSpyOptions={{ selector: "h3" }}
+            minDepthToOffset={3}
+            getControlProps={({ data, active }) => ({
+              component: "a",
+              href: "#" + data.id,
+              style: {
+                fontStyle: "italic",
+                ...(active && {
+                  backgroundColor: "var(--mantine-color-primary-filled)",
+                }),
+              },
+              children: data.value,
+            })}
+          />
+        </Stack>
         <Stack gap="lg">
-          <Stack gap={8} align="center">
-            <Title order={3} className={classes.question}>
+          <Stack gap="xs" align="center">
+            <Title order={3} className={classes.question} id="neko">
               &quot;who is neko?&quot;
             </Title>
             <Image
@@ -143,7 +166,7 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={6} align="center">
-          <Title order={3} className={classes.question}>
+          <Title order={3} className={classes.question} id="privacy">
             &quot;is my world actually private?&quot;
           </Title>
           <Text ta="center" maw={400}>
@@ -154,8 +177,12 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Text>
         </Stack>
         <Stack gap={8} align="center">
-          <Title order={3} className={classes.question}>
-            &quot;what if i don’t want some people to see my post?&quot;
+          <Title
+            order={3}
+            className={classes.question}
+            id="visibility-controls"
+          >
+            &quot;what if i don&apos;t want some people to see my post?&quot;
           </Title>
           <Stack>
             <Stack align="center" gap="xs">
@@ -203,7 +230,11 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={6} align="center">
-          <Title order={3} className={classes.question}>
+          <Title
+            order={3}
+            className={classes.question}
+            id="friends-not-reading"
+          >
             &quot;i don&apos;t think my friends are seeing my posts&quot;
           </Title>
           <Title order={4} size="h5" td="underline" ta="center">
@@ -235,7 +266,11 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={4} align="center">
-          <Title order={3} className={classes.question}>
+          <Title
+            order={3}
+            className={classes.question}
+            id="friend-notifications"
+          >
             &quot;do my friends HAVE to activate notifications?&quot;
           </Title>
           <Stack gap="xs" align="center">
@@ -248,7 +283,7 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack align="center" gap={4}>
-          <Title order={3} className={classes.question}>
+          <Title order={3} className={classes.question} id="my-notifications">
             &quot;why should i enable notifications?&quot;
           </Title>
           <Stack>
@@ -282,7 +317,13 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={8} align="center">
-          <Title order={3} className={classes.question} maw={410} lh={1.25}>
+          <Title
+            order={3}
+            className={classes.question}
+            maw={410}
+            lh={1.25}
+            id="friends-not-installing"
+          >
             &quot;i&apos;ve invited my friends, but they&apos;re not downloading
             my world.&quot;
           </Title>
@@ -294,8 +335,13 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
               <Image src={anotherChanceSrc} maw={300} />
               <Text ta="center" maw={360}>
                 there are a few steps to downloading your world, and sometimes
-                people don&apos;t finish the process. you can give them another
-                chance by re-sending the invite link :)
+                people don&apos;t finish the process. it&apos;s not personal
+                (who HASN&apos;T forgotten to open a random link their friend
+                sent them?).
+              </Text>
+              <Text ta="center" maw={360}>
+                try giving them another chance by re-sending the invite link.
+                (Adam likes to send attach personal voice notes along with his).
               </Text>
             </Stack>
             <Stack align="center" gap={6}>
@@ -343,7 +389,7 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={4} align="center">
-          <Title order={3} className={classes.question}>
+          <Title order={3} className={classes.question} id="sharing">
             &quot;can my friends share my posts?&quot;
           </Title>
           <Stack>
@@ -371,7 +417,13 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={4} align="center">
-          <Title order={3} className={classes.question} maw={380} lh={1.25}>
+          <Title
+            order={3}
+            className={classes.question}
+            maw={380}
+            lh={1.25}
+            id="activity-coupons"
+          >
             &quot;FRIENDSHIP ACTIVITY COUPONS? what are those?&quot;
           </Title>
           <Stack>
@@ -432,7 +484,7 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={4} align="center">
-          <Title order={3} className={classes.question}>
+          <Title order={3} className={classes.question} id="encouragements">
             &quot;i wish my friends would post more&quot;
           </Title>
           <Stack>
@@ -457,7 +509,7 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Text>
         </Stack>
         <Stack gap={4} align="center">
-          <Title order={3} className={classes.question}>
+          <Title order={3} className={classes.question} id="search">
             &quot;i wrote a post a while back and I can&apos;t find it&quot;
           </Title>
           <Stack gap={6} align="center">
@@ -469,7 +521,13 @@ const Update1Page: PageComponent<Update1PageProps> = () => {
           </Stack>
         </Stack>
         <Stack gap={8} align="center">
-          <Title order={3} className={classes.question} maw={440} lh={1.25}>
+          <Title
+            order={3}
+            className={classes.question}
+            maw={440}
+            lh={1.25}
+            id="posting-anxiety"
+          >
             &quot;i think i wanna post but i don&apos;t know what to post
             about.&quot;
           </Title>
@@ -516,24 +574,22 @@ const StatsBadge: FC<StatsBadgeProps> = ({
   className,
   children,
   ...otherProps
-}) => {
-  return (
-    <Tooltip
-      label={tooltip}
-      position="bottom"
-      disabled={!tooltip}
-      defaultOpened
-      events={{ hover: false, focus: false, touch: false }}
-      middlewares={{ shift: false }}
-      withinPortal={false}
+}) => (
+  <Tooltip
+    label={tooltip}
+    position="bottom"
+    disabled={!tooltip}
+    defaultOpened
+    events={{ hover: false, focus: false, touch: false }}
+    middlewares={{ shift: false }}
+    withinPortal={false}
+  >
+    <Badge
+      size="lg"
+      className={cn(classes.statsBadge, className)}
+      {...otherProps}
     >
-      <Badge
-        size="lg"
-        className={cn(classes.statsBadge, className)}
-        {...otherProps}
-      >
-        {children}
-      </Badge>
-    </Tooltip>
-  );
-};
+      {children}
+    </Badge>
+  </Tooltip>
+);
