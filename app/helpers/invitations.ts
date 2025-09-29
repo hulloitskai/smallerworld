@@ -1,41 +1,38 @@
 import { type Invitation } from "~/types";
 
-const INVITE_MESSAGE =
-  "you're invited to join my smaller world (a secret blog just for friends)";
+import { shortlinkIfAvailable } from "./shortlinks";
 
 export const formatInvitationMessage = (invitationUrl: string): string =>
-  `${INVITE_MESSAGE}: ${invitationUrl}`;
+  "here's an invitation to my smaller world (a secret blog just for friends)" +
+  `: ${invitationUrl}`;
 
 export const useInvitationMessage = (
   invitation: Invitation,
 ): string | undefined => {
   const [invitationMessage, setInvitationMessage] = useState<string>();
   useEffect(() => {
-    const invitePath = routes.invitations.show.path({ id: invitation.id });
-    const inviteUrl = normalizeUrl(invitePath);
-    setInvitationMessage(formatInvitationMessage(inviteUrl));
-  }, [invitation.id]);
+    const shortlink = invitationShortlink(invitation);
+    setInvitationMessage(formatInvitationMessage(shortlink));
+  }, [invitation]);
   return invitationMessage;
 };
 
 export const useInvitationShareData = (
   invitation: Invitation,
 ): ShareData | undefined => {
-  const invitationUrl = useNormalizeUrl(
-    () => routes.invitations.show.path({ id: invitation.id }),
-    [invitation.id],
-  );
-  return useMemo(() => {
-    if (!invitationUrl) {
-      return;
-    }
-    const shareData: ShareData = {
-      text: formatInvitationMessage(invitationUrl),
-    };
-    if (navigator.canShare(shareData)) {
-      return shareData;
-    }
-  }, [invitationUrl]);
+  const [shareData, setShareData] = useState<ShareData>();
+  useEffect(() => {
+    const shortlink = invitationShortlink(invitation);
+    setShareData({ text: formatInvitationMessage(shortlink) });
+  }, [invitation]);
+  return shareData;
+};
+
+const invitationShortlink = (invitation: Invitation): string => {
+  const invitePath = routes.invitations.show.path({ id: invitation.id });
+  const inviteUrl = hrefToUrl(invitePath);
+  shortlinkIfAvailable(inviteUrl);
+  return inviteUrl.toString();
 };
 
 export const prettyInviteeName = (

@@ -1,11 +1,10 @@
-import { CopyButton, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 
-import ShareIcon from "~icons/heroicons/share-20-solid";
-
-import { type WorldFriend } from "~/types";
+import { type Invitation, type WorldFriend } from "~/types";
 
 import Drawer, { type DrawerProps } from "./Drawer";
-import PlainQRCode from "./PlainQRCode";
+import InvitationQRCode from "./InvitationQRCode";
+import SendInviteLinkButton from "./SendInviteLinkButton";
 
 import "@mantine/carousel/styles.layer.css";
 
@@ -19,15 +18,15 @@ const WorldFriendInviteDrawer: FC<WorldFriendInviteDrawerProps> = ({
   opened,
   ...otherProps
 }) => {
-  const { data } = useRouteSWR<{ inviteUrl: string }>(
-    routes.worldFriends.inviteUrl,
+  const { data } = useRouteSWR<{ invitation: Invitation }>(
+    routes.worldFriends.invitation,
     {
       params: opened ? { id: friend.id } : null,
-      descriptor: "load invite link",
+      descriptor: "load invitation details",
       keepPreviousData: true,
     },
   );
-  const { inviteUrl } = data ?? {};
+  const { invitation } = data ?? {};
   return (
     <Drawer
       title={`invite ${friend.name} to your world!`}
@@ -41,14 +40,20 @@ const WorldFriendInviteDrawer: FC<WorldFriendInviteDrawerProps> = ({
           or send them the link using the button below
         </Text>
         <Stack gap="xs" align="center">
-          {inviteUrl ? (
-            <PlainQRCode value={inviteUrl} />
+          {invitation ? (
+            <InvitationQRCode {...{ invitation }} />
           ) : (
             <Skeleton width={160} height={160} />
           )}
           <Divider label="or" w="100%" maw={120} mx="auto" />
           <Center>
-            <SendInviteLinkButton {...{ inviteUrl }} />
+            {invitation ? (
+              <SendInviteLinkButton {...{ invitation }} />
+            ) : (
+              <Skeleton radius="default">
+                <Button>send invite link via...</Button>
+              </Skeleton>
+            )}
           </Center>
         </Stack>
       </Stack>
@@ -57,63 +62,3 @@ const WorldFriendInviteDrawer: FC<WorldFriendInviteDrawerProps> = ({
 };
 
 export default WorldFriendInviteDrawer;
-
-interface SendInviteLinkButtonProps {
-  inviteUrl: string | undefined;
-}
-
-const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({ inviteUrl }) => {
-  const vaulPortalTarget = useVaulPortalTarget();
-  const inviteShareData = useMemo(() => {
-    if (!inviteUrl) {
-      return;
-    }
-    const shareData: ShareData = {
-      text: "you're invited to join my smaller world",
-      url: inviteUrl,
-    };
-    if (navigator.canShare(shareData)) {
-      return shareData;
-    }
-  }, [inviteUrl]);
-
-  return (
-    <Menu width={140} portalProps={{ target: vaulPortalTarget }}>
-      <Menu.Target>
-        <Button
-          variant="filled"
-          leftSection={<SendIcon />}
-          disabled={!inviteUrl}
-        >
-          send invite link
-        </Button>
-      </Menu.Target>
-      {!!inviteUrl && (
-        <Menu.Dropdown>
-          <CopyButton value={inviteUrl}>
-            {({ copied, copy }) => (
-              <Menu.Item
-                leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                closeMenuOnClick={false}
-                onClick={copy}
-              >
-                {copied ? "link copied!" : "copy link"}
-              </Menu.Item>
-            )}
-          </CopyButton>
-          {inviteShareData && (
-            <Menu.Item
-              leftSection={<ShareIcon />}
-              closeMenuOnClick={false}
-              onClick={() => {
-                void navigator.share(inviteShareData);
-              }}
-            >
-              share via...
-            </Menu.Item>
-          )}
-        </Menu.Dropdown>
-      )}
-    </Menu>
-  );
-};

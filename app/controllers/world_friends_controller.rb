@@ -101,8 +101,8 @@ class WorldFriendsController < ApplicationController
     render(json: {})
   end
 
-  # GET /world/friends/:id/invite_url
-  def invite_url
+  # GET /world/friends/:id/invitation
+  def invitation
     friend = load_friend
     authorize!(friend)
     invitation = friend.invitation || scoped do
@@ -120,9 +120,8 @@ class WorldFriendsController < ApplicationController
         invitation
       end
     end
-    invite_url = ShortlinkService.url_helpers.invitation_url(invitation)
     render(json: {
-      "inviteUrl" => invite_url,
+      "invitation" => WorldInvitationSerializer.one(invitation),
     })
   end
 

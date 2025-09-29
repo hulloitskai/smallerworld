@@ -147,7 +147,7 @@ Rails.application.routes.draw do
       get :text_subscribers
     end
     member do
-      get :invite_url
+      get :invitation
       post :pause
       post :unpause
     end

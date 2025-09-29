@@ -1,17 +1,15 @@
-import { CopyButton, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { map } from "lodash-es";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
-import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import { useInvitationShareData } from "~/helpers/invitations";
-import { useShortlink } from "~/helpers/shortlinks";
 import { type Activity, type Invitation } from "~/types";
 
 import Drawer, { type DrawerProps } from "./Drawer";
 import EmojiPopover from "./EmojiPopover";
-import PlainQRCode from "./PlainQRCode";
+import InvitationQRCode from "./InvitationQRCode";
+import SendInviteLinkButton from "./SendInviteLinkButton";
 
 import classes from "./EditInvitationDrawer.module.css";
 import "@mantine/carousel/styles.layer.css";
@@ -222,69 +220,3 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
 };
 
 export default EditInvitationDrawer;
-
-interface InvitationQRCodeProps {
-  invitation: Invitation;
-}
-
-const InvitationQRCode: FC<InvitationQRCodeProps> = ({ invitation }) => {
-  const shortlink = useShortlink(
-    () => routes.invitations.show.path({ id: invitation.id }),
-    [invitation.id],
-  );
-  return <>{shortlink && <PlainQRCode value={shortlink} />}</>;
-};
-
-interface SendInviteLinkButtonProps {
-  invitation: Invitation;
-}
-
-const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
-  invitation,
-}) => {
-  const vaulPortalTarget = useVaulPortalTarget();
-  const invitationUrl = useNormalizeUrl(
-    () => routes.invitations.show.path({ id: invitation.id }),
-    [invitation.id],
-  );
-  const invitationShareData = useInvitationShareData(invitation);
-  return (
-    <Menu width={140} portalProps={{ target: vaulPortalTarget }}>
-      <Menu.Target>
-        <Button
-          variant="filled"
-          leftSection={<SendIcon />}
-          disabled={!invitationUrl}
-        >
-          send invite link
-        </Button>
-      </Menu.Target>
-      {!!invitationUrl && (
-        <Menu.Dropdown>
-          <CopyButton value={invitationUrl}>
-            {({ copied, copy }) => (
-              <Menu.Item
-                leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                closeMenuOnClick={false}
-                onClick={copy}
-              >
-                {copied ? "link copied!" : "copy link"}
-              </Menu.Item>
-            )}
-          </CopyButton>
-          {invitationShareData && (
-            <Menu.Item
-              leftSection={<ShareIcon />}
-              closeMenuOnClick={false}
-              onClick={() => {
-                void navigator.share(invitationShareData);
-              }}
-            >
-              share via...
-            </Menu.Item>
-          )}
-        </Menu.Dropdown>
-      )}
-    </Menu>
-  );
-};

@@ -1,33 +1,28 @@
 import { Carousel } from "@mantine/carousel";
-import { CopyButton, Image, Popover, Text } from "@mantine/core";
+import { Image, Popover, Text } from "@mantine/core";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
 import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
-import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
-import {
-  formatInvitationMessage,
-  useInvitationMessage,
-  useInvitationShareData,
-} from "~/helpers/invitations";
+import { formatInvitationMessage } from "~/helpers/invitations";
 import {
   messageUri,
   MESSAGING_PLATFORM_TO_ICON,
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
-import { useShortlink } from "~/helpers/shortlinks";
 import { useWorldActivities } from "~/helpers/world";
 import { type Activity, type Invitation, type JoinRequest } from "~/types";
 
 import ActivityCard from "./ActivityCard";
 import Drawer, { type DrawerProps } from "./Drawer";
 import EmojiPopover from "./EmojiPopover";
-import PlainQRCode from "./PlainQRCode";
+import InvitationQRCode from "./InvitationQRCode";
+import SendInviteLinkButton from "./SendInviteLinkButton";
 
 import classes from "./CreateInvitationDrawer.module.css";
 import "@mantine/carousel/styles.layer.css";
@@ -413,69 +408,6 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
 };
 
 export default CreateInvitationDrawer;
-
-interface InvitationQRCodeProps {
-  invitation: Invitation;
-}
-
-const InvitationQRCode: FC<InvitationQRCodeProps> = ({ invitation }) => {
-  const shortlink = useShortlink(
-    () => routes.invitations.show.path({ id: invitation.id }),
-    [invitation.id],
-  );
-  return <>{shortlink && <PlainQRCode value={shortlink} />}</>;
-};
-
-interface SendInviteLinkButtonProps {
-  invitation: Invitation;
-}
-
-const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
-  invitation,
-}) => {
-  const vaulPortalTarget = useVaulPortalTarget();
-  const invitationMessage = useInvitationMessage(invitation);
-  const invitationShareData = useInvitationShareData(invitation);
-  return (
-    <Menu width={140} portalProps={{ target: vaulPortalTarget }}>
-      <Menu.Target>
-        <Button
-          variant="filled"
-          leftSection={<SendIcon />}
-          disabled={!invitationMessage}
-        >
-          send invite link via...
-        </Button>
-      </Menu.Target>
-      {!!invitationMessage && (
-        <Menu.Dropdown>
-          <CopyButton value={invitationMessage}>
-            {({ copied, copy }) => (
-              <Menu.Item
-                leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                closeMenuOnClick={false}
-                onClick={copy}
-              >
-                {copied ? "link copied!" : "copy link"}
-              </Menu.Item>
-            )}
-          </CopyButton>
-          {invitationShareData && (
-            <Menu.Item
-              leftSection={<ShareIcon />}
-              closeMenuOnClick={false}
-              onClick={() => {
-                void navigator.share(invitationShareData);
-              }}
-            >
-              share via...
-            </Menu.Item>
-          )}
-        </Menu.Dropdown>
-      )}
-    </Menu>
-  );
-};
 
 interface SendInviteLinkViaJoinRequestButtonProps {
   invitation: Invitation;

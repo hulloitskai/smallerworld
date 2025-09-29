@@ -2,7 +2,7 @@ import QRCode, { type QRCodeProps } from "react-qr-code";
 
 import classes from "./PlainQRCode.module.css";
 
-interface PlainQRCodeProps extends Omit<QRCodeProps, "ref"> {}
+export interface PlainQRCodeProps extends Omit<QRCodeProps, "ref"> {}
 
 const PlainQRCode: FC<PlainQRCodeProps> = ({
   className,
