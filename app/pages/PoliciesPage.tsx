@@ -107,8 +107,8 @@ const PolicyPage: PageComponent<PolicyPageProps> = () => {
           title: "We keep things minimal.",
           body: (
             <>
-              We only collect what we need — your email, posts, and how you use
-              the app (so we can improve it).
+              We only collect what we need — your phone number, posts, and how
+              you use the app (so we can improve it).
             </>
           ),
         }}
