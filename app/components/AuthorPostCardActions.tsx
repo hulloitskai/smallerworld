@@ -38,14 +38,15 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   // == Stats clicked count
   const [statsClickedCount, setStatsClickedCount] = useState(0);
   useDidUpdate(() => {
-    if (statsClickedCount > 0) {
-      const clickTrackingTimeout = setTimeout(() => {
-        setStatsClickedCount(0);
-      }, 1000);
-      return () => {
-        clearTimeout(clickTrackingTimeout);
-      };
+    if (statsClickedCount <= 0) {
+      return;
     }
+    const clickTrackingTimeout = setTimeout(() => {
+      setStatsClickedCount(0);
+    }, 1000);
+    return () => {
+      clearTimeout(clickTrackingTimeout);
+    };
   }, [statsClickedCount]);
 
   // == Load post stats
@@ -340,28 +341,31 @@ const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ post }) => {
   );
   const { viewers } = data ?? {};
   return (
-    <Stack>
+    <>
       {viewers ? (
         isEmpty(viewers) ? (
           <EmptyCard itemLabel="viewers" />
         ) : (
           <List size="sm">
             {viewers.map(viewer => (
-              <List.Item key={viewer.id} icon={viewer.emoji}>
+              <List.Item
+                key={viewer.id}
+                icon={viewer.emoji ?? <Space w={14} />}
+              >
                 {viewer.name}
               </List.Item>
             ))}
           </List>
         )
       ) : (
-        <List>
+        <Stack gap={4} align="start">
           {[...new Array(3)].map((_, index) => (
-            <Skeleton key={index}>
-              <List.Item>placeholder</List.Item>
+            <Skeleton key={index} radius="md">
+              <Text className={List.classes.item}>placeholder name</Text>
             </Skeleton>
           ))}
-        </List>
+        </Stack>
       )}
-    </Stack>
+    </>
   );
 };
