@@ -286,6 +286,9 @@ module GeneratedUrlHelpersModule
   def user_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def viewers_world_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def visit_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

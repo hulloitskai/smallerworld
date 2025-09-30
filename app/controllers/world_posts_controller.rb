@@ -58,6 +58,15 @@ class WorldPostsController < ApplicationController
     })
   end
 
+  # GET /world/posts/:id/viewers
+  def viewers
+    post = load_post
+    authorize!(post)
+    render(json: {
+      viewers: FriendProfileSerializer.many(post.viewers),
+    })
+  end
+
   # POST /world/posts
   def create
     current_user = authenticate_user!

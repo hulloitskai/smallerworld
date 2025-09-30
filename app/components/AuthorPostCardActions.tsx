@@ -11,6 +11,7 @@ import ShareIcon from "~icons/heroicons/share-20-solid";
 import { mutateWorldPosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type PostReaction, type PostShare, type WorldPost } from "~/types";
 
+import { type FriendProfile } from "../types/generated";
 import DrawerModal from "./DrawerModal";
 import PostForm from "./PostForm";
 
@@ -33,6 +34,9 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   onFollowUpDrawerModalOpened,
 }) => {
   const { ref, inViewport } = useInViewport();
+
+  // == Stats clicked count
+  const [_statsClickedCount, setStatsClickedCount] = useState(0);
 
   // == Load post stats
   const { data: statsData } = useRouteSWR<{
@@ -96,6 +100,19 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
                     size="xs"
                     variant="transparent"
                     className={classes.statsIcon}
+                    onClick={() => {
+                      setStatsClickedCount(count => {
+                        const updatedCount = count + 1;
+                        if (updatedCount === 10) {
+                          openModal({
+                            title: "post viewers",
+                            children: <PostViewersModalBody {...{ post }} />,
+                          });
+                          return 0;
+                        }
+                        return updatedCount;
+                      });
+                    }}
                   >
                     {statsData?.viewers ? <OpenedIcon /> : <NotificationIcon />}
                   </ActionIcon>
@@ -294,5 +311,47 @@ const ShareMenuItem: FC<ShareMenuItemProps> = ({ post }) => {
     >
       share post
     </Menu.Item>
+  );
+};
+
+interface PostViewersModalBodyProps {
+  post: WorldPost;
+}
+
+const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ post }) => {
+  const { data } = useRouteSWR<{ viewers: FriendProfile[] }>(
+    routes.worldPosts.viewers,
+    {
+      params: {
+        id: post.id,
+      },
+      descriptor: "load post viewers",
+    },
+  );
+  const { viewers } = data ?? {};
+  return (
+    <Stack>
+      {viewers ? (
+        isEmpty(viewers) ? (
+          <EmptyCard itemLabel="viewers" />
+        ) : (
+          <List size="sm">
+            {viewers.map(viewer => (
+              <List.Item key={viewer.id} icon={viewer.emoji}>
+                {viewer.name}
+              </List.Item>
+            ))}
+          </List>
+        )
+      ) : (
+        <List>
+          {[...new Array(3)].map((_, index) => (
+            <Skeleton key={index}>
+              <List.Item>placeholder</List.Item>
+            </Skeleton>
+          ))}
+        </List>
+      )}
+    </Stack>
   );
 };

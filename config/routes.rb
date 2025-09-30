@@ -130,6 +130,7 @@ Rails.application.routes.draw do
     end
     member do
       get :stats
+      get :viewers
       post :share
     end
   end

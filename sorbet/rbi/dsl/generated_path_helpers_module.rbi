@@ -286,6 +286,9 @@ module GeneratedPathHelpersModule
   def user_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def viewers_world_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def visit_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
