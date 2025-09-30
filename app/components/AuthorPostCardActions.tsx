@@ -36,7 +36,17 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   const { ref, inViewport } = useInViewport();
 
   // == Stats clicked count
-  const [_statsClickedCount, setStatsClickedCount] = useState(0);
+  const [statsClickedCount, setStatsClickedCount] = useState(0);
+  useDidUpdate(() => {
+    if (statsClickedCount > 0) {
+      const clickTrackingTimeout = setTimeout(() => {
+        setStatsClickedCount(0);
+      }, 1000);
+      return () => {
+        clearTimeout(clickTrackingTimeout);
+      };
+    }
+  }, [statsClickedCount]);
 
   // == Load post stats
   const { data: statsData } = useRouteSWR<{
