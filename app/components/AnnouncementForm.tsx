@@ -39,7 +39,12 @@ const AnnouncementForm: FC<AnnouncementFormProps> = ({
         }
       },
     },
-    onSuccess: ({ announcement }: { announcement: Announcement }) => {
+    onSuccess: (
+      { announcement }: { announcement: Announcement },
+      { reset },
+    ) => {
+      reset();
+      setTestMode(false);
       void mutateRoute(routes.announcements.index);
       onAnnouncementCreated?.(announcement);
     },
