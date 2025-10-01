@@ -303,16 +303,56 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
       visited.add(currentId);
       component.push(currentId);
 
-      // Add all neighbors to queue
+      // Add only SNAPPED neighbors to queue
       const neighbors = map.neighbors[currentId] ?? [];
       for (const neighborId of neighbors) {
-        if (!visited.has(neighborId)) {
+        if (
+          !visited.has(neighborId) &&
+          arePiecesSnapped(currentId, neighborId, 8)
+        ) {
           queue.push(neighborId);
         }
       }
     }
 
     return component;
+  };
+
+  // Auto-align pieces when they snap together
+  const autoAlignSnappedPieces = (pieceId: string, layer: Konva.Layer) => {
+    const neighbors = map.neighbors[pieceId] ?? [];
+    const snappedNeighbors: string[] = [];
+
+    // Find all snapped neighbors
+    for (const neighborId of neighbors) {
+      if (arePiecesSnapped(pieceId, neighborId, 8)) {
+        snappedNeighbors.push(neighborId);
+      }
+    }
+
+    if (snappedNeighbors.length === 0) return;
+
+    // Calculate the aligned position based on snapped neighbors
+    const currentPos = pathPositions.get(pieceId);
+    if (!currentPos) return;
+
+    // Get the first snapped neighbor's position (they should all be aligned)
+    const neighborPos = pathPositions.get(snappedNeighbors[0]!);
+    if (!neighborPos) return;
+
+    // The pieces should be at the same position (since they're neighbors in a puzzle)
+    // Just align them exactly
+    const alignedPos = {
+      x: neighborPos.x,
+      y: neighborPos.y,
+    };
+
+    // Update the piece position
+    const node = layer.findOne(`.${pieceId}`);
+    if (node) {
+      node.position(alignedPos);
+      pathPositions.set(pieceId, alignedPos);
+    }
   };
 
   const scaleMultiplier = 0.7;
@@ -337,19 +377,26 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
             onDragEnd: ({ target }) => {
               document.body.style.cursor = "grab";
 
+              const layer = target.getLayer();
+              if (!layer) return;
+
               // Commit positions for all group members
               if (dragGroupRef.current) {
                 const { groupIds } = dragGroupRef.current;
-                const layer = target.getLayer();
 
                 for (const memberId of groupIds) {
-                  const node = layer?.findOne(`.${memberId}`);
+                  const node = layer.findOne(`.${memberId}`);
                   if (node) {
                     pathPositions.set(memberId, {
                       x: node.x(),
                       y: node.y(),
                     });
                   }
+                }
+
+                // Auto-align each piece in the group if it snapped with new neighbors
+                for (const memberId of groupIds) {
+                  autoAlignSnappedPieces(memberId, layer);
                 }
 
                 // Clear drag group state
@@ -360,6 +407,9 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
                   x: target.x(),
                   y: target.y(),
                 });
+
+                // Auto-align if snapped
+                autoAlignSnappedPieces(path.id, layer);
               }
             },
             onClick: ({ target }) => {
