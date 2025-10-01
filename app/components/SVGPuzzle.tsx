@@ -9,24 +9,27 @@ import {
 } from "react-konva";
 import { useImage } from "react-konva-utils";
 
+interface FillPatternOffset {
+  x?: number;
+  y?: number;
+}
+
 interface SVGPuzzleProps extends StageProps {
   svgData: string;
   width: number;
   height: number;
+  hardcodedFillPatternOffsets: Record<string, FillPatternOffset>;
 }
 
 interface ParsedPath {
   id: string;
   data: string;
   fill?: string;
-  fillPattern?: string;
-  fillPatternScale?: { x: number; y: number };
-  fillPatternOffset?: { x: number; y: number };
+  fillPatternSrc?: string;
+  fillPatternTransform?: string;
   stroke?: string;
   strokeWidth?: number;
   transform: string | null;
-  x: number;
-  y: number;
 }
 
 interface ParsedSVGData {
@@ -35,10 +38,7 @@ interface ParsedSVGData {
     string,
     {
       href: string;
-      scaleX: number;
-      scaleY: number;
-      translateX: number;
-      translateY: number;
+      transform?: string;
     }
   >;
   svgWidth: number;
@@ -49,13 +49,17 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
   svgData,
   width,
   height,
+  hardcodedFillPatternOffsets,
   ...otherProps
 }) => {
   // Parse SVG and extract patterns and viewBox
   const { paths, svgWidth, svgHeight } = useMemo<ParsedSVGData>(() => {
-    const parser = new DOMParser();
-    const svgDoc = parser.parseFromString(svgData, "image/svg+xml");
-    const svgElement = svgDoc.querySelector("svg");
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.visibility = "hidden";
+    document.body.appendChild(container);
+    container.innerHTML = svgData;
+    const svgElement = container.querySelector("svg");
     invariant(svgElement, "Missing SVG element");
 
     // Extract viewBox dimensions
@@ -70,69 +74,34 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
       string,
       {
         href: string;
-        scaleX: number;
-        scaleY: number;
-        translateX: number;
-        translateY: number;
+        transform?: string;
       }
     > = {};
 
-    svgDoc.querySelectorAll("pattern").forEach(pattern => {
+    svgElement.querySelectorAll("pattern").forEach(pattern => {
       const id = pattern.getAttribute("id");
       const useElement = pattern.querySelector("use");
       const imageRef = useElement?.getAttribute("xlink:href");
-      const transformAttr = useElement?.getAttribute("transform");
 
       if (id && imageRef) {
         // Remove the "#" and find the actual image element
         const imageId = imageRef.substring(1);
-        const imageElement = svgDoc.querySelector(`image[id="${imageId}"]`);
+        const imageElement = svgElement.querySelector(`image[id="${imageId}"]`);
         const href =
           imageElement?.getAttribute("xlink:href") ??
           imageElement?.getAttribute("href");
 
         if (href?.startsWith("data:")) {
           invariant(href, `Pattern ${id} missing image data`);
-
-          // Parse matrix transform: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
-          let scaleX = 1,
-            scaleY = 1,
-            translateX = 0,
-            translateY = 0;
-
-          if (transformAttr) {
-            const matrixMatch = transformAttr.match(/matrix\(([^)]+)\)/);
-            if (matrixMatch?.[1]) {
-              const values = matrixMatch[1]
-                .split(/[,\s]+/)
-                .map(Number)
-                .filter(v => !isNaN(v));
-              if (values.length >= 6) {
-                scaleX = values[0] ?? 1;
-                scaleY = values[3] ?? 1;
-                translateX = values[4] ?? 0;
-                translateY = values[5] ?? 0;
-              }
-            }
-          }
-
-          patterns[id] = { href, scaleX, scaleY, translateX, translateY };
-          console.log(`Pattern ${id}:`, {
-            scaleX,
-            scaleY,
-            translateX,
-            translateY,
-          });
+          patterns[id] = {
+            href,
+            transform: useElement?.getAttribute("transform") ?? undefined,
+          };
         }
       }
     });
 
-    console.log(
-      `Found ${Object.keys(patterns).length} patterns:`,
-      Object.keys(patterns),
-    );
-
-    const pathElements = svgDoc.querySelectorAll("path");
+    const pathElements = svgElement.querySelectorAll("path");
     const paths = Array.from(pathElements).map<ParsedPath>(
       (pathElement, index) => {
         const data = pathElement.getAttribute("d");
@@ -143,47 +112,14 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
         const strokeWidth = parseStrokeWidth(pathElement);
         const transform = pathElement.getAttribute("transform");
 
-        // Get the bounding box first for coordinate conversion
-        const bbox = pathElement.getBBox();
-
-        let fillPattern: string | undefined;
-        let fillPatternScale: { x: number; y: number } | undefined;
-        let fillPatternOffset: { x: number; y: number } | undefined;
+        let fillPatternSrc: string | undefined;
+        let fillPatternTransform: string | undefined;
         if (fill?.startsWith("url(#")) {
           const patternId = fill.match(/url\(#([^)]+)\)/)?.[1];
           if (patternId && patterns[patternId]) {
             const pattern = patterns[patternId];
-            fillPattern = pattern.href;
-
-            // Try using SVG dimensions for scale calculation like we did for offset
-            fillPatternScale = {
-              x: pattern.scaleX * svgWidth,
-              y: pattern.scaleY * svgHeight,
-            };
-            // Use SVG dimensions instead of bbox since bbox is often 0x0
-            fillPatternOffset = {
-              x: pattern.translateX * svgWidth,
-              y: pattern.translateY * svgHeight,
-            };
-
-            console.log(`Path ${index} with pattern ${patternId}:`);
-            console.log(`  bbox: ${bbox.width}x${bbox.height}`);
-            console.log(
-              `  original scaleX: ${pattern.scaleX}, scaleY: ${pattern.scaleY}`,
-            );
-            console.log(
-              `  original translateX: ${pattern.translateX}, translateY: ${pattern.translateY}`,
-            );
-            console.log(
-              `  inverse scales would be: ${1 / pattern.scaleX}, ${1 / pattern.scaleY}`,
-            );
-            console.log(
-              `  fillPatternScale: ${fillPatternScale ? `${fillPatternScale.x.toFixed(2)}, ${fillPatternScale.y.toFixed(2)}` : "undefined"}`,
-            );
-            console.log(
-              `  fillPatternOffset: ${fillPatternOffset ? `${fillPatternOffset.x.toFixed(2)}, ${fillPatternOffset.y.toFixed(2)}` : "undefined"}`,
-            );
-            console.log(`  svgDimensions: ${svgWidth}x${svgHeight}`);
+            fillPatternSrc = pattern.href;
+            fillPatternTransform = pattern.transform;
           }
         }
         return {
@@ -193,15 +129,13 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
           stroke,
           strokeWidth,
           transform,
-          fillPattern,
-          fillPatternScale,
-          fillPatternOffset,
-          x: bbox.x,
-          y: bbox.y,
+          fillPatternSrc,
+          fillPatternTransform,
         };
       },
     );
 
+    document.body.removeChild(container);
     return { paths, patterns, svgWidth, svgHeight };
   }, [svgData]);
 
@@ -209,8 +143,8 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
   const pathPositions = useMap<string, { x: number; y: number }>();
   useEffect(() => {
     pathPositions.clear();
-    paths.forEach(({ id, x, y }) => {
-      pathPositions.set(id, { x, y });
+    paths.forEach(({ id }) => {
+      pathPositions.set(id, { x: 0, y: 0 });
     });
   }, [paths]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -236,9 +170,10 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
         offset={{ x: -offsetX / scale, y: -offsetY / scale }}
       >
         {paths.map(path => {
-          const { x, y } = pathPositions.get(path.id) ?? path;
+          const { x, y } = pathPositions.get(path.id) ?? {};
           const props: Konva.PathConfig & KonvaNodeEvents = {
             key: path.id,
+            name: path.id,
             data: path.data,
             x,
             y,
@@ -246,6 +181,7 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
             strokeWidth: path.strokeWidth,
             draggable: true,
             onDragEnd: ({ target }) => {
+              document.body.style.cursor = "grab";
               pathPositions.set(path.id, {
                 x: target.x(),
                 y: target.y(),
@@ -269,12 +205,12 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
               document.body.style.cursor = "grabbing";
             },
           };
-          return path.fillPattern ? (
+          return path.fillPatternSrc ? (
             <ImagePath
               {...props}
-              fillPattern={path.fillPattern}
-              fillPatternScale={path.fillPatternScale}
-              fillPatternOffset={path.fillPatternOffset}
+              {...{ hardcodedFillPatternOffsets }}
+              fillPatternSrc={path.fillPatternSrc}
+              fillPatternTransform={path.fillPatternTransform}
             />
           ) : (
             <Path {...props} fill={path.fill} />
@@ -294,42 +230,63 @@ const parseStrokeWidth = (pathElement: SVGPathElement): number | undefined => {
   }
 };
 
-interface ImagePathProps
-  extends Omit<
-    Konva.PathConfig,
-    "fillPatternImage" | "fillPatternScale" | "fillPatternOffset"
-  > {
-  fillPattern: string;
-  fillPatternScale?: { x: number; y: number };
-  fillPatternOffset?: { x: number; y: number };
+interface ImagePathProps extends Omit<Konva.PathConfig, "fillPatternImage"> {
+  hardcodedFillPatternOffsets: Record<string, FillPatternOffset>;
+  fillPatternSrc: string;
+  fillPatternTransform?: string;
 }
 
 const ImagePath: FC<ImagePathProps> = ({
-  fillPattern,
-  fillPatternScale,
-  fillPatternOffset,
+  hardcodedFillPatternOffsets,
+  fillPatternSrc,
+  fillPatternTransform,
   ...otherProps
 }) => {
-  const [image, status] = useImage(fillPattern);
-
-  console.log("ImagePath rendering:");
-  console.log(`  image loaded: ${!!image}, status: ${status}`);
-  console.log(
-    `  image size: ${image ? `${image.width}x${image.height}` : "null"}`,
-  );
-  console.log(
-    `  fillPatternScale: ${fillPatternScale ? `${fillPatternScale.x}, ${fillPatternScale.y}` : "undefined"}`,
-  );
-  console.log(
-    `  fillPatternOffset: ${fillPatternOffset ? `${fillPatternOffset.x}, ${fillPatternOffset.y}` : "undefined"}`,
-  );
-
+  const ref = useRef<Konva.Path>(null);
+  const [fillPatternImage] = useImage(fillPatternSrc);
+  const { x, y } =
+    typeof otherProps.name === "string"
+      ? (hardcodedFillPatternOffsets[otherProps.name] ?? {})
+      : { x: undefined, y: undefined };
   return (
     <Path
+      {...{ ref, fillPatternImage }}
+      {...svgTransform2KonvaTransformAttributes(
+        ref.current,
+        fillPatternTransform,
+      )}
+      fillPatternX={x}
+      fillPatternY={y}
       {...otherProps}
-      fillPatternImage={image}
-      fillPatternScale={fillPatternScale}
-      fillPatternOffset={fillPatternOffset}
     />
   );
+};
+
+const svgTransform2KonvaTransformAttributes = (
+  path: Konva.Path | null,
+  transform: string | undefined,
+): Pick<Konva.PathConfig, "fillPatternScale" | "fillPatternOffset"> => {
+  if (!transform || !path) {
+    return {};
+  }
+  const match = transform.match(/matrix\(([^)]+)\)/);
+  if (!match) {
+    throw new Error("Invalid transform string: " + transform);
+  }
+  const [scaleX, _skewY, _skewX, scaleY, translateX, translateY] = match[1]!
+    .split(/[\s,]+/)
+    .map(Number) as [number, number, number, number, number, number];
+  const { width, height } = path.getClientRect({ skipTransform: true });
+  return {
+    fillPatternScale: {
+      x: scaleX * width,
+      y: scaleY * height,
+    },
+    fillPatternOffset: {
+      x: translateX * width,
+      y: translateY * height,
+    },
+    // fillPatternX: 104,
+    // fillPatternY: -385,
+  };
 };

@@ -8,7 +8,4 @@
 class ApplicationSerializer
   include GeneratedUrlHelpersModule
   include GeneratedPathHelpersModule
-
-  sig { returns(T.untyped) }
-  def application; end
 end

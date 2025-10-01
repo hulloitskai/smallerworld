@@ -17,8 +17,34 @@ const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { width, height } = useViewportSize();
-
-  return <SVGPuzzle svgData={puzzle1Data} {...{ width, height }} />;
+  return (
+    <SVGPuzzle
+      svgData={puzzle1Data}
+      {...{ width, height }}
+      hardcodedFillPatternOffsets={{
+        "path-0": {
+          x: 42,
+          y: 0,
+        },
+        "path-1": {
+          x: 60,
+          y: 38,
+        },
+        "path-2": {
+          x: 107,
+          y: -383,
+        },
+        "path-3": {
+          x: -83,
+          y: -408,
+        },
+        "path-4": {
+          x: -144,
+          y: -792,
+        },
+      }}
+    />
+  );
 };
 
 export default MarshaPuzzlePage;
