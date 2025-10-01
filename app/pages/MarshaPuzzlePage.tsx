@@ -22,7 +22,6 @@ const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = () => {
       svgData={puzzle1Data}
       {...{ width, height }}
       debugSnapOverlay={true}
-      scaleMultiplier={0.8}
       hardcodedFillPatternOffsets={{
         "path-0": {
           x: -70,

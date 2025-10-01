@@ -25,6 +25,13 @@ interface SVGPuzzleProps extends StageProps {
   scaleMultiplier?: number;
 }
 
+interface DragGroupState {
+  leaderId: string;
+  leaderStart: { x: number; y: number };
+  groupIds: string[];
+  memberStarts: Record<string, { x: number; y: number }>;
+}
+
 interface ParsedPath {
   id: string;
   data: string;
@@ -55,7 +62,6 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
   height,
   hardcodedFillPatternOffsets,
   debugSnapOverlay = true,
-  scaleMultiplier = 1,
   ...otherProps
 }) => {
   // Parse SVG and extract patterns and viewBox
@@ -170,12 +176,41 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
   }, [width, height, svgWidth, svgHeight]);
 
   // Puzzle snapping functionality
-  const { arePiecesSnapped } = usePuzzleSnap(
+  const { arePiecesSnapped, map } = usePuzzleSnap(
     svgData,
     () => Object.fromEntries(pathPositions.entries()),
     () => scale,
   );
 
+  // Drag group state
+  const dragGroupRef = useRef<DragGroupState | null>(null);
+
+  // BFS to collect connected component from map.neighbors
+  const collectConnectedComponent = (startId: string): string[] => {
+    const visited = new Set<string>();
+    const queue = [startId];
+    const component: string[] = [];
+
+    while (queue.length > 0) {
+      const currentId = queue.shift()!;
+      if (visited.has(currentId)) continue;
+
+      visited.add(currentId);
+      component.push(currentId);
+
+      // Add all neighbors to queue
+      const neighbors = map.neighbors[currentId] ?? [];
+      for (const neighborId of neighbors) {
+        if (!visited.has(neighborId)) {
+          queue.push(neighborId);
+        }
+      }
+    }
+
+    return component;
+  };
+
+  const scaleMultiplier = 1;
   return (
     <Stage {...{ width, height }} {...otherProps}>
       <Layer
@@ -194,10 +229,31 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
             draggable: true,
             onDragEnd: ({ target }) => {
               document.body.style.cursor = "grab";
-              pathPositions.set(path.id, {
-                x: target.x(),
-                y: target.y(),
-              });
+
+              // Commit positions for all group members
+              if (dragGroupRef.current) {
+                const { groupIds } = dragGroupRef.current;
+                const layer = target.getLayer();
+
+                for (const memberId of groupIds) {
+                  const node = layer?.findOne(`.${memberId}`);
+                  if (node) {
+                    pathPositions.set(memberId, {
+                      x: node.x(),
+                      y: node.y(),
+                    });
+                  }
+                }
+
+                // Clear drag group state
+                dragGroupRef.current = null;
+              } else {
+                // Fallback for non-group drags
+                pathPositions.set(path.id, {
+                  x: target.x(),
+                  y: target.y(),
+                });
+              }
             },
             onClick: ({ target }) => {
               target.moveToTop();
@@ -213,8 +269,66 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
               target.opacity(1);
               document.body.style.cursor = "default";
             },
-            onDragStart: () => {
+            onDragStart: evt => {
               document.body.style.cursor = "grabbing";
+
+              // Collect connected component and cache positions
+              const groupIds = collectConnectedComponent(path.id);
+              const layer = evt.target.getLayer();
+              const memberStarts: Record<string, { x: number; y: number }> = {};
+
+              // Get current positions for all group members
+              for (const memberId of groupIds) {
+                const node = layer?.findOne(`.${memberId}`);
+                if (node) {
+                  memberStarts[memberId] = { x: node.x(), y: node.y() };
+                }
+              }
+
+              // Store drag group state
+              const leaderStart = memberStarts[path.id];
+              if (leaderStart) {
+                dragGroupRef.current = {
+                  leaderId: path.id,
+                  leaderStart,
+                  groupIds,
+                  memberStarts,
+                };
+              }
+            },
+            onDragMove: evt => {
+              if (!dragGroupRef.current) return;
+
+              const { leaderId, leaderStart, groupIds, memberStarts } =
+                dragGroupRef.current;
+              const layer = evt.target.getLayer();
+
+              // Calculate delta from leader's movement
+              const leaderCurrent = { x: evt.target.x(), y: evt.target.y() };
+              const delta = {
+                x: leaderCurrent.x - leaderStart.x,
+                y: leaderCurrent.y - leaderStart.y,
+              };
+
+              // Apply delta to all group members (except leader)
+              for (const memberId of groupIds) {
+                if (memberId === leaderId) continue;
+
+                const node = layer?.findOne(`.${memberId}`);
+                if (node && memberStarts[memberId]) {
+                  const memberStart = memberStarts[memberId];
+                  if (memberStart) {
+                    const newPos = {
+                      x: memberStart.x + delta.x,
+                      y: memberStart.y + delta.y,
+                    };
+                    node.position(newPos);
+                  }
+                }
+              }
+
+              // Batch draw for performance
+              layer?.batchDraw();
             },
           };
 
