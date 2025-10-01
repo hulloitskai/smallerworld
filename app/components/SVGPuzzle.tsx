@@ -1,6 +1,5 @@
 import { useMap } from "@mantine/hooks";
 import type Konva from "konva";
-import { useRef, useState } from "react";
 import {
   type KonvaNodeEvents,
   Layer,
@@ -10,7 +9,7 @@ import {
 } from "react-konva";
 import { useImage } from "react-konva-utils";
 
-import { usePuzzleSnap } from "~/helpers/puzzleSnap";
+import { usePuzzleSnap } from "~/helpers/svgPuzzle";
 
 interface FillPatternOffset {
   x?: number;
