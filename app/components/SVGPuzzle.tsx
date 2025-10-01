@@ -1,5 +1,6 @@
 import { useMap } from "@mantine/hooks";
 import type Konva from "konva";
+import { useRef, useState } from "react";
 import {
   type KonvaNodeEvents,
   Layer,
@@ -61,7 +62,7 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
   width,
   height,
   hardcodedFillPatternOffsets,
-  debugSnapOverlay = true,
+  debugSnapOverlay,
   ...otherProps
 }) => {
   // Parse SVG and extract patterns and viewBox
@@ -160,6 +161,105 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
     });
   }, [paths]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Scatter pieces randomly on mount (hidden-then-reveal)
+  useEffect(() => {
+    if (hasScatteredRef.current) {
+      return;
+    }
+    const layer = layerRef.current;
+    if (!layer) {
+      return;
+    }
+
+    // ensure nodes are in the scene graph
+    requestAnimationFrame(() => {
+      const placedPieces: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+      }[] = [];
+
+      // Helper to check if two rectangles overlap significantly
+      const overlaps = (
+        rect1: { x: number; y: number; width: number; height: number },
+        rect2: { x: number; y: number; width: number; height: number },
+      ) => {
+        const overlapThreshold = 0.3; // 30% overlap is too much
+        const dx = Math.abs(
+          rect1.x + rect1.width / 2 - (rect2.x + rect2.width / 2),
+        );
+        const dy = Math.abs(
+          rect1.y + rect1.height / 2 - (rect2.y + rect2.height / 2),
+        );
+        const overlapX = Math.max(0, (rect1.width + rect2.width) / 2 - dx);
+        const overlapY = Math.max(0, (rect1.height + rect2.height) / 2 - dy);
+        const overlapArea = overlapX * overlapY;
+        const minArea = Math.min(
+          rect1.width * rect1.height,
+          rect2.width * rect2.height,
+        );
+        return overlapArea / minArea > overlapThreshold;
+      };
+
+      paths.forEach(({ id }) => {
+        const node = layer.findOne(`.${id}`) as Konva.Node | null;
+        if (!node) {
+          return;
+        }
+
+        const rect = node.getClientRect({
+          skipTransform: true,
+          skipShadow: true,
+        });
+        const minX = 0;
+        const maxX = svgWidth - rect.width;
+        const minY = 0;
+        const maxY = svgHeight - rect.height;
+
+        if (maxX < minX || maxY < minY) return;
+
+        // Try to find a non-overlapping position
+        let x, y;
+        let attempts = 0;
+        let hasOverlap = true;
+
+        do {
+          x = minX + Math.random() * (maxX - minX);
+          y = minY + Math.random() * (maxY - minY);
+
+          const candidateRect = {
+            x,
+            y,
+            width: rect.width,
+            height: rect.height,
+          };
+
+          hasOverlap = placedPieces.some(placed =>
+            overlaps(candidateRect, placed),
+          );
+          attempts++;
+        } while (hasOverlap && attempts < 50);
+
+        // Store the placed piece position
+        placedPieces.push({
+          x,
+          y,
+          width: rect.width,
+          height: rect.height,
+        });
+
+        pathPositions.set(id, {
+          x,
+          y,
+        });
+      });
+
+      hasScatteredRef.current = true;
+      setIsInitialized(true);
+    });
+  }, [paths, svgWidth, svgHeight]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Calculate aspect-ratio preserving scale and centering
   const { scale, offsetX, offsetY } = useMemo(() => {
     const scaleX = width / svgWidth;
@@ -184,6 +284,11 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
 
   // Drag group state
   const dragGroupRef = useRef<DragGroupState | null>(null);
+
+  // Scatter initialization refs and state
+  const layerRef = useRef<Konva.Layer>(null);
+  const hasScatteredRef = useRef(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // BFS to collect connected component from map.neighbors
   const collectConnectedComponent = (startId: string): string[] => {
@@ -210,10 +315,12 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
     return component;
   };
 
-  const scaleMultiplier = 1;
+  const scaleMultiplier = 0.7;
   return (
     <Stage {...{ width, height }} {...otherProps}>
       <Layer
+        ref={layerRef}
+        opacity={isInitialized ? 1 : 0}
         scale={{ x: scale * scaleMultiplier, y: scale * scaleMultiplier }}
         offset={{ x: -offsetX / scale, y: -offsetY / scale }}
       >
