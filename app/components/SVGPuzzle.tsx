@@ -9,6 +9,8 @@ import {
 } from "react-konva";
 import { useImage } from "react-konva-utils";
 
+import { usePuzzleSnap } from "~/helpers/puzzleSnap";
+
 interface FillPatternOffset {
   x?: number;
   y?: number;
@@ -19,6 +21,8 @@ interface SVGPuzzleProps extends StageProps {
   width: number;
   height: number;
   hardcodedFillPatternOffsets: Record<string, FillPatternOffset>;
+  debugSnapOverlay?: boolean;
+  scaleMultiplier?: number;
 }
 
 interface ParsedPath {
@@ -50,6 +54,8 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
   width,
   height,
   hardcodedFillPatternOffsets,
+  debugSnapOverlay = true,
+  scaleMultiplier = 1,
   ...otherProps
 }) => {
   // Parse SVG and extract patterns and viewBox
@@ -163,16 +169,22 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
     return { scale: uniformScale, offsetX, offsetY };
   }, [width, height, svgWidth, svgHeight]);
 
+  // Puzzle snapping functionality
+  const { arePiecesSnapped } = usePuzzleSnap(
+    svgData,
+    () => Object.fromEntries(pathPositions.entries()),
+    () => scale,
+  );
+
   return (
     <Stage {...{ width, height }} {...otherProps}>
       <Layer
-        scale={{ x: scale, y: scale }}
+        scale={{ x: scale * scaleMultiplier, y: scale * scaleMultiplier }}
         offset={{ x: -offsetX / scale, y: -offsetY / scale }}
       >
         {paths.map(path => {
           const { x, y } = pathPositions.get(path.id) ?? {};
           const props: Konva.PathConfig & KonvaNodeEvents = {
-            key: path.id,
             name: path.id,
             data: path.data,
             x,
@@ -205,15 +217,38 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
               document.body.style.cursor = "grabbing";
             },
           };
+
+          // Check if this piece is snapped with any neighbor
+          const isSnapped =
+            debugSnapOverlay &&
+            Array.from(pathPositions.keys()).some(
+              neighborId =>
+                neighborId !== path.id &&
+                arePiecesSnapped(path.id, neighborId, 8),
+            );
+
+          // Add snap styling to props if snapped
+          const snapProps = isSnapped
+            ? {
+                shadowColor: "lime",
+                shadowBlur: 4 / scale,
+                shadowOffset: { x: 0, y: 0 },
+                shadowOpacity: 1,
+                skipShadow: true,
+              }
+            : {};
+
           return path.fillPatternSrc ? (
             <ImagePath
+              key={path.id}
               {...props}
+              {...snapProps}
               {...{ hardcodedFillPatternOffsets }}
               fillPatternSrc={path.fillPatternSrc}
               fillPatternTransform={path.fillPatternTransform}
             />
           ) : (
-            <Path {...props} fill={path.fill} />
+            <Path key={path.id} {...props} {...snapProps} fill={path.fill} />
           );
         })}
       </Layer>
@@ -276,7 +311,10 @@ const svgTransform2KonvaTransformAttributes = (
   const [scaleX, _skewY, _skewX, scaleY, translateX, translateY] = match[1]!
     .split(/[\s,]+/)
     .map(Number) as [number, number, number, number, number, number];
-  const { width, height } = path.getClientRect({ skipTransform: true });
+  const { width, height } = path.getClientRect({
+    skipTransform: true,
+    skipShadow: true,
+  });
   return {
     fillPatternScale: {
       x: scaleX * width,
@@ -286,7 +324,5 @@ const svgTransform2KonvaTransformAttributes = (
       x: translateX * width,
       y: translateY * height,
     },
-    // fillPatternX: 104,
-    // fillPatternY: -385,
   };
 };
