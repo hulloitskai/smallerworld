@@ -345,6 +345,7 @@ Rails.application.routes.draw do
       status: 302,
     )
     inertia "/update1" => "Update1Page"
+    inertia "/marsha_puzzle" => "MarshaPuzzlePage"
   end
 
   # == Devtools

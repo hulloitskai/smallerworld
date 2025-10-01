@@ -97,6 +97,9 @@ module GeneratedPathHelpersModule
   def mark_seen_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def marsha_puzzle_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
