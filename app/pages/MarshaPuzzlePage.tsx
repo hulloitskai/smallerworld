@@ -10,12 +10,18 @@ const LazySVGPuzzle = lazy(() => import("~/components/SVGPuzzle"));
 
 export interface MarshaPuzzlePageProps extends SharedPageProps {
   puzzleSvg: string;
-  hardcodedFillPatternOffsets: Record<string, FillPatternOffset>;
+  pathInitializers: Record<
+    string,
+    {
+      initialPosition: { x: number; y: number };
+      fillPatternOffset: FillPatternOffset;
+    }
+  >;
 }
 
 const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = ({
   puzzleSvg,
-  hardcodedFillPatternOffsets,
+  pathInitializers,
 }) => {
   const { setColorScheme } = useMantineColorScheme();
   useEffect(() => {
@@ -27,7 +33,7 @@ const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = ({
     <Suspense>
       <LazySVGPuzzle
         svgData={puzzleSvg}
-        {...{ width, height, hardcodedFillPatternOffsets }}
+        {...{ width, height, pathInitializers }}
         debugSnapOverlay={true}
       />
     </Suspense>

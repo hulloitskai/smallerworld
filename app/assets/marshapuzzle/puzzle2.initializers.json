@@ -1,0 +1,52 @@
+{
+  "path-0": {
+    "fillPatternOffset": {
+      "x": -15,
+      "y": -22
+    },
+    "initialPosition": {
+      "x": 1000,
+      "y": 0
+    }
+  },
+  "path-1": {
+    "fillPatternOffset": {
+      "x": -378,
+      "y": -12
+    },
+    "initialPosition": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "path-2": {
+    "fillPatternOffset": {
+      "x": -574,
+      "y": -445
+    },
+    "initialPosition": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "path-3": {
+    "fillPatternOffset": {
+      "x": -285,
+      "y": -728
+    },
+    "initialPosition": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "path-4": {
+    "fillPatternOffset": {
+      "x": -453,
+      "y": -770
+    },
+    "initialPosition": {
+      "x": 0,
+      "y": 0
+    }
+  }
+}
