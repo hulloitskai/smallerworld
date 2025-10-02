@@ -11,7 +11,7 @@ import { useImage } from "react-konva-utils";
 
 import { usePuzzleSnap } from "~/helpers/svgPuzzle";
 
-interface FillPatternOffset {
+export interface FillPatternOffset {
   x?: number;
   y?: number;
 }

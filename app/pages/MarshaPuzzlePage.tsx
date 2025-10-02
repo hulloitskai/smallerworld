@@ -3,15 +3,20 @@ import { useMantineColorScheme } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { lazy, Suspense } from "react";
 
-import puzzle1Data from "~/assets/marshapuzzle/puzzle1.svg?raw";
-
 import PageLayout from "~/components/PageLayout";
+import { type FillPatternOffset } from "~/components/SVGPuzzle";
 
 const LazySVGPuzzle = lazy(() => import("~/components/SVGPuzzle"));
 
-export interface MarshaPuzzlePageProps extends SharedPageProps {}
+export interface MarshaPuzzlePageProps extends SharedPageProps {
+  puzzleSvg: string;
+  hardcodedFillPatternOffsets: Record<string, FillPatternOffset>;
+}
 
-const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = () => {
+const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = ({
+  puzzleSvg,
+  hardcodedFillPatternOffsets,
+}) => {
   const { setColorScheme } = useMantineColorScheme();
   useEffect(() => {
     setColorScheme("light");
@@ -21,31 +26,9 @@ const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = () => {
   return (
     <Suspense>
       <LazySVGPuzzle
-        svgData={puzzle1Data}
-        {...{ width, height }}
+        svgData={puzzleSvg}
+        {...{ width, height, hardcodedFillPatternOffsets }}
         debugSnapOverlay={true}
-        hardcodedFillPatternOffsets={{
-          "path-0": {
-            x: -70,
-            y: -113,
-          },
-          "path-1": {
-            x: -396,
-            y: -34,
-          },
-          "path-2": {
-            x: -92,
-            y: -726,
-          },
-          "path-3": {
-            x: -449,
-            y: -714,
-          },
-          "path-4": {
-            x: -342,
-            y: -1157,
-          },
-        }}
       />
     </Suspense>
   );

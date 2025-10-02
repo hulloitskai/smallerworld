@@ -328,6 +328,11 @@ Rails.application.routes.draw do
             constraints: { format: "json" },
             export: true
 
+  # == Marsha puzzle
+  resources :marsha_puzzles,
+            only: :show,
+            constraints: { format: "html" }
+
   # == Pages
   root "landing#show", export: true
   scope constraints: { format: "html" } do
@@ -345,7 +350,6 @@ Rails.application.routes.draw do
       status: 302,
     )
     inertia "/update1" => "Update1Page"
-    inertia "/marsha_puzzle" => "MarshaPuzzlePage"
   end
 
   # == Devtools
