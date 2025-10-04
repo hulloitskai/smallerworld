@@ -232,6 +232,9 @@ module GeneratedUrlHelpersModule
   def share_world_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def shortlinks_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def signup_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
