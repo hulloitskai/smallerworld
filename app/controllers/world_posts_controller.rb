@@ -13,8 +13,8 @@ class WorldPostsController < ApplicationController
   def index
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
-      .with_images
-      .with_quoted_post_and_images
+      .with_attached_images
+      .with_quoted_post_and_attached_images
       .with_encouragement
     if (type = params[:type])
       posts = posts.where(type:)
@@ -39,8 +39,9 @@ class WorldPostsController < ApplicationController
   def pinned
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts.currently_pinned)
-      .with_images
-      .with_quoted_post_and_images
+      .with_attached_images
+      .with_quoted_post_and_attached_images
+      .with_encouragement
       .order(pinned_until: :asc, created_at: :asc)
     render(json: {
       posts: WorldPostSerializer.many(posts),
@@ -97,7 +98,9 @@ class WorldPostsController < ApplicationController
 
   # PUT /world/posts/:id
   def update
-    post = load_post(scope: Post.with_images.with_quoted_post_and_images)
+    post = load_post(
+      scope: Post.with_attached_images.with_quoted_post_and_attached_images,
+    )
     authorize!(post)
     post_params = params.expect(post: [
       :title,
@@ -121,7 +124,9 @@ class WorldPostsController < ApplicationController
 
   # DELETE /world/posts/:id
   def destroy
-    post = load_post(scope: Post.with_images)
+    post = load_post(
+      scope: Post.with_attached_images.with_quoted_post_and_attached_images,
+    )
     authorize!(post)
     if post.destroy
       render(json: {})

@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   # == Actions
   # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def show
-    user = load_user(scope: User.with_page_icon)
+    user = load_user(scope: User.with_attached_page_icon)
     if (current_user = self.current_user)
       invitation_requested = user
         .join_requests
@@ -45,7 +45,7 @@ class UsersController < ApplicationController
   # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def manifest
     current_friend = authenticate_friend!
-    user = load_user(scope: User.with_page_icon)
+    user = load_user(scope: User.with_attached_page_icon)
     icons =
       if params[:icon_type] == "generic"
         brand_manifest_icons

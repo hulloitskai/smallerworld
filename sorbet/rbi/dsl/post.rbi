@@ -747,10 +747,7 @@ class Post
     def with_encouragement(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def with_images(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def with_quoted_post_and_images(*args, &blk); end
+    def with_quoted_post_and_attached_images(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_reactions(*args, &blk); end
@@ -1791,10 +1788,7 @@ class Post
     def with_encouragement(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def with_images(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def with_quoted_post_and_images(*args, &blk); end
+    def with_quoted_post_and_attached_images(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_reactions(*args, &blk); end

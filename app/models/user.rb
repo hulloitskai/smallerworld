@@ -80,8 +80,8 @@ class User < ApplicationRecord
 
   sig { returns(ActiveStorage::Blob) }
   def page_icon_blob!
-    page_icon_blob or
-      raise ActiveRecord::RecordNotFound, "Missing page icon blob"
+    page_icon_attachment&.blob or
+      raise ActiveRecord::RecordNotFound, "Missing page icon"
   end
 
   sig { returns(Image) }
@@ -114,9 +114,6 @@ class User < ApplicationRecord
 
   # == Callbacks
   after_create :create_welcome_post!
-
-  # == Scopes
-  scope :with_page_icon, -> { includes(:page_icon_blob) }
 
   # == Search
   pg_search_scope :search,

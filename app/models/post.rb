@@ -197,11 +197,10 @@ class Post < ApplicationRecord
     joins(:author)
       .where("posts.updated_at > (users.created_at + INTERVAL '1 second')")
   }
-  scope :with_images, -> { includes(:images_blobs) }
   scope :with_reactions, -> { includes(:reactions) }
   scope :with_encouragement, -> { includes(:encouragement) }
-  scope :with_quoted_post_and_images, -> {
-    includes(quoted_post: :images_blobs)
+  scope :with_quoted_post_and_attached_images, -> {
+    includes(quoted_post: [images_attachments: :blob])
   }
 
   # == Noticeable
@@ -323,9 +322,9 @@ class Post < ApplicationRecord
 
   sig { returns(T::Array[ActiveStorage::Blob]) }
   def ordered_image_blobs
-    blobs = images_blobs.to_a
-    blobs_by_id = blobs.index_by(&:id)
-    images_ids.filter_map { |id| blobs_by_id[id] }
+    attachments = images_attachments.to_a
+    attachments_by_blob_id = attachments.index_by(&:blob_id)
+    images_ids.filter_map { |blob_id| attachments_by_blob_id[blob_id]&.blob }
   end
 
   sig { returns(T::Array[Image]) }

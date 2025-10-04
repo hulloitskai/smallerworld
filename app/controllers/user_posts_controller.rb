@@ -7,8 +7,8 @@ class UserPostsController < ApplicationController
   def index
     user = load_user
     posts = user.posts
-      .with_images
-      .with_quoted_post_and_images
+      .with_attached_images
+      .with_quoted_post_and_attached_images
       .with_encouragement
     if (friend = current_friend)
       posts = posts.not_hidden_from(friend)
@@ -65,8 +65,8 @@ class UserPostsController < ApplicationController
   def pinned
     user = load_user
     posts = user.posts.currently_pinned
-      .with_images
-      .with_quoted_post_and_images
+      .with_attached_images
+      .with_quoted_post_and_attached_images
     unless (friend = current_friend) && friend.chosen_family?
       posts = posts.visible_to_friends
     end

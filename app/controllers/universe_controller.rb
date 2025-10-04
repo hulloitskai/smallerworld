@@ -13,6 +13,7 @@ class UniverseController < ApplicationController
   # GET /universe/worlds
   def worlds
     users = User
+      .with_attached_page_icon
       .notifiable
       .left_outer_joins(:posts)
       .group("users.id")
