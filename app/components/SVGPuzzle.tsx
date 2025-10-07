@@ -170,7 +170,7 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
   );
 
   // Calculate aspect-ratio preserving scale and centering
-  const { scale, offsetX, offsetY } = useMemo(() => {
+  const { scale /*, offsetX, offsetY */ } = useMemo(() => {
     const scaleX = width / svgWidth;
     const scaleY = height / svgHeight;
     const uniformScale = Math.min(scaleX, scaleY);
@@ -268,7 +268,7 @@ const SVGPuzzle: FC<SVGPuzzleProps> = ({
       <Layer
         ref={layerRef}
         scale={{ x: scale * scaleMultiplier, y: scale * scaleMultiplier }}
-        offset={{ x: -offsetX / scale, y: -offsetY / scale }}
+        // offset={{ x: -offsetX / scale, y: -offsetY / scale }}
       >
         {paths.map(path => {
           const { x, y } = pathPositions.get(path.id) ?? {};
