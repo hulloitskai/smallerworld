@@ -8,6 +8,9 @@ class MarshaPuzzlesController < ApplicationController
   # == Actions
   # GET /marsha_puzzles/:id
   def show
+    # Allow iframe embedding
+    response.headers["X-Frame-Options"] = "ALLOWALL"
+
     id = params.fetch(:id)
     marshapuzzle_dir = Rails.root.join("app/assets/marshapuzzle")
     svg = marshapuzzle_dir.join("#{id}.svg").read
