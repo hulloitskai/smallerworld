@@ -2,10 +2,13 @@ import {
   AspectRatio,
   type CardProps,
   Image,
+  Spoiler,
   Text,
   Typography,
 } from "@mantine/core";
 import Lightbox from "yet-another-react-lightbox";
+
+import ExpandIcon from "~icons/heroicons/chevron-down-20-solid";
 
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type Image as ImageType, type QuotedPost } from "~/types";
@@ -25,6 +28,9 @@ const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
       return DateTime.fromISO(post.pinned_until);
     }
   }, [post.pinned_until]);
+
+  // == Spoiler
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <Card
@@ -74,9 +80,30 @@ const QuotedPostCard: FC<QuotedPostCardProps> = ({ post, ...otherProps }) => {
               {post.title}
             </Title>
           )}
-          <Typography>
-            <div dangerouslySetInnerHTML={{ __html: post.body_html }} />
-          </Typography>
+          <Spoiler
+            maxHeight={200}
+            showLabel={
+              <Button
+                component="div"
+                className={classes.showMoreButton}
+                leftSection={<ExpandIcon />}
+                size="compact-sm"
+              >
+                show more
+              </Button>
+            }
+            hideLabel={null}
+            {...{ expanded }}
+            onExpandedChange={setExpanded}
+            classNames={{
+              root: classes.spoiler,
+              control: classes.spoilerControl,
+              content: classes.spoilerContent,
+            }}
+            mod={{ expanded }}
+          >
+            <Typography dangerouslySetInnerHTML={{ __html: post.body_html }} />
+          </Spoiler>
           {coverImage && <PostImage image={coverImage} />}
         </Stack>
       </Card.Section>

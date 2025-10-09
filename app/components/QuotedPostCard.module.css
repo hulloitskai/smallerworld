@@ -82,3 +82,29 @@
     top: var(--safe-area-inset-top, 0px);
   }
 }
+
+.spoilerControl {
+  left: 0;
+  right: 0;
+
+  @mixin hover {
+    .showMoreButton {
+      background-color: var(--button-hover);
+    }
+  }
+}
+
+.spoiler:not([data-expanded]) > .spoilerControl + .spoilerContent {
+  mask: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0,
+    rgba(0, 0, 0, 1) 80%,
+    transparent 100%
+  );
+}
+
+.showMoreButton {
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: 4px;
+  }
+}
