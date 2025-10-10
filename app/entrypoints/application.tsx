@@ -23,7 +23,7 @@ import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";
 import {
   handlePrecaching,
-  handleServiceWorkerNavigation,
+  handleServiceWorkerMessages,
   registerServiceWorker,
   unregisterOutdatedServiceWorkers,
 } from "~/helpers/serviceWorker/client";
@@ -46,7 +46,7 @@ requestIdleCallback(() => {
 
 // == Service worker
 if ("serviceWorker" in navigator && matchMedia("(display-mode: standalone)")) {
-  handleServiceWorkerNavigation();
+  handleServiceWorkerMessages();
   handlePrecaching();
   void unregisterOutdatedServiceWorkers();
   void registerServiceWorker();

@@ -125,36 +125,60 @@ export const unregisterOutdatedServiceWorkers = async (): Promise<void> => {
   );
 };
 
-export const handleServiceWorkerNavigation = (): void => {
+export const handleServiceWorkerMessages = (): void => {
   const handleMessage = ({ data, ports }: MessageEvent<any>): void => {
     const [responsePort] = ports;
-    invariant(
-      typeof data === "object" && "action" in data,
-      "Invalid message data",
-    );
-    const { action } = data;
-    if (action !== "navigate") {
+    if (typeof data !== "object" || !data) {
       return;
     }
-    const { url } = data;
-    invariant(typeof url === "string", "Invalid navigation URL");
-    console.info("Received service worker navigation request to:", url);
-    if (url === location.href) {
-      console.info("Already on this page, skipping navigation");
+    const { meta } = data;
+    if (typeof meta !== "string") {
       return;
     }
-
-    router.visit(url, {
-      onBefore: () => {
-        responsePort?.postMessage({ result: "success" });
-      },
-      onSuccess: () => {
-        console.info(`Requested navigation to '${url}' successful`);
-      },
-    });
+    switch (meta) {
+      case "navigate": {
+        const { url } = data;
+        invariant(typeof url === "string", "Invalid navigation URL");
+        console.info("Received service worker navigation request to:", url);
+        if (url === location.href) {
+          console.info("Already on this page, skipping navigation");
+          break;
+        }
+        router.visit(url, {
+          onBefore: () => {
+            responsePort?.postMessage({ result: "success" });
+          },
+          onSuccess: () => {
+            console.info(`Requested navigation to '${url}' successful`);
+          },
+        });
+        break;
+      }
+      case "workbox-broadcast-update": {
+        const { payload } = data;
+        invariant(typeof payload === "object" && !!payload, "Invalid payload");
+        const { cacheName, updatedUrl } = payload;
+        console.info(
+          "Received service worker broadcast update to:",
+          updatedUrl,
+          { cacheName },
+        );
+        if (updatedUrl === hrefWithoutSearch(location.href)) {
+          console.info("Refreshing page due to stale content");
+          location.reload();
+        }
+        break;
+      }
+    }
   };
 
   navigator.serviceWorker.addEventListener("message", handleMessage);
+};
+
+const hrefWithoutSearch = (href: string): string => {
+  const url = hrefToUrl(href);
+  url.search = "";
+  return url.toString();
 };
 
 export const waitForActiveServiceWorker = async (): Promise<ServiceWorker> => {

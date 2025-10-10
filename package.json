@@ -136,6 +136,7 @@
     "vite-plugin-iso-import": "^0.1.3",
     "vite-plugin-pwa": "^0.21.2",
     "vite-plugin-ruby": "^5.1.1",
+    "workbox-broadcast-update": "^7.3.0",
     "workbox-core": "^7.3.0",
     "workbox-navigation-preload": "^7.3.0",
     "workbox-precaching": "^7.3.0",

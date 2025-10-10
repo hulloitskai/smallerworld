@@ -13,10 +13,11 @@ import {
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
+import { BroadcastUpdatePlugin } from "workbox-broadcast-update";
 import { enable as enableNavigationPreload } from "workbox-navigation-preload";
 import { PrecacheController } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { CacheFirst, NetworkOnly } from "workbox-strategies";
+import { CacheFirst, StaleWhileRevalidate } from "workbox-strategies";
 
 import { DEFAULT_NOTIFICATION_ICON_URL } from "~/helpers/notifications";
 import routes, { setupRoutes } from "~/helpers/routes";
@@ -33,6 +34,9 @@ declare const self: ServiceWorkerGlobalScope;
 // == Constants
 const MANIFEST = self.__WB_MANIFEST;
 const SERVICE_WORKER_VERSION = 2;
+const PAGES_CACHE_NAME = "pages";
+const EMOJI_DATASOURCE_APPLE_CACHE_NAME = "emoji-datasource-apple";
+const EMOJI_STICKERS_CACHE_NAME = "emoji-stickers";
 const metadataStore = createStore("smallerworld", "metadata");
 
 // == Lifecycle
@@ -81,22 +85,26 @@ registerRoute(
   },
 );
 registerRoute(
-  ({ request }) => ["", "document"].includes(request.destination),
-  new NetworkOnly(),
+  ({ request }) =>
+    request.mode === "navigate" && request.destination === "document",
+  new StaleWhileRevalidate({
+    cacheName: PAGES_CACHE_NAME,
+    plugins: [new BroadcastUpdatePlugin()],
+  }),
 );
 registerRoute(
   ({ request, url }) =>
     request.destination === "image" &&
     url.hostname === "cdn.jsdelivr.net" &&
     url.pathname.startsWith("/npm/emoji-datasource-apple/img/"),
-  new CacheFirst({ cacheName: "emoji-datasource-apple" }),
+  new CacheFirst({ cacheName: EMOJI_DATASOURCE_APPLE_CACHE_NAME }),
 );
 registerRoute(
   ({ request, url }) =>
     request.destination === "image" &&
     url.hostname === "tttkkdzhzvelxmbcqvlg.supabase.co" &&
     url.pathname.startsWith("/storage/v1/object/public/emoji-stickers/"),
-  new CacheFirst({ cacheName: "emoji-stickers" }),
+  new CacheFirst({ cacheName: EMOJI_STICKERS_CACHE_NAME }),
 );
 
 // == Precaching
@@ -365,7 +373,7 @@ self.addEventListener("notificationclick", event => {
           });
 
           // Send client-side navigation request with MessagePort
-          client.postMessage({ action: "navigate", url: target_url }, [port2]);
+          client.postMessage({ meta: "navigate", url: target_url }, [port2]);
 
           // Wait for navigation to complete or timeout
           const success = await navigationPromise;
