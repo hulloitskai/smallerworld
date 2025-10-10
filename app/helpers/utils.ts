@@ -39,3 +39,12 @@ export const readingTimeFor = (text: string, wpm = 150) => {
   const wordCount = count(text, "words");
   return (wordCount / wpm) * 60 * 1000;
 };
+
+const stripQuery = (href: string): string => {
+  const url = hrefToUrl(href);
+  url.search = "";
+  return url.toString();
+};
+
+export const urlsAreSamePage = (href1: string, href2: string): boolean =>
+  stripQuery(href1) === stripQuery(href2);

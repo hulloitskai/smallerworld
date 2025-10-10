@@ -1,5 +1,7 @@
 import { type BrowserOptions } from "@sentry/browser";
 
+import { urlsAreSamePage } from "~/helpers/utils";
+
 import {
   SERVICE_WORKER_UPDATE_INTERVAL,
   SERVICE_WORKER_URL,
@@ -158,12 +160,14 @@ export const handleServiceWorkerMessages = (): void => {
         const { payload } = data;
         invariant(typeof payload === "object" && !!payload, "Invalid payload");
         const { cacheName, updatedUrl } = payload;
+        invariant(typeof cacheName === "string", "Invalid cacheName type");
+        invariant(typeof updatedUrl === "string", "Invalid updatedUrl type");
         console.info(
           "Received service worker broadcast update to:",
           updatedUrl,
           { cacheName },
         );
-        if (updatedUrl === hrefWithoutSearch(location.href)) {
+        if (urlsAreSamePage(updatedUrl, location.href)) {
           console.info("Refreshing page due to stale content");
           location.reload();
         }
@@ -173,12 +177,6 @@ export const handleServiceWorkerMessages = (): void => {
   };
 
   navigator.serviceWorker.addEventListener("message", handleMessage);
-};
-
-const hrefWithoutSearch = (href: string): string => {
-  const url = hrefToUrl(href);
-  url.search = "";
-  return url.toString();
 };
 
 export const waitForActiveServiceWorker = async (): Promise<ServiceWorker> => {
