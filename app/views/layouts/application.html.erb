@@ -62,7 +62,7 @@
     <script>
       // Reload page if any script from /dist/assets fails to load (404)
       // This handles cache busting scenarios where HTML is cached but assets have new hashes
-      var hasReloaded = sessionStorage.getItem("asset-reload-attempted");
+      var hasReloaded = sessionStorage.getItem("asset_reload_attempted");
 
       // Prevent infinite reload loops - only try once per session
       if (hasReloaded === "true") {
@@ -82,7 +82,7 @@
               console.info("reloading page to fetch updated assets...");
 
               // Mark that we've attempted a reload
-              sessionStorage.setItem("asset-reload-attempted", "true");
+              sessionStorage.setItem("asset_reload_attempted", "true");
 
               // Reload the page
               window.location.reload();
