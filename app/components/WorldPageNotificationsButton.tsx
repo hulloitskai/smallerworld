@@ -29,7 +29,7 @@ const WorldPageNotificationsButton: FC = () => {
           <NotificationIcon />
         </ActionIcon>
       ) : pushSubscription === null || pushRegistration === null ? (
-        <Stack gap={4} align="start">
+        <Stack gap={4}>
           <Button
             variant="filled"
             loading={loading || subscribing}

@@ -26,11 +26,7 @@ const updateServiceWorkerIfScriptIsReachable = async (
 };
 
 export const registerServiceWorker = async (): Promise<void> => {
-  if (!("serviceWorker" in navigator)) {
-    return;
-  }
   console.info("Registering service worker at:", SERVICE_WORKER_URL);
-
   let registration: ServiceWorkerRegistration | undefined = undefined;
   try {
     const type: WorkerType =
@@ -113,9 +109,6 @@ export const registerServiceWorker = async (): Promise<void> => {
 };
 
 export const unregisterOutdatedServiceWorkers = async (): Promise<void> => {
-  if (!("serviceWorker" in navigator)) {
-    return;
-  }
   const registrations = await navigator.serviceWorker.getRegistrations();
   const oldRegistrations = registrations.filter(
     ({ active }) =>
