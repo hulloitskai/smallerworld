@@ -6,7 +6,7 @@ import {
   type ResponseError,
 } from "@js-from-routes/client";
 
-import { isCSRFVerificationError, toastInvalidCSRFToken } from "~/helpers/csrf";
+import { isCSRFVerificationError, reloadCSRF } from "~/helpers/csrf";
 
 export type FetchRouteOptions = Partial<
   Omit<RequestOptions, "method" | "fetch">
@@ -27,7 +27,7 @@ export const fetchRoute = async <Data>(
       const { error } = body;
       console.error(`Failed to ${descriptor}`, error);
       if (isCSRFVerificationError(error)) {
-        toastInvalidCSRFToken();
+        return reloadCSRF().then(() => fetchRoute<Data>(route, options));
       } else if (!failSilently) {
         const message =
           response?.status === 503

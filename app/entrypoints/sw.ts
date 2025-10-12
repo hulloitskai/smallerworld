@@ -34,7 +34,6 @@ declare const self: ServiceWorkerGlobalScope;
 // == Constants
 const MANIFEST = self.__WB_MANIFEST;
 const SERVICE_WORKER_VERSION = 2;
-const PAGES_CACHE_NAME = "pages";
 const EMOJI_DATASOURCE_APPLE_CACHE_NAME = "emoji-datasource-apple";
 const EMOJI_STICKERS_CACHE_NAME = "emoji-stickers";
 const metadataStore = createStore("smallerworld", "metadata");
@@ -63,17 +62,26 @@ self.addEventListener("fetch", event => {
 });
 
 // == Setup
-const precacheController = new PrecacheController();
 setupRoutes();
 enableNavigationPreload();
+
+const precacheAssets = new PrecacheController({});
 if (!isEmpty(MANIFEST)) {
   console.info("Adding routes to precache list", MANIFEST);
-  precacheController.addToCacheList(MANIFEST);
+  precacheAssets.addToCacheList(MANIFEST);
 }
+
+const swrPages = new StaleWhileRevalidate({
+  matchOptions: {
+    ignoreSearch: true,
+  },
+  plugins: [new BroadcastUpdatePlugin()],
+});
+
 registerRoute(
-  ({ url }) => precacheController.getCacheKeyForURL(url.href),
+  ({ url }) => precacheAssets.getCacheKeyForURL(url.href),
   async ({ request }) => {
-    const cache = await caches.open(precacheController.strategy.cacheName);
+    const cache = await caches.open(precacheAssets.strategy.cacheName);
     const cached = await cache.match(request);
     if (cached) {
       return cached;
@@ -87,10 +95,7 @@ registerRoute(
 registerRoute(
   ({ request }) =>
     request.mode === "navigate" && request.destination === "document",
-  new StaleWhileRevalidate({
-    cacheName: PAGES_CACHE_NAME,
-    plugins: [new BroadcastUpdatePlugin()],
-  }),
+  swrPages,
 );
 registerRoute(
   ({ request, url }) =>
@@ -107,15 +112,15 @@ registerRoute(
   new CacheFirst({ cacheName: EMOJI_STICKERS_CACHE_NAME }),
 );
 
-// == Precaching
+// == Helpers
 const precache = async (): Promise<void> => {
   try {
     const fakeInstallEvent = new ExtendableEvent("install");
     fakeInstallEvent.waitUntil = (_: Promise<any>): void => {}; // shim
     const fakeActivateEvent = new ExtendableEvent("activate");
     fakeActivateEvent.waitUntil = (_: Promise<any>): void => {}; // shim
-    const installResult = await precacheController.install(fakeInstallEvent);
-    const cleanupResult = await precacheController.activate(fakeActivateEvent);
+    const installResult = await precacheAssets.install(fakeInstallEvent);
+    const cleanupResult = await precacheAssets.activate(fakeActivateEvent);
     console.info("Precaching completed", { installResult, cleanupResult });
   } catch (error) {
     console.error("Precaching failed", error);

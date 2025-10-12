@@ -1,3 +1,5 @@
+import { router } from "@inertiajs/react";
+
 import ReloadIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
 
 export const useCSRFToken = (): string => {
@@ -35,3 +37,17 @@ export const toastInvalidCSRFToken = (): void => {
     ),
   });
 };
+
+export const reloadCSRF = (): Promise<void> =>
+  new Promise((resolve, reject) => {
+    router.reload({
+      only: ["csrf"],
+      onFinish: visit => {
+        if (visit.completed) {
+          resolve();
+        } else {
+          reject(new Error("Failed to reload CSRF token"));
+        }
+      },
+    });
+  });
