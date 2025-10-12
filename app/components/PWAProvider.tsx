@@ -13,7 +13,7 @@ const PWAProvider: FC<PWAProviderProps> = ({ children }) => {
   const isStandalone = useIsStandalone();
   const outOfPWAScope = useOutOfPWAScope();
   const activeServiceWorker = useActiveServiceWorker();
-  const freshCSRF = useFreshCSRF();
+  const freshCSRF = useFreshCSRF(!!isStandalone && !outOfPWAScope);
   const { installing, install, error: installError } = useInstallPWA();
   return (
     <PWAContext.Provider

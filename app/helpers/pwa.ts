@@ -7,7 +7,7 @@ import { queryParamsFromPath } from "./inertia/routing";
 import { resetSWRCache } from "./routes/swr";
 
 export interface PWAState {
-  freshCSRF: { param: string; token: string } | null;
+  freshCSRF: { param: string; token: string } | null | undefined;
   activeServiceWorker: ServiceWorker | null | undefined;
   isStandalone: boolean | undefined;
   outOfPWAScope: boolean;
@@ -148,10 +148,16 @@ export const useInstallPWA = (): InstallPWAResult => {
   };
 };
 
-export const useFreshCSRF = (): PageCSRF | null => {
+export const useFreshCSRF = (
+  shouldLoad: boolean,
+): PageCSRF | null | undefined => {
   const pageProps = usePageProps();
-  const [freshCSRF, setFreshCSRF] = useState<PageCSRF | null>(null);
+  const [freshCSRF, setFreshCSRF] = useState<PageCSRF | null | undefined>();
   useEffect(() => {
+    setFreshCSRF(null);
+    if (!shouldLoad) {
+      return;
+    }
     void reloadCSRF().then(csrf => {
       setFreshCSRF(csrf);
       if (!isEqual(csrf, pageProps.csrf)) {

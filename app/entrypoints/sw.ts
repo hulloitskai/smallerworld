@@ -34,8 +34,15 @@ declare const self: ServiceWorkerGlobalScope;
 // == Constants
 const MANIFEST = self.__WB_MANIFEST;
 const SERVICE_WORKER_VERSION = 2;
-const EMOJI_DATASOURCE_APPLE_CACHE_NAME = "emoji-datasource-apple";
-const EMOJI_STICKERS_CACHE_NAME = "emoji-stickers";
+const withVersionPrefix = (name: string): string =>
+  `v${SERVICE_WORKER_VERSION}/${name}`;
+
+const EMOJI_DATASOURCE_APPLE_CACHE_NAME = withVersionPrefix(
+  "emoji-datasource-apple",
+);
+const EMOJI_STICKERS_CACHE_NAME = withVersionPrefix("emoji-stickers");
+const ASSETS_CACHE_NAME = withVersionPrefix("assets");
+const PAGES_CACHE_NAME = withVersionPrefix("pages");
 const metadataStore = createStore("smallerworld", "metadata");
 
 // == Lifecycle
@@ -65,15 +72,18 @@ self.addEventListener("fetch", event => {
 setupRoutes();
 enableNavigationPreload();
 
-const precacheAssets = new PrecacheController({});
+const swrPages = new StaleWhileRevalidate({
+  cacheName: PAGES_CACHE_NAME,
+  plugins: [new BroadcastUpdatePlugin()],
+});
+
+const precacheAssets = new PrecacheController({
+  cacheName: ASSETS_CACHE_NAME,
+});
 if (!isEmpty(MANIFEST)) {
   console.info("Adding routes to precache list", MANIFEST);
   precacheAssets.addToCacheList(MANIFEST);
 }
-
-const swrPages = new StaleWhileRevalidate({
-  plugins: [new BroadcastUpdatePlugin()],
-});
 
 registerRoute(
   ({ url }) => precacheAssets.getCacheKeyForURL(url.href),
