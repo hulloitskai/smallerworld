@@ -82,7 +82,7 @@ class ErrorsController < ApplicationController
       end
       format.any do
         message = Rack::Utils::HTTP_STATUS_CODES[code]
-        render(plain: message)
+        render(plain: message, status:)
       end
     end
   end
