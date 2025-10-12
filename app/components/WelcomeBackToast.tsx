@@ -42,11 +42,11 @@ const WelcomeBackToast: FC<WelcomeBackToastProps> = ({ subject }) => {
 
 export default WelcomeBackToast;
 
-const LAST_SHOWN_AT_KEY_PREFIX = "welcome_back_last_shown_at";
+const LAST_SHOWN_AT_KEY_PREFIX = "welcome_back_last_shown_at/";
 
 const lastShownAtKey = (subject: User | Friend) => {
   const subjectType = "access_token" in subject ? "friend" : "user";
-  return [LAST_SHOWN_AT_KEY_PREFIX, subjectType, subject.id].join(":");
+  return LAST_SHOWN_AT_KEY_PREFIX + [subjectType, subject.id].join(":");
 };
 
 const getLastShownAt = (subject: User | Friend): DateTime | null => {
