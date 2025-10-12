@@ -153,17 +153,24 @@ export const useFreshCSRF = (
 ): PageCSRF | null | undefined => {
   const pageProps = usePageProps();
   const [freshCSRF, setFreshCSRF] = useState<PageCSRF | null | undefined>();
+  const csrfLoadStartedRef = useRef(false);
   useEffect(() => {
+    if (csrfLoadStartedRef.current) {
+      return;
+    }
+
     setFreshCSRF(null);
     if (!shouldLoad) {
       return;
     }
+
+    csrfLoadStartedRef.current = true;
     void reloadCSRF().then(csrf => {
       setFreshCSRF(csrf);
       if (!isEqual(csrf, pageProps.csrf)) {
         return resetSWRCache();
       }
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [shouldLoad]); // eslint-disable-line react-hooks/exhaustive-deps
   return freshCSRF;
 };
