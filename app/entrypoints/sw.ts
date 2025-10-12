@@ -13,11 +13,11 @@ import {
 import { isEmpty, pick } from "lodash-es";
 import invariant from "tiny-invariant";
 import { v4 as uuid } from "uuid";
-import { BroadcastUpdatePlugin } from "workbox-broadcast-update";
+// import { BroadcastUpdatePlugin } from "workbox-broadcast-update";
 import { enable as enableNavigationPreload } from "workbox-navigation-preload";
 import { PrecacheController } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { CacheFirst, StaleWhileRevalidate } from "workbox-strategies";
+import { CacheFirst /*, StaleWhileRevalidate */ } from "workbox-strategies";
 
 import { DEFAULT_NOTIFICATION_ICON_URL } from "~/helpers/notifications";
 import routes, { setupRoutes } from "~/helpers/routes";
@@ -42,7 +42,7 @@ const EMOJI_DATASOURCE_APPLE_CACHE_NAME = withVersionPrefix(
 );
 const EMOJI_STICKERS_CACHE_NAME = withVersionPrefix("emoji-stickers");
 const ASSETS_CACHE_NAME = withVersionPrefix("assets");
-const PAGES_CACHE_NAME = withVersionPrefix("pages");
+// const PAGES_CACHE_NAME = withVersionPrefix("pages");
 const metadataStore = createStore("smallerworld", "metadata");
 
 // == Lifecycle
@@ -72,10 +72,10 @@ self.addEventListener("fetch", event => {
 setupRoutes();
 enableNavigationPreload();
 
-const swrPages = new StaleWhileRevalidate({
-  cacheName: PAGES_CACHE_NAME,
-  plugins: [new BroadcastUpdatePlugin()],
-});
+// const swrPages = new StaleWhileRevalidate({
+//   cacheName: PAGES_CACHE_NAME,
+//   plugins: [new BroadcastUpdatePlugin()],
+// });
 
 const precacheAssets = new PrecacheController({
   cacheName: ASSETS_CACHE_NAME,
@@ -99,11 +99,11 @@ registerRoute(
     }
   },
 );
-registerRoute(
-  ({ request }) =>
-    request.mode === "navigate" && request.destination === "document",
-  swrPages,
-);
+// registerRoute(
+//   ({ request }) =>
+//     request.mode === "navigate" && request.destination === "document",
+//   swrPages,
+// );
 registerRoute(
   ({ request, url }) =>
     request.destination === "image" &&
@@ -454,6 +454,10 @@ const processGetMetadata = async (): Promise<ServiceWorkerMetadata> => {
   };
 };
 
+// const processClearCaches = async (): Promise<void> => {
+//   await caches.delete(PAGES_CACHE_NAME);
+// };
+
 const processCommand = async (
   message: ServiceWorkerCommandMessage,
 ): Promise<any> => {
@@ -468,6 +472,9 @@ const processCommand = async (
       const metadata = await processGetMetadata();
       return { metadata };
     }
+    // case "clearCaches": {
+    //   return processClearCaches();
+    // }
     case "precache": {
       return precache();
     }

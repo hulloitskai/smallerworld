@@ -24,4 +24,7 @@ export type ServiceWorkerCommandMessage =
     }
   | {
       command: "precache";
+    }
+  | {
+      command: "clearCaches";
     };

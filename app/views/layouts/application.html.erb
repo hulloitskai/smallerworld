@@ -59,7 +59,7 @@
     <% end %>
 
     <%# == Stale asset handler %>
-    <script>
+    <%# <script>
       // Reload page if any script from /dist/assets fails to load (404)
       // This handles cache busting scenarios where HTML is cached but assets have new hashes
       var hasReloaded = sessionStorage.getItem("asset_reload_attempted");
@@ -78,19 +78,29 @@
 
             // Check if the failed resource is from /dist/assets
             if (url && url.includes("/dist/assets")) {
-              console.warn("asset failed to load:", url);
-              console.info("reloading page to fetch updated assets...");
+              console.warn("Asset failed to load:", url);
 
-              // Mark that we've attempted a reload
-              sessionStorage.setItem("asset_reload_attempted", "true");
+              navigator.serviceWorker.ready.then((registration) => {
+                if (!registration.active) {
+                  return;
+                }
 
-              // Reload the page
-              window.location.reload();
+                console.info("Clearing PWA caches...");
+                registration.active.postMessage({
+                  command: "clearCaches",
+                });
+
+                console.info("Reloading page to fetch updated assets...");
+                // Mark that we've attempted a reload
+                sessionStorage.setItem("asset_reload_attempted", "true");
+                // Reload the page
+                window.location.reload();
+              });
             }
           }
         }, true); // Use capture phase to catch errors early
       }
-    </script>
+    </script> %>
 
     <%# == Vite %>
     <%= vite_client_tag %>
