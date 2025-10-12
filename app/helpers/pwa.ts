@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 
 import { type PageCSRF } from "~/types";
 
+import { reloadCSRF } from "./csrf";
 import { queryParamsFromPath } from "./inertia/routing";
 import { resetSWRCache } from "./routes/swr";
 
@@ -158,17 +159,9 @@ export const useFreshCSRF = (): PageCSRF | null => {
     if (visibility === "hidden") {
       setFreshCSRF(null);
     } else if (visibility === "visible") {
-      router.reload({
-        only: ["csrf"],
-        async: true,
-        onBefore: () => {
-          setFreshCSRF(null);
-        },
-        onSuccess: ({ props }) => {
-          const { csrf } = props as unknown as SharedPageProps;
-          setFreshCSRF(csrf);
-          void resetSWRCache();
-        },
+      void reloadCSRF().then(csrf => {
+        setFreshCSRF(csrf);
+        return resetSWRCache();
       });
     }
   }, [visibility]);
