@@ -49,8 +49,10 @@ export const reloadCSRF = (): Promise<PageCSRF> =>
         const { csrf } = props as unknown as SharedPageProps;
         resolve(csrf);
       },
-      onError: () => {
-        reject(new Error("Failed to reload CSRF token"));
+      onFinish: visit => {
+        if (!visit.completed) {
+          reject(new Error("Failed to reload CSRF token"));
+        }
       },
     });
   });
