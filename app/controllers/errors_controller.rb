@@ -80,6 +80,9 @@ class ErrorsController < ApplicationController
           status:,
         )
       end
+      format.any do
+        render(plain: title)
+      end
     end
   end
 
