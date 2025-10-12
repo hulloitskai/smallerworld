@@ -1592,17 +1592,6 @@ class Rails::ApplicationController < ::ActionController::Base
   end
 end
 
-# source://railties//lib/rails/application_controller.rb#3
-module Rails::ApplicationController::HelperMethods
-  include ::ActionText::ContentHelper
-  include ::ActionText::TagHelper
-  include ::InertiaRails::Helper
-  include ::InertiaRails::AssetHelper
-  include ::ViteRails::TagHelpers
-  include ::ActionController::Base::HelperMethods
-  include ::CsrfHelper
-end
-
 # source://railties//lib/rails/autoloaders.rb#4
 class Rails::Autoloaders
   include ::Enumerable
@@ -5575,17 +5564,6 @@ class Rails::HealthController < ::ActionController::Base
   end
 end
 
-# source://railties//lib/rails/health_controller.rb#35
-module Rails::HealthController::HelperMethods
-  include ::ActionText::ContentHelper
-  include ::ActionText::TagHelper
-  include ::InertiaRails::Helper
-  include ::InertiaRails::AssetHelper
-  include ::ViteRails::TagHelpers
-  include ::ActionController::Base::HelperMethods
-  include ::CsrfHelper
-end
-
 # This module helps build the runtime properties that are displayed in
 # Rails::InfoController responses. These include the active \Rails version,
 # Ruby version, Rack version, and so on.
@@ -5864,8 +5842,6 @@ module Rails::MailersController::HelperMethods
   include ::InertiaRails::AssetHelper
   include ::ViteRails::TagHelpers
   include ::ActionController::Base::HelperMethods
-  include ::CsrfHelper
-  include ::Rails::ApplicationController::HelperMethods
 
   # source://railties//lib/rails/mailers_controller.rb#13
   def attachment_url(*_arg0, **_arg1, &_arg2); end

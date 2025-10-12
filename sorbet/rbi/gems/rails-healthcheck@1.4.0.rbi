@@ -183,17 +183,7 @@ end
 Healthcheck::Configuration::SETTINGS = T.let(T.unsafe(nil), Array)
 
 # source://rails-healthcheck//lib/healthcheck/engine.rb#6
-class Healthcheck::Engine < ::Rails::Engine
-  class << self
-    private
-
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#15
-    def __class_attr___callbacks; end
-
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#17
-    def __class_attr___callbacks=(new_value); end
-  end
-end
+class Healthcheck::Engine < ::Rails::Engine; end
 
 # source://rails-healthcheck//lib/healthcheck/error.rb#4
 class Healthcheck::Error
@@ -244,43 +234,20 @@ class Healthcheck::HealthchecksController < ::ActionController::Base
 
   private
 
-  # source://actionview/8.0.1/lib/action_view/layouts.rb#328
-  def _layout(lookup_context, formats); end
+  def _layout(lookup_context, formats, keys); end
 
   class << self
-    # source://actionpack/8.0.1/lib/action_dispatch/routing/route_set.rb#612
     def _routes; end
 
     private
 
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#15
     def __class_attr__wrapper_options; end
-
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#17
     def __class_attr__wrapper_options=(new_value); end
-
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#15
     def __class_attr_helpers_path; end
-
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#17
     def __class_attr_helpers_path=(new_value); end
-
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#15
     def __class_attr_middleware_stack; end
-
-    # source://activesupport/8.0.1/lib/active_support/class_attribute.rb#17
     def __class_attr_middleware_stack=(new_value); end
   end
-end
-
-module Healthcheck::HealthchecksController::HelperMethods
-  include ::ActionText::ContentHelper
-  include ::ActionText::TagHelper
-  include ::InertiaRails::Helper
-  include ::InertiaRails::AssetHelper
-  include ::ViteRails::TagHelpers
-  include ::ActionController::Base::HelperMethods
-  include ::CsrfHelper
 end
 
 # source://rails-healthcheck//lib/healthcheck/response/base.rb#4

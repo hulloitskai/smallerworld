@@ -2,11 +2,21 @@ import { router } from "@inertiajs/core";
 import { closeAllModals } from "@mantine/modals";
 import { AxiosHeaders } from "axios";
 
+import { setMeta } from "~/helpers/meta";
+
 export const setupInertia = (): void => {
   router.on("before", ({ detail: { visit } }) => {
     const csrfToken = getMeta("csrf-token");
     if (csrfToken) {
       visit.headers["X-CSRF-Token"] = csrfToken;
+    }
+  });
+  router.on("success", ({ detail: { page } }) => {
+    const props = page.props as unknown as Partial<SharedPageProps>;
+    if (props.csrf) {
+      const { param, token } = props.csrf;
+      setMeta("csrf-param", param);
+      setMeta("csrf-token", token);
     }
   });
   router.on("invalid", event => {

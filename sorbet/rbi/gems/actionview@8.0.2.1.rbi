@@ -15619,17 +15619,6 @@ class ActionView::TestCase::TestController < ::ActionController::Base
   end
 end
 
-# source://actionview//lib/action_view/test_case.rb#16
-module ActionView::TestCase::TestController::HelperMethods
-  include ::ActionText::ContentHelper
-  include ::ActionText::TagHelper
-  include ::InertiaRails::Helper
-  include ::InertiaRails::AssetHelper
-  include ::ViteRails::TagHelpers
-  include ::ActionController::Base::HelperMethods
-  include ::CsrfHelper
-end
-
 # source://actionview//lib/action_view/unbound_template.rb#6
 class ActionView::UnboundTemplate
   # @return [UnboundTemplate] a new instance of UnboundTemplate

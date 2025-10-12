@@ -159,17 +159,17 @@ export const handleServiceWorkerMessages = (): void => {
       case "workbox-broadcast-update": {
         const { payload } = data;
         invariant(typeof payload === "object" && !!payload, "Invalid payload");
-        const { cacheName, updatedUrl } = payload;
+        const { cacheName, updatedURL } = payload;
         invariant(typeof cacheName === "string", "Invalid cacheName type");
-        invariant(typeof updatedUrl === "string", "Invalid updatedUrl type");
+        invariant(typeof updatedURL === "string", "Invalid updatedURL type");
         console.info(
           "Received service worker broadcast update to:",
-          updatedUrl,
+          updatedURL,
           { cacheName },
         );
-        if (urlsAreSamePage(updatedUrl, location.href)) {
+        if (urlsAreSamePage(updatedURL, location.href)) {
           console.info("Refreshing page due to stale content");
-          location.reload();
+          router.reload({ async: true });
         }
         break;
       }

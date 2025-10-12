@@ -1037,13 +1037,3 @@ class Rails::Conductor::BaseController < ::ActionController::Base
     def __class_attr_middleware_stack=(new_value); end
   end
 end
-
-module Rails::Conductor::BaseController::HelperMethods
-  include ::ActionText::ContentHelper
-  include ::ActionText::TagHelper
-  include ::InertiaRails::Helper
-  include ::InertiaRails::AssetHelper
-  include ::ViteRails::TagHelpers
-  include ::ActionController::Base::HelperMethods
-  include ::CsrfHelper
-end

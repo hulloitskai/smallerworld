@@ -11,7 +11,8 @@ class ApplicationController < ActionController::Base
   include RendersJsonException
   include AuthenticatesUsers
   include AuthenticatesFriends
-  include DefaultFaviconLinks
+  include SharesApplicationProps
+  include SimulatesExpiredPage unless Rails.env.production?
   include NPlusOneDetection
 
   # == Errors
@@ -25,21 +26,6 @@ class ApplicationController < ActionController::Base
   around_action :with_error_context
   if Rails.env.development? && !InertiaRails.configuration.ssr_enabled
     around_action :with_ssr
-  end
-
-  # == Inertia
-  inertia_share do
-    {
-      csrf: {
-        param: request_forgery_protection_token,
-        token: form_authenticity_token,
-      },
-      flash: flash.to_h,
-      "currentUser" => UserSerializer.one_if(current_user),
-      "currentFriend" => FriendSerializer.one_if(current_friend),
-      "faviconLinks" => DEFAULT_FAVICON_LINKS,
-      "isAdmin" => current_user&.admin?,
-    }
   end
 
   # == Pagy

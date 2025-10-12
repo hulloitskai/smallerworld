@@ -1,4 +1,3 @@
-import { useDocumentVisibility } from "@mantine/hooks";
 import { createContext, useContext } from "react";
 
 import { type PageCSRF } from "~/types";
@@ -151,19 +150,14 @@ export const useInstallPWA = (): InstallPWAResult => {
 
 export const useFreshCSRF = (): PageCSRF | null => {
   const pageProps = usePageProps();
-  const [freshCSRF, setFreshCSRF] = useState<PageCSRF | null>(
-    () => pageProps.csrf,
-  );
-  const visibility = useDocumentVisibility();
-  useDidUpdate(() => {
-    if (visibility === "hidden") {
-      setFreshCSRF(null);
-    } else if (visibility === "visible") {
-      void reloadCSRF().then(csrf => {
-        setFreshCSRF(csrf);
+  const [freshCSRF, setFreshCSRF] = useState<PageCSRF | null>(null);
+  useEffect(() => {
+    void reloadCSRF().then(csrf => {
+      setFreshCSRF(csrf);
+      if (!isEqual(csrf, pageProps.csrf)) {
         return resetSWRCache();
-      });
-    }
-  }, [visibility]);
+      }
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return freshCSRF;
 };

@@ -72,9 +72,6 @@ if (!isEmpty(MANIFEST)) {
 }
 
 const swrPages = new StaleWhileRevalidate({
-  matchOptions: {
-    ignoreSearch: true,
-  },
   plugins: [new BroadcastUpdatePlugin()],
 });
 

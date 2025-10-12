@@ -29,13 +29,14 @@ export const fetchRoute = async <Data>(
       if (isCSRFVerificationError(error)) {
         return reloadCSRF().then(() => fetchRoute<Data>(route, options));
       } else if (!failSilently) {
-        const message =
-          response?.status === 503
-            ? "server is unresponsive; retrying..."
-            : typeof error === "string"
-              ? error
-              : "an unknown error occurred.";
-        toast.error(`failed to ${descriptor}`, { description: message });
+        toast.error(`failed to ${descriptor}`, {
+          description:
+            response?.status === 503
+              ? "server is unresponsive; retrying..."
+              : typeof error === "string"
+                ? error
+                : "an unknown error occurred.",
+        });
       }
       throw new Error(error);
     } else {
