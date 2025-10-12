@@ -31,6 +31,8 @@ import {
 import "./application.css";
 
 // == Setup
+window.BOOTED_AT = new Date();
+
 setupInertia();
 setupRoutes();
 setupLuxon();
