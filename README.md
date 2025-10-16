@@ -23,24 +23,10 @@ bin/setup
       modal
 - [ ] needs to refresh after signup for the 'pin to home screen' to work
       properly
-- [ ] add 'what people are talking about' to user's world
-- [ ] adding friend page to chrome standalone doesn't dismiss join modal
-- [ ] server-side notifications rendering
-- [ ] clearer instructions for pin-to-home-screen on iOS
-- [ ] make it easier for people to give "enable notifications" a shot
-  - is it ok if we enable notifications so you can know when <user> needs
-    support from you?
-- [ ] add ?ref=smallerworld on outbound links
-- [ ] resolve "reply count" countroversey
-  - how to incentivize people to reply more? without introducing social gaming
-    elements?
-- [ ] privacy policy + tos
-- [ ] implement stickers!!
-- [ ] android takes some time for beforeinstallprompt event to fire, i need to
-      account for this
-- [ ] emoji picker search sucks
-- [ ] user-page-specific splash screens for Android / iOS
-- [ ] fix iOS text selection in Vaul drawers
+  - [ ] bug where installing your world from "create your world" button doesn't
+        work immediately on Android
+- [ ] auto-push-registration when PWA is out-of-scope is creating duplicate user
+      notifications
 
 ## archived todos
 
