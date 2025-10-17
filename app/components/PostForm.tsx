@@ -167,20 +167,19 @@ const PostForm: FC<PostFormProps> = props => {
             title,
             images_uploads,
             pinned_until,
-            text_blast,
             visibility,
             hidden_from_ids,
             ...values
           }) => ({
             post: {
-              ...omit(values, "quiet"),
+              ...omit(values, "quiet", "text_blast"),
               emoji: emoji || null,
               title: title || null,
               images: images_uploads.map(upload => upload.signedId),
               pinned_until: pinned_until
                 ? formatDateString(pinned_until)
                 : null,
-              text_blast: visibility === "only_me" ? false : text_blast,
+              visibility,
               hidden_from_ids: visibility === "only_me" ? [] : hidden_from_ids,
             },
           }),
@@ -193,6 +192,10 @@ const PostForm: FC<PostFormProps> = props => {
             title,
             images_uploads,
             pinned_until,
+            visibility,
+            text_blast,
+            encouragement_id,
+            hidden_from_ids,
             ...values
           }) => {
             invariant(postType, "Missing post type");
@@ -209,6 +212,12 @@ const PostForm: FC<PostFormProps> = props => {
                 pinned_until: pinned_until
                   ? formatDateString(pinned_until)
                   : null,
+                visibility,
+                encouragement_id:
+                  visibility === "only_me" ? null : encouragement_id,
+                hidden_from_ids:
+                  visibility === "only_me" ? [] : hidden_from_ids,
+                text_blast: visibility === "only_me" ? false : text_blast,
               },
             };
           },
@@ -307,7 +316,12 @@ const PostForm: FC<PostFormProps> = props => {
     <form onSubmit={submit}>
       <Stack>
         {encouragement && (
-          <Transition transition="pop" mounted={!!values.encouragement_id}>
+          <Transition
+            transition="pop"
+            mounted={
+              !!values.encouragement_id && values.visibility !== "only_me"
+            }
+          >
             {transitionStyle => (
               <Stack gap={4} mx="md" style={transitionStyle}>
                 <Card withBorder className={classes.encouragementCard}>
