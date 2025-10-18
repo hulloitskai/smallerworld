@@ -54,13 +54,18 @@ class UsersController < ApplicationController
       end
     render(
       json: {
+        id: user_path(user, friend_token: current_friend.access_token),
         name: "#{user.name}'s world",
         short_name: user.name,
         description: "life updates, personal invitations, poems, and more!",
         icons:,
         display: "standalone",
-        start_url: user_path(user, friend_token: current_friend.access_token),
-        scope: user_path(user),
+        start_url: user_path(
+          user,
+          friend_token: current_friend.access_token,
+          trailing_slash: true,
+        ),
+        scope: user_path(user, trailing_slash: true),
         # start_url: user_path(
         #   user.id,
         #   friend_token: current_friend.access_token,

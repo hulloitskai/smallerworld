@@ -48,13 +48,14 @@ class UniverseController < ApplicationController
   def manifest
     render(
       json: {
+        id: universe_path,
         name: "smaller universe",
         short_name: "smaller universe",
         description: "happenings from all over the smaller universe!",
         icons: brand_manifest_icons,
         display: "standalone",
-        start_url: universe_path,
-        scope: universe_path,
+        start_url: universe_path(trailing_slash: true),
+        scope: universe_path(trailing_slash: true),
       },
       content_type: "application/manifest+json",
     )

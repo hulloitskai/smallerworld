@@ -81,13 +81,14 @@ class WorldsController < ApplicationController
     current_user = authenticate_user!
     render(
       json: {
+        id: world_path,
         name: "smaller world",
         short_name: "smaller world",
         description: "a smaller world for you and your friends :)",
         icons: user_manifest_icons(current_user),
         display: "standalone",
-        start_url: world_path,
-        scope: world_path,
+        start_url: world_path(trailing_slash: true),
+        scope: world_path(trailing_slash: true),
       },
       content_type: "application/manifest+json",
     )

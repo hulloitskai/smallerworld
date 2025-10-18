@@ -125,9 +125,11 @@
     </script>
 
     <%# == Overpowered %>
-    <meta name="overpowered-api-key" content="<%= Overpowered.settings.api_key %>">
-    <meta name="overpowered-endpoint" content="<%= Overpowered.settings.fingerprint_url %>">
-    <script src="<%= Overpowered.settings.script_url %>"></script>
+    <% if false %>
+      <meta name="overpowered-api-key" content="<%= Overpowered.settings.api_key %>">
+      <meta name="overpowered-endpoint" content="<%= Overpowered.settings.fingerprint_url %>">
+      <script src="<%= Overpowered.settings.script_url %>"></script>
+    <% end %>
 
     <%# == Canny %>
     <% if (settings = Canny.settings) %>
