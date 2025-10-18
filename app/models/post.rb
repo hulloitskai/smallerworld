@@ -240,6 +240,7 @@ class Post < ApplicationRecord
         author,
         friend_token: recipient&.access_token,
         post_id: id,
+        trailing_slash: true,
       ),
     )
   end

@@ -70,7 +70,10 @@ class PostReaction < ApplicationRecord
     NotificationMessage.new(
       title: "#{emoji} from #{friend.name}",
       body: post!.compact_snippet,
-      target_url: Rails.application.routes.url_helpers.world_url(post_id:),
+      target_url: Rails.application.routes.url_helpers.world_url(
+        post_id:,
+        trailing_slash: true,
+      ),
     )
   end
 

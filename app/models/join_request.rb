@@ -73,8 +73,10 @@ class JoinRequest < ApplicationRecord
     NotificationMessage.new(
       title: "#{name} wants to join your world!",
       body: "request from #{name} (#{phone_number})",
-      target_url: Rails.application.routes.url_helpers
-        .world_join_requests_url(join_request_id: id),
+      target_url: Rails.application.routes.url_helpers.world_join_requests_url(
+        join_request_id: id,
+        trailing_slash: true,
+      ),
     )
   end
 

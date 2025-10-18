@@ -96,6 +96,7 @@ class ActivityCoupon < ApplicationRecord
         user!,
         friend_token: recipient.access_token,
         anchor: "#invitations",
+        trailing_slash: true,
       ),
     )
   end
