@@ -21,6 +21,7 @@
 
   // == Rubocop
   "rubocop.mode": "enableViaGemfile",
+  "rubocop.bundleCommandPath": "bin/bundle",
 
   // == YAML
   "yaml.schemas": {
@@ -54,5 +55,8 @@
   },
   "[ignore]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
   }
 }
