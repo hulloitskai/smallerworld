@@ -49,13 +49,13 @@ const stripQuery = (href: string): string => {
 export const urlsAreSamePage = (href1: string, href2: string): boolean =>
   stripQuery(href1) === stripQuery(href2);
 
-export const addTrailingSlash = (url: string): string => {
-  const [path, search] = url.split("?");
-  if (!path) {
-    return url;
+export const addTrailingSlash = (href: string): string => {
+  const [base, search] = href.split("?");
+  if (!base) {
+    return href;
   }
-  if (path.endsWith("/")) {
-    return url;
+  if (base.endsWith("/")) {
+    return href;
   }
-  return [path, search].filter(Boolean).join("/?");
+  return [base, search].filter(Boolean).join("/?");
 };

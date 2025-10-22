@@ -58,7 +58,7 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                 i&apos;m going to.
               </Text>
               <Group gap="xs">
-                <Button<"a" | "button">
+                <Button
                   className={classes.button}
                   variant="white"
                   size="compact-sm"
@@ -78,14 +78,12 @@ const UserPageInstallAlert: FC<UserPageInstallAlertProps> = ({
                       !isMobileStandaloneBrowser(browserDetection) &&
                       canOpenUrlInMobileSafari(browserDetection)
                     ) {
-                      openUserPageInstallationInstructionsInMobileSafari(
+                      openUserPageInstallationInstructionsInMobileSafari({
                         user,
                         currentFriend,
-                      );
-                    } else {
-                      openUserPageInstallationInstructionsModal({
-                        user,
                       });
+                    } else {
+                      openUserPageInstallationInstructionsModal({ user });
                     }
                   }}
                 >

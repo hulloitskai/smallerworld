@@ -9,6 +9,8 @@ import {
   shouldWaitForInstallEvent,
   useBrowserDetection,
 } from "~/helpers/browsers";
+import { getPWAScope } from "~/helpers/pwa";
+import { addTrailingSlash } from "~/helpers/utils";
 import { type User } from "~/types";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
@@ -86,11 +88,14 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
               isMobileStandaloneBrowser(browserDetection)
             ) {
               if (isStandalone && outOfPWAScope) {
-                location.href = routes.world.show.path({
+                const pwaScope = getPWAScope();
+                const instructionsPath = routes.world.show.path({
                   query: {
                     intent: "installation_instructions",
+                    pwa_scope: pwaScope,
                   },
                 });
+                location.href = addTrailingSlash(instructionsPath);
               } else {
                 openWorldPageInstallationInstructionsModal({ currentUser });
                 closeModal(modalId);

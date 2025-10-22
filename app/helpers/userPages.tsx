@@ -108,10 +108,15 @@ export const useUserPageDialogOpened = (opened?: boolean): boolean => {
   return state.opened;
 };
 
-export const openUserPageInstallationInstructionsInMobileSafari = (
-  user: UserProfile,
-  currentFriend: Friend,
-) => {
+interface UserPageInstallationInstructionsInMobileSafariSettings {
+  currentFriend: Friend;
+  user: UserProfile;
+}
+
+export const openUserPageInstallationInstructionsInMobileSafari = ({
+  currentFriend,
+  user,
+}: UserPageInstallationInstructionsInMobileSafariSettings) => {
   const instructionsQuery: Record<string, string> = {
     friend_token: currentFriend.access_token,
     intent: "installation_instructions",
@@ -120,9 +125,9 @@ export const openUserPageInstallationInstructionsInMobileSafari = (
   if (manifest_icon_type) {
     instructionsQuery.manifest_icon_type = manifest_icon_type;
   }
-  const instructionsUrl = routes.users.show.path({
+  const instructionsPath = routes.users.show.path({
     id: user.handle,
     query: instructionsQuery,
   });
-  openUrlInMobileSafari(instructionsUrl);
+  openUrlInMobileSafari(instructionsPath);
 };

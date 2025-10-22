@@ -10,9 +10,9 @@ import SingleDayFontHead from "./SingleDayFontHead";
 import classes from "./HomescreenPreview.module.css";
 
 export interface HomescreenPreviewProps extends BoxProps {
-  pageName: string;
-  pageIcon: { src: string; srcset?: string | null } | null;
   arrowLabel: ReactNode;
+  pageName: string;
+  pageIcon?: { src: string; srcset?: string | null } | null;
   radius?: MantineRadius;
 }
 

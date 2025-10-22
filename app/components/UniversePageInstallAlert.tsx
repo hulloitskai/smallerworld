@@ -43,7 +43,7 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
                 invitations to events you&apos;re going to.
               </Text>
               <Group gap="xs">
-                <Button<"a" | "button">
+                <Button
                   className={classes.button}
                   variant="white"
                   size="compact-sm"
@@ -68,7 +68,6 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
                       openInstallationInstructionsModal({
                         title: "install smaller universe 📲",
                         pageName: "smaller universe",
-                        pageIcon: null,
                       });
                     }
                   }}
