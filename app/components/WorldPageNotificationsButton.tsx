@@ -14,7 +14,7 @@ const WorldPageNotificationsButton: FC = () => {
     pushRegistration,
     subscribe,
     subscribing,
-    subscribeError = new Error("meow meow meow"),
+    subscribeError,
     supported: webPushSupported,
     permission: webPushPermission,
     loading,

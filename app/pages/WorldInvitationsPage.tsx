@@ -1,6 +1,7 @@
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldInvitationCard from "~/components/WorldInvitationCard";
+import { addTrailingSlash } from "~/helpers/utils";
 import { useWorldActivities } from "~/helpers/world";
 import { type User, type WorldInvitation } from "~/types";
 
@@ -70,6 +71,7 @@ WorldInvitationsPage.layout = page => (
   <AppLayout<WorldInvitationsPageProps>
     title="your pending invitations"
     manifestUrl={routes.world.manifest.path()}
+    pwaScope={addTrailingSlash(routes.world.show.path())}
     withContainer
     containerSize="xs"
     withGutter

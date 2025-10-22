@@ -84,7 +84,7 @@ export default WebPushProvider;
 const useWebPushSupported = (): boolean | undefined => {
   const [supported, setSupported] = useState<boolean | undefined>();
   useEffect(() => {
-    setSupported("Notification" in window);
+    setSupported("Notification" in window && "serviceWorker" in navigator);
   }, []);
   return supported;
 };

@@ -58,50 +58,6 @@
       <meta name="clarity-project-id" content="<%= settings.project_id %>">
     <% end %>
 
-    <%# == Stale asset handler %>
-    <%# <script>
-      // Reload page if any script from /dist/assets fails to load (404)
-      // This handles cache busting scenarios where HTML is cached but assets have new hashes
-      var hasReloaded = sessionStorage.getItem("asset_reload_attempted");
-
-      // Prevent infinite reload loops - only try once per session
-      if (hasReloaded === "true") {
-        console.error("Asset failed to load after reload attempt. Not retrying to prevent infinite loop.");
-      } else {
-        // Listen for resource loading errors in capture phase (before they reach the target)
-        document.addEventListener("error", function(event) {
-          var target = event.target;
-
-          // Check if the error is from a script
-          if (target.tagName === "SCRIPT") {
-            var url = target.src || target.href;
-
-            // Check if the failed resource is from /dist/assets
-            if (url && url.includes("/dist/assets")) {
-              console.warn("Asset failed to load:", url);
-
-              navigator.serviceWorker.ready.then((registration) => {
-                if (!registration.active) {
-                  return;
-                }
-
-                console.info("Clearing PWA caches...");
-                registration.active.postMessage({
-                  command: "clearCaches",
-                });
-
-                console.info("Reloading page to fetch updated assets...");
-                // Mark that we've attempted a reload
-                sessionStorage.setItem("asset_reload_attempted", "true");
-                // Reload the page
-                window.location.reload();
-              });
-            }
-          }
-        }, true); // Use capture phase to catch errors early
-      }
-    </script> %>
-
     <%# == Vite %>
     <%= vite_client_tag %>
     <% if local_assigns.include?(:page) %>

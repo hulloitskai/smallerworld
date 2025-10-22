@@ -1,14 +1,7 @@
 {
   "mcpServers": {
     "supabase": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@supabase/mcp-server-supabase@latest",
-        "--read-only",
-        "--project-ref=tttkkdzhzvelxmbcqvlg"
-      ],
-      "envFile": "${workspaceFolder}/.env"
+      "url": "https://mcp.supabase.com/mcp?project_ref=tttkkdzhzvelxmbcqvlg&read_only=true&features=database,docs"
     }
   }
 }

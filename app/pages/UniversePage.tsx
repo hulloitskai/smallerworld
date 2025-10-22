@@ -15,6 +15,7 @@ import UniversePageFeed from "~/components/UniversePageFeed";
 import UniversePageInstallAlert from "~/components/UniversePageInstallAlert";
 import UniversePageNotificationsButton from "~/components/UniversePageNotificationsButton";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { addTrailingSlash } from "~/helpers/utils";
 import { useWebPush } from "~/helpers/webPush";
 import { type User, type World } from "~/types";
 
@@ -157,6 +158,7 @@ UniversePage.layout = page => (
   <AppLayout<UniversePageProps>
     title="smaller universe"
     manifestUrl={routes.universe.manifest.path()}
+    pwaScope={addTrailingSlash(routes.universe.show.path())}
     padding={0}
   >
     {page}

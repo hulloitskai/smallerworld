@@ -1,6 +1,6 @@
 # smallerworld
 
-_a smaller world for you and your friends._
+_your new secret blog, for close friends only._
 
 ## setup
 
@@ -19,16 +19,16 @@ bin/setup
 
 ## todos
 
-- [ ] creating world from friend page doesn't show the 'pin to home screen'
-      modal
+### oct 2025
+
 - [ ] needs to refresh after signup for the 'pin to home screen' to work
       properly
   - [ ] bug where installing your world from "create your world" button doesn't
         work immediately on Android
-- [ ] auto-push-registration when PWA is out-of-scope is creating duplicate user
+- [x] auto-push-registration when PWA is out-of-scope is creating duplicate user
       notifications
 
-## archived todos
+### archived todos
 
 - [x] show upcoming events when not logged in
 - [x] hide link href when not logged in

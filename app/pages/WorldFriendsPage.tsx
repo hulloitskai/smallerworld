@@ -10,6 +10,7 @@ import CloseIcon from "~icons/heroicons/x-mark";
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
+import { addTrailingSlash } from "~/helpers/utils";
 import {
   useFriendsByNotifiable,
   useWorldActivities,
@@ -267,6 +268,7 @@ WorldFriendsPage.layout = page => (
   <AppLayout<WorldFriendsPageProps>
     title="your friends"
     manifestUrl={routes.world.manifest.path()}
+    pwaScope={addTrailingSlash(routes.world.show.path())}
     withContainer
     containerSize="xs"
     withGutter

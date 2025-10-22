@@ -47,6 +47,20 @@ export const useIsStandalone = (): boolean | undefined => {
   return isStandalone;
 };
 
+export const isStandalone = (): boolean => {
+  const { matches } = matchMedia("(display-mode: standalone)");
+  return matches;
+};
+
+export const isOutOfPWAScope = (): boolean => {
+  const searchParams = new URLSearchParams(location.search);
+  const pwaScope = searchParams.get("pwa_scope");
+  if (pwaScope) {
+    return !location.href.startsWith(pwaScope);
+  }
+  return false;
+};
+
 export const useOutOfPWAScope = (): boolean => {
   const { url } = usePage();
   return useMemo(() => {

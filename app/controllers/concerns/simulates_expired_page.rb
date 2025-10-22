@@ -17,7 +17,11 @@ module SimulatesExpiredPage
       .returns(String)
   end
   def global_csrf_token(session = nil)
-    should_fake_csrf? ? "dummy" : super
+    if should_fake_csrf?
+      csrf_token_hmac(nil, "!real_csrf_token")
+    else
+      super
+    end
   end
 
   # == Helpers

@@ -1,5 +1,3 @@
-import spotlightSidecarPlugin from "@spotlightjs/sidecar/vite-plugin";
-import spotlightPlugin from "@spotlightjs/spotlight/vite-plugin";
 import reactPlugin from "@vitejs/plugin-react";
 import { join } from "path";
 import { visualizer as visualizerPlugin } from "rollup-plugin-visualizer";
@@ -76,8 +74,6 @@ export default defineConfig(
         ],
         { delay: 200 },
       ),
-      spotlightSidecarPlugin(),
-      spotlightPlugin(),
     ];
 
     // == Visualize

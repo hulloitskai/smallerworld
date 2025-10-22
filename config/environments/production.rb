@@ -3,16 +3,15 @@
 
 require "active_support/core_ext/integer/time"
 
-# == Canonical URL
-Rails.application.default_url_options = {
-  protocol: "https",
-  host: "smallerworld.club",
-}
-
-# == Configuration
 # Settings specified here will take precedence over those in
 # config/application.rb.
 Rails.application.configure do
+  # Set default URL options.
+  routes.default_url_options = {
+    protocol: "https",
+    host: "smallerworld.club",
+  }
+
   # Run Good Job in async mode.
   config.good_job.execution_mode = :async
 

@@ -19,6 +19,9 @@
     "markdown"
   ],
 
+  // == Typescript
+  "typescript.tsdk": "node_modules/typescript/lib",
+
   // == Rubocop
   "rubocop.mode": "enableViaGemfile",
   "rubocop.bundleCommandPath": "bin/bundle",

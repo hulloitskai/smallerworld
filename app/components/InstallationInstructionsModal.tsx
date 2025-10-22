@@ -12,6 +12,7 @@ import {
   isMobileChrome,
   useBrowserDetection,
 } from "~/helpers/browsers";
+import { isOutOfPWAScope, isStandalone } from "~/helpers/pwa";
 import { type UserProfile } from "~/types";
 
 import CurrentUrlQRCode from "./CurrentUrlQRCode";
@@ -35,6 +36,7 @@ export const openInstallationInstructionsModal = ({
     title,
     className: classes.modal,
     children: <ModalBody {...{ modalId }} {...otherProps} />,
+    withCloseButton: !(isStandalone() && isOutOfPWAScope()),
   });
 };
 

@@ -4,17 +4,16 @@
 # Add time helpers.
 require "active_support/core_ext/integer/time"
 
-# == Canonical URL
-Rails.application.default_url_options = {
-  protocol: "http",
-  host: "localhost",
-  port: ENV.fetch("RAILS_PORT") { 3000 }.to_i,
-}
-
-# == Configuration
 # Settings specified here will take precedence over those in
 # config/application.rb.
 Rails.application.configure do
+  # Set default URL options.
+  routes.default_url_options = {
+    protocol: "http",
+    host: "localhost",
+    port: ENV.fetch("RAILS_PORT") { 3000 }.to_i,
+  }
+
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true
 
@@ -92,7 +91,6 @@ Rails.application.configure do
   config.middleware.insert_before(Rack::Sendfile, ActionDispatch::DebugLocks)
 
   # Add custom development hosts.
-  config.hosts << "kaibook.itskai.me"
   config.hosts << /([a-z0-9-]+\.)+nip\.io/
   config.hosts << /[a-z0-9-]+\.ngrok\.io/
   config.hosts << /[a-z0-9-]+\.ngrok-free\.app/
