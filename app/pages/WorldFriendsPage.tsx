@@ -10,7 +10,6 @@ import CloseIcon from "~icons/heroicons/x-mark";
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
-import { addTrailingSlash } from "~/helpers/utils";
 import {
   useFriendsByNotifiable,
   useWorldActivities,
@@ -107,7 +106,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
           component={Link}
           leftSection={<BackIcon />}
           radius="xl"
-          href={routes.world.show.path()}
+          href={withTrailingSlash(routes.world.show.path())}
           mt={4}
         >
           back to your world
@@ -268,7 +267,7 @@ WorldFriendsPage.layout = page => (
   <AppLayout<WorldFriendsPageProps>
     title="your friends"
     manifestUrl={routes.world.manifest.path()}
-    pwaScope={addTrailingSlash(routes.world.show.path())}
+    pwaScope={withTrailingSlash(routes.world.show.path())}
     withContainer
     containerSize="xs"
     withGutter

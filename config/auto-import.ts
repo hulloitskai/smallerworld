@@ -66,6 +66,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "isTruthy",
       "normalizeUrl",
       "useNormalizeUrl",
+      "withTrailingSlash",
     ],
     "~/helpers/formatting": ["possessive"],
     "~/helpers/layouts": ["useIsMobileSize"],

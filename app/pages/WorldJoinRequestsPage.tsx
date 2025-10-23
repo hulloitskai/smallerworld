@@ -1,7 +1,6 @@
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
 import WorldJoinRequestCard from "~/components/WorldJoinRequestCard";
-import { addTrailingSlash } from "~/helpers/utils";
 import { type JoinRequest, type User } from "~/types";
 
 export interface WorldJoinRequestsPageProps extends SharedPageProps {
@@ -41,7 +40,7 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
             component={Link}
             leftSection={<BackIcon />}
             radius="xl"
-            href={routes.world.show.path()}
+            href={withTrailingSlash(routes.world.show.path())}
             mt={4}
           >
             back to your world
@@ -85,7 +84,7 @@ WorldJoinRequestsPage.layout = page => (
   <AppLayout<WorldJoinRequestsPageProps>
     title="your join requests"
     manifestUrl={routes.world.manifest.path()}
-    pwaScope={addTrailingSlash(routes.world.show.path())}
+    pwaScope={withTrailingSlash(routes.world.show.path())}
     withContainer
     containerSize="xs"
     withGutter

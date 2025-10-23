@@ -74,7 +74,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
     <Stack w="100%" maw={380}>
       <Button
         component={Link}
-        href={routes.world.show.path()}
+        href={withTrailingSlash(routes.world.show.path())}
         leftSection={<BackIcon />}
         style={{ alignSelf: "center" }}
       >

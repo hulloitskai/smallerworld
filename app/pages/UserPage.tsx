@@ -19,7 +19,6 @@ import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvi
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { addTrailingSlash } from "~/helpers/utils";
 import { useWebPush } from "~/helpers/webPush";
 import { type Encouragement, type UserProfile } from "~/types";
 
@@ -299,7 +298,7 @@ UserPage.layout = page => (
         : null;
     }}
     pwaScope={({ user }) =>
-      addTrailingSlash(routes.users.show.path({ id: user.id }))
+      withTrailingSlash(routes.users.show.path({ id: user.id }))
     }
     withContainer
     containerSize="xs"

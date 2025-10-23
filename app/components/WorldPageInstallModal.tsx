@@ -10,7 +10,6 @@ import {
   useBrowserDetection,
 } from "~/helpers/browsers";
 import { getPWAScope } from "~/helpers/pwa";
-import { addTrailingSlash } from "~/helpers/utils";
 import { type User } from "~/types";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";
@@ -95,7 +94,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
                     pwa_scope: pwaScope,
                   },
                 });
-                location.href = addTrailingSlash(instructionsPath);
+                location.href = withTrailingSlash(instructionsPath);
               } else {
                 openWorldPageInstallationInstructionsModal({ currentUser });
                 closeModal(modalId);

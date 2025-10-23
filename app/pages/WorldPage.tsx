@@ -29,7 +29,6 @@ import WorldPageNotificationsButton from "~/components/WorldPageNotificationsBut
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { useWorldPosts } from "~/helpers/posts";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { addTrailingSlash } from "~/helpers/utils";
 import { useWebPush } from "~/helpers/webPush";
 import { type User } from "~/types";
 
@@ -453,7 +452,7 @@ WorldPage.layout = page => (
   <AppLayout<WorldPageProps>
     title="your world"
     manifestUrl={routes.world.manifest.path()}
-    pwaScope={addTrailingSlash(routes.world.show.path())}
+    pwaScope={withTrailingSlash(routes.world.show.path())}
     withContainer
     containerSize="xs"
     withGutter
