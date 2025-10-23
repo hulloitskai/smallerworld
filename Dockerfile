@@ -111,7 +111,7 @@ FROM base AS builder
 
 # Install NodeJS dependencies
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm,sharing=locked npm install
+RUN --mount=type=cache,target=/root/.npm,sharing=locked npm ci
 
 # Copy application code
 COPY . ./

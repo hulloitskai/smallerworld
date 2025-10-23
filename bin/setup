@@ -43,8 +43,11 @@ FileUtils.chdir APP_ROOT do
   puts "Node installed"
 
   puts "\n=> Installing Node dependencies"
-  system!("npm install") &&
-    puts("Node dependencies are installed")
+  if ENV["CI"]
+    system!("npm ci") && puts("Node dependencies are installed")
+  else
+    system!("npm install") && puts("Node dependencies are installed")
+  end
 
   puts "\n=> Installing git hooks"
   system! "bin/lefthook install"
