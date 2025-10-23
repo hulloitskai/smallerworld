@@ -68,6 +68,7 @@ const UniversePageInstallAlert: FC<UniversePageInstallAlertProps> = () => {
                       openInstallationInstructionsModal({
                         title: "install smaller universe 📲",
                         pageName: "smaller universe",
+                        pageIcon: null,
                       });
                     }
                   }}
