@@ -1,0 +1,15 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid var(--mantine-color-default-border);
+
+  > * {
+    width: unset;
+  }
+
+  @mixin dark-user-theme {
+    border-color: alpha(var(--mantine-color-white), 0.2);
+  }
+}

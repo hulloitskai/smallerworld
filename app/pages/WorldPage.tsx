@@ -1,9 +1,11 @@
+import { type InertiaLinkProps } from "@inertiajs/react";
 import {
   Avatar,
   Image,
   Indicator,
   type ListItemProps,
   Loader,
+  type MenuItemProps,
   Overlay,
   RemoveScroll,
   Text,
@@ -21,6 +23,7 @@ import AppLayout from "~/components/AppLayout";
 import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
 import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
+import WorldFooter from "~/components/WorldFooter";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPageInstallationInstructionsModal";
@@ -99,8 +102,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
     } else if (
       queryParams.intent === "install" ||
       ((!isStandalone || outOfPWAScope) &&
-        !!browserDetection &&
-        (installPWA || !isDesktop(browserDetection)))
+        (installPWA || (browserDetection && !isDesktop(browserDetection))))
     ) {
       openWorldPageInstallModal({ currentUser });
     }
@@ -124,6 +126,14 @@ const WorldPage: PageComponent<WorldPageProps> = ({
 
   // == Add friend modal
   const [addFriendModalOpened, setAddFriendModalOpened] = useState(false);
+
+  // == Link items
+  interface LinkItemProps
+    extends MenuItemProps,
+      Omit<InertiaLinkProps, "color" | "style"> {}
+  const LinkItem: FC<LinkItemProps> = props => (
+    <Menu.Item component={Link} {...props} />
+  );
 
   const body = (
     <Stack gap="lg">
@@ -239,24 +249,21 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             </ActionIcon>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item
-              component={Link}
+            <LinkItem
               leftSection={<EditIcon />}
               href={routes.world.edit.path()}
             >
               customize your page
-            </Menu.Item>
-            <Menu.Item
-              component="a"
+            </LinkItem>
+            <LinkItem
               leftSection={<OpenExternalIcon />}
-              href={routes.users.show.path({ id: currentUser.handle })}
-              target="_blank"
-              rel="noopener"
+              href={withTrailingSlash(
+                routes.users.show.path({ id: currentUser.handle }),
+              )}
             >
               view public profile
-            </Menu.Item>
-            <Menu.Item
-              component={Link}
+            </LinkItem>
+            <LinkItem
               className={classes.joinRequestMenuItem}
               leftSection={<JoinRequestIcon />}
               href={routes.worldJoinRequests.index.path()}
@@ -269,7 +276,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               })}
             >
               view join requests
-            </Menu.Item>
+            </LinkItem>
             {isStandalone && <LogoutItem />}
             <Menu.Divider />
             <Menu.Item
@@ -456,6 +463,7 @@ WorldPage.layout = page => (
     withContainer
     containerSize="xs"
     withGutter
+    footer={<WorldFooter />}
   >
     {page}
   </AppLayout>

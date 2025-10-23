@@ -1,6 +1,9 @@
 .affix {
-  --affix-inset: var(--mantine-spacing-xl);
-  --affix-bottom: max(var(--affix-inset), var(--safe-area-inset-bottom, 0px));
+  --affix-inset: var(--mantine-spacing-md);
+  --affix-bottom: calc(
+    var(--affix-inset) + var(--app-shell-footer-height) +
+      var(--safe-area-inset-bottom, 0px)
+  );
   --affix-left: var(--affix-inset);
   --affix-right: var(--affix-inset);
 

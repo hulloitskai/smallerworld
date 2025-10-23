@@ -43,6 +43,12 @@ module GeneratedUrlHelpersModule
   def download_image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_local_universe_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_universe_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -68,6 +74,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def invitation_world_friend_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def local_universe_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def login_requests_url(*args); end
@@ -100,10 +109,16 @@ module GeneratedUrlHelpersModule
   def marsha_puzzle_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_local_universe_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_universe_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pause_world_friend_url(*args); end
@@ -238,6 +253,9 @@ module GeneratedUrlHelpersModule
   def signup_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def smaller_universe_posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def src_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -263,9 +281,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def universe_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def universe_worlds_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unpause_world_friend_url(*args); end
@@ -329,4 +344,10 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def world_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def worlds_local_universe_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def worlds_universe_url(*args); end
 end

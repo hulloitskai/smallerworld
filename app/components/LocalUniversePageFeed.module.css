@@ -1,0 +1,15 @@
+.authorImage {
+  object-fit: cover;
+  flex: unset;
+}
+
+.authorButton {
+  align-self: center;
+  padding-inline: 6px;
+  border-radius: var(--mantine-radius-md);
+  color: var(--mantine-color-white);
+
+  :global(.mantine-Button-label) {
+    font-size: var(--mantine-font-size-sm);
+  }
+}

@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class WorldSerializer < ApplicationSerializer
+class UniverseWorldSerializer < ApplicationSerializer
   # == Attributes
   attributes user_id: { type: :string },
              user_handle: { type: :string },

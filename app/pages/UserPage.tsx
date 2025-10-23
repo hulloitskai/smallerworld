@@ -92,7 +92,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             </Group>
             <Button
               component={Link}
-              href={routes.world.show.path()}
+              href={withTrailingSlash(routes.world.show.path())}
               variant="white"
               leftSection={<BackIcon />}
               style={{ flexShrink: 0 }}

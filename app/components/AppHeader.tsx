@@ -18,21 +18,19 @@ const AppHeader = forwardRef<HTMLDivElement, AppHeaderProps>(
       className={cn("AppHeader", classes.header, className)}
       {...otherProps}
     >
-      <Group justify="space-between" gap={8} h="100%">
-        <Group gap={4}>
-          <Button
-            component={Link}
-            href={logoHref ?? routes.start.redirect.path()}
-            variant="subtle"
-            size="compact-md"
-            leftSection={<Image src={logoSrc} h={24} w="unset" />}
-            className={classes.logoButton}
-          >
-            smaller world
-          </Button>
-        </Group>
-        <AppMenu className={classes.menu} />
+      <Group gap={4}>
+        <Button
+          component={Link}
+          href={logoHref ?? routes.start.redirect.path()}
+          variant="subtle"
+          size="compact-md"
+          leftSection={<Image src={logoSrc} h={24} w="unset" />}
+          className={classes.logoButton}
+        >
+          smaller world
+        </Button>
       </Group>
+      <AppMenu className={classes.menu} />
     </AppShell.Header>
   ),
 );

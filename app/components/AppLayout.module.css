@@ -12,20 +12,6 @@
   position: sticky;
 }
 
-.footer {
-  height: calc(
-    var(--app-shell-footer-height) + var(--safe-area-inset-bottom, 0px)
-  );
-  padding-inline: 8px;
-  padding-bottom: var(--safe-area-inset-bottom, 0px);
-  margin-left: var(--app-shell-navbar-offset, 0px);
-  overflow: hidden;
-
-  &[data-with-border] {
-    border-top: rem(1px) solid var(--app-shell-border-color);
-  }
-}
-
 .main {
   --app-shell-footer-offset: var(--app-shell-footer-height, 0px);
 
@@ -34,13 +20,12 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  margin-top: max(var(--safe-area-inset-top, 0px), var(--mantine-spacing-sm));
+  margin-top: var(--safe-area-inset-top, 0px);
   min-height: calc(
     100vh - var(--safe-area-inset-top, 0px) -
-      (var(--app-shell-footer-height, 0px) + var(--safe-area-inset-bottom, 0px))
+      var(--app-shell-footer-height, 0px) - var(--safe-area-inset-bottom, 0px)
   );
   padding-top: var(--app-shell-padding);
-  padding-bottom: 0px;
 
   :where([data-user-theme]) & {
     background: none;

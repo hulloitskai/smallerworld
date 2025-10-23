@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class World < T::Struct
+class UniverseWorld < T::Struct
   extend T::Sig
 
   # == Properties
@@ -11,7 +11,5 @@ class World < T::Struct
 
   const :post_count, Integer
   const :last_post_created_at, T.nilable(Time)
-
-  const :associated_friend, T.nilable(Friend)
-  delegate :access_token, to: :associated_friend, prefix: true, allow_nil: true
+  const :associated_friend_access_token, T.nilable(String)
 end

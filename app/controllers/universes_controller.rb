@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class UniverseController < ApplicationController
+class UniversesController < ApplicationController
   include GeneratesManifest
 
   # == Actions
@@ -25,22 +25,22 @@ class UniverseController < ApplicationController
       .order("last_post_created_at DESC NULLS LAST")
     joined_worlds, other_worlds = [], []
     users.each do |user|
-      associated_friend = associated_friends_by_user_id[user.id]
-      world = World.new(
+      friend = associated_friends_by_user_id[user.id]
+      world = UniverseWorld.new(
         user:,
         post_count: user[:post_count],
         last_post_created_at: user[:last_post_created_at],
-        associated_friend:,
+        associated_friend_access_token: friend&.access_token,
       )
-      if user == current_user || associated_friend
+      if user == current_user || friend
         joined_worlds << world
       else
         other_worlds << world
       end
     end
     render(json: {
-      "joinedWorlds" => WorldSerializer.many(joined_worlds),
-      "otherWorlds" => WorldSerializer.many(other_worlds),
+      "joinedWorlds" => UniverseWorldSerializer.many(joined_worlds),
+      "otherWorlds" => UniverseWorldSerializer.many(other_worlds),
     })
   end
 

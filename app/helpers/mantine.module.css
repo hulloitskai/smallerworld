@@ -401,4 +401,11 @@
       }
     }
   }
+
+  .appShellFooter {
+    height: calc(
+      var(--app-shell-footer-height) + var(--safe-area-inset-bottom, 0px)
+    );
+    padding-bottom: var(--safe-area-inset-bottom, 0px);
+  }
 }

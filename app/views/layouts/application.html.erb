@@ -107,25 +107,25 @@
       });
 
       // Offer to unregister service worker if application fails to boot
-      if ("serviceWorker" in navigator) {
-        setTimeout(() => {
-          if (window.BOOTED_AT) {
-            return;
-          }
-          var forceReload = confirm("Page failed to load. Force-reload application?");
-          if (!forceReload) {
-            return;
-          }
-          navigator.serviceWorker
-            .getRegistrations()
-            .then((registrations) =>
-              Promise.all(registrations.map(registration => registration.unregister())),
-            )
-            .then(() => {
-              location.reload();
-            });
-        }, 6000);
-      }
+      // if ("serviceWorker" in navigator) {
+      //   setTimeout(() => {
+      //     if (window.BOOTED_AT) {
+      //       return;
+      //     }
+      //     var forceReload = confirm("Page failed to load. Force-reload application?");
+      //     if (!forceReload) {
+      //       return;
+      //     }
+      //     navigator.serviceWorker
+      //       .getRegistrations()
+      //       .then((registrations) =>
+      //         Promise.all(registrations.map(registration => registration.unregister())),
+      //       )
+      //       .then(() => {
+      //         location.reload();
+      //       });
+      //   }, 6000);
+      // }
     </script>
 
     <%# == Content %>

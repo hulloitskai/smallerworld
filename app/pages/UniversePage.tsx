@@ -16,7 +16,7 @@ import UniversePageInstallAlert from "~/components/UniversePageInstallAlert";
 import UniversePageNotificationsButton from "~/components/UniversePageNotificationsButton";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
-import { type User, type World } from "~/types";
+import { type UniverseWorld, type User } from "~/types";
 
 import classes from "./UniversePage.module.css";
 
@@ -31,12 +31,12 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
   useUserTheme("aquatica");
 
   // == Load worlds
-  const { data } = useRouteSWR<{ joinedWorlds: World[]; otherWorlds: World[] }>(
-    routes.universe.worlds,
-    {
-      descriptor: "load worlds",
-    },
-  );
+  const { data } = useRouteSWR<{
+    joinedWorlds: UniverseWorld[];
+    otherWorlds: UniverseWorld[];
+  }>(routes.universe.worlds, {
+    descriptor: "load worlds",
+  });
   const worlds = useMemo(() => {
     if (data) {
       const { joinedWorlds, otherWorlds } = data;
@@ -51,12 +51,9 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
           💫 smaller universe
         </Title>
         {worlds && isEmpty(worlds) ? (
-          <EmptyCard
-            itemLabel="worlds"
-            w="100%"
-            maw="var(--container-size-xs)"
-            mx="md"
-          />
+          <Container size="xs" w="100%">
+            <EmptyCard itemLabel="worlds" />
+          </Container>
         ) : (
           <Box>
             <ScrollArea
@@ -167,7 +164,7 @@ UniversePage.layout = page => (
 export default UniversePage;
 
 interface WorldIconProps extends BoxProps {
-  world: World;
+  world: UniverseWorld;
 }
 
 const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
@@ -212,5 +209,5 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
   );
 };
 
-const isJoinedWorld = (world: World, currentUser: User | null) =>
+const isJoinedWorld = (world: UniverseWorld, currentUser: User | null) =>
   currentUser?.id === world.user_id || !!world.associated_friend_access_token;

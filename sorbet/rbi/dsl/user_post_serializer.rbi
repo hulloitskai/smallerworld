@@ -6,6 +6,6 @@
 
 
 class UserPostSerializer
-  sig { returns(Post) }
-  def post; end
+  sig { returns(UserPost) }
+  def user_post; end
 end

@@ -1,6 +1,10 @@
 .header {
   pointer-events: none;
   background-color: transparent;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 
   &::before {
     position: absolute;

@@ -46,7 +46,7 @@ Rails.application.routes.draw do
   resource :contact_url,
            only: :show,
            constraints: { format: "json" },
-           export: { namespace: "contact_url" }
+           export: { namespace: "contactUrl" }
 
   # == Push subscriptions
   resources(
@@ -180,6 +180,26 @@ Rails.application.routes.draw do
             constraints: { format: "json" },
             export: true
 
+  # == Local universe
+  resource :local_universe,
+           path: "/world/universe",
+           only: :show,
+           constraints: { format: "html" },
+           export: { namespace: "localUniverse" }
+  resource(
+    :local_universe,
+    path: "/world/universe",
+    constraints: { format: "json" },
+    export: { namespace: "localUniverse" },
+  ) do
+    get :worlds
+  end
+  resources :local_universe_posts,
+            path: "/world/universe/posts",
+            only: :index,
+            constraints: { format: "json" },
+            export: true
+
   # == Friend notification settings
   resource :friend_notification_settings,
            only: %i[show update],
@@ -289,12 +309,17 @@ Rails.application.routes.draw do
   end
 
   # == Universe
-  scope export: { namespace: "universe" } do
-    get "/universe" => "universe#show", constraints: { format: "html" }
-    get "/universe/worlds" => "universe#worlds",
-        constraints: { format: "json" }
-    get "/universe/manifest.webmanifest" => "universe#manifest",
-        constraints: { format: "" }
+  resource :universe,
+           only: :show,
+           constraints: { format: "html" },
+           export: { namespace: "universe" }
+  resource(
+    :universe,
+    constraints: { format: "json" },
+    export: { namespace: "universe" },
+  ) do
+    get :worlds
+    get "manifest.webmanifest" => :manifest, constraints: { format: "" }
   end
   resources :universe_posts,
             path: "/universe/posts",

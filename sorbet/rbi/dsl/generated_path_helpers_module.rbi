@@ -43,6 +43,12 @@ module GeneratedPathHelpersModule
   def download_image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_local_universe_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def edit_universe_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -68,6 +74,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def invitation_world_friend_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def local_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def login_path(*args); end
@@ -100,10 +109,16 @@ module GeneratedPathHelpersModule
   def marsha_puzzle_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_local_universe_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def new_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pause_world_friend_path(*args); end
@@ -238,6 +253,9 @@ module GeneratedPathHelpersModule
   def signup_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def smaller_universe_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -263,9 +281,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def universe_posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def universe_worlds_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unpause_world_friend_path(*args); end
@@ -329,4 +344,10 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def world_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def worlds_local_universe_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def worlds_universe_path(*args); end
 end

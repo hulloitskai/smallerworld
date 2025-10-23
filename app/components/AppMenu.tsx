@@ -18,14 +18,6 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
   const currentUser = useCurrentUser();
   const [opened, setOpened] = useState(false);
 
-  // == Link items
-  interface MenuLinkProps
-    extends MenuItemProps,
-      Omit<InertiaLinkProps, "color" | "style"> {}
-  const MenuLink: FC<MenuLinkProps> = props => (
-    <Menu.Item component={Link} {...props} />
-  );
-
   return (
     <Menu
       position="bottom-end"
@@ -52,12 +44,12 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
       <Menu.Dropdown>
         {currentUser ? (
           <>
-            <MenuLink
+            <LinkItem
               href={routes.world.show.path()}
               leftSection={<Image src={logoSrc} h="100%" w="unset" />}
             >
               your world
-            </MenuLink>
+            </LinkItem>
             <LogoutItem
               onClose={() => {
                 setOpened(false);
@@ -66,12 +58,12 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
           </>
         ) : (
           <>
-            <MenuLink
+            <LinkItem
               href={routes.registration.new.path()}
               leftSection={<Image src={logoSrc} h="100%" w="unset" />}
             >
               create your world
-            </MenuLink>
+            </LinkItem>
             <Menu.Item
               leftSection={<SignInIcon />}
               component={Link}
@@ -87,9 +79,9 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
             setOpened(false);
           }}
         />
-        <MenuLink href={routes.policies.show.path()} leftSection={<LockIcon />}>
+        <LinkItem href={routes.policies.show.path()} leftSection={<LockIcon />}>
           terms of use & privacy
-        </MenuLink>
+        </LinkItem>
         <Menu.Divider />
         <ServerInfoItem />
       </Menu.Dropdown>
@@ -188,3 +180,10 @@ const ServerInfoItem: FC<BoxProps> = props => {
     </Menu.Item>
   );
 };
+
+interface LinkItemProps
+  extends MenuItemProps,
+    Omit<InertiaLinkProps, "color" | "style"> {}
+const LinkItem: FC<LinkItemProps> = props => (
+  <Menu.Item component={Link} {...props} />
+);

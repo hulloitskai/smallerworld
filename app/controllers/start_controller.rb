@@ -6,7 +6,7 @@ class StartController < ApplicationController
   # GET /start
   def redirect
     next_path = if signed_in?
-      world_path
+      world_path(trailing_slash: true)
     elsif valid_registration_token?
       signup_path
     else

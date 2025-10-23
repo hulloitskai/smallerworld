@@ -201,6 +201,11 @@ class User < ApplicationRecord
     ShortlinkService.url_helpers.user_url(self, **params)
   end
 
+  sig { returns(Friend::PrivateRelation) }
+  def associated_friends
+    Friend.where(phone_number:)
+  end
+
   # == Helpers
   sig { params(phone_number: String).returns(T.nilable(User)) }
   def self.find_by_phone_number(phone_number)

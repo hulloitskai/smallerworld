@@ -103,7 +103,8 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
 
 export default AppLayout;
 
-interface AppInnerProps extends Omit<AppShellProps, "title"> {
+interface AppInnerProps
+  extends Omit<AppShellProps, "title" | "header" | "footer"> {
   breadcrumbs: AppBreadcrumb[];
   withContainer?: boolean;
   containerSize?: MantineSize | (string & {}) | number;
@@ -111,6 +112,7 @@ interface AppInnerProps extends Omit<AppShellProps, "title"> {
   withGutter?: boolean;
   gutterSize?: MantineSize | (string & {}) | number;
   logoHref?: AppHeaderProps["logoHref"];
+  footer?: ReactNode;
 }
 
 const AppInner: FC<AppInnerProps> = ({
@@ -122,6 +124,7 @@ const AppInner: FC<AppInnerProps> = ({
   withGutter,
   gutterSize,
   logoHref,
+  footer,
   padding,
   pt,
   pb,
@@ -165,7 +168,7 @@ const AppInner: FC<AppInnerProps> = ({
         {...((isStandalone === false || outOfPWAScope) && {
           header: { height: 46 },
         })}
-        footer={{ height: "var(--mantine-spacing-md)" }}
+        {...(footer && { footer: { height: 36 } })}
         padding={padding ?? (withContainer ? undefined : "md")}
         classNames={{ root: classes.shell, header: classes.header }}
         data-vaul-drawer-wrapper
@@ -196,7 +199,7 @@ const AppInner: FC<AppInnerProps> = ({
           )}
           {main}
         </AppShell.Main>
-        <footer className={classes.footer} />
+        {footer}
       </AppShell>
       <canvas id={SMOKE_CANVAS_ID} className={classes.particleCanvas} />
       <canvas id={CONFETTI_CANVAS_ID} className={classes.particleCanvas} />

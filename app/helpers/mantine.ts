@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Alert,
+  AppShell,
   Button,
   Chip,
   CloseButton,
@@ -341,6 +342,11 @@ const createTheme = (
       ScrollArea: ScrollArea.extend({
         defaultProps: {
           type: "auto",
+        },
+      }),
+      AppShell: AppShell.extend({
+        classNames: {
+          footer: classes.appShellFooter,
         },
       }),
     },
