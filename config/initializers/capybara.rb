@@ -8,7 +8,7 @@ Capybara.register_driver(:custom_playwright) do |app|
     app,
     playwright_cli_executable_path:
       Rails.root.join("node_modules/.bin/playwright"),
-    headless: ENV["CI"].present? || ENV["PLAYWRIGHT_HEADLESS"].truthy?,
+    headless: ENV["CI"].present? || !ENV["PLAYWRIGHT_INTERACTIVE"].truthy?,
   )
 end
 

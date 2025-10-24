@@ -30,7 +30,7 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
     supported: webPushSupported,
     permission: webPushPermission,
   } = useWebPush();
-  useUserTheme("aquatica");
+  useUserTheme(currentUser.theme);
 
   // == Load worlds
   const { data } = useRouteSWR<{ worlds: LocalUniverseWorld[] }>(
@@ -105,7 +105,7 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
         label={
           <>
             <span className={classes.dividerText}>
-              smaller happenings around the universe
+              smaller happenings in your universe
             </span>{" "}
             <span className={classes.dividerEmoji}>⤵️</span>
           </>

@@ -69,7 +69,7 @@ pre-commit:
       glob: "*.{ts,tsx}"
       tags: js
     check-sorbet:
-      run: bundle exec srb tc --cache-dir ./tmp/sorbet
+      run: bundle exec srb tc
       glob: "*.{rb,rbi}"
       tags: rb
     check-rubocop:

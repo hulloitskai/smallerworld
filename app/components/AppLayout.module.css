@@ -22,8 +22,8 @@
   align-items: stretch;
   margin-top: var(--safe-area-inset-top, 0px);
   min-height: calc(
-    100vh - var(--safe-area-inset-top, 0px) -
-      var(--app-shell-footer-height, 0px) - var(--safe-area-inset-bottom, 0px)
+    100vh - var(--app-shell-footer-offset, 0px) -
+      var(--safe-area-inset-bottom, 0px)
   );
   padding-top: var(--app-shell-padding);
 

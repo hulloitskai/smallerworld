@@ -1,4 +1,6 @@
 --enable-experimental-requires-ancestor
+--cache-dir
+./tmp/sorbet
 --dir
 .
 --ignore=/.github
