@@ -146,7 +146,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             ) : (
               <Group gap="xs" justify="center">
                 <UserPageInvitationsButton />
-                {isStandalone && <UserPageRefreshButton userId={user.id} />}
+                {isStandalone && !outOfPWAScope && (
+                  <UserPageRefreshButton userId={user.id} />
+                )}
               </Group>
             )}
           </Stack>
@@ -274,8 +276,11 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
       )}
       {(isStandalone === false || outOfPWAScope) && (
         <>
-          {currentFriend && <UserPageInstallAlert {...{ currentFriend }} />}
-          {!currentFriend && <UserPageRequestInvitationAlert />}
+          {currentFriend ? (
+            <UserPageInstallAlert {...{ currentFriend }} />
+          ) : (
+            <UserPageRequestInvitationAlert />
+          )}
         </>
       )}
     </>
