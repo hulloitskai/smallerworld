@@ -13,3 +13,15 @@
     border-color: alpha(var(--mantine-color-white), 0.2);
   }
 }
+
+.navLink {
+  :global(.mantine-NavLink-section[data-position="left"]) {
+    margin-right: 8px;
+  }
+}
+
+.localUniverseNavLink {
+  :global(.mantine-NavLink-section[data-position="left"]) {
+    font-family: var(--font-family-emoji);
+  }
+}
