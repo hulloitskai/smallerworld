@@ -114,13 +114,13 @@ export const useInstallPWA = (): InstallPWAResult => {
         const standaloneQuery = matchMedia("(display-mode: standalone)");
         const handleDisplayModeChange = (event: MediaQueryListEvent) => {
           if (event.matches) {
-            const url = hrefToUrl(location.href);
-            for (const key of url.searchParams.keys()) {
+            const currentUrl = hrefToUrl(location.href);
+            for (const key of currentUrl.searchParams.keys()) {
               if (!["friend_token", "pwa_scope"].includes(key)) {
-                url.searchParams.delete(key);
+                currentUrl.searchParams.delete(key);
               }
             }
-            router.visit(url.toString());
+            router.visit(currentUrl.toString());
           }
         };
         standaloneQuery.addEventListener("change", handleDisplayModeChange);

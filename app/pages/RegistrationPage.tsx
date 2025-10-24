@@ -69,7 +69,8 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       // Use location.href instead of router.visit in order to force browser
       // to load new page metadata for pin-to-homescreen + PWA detection.
       const query = queryParamsFromPath(pageUrl);
-      location.href = routes.world.show.path({ query });
+      const worldPath = withTrailingSlash(routes.world.show.path({ query }));
+      location.href = worldPath;
     },
   });
   useEffect(() => {

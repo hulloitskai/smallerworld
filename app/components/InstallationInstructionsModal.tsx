@@ -89,10 +89,10 @@ const ModalBody: FC<ModalBodyProps> = ({
                 onClick={() =>
                   void installPWA().then(() => {
                     closeModal(modalId);
-                    const url = hrefToUrl(location.href);
-                    if (url.searchParams.has("intent")) {
-                      url.searchParams.delete("intent");
-                      router.replace({ url: url.toString() });
+                    const currentUrl = hrefToUrl(location.href);
+                    if (currentUrl.searchParams.has("intent")) {
+                      currentUrl.searchParams.delete("intent");
+                      router.replace({ url: currentUrl.toString() });
                     }
                   })
                 }

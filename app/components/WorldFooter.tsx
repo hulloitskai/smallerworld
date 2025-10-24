@@ -15,11 +15,12 @@ export interface WorldFooterProps
 const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
   ({ className, ...otherProps }, ref) => {
     const { url } = usePage();
-    const value = useMemo(
-      () =>
-        url.startsWith(routes.localUniverse.show.path()) ? "universe" : "world",
-      [url],
+    const [value, setValue] = useState<"world" | "universe">(() =>
+      urlValue(url),
     );
+    useDidUpdate(() => {
+      setValue(urlValue(url));
+    }, [url]);
     return (
       <AppShell.Footer
         {...{ ref }}
@@ -54,11 +55,16 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
           ]}
           {...{ value }}
           onChange={value => {
-            router.visit(
-              value === "world"
-                ? withTrailingSlash(routes.world.show.path())
-                : routes.localUniverse.show.path(),
-            );
+            switch (value) {
+              case "world":
+                setValue("universe");
+                router.visit(routes.localUniverse.show.path());
+                break;
+              case "universe":
+                setValue("world");
+                router.visit(withTrailingSlash(routes.world.show.path()));
+                break;
+            }
           }}
           className={classes.segmentedControl}
         />
@@ -80,3 +86,6 @@ const NavItem: FC<NavItemLabel> = ({ text, icon }) => (
     {text}
   </Group>
 );
+
+const urlValue = (url: string): "world" | "universe" =>
+  url.startsWith(routes.localUniverse.show.path()) ? "universe" : "world";

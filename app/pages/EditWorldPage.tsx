@@ -58,7 +58,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
       name: hasLength({ max: 30 }, "Must be less than 30 characters"),
     },
     onSuccess: () => {
-      router.visit(routes.world.show.path());
+      router.visit(withTrailingSlash(routes.world.show.path()));
     },
   });
 

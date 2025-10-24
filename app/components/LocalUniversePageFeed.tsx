@@ -43,18 +43,21 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                 <Button
                   className={classes.authorButton}
                   component={PWAScopedLink}
-                  href={withTrailingSlash(
+                  href={
                     post.author.id === currentUser.id
-                      ? routes.world.show.path()
-                      : routes.users.show.path({
-                          id: post.author.handle,
-                          query: {
-                            ...(post.associated_friend_access_token && {
-                              friend_token: post.associated_friend_access_token,
-                            }),
-                          },
-                        }),
-                  )}
+                      ? withTrailingSlash(routes.world.show.path())
+                      : withTrailingSlash(
+                          routes.users.show.path({
+                            id: post.author.handle,
+                            query: {
+                              ...(post.associated_friend_access_token && {
+                                friend_token:
+                                  post.associated_friend_access_token,
+                              }),
+                            },
+                          }),
+                        )
+                  }
                   size="sm"
                   variant="subtle"
                   leftSection={

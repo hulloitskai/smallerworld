@@ -14,14 +14,14 @@ const CurrentUrlQRCode: FC<CurrentUrlQRCodeProps> = ({
 }) => {
   const [currentUrl, setCurrentUrl] = useState<string>();
   useEffect(() => {
-    const url = hrefToUrl(location.href);
+    const currentUrl = hrefToUrl(location.href);
     if (queryParams) {
       Object.entries(queryParams).forEach(([key, value]) => {
-        url.searchParams.set(key, value);
+        currentUrl.searchParams.set(key, value);
       });
     }
-    shortlinkIfAvailable(url);
-    setCurrentUrl(url.toString());
+    shortlinkIfAvailable(currentUrl);
+    setCurrentUrl(currentUrl.toString());
   }, [queryParams]);
   return (
     <>{!!currentUrl && <PlainQRCode value={currentUrl} {...otherProps} />}</>

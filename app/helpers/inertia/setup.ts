@@ -30,9 +30,9 @@ export const setupInertia = (): void => {
     }
     if (status >= 200 && status < 300) {
       const contentType = headers.get("Content-Type");
-      const url = hrefToUrl(request.responseURL);
+      const responseUrl = hrefToUrl(request.responseURL);
       if (
-        url.host === location.host &&
+        responseUrl.host === location.host &&
         typeof contentType === "string" &&
         contentType.startsWith("text/html") &&
         typeof data === "string"
@@ -41,7 +41,7 @@ export const setupInertia = (): void => {
         document.open();
         document.write(data);
         document.close();
-        history.pushState(null, "", url.toString());
+        history.pushState(null, "", responseUrl.toString());
       }
     } else if (status >= 500 && status < 600) {
       const contentType = headers.get("Content-Type");

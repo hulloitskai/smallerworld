@@ -39,13 +39,13 @@ export const canOpenUrlInMobileSafari = (result: IResult): boolean =>
   isIos(result) &&
   (!result.browser.is("Instagram") || canUseIosShortcutsExploit(result));
 
-export const openUrlInMobileSafari = (url: string): void => {
+export const openUrlInMobileSafari = (href: string): void => {
   const parser = new UAParser();
   const result = parser.getResult();
-  const parsedUrl = hrefToUrl(url);
+  const url = hrefToUrl(href);
   if (result.browser.is("Instagram") && canUseIosShortcutsExploit(result)) {
-    location.href = `shortcuts://x-callback-url/run-shortcut?name=${randomId()}&x-error=${encodeURIComponent(parsedUrl.toString())}`;
-  } else if (parsedUrl.protocol === "https:") {
-    location.href = `x-safari-${parsedUrl.toString()}`;
+    location.href = `shortcuts://x-callback-url/run-shortcut?name=${randomId()}&x-error=${encodeURIComponent(url.toString())}`;
+  } else if (url.protocol === "https:") {
+    location.href = `x-safari-${url.toString()}`;
   }
 };

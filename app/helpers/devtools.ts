@@ -23,8 +23,8 @@ export const setupDevtools = (): void => {
       });
 
   window.sendTestNotification = (): Promise<void> => {
-    const url = hrefToUrl(location.href);
-    const friendToken = url.searchParams.get("friend_token");
+    const currentUrl = hrefToUrl(location.href);
+    const friendToken = currentUrl.searchParams.get("friend_token");
     return navigator.serviceWorker.ready.then(async ({ pushManager }) => {
       const subscription = await pushManager.getSubscription();
       if (!subscription) {

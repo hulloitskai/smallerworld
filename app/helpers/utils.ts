@@ -18,8 +18,8 @@ export const isTruthy = (value: any): boolean => {
 
 export const resolve = <T>(f: () => T): T => f();
 
-export const normalizeUrl = (urlOrPath: string): string =>
-  hrefToUrl(urlOrPath).toString();
+export const normalizeUrl = (href: string): string =>
+  hrefToUrl(href).toString();
 
 export const useNormalizeUrl = (
   resolveUrlOrPath: () => string,

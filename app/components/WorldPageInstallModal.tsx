@@ -78,9 +78,9 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
             if (installPWA) {
               void installPWA().then(() => {
                 closeModal(modalId);
-                const url = hrefToUrl(location.href);
-                url.searchParams.delete("intent");
-                router.replace({ url: url.toString() });
+                const currentUrl = hrefToUrl(location.href);
+                currentUrl.searchParams.delete("intent");
+                router.replace({ url: currentUrl.toString() });
               });
             } else if (
               !!browserDetection &&
@@ -88,25 +88,28 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
             ) {
               if (isStandalone && outOfPWAScope) {
                 const pwaScope = getPWAScope();
-                const instructionsPath = routes.world.show.path({
-                  query: {
-                    intent: "installation_instructions",
-                    pwa_scope: pwaScope,
-                  },
-                });
-                location.href = withTrailingSlash(instructionsPath);
+                const instructionsPath = withTrailingSlash(
+                  routes.world.show.path({
+                    query: {
+                      intent: "installation_instructions",
+                      pwa_scope: pwaScope,
+                    },
+                  }),
+                );
+                location.href = instructionsPath;
               } else {
                 openWorldPageInstallationInstructionsModal({ currentUser });
                 closeModal(modalId);
               }
             } else {
-              const path = routes.world.show.path({
-                query: {
-                  intent: "installation_instructions",
-                },
-              });
-              const url = hrefToUrl(path);
-              openUrlInMobileSafari(url.toString());
+              const instructionsPath = withTrailingSlash(
+                routes.world.show.path({
+                  query: {
+                    intent: "installation_instructions",
+                  },
+                }),
+              );
+              openUrlInMobileSafari(normalizeUrl(instructionsPath));
             }
           }}
         >

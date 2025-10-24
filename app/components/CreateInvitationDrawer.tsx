@@ -391,7 +391,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                 {transitionStyle => (
                   <Button
                     component={Link}
-                    href={routes.world.show.path()}
+                    href={withTrailingSlash(routes.world.show.path())}
                     leftSection={<BackIcon />}
                     style={transitionStyle}
                   >

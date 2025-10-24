@@ -43,7 +43,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
             </Text>
             <Button
               component={Link}
-              href={routes.world.show.path()}
+              href={withTrailingSlash(routes.world.show.path())}
               variant="filled"
               leftSection={<Image src={logoSrc} h={24} w="unset" />}
               style={{ flexShrink: 0 }}
@@ -156,7 +156,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           bottomSection={
             <Button
               component={Link}
-              href={routes.world.show.path()}
+              href={withTrailingSlash(routes.world.show.path())}
               leftSection="😍"
               variant="filled"
               radius="xl"
@@ -259,7 +259,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         </Title>
         <Button
           component={Link}
-          href={routes.world.show.path()}
+          href={withTrailingSlash(routes.world.show.path())}
           leftSection="😍"
           size="lg"
           radius="xl"

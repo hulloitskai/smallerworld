@@ -49,12 +49,6 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
             w={ICON_SIZE}
             h={ICON_SIZE}
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
-            onClick={() => {
-              const pageUrl = normalizeUrl(routes.world.show.path());
-              void navigator.clipboard.writeText(pageUrl).then(() => {
-                toast.success("page url copied");
-              });
-            }}
           />
           <Image src={bottomLeftArrowSrc} className={classes.pageArrow} />
         </Box>

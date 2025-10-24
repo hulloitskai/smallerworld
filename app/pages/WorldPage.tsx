@@ -147,7 +147,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             h={ICON_SIZE}
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
             onClick={() => {
-              const pageUrl = normalizeUrl(routes.world.show.path());
+              const pageUrl = normalizeUrl(
+                withTrailingSlash(routes.world.show.path()),
+              );
               void navigator.clipboard.writeText(pageUrl).then(() => {
                 toast.success("page url copied");
               });
@@ -512,7 +514,8 @@ const LogoutItem: FC<LogoutItemProps> = ({ ...otherProps }) => {
   const { trigger, mutating } = useRouteMutation(routes.session.destroy, {
     descriptor: "sign out",
     onSuccess: () => {
-      location.href = routes.world.show.path();
+      const worldPath = withTrailingSlash(routes.world.show.path());
+      location.href = worldPath;
     },
   });
 
