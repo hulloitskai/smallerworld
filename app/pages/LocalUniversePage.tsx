@@ -42,8 +42,8 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
   const { worlds } = data ?? {};
 
   const body = (
-    <Stack gap="xl" py="md">
-      <Stack gap="lg">
+    <Stack gap="lg" py="md">
+      <Stack gap="sm">
         <Title size="h2" className={classes.pageTitle} mx="md">
           your universe
         </Title>

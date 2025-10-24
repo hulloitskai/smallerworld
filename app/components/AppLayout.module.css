@@ -13,18 +13,16 @@
 }
 
 .main {
-  --app-shell-footer-offset: var(--app-shell-footer-height, 0px);
+  /* --app-shell-footer-offset: var(--app-shell-footer-height, 0px); */
 
   flex-grow: 1;
-  background-color: var(--mantine-color-body);
+  /* background-color: var(--mantine-color-body); */
+  background: pink;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   margin-top: var(--safe-area-inset-top, 0px);
-  min-height: calc(
-    100vh - var(--app-shell-footer-offset, 0px) -
-      var(--safe-area-inset-bottom, 0px)
-  );
+  min-height: calc(100vh - var(--app-shell-header-height, 0px));
   padding-top: var(--app-shell-padding);
 
   :where([data-user-theme]) & {

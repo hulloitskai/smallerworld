@@ -42,7 +42,9 @@ const TestPage: PageComponent<TestPageProps> = ({ name: initialName }) => {
 
   return (
     <Stack gap="xl">
-      <Title fw={900}>Test page</Title>
+      <Title fw={900} size="h2">
+        Test page
+      </Title>
       <Stack gap="xs">
         <Title order={3}>Test component</Title>
         <TextInput

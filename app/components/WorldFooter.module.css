@@ -6,6 +6,8 @@
 }
 
 .segmentedControl {
+  box-shadow: var(--mantine-shadow-xl);
+
   /* Enforce minimum lightness of 75% for light user themes */
   @mixin light-user-theme {
     --min-lightness: 75;

@@ -28,14 +28,6 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
         {...otherProps}
       >
         <SegmentedControl
-          {...{ value }}
-          onChange={value => {
-            router.visit(
-              value === "world"
-                ? withTrailingSlash(routes.world.show.path())
-                : routes.localUniverse.show.path(),
-            );
-          }}
           data={[
             {
               value: "world",
@@ -60,6 +52,14 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
               ),
             },
           ]}
+          {...{ value }}
+          onChange={value => {
+            router.visit(
+              value === "world"
+                ? withTrailingSlash(routes.world.show.path())
+                : routes.localUniverse.show.path(),
+            );
+          }}
           className={classes.segmentedControl}
         />
       </AppShell.Footer>

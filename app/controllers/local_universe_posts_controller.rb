@@ -18,7 +18,11 @@ class LocalUniversePostsController < ApplicationController
       .with_quoted_post_and_attached_images
       .visible_to_public
       .where(id: Post.user_created.select(:id))
-      .or(Post.where(author_id: current_user.id))
+      .or(
+        Post
+          .where(author_id: current_user.id)
+          .where.not(visibility: :only_me),
+      )
       .or(
         Post
           .where(author_id: other_friends.select(:user_id))
