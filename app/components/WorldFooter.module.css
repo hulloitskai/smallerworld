@@ -14,9 +14,17 @@
   }
 }
 
-.navLink {
-  :global(.mantine-NavLink-section[data-position="left"]) {
-    margin-right: 8px;
+.linkItem {
+  cursor: pointer;
+  height: unset;
+
+  &:not([data-active]) {
+    border-color: alpha(var(--mantine-color-primary-filled), 0.7);
+    color: var(--mantine-color-text);
+
+    @mixin hover {
+      background-color: var(--mantine-color-primary-light);
+    }
   }
 }
 

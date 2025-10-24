@@ -2,9 +2,8 @@ import { type InertiaLinkProps } from "@inertiajs/react";
 import {
   AppShell,
   type AppShellFooterProps,
+  type BadgeProps,
   Image,
-  NavLink,
-  type NavLinkProps,
 } from "@mantine/core";
 
 import logoSrc from "~/assets/images/logo.png";
@@ -25,19 +24,20 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
         className={cn("AppFooter", classes.footer, className)}
         {...otherProps}
       >
-        <NavLinkItem
+        <LinkItemBadge
           href={withTrailingSlash(routes.world.show.path())}
-          label="your world"
-          leftSection={<Image src={logoSrc} h={18} />}
+          leftSection={<Image src={logoSrc} h={18} w="unset" />}
           active={!isLocalUniverse}
-        />
-        <NavLinkItem
+        >
+          your world
+        </LinkItemBadge>
+        <LinkItemBadge
           href={routes.localUniverse.show.path()}
-          label="local universe"
           leftSection="💫"
           active={isLocalUniverse}
-          className={classes.localUniverseNavLink}
-        />
+        >
+          local universe
+        </LinkItemBadge>
       </AppShell.Footer>
     );
   },
@@ -45,13 +45,22 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
 
 export default WorldFooter;
 
-interface NavLinkItemProps
-  extends NavLinkProps,
-    Omit<InertiaLinkProps, "color" | "label" | "onChange" | "style"> {}
-const NavLinkItem: FC<NavLinkItemProps> = ({ className, ...otherProps }) => (
-  <NavLink
-    className={cn(classes.navLink, className)}
+interface LinkItemProps
+  extends Omit<BadgeProps, "variant">,
+    Omit<InertiaLinkProps, "color" | "size" | "onChange" | "style"> {
+  active: boolean;
+}
+const LinkItemBadge: FC<LinkItemProps> = ({
+  className,
+  active,
+  ...otherProps
+}) => (
+  <Badge
+    className={cn(classes.linkItem, className)}
     component={Link}
+    variant={active ? "filled" : "outline"}
+    size="lg"
+    mod={{ active }}
     {...otherProps}
   />
 );

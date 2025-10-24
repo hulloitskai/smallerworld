@@ -45,7 +45,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
         {currentUser ? (
           <>
             <LinkItem
-              href={routes.world.show.path()}
+              href={withTrailingSlash(routes.world.show.path())}
               leftSection={<Image src={logoSrc} h="100%" w="unset" />}
             >
               your world
