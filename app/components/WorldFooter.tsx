@@ -75,7 +75,7 @@ interface NavItemLabel {
 }
 
 const NavItem: FC<NavItemLabel> = ({ text, icon }) => (
-  <Group gap={4}>
+  <Group gap={6}>
     {icon}
     {text}
   </Group>

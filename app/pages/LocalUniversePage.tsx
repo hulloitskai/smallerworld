@@ -104,18 +104,21 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
           </Box>
         )}
       </Stack>
-      <Divider
-        label={
-          <>
-            <span className={classes.dividerText}>
-              smaller happenings in your universe
-            </span>{" "}
-            <span className={classes.dividerEmoji}>⤵️</span>
-          </>
-        }
-        className={classes.centered}
-      />
-      <LocalUniversePageFeed className={classes.centered} />
+      <Container size="xs" w="100%">
+        <Divider
+          label={
+            <>
+              <span className={classes.dividerText}>
+                smaller happenings in your universe
+              </span>{" "}
+              <span className={classes.dividerEmoji}>⤵️</span>
+            </>
+          }
+        />
+      </Container>
+      <Container size="xs" w="100%">
+        <LocalUniversePageFeed />
+      </Container>
     </Stack>
   );
   return (
@@ -141,6 +144,7 @@ LocalUniversePage.layout = page => (
     manifestUrl={routes.world.manifest.path()}
     pwaScope={withTrailingSlash(routes.world.show.path())}
     footer={<WorldFooter />}
+    padding={0}
   >
     {page}
   </AppLayout>

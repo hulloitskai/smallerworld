@@ -58,8 +58,6 @@
 }
 
 .scrollArea {
-  margin-inline: calc(var(--mantine-spacing-md) * -1);
-
   :global(.mantine-ScrollArea-viewport) {
     padding-block: 6px;
     padding-inline: 8px;
@@ -76,10 +74,4 @@
     justify-content: center;
     width: fit-content;
   }
-}
-
-.centered {
-  width: 100%;
-  max-width: var(--container-size-xs);
-  margin-inline: auto;
 }
