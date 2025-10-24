@@ -6,308 +6,7 @@
 
 
 # source://capybara-playwright-driver//lib/capybara/playwright/tmpdir_owner.rb#1
-module Capybara
-  class << self
-    # source://capybara/3.40.0/lib/capybara.rb#390
-    def HTML(html); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#182
-    def add_selector(name, **options, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def allow_gumbo(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def allow_gumbo=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def always_include_port(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def always_include_port=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def app(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def app=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def app_host(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def app_host=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def asset_host(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def asset_host=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def automatic_label_click(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def automatic_label_click=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def automatic_reload(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def automatic_reload=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#114
-    def configure; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#261
-    def current_driver; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#270
-    def current_driver=(name); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#316
-    def current_session; end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_driver(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_driver=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_host(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_host=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_max_wait_time(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_max_wait_time=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_normalize_ws(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_normalize_ws=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_retry_interval(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_retry_interval=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_selector(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_selector=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_set_options(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def default_set_options=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def disable_animation(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def disable_animation=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#204
-    def drivers; end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def enable_aria_label(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def enable_aria_label=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def enable_aria_role(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def enable_aria_role=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def exact(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def exact=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def exact_text(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def exact_text=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def ignore_hidden_elements(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def ignore_hidden_elements=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def javascript_driver(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def javascript_driver=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def match(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def match=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#261
-    def mode; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#200
-    def modify_selector(name, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def predicates_wait(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def predicates_wait=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def raise_server_errors(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def raise_server_errors=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#131
-    def register_driver(name, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#150
-    def register_server(name, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#325
-    def reset!; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#325
-    def reset_sessions!; end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def reuse_server(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def reuse_server=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#253
-    def run_default_server(app, port); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def run_server(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def run_server=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def save_path(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def save_path=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server_errors(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server_errors=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server_host(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server_host=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server_port(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def server_port=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#208
-    def servers; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#337
-    def session_name; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#346
-    def session_name=(name); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#410
-    def session_options; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#240
-    def string(html); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def test_id(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def test_id=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def threadsafe(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def threadsafe=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#282
-    def use_default_driver; end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def use_html5_parsing(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def use_html5_parsing=(*args, **_arg1, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#290
-    def using_driver(driver); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#358
-    def using_session(name_or_session, &block); end
-
-    # source://capybara/3.40.0/lib/capybara.rb#302
-    def using_wait_time(seconds); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def visible_text_only(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def visible_text_only=(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def w3c_click_offset(*args, **_arg1, &block); end
-
-    # source://forwardable/1.3.3/forwardable.rb#231
-    def w3c_click_offset=(*args, **_arg1, &block); end
-
-    private
-
-    # source://capybara/3.40.0/lib/capybara.rb#416
-    def config; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#420
-    def session_pool; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#426
-    def specified_session; end
-
-    # source://capybara/3.40.0/lib/capybara.rb#434
-    def specified_session=(session); end
-  end
-end
+module Capybara; end
 
 # source://capybara-playwright-driver//lib/capybara/playwright/node.rb#33
 module Capybara::CapybaraObscuredPatch
@@ -523,15 +222,15 @@ Capybara::Playwright::BrowserOptions::LAUNCH_PARAMS = T.let(T.unsafe(nil), Array
 class Capybara::Playwright::BrowserRunner
   # @return [BrowserRunner] a new instance of BrowserRunner
   #
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#76
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#82
   def initialize(options); end
 
   # @return [::Playwright::Browser]
   #
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#88
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#94
   def start; end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#93
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#99
   def stop; end
 end
 
@@ -540,12 +239,12 @@ class Capybara::Playwright::BrowserRunner::PlaywrightConnectToBrowserServer
   # @return [PlaywrightConnectToBrowserServer] a new instance of PlaywrightConnectToBrowserServer
   #
   # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#40
-  def initialize(endpoint_url); end
+  def initialize(endpoint_url, options); end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#48
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#54
   def playwright_browser; end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#44
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#49
   def playwright_execution; end
 end
 
@@ -563,17 +262,17 @@ class Capybara::Playwright::BrowserRunner::PlaywrightConnectToPlaywrightServer
   def playwright_execution; end
 end
 
-# source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#53
+# source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#59
 class Capybara::Playwright::BrowserRunner::PlaywrightCreate
   # @return [PlaywrightCreate] a new instance of PlaywrightCreate
   #
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#54
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#60
   def initialize(options); end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#69
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#75
   def playwright_browser; end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#63
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#69
   def playwright_execution; end
 end
 
@@ -632,55 +331,55 @@ class Capybara::Playwright::Driver < ::Capybara::Driver::Base
   # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#9
   def initialize(app, **options); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#147
   def accept_modal(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#135
   def active_element(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#143
   def close_window(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#120
   def current_url(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#138
   def current_window_handle(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#148
   def dismiss_modal(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#131
   def evaluate_async_script(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#130
   def evaluate_script(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#129
   def execute_script(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#124
   def find_css(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#123
   def find_xpath(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#142
   def fullscreen_window(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#127
   def go_back(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#128
   def go_forward(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#126
   def html(*args, **_arg1, &block); end
 
   # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#108
   def invalid_element_errors; end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#141
   def maximize_window(*args, **_arg1, &block); end
 
   # @return [Boolean]
@@ -691,40 +390,40 @@ class Capybara::Playwright::Driver < ::Capybara::Driver::Base
   # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#115
   def no_such_window_error; end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#145
   def open_new_window(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#122
   def refresh(*args, **_arg1, &block); end
 
   # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#84
   def reset!; end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#140
   def resize_window_to(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#133
   def response_headers(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#132
   def save_screenshot(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#136
   def send_keys(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#134
   def status_code(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#137
   def switch_to_frame(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#146
   def switch_to_window(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#125
   def title(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#121
   def visit(*args, **_arg1, &block); end
 
   # @return [Boolean]
@@ -732,10 +431,10 @@ class Capybara::Playwright::Driver < ::Capybara::Driver::Base
   # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#24
   def wait?; end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#144
   def window_handles(*args, **_arg1, &block); end
 
-  # source://forwardable/1.3.3/forwardable.rb#231
+  # source://capybara-playwright-driver//lib/capybara/playwright/driver.rb#139
   def window_size(*args, **_arg1, &block); end
 
   private
