@@ -17,6 +17,7 @@ class LocalUniversePostsController < ApplicationController
     posts = Post
       .with_quoted_post_and_attached_images
       .visible_to_public
+      .where(id: Post.user_created.select(:id))
       .or(Post.where(author_id: current_user.id))
       .or(
         Post
