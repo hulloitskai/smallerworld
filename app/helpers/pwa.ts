@@ -120,7 +120,9 @@ export const useInstallPWA = (): InstallPWAResult => {
                 currentUrl.searchParams.delete(key);
               }
             }
-            router.visit(currentUrl.toString());
+            startTransition(() => {
+              router.visit(currentUrl.toString());
+            });
           }
         };
         standaloneQuery.addEventListener("change", handleDisplayModeChange);

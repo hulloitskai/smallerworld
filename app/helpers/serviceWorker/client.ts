@@ -139,13 +139,15 @@ export const handleServiceWorkerMessages = (): void => {
           console.info("Already on this page, skipping navigation");
           break;
         }
-        router.visit(url, {
-          onBefore: () => {
-            responsePort?.postMessage({ result: "success" });
-          },
-          onSuccess: () => {
-            console.info(`Requested navigation to '${url}' successful`);
-          },
+        startTransition(() => {
+          router.visit(url, {
+            onBefore: () => {
+              responsePort?.postMessage({ result: "success" });
+            },
+            onSuccess: () => {
+              console.info(`Requested navigation to '${url}' successful`);
+            },
+          });
         });
         break;
       }

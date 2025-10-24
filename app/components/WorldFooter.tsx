@@ -58,11 +58,15 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
             switch (value) {
               case "world":
                 setValue("universe");
-                router.visit(routes.localUniverse.show.path());
+                startTransition(() => {
+                  router.visit(routes.localUniverse.show.path());
+                });
                 break;
               case "universe":
                 setValue("world");
-                router.visit(withTrailingSlash(routes.world.show.path()));
+                startTransition(() => {
+                  router.visit(withTrailingSlash(routes.world.show.path()));
+                });
                 break;
             }
           }}
