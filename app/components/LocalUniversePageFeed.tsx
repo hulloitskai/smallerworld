@@ -2,6 +2,7 @@ import { Image } from "@mantine/core";
 
 import { useLocalUniversePosts } from "~/helpers/localUniverse";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { type LocalUniversePageProps } from "~/pages/LocalUniversePage";
 
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
@@ -17,6 +18,7 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
   className,
   ...otherProps
 }) => {
+  const { currentUser } = usePageProps<LocalUniversePageProps>();
   const queryParams = useQueryParams();
 
   // == Load posts
@@ -42,12 +44,16 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                   className={classes.authorButton}
                   component={PWAScopedLink}
                   href={withTrailingSlash(
-                    routes.users.show.path({
-                      id: post.author.handle,
-                      query: {
-                        friend_token: post.associated_friend_access_token,
-                      },
-                    }),
+                    post.author.id === currentUser.id
+                      ? routes.world.show.path()
+                      : routes.users.show.path({
+                          id: post.author.handle,
+                          query: {
+                            ...(post.associated_friend_access_token && {
+                              friend_token: post.associated_friend_access_token,
+                            }),
+                          },
+                        }),
                   )}
                   size="sm"
                   variant="subtle"

@@ -4,5 +4,5 @@
 class LocalUniversePost < T::Struct
   # == Properties
   const :post, Post
-  const :associated_friend_access_token, String
+  const :associated_friend_access_token, T.nilable(String)
 end
