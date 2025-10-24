@@ -19,7 +19,10 @@
   height: unset;
 
   &:not([data-active]) {
-    border-color: alpha(var(--mantine-color-primary-filled), 0.7);
+    border-color: alpha(
+      light-dark(var(--mantine-color-black), var(--mantine-color-white)),
+      0.5
+    );
     color: var(--mantine-color-text);
 
     @mixin hover {
