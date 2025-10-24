@@ -39,7 +39,7 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
       descriptor: "load worlds",
     },
   );
-  const { worlds = [] } = data ?? {};
+  const { worlds } = data ?? {};
 
   const body = (
     <Stack gap="xl" py="md">
