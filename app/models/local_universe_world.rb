@@ -9,7 +9,7 @@ class LocalUniverseWorld < T::Struct
   delegate :page_icon_image, to: :user
   delegate :id, :handle, :name, to: :user, prefix: true
 
-  const :post_count, Integer
+  const :uncleared_notification_count, Integer
   const :last_post_created_at, T.nilable(Time)
-  const :associated_friend_access_token, String
+  const :associated_friend_access_token, T.nilable(String)
 end

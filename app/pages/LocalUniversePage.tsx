@@ -69,11 +69,14 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
                           : routes.users.show.path({
                               id: world.user_handle,
                               query: {
-                                friend_token:
-                                  world.associated_friend_access_token,
+                                ...(!!world.associated_friend_access_token && {
+                                  friend_token:
+                                    world.associated_friend_access_token,
+                                }),
                               },
                             }),
                       )}
+                      mod={{ dimmed: !world.uncleared_notification_count }}
                     >
                       <Stack align="center" gap={8} w="min-content">
                         <WorldIcon {...{ world }} mx="sm" />
@@ -149,41 +152,40 @@ interface WorldIconProps extends BoxProps {
   world: LocalUniverseWorld;
 }
 
-const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => {
-  return (
-    <Box {...otherProps}>
-      <Indicator
-        className={classes.postCountIndicator}
-        label={world.post_count}
-        size={20}
-        offset={4}
+const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => (
+  <Box {...otherProps}>
+    <Indicator
+      className={classes.postCountIndicator}
+      label={world.uncleared_notification_count}
+      size={20}
+      offset={4}
+      disabled={!world.uncleared_notification_count}
+    >
+      <Tooltip
+        label={
+          <>
+            {!!world.last_post_created_at && (
+              <>
+                last posted on{" "}
+                <Time format={DateTime.DATETIME_MED} inherit>
+                  {world.last_post_created_at}
+                </Time>
+              </>
+            )}
+          </>
+        }
+        events={{ hover: true, focus: true, touch: true }}
+        disabled={!world.last_post_created_at}
       >
-        <Tooltip
-          label={
-            <>
-              {!!world.last_post_created_at && (
-                <>
-                  last posted on{" "}
-                  <Time format={DateTime.DATETIME_MED} inherit>
-                    {world.last_post_created_at}
-                  </Time>
-                </>
-              )}
-            </>
-          }
-          events={{ hover: true, focus: true, touch: true }}
-          disabled={!world.last_post_created_at}
-        >
-          <Image
-            className={classes.worldPageIcon}
-            src={world.page_icon.src}
-            srcSet={world.page_icon.srcset ?? undefined}
-            w={ICON_SIZE}
-            h={ICON_SIZE}
-            radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
-          />
-        </Tooltip>
-      </Indicator>
-    </Box>
-  );
-};
+        <Image
+          className={classes.worldPageIcon}
+          src={world.page_icon.src}
+          srcSet={world.page_icon.srcset ?? undefined}
+          w={ICON_SIZE}
+          h={ICON_SIZE}
+          radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
+        />
+      </Tooltip>
+    </Indicator>
+  </Box>
+);

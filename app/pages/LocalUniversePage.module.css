@@ -22,6 +22,10 @@
 
 .worldAnchor {
   flex-shrink: 0;
+
+  &[data-dimmed] {
+    color: alpha(var(--mantine-color-text), 0.6);
+  }
 }
 
 .worldSkeleton {

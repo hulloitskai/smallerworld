@@ -1,9 +1,8 @@
-import { type InertiaLinkProps } from "@inertiajs/react";
 import {
   AppShell,
   type AppShellFooterProps,
-  type BadgeProps,
   Image,
+  SegmentedControl,
 } from "@mantine/core";
 
 import logoSrc from "~/assets/images/logo.png";
@@ -16,7 +15,11 @@ export interface WorldFooterProps
 const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
   ({ className, ...otherProps }, ref) => {
     const { url } = usePage();
-    const isLocalUniverse = url.startsWith(routes.localUniverse.show.path());
+    const value = useMemo(
+      () =>
+        url.startsWith(routes.localUniverse.show.path()) ? "universe" : "world",
+      [url],
+    );
     return (
       <AppShell.Footer
         {...{ ref }}
@@ -24,20 +27,41 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
         className={cn("AppFooter", classes.footer, className)}
         {...otherProps}
       >
-        <LinkItemBadge
-          href={withTrailingSlash(routes.world.show.path())}
-          leftSection={<Image src={logoSrc} h={18} w="unset" />}
-          active={!isLocalUniverse}
-        >
-          your world
-        </LinkItemBadge>
-        <LinkItemBadge
-          href={routes.localUniverse.show.path()}
-          leftSection="💫"
-          active={isLocalUniverse}
-        >
-          your universe
-        </LinkItemBadge>
+        <SegmentedControl
+          {...{ value }}
+          onChange={value => {
+            router.visit(
+              value === "world"
+                ? withTrailingSlash(routes.world.show.path())
+                : routes.localUniverse.show.path(),
+            );
+          }}
+          data={[
+            {
+              value: "world",
+              label: (
+                <NavItem
+                  text="your world"
+                  icon={<Image src={logoSrc} h={18} w="unset" />}
+                />
+              ),
+            },
+            {
+              value: "universe",
+              label: (
+                <NavItem
+                  text="your universe"
+                  icon={
+                    <span style={{ fontFamily: "var(--font-family-emoji)" }}>
+                      💫
+                    </span>
+                  }
+                />
+              ),
+            },
+          ]}
+          className={classes.segmentedControl}
+        />
       </AppShell.Footer>
     );
   },
@@ -45,22 +69,14 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
 
 export default WorldFooter;
 
-interface LinkItemProps
-  extends Omit<BadgeProps, "variant">,
-    Omit<InertiaLinkProps, "color" | "size" | "onChange" | "style"> {
-  active: boolean;
+interface NavItemLabel {
+  text: string;
+  icon: ReactNode;
 }
-const LinkItemBadge: FC<LinkItemProps> = ({
-  className,
-  active,
-  ...otherProps
-}) => (
-  <Badge
-    className={cn(classes.linkItem, className)}
-    component={Link}
-    variant={active ? "filled" : "outline"}
-    size="lg"
-    mod={{ active }}
-    {...otherProps}
-  />
+
+const NavItem: FC<NavItemLabel> = ({ text, icon }) => (
+  <Group gap={4}>
+    {icon}
+    {text}
+  </Group>
 );

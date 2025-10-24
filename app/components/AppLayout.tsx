@@ -168,7 +168,7 @@ const AppInner: FC<AppInnerProps> = ({
         {...((isStandalone === false || outOfPWAScope) && {
           header: { height: 46 },
         })}
-        {...(footer && { footer: { height: 36 } })}
+        {...(footer && { footer: { height: 40 } })}
         padding={padding ?? (withContainer ? undefined : "md")}
         classNames={{ root: classes.shell, header: classes.header }}
         data-vaul-drawer-wrapper

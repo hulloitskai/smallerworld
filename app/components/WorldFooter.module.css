@@ -1,38 +1,29 @@
 .footer {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 8px;
-  border-top: 1px solid var(--mantine-color-default-border);
-
-  > * {
-    width: unset;
-  }
-
-  @mixin dark-user-theme {
-    border-color: alpha(var(--mantine-color-white), 0.2);
-  }
+  align-items: start;
+  background-color: transparent;
 }
 
-.linkItem {
-  cursor: pointer;
-  height: unset;
+.segmentedControl {
+  background-color: var(--mantine-color-body);
 
-  &:not([data-active]) {
-    border-color: alpha(
-      light-dark(var(--mantine-color-black), var(--mantine-color-white)),
-      0.5
+  /* Enforce minimum lightness of 75% for light user themes */
+  @mixin light-user-theme {
+    --min-lightness: 75;
+
+    background-color: hsl(
+      from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
     );
-    color: var(--mantine-color-text);
 
-    @mixin hover {
-      background-color: var(--mantine-color-primary-light);
+    /* Use @supports to add in support for old syntax that requires % units to
+            be specified in lightness calculations. This is required for
+            Safari >= 16.4+ and < 18.0 */
+    @supports (color: hsl(from red h s calc(l - 20%))) {
+      background-color: hsl(
+        from var(--mantine-color-body) h s
+          clamp(calc(var(--min-lightness) * 1%), l, 100%)
+      );
     }
-  }
-}
-
-.localUniverseNavLink {
-  :global(.mantine-NavLink-section[data-position="left"]) {
-    font-family: var(--font-family-emoji);
   }
 }
