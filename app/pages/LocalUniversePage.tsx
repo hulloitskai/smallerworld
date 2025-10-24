@@ -45,7 +45,7 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
     <Stack gap="xl" py="md">
       <Stack gap="lg">
         <Title size="h2" className={classes.pageTitle} mx="md">
-          your local universe
+          your universe
         </Title>
         {worlds && isEmpty(worlds) ? (
           <Container size="xs" w="100%">
@@ -134,7 +134,7 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
 
 LocalUniversePage.layout = page => (
   <AppLayout<LocalUniversePageProps>
-    title="local universe"
+    title="your universe"
     manifestUrl={routes.world.manifest.path()}
     pwaScope={withTrailingSlash(routes.world.show.path())}
     footer={<WorldFooter />}

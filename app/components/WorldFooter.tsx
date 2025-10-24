@@ -36,7 +36,7 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
           leftSection="💫"
           active={isLocalUniverse}
         >
-          local universe
+          your universe
         </LinkItemBadge>
       </AppShell.Footer>
     );
