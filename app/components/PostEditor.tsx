@@ -94,7 +94,7 @@ const PostEditor: FC<PostEditorProps> = ({
     >
       <BubbleMenu
         options={{
-          placement: "bottom",
+          placement: "top",
           inline: true,
           flip: true,
           shift: true,
