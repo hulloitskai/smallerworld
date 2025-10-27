@@ -15,7 +15,10 @@ class LocalUniversePostsController < ApplicationController
     chosen_family_friends = associated_friends.chosen_family
     other_friends = associated_friends.where.not(chosen_family: true)
     posts = Post
+      .with_attached_images
       .with_quoted_post_and_attached_images
+      .with_encouragement
+      .includes(:author)
       .visible_to_public
       .where(id: Post.user_created.select(:id))
       .or(
