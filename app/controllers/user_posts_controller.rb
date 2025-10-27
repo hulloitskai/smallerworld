@@ -25,19 +25,6 @@ class UserPostsController < ApplicationController
       end
     end
     post_ids = paginated_posts.map(&:id)
-    views_by_post_id = if (friend = current_friend)
-      PostView
-        .where(post_id: post_ids, friend:)
-        .group(:post_id)
-        .pluck(:post_id)
-        .to_set
-    end
-    replied_post_ids = if (friend = current_friend)
-      PostReplyReceipt
-        .where(post_id: post_ids, friend:)
-        .pluck(:post_id)
-        .to_set
-    end
     repliers_by_post_id = PostReplyReceipt
       .where(post_id: post_ids)
       .group(:post_id)
@@ -47,14 +34,34 @@ class UserPostsController < ApplicationController
         [reply_receipt.post_id, repliers]
       end
       .to_h
-    user_posts = paginated_posts.map do |post|
-      seen = views_by_post_id&.include?(post.id)
-      replied = replied_post_ids&.include?(post.id)
-      repliers = repliers_by_post_id.fetch(post.id, 0)
-      UserPost.new(post:, seen:, replied:, repliers:)
-    end
+    serialized_posts =
+      if (friend = current_friend)
+        views_by_post_id = PostView
+          .where(post_id: post_ids, friend:)
+          .group(:post_id)
+          .pluck(:post_id)
+          .to_set
+        replied_post_ids =
+          PostReplyReceipt
+            .where(post_id: post_ids, friend:)
+            .pluck(:post_id)
+            .to_set
+        paginated_posts.map do |post|
+          repliers = repliers_by_post_id.fetch(post.id, 0)
+          seen = views_by_post_id.include?(post.id)
+          replied = replied_post_ids.include?(post.id)
+          friend_post = UserFriendPost.new(post:, repliers:, seen:, replied:)
+          UserFriendPostSerializer.one(friend_post)
+        end
+      else
+        paginated_posts.map do |post|
+          repliers = repliers_by_post_id.fetch(post.id, 0)
+          public_post = UserPublicPost.new(post:, repliers:)
+          UserPublicPostSerializer.one(public_post)
+        end
+      end
     render(json: {
-      posts: UserPostSerializer.many(user_posts),
+      posts: serialized_posts,
       pagination: {
         next: pagy.next,
       },
@@ -71,17 +78,11 @@ class UserPostsController < ApplicationController
       posts = posts.visible_to_friends
     end
     posts = posts.order(pinned_until: :asc, created_at: :asc).to_a
+    post_ids = posts.map(&:id)
     unless current_friend
       posts.map! do |post|
         post.visibility == :public ? post : post.becomes(MaskedPost)
       end
-    end
-    post_ids = posts.map(&:id)
-    replied_post_ids = if (friend = current_friend)
-      PostReplyReceipt
-        .where(post_id: post_ids, friend:)
-        .pluck(:post_id)
-        .to_set
     end
     repliers_by_post_id = PostReplyReceipt
       .where(post_id: post_ids)
@@ -92,12 +93,31 @@ class UserPostsController < ApplicationController
         [reply_receipt.post_id, repliers]
       end
       .to_h
-    user_posts = posts.map do |post|
-      replied = replied_post_ids&.include?(post.id)
-      repliers = repliers_by_post_id.fetch(post.id, 0)
-      UserPost.new(post:, replied:, repliers:)
+    serialized_posts = if (friend = current_friend)
+      views_by_post_id = PostView
+        .where(post_id: post_ids, friend:)
+        .group(:post_id)
+        .pluck(:post_id)
+        .to_set
+      replied_post_ids = PostReplyReceipt
+        .where(post_id: post_ids, friend:)
+        .pluck(:post_id)
+        .to_set
+      posts.map do |post|
+        repliers = repliers_by_post_id.fetch(post.id, 0)
+        seen = views_by_post_id.include?(post.id)
+        replied = replied_post_ids.include?(post.id)
+        friend_post = UserFriendPost.new(post:, repliers:, seen:, replied:)
+        UserFriendPostSerializer.one(friend_post)
+      end
+    else
+      posts.map do |post|
+        repliers = repliers_by_post_id.fetch(post.id, 0)
+        public_post = UserPublicPost.new(post:, repliers:)
+        UserPublicPostSerializer.one(public_post)
+      end
     end
-    render(json: { posts: UserPostSerializer.many(user_posts) })
+    render(json: { posts: serialized_posts })
   end
 
   private

@@ -5,13 +5,14 @@ import { NEKO_SIZE } from "~/helpers/neko";
 import { mutateUserPagePosts, useUserPagePosts } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
 import { type UserPageProps } from "~/pages/UserPage";
-import { type UserPost } from "~/types";
+import { type UserFriendPost } from "~/types";
 
 import EncouragementCard from "./EncouragementCard";
 import FeedbackNeko from "./FeedbackNeko";
 import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
+import PublicPostCardActions from "./PublicPostCardActions";
 
 export interface UserPageFeedProps extends BoxProps {}
 
@@ -76,18 +77,23 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
           </Card>
         ) : (
           <>
-            {posts.map((post, index) => (
-              <TrackUserPostSeen key={post.id} {...{ post }}>
+            {posts.map((post, index) => {
+              const children = (
                 <Box pos="relative">
                   <PostCard
                     {...{ post }}
                     blurContent={!currentFriend && post.visibility !== "public"}
                     focus={queryParams.post_id === post.id}
                     actions={
-                      <FriendPostCardActions
-                        {...{ user, post, replyToNumber }}
-                        shareable={allowFriendSharing}
-                      />
+                      post.user_post_type === "friend" && replyToNumber ? (
+                        <FriendPostCardActions
+                          {...{ post, replyToNumber }}
+                          author={user}
+                          shareable={allowFriendSharing}
+                        />
+                      ) : (
+                        <PublicPostCardActions postId={post.id} />
+                      )
                     }
                   />
                   {!hideNeko &&
@@ -101,8 +107,15 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
                       />
                     )}
                 </Box>
-              </TrackUserPostSeen>
-            ))}
+              );
+              return post.user_post_type === "friend" ? (
+                <TrackUserPostSeen key={post.id} {...{ post }}>
+                  {children}
+                </TrackUserPostSeen>
+              ) : (
+                children
+              );
+            })}
             {hasMorePosts && (
               <LoadMoreButton
                 loading={isValidating}
@@ -124,7 +137,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
 export default UserPageFeed;
 
 interface TrackUserPostSeenProps extends PropsWithChildren {
-  post: UserPost;
+  post: UserFriendPost;
 }
 
 const TrackUserPostSeen: FC<TrackUserPostSeenProps> = ({ post, children }) => {

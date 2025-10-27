@@ -12,6 +12,7 @@ import ActivityCouponsCarousel from "./ActivityCouponsCarousel";
 import DrawerModal from "./DrawerModal";
 import FriendPostCardActions from "./FriendPostCardActions";
 import PostCard from "./PostCard";
+import PublicPostCardActions from "./PublicPostCardActions";
 
 import classes from "./UserPageInvitationsButton.module.css";
 
@@ -176,10 +177,15 @@ const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
                   {...{ post }}
                   blurContent={!currentFriend && post.visibility !== "public"}
                   actions={
-                    <FriendPostCardActions
-                      {...{ user, post, replyToNumber }}
-                      shareable={allowFriendSharing}
-                    />
+                    post.user_post_type === "friend" && replyToNumber ? (
+                      <FriendPostCardActions
+                        {...{ post, replyToNumber }}
+                        author={user}
+                        shareable={allowFriendSharing}
+                      />
+                    ) : (
+                      <PublicPostCardActions postId={post.id} />
+                    )
                   }
                 />
               ))}

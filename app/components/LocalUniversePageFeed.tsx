@@ -4,6 +4,8 @@ import { useLocalUniversePosts } from "~/helpers/localUniverse";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type LocalUniversePageProps } from "~/pages/LocalUniversePage";
 
+import AuthorPostCardActions from "./AuthorPostCardActions";
+import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 import PublicPostCardActions from "./PublicPostCardActions";
@@ -18,7 +20,8 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
   className,
   ...otherProps
 }) => {
-  const { currentUser } = usePageProps<LocalUniversePageProps>();
+  const { currentUser, pausedFriendIds, recentlyPausedFriendIds, hideStats } =
+    usePageProps<LocalUniversePageProps>();
   const queryParams = useQueryParams();
 
   // == Load posts
@@ -50,7 +53,8 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                           routes.users.show.path({
                             id: post.author.handle,
                             query: {
-                              ...(post.associated_friend_access_token && {
+                              ...(post.local_universe_post_type ===
+                                "friend" && {
                                 friend_token:
                                   post.associated_friend_access_token,
                               }),
@@ -78,7 +82,27 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                 <PostCard
                   {...{ post }}
                   focus={queryParams.post_id === post.id}
-                  actions={<PublicPostCardActions postId={post.id} />}
+                  actions={
+                    post.local_universe_post_type === "author" ? (
+                      <AuthorPostCardActions
+                        {...{
+                          post,
+                          pausedFriendIds,
+                          recentlyPausedFriendIds,
+                          hideStats,
+                        }}
+                      />
+                    ) : post.local_universe_post_type === "friend" ? (
+                      <FriendPostCardActions
+                        {...{ post }}
+                        author={post.author}
+                        replyToNumber={post.reply_to_number}
+                        friendToken={post.associated_friend_access_token}
+                      />
+                    ) : (
+                      <PublicPostCardActions postId={post.id} />
+                    )
+                  }
                 />
               </Stack>
             ))}

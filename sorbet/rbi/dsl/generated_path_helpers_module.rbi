@@ -79,6 +79,9 @@ module GeneratedPathHelpersModule
   def local_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def local_universe_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def login_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -251,9 +254,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def signup_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def smaller_universe_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end

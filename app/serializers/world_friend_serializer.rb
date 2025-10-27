@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class WorldFriendSerializer < ApplicationSerializer
+class WorldFriendSerializer < FriendProfileSerializer
   # == Configuration
   object_as :friend
 
@@ -18,7 +18,6 @@ class WorldFriendSerializer < ApplicationSerializer
   end
 
   # == Associations
-  flat_one :friend, serializer: FriendProfileSerializer
   has_many :active_activity_coupons,
            serializer: FriendActivityCouponSerializer
 end

@@ -76,6 +76,9 @@ module GeneratedUrlHelpersModule
   def invitation_world_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def local_universe_posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def local_universe_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -251,9 +254,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def signup_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def smaller_universe_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_url(*args); end

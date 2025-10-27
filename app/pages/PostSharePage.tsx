@@ -6,18 +6,23 @@ import MailIcon from "~icons/heroicons/envelope-open-20-solid";
 import logoSrc from "~/assets/images/logo.png";
 
 import AppLayout from "~/components/AppLayout";
-import FriendPostCardActions from "~/components/FriendPostCardActions";
 import PostCard from "~/components/PostCard";
 import PostSharePageRequestInvitationAlert from "~/components/PostSharePageRequestInvitationAlert";
+import PublicPostCardActions from "~/components/PublicPostCardActions";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { type FriendProfile, type UserPost, type UserProfile } from "~/types";
+import {
+  type FriendProfile,
+  type UserPost,
+  type UserProfile,
+  type UserPublicPost,
+} from "~/types";
 
 import classes from "./PostSharePage.module.css";
 import userPageClasses from "./UserPage.module.css";
 
 export interface PostSharePageProps extends SharedPageProps {
   user: UserProfile;
-  post: UserPost;
+  post: UserPublicPost;
   sharer: FriendProfile | null;
   invitationRequested: boolean;
 }
@@ -128,7 +133,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
       <PostCard
         {...{ post }}
         expanded
-        actions={<FriendPostCardActions {...{ user, post }} />}
+        actions={<PublicPostCardActions postId={post.id} />}
       />
       <PostSharePageRequestInvitationAlert />
     </Stack>

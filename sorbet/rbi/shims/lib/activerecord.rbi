@@ -435,4 +435,13 @@ module ActiveRecord
       def generates_token_for(purpose, expires_in: T.unsafe(nil), &block); end
     end
   end
+
+  module Persistence
+    sig do
+      type_parameters(:U)
+        .params(klass: T::Class[T.all(T.type_parameter(:U), Base)])
+        .returns(T.type_parameter(:U))
+    end
+    def becomes(klass); end
+  end
 end

@@ -22,15 +22,17 @@ import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
 export interface FriendPostCardActionsProps
-  extends Pick<PostCardReplyButtonProps, "user" | "post" | "replyToNumber"> {
+  extends Pick<PostCardReplyButtonProps, "post" | "author" | "replyToNumber"> {
   shareable?: boolean;
+  friendToken?: string;
 }
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
-  user,
   post,
+  author,
   replyToNumber,
   shareable,
+  friendToken,
 }) => {
   const { ref, inViewport } = useInViewport();
 
@@ -111,7 +113,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
               <ReactionButton
                 key={emoji}
                 postId={post.id}
-                {...{ emoji, reactions }}
+                {...{ emoji, reactions, friendToken }}
               />
             ))}
           </Group>
@@ -146,13 +148,16 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             <NewReactionButton
               postId={post.id}
               hasExistingReactions={!isEmpty(reactions)}
+              {...{ friendToken }}
             />
             <Text className={postCardClasses.actionSeparator}>/</Text>
-            <PostCardReplyButton {...{ user, post, replyToNumber }} />
+            <PostCardReplyButton
+              {...{ post, author, replyToNumber, friendToken }}
+            />
             {shareable && (
               <>
                 <Text className={postCardClasses.actionSeparator}>/</Text>
-                <PostCardShareButton {...{ user, post }} />
+                <PostCardShareButton {...{ post, author }} />
               </>
             )}
           </Group>
@@ -188,13 +193,16 @@ export default FriendPostCardActions;
 interface NewReactionButtonProps {
   postId: string;
   hasExistingReactions: boolean;
+  friendToken?: string;
 }
 
 const NewReactionButton: FC<NewReactionButtonProps> = ({
   postId,
   hasExistingReactions,
+  friendToken: friendTokenProp,
 }) => {
   const currentFriend = useCurrentFriend();
+  const friendToken = friendTokenProp ?? currentFriend?.access_token;
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // == Add reaction
@@ -202,11 +210,11 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
     reaction: PostReaction;
   }>(routes.postReactions.create, {
     descriptor: "react to post",
-    params: currentFriend
+    params: friendToken
       ? {
           post_id: postId,
           query: {
-            friend_token: currentFriend.access_token,
+            friend_token: friendToken,
           },
         }
       : null,
@@ -240,7 +248,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
         ],
       }}
       onEmojiClick={({ emoji }) => {
-        if (!currentFriend) {
+        if (!friendToken) {
           toast.warning(
             "you must be invited to this page to react to this post",
           );
@@ -291,14 +299,17 @@ interface ReactionButtonProps {
   postId: string;
   emoji: string;
   reactions: PostReaction[];
+  friendToken?: string;
 }
 
 const ReactionButton: FC<ReactionButtonProps> = ({
   postId,
   emoji,
   reactions,
+  friendToken: friendTokenProp,
 }) => {
   const currentFriend = useCurrentFriend();
+  const friendToken = friendTokenProp ?? currentFriend?.access_token;
   const currentReaction = useMemo(
     () =>
       currentFriend?.id
@@ -316,7 +327,7 @@ const ReactionButton: FC<ReactionButtonProps> = ({
       loading={mutating}
       className={classes.reactionButton}
       onClick={({ currentTarget }) => {
-        if (!currentFriend) {
+        if (!friendToken) {
           toast.warning(
             "you must be invited to this page to react to this post",
           );
@@ -328,7 +339,7 @@ const ReactionButton: FC<ReactionButtonProps> = ({
               params: {
                 id: currentReaction.id,
                 query: {
-                  friend_token: currentFriend.access_token,
+                  friend_token: friendToken,
                 },
               },
               descriptor: "remove reaction",
@@ -355,7 +366,7 @@ const ReactionButton: FC<ReactionButtonProps> = ({
                 params: {
                   post_id: postId,
                   query: {
-                    friend_token: currentFriend.access_token,
+                    friend_token: friendToken,
                   },
                 },
                 descriptor: "react to post",

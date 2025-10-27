@@ -2,18 +2,18 @@ import { type ActionIconProps } from "@mantine/core";
 
 import ShareIcon from "~icons/heroicons/arrow-up-on-square-20-solid";
 
-import { type PostShare, type UserPost, type UserProfile } from "~/types";
+import { type Author, type PostShare, type UserPost } from "~/types";
 
 import classes from "./PostCardShareButton.module.css";
 
 export interface PostCardShareButtonProps extends ActionIconProps {
-  user: UserProfile;
   post: UserPost;
+  author: Author;
 }
 
 const PostCardShareButton: FC<PostCardShareButtonProps> = ({
-  user,
   post,
+  author,
   ...otherProps
 }) => {
   const currentFriend = useCurrentFriend();
@@ -59,7 +59,7 @@ const PostCardShareButton: FC<PostCardShareButtonProps> = ({
         if (!currentFriend) {
           toast.warning(
             <>
-              you must be invited to {possessive(user.name)} world to share
+              you must be invited to {possessive(author.name)} world to share
               posts
             </>,
           );

@@ -12,7 +12,7 @@ class PostSharesController < ApplicationController
       .where(post:)
       .distinct
       .count(:friend_id)
-    user_post = UserPost.new(post:, seen: false, replied: false, repliers:)
+    public_post = UserPublicPost.new(post:, repliers:)
     sharer = share.sharer!
     if (current_user = self.current_user)
       invitation_requested = user
@@ -21,7 +21,7 @@ class PostSharesController < ApplicationController
     end
     render(inertia: "PostSharePage", props: {
       user: UserSerializer.one(user),
-      post: UserPostSerializer.one(user_post),
+      post: UserPublicPostSerializer.one(public_post),
       sharer: (FriendProfileSerializer.one(sharer) if sharer.is_a?(Friend)),
       "invitationRequested" => invitation_requested || false,
     })

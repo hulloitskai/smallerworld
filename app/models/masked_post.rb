@@ -40,8 +40,6 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class MaskedPost < Post
-  extend T::Sig
-
   # == Attributes
   sig { override.returns(T.nilable(String)) }
   def title

@@ -7,23 +7,26 @@ import {
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
 import { mutateUserPagePosts } from "~/helpers/userPages";
-import { type UserPost, type UserProfile } from "~/types";
+import { type Author, type UserFriendPost } from "~/types";
 
 import classes from "./PostCardReplyButton.module.css";
 
 export interface PostCardReplyButtonProps extends ButtonProps {
-  user: UserProfile;
-  post: UserPost;
-  replyToNumber?: string | null;
+  post: UserFriendPost;
+  author: Author;
+  replyToNumber: string;
+  friendToken?: string;
 }
 
 const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
-  user,
   post,
+  author,
   replyToNumber,
+  friendToken: friendTokenProp,
   ...otherProps
 }) => {
   const currentFriend = useCurrentFriend();
+  const friendToken = friendTokenProp ?? currentFriend?.access_token;
   const vaulPortalTarget = useVaulPortalTarget();
 
   // == Mark as replied
@@ -33,16 +36,16 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
     params: {
       id: post.id,
       query: {
-        ...(currentFriend && {
-          friend_token: currentFriend.access_token,
+        ...(friendToken && {
+          friend_token: friendToken,
         }),
       },
     },
     descriptor: "mark post as replied",
     failSilently: true,
-    ...(currentFriend && {
+    ...(friendToken && {
       onSuccess: ({ authorId }) => {
-        mutateUserPagePosts(authorId, currentFriend.access_token);
+        mutateUserPagePosts(authorId, friendToken);
       },
     }),
   });
@@ -53,7 +56,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
       arrowOffset={20}
       shadow="sm"
       portalProps={{ target: vaulPortalTarget }}
-      disabled={!currentFriend || !replyToNumber}
+      disabled={!friendToken || !replyToNumber}
     >
       <Popover.Target>
         <Button
@@ -76,11 +79,11 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
           }
           mod={{ replied: post.replied }}
           onClick={() => {
-            if (!currentFriend || !replyToNumber) {
+            if (!friendToken || !replyToNumber) {
               toast.warning(
                 <>
-                  you must be invited to {possessive(user.name)} world to reply
-                  via sms
+                  you must be invited to {possessive(author.name)} world to
+                  reply via sms
                 </>,
               );
             }
@@ -90,7 +93,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
           reply by dm
         </Button>
       </Popover.Target>
-      {currentFriend && !!replyToNumber && (
+      {!!friendToken && !!replyToNumber && (
         <Popover.Dropdown>
           <Stack gap="xs">
             <Text ta="center" ff="heading" fw={500} size="sm">

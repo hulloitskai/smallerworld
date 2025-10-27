@@ -41,18 +41,52 @@ class LocalUniversePostsController < ApplicationController
       posts.order(created_at: :desc, id: :asc),
       limit: 5,
     )
+    post_ids = paginated_posts.map(&:id)
+    views_by_post_id = PostView
+      .where(post_id: post_ids, friend: associated_friends)
+      .group(:post_id)
+      .pluck(:post_id)
+      .to_set
+    replied_post_ids = PostReplyReceipt
+      .where(post_id: post_ids, friend: associated_friends)
+      .pluck(:post_id)
+      .to_set
+    repliers_by_post_id = PostReplyReceipt
+      .where(post_id: post_ids)
+      .group(:post_id)
+      .select(:post_id, "COUNT(DISTINCT friend_id) AS repliers")
+      .map do |reply_receipt|
+        repliers = T.let(reply_receipt[:repliers], Integer)
+        [reply_receipt.post_id, repliers]
+      end
+      .to_h
     associated_friends_by_user_id = associated_friends
       .select(:user_id, :access_token)
       .index_by(&:user_id)
-    local_universe_posts = paginated_posts.map do |post|
+    serialized_posts = paginated_posts.map do |post|
       associated_friend = associated_friends_by_user_id[post.author_id]
-      LocalUniversePost.new(
-        post:,
-        associated_friend_access_token: associated_friend&.access_token,
-      )
+      author = T.let(post.author!, User)
+      if author == current_user
+        LocalUniverseAuthorPostSerializer.one(post)
+      elsif associated_friend
+        seen = views_by_post_id.include?(post.id)
+        replied = replied_post_ids.include?(post.id)
+        repliers = repliers_by_post_id.fetch(post.id, 0)
+        friend_post = LocalUniverseFriendPost.new(
+          associated_friend_access_token: associated_friend.access_token,
+          reply_to_number: author.phone_number,
+          repliers:,
+          post:,
+          replied:,
+          seen:,
+        )
+        LocalUniverseFriendPostSerializer.one(friend_post)
+      else
+        LocalUniversePublicPostSerializer.one(post)
+      end
     end
     render(json: {
-      posts: LocalUniversePostSerializer.many(local_universe_posts),
+      posts: serialized_posts,
       pagination: {
         next: pagy.next,
       },
