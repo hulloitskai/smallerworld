@@ -222,15 +222,15 @@ Capybara::Playwright::BrowserOptions::LAUNCH_PARAMS = T.let(T.unsafe(nil), Array
 class Capybara::Playwright::BrowserRunner
   # @return [BrowserRunner] a new instance of BrowserRunner
   #
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#82
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#76
   def initialize(options); end
 
   # @return [::Playwright::Browser]
   #
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#94
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#88
   def start; end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#99
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#93
   def stop; end
 end
 
@@ -239,12 +239,12 @@ class Capybara::Playwright::BrowserRunner::PlaywrightConnectToBrowserServer
   # @return [PlaywrightConnectToBrowserServer] a new instance of PlaywrightConnectToBrowserServer
   #
   # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#40
-  def initialize(endpoint_url, options); end
+  def initialize(endpoint_url); end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#54
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#48
   def playwright_browser; end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#49
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#44
   def playwright_execution; end
 end
 
@@ -262,17 +262,17 @@ class Capybara::Playwright::BrowserRunner::PlaywrightConnectToPlaywrightServer
   def playwright_execution; end
 end
 
-# source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#59
+# source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#53
 class Capybara::Playwright::BrowserRunner::PlaywrightCreate
   # @return [PlaywrightCreate] a new instance of PlaywrightCreate
   #
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#60
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#54
   def initialize(options); end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#75
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#69
   def playwright_browser; end
 
-  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#69
+  # source://capybara-playwright-driver//lib/capybara/playwright/browser_runner.rb#63
   def playwright_execution; end
 end
 
