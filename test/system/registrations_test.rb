@@ -29,7 +29,7 @@ class RegistrationsTest < ApplicationSystemTestCase
     click_link_or_button "complete signup"
 
     # Wait for redirection to world_path
-    assert_current_path world_path, wait: 15.seconds
+    assert_current_path world_path(trailing_slash: true), wait: 15.seconds
 
     # Assert welcome post visible
     assert_text "welcome to my smaller world!"
