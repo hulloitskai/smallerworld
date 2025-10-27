@@ -21,6 +21,5 @@ class LocalUniverseFriendPostSerializer < LocalUniversePublicPostSerializer
              repliers: { type: :number }
 
   # == Associations
-  has_one :associated_friend,
-          serializer: LocalUniverseAssociatedFriendSerializer
+  has_one :associated_friend, serializer: AssociatedFriendSerializer
 end

@@ -9,7 +9,7 @@ import {
   puffOfSmoke,
 } from "~/helpers/particles";
 import {
-  type LocalUniverseAssociatedFriend,
+  type AssociatedFriend,
   type PostReaction /*, type PostSticker */,
 } from "~/types";
 
@@ -27,7 +27,7 @@ import postCardClasses from "./PostCard.module.css";
 export interface FriendPostCardActionsProps
   extends Pick<PostCardReplyButtonProps, "post" | "author" | "replyToNumber"> {
   shareable?: boolean;
-  friend?: LocalUniverseAssociatedFriend;
+  asFriend?: AssociatedFriend;
 }
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
@@ -35,7 +35,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   author,
   replyToNumber,
   shareable,
-  friend,
+  asFriend,
 }) => {
   const { ref, inViewport } = useInViewport();
 
@@ -116,7 +116,7 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
               <ReactionButton
                 key={emoji}
                 postId={post.id}
-                {...{ emoji, reactions, friend }}
+                {...{ emoji, reactions, asFriend }}
               />
             ))}
           </Group>
@@ -151,10 +151,12 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
             <NewReactionButton
               postId={post.id}
               hasExistingReactions={!isEmpty(reactions)}
-              {...{ friend }}
+              {...{ asFriend }}
             />
             <Text className={postCardClasses.actionSeparator}>/</Text>
-            <PostCardReplyButton {...{ post, author, replyToNumber, friend }} />
+            <PostCardReplyButton
+              {...{ post, author, replyToNumber, asFriend }}
+            />
             {shareable && (
               <>
                 <Text className={postCardClasses.actionSeparator}>/</Text>
@@ -194,16 +196,16 @@ export default FriendPostCardActions;
 interface NewReactionButtonProps {
   postId: string;
   hasExistingReactions: boolean;
-  friend?: LocalUniverseAssociatedFriend;
+  asFriend?: AssociatedFriend;
 }
 
 const NewReactionButton: FC<NewReactionButtonProps> = ({
   postId,
   hasExistingReactions,
-  friend: friendProps,
+  asFriend,
 }) => {
   const currentFriend = useCurrentFriend();
-  const friend = friendProps ?? currentFriend;
+  const friend = asFriend ?? currentFriend;
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // == Add reaction
@@ -300,17 +302,17 @@ interface ReactionButtonProps {
   postId: string;
   emoji: string;
   reactions: PostReaction[];
-  friend?: LocalUniverseAssociatedFriend;
+  asFriend?: AssociatedFriend;
 }
 
 const ReactionButton: FC<ReactionButtonProps> = ({
   postId,
   emoji,
   reactions,
-  friend: friendProps,
+  asFriend,
 }) => {
   const currentFriend = useCurrentFriend();
-  const friend = friendProps ?? currentFriend;
+  const friend = asFriend ?? currentFriend;
   const currentReaction = useMemo(
     () =>
       currentFriend?.id

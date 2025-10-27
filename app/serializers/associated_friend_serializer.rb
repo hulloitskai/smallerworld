@@ -1,8 +1,8 @@
 # typed: true
 # frozen_string_literal: true
 
-class LocalUniverseAssociatedFriendSerializer < ApplicationSerializer
-  # == Configurationj
+class AssociatedFriendSerializer < ApplicationSerializer
+  # == Configuration
   object_as :friend
 
   # == Attributes

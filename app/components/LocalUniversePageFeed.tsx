@@ -97,7 +97,7 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                         {...{ post }}
                         author={post.author}
                         replyToNumber={post.reply_to_number}
-                        friend={post.associated_friend}
+                        asFriend={post.associated_friend}
                       />
                     ) : (
                       <PublicPostCardActions postId={post.id} />
