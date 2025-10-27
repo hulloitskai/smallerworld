@@ -5,31 +5,35 @@ class TwilioService < ApplicationService
   # == Configuration
   sig { override.returns(T::Boolean) }
   def self.enabled?
+    return false unless credentials_available?
+
     Twilio.account_sid.present? && Twilio.auth_token.present?
   end
+
+  # == Initialization
+  sig { void }
+  def initialize
+    super
+    @client = Twilio::REST::Client.new
+  end
+
+  sig { returns(Twilio::REST::Client) }
+  attr_reader :client
 
   # == Methods
   sig { params(to: String, body: String).returns(T.untyped) }
   def self.send_message(to:, body:)
-    twilio_client.messages.create(from: sender_number, to:, body:)
+    from = credentials!.sender_number!
+    instance.client.messages.create(from:, to:, body:)
   end
 
   # == Helpers
-  sig { returns(String) }
-  def self.sender_number
-    twilio_credentials.sender_number!
+  sig { returns(T::Boolean) }
+  def self.credentials_available?
+    Rails.application.credentials.twilio.present?
   end
 
-  private
-
-  # == Helpers
-  sig { returns(T.untyped) }
-  private_class_method def self.twilio_credentials
+  def self.credentials!
     Rails.application.credentials.twilio!
-  end
-
-  sig { returns(T.untyped) }
-  private_class_method def self.twilio_client
-    @client ||= Twilio::REST::Client.new
   end
 end

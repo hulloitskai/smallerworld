@@ -323,7 +323,7 @@ const PostForm: FC<PostFormProps> = props => {
             }
           >
             {transitionStyle => (
-              <Stack gap={4} mx="md" style={transitionStyle}>
+              <Stack gap={4} style={transitionStyle}>
                 <Card withBorder className={classes.encouragementCard}>
                   <Stack gap={2} style={{ alignSelf: "center" }}>
                     <Text size="sm">

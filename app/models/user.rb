@@ -206,6 +206,16 @@ class User < ApplicationRecord
     Friend.where(phone_number:)
   end
 
+  sig { returns(T::Array[Symbol]) }
+  def disabled_messaging_platforms
+    disabled_platforms = T.let([], T::Array[Symbol])
+    if GreenApiService.enabled? &&
+        !GreenApiService.reachable_on_whatsapp?(phone_number)
+      disabled_platforms << :whatsapp
+    end
+    disabled_platforms
+  end
+
   # == Helpers
   sig { params(phone_number: String).returns(T.nilable(User)) }
   def self.find_by_phone_number(phone_number)

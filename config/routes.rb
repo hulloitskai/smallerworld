@@ -235,6 +235,7 @@ Rails.application.routes.draw do
   resources :users, only: [], export: true do
     member do
       post :request_invitation, constraints: { format: "json" }
+      get :messaging_platforms, constraints: { format: "json" }
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end

@@ -112,6 +112,9 @@ module GeneratedUrlHelpersModule
   def marsha_puzzle_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def messaging_platforms_user_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_local_universe_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

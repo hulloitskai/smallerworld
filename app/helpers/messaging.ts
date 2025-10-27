@@ -5,7 +5,7 @@ import TelegramIcon from "~icons/basil/telegram-solid";
 import WhatsappIcon from "~icons/basil/whatsapp-outline";
 import SMSIcon from "~icons/heroicons/chat-bubble-bottom-center-text-20-solid";
 
-type MessagingPlatform = "sms" | "telegram" | "whatsapp";
+export type MessagingPlatform = "sms" | "telegram" | "whatsapp";
 
 export const MESSAGING_PLATFORMS: MessagingPlatform[] = [
   "sms",
