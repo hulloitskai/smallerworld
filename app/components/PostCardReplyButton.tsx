@@ -130,7 +130,12 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
                       platform,
                     )}
                     disabled={disabledMessagingPlatforms?.includes(platform)}
-                    onClick={() => {
+                    onClick={event => {
+                      if (disabledMessagingPlatforms?.includes(platform)) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return;
+                      }
                       void markReplied();
                     }}
                   >
