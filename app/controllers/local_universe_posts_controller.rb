@@ -73,7 +73,7 @@ class LocalUniversePostsController < ApplicationController
         replied = replied_post_ids.include?(post.id)
         repliers = repliers_by_post_id.fetch(post.id, 0)
         friend_post = LocalUniverseFriendPost.new(
-          associated_friend_access_token: associated_friend.access_token,
+          associated_friend:,
           reply_to_number: author.phone_number,
           repliers:,
           post:,

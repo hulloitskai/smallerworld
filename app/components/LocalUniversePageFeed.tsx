@@ -56,7 +56,7 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                               ...(post.local_universe_post_type ===
                                 "friend" && {
                                 friend_token:
-                                  post.associated_friend_access_token,
+                                  post.associated_friend.access_token,
                               }),
                             },
                           }),
@@ -97,7 +97,7 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                         {...{ post }}
                         author={post.author}
                         replyToNumber={post.reply_to_number}
-                        friendToken={post.associated_friend_access_token}
+                        friend={post.associated_friend}
                       />
                     ) : (
                       <PublicPostCardActions postId={post.id} />

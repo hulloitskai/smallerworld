@@ -6,7 +6,7 @@ class LocalUniverseFriendPost < T::Struct
   const :post, Post
   delegate_missing_to :post
 
-  const :associated_friend_access_token, String
+  const :associated_friend, Friend
   const :reply_to_number, String
   const :repliers, Integer
   const :replied, T::Boolean

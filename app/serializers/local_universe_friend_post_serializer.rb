@@ -15,9 +15,12 @@ class LocalUniverseFriendPostSerializer < LocalUniversePublicPostSerializer
   end
 
   # == Attributes
-  attributes associated_friend_access_token: { type: :string },
-             reply_to_number: { type: :string },
+  attributes reply_to_number: { type: :string },
              replied: { type: :boolean },
              seen: { type: :boolean },
              repliers: { type: :number }
+
+  # == Associations
+  has_one :associated_friend,
+          serializer: LocalUniverseAssociatedFriendSerializer
 end
