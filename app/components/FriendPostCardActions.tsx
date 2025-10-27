@@ -2,7 +2,6 @@ import { Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 
-// import StickerIcon from "~icons/ri/emoji-sticker-fill";
 import {
   confetti,
   particlePositionFor,
@@ -14,13 +13,11 @@ import {
 } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
-// import LazyStickerPad from "./LazyStickerPad";
 import PostCardReplyButton, {
   type PostCardReplyButtonProps,
 } from "./PostCardReplyButton";
 import PostCardShareButton from "./PostCardShareButton";
 
-// import StickerPicker from "./StickerPicker";
 import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
@@ -56,72 +53,19 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
     [reactions],
   );
 
-  // // == Stickers
-  // const stickerPadRef = useRef<HTMLDivElement>(null);
-  // const [showStickerPad, setShowStickerPad] = useState(false);
-  // const [showStickerDrawer, setShowStickerDrawer] = useState(false);
-  // const { data: stickersData, mutate: mutateStickers } = useRouteSWR<{
-  //   stickers: PostSticker[];
-  // }>(routes.postStickers.index, {
-  //   params:
-  //     user.supported_features.includes("stickers") && inViewport
-  //       ? { post_id: post.id }
-  //       : null,
-  //   descriptor: "load stickers",
-  //   keepPreviousData: true,
-  //   refreshInterval: 5000,
-  //   isVisible: () => inViewport,
-  //   onSuccess: ({ stickers }) => {
-  //     if (!isEmpty(stickers)) {
-  //       setShowStickerPad(true);
-  //     }
-  //   },
-  // });
-  // const { stickers = [] } = stickersData ?? {};
-
   return (
-    <>
-      <Box>
-        {/* <Box
-          component={motion.div}
-          key="sticker-pad-container"
-          layout="size"
-          variants={{
-            hidden: { opacity: 0, scale: 0 },
-            visible: { opacity: 1, scale: 1 },
-          }}
-          transition={{ delay: 0.2 }}
-          animate={showStickerPad ? "visible" : "hidden"}
-          pb={8}
-        >
-          {showStickerPad && (
-            <LazyStickerPad
-              ref={stickerPadRef}
-              postId={post.id}
-              {...{ stickers }}
-              optimisticallyUpdateStickers={async update => {
-                await mutateStickers(
-                  prevData => ({
-                    stickers: update(prevData?.stickers ?? []),
-                  }),
-                  { revalidate: false },
-                );
-              }}
-            />
-          )}
-        </Box> */}
-        <Group {...{ ref }} align="start" gap={2} wrap="wrap">
-          <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
-            {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
-              <ReactionButton
-                key={emoji}
-                postId={post.id}
-                {...{ emoji, reactions, asFriend }}
-              />
-            ))}
-          </Group>
-          <Group justify="end" gap={2} style={{ flexGrow: 1 }}>
-            {/* {user.supported_features.includes("stickers") ? (
+    <Group {...{ ref }} align="start" gap={2} wrap="wrap">
+      <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
+        {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
+          <ReactionButton
+            key={emoji}
+            postId={post.id}
+            {...{ emoji, reactions, asFriend }}
+          />
+        ))}
+      </Group>
+      <Group justify="end" gap={2} style={{ flexGrow: 1 }}>
+        {/* {user.supported_features.includes("stickers") ? (
               <Button
                 variant="subtle"
                 size="compact-xs"
@@ -148,46 +92,21 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
                 hasExistingReactions={!isEmpty(reactions)}
               />
             )} */}
-            <NewReactionButton
-              postId={post.id}
-              hasExistingReactions={!isEmpty(reactions)}
-              {...{ asFriend }}
-            />
-            <Text className={postCardClasses.actionSeparator}>/</Text>
-            <PostCardReplyButton
-              {...{ post, author, replyToNumber, asFriend }}
-            />
-            {shareable && (
-              <>
-                <Text className={postCardClasses.actionSeparator}>/</Text>
-                <PostCardShareButton {...{ post, author }} />
-              </>
-            )}
-          </Group>
-        </Group>
-      </Box>
-      {/* <Drawer
-        title="add sticker"
-        opened={showStickerDrawer}
-        classNames={{ body: classes.stickerDrawerBody }}
-        onClose={() => {
-          setShowStickerDrawer(false);
-        }}
-      >
-        <StickerPicker
-          onSelect={() => {
-            setShowStickerPad(true);
-            setShowStickerDrawer(false);
-            setTimeout(() => {
-              stickerPadRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
-            }, 100);
-          }}
+        <NewReactionButton
+          postId={post.id}
+          hasExistingReactions={!isEmpty(reactions)}
+          {...{ asFriend }}
         />
-      </Drawer> */}
-    </>
+        <Text className={postCardClasses.actionSeparator}>/</Text>
+        <PostCardReplyButton {...{ post, author, replyToNumber, asFriend }} />
+        {shareable && (
+          <>
+            <Text className={postCardClasses.actionSeparator}>/</Text>
+            <PostCardShareButton {...{ post, author }} />
+          </>
+        )}
+      </Group>
+    </Group>
   );
 };
 
@@ -222,7 +141,7 @@ const NewReactionButton: FC<NewReactionButtonProps> = ({
         }
       : null,
     onSuccess: ({ reaction }) => {
-      invariant(currentFriend, "Missing current friend");
+      invariant(friend, "Missing friend");
       void mutateRoute<{ reactions: PostReaction[] }>(
         routes.postReactions.index,
         { post_id: postId },
@@ -315,10 +234,10 @@ const ReactionButton: FC<ReactionButtonProps> = ({
   const friend = asFriend ?? currentFriend;
   const currentReaction = useMemo(
     () =>
-      currentFriend?.id
-        ? reactions.find(reaction => reaction.friend_id === currentFriend.id)
+      friend?.id
+        ? reactions.find(reaction => reaction.friend_id === friend.id)
         : null,
-    [reactions, currentFriend?.id],
+    [reactions, friend?.id],
   );
   const [mutating, setMutating] = useState(false);
 
