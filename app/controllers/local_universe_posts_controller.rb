@@ -61,7 +61,7 @@ class LocalUniversePostsController < ApplicationController
       end
       .to_h
     associated_friends_by_user_id = associated_friends
-      .select(:user_id, :access_token)
+      .select(:id, :user_id, :access_token)
       .index_by(&:user_id)
     serialized_posts = paginated_posts.map do |post|
       associated_friend = associated_friends_by_user_id[post.author_id]
