@@ -9,14 +9,11 @@ class VisitsController < ApplicationController
   # POST /visits
   def track
     visit_params = params.expect(visit: %i[time_zone_name clear_notifications])
-    clear_notifications = visit_params.delete(:clear_notifications).truthy?
     if (friend = current_friend)
-      friend.notifications_last_cleared_at = Time.current if clear_notifications
-      friend.save!
+      friend.update!(notifications_last_cleared_at: Time.current)
     elsif (user = current_user)
-      user.attributes = visit_params.slice(:time_zone_name)
-      user.notifications_last_cleared_at = Time.current if clear_notifications
-      user.save!
+      user_params = visit_params.slice(:time_zone_name)
+      user.update!(notifications_last_cleared_at: Time.current, **user_params)
     end
     render(json: {})
   end
