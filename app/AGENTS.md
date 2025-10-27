@@ -78,3 +78,8 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 
 - When editing `app/models`, run `bin/tapioca dsl` after changing associations or scopes so Sorbet gains updated RBI files.
 - The command needs database access; rerun once the DB is available if it fails during sandboxed work.
+
+## Naming Conventions
+
+- Prefer descriptive names for event parameters in callbacks. Use `event` instead of abbreviations like `e`.
+- Example: `onClick={(event) => { event.preventDefault(); /* ... */ }}`
