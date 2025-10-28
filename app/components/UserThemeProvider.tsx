@@ -5,6 +5,7 @@
  * This code was AI-generated and may require human review and testing.
  */
 import { useComputedColorScheme } from "@mantine/core";
+
 import bkdkImage from "~/assets/images/bakudeku.jpg";
 
 import {
@@ -31,7 +32,8 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   // Show BKDK backdrop only when user is "kirsamansi" AND
   // either no theme is selected or the ad-hoc "bakudeku" theme is selected.
   const isBkdkUser =
-    currentUser?.handle === "kirsamansi" && (!theme || theme === ("bakudeku" as any));
+    currentUser?.handle === "kirsamansi" &&
+    (!theme || theme === ("bakudeku" as any));
   const bkdkImageUrl = bkdkImage;
 
   // == Apply theme on document body
@@ -65,7 +67,10 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
     if (isBkdkUser) {
       document.documentElement.setAttribute("data-user-theme", "bkdk");
       // Prefer dark UI to contrast most backgrounds
-      document.documentElement.setAttribute("data-mantine-color-scheme", "dark");
+      document.documentElement.setAttribute(
+        "data-mantine-color-scheme",
+        "dark",
+      );
       return () => {
         document.documentElement.removeAttribute("data-user-theme");
       };
@@ -91,50 +96,50 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
         />
       ) : (
         !!theme && (
-        <Box
-          className={classes.backdrop}
-          role="backdrop"
-          style={{
-            backgroundImage: themeBackgroundMedia(theme),
-            backgroundColor: USER_THEME_BACKGROUND_COLORS[theme],
-          }}
-        >
-          {IMAGE_USER_THEMES.includes(theme) ? (
-            <div className={classes.imageContainer}>
-              <img
-                className={classes.image}
-                src={userThemeBackgroundImageSrc(theme)}
-              />
-              <div
-                className={classes.imageBackdrop}
-                style={{
-                  backgroundImage: themeBackgroundMedia(theme),
+          <Box
+            className={classes.backdrop}
+            role="backdrop"
+            style={{
+              backgroundImage: themeBackgroundMedia(theme),
+              backgroundColor: USER_THEME_BACKGROUND_COLORS[theme],
+            }}
+          >
+            {IMAGE_USER_THEMES.includes(theme) ? (
+              <div className={classes.imageContainer}>
+                <img
+                  className={classes.image}
+                  src={userThemeBackgroundImageSrc(theme)}
+                />
+                <div
+                  className={classes.imageBackdrop}
+                  style={{
+                    backgroundImage: themeBackgroundMedia(theme),
+                  }}
+                />
+              </div>
+            ) : (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                src={userThemeBackgroundVideoSrc(theme)}
+                onSuspend={({ currentTarget }) => {
+                  if (!videoSuspended && currentTarget.paused) {
+                    currentTarget.play().then(undefined, reason => {
+                      if (
+                        reason instanceof Error &&
+                        reason.name === "NotAllowedError"
+                      ) {
+                        setVideoSuspended(true);
+                      }
+                    });
+                  }
                 }}
+                {...(videoSuspended && { style: { display: "none" } })}
               />
-            </div>
-          ) : (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              src={userThemeBackgroundVideoSrc(theme)}
-              onSuspend={({ currentTarget }) => {
-                if (!videoSuspended && currentTarget.paused) {
-                  currentTarget.play().then(undefined, reason => {
-                    if (
-                      reason instanceof Error &&
-                      reason.name === "NotAllowedError"
-                    ) {
-                      setVideoSuspended(true);
-                    }
-                  });
-                }
-              }}
-              {...(videoSuspended && { style: { display: "none" } })}
-            />
-          )}
-        </Box>
+            )}
+          </Box>
         )
       )}
       {children}

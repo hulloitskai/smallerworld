@@ -5,9 +5,10 @@
  * This code was AI-generated and may require human review and testing.
  */
 import { Image, Radio, type RadioGroupProps } from "@mantine/core";
-import bkdkImage from "~/assets/images/bakudeku.jpg";
 
 import NoneIcon from "~icons/heroicons/no-symbol-20-solid";
+
+import bkdkImage from "~/assets/images/bakudeku.jpg";
 
 import { USER_THEMES, userThemeThumbnailSrc } from "~/helpers/userThemes";
 import { type UserTheme } from "~/types";
@@ -16,7 +17,7 @@ import classes from "./UserThemeRadioGroup.module.css";
 
 export interface UserThemeRadioGroupProps
   extends Omit<RadioGroupProps, "children"> {
-  extraOptions?: { value: string; imageSrc?: string }[];
+  extraOptions?: { value: UserTheme | "bakudeku"; imageSrc?: string }[];
 }
 
 const UserThemeRadioGroup: FC<UserThemeRadioGroupProps> = props => (
@@ -40,7 +41,7 @@ const UserThemeRadioGroup: FC<UserThemeRadioGroupProps> = props => (
 export default UserThemeRadioGroup;
 
 interface RadioCardProps {
-  theme: UserTheme | string | null;
+  theme: UserTheme | "bakudeku" | null;
   imageSrc?: string;
 }
 
