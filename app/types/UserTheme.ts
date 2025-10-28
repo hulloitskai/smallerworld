@@ -13,6 +13,7 @@ type UserTheme =
   | "toile"
   | "rush"
   | "phantom"
-  | "meadows";
+  | "meadows"
+  | "bakudeku";
 
 export default UserTheme;

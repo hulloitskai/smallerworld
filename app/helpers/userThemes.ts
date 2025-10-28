@@ -1,5 +1,7 @@
 import { createContext, useContext } from "react";
 
+import bakudekuSrc from "~/assets/images/bakudeku.jpg";
+
 import { type UserTheme } from "~/types";
 
 export const USER_THEMES: UserTheme[] = [
@@ -31,18 +33,27 @@ export const DARK_USER_THEMES: UserTheme[] = [
   "aquatica",
   "rush",
   "phantom",
+  "bakudeku",
 ];
 
-export const IMAGE_USER_THEMES: UserTheme[] = ["forest", "aquatica"];
+export const IMAGE_USER_THEMES: UserTheme[] = [
+  "forest",
+  "aquatica",
+  "bakudeku",
+];
 
 export const userThemeBackgroundVideoSrc = (theme: UserTheme): string =>
   `https://assets.getpartiful.com/backgrounds/${theme}/web.mp4`;
 
 export const userThemeBackgroundImageSrc = (theme: UserTheme): string =>
-  `https://assets.getpartiful.com/backgrounds/${theme}/web.jpg`;
+  theme === "bakudeku"
+    ? bakudekuSrc
+    : `https://assets.getpartiful.com/backgrounds/${theme}/web.jpg`;
 
 export const userThemeThumbnailSrc = (theme: UserTheme): string =>
-  `https://assets.getpartiful.com/backgrounds/${theme}/thumbnail.png`;
+  theme === "bakudeku"
+    ? bakudekuSrc
+    : `https://assets.getpartiful.com/backgrounds/${theme}/thumbnail.png`;
 
 export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   cloudflow: "rgb(167, 200, 255)",
@@ -60,6 +71,7 @@ export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   rush: "rgb(147, 26, 1)",
   phantom: "rgb(15, 13, 14)",
   meadows: "rgb(197, 219, 118)",
+  bakudeku: "rgb(15, 13, 14)",
 };
 
 export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {
@@ -91,6 +103,8 @@ export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {
     "linear-gradient(90deg, rgb(15, 13, 14) 0%, rgb(22, 22, 25) 70%, rgb(39, 41, 44) 100%)",
   meadows:
     "linear-gradient(90deg, rgb(246, 225, 130) 0%, rgb(180, 192, 87) 50%, rgb(153, 178, 75) 80%)",
+  bakudeku:
+    "linear-gradient(90deg, rgb(15, 13, 14) 0%, rgb(22, 22, 25) 70%, rgb(39, 41, 44) 100%)",
 };
 
 export interface UserThemeContext {

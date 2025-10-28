@@ -23,16 +23,6 @@ export interface PostEditorProps
   contentProps?: RichTextEditorContentProps;
 }
 
-//
-// wouldnt let their personal agenda affect meraki
-// she saw adam in the picture from the kickoff
-// "why do u have 5 hosts"
-// i don't think these 2 guys are fit to be hosts
-// you didn't consult me when we changed logo or contact sponsors
-// do u even have a notion page girl?
-// she changed the instagram email to her own email
-// "krupa no change it back right now"
-
 const PostEditor: FC<PostEditorProps> = ({
   initialValue,
   placeholder,

@@ -6,8 +6,6 @@
  */
 import { useComputedColorScheme } from "@mantine/core";
 
-import bkdkImage from "~/assets/images/bakudeku.jpg";
-
 import {
   DARK_USER_THEMES,
   IMAGE_USER_THEMES,
@@ -26,20 +24,11 @@ export interface UserThemeProviderProps extends PropsWithChildren {}
 const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<UserTheme | null>(null);
   const [videoSuspended, setVideoSuspended] = useState(false);
-  const currentUser = useCurrentUser();
-
-  // == Special-case background for specific user(s)
-  // Show BKDK backdrop only when user is "kirsamansi" AND
-  // either no theme is selected or the ad-hoc "bakudeku" theme is selected.
-  const isBkdkUser =
-    currentUser?.handle === "kirsamansi" &&
-    (!theme || theme === ("bakudeku" as any));
-  const bkdkImageUrl = bkdkImage;
 
   // == Apply theme on document body
   const colorScheme = useComputedColorScheme("light");
   useEffect(() => {
-    if (theme && !isBkdkUser) {
+    if (theme) {
       document.documentElement.setAttribute("data-user-theme", theme);
       document.body.style.setProperty(
         "--mantine-color-body",
@@ -60,23 +49,7 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
         colorScheme,
       );
     }
-  }, [theme, colorScheme, isBkdkUser]);
-
-  // == Ensure layout background is transparent so backdrop shows for BKDK user
-  useEffect(() => {
-    if (isBkdkUser) {
-      document.documentElement.setAttribute("data-user-theme", "bkdk");
-      // Prefer dark UI to contrast most backgrounds
-      document.documentElement.setAttribute(
-        "data-mantine-color-scheme",
-        "dark",
-      );
-      return () => {
-        document.documentElement.removeAttribute("data-user-theme");
-      };
-    }
-    return undefined;
-  }, [isBkdkUser]);
+  }, [theme, colorScheme]);
 
   return (
     <UserThemeContext.Provider
@@ -85,62 +58,51 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
         setTheme,
       }}
     >
-      {isBkdkUser ? (
+      {!!theme && (
         <Box
           className={classes.backdrop}
           role="backdrop"
           style={{
-            backgroundImage: `url(${bkdkImageUrl})`,
-            backgroundColor: "#0b0b0b",
+            backgroundImage: themeBackgroundMedia(theme),
+            backgroundColor: USER_THEME_BACKGROUND_COLORS[theme],
           }}
-        />
-      ) : (
-        !!theme && (
-          <Box
-            className={classes.backdrop}
-            role="backdrop"
-            style={{
-              backgroundImage: themeBackgroundMedia(theme),
-              backgroundColor: USER_THEME_BACKGROUND_COLORS[theme],
-            }}
-          >
-            {IMAGE_USER_THEMES.includes(theme) ? (
-              <div className={classes.imageContainer}>
-                <img
-                  className={classes.image}
-                  src={userThemeBackgroundImageSrc(theme)}
-                />
-                <div
-                  className={classes.imageBackdrop}
-                  style={{
-                    backgroundImage: themeBackgroundMedia(theme),
-                  }}
-                />
-              </div>
-            ) : (
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                src={userThemeBackgroundVideoSrc(theme)}
-                onSuspend={({ currentTarget }) => {
-                  if (!videoSuspended && currentTarget.paused) {
-                    currentTarget.play().then(undefined, reason => {
-                      if (
-                        reason instanceof Error &&
-                        reason.name === "NotAllowedError"
-                      ) {
-                        setVideoSuspended(true);
-                      }
-                    });
-                  }
-                }}
-                {...(videoSuspended && { style: { display: "none" } })}
+        >
+          {IMAGE_USER_THEMES.includes(theme) ? (
+            <div className={classes.imageContainer}>
+              <img
+                className={classes.image}
+                src={userThemeBackgroundImageSrc(theme)}
               />
-            )}
-          </Box>
-        )
+              <div
+                className={classes.imageBackdrop}
+                style={{
+                  backgroundImage: themeBackgroundMedia(theme),
+                }}
+              />
+            </div>
+          ) : (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              src={userThemeBackgroundVideoSrc(theme)}
+              onSuspend={({ currentTarget }) => {
+                if (!videoSuspended && currentTarget.paused) {
+                  currentTarget.play().then(undefined, reason => {
+                    if (
+                      reason instanceof Error &&
+                      reason.name === "NotAllowedError"
+                    ) {
+                      setVideoSuspended(true);
+                    }
+                  });
+                }
+              }}
+              {...(videoSuspended && { style: { display: "none" } })}
+            />
+          )}
+        </Box>
       )}
       {children}
     </UserThemeContext.Provider>

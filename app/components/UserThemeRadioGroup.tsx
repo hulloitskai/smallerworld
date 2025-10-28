@@ -8,35 +8,32 @@ import { Image, Radio, type RadioGroupProps } from "@mantine/core";
 
 import NoneIcon from "~icons/heroicons/no-symbol-20-solid";
 
-import bkdkImage from "~/assets/images/bakudeku.jpg";
-
 import { USER_THEMES, userThemeThumbnailSrc } from "~/helpers/userThemes";
 import { type UserTheme } from "~/types";
 
 import classes from "./UserThemeRadioGroup.module.css";
 
 export interface UserThemeRadioGroupProps
-  extends Omit<RadioGroupProps, "children"> {
-  extraOptions?: { value: UserTheme | "bakudeku"; imageSrc?: string }[];
-}
+  extends Omit<RadioGroupProps, "children"> {}
 
-const UserThemeRadioGroup: FC<UserThemeRadioGroupProps> = props => (
-  <Radio.Group label="your page theme" labelProps={{ mb: 8 }} {...props}>
-    <Group justify="center" gap={6} wrap="wrap">
-      <RadioCard theme={null} />
-      {USER_THEMES.map(theme => (
-        <RadioCard key={theme} {...{ theme }} />
-      ))}
-      {props.extraOptions?.map(option => (
-        <RadioCard
-          key={option.value}
-          theme={option.value}
-          imageSrc={option.imageSrc ?? bkdkImage}
-        />
-      ))}
-    </Group>
-  </Radio.Group>
-);
+const UserThemeRadioGroup: FC<UserThemeRadioGroupProps> = props => {
+  const currentUser = useCurrentUser();
+  const themes: UserTheme[] = currentUser
+    ? ["kirsamansi", "itskai"].includes(currentUser.handle)
+      ? [...USER_THEMES, "bakudeku"]
+      : USER_THEMES
+    : USER_THEMES;
+  return (
+    <Radio.Group label="your page theme" labelProps={{ mb: 8 }} {...props}>
+      <Group justify="center" gap={6} wrap="wrap">
+        <RadioCard theme={null} />
+        {themes.map(theme => (
+          <RadioCard key={theme} {...{ theme }} />
+        ))}
+      </Group>
+    </Radio.Group>
+  );
+};
 
 export default UserThemeRadioGroup;
 
@@ -49,7 +46,11 @@ const RadioCard: FC<RadioCardProps> = ({ theme, imageSrc }) => {
   return (
     <Radio.Card className={classes.radioCard} value={theme ?? ""}>
       {theme ? (
-        <Image src={imageSrc ?? userThemeThumbnailSrc(theme as UserTheme)} />
+        <Image
+          src={imageSrc ?? userThemeThumbnailSrc(theme)}
+          radius={1000}
+          h="100%"
+        />
       ) : (
         <Center className={classes.noTheme}>
           <Box component={NoneIcon} fz={24} c="dimmed" />
