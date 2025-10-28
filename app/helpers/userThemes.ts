@@ -36,19 +36,15 @@ export const DARK_USER_THEMES: UserTheme[] = [
   "bakudeku",
 ];
 
-export const IMAGE_USER_THEMES: UserTheme[] = [
-  "forest",
-  "aquatica",
-  "bakudeku",
-];
+export const IMAGE_USER_THEMES: UserTheme[] = ["forest", "aquatica"];
 
 export const userThemeBackgroundVideoSrc = (theme: UserTheme): string =>
-  `https://assets.getpartiful.com/backgrounds/${theme}/web.mp4`;
+  theme === "bakudeku"
+    ? `https://tttkkdzhzvelxmbcqvlg.supabase.co/storage/v1/object/public/media/${theme}.mp4`
+    : `https://assets.getpartiful.com/backgrounds/${theme}/web.mp4`;
 
 export const userThemeBackgroundImageSrc = (theme: UserTheme): string =>
-  theme === "bakudeku"
-    ? bakudekuSrc
-    : `https://assets.getpartiful.com/backgrounds/${theme}/web.jpg`;
+  `https://assets.getpartiful.com/backgrounds/${theme}/web.jpg`;
 
 export const userThemeThumbnailSrc = (theme: UserTheme): string =>
   theme === "bakudeku"
