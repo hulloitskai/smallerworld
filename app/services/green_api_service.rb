@@ -28,7 +28,7 @@ class GreenApiService < ApplicationService
   attr_reader :conn
 
   # == Methods
-  sig { params(phone_number: String).returns(T::Boolean) }
+  sig { params(phone_number: String).returns(T.nilable(T::Boolean)) }
   def self.reachable_on_whatsapp?(phone_number)
     credentials = credentials!
     id_instance = credentials.id_instance!
@@ -37,7 +37,7 @@ class GreenApiService < ApplicationService
       "/waInstance#{id_instance}/checkWhatsapp/#{api_token_instance}",
       { "phoneNumber" => phone_number },
     )
-    response.body.fetch("existsWhatsapp")
+    response.body["existsWhatsapp"]
   end
 
   # == Helper

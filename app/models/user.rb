@@ -210,7 +210,7 @@ class User < ApplicationRecord
   def disabled_messaging_platforms
     disabled_platforms = T.let([], T::Array[Symbol])
     if GreenApiService.enabled? &&
-        !GreenApiService.reachable_on_whatsapp?(phone_number)
+        !GreenApiService.reachable_on_whatsapp?(phone_number) == false
       disabled_platforms << :whatsapp
     end
     disabled_platforms
