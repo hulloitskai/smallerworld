@@ -23,14 +23,14 @@ const USER_THEMES: UserTheme[] = [
   "bakudeku",
 ];
 
-const SMUTTY_THEMES: UserTheme[] = ["bakudeku"];
+const SMUTTY_USER_THEMES: UserTheme[] = ["bakudeku"];
 
 export const availableUserThemes = (user: User | null): UserTheme[] => {
-  const themes = new Set(USER_THEMES);
+  const userThemes = new Set(USER_THEMES);
   if (!user?.supported_features.includes("smutty_themes")) {
-    SMUTTY_THEMES.forEach(theme => themes.delete(theme));
+    SMUTTY_USER_THEMES.forEach(theme => userThemes.delete(theme));
   }
-  return Array.from(themes);
+  return Array.from(userThemes);
 };
 
 export const useUserThemes = (user: User | null): UserTheme[] =>
@@ -118,29 +118,31 @@ export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {
 };
 
 export interface UserThemeContext {
-  theme: UserTheme | null;
-  setTheme: (theme: UserTheme | null) => void;
+  userTheme: UserTheme | null;
+  setUserTheme: (userTheme: UserTheme | null) => void;
 }
 
 export const UserThemeContext = createContext<UserThemeContext | undefined>(
   undefined,
 );
 
-export const useUserTheme = (theme?: UserTheme | null): UserTheme | null => {
+export const useUserTheme = (
+  userTheme?: UserTheme | null,
+): UserTheme | null => {
   const context = useContext(UserThemeContext);
   if (!context) {
     throw new Error("useUserTheme must be used within a UserThemeProvider");
   }
-  const { theme: activeTheme, setTheme } = context;
+  const { userTheme: currentUserTheme, setUserTheme } = context;
   useEffect(() => {
-    if (theme !== undefined) {
-      setTheme(theme);
+    if (userTheme !== undefined) {
+      setUserTheme(userTheme);
     }
-  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [userTheme]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     return () => {
-      setTheme(null);
+      setUserTheme(null);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  return activeTheme;
+  return currentUserTheme;
 };

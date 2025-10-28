@@ -52,7 +52,9 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   }, [theme, colorScheme]);
 
   return (
-    <UserThemeContext.Provider value={{ theme, setTheme }}>
+    <UserThemeContext.Provider
+      value={{ userTheme: theme, setUserTheme: setTheme }}
+    >
       {!!theme && (
         <Box
           className={classes.backdrop}

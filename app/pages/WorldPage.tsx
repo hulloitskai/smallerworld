@@ -55,7 +55,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   pendingJoinRequests,
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
-  const userTheme = useUserTheme();
+  const userTheme = useUserTheme(currentUser.theme);
   const {
     pushRegistration,
     supported: webPushSupported,
