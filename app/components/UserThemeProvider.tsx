@@ -5,6 +5,7 @@
  * This code was AI-generated and may require human review and testing.
  */
 import { useComputedColorScheme } from "@mantine/core";
+import bkdkImage from "~/assets/images/bakudeku.jpg";
 
 import {
   DARK_USER_THEMES,
@@ -27,19 +28,8 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   const currentUser = useCurrentUser();
 
   // == Special-case background for specific user(s)
-  const isBkdkUser = currentUser?.handle === "kirsamansi";
-  // Prefer local asset if available; Vite will handle bundling
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore - asset import provided by bundler
-  const bkdkLocal: string | undefined = (() => {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      return require("~/assets/images/bakudeku.jpg");
-    } catch {
-      return undefined;
-    }
-  })();
-  const bkdkImageUrl = bkdkLocal ?? "https://i.imgur.com/2yJkV3r.jpeg";
+  const isBkdkUser = currentUser?.handle === "kirsamansi" || theme === ("bakudeku" as any);
+  const bkdkImageUrl = bkdkImage;
 
   // == Apply theme on document body
   const colorScheme = useComputedColorScheme("light");
