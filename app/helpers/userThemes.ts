@@ -23,12 +23,12 @@ const USER_THEMES: UserTheme[] = [
   "bakudeku",
 ];
 
-const HANDLES_ALLOWING_SMUT = ["kirsamansi", "itskai"];
+const SMUTTY_THEMES: UserTheme[] = ["bakudeku"];
 
 export const availableUserThemes = (user: User | null): UserTheme[] => {
   const themes = new Set(USER_THEMES);
-  if (!user || !HANDLES_ALLOWING_SMUT.includes(user.handle)) {
-    themes.delete("bakudeku");
+  if (!user?.supported_features.includes("smutty_themes")) {
+    SMUTTY_THEMES.forEach(theme => themes.delete(theme));
   }
   return Array.from(themes);
 };

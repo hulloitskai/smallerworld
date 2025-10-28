@@ -142,6 +142,11 @@ class User < ApplicationRecord
     notifications_last_cleared_at || created_at
   end
 
+  sig { returns(T::Boolean) }
+  def smutty_themes_allowed?
+    self.class.handles_allowing_smutty_themes.include?(handle)
+  end
+
   sig { returns(T::Array[Symbol]) }
   def supported_features
     features = []
@@ -151,6 +156,9 @@ class User < ApplicationRecord
     end
     if posts.count >= MIN_POST_COUNT_FOR_SEARCH
       features << :search
+    end
+    if smutty_themes_allowed?
+      features << :smutty_themes
     end
     # if admin?
     #   features << :stickers
@@ -221,6 +229,16 @@ class User < ApplicationRecord
   def self.find_by_phone_number(phone_number)
     phone_number = normalize_value_for(:phone_number, phone_number)
     find_by(phone_number:)
+  end
+
+  sig { returns(T::Set[String]) }
+  def self.handles_allowing_smutty_themes
+    @handles_allowing_smutty_themes ||= scoped do
+      handles = Rails.application.credentials
+        .smutty_themes
+        &.allowed_user_handles || []
+      handles.to_set
+    end
   end
 
   private
