@@ -1,8 +1,9 @@
 import { InputWrapper, Text } from "@mantine/core";
 import { hasLength } from "@mantine/form";
 
-import AppLayout from "~/components/AppLayout";
 import bkdkImage from "~/assets/images/bakudeku.jpg";
+
+import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomescreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
@@ -127,16 +128,15 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
                 />
                 <UserThemeRadioGroup
                   {...getInputProps("theme")}
-                  {...(currentUser.handle === "kirsamansi"
-                    ? {
-                        extraOptions: [
-                          {
-                            value: "bakudeku",
-                            imageSrc: bkdkImage,
-                          },
-                        ],
-                      }
-                    : undefined)}
+                  {...((currentUser.handle === "kirsamansi" && {
+                    extraOptions: [
+                      {
+                        value: "bakudeku",
+                        imageSrc: bkdkImage,
+                      },
+                    ],
+                  }) ||
+                    {})}
                 />
                 <InputWrapper
                   className={classes.advancedSettingsWrapper}
