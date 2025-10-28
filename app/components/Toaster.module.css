@@ -7,7 +7,7 @@
 
     @mixin smaller-than 600px {
       bottom: calc(
-        var(--safe-area-inset-bottom, 0px)+var(--mobile-offset-bottom)
+        var(--safe-area-inset-bottom, 0px) + var(--mobile-offset-bottom)
       );
     }
   }
