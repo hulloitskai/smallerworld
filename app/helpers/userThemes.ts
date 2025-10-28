@@ -76,7 +76,7 @@ export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   darkSky: "rgb(23, 38, 72)",
   pool: "rgb(201, 231, 238)",
   forest: "rgb(24, 53, 30)",
-  toile: "rgb(255, 255, 255)",
+  toile: "#DEE2EC",
   aquatica: "rgb(11, 32, 100)",
   rush: "rgb(147, 26, 1)",
   phantom: "rgb(15, 13, 14)",
