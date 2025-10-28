@@ -55,6 +55,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   pendingJoinRequests,
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
+  const theme = useUserTheme();
   const {
     pushRegistration,
     supported: webPushSupported,
@@ -181,6 +182,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                         onClick={() => {
                           setSearchActive(true);
                         }}
+                        {...(theme === "bakudeku" && {
+                          variant: "filled",
+                        })}
                       >
                         <SearchIcon />
                       </ActionIcon>
@@ -189,7 +193,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   <Button
                     component={Link}
                     href={routes.worldFriends.index.path()}
-                    className={classes.friendButton}
+                    {...(theme === "bakudeku" && {
+                      variant: "filled",
+                    })}
                     leftSection={
                       !isEmpty(latestFriendEmojis) ? (
                         <Avatar.Group className={classes.avatarGroup}>
@@ -212,6 +218,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                         <FriendsIcon />
                       )
                     }
+                    className={classes.friendButton}
                     onClick={event => {
                       if (isEmpty(latestFriendEmojis)) {
                         event.preventDefault();
@@ -226,7 +233,11 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                 </>
               )}
               {isStandalone && !outOfPWAScope && (
-                <WorldPageNotificationsButton />
+                <WorldPageNotificationsButton
+                  {...(theme === "bakudeku" && {
+                    variant: "filled",
+                  })}
+                />
               )}
             </Group>
           </Stack>

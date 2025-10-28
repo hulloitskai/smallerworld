@@ -2,9 +2,9 @@ import { createContext, useContext } from "react";
 
 import bakudekuSrc from "~/assets/images/bakudeku.jpg";
 
-import { type UserTheme } from "~/types";
+import { type User, type UserTheme } from "~/types";
 
-export const USER_THEMES: UserTheme[] = [
+const USER_THEMES: UserTheme[] = [
   "cloudflow",
   "watercolor",
   "karaoke",
@@ -20,7 +20,18 @@ export const USER_THEMES: UserTheme[] = [
   "rush",
   "phantom",
   "meadows",
+  "bakudeku",
 ];
+
+const HANDLES_ALLOWING_SMUT = ["kirsamansi", "itskai"];
+
+export const availableUserThemes = (user: User | null): UserTheme[] => {
+  const themes = new Set(USER_THEMES);
+  if (!user || !HANDLES_ALLOWING_SMUT.includes(user.handle)) {
+    themes.delete("bakudeku");
+  }
+  return Array.from(themes);
+};
 
 export const isUserTheme = (theme: string): theme is UserTheme =>
   (USER_THEMES as string[]).includes(theme);
@@ -67,7 +78,7 @@ export const USER_THEME_BACKGROUND_COLORS: Record<UserTheme, string> = {
   rush: "rgb(147, 26, 1)",
   phantom: "rgb(15, 13, 14)",
   meadows: "rgb(197, 219, 118)",
-  bakudeku: "rgb(15, 13, 14)",
+  bakudeku: "#90340B",
 };
 
 export const USER_THEME_BACKGROUND_GRADIENTS: Record<UserTheme, string> = {

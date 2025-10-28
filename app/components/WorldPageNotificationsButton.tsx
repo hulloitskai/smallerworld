@@ -1,10 +1,20 @@
-import { Loader, Text } from "@mantine/core";
+import {
+  type ActionIconProps,
+  type ButtonProps,
+  Loader,
+  Text,
+} from "@mantine/core";
 
 import { useSendTestNotification, useWebPush } from "~/helpers/webPush";
 
 import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
-const WorldPageNotificationsButton: FC = () => {
+export interface WorldPageNotificationsButtonProps
+  extends Omit<ButtonProps & ActionIconProps, "children"> {}
+
+const WorldPageNotificationsButton: FC<
+  WorldPageNotificationsButtonProps
+> = props => {
   // == Menu
   const [menuOpened, setMenuOpened] = useState(false);
 
@@ -25,7 +35,7 @@ const WorldPageNotificationsButton: FC = () => {
       {webPushSupported === false ||
       webPushPermission === "denied" ? null : pushSubscription === undefined ||
         pushRegistration === undefined ? (
-        <ActionIcon size="lg" variant="light" loading>
+        <ActionIcon size="lg" variant="light" loading {...props}>
           <NotificationIcon />
         </ActionIcon>
       ) : pushSubscription === null || pushRegistration === null ? (
@@ -38,6 +48,7 @@ const WorldPageNotificationsButton: FC = () => {
             onClick={() => {
               void subscribe();
             }}
+            {...props}
           >
             enable push notifications
           </Button>
@@ -55,7 +66,7 @@ const WorldPageNotificationsButton: FC = () => {
       ) : (
         <Menu opened={menuOpened} onChange={setMenuOpened}>
           <Menu.Target>
-            <ActionIcon size="lg" variant="light">
+            <ActionIcon size="lg" variant="light" {...props}>
               <NotificationIcon />
             </ActionIcon>
           </Menu.Target>

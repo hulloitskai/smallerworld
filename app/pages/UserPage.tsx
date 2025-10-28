@@ -65,7 +65,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   });
 
   // == User theme
-  useUserTheme(user.theme);
+  const theme = useUserTheme(user.theme);
 
   // == Installation instructions modal
   const queryParams = useQueryParams();
@@ -97,6 +97,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
               leftSection={<BackIcon />}
               style={{ flexShrink: 0 }}
               mt={4}
+              {...(theme === "bakudeku" && {
+                variant: "filled",
+              })}
             >
               back to your world
             </Button>

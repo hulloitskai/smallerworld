@@ -1,12 +1,15 @@
-import { MantineProvider } from "@mantine/core";
+import { DEFAULT_THEME, MantineProvider } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 
 import { useCreateTheme } from "~/helpers/mantine";
 import { DARK_USER_THEMES, isUserTheme } from "~/helpers/userThemes";
+import { type UserTheme } from "~/types";
 
 const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
   const theme = useCreateTheme();
-  const [forceColorScheme, setForceColorScheme] = useState<"light" | "dark">();
+  const [detectedUserTheme, setDetectedUserTheme] = useState<UserTheme | null>(
+    null,
+  );
   useEffect(() => {
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
@@ -15,12 +18,9 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
         }
         const theme = document.documentElement.getAttribute("data-user-theme");
         if (theme && isUserTheme(theme)) {
-          const colorScheme = DARK_USER_THEMES.includes(theme)
-            ? "dark"
-            : "light";
-          setForceColorScheme(colorScheme);
+          setDetectedUserTheme(theme);
         } else {
-          setForceColorScheme(undefined);
+          setDetectedUserTheme(null);
         }
       });
     });
@@ -30,14 +30,26 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
     });
     return () => {
       observer.disconnect();
-      setForceColorScheme(undefined);
     };
   }, []);
 
   return (
     <MantineProvider
-      {...{ theme, forceColorScheme }}
-      defaultColorScheme="auto"
+      theme={{
+        ...theme,
+        colors: {
+          ...theme.colors,
+          primary:
+            detectedUserTheme === "bakudeku"
+              ? DEFAULT_THEME.colors.orange
+              : theme.colors?.primary,
+        },
+      }}
+      {...(detectedUserTheme && {
+        defaultColorScheme: DARK_USER_THEMES.includes(detectedUserTheme)
+          ? "dark"
+          : "light",
+      })}
       {...(import.meta.env.RAILS_ENV === "test" && {
         env: "test",
       })}

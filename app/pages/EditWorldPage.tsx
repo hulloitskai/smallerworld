@@ -66,7 +66,7 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
   });
 
   // == User theme preview
-  useUserTheme(values.theme || null);
+  const theme = useUserTheme(values.theme || null);
 
   // == Page icon preview
   const [pageIconPreview, setPageIconPreview] = useState<Image | null>(
@@ -80,6 +80,9 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
         href={withTrailingSlash(routes.world.show.path())}
         leftSection={<BackIcon />}
         style={{ alignSelf: "center" }}
+        {...(theme === "bakudeku" && {
+          variant: "filled",
+        })}
       >
         back to your world
       </Button>

@@ -12,7 +12,7 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
   currentUser,
 }) => {
   // == User theme
-  useUserTheme(currentUser.theme);
+  const theme = useUserTheme(currentUser.theme);
 
   // == Load invitations
   const { data } = useRouteSWR<{ pendingInvitations: WorldInvitation[] }>(
@@ -40,7 +40,10 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
           leftSection={<BackIcon />}
           radius="xl"
           href={routes.worldFriends.index.path()}
-          mt={2}
+          mt={4}
+          {...(theme === "bakudeku" && {
+            variant: "filled",
+          })}
         >
           back to your friends
         </Button>
