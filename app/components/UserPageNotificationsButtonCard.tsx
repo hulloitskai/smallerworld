@@ -19,6 +19,8 @@ export interface UserPageNotificationsButtonCardProps
 const UserPageNotificationsButtonCard: FC<
   UserPageNotificationsButtonCardProps
 > = ({ currentFriend }) => {
+  const userTheme = useUserTheme();
+
   // == Dropdown
   const [dropdownOpened, setDropdownOpened] = useState(false);
 
@@ -102,6 +104,9 @@ const UserPageNotificationsButtonCard: FC<
               onClick={() => {
                 setDropdownOpened(true);
               }}
+              {...(userTheme === "bakudeku" && {
+                variant: "filled",
+              })}
             >
               notification settings
             </Button>

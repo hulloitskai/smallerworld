@@ -33,6 +33,9 @@ export const availableUserThemes = (user: User | null): UserTheme[] => {
   return Array.from(themes);
 };
 
+export const useUserThemes = (user: User | null): UserTheme[] =>
+  useMemo(() => availableUserThemes(user), [user]);
+
 export const isUserTheme = (theme: string): theme is UserTheme =>
   (USER_THEMES as string[]).includes(theme);
 

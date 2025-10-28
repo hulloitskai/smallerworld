@@ -12,7 +12,7 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
   currentUser,
 }) => {
   // == User theme
-  const theme = useUserTheme(currentUser.theme);
+  const userTheme = useUserTheme(currentUser.theme);
 
   // == Load invitations
   const { data } = useRouteSWR<{ pendingInvitations: WorldInvitation[] }>(
@@ -41,7 +41,7 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
           radius="xl"
           href={routes.worldFriends.index.path()}
           mt={4}
-          {...(theme === "bakudeku" && {
+          {...(userTheme === "bakudeku" && {
             variant: "filled",
           })}
         >

@@ -55,7 +55,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
   pendingJoinRequests,
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
-  const theme = useUserTheme();
+  const userTheme = useUserTheme();
   const {
     pushRegistration,
     supported: webPushSupported,
@@ -81,9 +81,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       async: true,
     });
   });
-
-  // == User theme
-  useUserTheme(currentUser.theme);
 
   // == Browser detection
   const browserDetection = useBrowserDetection();
@@ -182,7 +179,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                         onClick={() => {
                           setSearchActive(true);
                         }}
-                        {...(theme === "bakudeku" && {
+                        {...(userTheme === "bakudeku" && {
                           variant: "filled",
                         })}
                       >
@@ -193,7 +190,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
                   <Button
                     component={Link}
                     href={routes.worldFriends.index.path()}
-                    {...(theme === "bakudeku" && {
+                    {...(userTheme === "bakudeku" && {
                       variant: "filled",
                     })}
                     leftSection={
@@ -234,7 +231,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
               )}
               {isStandalone && !outOfPWAScope && (
                 <WorldPageNotificationsButton
-                  {...(theme === "bakudeku" && {
+                  {...(userTheme === "bakudeku" && {
                     variant: "filled",
                   })}
                 />

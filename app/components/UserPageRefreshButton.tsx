@@ -1,7 +1,10 @@
+import { type ActionIconProps } from "@mantine/core";
+
 import { useUserPagePosts } from "~/helpers/userPages";
 import { type UserPageProps } from "~/pages/UserPage";
 
-export interface UserPageRefreshButtonProps extends BoxProps {
+export interface UserPageRefreshButtonProps
+  extends Omit<ActionIconProps, "children"> {
   userId: string;
 }
 

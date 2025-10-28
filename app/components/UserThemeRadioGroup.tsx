@@ -8,10 +8,7 @@ import { Image, Radio, type RadioGroupProps } from "@mantine/core";
 
 import NoneIcon from "~icons/heroicons/no-symbol-20-solid";
 
-import {
-  availableUserThemes,
-  userThemeThumbnailSrc,
-} from "~/helpers/userThemes";
+import { userThemeThumbnailSrc, useUserThemes } from "~/helpers/userThemes";
 import { type UserTheme } from "~/types";
 
 import classes from "./UserThemeRadioGroup.module.css";
@@ -23,13 +20,13 @@ const UserThemeRadioGroup: FC<UserThemeRadioGroupProps> = ({
   ...otherProps
 }) => {
   const currentUser = useCurrentUser();
-  const themes = useMemo(() => availableUserThemes(currentUser), [currentUser]);
+  const userThemes = useUserThemes(currentUser);
   return (
     <Radio.Group label="your page theme" labelProps={{ mb: 8 }} {...otherProps}>
       <Group justify="center" gap={6} wrap="wrap">
         <RadioCard theme={null} />
-        {themes.map(theme => (
-          <RadioCard key={theme} {...{ theme }} />
+        {userThemes.map(userTheme => (
+          <RadioCard key={userTheme} {...{ theme: userTheme }} />
         ))}
       </Group>
     </Radio.Group>

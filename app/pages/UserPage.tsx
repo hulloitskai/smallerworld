@@ -65,7 +65,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
   });
 
   // == User theme
-  const theme = useUserTheme(user.theme);
+  const userTheme = useUserTheme(user.theme);
 
   // == Installation instructions modal
   const queryParams = useQueryParams();
@@ -97,7 +97,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
               leftSection={<BackIcon />}
               style={{ flexShrink: 0 }}
               mt={4}
-              {...(theme === "bakudeku" && {
+              {...(userTheme === "bakudeku" && {
                 variant: "filled",
               })}
             >
@@ -144,13 +144,29 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
               webPushPermission !== "denied" ? (
               <Group gap="xs" justify="center">
                 <UserPageNotificationsButtonCard {...{ currentFriend }} />
-                {pushRegistration && <UserPageRefreshButton userId={user.id} />}
+                {pushRegistration && (
+                  <UserPageRefreshButton
+                    userId={user.id}
+                    {...(userTheme === "bakudeku" && {
+                      variant: "filled",
+                    })}
+                  />
+                )}
               </Group>
             ) : (
               <Group gap="xs" justify="center">
-                <UserPageInvitationsButton />
+                <UserPageInvitationsButton
+                  {...(userTheme === "bakudeku" && {
+                    variant: "filled",
+                  })}
+                />
                 {isStandalone && !outOfPWAScope && (
-                  <UserPageRefreshButton userId={user.id} />
+                  <UserPageRefreshButton
+                    userId={user.id}
+                    {...(userTheme === "bakudeku" && {
+                      variant: "filled",
+                    })}
+                  />
                 )}
               </Group>
             )}

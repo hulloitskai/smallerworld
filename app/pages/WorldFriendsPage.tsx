@@ -31,7 +31,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   pendingInvitationsCount,
 }) => {
   // == User theme
-  const theme = useUserTheme(currentUser.theme);
+  const userTheme = useUserTheme(currentUser.theme);
 
   // == MiniSearch
   const [miniSearch] = useState(
@@ -108,7 +108,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
           radius="xl"
           href={withTrailingSlash(routes.world.show.path())}
           mt={4}
-          {...(theme === "bakudeku" && {
+          {...(userTheme === "bakudeku" && {
             variant: "filled",
           })}
         >
@@ -135,7 +135,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
                 leftSection={<EnvelopeIcon />}
                 mb="xs"
                 style={[{ alignSelf: "center" }, transitionStyle]}
-                {...(theme === "bakudeku" && {
+                {...(userTheme === "bakudeku" && {
                   variant: "white",
                 })}
               >

@@ -11,7 +11,7 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
   currentUser,
 }) => {
   // == User theme
-  const theme = useUserTheme(currentUser.theme);
+  const userTheme = useUserTheme(currentUser.theme);
 
   // == Load join requests
   const { data } = useRouteSWR<{ pendingJoinRequests: JoinRequest[] }>(
@@ -42,7 +42,7 @@ const WorldJoinRequestsPage: PageComponent<WorldJoinRequestsPageProps> = ({
             radius="xl"
             href={withTrailingSlash(routes.world.show.path())}
             mt={4}
-            {...(theme === "bakudeku" && {
+            {...(userTheme === "bakudeku" && {
               variant: "filled",
             })}
           >

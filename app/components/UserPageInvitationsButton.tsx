@@ -1,4 +1,4 @@
-import { Text } from "@mantine/core";
+import { type ButtonProps, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
@@ -16,7 +16,8 @@ import PublicPostCardActions from "./PublicPostCardActions";
 
 import classes from "./UserPageInvitationsButton.module.css";
 
-export interface UserPageInvitationsButtonProps extends BoxProps {}
+export interface UserPageInvitationsButtonProps
+  extends Omit<ButtonProps, "children"> {}
 
 const UserPageInvitationsButton: FC<UserPageInvitationsButtonProps> = ({
   style,
