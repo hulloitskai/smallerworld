@@ -1,4 +1,5 @@
 import { Text } from "@mantine/core";
+import { groupBy, sortBy } from "lodash-es";
 import MiniSearch from "minisearch";
 
 import HideIcon from "~icons/heroicons/chevron-up-20-solid";
@@ -10,11 +11,7 @@ import CloseIcon from "~icons/heroicons/x-mark";
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
-import {
-  useGroupedAndSortedWorldFriends,
-  useWorldActivities,
-  useWorldFriends,
-} from "~/helpers/world";
+import { useWorldActivities, useWorldFriends } from "~/helpers/world";
 import { type User, type WorldFriend } from "~/types";
 
 import classes from "./WorldFriendsPage.module.css";
@@ -56,7 +53,12 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
       reindexMiniSearch(friends);
     },
   });
-  const groupedFriends = useGroupedAndSortedWorldFriends(friends);
+  const friendsByNotifiability = useMemo(() => {
+    const sortedFriends = sortBy(friends, friend =>
+      friend.paused_since ? DateTime.fromISO(friend.paused_since) : null,
+    );
+    return groupBy(sortedFriends, "notifiable");
+  }, [friends]);
   const friendsById = useMemo(() => keyBy(friends, "id"), [friends]);
 
   // == Load activities
@@ -74,7 +76,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
         push: pushNotifiable = [],
         sms: smsNotifiable = [],
         false: notNotifiable = [],
-      } = groupedFriends;
+      } = friendsByNotifiability;
       return [...pushNotifiable, ...smsNotifiable, ...notNotifiable];
     }
     const results: WorldFriend[] = [];
@@ -88,7 +90,13 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
         }
       });
     return results;
-  }, [friendsById, groupedFriends, miniSearch, miniSearchReady, searchQuery]);
+  }, [
+    friendsById,
+    friendsByNotifiability,
+    miniSearch,
+    miniSearchReady,
+    searchQuery,
+  ]);
   return (
     <Stack gap="lg">
       <Stack gap={4} align="center">

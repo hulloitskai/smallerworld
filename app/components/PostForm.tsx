@@ -9,7 +9,7 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
-import { difference, invertBy, map } from "lodash-es";
+import { difference, invertBy, map, sortBy } from "lodash-es";
 import { type DraggableProps, motion, Reorder } from "motion/react";
 
 import MutedIcon from "~icons/heroicons/bell-slash-20-solid";
@@ -32,10 +32,7 @@ import {
   type PostFormValues,
   usePostDraftValues,
 } from "~/helpers/posts/form";
-import {
-  useGroupedAndSortedWorldFriends,
-  useWorldFriends,
-} from "~/helpers/world";
+import { useWorldFriends } from "~/helpers/world";
 import {
   type Encouragement,
   type Post,
@@ -111,12 +108,12 @@ const PostForm: FC<PostFormProps> = props => {
   const { friends } = useWorldFriends();
   const subscribedFriends = useMemo(
     () =>
-      friends?.filter(friend =>
-        friend.subscribed_post_types.includes(postType),
+      friends?.filter(
+        friend =>
+          friend.notifiable && friend.subscribed_post_types.includes(postType),
       ),
     [friends, postType],
   );
-  const groupedFriends = useGroupedAndSortedWorldFriends(subscribedFriends);
 
   // == Post editor
   const editorRef = useRef<Editor | null>();
@@ -194,6 +191,8 @@ const PostForm: FC<PostFormProps> = props => {
             friend_notifiability,
             ...values
           }) => {
+            invariant(audienceData, "Missing audience data");
+            const { notifiedIds } = audienceData;
             const {
               hidden: hiddenFromIds = [],
               notify: friendIdsToNotify = [],
@@ -215,12 +214,10 @@ const PostForm: FC<PostFormProps> = props => {
                     }
                   : {
                       hidden_from_ids: hiddenFromIds,
-                      friend_ids_to_notify: audienceData
-                        ? difference(
-                            friendIdsToNotify,
-                            audienceData.notifiedIds,
-                          )
-                        : friendIdsToNotify,
+                      friend_ids_to_notify: difference(
+                        friendIdsToNotify,
+                        notifiedIds,
+                      ),
                     }),
               },
             };
@@ -357,6 +354,26 @@ const PostForm: FC<PostFormProps> = props => {
   );
   const [newImageInputKey, setNewImageInputKey] = useState(0);
 
+  // == Friend notifiability
+  const [currentlyNotifyingNone, currentlyMutingNone] = useMemo(() => {
+    const friendsById = keyBy(subscribedFriends, "id");
+    let notifyingNone = true;
+    let mutingNone = true;
+    for (const [friendId, notifiability] of Object.entries(
+      values.friend_notifiability,
+    )) {
+      if (notifiability === "notify") {
+        notifyingNone = false;
+      } else if (notifiability === "muted") {
+        const friend = friendsById[friendId];
+        if (friend && friend.notifiable === "push") {
+          mutingNone = false;
+        }
+      }
+    }
+    return [notifyingNone, mutingNone];
+  }, [values, subscribedFriends]);
+
   const emojiInput = (
     <EmojiPopover
       position="right"
@@ -392,7 +409,6 @@ const PostForm: FC<PostFormProps> = props => {
       <Stack>
         {encouragement && (
           <Transition
-            transition="pop"
             mounted={
               !!values.encouragement_id && values.visibility !== "only_me"
             }
@@ -617,7 +633,7 @@ const PostForm: FC<PostFormProps> = props => {
             )}
           </Stack>
         </Group>
-        <Card withBorder mt="xs" pt="lg" style={{ overflow: "visible" }}>
+        <Card withBorder className={classes.visibilityCard}>
           <Stack gap="xs">
             <Stack gap={4}>
               <SegmentedControl
@@ -640,12 +656,17 @@ const PostForm: FC<PostFormProps> = props => {
                 {POST_VISIBILITY_DESCRIPTORS[values.visibility]}
               </Text>
             </Stack>
-            {values.visibility !== "only_me" &&
-              !isEmpty(subscribedFriends) &&
-              (!post || !!audienceData) && (
+            <Transition
+              transition="pop"
+              mounted={
+                values.visibility !== "only_me" && !isEmpty(subscribedFriends)
+              }
+            >
+              {transitionStyle => (
                 <Accordion
                   variant="separated"
                   className={classes.friendNotifiabilityAccordion}
+                  style={transitionStyle}
                 >
                   <Accordion.Item value="friend_notifiability">
                     <Accordion.Control icon={<SettingsIcon />}>
@@ -653,115 +674,75 @@ const PostForm: FC<PostFormProps> = props => {
                     </Accordion.Control>
                     <Accordion.Panel>
                       <Stack gap={4}>
-                        <Table className={classes.friendNotifiabilityTable}>
-                          {[...groupedFriends.push, ...groupedFriends.sms].map(
-                            friend => {
-                              const value =
-                                values.friend_notifiability[friend.id];
-                              const notified =
-                                audienceData?.notifiedIds.includes(friend.id) ??
-                                false;
-                              return (
-                                <Table.Tr key={friend.id}>
-                                  <Table.Td
-                                    className={
-                                      classes.friendNotifiabilityTableNameCell
-                                    }
-                                    data-notifiability={
-                                      values.friend_notifiability[friend.id]
-                                    }
-                                  >
-                                    {prettyFriendName(friend)}
-                                  </Table.Td>
-                                  <Table.Td w={0}>
-                                    <SegmentedControl
-                                      {...getInputProps(
-                                        `friend_notifiability.${friend.id}`,
-                                      )}
-                                      withItemsBorders
-                                      data={[
-                                        {
-                                          value: "hidden",
-                                          label: (
-                                            <Tooltip
-                                              label="hide post"
-                                              withArrow
-                                            >
-                                              <HiddenIcon />
-                                            </Tooltip>
-                                          ),
-                                        },
-                                        ...(notified
-                                          ? []
-                                          : [
-                                              {
-                                                value: "muted",
-                                                label: (
-                                                  <Tooltip
-                                                    label="don't notify"
-                                                    withArrow
-                                                  >
-                                                    <MutedIcon />
-                                                  </Tooltip>
-                                                ),
-                                              },
-                                            ]),
-                                        {
-                                          value: "notify",
-                                          label:
-                                            friend.notifiable === "sms" ? (
-                                              <Tooltip
-                                                label={
-                                                  notified
-                                                    ? "text notification sent"
-                                                    : "send text notification"
-                                                }
-                                                withArrow
-                                              >
-                                                <Group gap={0}>
-                                                  <PhoneIcon />
-                                                  {notified && <SuccessIcon />}
-                                                </Group>
-                                              </Tooltip>
-                                            ) : (
-                                              <Tooltip
-                                                label={
-                                                  notified
-                                                    ? "push notification sent"
-                                                    : "send push notification"
-                                                }
-                                                withArrow
-                                              >
-                                                <Group gap={0}>
-                                                  <NotificationIcon />
-                                                  {notified && <SuccessIcon />}
-                                                </Group>
-                                              </Tooltip>
-                                            ),
-                                        },
-                                      ]}
-                                      {...(value === "notify" && {
-                                        color: "primary",
-                                      })}
-                                      className={cn(
-                                        classes.segmentedControl,
-                                        classes.friendNotifiabilitySegmentedControl,
-                                      )}
-                                    />
-                                  </Table.Td>
-                                </Table.Tr>
+                        <Group gap={8} justify="center">
+                          <Button
+                            size="compact-xs"
+                            leftSection={<MutedIcon />}
+                            disabled={currentlyNotifyingNone}
+                            className={classes.friendNotifiabilityPresetButton}
+                            onClick={() => {
+                              setFieldValue("friend_notifiability", prevValue =>
+                                mapValues(prevValue, prevNotifiability =>
+                                  prevNotifiability === "notify"
+                                    ? "muted"
+                                    : prevNotifiability,
+                                ),
                               );
-                            },
-                          )}
-                        </Table>
+                            }}
+                          >
+                            mute notifications
+                          </Button>
+                          <Button
+                            size="compact-xs"
+                            leftSection={<NotificationIcon />}
+                            disabled={currentlyMutingNone}
+                            className={classes.friendNotifiabilityPresetButton}
+                            onClick={() => {
+                              const friendsById = keyBy(
+                                subscribedFriends,
+                                "id",
+                              );
+                              setFieldValue("friend_notifiability", prevValue =>
+                                mapValues(
+                                  prevValue,
+                                  (prevNotifiability, friendId) => {
+                                    const friend = friendsById[friendId];
+                                    if (!friend) {
+                                      return prevNotifiability;
+                                    }
+                                    if (
+                                      prevNotifiability !== "muted" ||
+                                      friend.notifiable !== "push"
+                                    ) {
+                                      return prevNotifiability;
+                                    }
+                                    return "notify";
+                                  },
+                                ),
+                              );
+                            }}
+                          >
+                            notify all
+                          </Button>
+                        </Group>
+                        {subscribedFriends && (
+                          <FriendNotifiabilityTable
+                            postId={post?.id}
+                            friends={subscribedFriends}
+                            getSegmentedControlInputProps={friend =>
+                              getInputProps(`friend_notifiability.${friend.id}`)
+                            }
+                          />
+                        )}
                       </Stack>
                     </Accordion.Panel>
                   </Accordion.Item>
                 </Accordion>
               )}
+            </Transition>
           </Stack>
           <Center pos="absolute" left={0} right={0} top={-10}>
-            <Badge variant="default" styles={{ label: { fontWeight: 500 } }}>
+            <Badge variant="default" className={classes.visibilityBadge}>
               who can see this post?
             </Badge>
           </Center>
@@ -771,7 +752,7 @@ const PostForm: FC<PostFormProps> = props => {
           variant="filled"
           size="lg"
           leftSection={post ? <SaveIcon /> : <SendIcon />}
-          disabled={bodyTextEmpty || !isDirty()}
+          disabled={bodyTextEmpty || (!!post && !audienceData) || !isDirty()}
           loading={submitting}
         >
           {post ? "save" : "post"}
@@ -841,3 +822,169 @@ const buildFriendNotifiability = (
           ? "notify"
           : "muted",
   );
+
+interface FriendNotifiabilityTableProps {
+  postId: string | undefined;
+  friends: WorldFriend[];
+  getSegmentedControlInputProps: (friend: WorldFriend) => {
+    value?: any;
+    onChange: any;
+  };
+}
+
+const FriendNotifiabilityTable: FC<FriendNotifiabilityTableProps> = ({
+  postId,
+  friends,
+  getSegmentedControlInputProps,
+}) => {
+  // == Post audience
+  const { data: audienceData } = useRouteSWR<{
+    hiddenFromIds: string[];
+    notifiedIds: string[];
+  }>(routes.worldPosts.audience, {
+    params: postId ? { id: postId } : null,
+    descriptor: "load post audience",
+  });
+  const { pausedFriends, textOnlyFriends, pushableFriends } = useMemo(() => {
+    const pausedFriends = [];
+    const textOnlyFriends = [];
+    const pushableFriends = [];
+    for (const friend of friends) {
+      if (friend.paused_since) {
+        pausedFriends.push(friend);
+      } else if (friend.notifiable === "sms") {
+        textOnlyFriends.push(friend);
+      } else {
+        pushableFriends.push(friend);
+      }
+    }
+    const sortFriends = (friends: WorldFriend[]) => sortBy(friends, "name");
+    return {
+      pausedFriends: sortFriends(pausedFriends),
+      textOnlyFriends: sortFriends(textOnlyFriends),
+      pushableFriends: sortFriends(pushableFriends),
+    };
+  }, [friends]);
+
+  const renderRow = (friend: WorldFriend) => {
+    const { value, ...inputProps } = getSegmentedControlInputProps(friend);
+    const notified = audienceData?.notifiedIds?.includes(friend.id);
+    return (
+      <Table.Tr key={friend.id}>
+        <Table.Td
+          className={classes.friendNotifiabilityTableNameCell}
+          data-notifiability={value}
+        >
+          <Group gap={6}>
+            {!!friend.emoji && (
+              <Text span inherit ff="var(--font-family-emoji)" fz="xs">
+                {friend.emoji}
+              </Text>
+            )}
+            <Text span inherit>
+              {friend.name}
+            </Text>
+          </Group>
+        </Table.Td>
+        <Table.Td w={0} pos="relative">
+          <SegmentedControl
+            {...{ value }}
+            {...inputProps}
+            withItemsBorders
+            data={[
+              {
+                value: "hidden",
+                label: (
+                  <Tooltip label="hide post" withArrow>
+                    <HiddenIcon />
+                  </Tooltip>
+                ),
+              },
+              ...(notified
+                ? []
+                : [
+                    {
+                      value: "muted",
+                      label: (
+                        <Tooltip label="don't notify" withArrow>
+                          <MutedIcon />
+                        </Tooltip>
+                      ),
+                    },
+                  ]),
+              {
+                value: "notify",
+                label:
+                  friend.notifiable === "sms" ? (
+                    <Tooltip
+                      label={
+                        notified
+                          ? "text notification sent"
+                          : "send text notification"
+                      }
+                      withArrow
+                    >
+                      <Group gap={0}>
+                        <PhoneIcon />
+                        {notified && <SuccessIcon />}
+                      </Group>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip
+                      label={
+                        notified
+                          ? "push notification sent"
+                          : "send push notification"
+                      }
+                      withArrow
+                    >
+                      <Group gap={0}>
+                        <NotificationIcon />
+                        {notified && <SuccessIcon />}
+                      </Group>
+                    </Tooltip>
+                  ),
+              },
+            ]}
+            {...(value === "notify" && {
+              color: "primary",
+            })}
+            className={cn(
+              classes.segmentedControl,
+              classes.friendNotifiabilitySegmentedControl,
+            )}
+          />
+          <LoadingOverlay visible={!!postId && !audienceData} />
+        </Table.Td>
+      </Table.Tr>
+    );
+  };
+  return (
+    <Table className={classes.friendNotifiabilityTable}>
+      {!isEmpty(pushableFriends) && (
+        <Table.Tbody>
+          <Table.Tr>
+            <Table.Th colSpan={2}>friends that installed your world</Table.Th>
+          </Table.Tr>
+          {pushableFriends.map(renderRow)}
+        </Table.Tbody>
+      )}
+      {!isEmpty(textOnlyFriends) && (
+        <Table.Tbody>
+          <Table.Tr>
+            <Table.Th colSpan={2}>friends subscribed via text</Table.Th>
+          </Table.Tr>
+          {textOnlyFriends.map(renderRow)}
+        </Table.Tbody>
+      )}
+      {!isEmpty(pausedFriends) && (
+        <Table.Tbody>
+          <Table.Tr>
+            <Table.Th colSpan={2}>paused friends</Table.Th>
+          </Table.Tr>
+          {pausedFriends.map(renderRow)}
+        </Table.Tbody>
+      )}
+    </Table>
+  );
+};

@@ -1,4 +1,3 @@
-import { groupBy, sortBy } from "lodash-es";
 import { type SWRConfiguration } from "swr";
 
 import {
@@ -50,16 +49,3 @@ export const useWorldFriends = (
     ...swrResponse,
   };
 };
-
-export const useGroupedAndSortedWorldFriends = (
-  friends: WorldFriend[] | undefined,
-) =>
-  useMemo(() => {
-    const sortedFriends = sortBy(friends, friend =>
-      friend.paused_since ? DateTime.fromISO(friend.paused_since) : null,
-    );
-    return groupBy(sortedFriends, "notifiable") as Record<
-      "sms" | "push" | "false",
-      WorldFriend[]
-    >;
-  }, [friends]);

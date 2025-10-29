@@ -21,6 +21,11 @@
         background-color: var(--mantine-color-body);
         border-color: alpha(var(--mantine-color-white), 0.2);
 
+        &[data-disabled] {
+          color: alpha(var(--mantine-color-white), 0.3);
+          border-color: transparent;
+        }
+
         @mixin hover {
           background-color: lighten(var(--mantine-color-body), 0.1);
         }
