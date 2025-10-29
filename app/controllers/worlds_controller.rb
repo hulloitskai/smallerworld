@@ -28,10 +28,6 @@ class WorldsController < ApplicationController
     end
     pending_join_requests = current_user.join_requests.pending.count
     paused_friend_ids = current_user.friends.paused.pluck(:id)
-    recently_paused_friend_ids = current_user.friends
-      .paused_during(1.month.ago..)
-      .distinct
-      .pluck(:id)
     render(inertia: "WorldPage", props: {
       "faviconLinks" => user_favicon_links(current_user),
       "latestFriendEmojis" => latest_friends.map(&:emoji),
@@ -39,7 +35,6 @@ class WorldsController < ApplicationController
       "hideStats" => current_user.hide_stats,
       "hideNeko" => current_user.hide_neko,
       "pausedFriendIds" => paused_friend_ids,
-      "recentlyPausedFriendIds" => recently_paused_friend_ids,
     })
   end
 

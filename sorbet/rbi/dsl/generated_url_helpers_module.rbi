@@ -28,6 +28,9 @@ module GeneratedUrlHelpersModule
   def api_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def audience_world_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def canny_sso_token_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -275,9 +278,6 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def test_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def text_subscribers_world_friends_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def universe_posts_url(*args); end

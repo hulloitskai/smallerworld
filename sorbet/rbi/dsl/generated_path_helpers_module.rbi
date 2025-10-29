@@ -28,6 +28,9 @@ module GeneratedPathHelpersModule
   def api_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def audience_world_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def canny_sso_token_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -275,9 +278,6 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def test_submit_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def text_subscribers_world_friends_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def universe_path(*args); end

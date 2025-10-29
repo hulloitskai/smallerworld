@@ -1,12 +1,20 @@
-import { Input, ScrollArea, SegmentedControl, Text } from "@mantine/core";
+import {
+  Accordion,
+  Input,
+  ScrollArea,
+  SegmentedControl,
+  Table,
+  Text,
+} from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
+import { difference, invertBy, map } from "lodash-es";
 import { type DraggableProps, motion, Reorder } from "motion/react";
 
-import NotifyIcon from "~icons/heroicons/bell";
-import QuietIcon from "~icons/heroicons/bell-slash-20-solid";
+import MutedIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
+import HiddenIcon from "~icons/heroicons/eye-slash-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
 
 import { isAndroid, isIos, useBrowserDetection } from "~/helpers/browsers";
@@ -15,24 +23,33 @@ import {
   mutateWorldPosts,
   NONPRIVATE_POST_VISIBILITIES,
   POST_VISIBILITIES,
+  POST_VISIBILITY_DESCRIPTORS,
   POST_VISIBILITY_TO_ICON,
   POST_VISIBILITY_TO_LABEL,
 } from "~/helpers/posts";
-import { type PostFormValues, usePostDraftValues } from "~/helpers/posts/form";
-import { useWorldFriends } from "~/helpers/world";
+import {
+  type PostFormSubmission,
+  type PostFormValues,
+  usePostDraftValues,
+} from "~/helpers/posts/form";
+import {
+  useGroupedAndSortedWorldFriends,
+  useWorldFriends,
+} from "~/helpers/world";
 import {
   type Encouragement,
   type Post,
   type PostType,
   type Upload,
+  type WorldFriend,
   type WorldPost,
 } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 import ImageInput, { type ImageInputProps } from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
-import PostFormHiddenFromIdsPicker from "./PostFormHiddenFromIdsPicker";
-import PostFormTextBlastCheckboxCard from "./PostFormTextBlastCheckboxCard";
+// import PostFormHiddenFromIdsPicker from "./PostFormHiddenFromIdsPicker";
+// import PostFormTextBlastCheckboxCard from "./PostFormTextBlastCheckboxCard";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostForm.module.css";
@@ -44,9 +61,7 @@ export type PostFormProps =
       onPostUpdated?: (post: WorldPost) => void;
     }
   | {
-      newPostType: PostType | null;
-      pausedFriendIds: string[];
-      recentlyPausedFriendIds: string[];
+      newPostType: PostType;
       encouragement?: Encouragement;
       quotedPost?: Post;
       onPostCreated?: (post: WorldPost) => void;
@@ -83,19 +98,25 @@ const PostForm: FC<PostFormProps> = props => {
         : undefined;
   const quotedPost =
     "quotedPost" in props ? props.quotedPost : (post?.quoted_post ?? undefined);
-  const pausedFriendIds =
-    "pausedFriendIds" in props ? props.pausedFriendIds : undefined;
-  const recentlyPausedFriendIds =
-    "recentlyPausedFriendIds" in props
-      ? props.recentlyPausedFriendIds
-      : undefined;
 
+  const showTitleInput = !!postType && POST_TYPES_WITH_TITLE.includes(postType);
   const titlePlaceholder = postType
     ? POST_TITLE_PLACEHOLDERS[postType]
     : undefined;
   const bodyPlaceholder = postType
     ? POST_BODY_PLACEHOLDERS[postType]
     : undefined;
+
+  // == World friends
+  const { friends } = useWorldFriends();
+  const subscribedFriends = useMemo(
+    () =>
+      friends?.filter(friend =>
+        friend.subscribed_post_types.includes(postType),
+      ),
+    [friends, postType],
+  );
+  const groupedFriends = useGroupedAndSortedWorldFriends(subscribedFriends);
 
   // == Post editor
   const editorRef = useRef<Editor | null>();
@@ -110,17 +131,19 @@ const PostForm: FC<PostFormProps> = props => {
   const [loadDraftValues, saveDraftValues, clearDraft] =
     usePostDraftValues(newPostType);
 
+  // == Post audience
+  const { data: audienceData } = useRouteSWR<{
+    hiddenFromIds: string[];
+    notifiedIds: string[];
+  }>(routes.worldPosts.audience, {
+    params: post ? { id: post.id } : null,
+    descriptor: "load post audience",
+  });
+
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
-    const {
-      title,
-      body_html,
-      emoji,
-      images,
-      visibility,
-      pinned_until,
-      hidden_from_ids,
-    } = post ?? {};
+    const { title, body_html, emoji, images, visibility, pinned_until } =
+      post ?? {};
     return {
       title: title ?? "",
       body_html: body_html ?? "",
@@ -130,12 +153,12 @@ const PostForm: FC<PostFormProps> = props => {
         : [],
       visibility: visibility ?? "friends",
       pinned_until: pinned_until ?? "",
-      quiet: !!post,
-      text_blast: false,
-      hidden_from_ids: hidden_from_ids ?? pausedFriendIds ?? [],
+      friend_notifiability: subscribedFriends
+        ? buildFriendNotifiability(subscribedFriends, audienceData)
+        : {},
       encouragement_id: encouragement?.id ?? post?.encouragement?.id ?? null,
     };
-  }, [post, encouragement, pausedFriendIds]);
+  }, [post, encouragement, subscribedFriends, audienceData]);
   const {
     setFieldValue,
     insertListItem,
@@ -155,7 +178,7 @@ const PostForm: FC<PostFormProps> = props => {
   } = useForm<
     { post: WorldPost },
     PostFormValues,
-    (values: PostFormValues) => { post: Record<string, any> }
+    (values: PostFormValues) => PostFormSubmission
   >({
     ...(post
       ? {
@@ -168,21 +191,40 @@ const PostForm: FC<PostFormProps> = props => {
             images_uploads,
             pinned_until,
             visibility,
-            hidden_from_ids,
+            friend_notifiability,
             ...values
-          }) => ({
-            post: {
-              ...omit(values, "quiet", "text_blast"),
-              emoji: emoji || null,
-              title: title || null,
-              images: images_uploads.map(upload => upload.signedId),
-              pinned_until: pinned_until
-                ? formatDateString(pinned_until)
-                : null,
-              visibility,
-              hidden_from_ids: visibility === "only_me" ? [] : hidden_from_ids,
-            },
-          }),
+          }) => {
+            const {
+              hidden: hiddenFromIds = [],
+              notify: friendIdsToNotify = [],
+            } = invertBy(friend_notifiability);
+            return {
+              post: {
+                ...values,
+                emoji: emoji || null,
+                title: title || null,
+                images: map(images_uploads, "signedId"),
+                pinned_until: pinned_until
+                  ? formatDateString(pinned_until)
+                  : null,
+                visibility,
+                ...(visibility === "only_me"
+                  ? {
+                      hidden_from_ids: [],
+                      friend_ids_to_notify: [],
+                    }
+                  : {
+                      hidden_from_ids: hiddenFromIds,
+                      friend_ids_to_notify: audienceData
+                        ? difference(
+                            friendIdsToNotify,
+                            audienceData.notifiedIds,
+                          )
+                        : friendIdsToNotify,
+                    }),
+              },
+            };
+          },
         }
       : {
           action: routes.worldPosts.create,
@@ -193,31 +235,38 @@ const PostForm: FC<PostFormProps> = props => {
             images_uploads,
             pinned_until,
             visibility,
-            text_blast,
             encouragement_id,
-            hidden_from_ids,
+            friend_notifiability,
             ...values
           }) => {
             invariant(postType, "Missing post type");
+            const {
+              hidden: hiddenFromIds = [],
+              notify: friendIdsToNotify = [],
+            } = invertBy(friend_notifiability);
             return {
               post: {
                 ...values,
                 type: postType,
                 emoji: emoji || null,
-                title: POST_TYPES_WITH_TITLE.includes(postType)
-                  ? title || null
-                  : null,
-                images: images_uploads.map(upload => upload.signedId),
+                title: showTitleInput ? title || null : null,
+                images: map(images_uploads, "signedId"),
                 quoted_post_id: quotedPost?.id ?? null,
                 pinned_until: pinned_until
                   ? formatDateString(pinned_until)
                   : null,
                 visibility,
-                encouragement_id:
-                  visibility === "only_me" ? null : encouragement_id,
-                hidden_from_ids:
-                  visibility === "only_me" ? [] : hidden_from_ids,
-                text_blast: visibility === "only_me" ? false : text_blast,
+                ...(visibility === "only_me"
+                  ? {
+                      encouragement_id: null,
+                      hidden_from_ids: [],
+                      friend_ids_to_notify: [],
+                    }
+                  : {
+                      encouragement_id,
+                      hidden_from_ids: hiddenFromIds,
+                      friend_ids_to_notify: friendIdsToNotify,
+                    }),
               },
             };
           },
@@ -245,6 +294,7 @@ const PostForm: FC<PostFormProps> = props => {
       }
       void mutateWorldPosts();
       void mutateRoute(routes.worldPosts.pinned);
+      void mutateRoute(routes.worldPosts.audience, { id: post.id });
       if ("onPostCreated" in props) {
         props.onPostCreated?.(post);
       } else if ("onPostUpdated" in props) {
@@ -290,11 +340,9 @@ const PostForm: FC<PostFormProps> = props => {
   const formStackRef = useMergedRef(formStackSizingRef);
 
   // == Post visibilities
-  const postVisibilities = postType
-    ? ["invitation", "question"].includes(postType)
-      ? NONPRIVATE_POST_VISIBILITIES
-      : POST_VISIBILITIES
-    : undefined;
+  const postVisibilities = ["invitation", "question"].includes(postType)
+    ? NONPRIVATE_POST_VISIBILITIES
+    : POST_VISIBILITIES;
 
   // == Pinned until
   const vaulPortalTarget = useVaulPortalTarget();
@@ -309,9 +357,36 @@ const PostForm: FC<PostFormProps> = props => {
   );
   const [newImageInputKey, setNewImageInputKey] = useState(0);
 
-  // == Friends
-  const { allFriends } = useWorldFriends({ keepPreviousData: true });
-
+  const emojiInput = (
+    <EmojiPopover
+      position="right"
+      onEmojiClick={({ emoji }) => {
+        setFieldValue("emoji", emoji);
+      }}
+    >
+      {({ open, opened }) => (
+        <ActionIcon
+          className={classes.emojiButton}
+          variant="default"
+          size={36}
+          mod={{ opened }}
+          onClick={() => {
+            if (values.emoji) {
+              setFieldValue("emoji", "");
+            } else {
+              open();
+            }
+          }}
+        >
+          {values.emoji ? (
+            <Box className={classes.emoji}>{values.emoji}</Box>
+          ) : (
+            <Box component={EmojiIcon} c="var(--mantine-color-placeholder)" />
+          )}
+        </ActionIcon>
+      )}
+    </EmojiPopover>
+  );
   return (
     <form onSubmit={submit}>
       <Stack>
@@ -364,64 +439,9 @@ const PostForm: FC<PostFormProps> = props => {
             )}
           </Transition>
         )}
-        <Group gap="xs" align="start" justify="center">
-          <Stack gap="xs" align="center">
-            <EmojiPopover
-              position="right"
-              onEmojiClick={({ emoji }) => {
-                setFieldValue("emoji", emoji);
-              }}
-            >
-              {({ open, opened }) => (
-                <ActionIcon
-                  className={classes.emojiButton}
-                  variant="default"
-                  size={36}
-                  mod={{ opened }}
-                  onClick={() => {
-                    if (values.emoji) {
-                      setFieldValue("emoji", "");
-                    } else {
-                      open();
-                    }
-                  }}
-                >
-                  {values.emoji ? (
-                    <Box className={classes.emoji}>{values.emoji}</Box>
-                  ) : (
-                    <Box
-                      component={EmojiIcon}
-                      c="var(--mantine-color-placeholder)"
-                    />
-                  )}
-                </ActionIcon>
-              )}
-            </EmojiPopover>
-            {postVisibilities && (
-              <SegmentedControl
-                {...getInputProps("visibility")}
-                className={classes.visibilitySegmentedControl}
-                orientation="vertical"
-                size="xs"
-                data={postVisibilities.map(visibility => ({
-                  label: (
-                    <Tooltip
-                      label={
-                        <>visible to {POST_VISIBILITY_TO_LABEL[visibility]}</>
-                      }
-                      events={{ hover: true, focus: true, touch: true }}
-                      position="right"
-                      withArrow
-                    >
-                      <Center h={20}>
-                        <Box component={POST_VISIBILITY_TO_ICON[visibility]} />
-                      </Center>
-                    </Tooltip>
-                  ),
-                  value: visibility,
-                }))}
-              />
-            )}
+        <Group gap={6} align="start" justify="center">
+          {!showTitleInput && emojiInput}
+          {/* <Stack gap="xs" align="center">
             {!post && (
               <Tooltip
                 label={
@@ -446,20 +466,26 @@ const PostForm: FC<PostFormProps> = props => {
                 </ActionIcon>
               </Tooltip>
             )}
-          </Stack>
+          </Stack> */}
           <Stack ref={formStackRef} gap="xs" style={{ flexGrow: 1 }}>
-            {!!postType && POST_TYPES_WITH_TITLE.includes(postType) && (
-              <TextInput
-                {...getInputProps("title")}
-                {...(!!titlePlaceholder && {
-                  placeholder: `(optional) ${titlePlaceholder}`,
-                })}
-                styles={{
-                  input: {
-                    fontFamily: "var(--mantine-font-family-headings)",
-                  },
-                }}
-              />
+            {showTitleInput && (
+              <Group gap={6}>
+                {emojiInput}
+                <TextInput
+                  {...getInputProps("title")}
+                  {...(!!titlePlaceholder && {
+                    placeholder: `(optional) ${titlePlaceholder}`,
+                  })}
+                  styles={{
+                    root: {
+                      flexGrow: 1,
+                    },
+                    input: {
+                      fontFamily: "var(--mantine-font-family-headings)",
+                    },
+                  }}
+                />
+              </Group>
             )}
             <Input.Wrapper error={errors.body_html}>
               <LazyPostEditor
@@ -589,57 +615,166 @@ const PostForm: FC<PostFormProps> = props => {
                 )}
               </>
             )}
-            {!post && (
-              <PostFormTextBlastCheckboxCard
-                {...getInputProps("text_blast", { type: "checkbox" })}
-                disabled={values.quiet || values.visibility === "only_me"}
-              />
-            )}
-            <Group justify="end" mt="xs">
-              <Transition
-                transition="fade"
-                mounted={
-                  !isEmpty(allFriends) && values.visibility !== "only_me"
-                }
-              >
-                {transitionStyle => (
-                  <PostFormHiddenFromIdsPicker
-                    {...{ recentlyPausedFriendIds }}
-                    {...getInputProps("hidden_from_ids")}
-                  >
-                    <Anchor
-                      component="button"
-                      type="button"
-                      size="xs"
-                      underline="always"
-                      c="dimmed"
-                      style={transitionStyle}
-                    >
-                      {isEmpty(values.hidden_from_ids) ? (
-                        "visible to all friends"
-                      ) : (
-                        <>
-                          hidden from {values.hidden_from_ids.length}{" "}
-                          {inflect("friend", values.hidden_from_ids.length)}
-                        </>
-                      )}
-                    </Anchor>
-                  </PostFormHiddenFromIdsPicker>
-                )}
-              </Transition>
-              <Button
-                type="submit"
-                variant="filled"
-                leftSection={post ? <SaveIcon /> : <SendIcon />}
-                disabled={bodyTextEmpty || !isDirty()}
-                loading={submitting}
-                style={{ flexShrink: 0 }}
-              >
-                {post ? "save" : "post"}
-              </Button>
-            </Group>
           </Stack>
         </Group>
+        <Card withBorder mt="xs" pt="lg" style={{ overflow: "visible" }}>
+          <Stack gap="xs">
+            <Stack gap={4}>
+              <SegmentedControl
+                {...getInputProps("visibility")}
+                data={postVisibilities.map(visibility => ({
+                  label: (
+                    <Group gap={6} justify="center">
+                      <Box
+                        component={POST_VISIBILITY_TO_ICON[visibility]}
+                        fz="xs"
+                      />
+                      {POST_VISIBILITY_TO_LABEL[visibility]}
+                    </Group>
+                  ),
+                  value: visibility,
+                }))}
+                className={classes.visibilitySegmentedControl}
+              />
+              <Text size="xs" c="dimmed" ta="center" inline>
+                {POST_VISIBILITY_DESCRIPTORS[values.visibility]}
+              </Text>
+            </Stack>
+            {values.visibility !== "only_me" &&
+              !isEmpty(subscribedFriends) &&
+              (!post || !!audienceData) && (
+                <Accordion
+                  variant="separated"
+                  className={classes.friendNotifiabilityAccordion}
+                >
+                  <Accordion.Item value="friend_notifiability">
+                    <Accordion.Control icon={<SettingsIcon />}>
+                      choose specific friends
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                      <Stack gap={4}>
+                        <Table className={classes.friendNotifiabilityTable}>
+                          {[...groupedFriends.push, ...groupedFriends.sms].map(
+                            friend => {
+                              const value =
+                                values.friend_notifiability[friend.id];
+                              const notified =
+                                audienceData?.notifiedIds.includes(friend.id) ??
+                                false;
+                              return (
+                                <Table.Tr key={friend.id}>
+                                  <Table.Td
+                                    className={
+                                      classes.friendNotifiabilityTableNameCell
+                                    }
+                                    data-notifiability={
+                                      values.friend_notifiability[friend.id]
+                                    }
+                                  >
+                                    {prettyFriendName(friend)}
+                                  </Table.Td>
+                                  <Table.Td w={0}>
+                                    <SegmentedControl
+                                      {...getInputProps(
+                                        `friend_notifiability.${friend.id}`,
+                                      )}
+                                      withItemsBorders
+                                      data={[
+                                        {
+                                          value: "hidden",
+                                          label: (
+                                            <Tooltip
+                                              label="hide post"
+                                              withArrow
+                                            >
+                                              <HiddenIcon />
+                                            </Tooltip>
+                                          ),
+                                        },
+                                        ...(notified
+                                          ? []
+                                          : [
+                                              {
+                                                value: "muted",
+                                                label: (
+                                                  <Tooltip
+                                                    label="don't notify"
+                                                    withArrow
+                                                  >
+                                                    <MutedIcon />
+                                                  </Tooltip>
+                                                ),
+                                              },
+                                            ]),
+                                        {
+                                          value: "notify",
+                                          label:
+                                            friend.notifiable === "sms" ? (
+                                              <Tooltip
+                                                label={
+                                                  notified
+                                                    ? "text notification sent"
+                                                    : "send text notification"
+                                                }
+                                                withArrow
+                                              >
+                                                <Group gap={0}>
+                                                  <PhoneIcon />
+                                                  {notified && <SuccessIcon />}
+                                                </Group>
+                                              </Tooltip>
+                                            ) : (
+                                              <Tooltip
+                                                label={
+                                                  notified
+                                                    ? "push notification sent"
+                                                    : "send push notification"
+                                                }
+                                                withArrow
+                                              >
+                                                <Group gap={0}>
+                                                  <NotificationIcon />
+                                                  {notified && <SuccessIcon />}
+                                                </Group>
+                                              </Tooltip>
+                                            ),
+                                        },
+                                      ]}
+                                      {...(value === "notify" && {
+                                        color: "primary",
+                                      })}
+                                      className={
+                                        classes.friendNotifiabilitySegmentedControl
+                                      }
+                                    />
+                                  </Table.Td>
+                                </Table.Tr>
+                              );
+                            },
+                          )}
+                        </Table>
+                      </Stack>
+                    </Accordion.Panel>
+                  </Accordion.Item>
+                </Accordion>
+              )}
+          </Stack>
+          <Center pos="absolute" left={0} right={0} top={-10}>
+            <Badge variant="default" styles={{ label: { fontWeight: 500 } }}>
+              who can see this post?
+            </Badge>
+          </Center>
+        </Card>
+        <Button
+          type="submit"
+          variant="filled"
+          size="lg"
+          leftSection={post ? <SaveIcon /> : <SendIcon />}
+          disabled={bodyTextEmpty || !isDirty()}
+          loading={submitting}
+        >
+          {post ? "save" : "post"}
+        </Button>
       </Stack>
     </form>
   );
@@ -687,3 +822,21 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
     </Reorder.Item>
   );
 };
+
+const buildFriendNotifiability = (
+  friends: WorldFriend[],
+  audienceData: { hiddenFromIds: string[]; notifiedIds: string[] } | undefined,
+): Record<string, "hidden" | "muted" | "notify"> =>
+  mapValues(keyBy(friends, "id"), friend =>
+    audienceData
+      ? audienceData.hiddenFromIds.includes(friend.id)
+        ? "hidden"
+        : audienceData.notifiedIds.includes(friend.id)
+          ? "notify"
+          : "muted"
+      : friend.paused_since
+        ? "hidden"
+        : friend.notifiable === "push"
+          ? "notify"
+          : "muted",
+  );

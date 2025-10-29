@@ -33,8 +33,7 @@ export interface WorldPageFloatingActionsProps {
 const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
   onPostCreated,
 }) => {
-  const { hideStats, hideNeko, pausedFriendIds, recentlyPausedFriendIds } =
-    usePageProps<WorldPageProps>();
+  const { hideStats, hideNeko } = usePageProps<WorldPageProps>();
   const { isStandalone, outOfPWAScope } = usePWA();
   const { pushRegistration, permission: webPushPermission } = useWebPush();
   const { modals } = useModals();
@@ -183,10 +182,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                                   closeAllModals();
                                   onPostCreated?.(post);
                                 }}
-                                {...{
-                                  pausedFriendIds,
-                                  recentlyPausedFriendIds,
-                                }}
                               />
                             ),
                           });
@@ -253,8 +248,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                   {...{
                     post,
                     hideStats,
-                    pausedFriendIds,
-                    recentlyPausedFriendIds,
                   }}
                   onFollowUpDrawerModalOpened={() => {
                     setPinnedPostsDrawerModalOpened(false);

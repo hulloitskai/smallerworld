@@ -29,8 +29,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
   hideSearch,
   ...otherProps
 }) => {
-  const { hideStats, pausedFriendIds, recentlyPausedFriendIds } =
-    usePageProps<WorldPageProps>();
+  const { hideStats } = usePageProps<WorldPageProps>();
   const queryParams = useQueryParams();
 
   // == Input
@@ -150,8 +149,6 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
                     {...{
                       post,
                       hideStats,
-                      pausedFriendIds,
-                      recentlyPausedFriendIds,
                     }}
                   />
                 }

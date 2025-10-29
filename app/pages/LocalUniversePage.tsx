@@ -17,8 +17,6 @@ import classes from "./LocalUniversePage.module.css";
 
 export interface LocalUniversePageProps extends SharedPageProps {
   currentUser: User;
-  pausedFriendIds: string[];
-  recentlyPausedFriendIds: string[];
   hideStats: boolean;
 }
 

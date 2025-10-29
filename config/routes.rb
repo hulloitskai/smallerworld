@@ -115,9 +115,11 @@ Rails.application.routes.draw do
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end
-  get "/world/posts" => "world_posts#index",
-      constraints: { format: "html" },
-      export: true
+  resources :world_posts,
+            path: "/world/posts",
+            only: :index,
+            constraints: { format: "html" },
+            export: true
   resources(
     :world_posts,
     path: "/world/posts",
@@ -129,6 +131,7 @@ Rails.application.routes.draw do
       get :pinned
     end
     member do
+      get :audience
       get :stats
       get :viewers
       post :share
@@ -144,9 +147,6 @@ Rails.application.routes.draw do
     constraints: { format: "json" },
     export: true,
   ) do
-    collection do
-      get :text_subscribers
-    end
     member do
       get :invitation
       post :pause
@@ -161,9 +161,11 @@ Rails.application.routes.draw do
             only: :destroy,
             constraints: { format: "json" },
             export: true
-  get "/world/invitations" => "world_invitations#index",
-      constraints: { format: %w[html json] },
-      export: true
+  resources :world_invitations,
+            path: "/world/invitations",
+            only: :index,
+            constraints: { format: %w[html json] },
+            export: true
   resources :world_invitations,
             path: "/world/invitations",
             only: %i[create update destroy],

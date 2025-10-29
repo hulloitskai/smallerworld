@@ -27,9 +27,9 @@ export const POST_TYPES: PostType[] = [
 ];
 
 export const POST_VISIBILITIES: PostVisibility[] = [
+  "only_me",
   "friends",
   "public",
-  "only_me",
   // "chosen_family",
 ];
 
@@ -37,6 +37,13 @@ export const NONPRIVATE_POST_VISIBILITIES: PostVisibility[] = [
   "friends",
   "public",
 ];
+
+export const POST_VISIBILITY_DESCRIPTORS: Record<PostVisibility, string> = {
+  public: "anyone can see this post",
+  friends: "only friends you invite can see this post",
+  only_me: "nobody else can see this post",
+  chosen_family: "UNIMPLEMENTED",
+};
 
 export const POST_TYPE_TO_ICON: Record<
   PostType,

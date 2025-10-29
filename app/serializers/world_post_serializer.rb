@@ -6,7 +6,7 @@ class WorldPostSerializer < PostSerializer
   object_as :post
 
   # == Attributes
-  attributes :updated_at, hidden_from_ids: { type: "string[]" }
+  attributes :updated_at
 
   # == Associations
   has_one :encouragement, serializer: EncouragementSerializer, nullable: true

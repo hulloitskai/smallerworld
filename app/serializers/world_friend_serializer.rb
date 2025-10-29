@@ -6,7 +6,10 @@ class WorldFriendSerializer < FriendProfileSerializer
   object_as :friend
 
   # == Attributes
-  attributes paused?: { as: :paused, type: :boolean }
+  attributes :paused_since,
+             subscribed_post_types: {
+               type: '"journal_entry" | "poem" | "invitation" | "question"',
+             }
   attribute :notifiable, type: '"sms" | "push" | false' do
     if friend.push_registrations.any?
       "push"

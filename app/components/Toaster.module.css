@@ -21,10 +21,11 @@
   }
 }
 
-.toast {
+.toast[data-sonner-toast][data-styled="true"] {
   pointer-events: auto;
   align-items: start;
-  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  height: unset;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
   border-radius: var(--mantine-radius-default);
 
   @mixin dark {

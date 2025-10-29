@@ -70,7 +70,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
             </Text>
           </Group>
           <Group gap={2} style={{ flexShrink: 0 }}>
-            {friend.paused ? (
+            {friend.paused_since ? (
               <Tooltip
                 label={
                   <>
@@ -170,7 +170,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                 >
                   remove friend
                 </Menu.Item>
-                {friend.paused ? (
+                {friend.paused_since ? (
                   <UnpauseFriendItem
                     friend={friend}
                     onFriendUnpaused={() => {

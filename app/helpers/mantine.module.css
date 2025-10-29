@@ -156,9 +156,13 @@
   }
 
   .card {
+    border-color: light-dark(
+      var(--mantine-color-gray-4),
+      var(--mantine-color-dark-4)
+    );
+
     @mixin dark {
       background-color: var(--mantine-color-dark-8);
-      border-color: var(--mantine-color-dark-6);
     }
 
     @mixin dark-user-theme {
@@ -290,9 +294,10 @@
   }
 
   .divider {
-    @mixin dark {
-      --divider-color: var(--mantine-color-dark-6);
-    }
+    --divider-color: light-dark(
+      var(--mantine-color-gray-4),
+      var(--mantine-color-dark-4)
+    );
 
     @mixin dark-user-theme {
       --divider-color: alpha(var(--mantine-color-white), 0.2);

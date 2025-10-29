@@ -20,16 +20,12 @@ import postCardClasses from "./PostCard.module.css";
 
 export interface AuthorPostCardActionsProps {
   post: WorldPost;
-  pausedFriendIds: string[];
-  recentlyPausedFriendIds: string[];
   hideStats: boolean;
   onFollowUpDrawerModalOpened?: () => void;
 }
 
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   post,
-  pausedFriendIds,
-  recentlyPausedFriendIds,
   hideStats,
   onFollowUpDrawerModalOpened,
 }) => {
@@ -261,7 +257,6 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
         {(followUpDrawerModalOpened || followUpDrawerModalExiting) && (
           <PostForm
             newPostType="follow_up"
-            {...{ pausedFriendIds, recentlyPausedFriendIds }}
             quotedPost={post}
             onPostCreated={() => {
               setFollowUpModalDrawerOpened(false);

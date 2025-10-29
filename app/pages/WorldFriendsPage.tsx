@@ -11,7 +11,7 @@ import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
 import {
-  useFriendsByNotifiable,
+  useGroupedAndSortedWorldFriends,
   useWorldActivities,
   useWorldFriends,
 } from "~/helpers/world";
@@ -50,14 +50,14 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
   );
 
   // == Load friends
-  const { allFriends } = useWorldFriends({
+  const { friends } = useWorldFriends({
     keepPreviousData: true,
     onSuccess: ({ friends }) => {
       reindexMiniSearch(friends);
     },
   });
-  const friendsByNotifiable = useFriendsByNotifiable(allFriends);
-  const friendsById = useMemo(() => keyBy(allFriends, "id"), [allFriends]);
+  const groupedFriends = useGroupedAndSortedWorldFriends(friends);
+  const friendsById = useMemo(() => keyBy(friends, "id"), [friends]);
 
   // == Load activities
   const { activities } = useWorldActivities({ keepPreviousData: true });
@@ -74,7 +74,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
         push: pushNotifiable = [],
         sms: smsNotifiable = [],
         false: notNotifiable = [],
-      } = friendsByNotifiable;
+      } = groupedFriends;
       return [...pushNotifiable, ...smsNotifiable, ...notNotifiable];
     }
     const results: WorldFriend[] = [];
@@ -88,13 +88,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
         }
       });
     return results;
-  }, [
-    friendsById,
-    friendsByNotifiable,
-    miniSearch,
-    miniSearchReady,
-    searchQuery,
-  ]);
+  }, [friendsById, groupedFriends, miniSearch, miniSearchReady, searchQuery]);
   return (
     <Stack gap="lg">
       <Stack gap={4} align="center">
@@ -155,8 +149,8 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
         <Transition
           transition="fade"
           mounted={
-            !!allFriends &&
-            allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
+            !!friends &&
+            friends.length >= MIN_FRIENDS_FOR_SEARCH &&
             !searchActive
           }
           enterDelay={250}
@@ -178,8 +172,8 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
         <Transition
           transition="pop"
           mounted={
-            !!allFriends &&
-            allFriends.length >= MIN_FRIENDS_FOR_SEARCH &&
+            !!friends &&
+            friends.length >= MIN_FRIENDS_FOR_SEARCH &&
             searchActive
           }
           enterDelay={250}
@@ -236,8 +230,8 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
             />
           )}
         </Transition>
-        {allFriends ? (
-          isEmpty(allFriends) ? (
+        {friends ? (
+          isEmpty(friends) ? (
             <Card
               withBorder
               c="dimmed"

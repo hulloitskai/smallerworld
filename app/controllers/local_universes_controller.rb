@@ -49,15 +49,8 @@ class LocalUniversesController < ApplicationController
         associated_friend_access_token: friend&.access_token,
       )
     end
-    paused_friend_ids = current_user.friends.paused.pluck(:id)
-    recently_paused_friend_ids = current_user.friends
-      .paused_during(1.month.ago..)
-      .distinct
-      .pluck(:id)
     render(json: {
       worlds: LocalUniverseWorldSerializer.many(worlds),
-      "pausedFriendIds" => paused_friend_ids,
-      "recentlyPausedFriendIds" => recently_paused_friend_ids,
       "hideStats" => current_user.hide_stats,
     })
   end

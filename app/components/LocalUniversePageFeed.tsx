@@ -20,8 +20,7 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
   className,
   ...otherProps
 }) => {
-  const { currentUser, pausedFriendIds, recentlyPausedFriendIds, hideStats } =
-    usePageProps<LocalUniversePageProps>();
+  const { currentUser, hideStats } = usePageProps<LocalUniversePageProps>();
   const queryParams = useQueryParams();
 
   // == Load posts
@@ -87,8 +86,6 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                       <AuthorPostCardActions
                         {...{
                           post,
-                          pausedFriendIds,
-                          recentlyPausedFriendIds,
                           hideStats,
                         }}
                       />

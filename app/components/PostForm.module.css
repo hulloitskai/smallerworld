@@ -30,6 +30,7 @@
 }
 
 .visibilitySegmentedControl {
+  display: flex;
   border: rem(1px) solid
     light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
 
@@ -60,8 +61,10 @@
 }
 
 .imagesScrollArea {
+  margin-top: -8px;
+
   :global(.mantine-ScrollArea-content) {
-    padding-top: 4px;
+    padding-top: 8px;
     padding-bottom: var(--mantine-spacing-xs);
   }
 
@@ -80,5 +83,48 @@
 
   @mixin light-user-theme {
     background-color: alpha(var(--mantine-color-white), 0.7);
+  }
+}
+
+.friendNotifiabilityAccordion {
+  :global(.mantine-Accordion-icon) {
+    font-size: var(--mantine-font-size-xs);
+  }
+
+  :global(.mantine-Accordion-label) {
+    font-family: var(--mantine-font-family-headings);
+    font-size: var(--mantine-font-size-sm);
+    padding-block: var(--mantine-spacing-xs);
+  }
+
+  :global(.mantine-Accordion-panel) {
+    padding-block: 0px;
+  }
+}
+
+.friendNotifiabilityTable {
+  :global(.mantine-Table-tr):last-of-type {
+    border-bottom: none;
+  }
+}
+
+.friendNotifiabilityTableNameCell {
+  &[data-notifiability="notify"] {
+    font-weight: 500;
+  }
+  &[data-notifiability="hidden"] {
+    color: var(--mantine-color-dimmed);
+  }
+}
+
+.friendNotifiabilitySegmentedControl {
+  display: flex;
+  border: rem(1px) solid
+    light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
+
+  :global(.mantine-SegmentedControl-innerLabel) {
+    display: block;
+    line-height: 1;
+    font-size: var(--mantine-font-size-xs);
   }
 }

@@ -58,19 +58,8 @@ class Post < ApplicationRecord
             predicates: true
   enumerize :visibility, in: %i[public friends chosen_family only_me]
 
-  sig { returns(T.nilable(T::Boolean)) }
-  attr_accessor :quiet
-
-  sig { returns(T::Boolean) }
-  def quiet? = !!quiet
-
-  sig { returns(T.nilable(T::Boolean)) }
-  attr_accessor :text_blast
-
-  sig { returns(T::Boolean) }
-  def text_blast? = !!text_blast
-
-  alias_method :send_text_blasts?, :text_blast?
+  sig { returns(T.nilable(T::Array[String])) }
+  attr_accessor :friend_ids_to_notify
 
   sig { returns(String) }
   def body_text
@@ -178,8 +167,7 @@ class Post < ApplicationRecord
   validate :validate_no_nested_quoting, if: :quoted_post?
 
   # == Callbacks
-  after_create :create_notifications_later, if: :send_notifications?
-  after_create :create_text_blasts!, if: :send_text_blasts?
+  after_save :create_notifications!, if: :send_notifications?
   after_save :save_images_ids!, if: :images_changed?
 
   # == Scopes
@@ -354,27 +342,37 @@ class Post < ApplicationRecord
     reply_receipts.select(:friend_id).distinct
   end
 
-  sig { returns(Friend::PrivateAssociationRelation) }
-  def hidden_from
-    author_friends.where(id: hidden_from_ids)
+  sig do
+    returns(T.any(
+      Friend::PrivateCollectionProxy,
+      Friend::PrivateAssociationRelation,
+    ))
   end
-
-  sig { returns(Friend::PrivateAssociationRelation) }
-  def audience
-    author_friends.where.not(id: hidden_from_ids)
+  def hidden_from
+    if (hidden_from_ids = self.hidden_from_ids.presence)
+      author_friends.where(id: hidden_from_ids)
+    else
+      author_friends
+    end
   end
 
   # == Notifications
   sig { returns(T::Boolean) }
-  def send_notifications? = user_created? && !quiet?
+  def send_notifications?
+    user_created? && friend_ids_to_notify.present?
+  end
 
   sig { returns(Friend::PrivateAssociationRelation) }
   def friends_to_notify
-    subscribed_type = quoted_post&.type || type
-    friends = audience.subscribed_to(subscribed_type)
-    if visibility == :chosen_family
-      friends = friends.chosen_family
+    friends = if (friend_ids = friend_ids_to_notify)
+      subscribed_type = quoted_post&.type || type
+      author_friends
+        .where(id: friend_ids)
+        .subscribed_to(subscribed_type)
+    else
+      author_friends.none
     end
+    friends = friends.chosen_family if visibility == :chosen_family
     friends
   end
 
@@ -382,21 +380,28 @@ class Post < ApplicationRecord
   def create_notifications!
     return if visibility == :only_me
 
-    friends_to_notify.select(:id).find_each do |friend|
-      notifications.create!(
-        recipient: friend,
-        push_delay: NOTIFICATION_DELAY,
-      )
-    end
+    friends = friends_to_notify
+    friends
+      .notifiable
+      .where.not(id: notifications.select(:recipient_id))
+      .select(:id).find_each do |friend|
+        notifications.create!(recipient: friend, push_delay: NOTIFICATION_DELAY)
+      end
     if visibility == :public
       notifications.create!(recipient: nil, push_delay: NOTIFICATION_DELAY)
     end
+    friends
+      .text_only
+      .where.not(id: text_blasts.select(:friend_id))
+      .find_each do |friend|
+        text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
+      end
   end
 
-  sig { void }
-  def create_notifications_later
-    CreatePostNotificationsJob.perform_later(self)
-  end
+  # sig { void }
+  # def create_notifications_later
+  #   CreatePostNotificationsJob.perform_later(self)
+  # end
 
   sig { returns(Friend::PrivateRelation) }
   def notified_friends
@@ -416,21 +421,6 @@ class Post < ApplicationRecord
         redelivered_notifications_count += 1
       end
     redelivered_notifications_count
-  end
-
-  # == Text blasts
-  sig { returns(Friend::PrivateAssociationRelation) }
-  def friends_to_text_blast
-    audience.text_only
-  end
-
-  sig { void }
-  def create_text_blasts!
-    return if visibility == :only_me
-
-    friends_to_text_blast.find_each do |friend|
-      text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
-    end
   end
 
   private

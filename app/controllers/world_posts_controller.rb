@@ -68,6 +68,18 @@ class WorldPostsController < ApplicationController
     })
   end
 
+  # GET /world/posts/:id/audience
+  def audience
+    post = load_post
+    authorize!(post)
+    notified_ids = post.notifications.to_friends.pluck(:recipient_id) +
+      post.text_blasts.pluck(:friend_id)
+    render(json: {
+      "hiddenFromIds" => post.hidden_from_ids,
+      "notifiedIds" => notified_ids,
+    })
+  end
+
   # POST /world/posts
   def create
     current_user = authenticate_user!
@@ -80,9 +92,8 @@ class WorldPostsController < ApplicationController
       :pinned_until,
       :encouragement_id,
       :quoted_post_id,
-      :quiet,
-      :text_blast,
       images: [],
+      friend_ids_to_notify: [],
       hidden_from_ids: [],
     ])
     post = current_user.posts.build(**post_params)
@@ -110,10 +121,13 @@ class WorldPostsController < ApplicationController
       :pinned_until,
       :encouragement_id,
       images: [],
+      friend_ids_to_notify: [],
       hidden_from_ids: [],
     ])
     if post.update(post_params)
-      render(json: { post: WorldPostSerializer.one(post) })
+      render(json: {
+        post: WorldPostSerializer.one(post),
+      })
     else
       render(
         json: { errors: post.form_errors },

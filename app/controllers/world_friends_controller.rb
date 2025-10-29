@@ -28,18 +28,6 @@ class WorldFriendsController < ApplicationController
     end
   end
 
-  # GET /world/friends/text_subscribers
-  def text_subscribers
-    current_user = authenticate_user!
-    friends = current_user.friends
-      .text_only
-      .reverse_chronological
-    render(json: {
-      friends: WorldFriendSerializer.many(friends.limit(2)),
-      "textSubscribersCount" => friends.count,
-    })
-  end
-
   # PUT /world/friends/:id
   def update
     friend = load_friend

@@ -43,8 +43,6 @@ export interface WorldPageProps extends SharedPageProps {
   pendingJoinRequests: number;
   hideStats: boolean;
   hideNeko: boolean;
-  pausedFriendIds: string[];
-  recentlyPausedFriendIds: string[];
 }
 
 const ICON_SIZE = 96;
@@ -75,8 +73,6 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         "hideNeko",
         "pendingJoinRequests",
         "latestFriendEmojis",
-        "pausedFriendIds",
-        "recentlyPausedFriendIds",
       ],
       async: true,
     });

@@ -9,10 +9,23 @@ export interface PostFormValues {
   images_uploads: Upload[];
   visibility: PostVisibility;
   pinned_until: string | null;
-  quiet: boolean;
-  text_blast: boolean;
-  hidden_from_ids: string[];
+  friend_notifiability: Record<string, "hidden" | "muted" | "notify">;
   encouragement_id: string | null;
+}
+
+export interface PostFormSubmission {
+  post: {
+    emoji: string | null;
+    title: string | null;
+    body_html: string;
+    images: string[];
+    visibility: PostVisibility;
+    pinned_until: string | null;
+    hidden_from_ids: string[];
+    friend_ids_to_notify: string[];
+    encouragement_id: string | null;
+    quoted_post_id?: string | null;
+  };
 }
 
 interface PostDraft {
