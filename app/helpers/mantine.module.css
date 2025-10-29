@@ -432,4 +432,12 @@
       }
     }
   }
+
+  .table {
+    @mixin dark-user-theme {
+      :global(.mantine-Table-tr) {
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
+  }
 }

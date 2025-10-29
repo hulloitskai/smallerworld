@@ -634,7 +634,7 @@ const PostForm: FC<PostFormProps> = props => {
                   ),
                   value: visibility,
                 }))}
-                className={classes.visibilitySegmentedControl}
+                className={classes.segmentedControl}
               />
               <Text size="xs" c="dimmed" ta="center" inline>
                 {POST_VISIBILITY_DESCRIPTORS[values.visibility]}
@@ -743,9 +743,10 @@ const PostForm: FC<PostFormProps> = props => {
                                       {...(value === "notify" && {
                                         color: "primary",
                                       })}
-                                      className={
-                                        classes.friendNotifiabilitySegmentedControl
-                                      }
+                                      className={cn(
+                                        classes.segmentedControl,
+                                        classes.friendNotifiabilitySegmentedControl,
+                                      )}
                                     />
                                   </Table.Td>
                                 </Table.Tr>

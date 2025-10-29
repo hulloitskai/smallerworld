@@ -29,7 +29,7 @@
   }
 }
 
-.visibilitySegmentedControl {
+.segmentedControl {
   display: flex;
   border: rem(1px) solid
     light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
@@ -38,13 +38,8 @@
     background-color: transparent;
     border: rem(1px) solid alpha(var(--mantine-color-white), 0.2);
 
-    :global(.mantine-SegmentedControl-indicator) {
-      background-color: var(--mantine-color-white);
-    }
-
-    :global(.mantine-SegmentedControl-label)[data-active] {
-      color: var(--mantine-color-body);
-    }
+    --sc-color: var(--mantine-color-white);
+    --sc-label-color: var(--mantine-color-body);
   }
 }
 
@@ -87,6 +82,13 @@
 }
 
 .friendNotifiabilityAccordion {
+  :global(.mantine-Accordion-item) {
+    @mixin dark-user-theme {
+      background-color: transparent;
+      border-color: alpha(var(--mantine-color-white), 0.2);
+    }
+  }
+
   :global(.mantine-Accordion-icon) {
     font-size: var(--mantine-font-size-xs);
   }
@@ -94,11 +96,16 @@
   :global(.mantine-Accordion-label) {
     font-family: var(--mantine-font-family-headings);
     font-size: var(--mantine-font-size-sm);
-    padding-block: var(--mantine-spacing-xs);
+    padding-block: var(--mantine-spacing-sm);
   }
 
   :global(.mantine-Accordion-panel) {
     padding-block: 0px;
+  }
+
+  :global(.mantine-Accordion-content) {
+    padding-top: 0;
+    padding-bottom: var(--mantine-spacing-sm);
   }
 }
 
@@ -118,10 +125,6 @@
 }
 
 .friendNotifiabilitySegmentedControl {
-  display: flex;
-  border: rem(1px) solid
-    light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
-
   :global(.mantine-SegmentedControl-innerLabel) {
     display: block;
     line-height: 1;

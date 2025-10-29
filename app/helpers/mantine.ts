@@ -25,6 +25,7 @@ import {
   PinInput,
   Popover,
   ScrollArea,
+  Table,
   Text,
   TextInput,
   ThemeIcon,
@@ -347,6 +348,11 @@ const createTheme = (
       AppShell: AppShell.extend({
         classNames: {
           footer: classes.appShellFooter,
+        },
+      }),
+      Table: Table.extend({
+        classNames: {
+          table: classes.table,
         },
       }),
     },
