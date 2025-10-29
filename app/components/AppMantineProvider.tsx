@@ -45,11 +45,13 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
               : theme.colors?.primary,
         },
       }}
-      {...(detectedUserTheme && {
-        defaultColorScheme: DARK_USER_THEMES.includes(detectedUserTheme)
-          ? "dark"
-          : "light",
-      })}
+      defaultColorScheme={
+        detectedUserTheme
+          ? DARK_USER_THEMES.includes(detectedUserTheme)
+            ? "dark"
+            : "light"
+          : "auto"
+      }
       {...(import.meta.env.RAILS_ENV === "test" && {
         env: "test",
       })}
