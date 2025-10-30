@@ -439,9 +439,9 @@
   }
 
   .table {
-    @mixin dark-user-theme {
-      :global(.mantine-Table-tr) {
-        border-color: alpha(var(--mantine-color-white), 0.2);
+    :global(.mantine-Table-tr) {
+      @mixin dark-user-theme {
+        border-color: alpha(var(--mantine-color-white), 0.1);
       }
     }
   }

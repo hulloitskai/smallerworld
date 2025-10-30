@@ -11,6 +11,7 @@ import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { difference, invertBy, map, sortBy } from "lodash-es";
 import { type DraggableProps, motion, Reorder } from "motion/react";
+import { type PropsWithChildren } from "react";
 
 import MutedIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
@@ -726,7 +727,7 @@ const PostForm: FC<PostFormProps> = props => {
                           </Button>
                         </Group>
                         {subscribedFriends && (
-                          <FriendNotifiabilityTable
+                          <FriendNotifiabilityTables
                             postId={post?.id}
                             friends={subscribedFriends}
                             getSegmentedControlInputProps={friend =>
@@ -832,7 +833,7 @@ interface FriendNotifiabilityTableProps {
   };
 }
 
-const FriendNotifiabilityTable: FC<FriendNotifiabilityTableProps> = ({
+const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
   postId,
   friends,
   getSegmentedControlInputProps,
@@ -960,31 +961,51 @@ const FriendNotifiabilityTable: FC<FriendNotifiabilityTableProps> = ({
     );
   };
   return (
-    <Table className={classes.friendNotifiabilityTable}>
+    <Stack gap={4}>
       {!isEmpty(pushableFriends) && (
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Th colSpan={2}>friends that installed your world</Table.Th>
-          </Table.Tr>
-          {pushableFriends.map(renderRow)}
-        </Table.Tbody>
+        <ScrollableTableContainer>
+          <Table stickyHeader className={classes.friendNotifiabilityTable}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th colSpan={2}>
+                  friends that installed your world
+                </Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{pushableFriends.map(renderRow)}</Table.Tbody>
+          </Table>
+        </ScrollableTableContainer>
       )}
       {!isEmpty(textOnlyFriends) && (
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Th colSpan={2}>friends subscribed via text</Table.Th>
-          </Table.Tr>
-          {textOnlyFriends.map(renderRow)}
-        </Table.Tbody>
+        <ScrollableTableContainer>
+          <Table stickyHeader className={classes.friendNotifiabilityTable}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th colSpan={2}>friends subscribed via text</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{textOnlyFriends.map(renderRow)}</Table.Tbody>
+          </Table>
+        </ScrollableTableContainer>
       )}
       {!isEmpty(pausedFriends) && (
-        <Table.Tbody>
-          <Table.Tr>
-            <Table.Th colSpan={2}>paused friends</Table.Th>
-          </Table.Tr>
-          {pausedFriends.map(renderRow)}
-        </Table.Tbody>
+        <ScrollableTableContainer>
+          <Table stickyHeader className={classes.friendNotifiabilityTable}>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th colSpan={2}>paused friends</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{pausedFriends.map(renderRow)}</Table.Tbody>
+          </Table>
+        </ScrollableTableContainer>
       )}
-    </Table>
+    </Stack>
   );
 };
+
+const ScrollableTableContainer: FC<PropsWithChildren> = ({ children }) => (
+  <ScrollArea.Autosize type="auto" mah={200}>
+    {children}
+  </ScrollArea.Autosize>
+);
