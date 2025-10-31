@@ -124,6 +124,11 @@ class User < ApplicationRecord
                     },
                   }
 
+  # == Scopes
+  scope :subscribed_to_public_posts, -> {
+    where(handle: handles_subscribed_to_public_posts)
+  }
+
   # == Methods
   sig { returns(T::Boolean) }
   def admin?
@@ -142,14 +147,14 @@ class User < ApplicationRecord
     notifications_last_cleared_at || created_at
   end
 
-  sig { returns(T::Boolean) }
-  def smutty_themes_allowed?
-    self.class.handles_allowing_smutty_themes.include?(handle)
+  sig { returns(T::Set[Symbol]) }
+  def feature_flags
+    self.class.feature_flags_for(handle)
   end
 
-  sig { returns(T::Array[Symbol]) }
+  sig { returns(T::Set[Symbol]) }
   def supported_features
-    features = []
+    features = feature_flags
     if push_registrations.any? &&
         last_active_at >= ENCOURAGEMENTS_AVAILABLE_SINCE
       features << :encouragements
@@ -157,12 +162,6 @@ class User < ApplicationRecord
     if posts.count >= MIN_POST_COUNT_FOR_SEARCH
       features << :search
     end
-    if smutty_themes_allowed?
-      features << :smutty_themes
-    end
-    # if admin?
-    #   features << :stickers
-    # end
     features
   end
 
@@ -231,12 +230,28 @@ class User < ApplicationRecord
     find_by(phone_number:)
   end
 
+  sig { params(handle: String).returns(T::Set[Symbol]) }
+  def self.feature_flags_for(handle)
+    @feature_flags ||= Hash.new do |hash, key|
+      hash[key] = if (flags = Rails.application.credentials
+        .dig(:feature_flags, key))
+        flags.map(&:to_sym).to_set
+      else
+        Set.new
+      end
+    end
+    @feature_flags[handle]
+  end
+
   sig { returns(T::Set[String]) }
-  def self.handles_allowing_smutty_themes
-    @handles_allowing_smutty_themes ||= scoped do
-      handles = Rails.application.credentials
-        .smutty_themes
-        &.allowed_user_handles || []
+  def self.handles_subscribed_to_public_posts
+    @handles_subscribed_to_public_posts ||= scoped do
+      all_flags = Rails.application.credentials.feature_flags or next Set.new
+      handles = all_flags.filter_map do |handle, flags|
+        if flags.include?("public_post_notifications")
+          handle
+        end
+      end
       handles.to_set
     end
   end
