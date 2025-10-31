@@ -328,9 +328,6 @@ GEM
       activerecord (>= 6.1)
       activesupport (>= 6.1)
     phonelib (0.10.10)
-    playwright-ruby-client (1.52.0)
-      concurrent-ruby (>= 1.1.6)
-      mime-types (>= 3.0)
     pp (0.6.2)
       prettyprint
     premailer (1.27.0)
@@ -365,7 +362,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.1)
+    rack (3.2.3)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-mini-profiler (3.3.1)
