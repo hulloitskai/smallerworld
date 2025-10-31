@@ -17,7 +17,6 @@ if [ "$STATUS" != "0" ]; then
       exit 1
     fi
 
-    echo "Waiting for Docker to boot..." >&2
     ATTEMPTS=1
     while ! docker info > /dev/null 2>&1; do
       if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then

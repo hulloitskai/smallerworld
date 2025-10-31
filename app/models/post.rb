@@ -198,16 +198,9 @@ class Post < ApplicationRecord
       .returns(NotificationMessage)
   end
   def notification_message(recipient:)
-    recipient = if recipient.nil? || recipient.is_a?(Friend)
-      recipient
-    else
-      raise "Invalid recipient for #{self.class}} notification: " \
-        "#{recipient.inspect}"
-    end
-
     title = "new #{type.humanize(capitalize: false)}"
     author = author!
-    unless recipient
+    unless recipient.is_a?(Friend)
       title += " from #{author.name}"
     end
     body = ""
@@ -220,17 +213,20 @@ class Post < ApplicationRecord
       truncated_body_text
     end
     url_helpers = Rails.application.routes.url_helpers
-    NotificationMessage.new(
-      title:,
-      body:,
-      image: cover_image,
-      target_url: url_helpers.user_url(
+    target_url = case recipient
+    when Friend
+      url_helpers.user_url(
         author,
-        friend_token: recipient&.access_token,
+        friend_token: recipient.access_token,
         post_id: id,
         trailing_slash: true,
-      ),
-    )
+      )
+    when User
+      url_helpers.local_universe_url(post_id: id)
+    else
+      url_helpers.universe_url(post_id: id, trailing_slash: true)
+    end
+    NotificationMessage.new(title:, body:, image: cover_image, target_url:)
   end
 
   sig { params(recipient: Friend).returns(String) }
@@ -359,7 +355,7 @@ class Post < ApplicationRecord
   # == Notifications
   sig { returns(T::Boolean) }
   def send_notifications?
-    user_created? && friend_ids_to_notify.present?
+    user_created? && (friend_ids_to_notify.present? || visibility == :public)
   end
 
   sig { returns(Friend::PrivateAssociationRelation) }
@@ -387,15 +383,22 @@ class Post < ApplicationRecord
       .select(:id).find_each do |friend|
         notifications.create!(recipient: friend, push_delay: NOTIFICATION_DELAY)
       end
-    if visibility == :public
-      notifications.create!(recipient: nil, push_delay: NOTIFICATION_DELAY)
-    end
     friends
       .text_only
       .where.not(id: text_blasts.select(:friend_id))
       .find_each do |friend|
         text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
       end
+    if visibility == :public
+      notifications.find_or_create_by!(recipient: nil) do |notification|
+        notification.push_delay = NOTIFICATION_DELAY
+      end
+      User.subscribed_to_public_posts.find_each do |user|
+        notifications.find_or_create_by!(recipient: user) do |notification|
+          notification.push_delay = NOTIFICATION_DELAY
+        end
+      end
+    end
   end
 
   # sig { void }
