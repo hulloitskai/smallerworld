@@ -62,7 +62,9 @@ const RequestInvitationForm: FC<RequestInvitationFormProps> = ({
     },
     onSuccess: ({ joinRequest }: { joinRequest: JoinRequest }) => {
       toast.success("invitation request sent!", {
-        description: "we'll text you when you're invited :)",
+        description: (
+          <>you'll get a text from {user.name} when they're ready for you :)</>
+        ),
       });
       onJoinRequestCreated?.(joinRequest);
     },
