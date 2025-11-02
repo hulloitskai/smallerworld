@@ -622,7 +622,6 @@ DEPENDENCIES
   pg_query
   pg_search (~> 2.3)
   phonelib (~> 0.10.10)
-  playwright-ruby-client
   premailer-rails (~> 1.12)
   prosopite
   pry

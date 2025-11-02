@@ -3,6 +3,7 @@
 
 require "core_ext"
 require "inertia_rails"
+require_relative "asset_helper"
 
 module InertiaRails
   # Adds support for rendering Inertia components in emails
@@ -26,6 +27,7 @@ module InertiaRails
       T.bind(self, T.class_of(ActionMailer::Base))
 
       helper Helper
+      helper AssetHelper
     end
 
     # == Methods
