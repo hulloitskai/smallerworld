@@ -2683,7 +2683,6 @@ module ActionController::Base::HelperMethods
   include ::ActionText::ContentHelper
   include ::ActionText::TagHelper
   include ::InertiaRails::Helper
-  include ::InertiaRails::AssetHelper
   include ::ViteRails::TagHelpers
 
   # source://actionpack//lib/action_controller/base.rb#289

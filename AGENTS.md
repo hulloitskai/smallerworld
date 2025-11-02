@@ -5,7 +5,7 @@
 - Format and lint with `bin/fix` before committing; it installs tooling with the project's versions.
 - Reset JS/TS tooling drift by running `npm ci` and matching the Node version in `.nvmrc`.
 - Execute the full test suite with `bin/test`; do not call Rails test runners directly.
-- If the pre-push hook fails and you've confirmed it's safe to proceed, push with `git push --no-verify`.
+- If the pre-push hook fails because of a failed dependency audit, push with `git push --no-verify`.
 
 ## Change Management
 

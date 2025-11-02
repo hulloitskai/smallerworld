@@ -1,5 +1,7 @@
 import reactPlugin from "@vitejs/plugin-react";
-import { join } from "path";
+import { createReadStream, existsSync } from "fs";
+import Mime from "mime";
+import path, { join } from "path";
 import { visualizer as visualizerPlugin } from "rollup-plugin-visualizer";
 import autoImportPlugin from "unplugin-auto-import/vite";
 import iconsPlugin from "unplugin-icons/vite";
@@ -15,10 +17,16 @@ import rubyPlugin from "vite-plugin-ruby";
 
 import { imports } from "./config/auto-import";
 
+interface ViteRubyEnv {
+  VITE_RUBY_ROOT: string;
+  VITE_RUBY_PUBLIC_DIR: string;
+  VITE_RUBY_PUBLIC_OUTPUT_DIR: string;
+}
+
 export default defineConfig(
   async ({ command, mode, isPreview }): Promise<UserConfig> => {
     // == Resolve Vite Ruby configurations
-    const { base } = await resolveConfig(
+    const { base, env } = await resolveConfig(
       {
         configFile: false,
         plugins: [rubyPlugin()],
@@ -28,6 +36,8 @@ export default defineConfig(
       undefined,
       isPreview,
     );
+    const { VITE_RUBY_ROOT, VITE_RUBY_PUBLIC_DIR } = env as ViteRubyEnv;
+    const publicDir = path.join(VITE_RUBY_ROOT, VITE_RUBY_PUBLIC_DIR);
 
     // == Plugins
     const plugins: PluginOption = [
@@ -76,7 +86,31 @@ export default defineConfig(
       ),
     ];
 
-    // == Visualize
+    // == Filesystem fallback
+    // For serving static assets referenced by the SSR server.
+    plugins.push({
+      name: "filesystem-fallback",
+      apply: "serve",
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (!req.url) {
+            return next();
+          }
+          const filePath = path.join(publicDir, req.url);
+          if (!existsSync(filePath)) {
+            return next();
+          }
+          const contentType = Mime.getType(filePath);
+          if (!contentType) {
+            return next();
+          }
+          res.setHeader("Content-Type", contentType);
+          createReadStream(filePath).pipe(res);
+        });
+      },
+    });
+
+    // == Visualizer
     const visualize = process.env.VITE_VISUALIZE;
     if (visualize && ["1", "true", "t"].includes(visualize.toLowerCase())) {
       plugins.push(
@@ -114,7 +148,7 @@ export default defineConfig(
         noExternal:
           process.env.RAILS_ENV === "production"
             ? true
-            : ["@microsoft/clarity"],
+            : ["@microsoft/clarity", "@wordpress/wordcount"],
       },
       plugins,
     };

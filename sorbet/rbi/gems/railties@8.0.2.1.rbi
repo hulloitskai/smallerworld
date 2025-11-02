@@ -5839,7 +5839,6 @@ module Rails::MailersController::HelperMethods
   include ::ActionText::ContentHelper
   include ::ActionText::TagHelper
   include ::InertiaRails::Helper
-  include ::InertiaRails::AssetHelper
   include ::ViteRails::TagHelpers
   include ::ActionController::Base::HelperMethods
 

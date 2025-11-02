@@ -272,6 +272,8 @@ module Premailer::Adapter::Nokogiri
   def load_html(input); end
 
   # Merge CSS into the HTML document.
+  #
+  # source://premailer//lib/premailer/adapter/nokogiri.rb#14
   sig { returns(::String) }
   def to_inline_css; end
 

@@ -56,19 +56,19 @@ module ActualDbSchema
     # source://actual_db_schema//lib/actual_db_schema.rb#56
     def migrations_paths; end
 
-    # source://railties/7.1.3.4/lib/rails/engine.rb#412
+    # source://actual_db_schema//lib/actual_db_schema/engine.rb#6
     def railtie_helpers_paths; end
 
-    # source://railties/7.1.3.4/lib/rails/engine.rb#395
+    # source://actual_db_schema//lib/actual_db_schema/engine.rb#6
     def railtie_namespace; end
 
-    # source://railties/7.1.3.4/lib/rails/engine.rb#416
+    # source://actual_db_schema//lib/actual_db_schema/engine.rb#6
     def railtie_routes_url_helpers(include_path_helpers = T.unsafe(nil)); end
 
-    # source://railties/7.1.3.4/lib/rails/engine.rb#401
+    # source://actual_db_schema//lib/actual_db_schema/engine.rb#6
     def table_name_prefix; end
 
-    # source://railties/7.1.3.4/lib/rails/engine.rb#408
+    # source://actual_db_schema//lib/actual_db_schema/engine.rb#6
     def use_relative_model_naming?; end
   end
 end
@@ -179,24 +179,23 @@ ActualDbSchema::Commands::Rollback::UNICODE_COLORS = T.let(T.unsafe(nil), Hash)
 # It isolates the namespace to avoid conflicts with the main application.
 #
 # source://actual_db_schema//lib/actual_db_schema/engine.rb#5
-class ActualDbSchema::Engine < ::Rails::Engine
-  class << self
-    # source://activesupport/7.1.3.4/lib/active_support/callbacks.rb#70
-    def __callbacks; end
-  end
-end
+class ActualDbSchema::Engine < ::Rails::Engine; end
 
 # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
 class ActualDbSchema::FailedMigration < ::Struct
   # Returns the value of attribute exception
   #
   # @return [Object] the current value of exception
+  #
+  # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
   def exception; end
 
   # Sets the attribute exception
   #
   # @param value [Object] the value to set the attribute exception to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
   def exception=(_); end
 
   # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#5
@@ -205,22 +204,35 @@ class ActualDbSchema::FailedMigration < ::Struct
   # Returns the value of attribute migration
   #
   # @return [Object] the current value of migration
+  #
+  # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
   def migration; end
 
   # Sets the attribute migration
   #
   # @param value [Object] the value to set the attribute migration to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
   def migration=(_); end
 
   # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#9
   def short_filename; end
 
   class << self
+    # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
     def [](*_arg0); end
+
+    # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
     def inspect; end
+
+    # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
     def keyword_init?; end
+
+    # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
     def members; end
+
+    # source://actual_db_schema//lib/actual_db_schema/failed_migration.rb#4
     def new(*_arg0); end
   end
 end
@@ -239,6 +251,7 @@ end
 #
 # source://actual_db_schema//lib/actual_db_schema/migration.rb#5
 class ActualDbSchema::Migration
+  include ::Singleton::SingletonInstanceMethods
   include ::Singleton
   extend ::Singleton::SingletonClassMethods
 
@@ -290,7 +303,10 @@ class ActualDbSchema::Migration
   class << self
     private
 
+    # source://actual_db_schema//lib/actual_db_schema/migration.rb#6
     def allocate; end
+
+    # source://actual_db_schema//lib/actual_db_schema/migration.rb#6
     def new(*_arg0); end
   end
 end
@@ -300,85 +316,122 @@ class ActualDbSchema::Migration::Migration < ::Struct
   # Returns the value of attribute branch
   #
   # @return [Object] the current value of branch
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def branch; end
 
   # Sets the attribute branch
   #
   # @param value [Object] the value to set the attribute branch to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def branch=(_); end
 
   # Returns the value of attribute database
   #
   # @return [Object] the current value of database
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def database; end
 
   # Sets the attribute database
   #
   # @param value [Object] the value to set the attribute database to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def database=(_); end
 
   # Returns the value of attribute filename
   #
   # @return [Object] the current value of filename
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def filename; end
 
   # Sets the attribute filename
   #
   # @param value [Object] the value to set the attribute filename to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def filename=(_); end
 
   # Returns the value of attribute name
   #
   # @return [Object] the current value of name
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def name; end
 
   # Sets the attribute name
   #
   # @param value [Object] the value to set the attribute name to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def name=(_); end
 
   # Returns the value of attribute phantom
   #
   # @return [Object] the current value of phantom
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def phantom; end
 
   # Sets the attribute phantom
   #
   # @param value [Object] the value to set the attribute phantom to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def phantom=(_); end
 
   # Returns the value of attribute status
   #
   # @return [Object] the current value of status
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def status; end
 
   # Sets the attribute status
   #
   # @param value [Object] the value to set the attribute status to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def status=(_); end
 
   # Returns the value of attribute version
   #
   # @return [Object] the current value of version
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def version; end
 
   # Sets the attribute version
   #
   # @param value [Object] the value to set the attribute version to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
   def version=(_); end
 
   class << self
+    # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
     def [](*_arg0); end
+
+    # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
     def inspect; end
+
+    # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
     def keyword_init?; end
+
+    # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
     def members; end
+
+    # source://actual_db_schema//lib/actual_db_schema/migration.rb#8
     def new(*_arg0); end
   end
 end
@@ -387,6 +440,7 @@ end
 #
 # source://actual_db_schema//lib/actual_db_schema/migration_context.rb#5
 class ActualDbSchema::MigrationContext
+  include ::Singleton::SingletonInstanceMethods
   include ::Singleton
   extend ::Singleton::SingletonClassMethods
 
@@ -407,7 +461,10 @@ class ActualDbSchema::MigrationContext
   class << self
     private
 
+    # source://actual_db_schema//lib/actual_db_schema/migration_context.rb#6
     def allocate; end
+
+    # source://actual_db_schema//lib/actual_db_schema/migration_context.rb#6
     def new(*_arg0); end
   end
 end
@@ -420,44 +477,39 @@ class ActualDbSchema::MigrationsController < ::ActionController::Base
 
   private
 
-  # source://actionview/7.1.3.4/lib/action_view/layouts.rb#330
-  def _layout(lookup_context, formats); end
-
+  def _layout(lookup_context, formats, keys); end
   def handle_migrate(id, database); end
   def handle_rollback(id, database); end
   def migration; end
   def migrations; end
 
   class << self
-    # source://activesupport/7.1.3.4/lib/active_support/callbacks.rb#70
-    def __callbacks; end
-
-    # source://actionpack/7.1.3.4/lib/abstract_controller/helpers.rb#12
-    def _helper_methods; end
-
-    # source://actionpack/7.1.3.4/lib/action_dispatch/routing/route_set.rb#584
     def _routes; end
 
-    # source://actionpack/7.1.3.4/lib/action_controller/metal/params_wrapper.rb#187
-    def _wrapper_options; end
+    private
 
-    # source://actionpack/7.1.3.4/lib/action_controller/metal/helpers.rb#65
-    def helpers_path; end
-
-    # source://actionpack/7.1.3.4/lib/action_controller/metal.rb#262
-    def middleware_stack; end
+    def __class_attr___callbacks; end
+    def __class_attr___callbacks=(new_value); end
+    def __class_attr__helper_methods; end
+    def __class_attr__helper_methods=(new_value); end
+    def __class_attr__wrapper_options; end
+    def __class_attr__wrapper_options=(new_value); end
+    def __class_attr_helpers_path; end
+    def __class_attr_helpers_path=(new_value); end
+    def __class_attr_middleware_stack; end
+    def __class_attr_middleware_stack=(new_value); end
   end
 end
 
 module ActualDbSchema::MigrationsController::HelperMethods
   include ::ActionText::ContentHelper
   include ::ActionText::TagHelper
-  include ::InertiaRails::AssetHelper
+  include ::InertiaRails::Helper
   include ::ViteRails::TagHelpers
   include ::ActionController::Base::HelperMethods
 
-  # def migration(*args, **_arg1, &block); end
-  # def migrations(*args, **_arg1, &block); end
+  # def migration(*_arg0, **_arg1, &_arg2); end
+  # def migrations(*_arg0, **_arg1, &_arg2); end
 end
 
 # source://actual_db_schema//lib/actual_db_schema/patches/migration_proxy.rb#4
@@ -528,50 +580,46 @@ class ActualDbSchema::PhantomMigrationsController < ::ActionController::Base
 
   private
 
-  # source://actionview/7.1.3.4/lib/action_view/layouts.rb#330
-  def _layout(lookup_context, formats); end
-
+  def _layout(lookup_context, formats, keys); end
   def handle_rollback(id, database); end
   def handle_rollback_all; end
   def phantom_migration; end
   def phantom_migrations; end
 
   class << self
-    # source://activesupport/7.1.3.4/lib/active_support/callbacks.rb#70
-    def __callbacks; end
-
-    # source://actionpack/7.1.3.4/lib/abstract_controller/helpers.rb#12
-    def _helper_methods; end
-
-    # source://actionpack/7.1.3.4/lib/action_dispatch/routing/route_set.rb#584
     def _routes; end
 
-    # source://actionpack/7.1.3.4/lib/action_controller/metal/params_wrapper.rb#187
-    def _wrapper_options; end
+    private
 
-    # source://actionpack/7.1.3.4/lib/action_controller/metal/helpers.rb#65
-    def helpers_path; end
-
-    # source://actionpack/7.1.3.4/lib/action_controller/metal.rb#262
-    def middleware_stack; end
+    def __class_attr___callbacks; end
+    def __class_attr___callbacks=(new_value); end
+    def __class_attr__helper_methods; end
+    def __class_attr__helper_methods=(new_value); end
+    def __class_attr__wrapper_options; end
+    def __class_attr__wrapper_options=(new_value); end
+    def __class_attr_helpers_path; end
+    def __class_attr_helpers_path=(new_value); end
+    def __class_attr_middleware_stack; end
+    def __class_attr_middleware_stack=(new_value); end
   end
 end
 
 module ActualDbSchema::PhantomMigrationsController::HelperMethods
   include ::ActionText::ContentHelper
   include ::ActionText::TagHelper
-  include ::InertiaRails::AssetHelper
+  include ::InertiaRails::Helper
   include ::ViteRails::TagHelpers
   include ::ActionController::Base::HelperMethods
 
-  # def phantom_migration(*args, **_arg1, &block); end
-  # def phantom_migrations(*args, **_arg1, &block); end
+  # def phantom_migration(*_arg0, **_arg1, &_arg2); end
+  # def phantom_migrations(*_arg0, **_arg1, &_arg2); end
 end
 
 # Stores the migrated files into the tmp folder
 #
 # source://actual_db_schema//lib/actual_db_schema/store.rb#5
 class ActualDbSchema::Store
+  include ::Singleton::SingletonInstanceMethods
   include ::Singleton
   extend ::Singleton::SingletonClassMethods
 
@@ -595,7 +643,10 @@ class ActualDbSchema::Store
   class << self
     private
 
+    # source://actual_db_schema//lib/actual_db_schema/store.rb#6
     def allocate; end
+
+    # source://actual_db_schema//lib/actual_db_schema/store.rb#6
     def new(*_arg0); end
   end
 end
@@ -605,41 +656,62 @@ class ActualDbSchema::Store::Item < ::Struct
   # Returns the value of attribute branch
   #
   # @return [Object] the current value of branch
+  #
+  # source://actual_db_schema//lib/actual_db_schema/store.rb#8
   def branch; end
 
   # Sets the attribute branch
   #
   # @param value [Object] the value to set the attribute branch to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/store.rb#8
   def branch=(_); end
 
   # Returns the value of attribute timestamp
   #
   # @return [Object] the current value of timestamp
+  #
+  # source://actual_db_schema//lib/actual_db_schema/store.rb#8
   def timestamp; end
 
   # Sets the attribute timestamp
   #
   # @param value [Object] the value to set the attribute timestamp to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/store.rb#8
   def timestamp=(_); end
 
   # Returns the value of attribute version
   #
   # @return [Object] the current value of version
+  #
+  # source://actual_db_schema//lib/actual_db_schema/store.rb#8
   def version; end
 
   # Sets the attribute version
   #
   # @param value [Object] the value to set the attribute version to.
   # @return [Object] the newly set value
+  #
+  # source://actual_db_schema//lib/actual_db_schema/store.rb#8
   def version=(_); end
 
   class << self
+    # source://actual_db_schema//lib/actual_db_schema/store.rb#8
     def [](*_arg0); end
+
+    # source://actual_db_schema//lib/actual_db_schema/store.rb#8
     def inspect; end
+
+    # source://actual_db_schema//lib/actual_db_schema/store.rb#8
     def keyword_init?; end
+
+    # source://actual_db_schema//lib/actual_db_schema/store.rb#8
     def members; end
+
+    # source://actual_db_schema//lib/actual_db_schema/store.rb#8
     def new(*_arg0); end
   end
 end

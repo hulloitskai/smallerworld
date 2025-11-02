@@ -1,10 +1,8 @@
 # typed: true
 # frozen_string_literal: true
 
-require "vite_rails"
 require "vite_ruby_ext"
-
-return unless defined?(ViteRails::Engine)
+require "vite_rails"
 
 class ViteRails::Engine
   initializer "vite_rails.ssr_support" do
@@ -20,4 +18,4 @@ class ViteRails::Engine
       end
     end
   end
-end
+end if defined?(ViteRails::Engine)

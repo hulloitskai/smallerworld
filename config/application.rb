@@ -39,7 +39,7 @@ module SmallerWorld
     require "clarity"
     require "amplitude"
     require "contact"
-    require "service_worker_proxy"
+    require "service_worker_app"
     require "overpowered"
     require "canny"
 

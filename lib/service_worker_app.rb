@@ -3,8 +3,10 @@
 
 require "vite_ruby"
 require "addressable"
+require "logging"
 
-class ServiceWorkerProxy
+class ServiceWorkerApp
+  include Logging
   extend T::Sig
 
   sig { params(app: T.untyped).void }
@@ -23,6 +25,15 @@ class ServiceWorkerProxy
       if dev_server_running?
         path = sw_path(query_values.fetch("worker", "dev-sw.js"))
         target_env = rewrite_env(env, path:, query_string: "dev-sw")
+        tag_logger do
+          env_subset = target_env.slice(
+            "PATH_INFO",
+            "REQUEST_PATH",
+            "REQUEST_URI",
+            "QUERY_STRING",
+          )
+          logger.debug("Forwarding to dev server with env: #{env_subset}")
+        end
         @proxy.call(target_env)
       else
         files = Rack::Files.new(Rails.public_path.to_s, {
@@ -54,15 +65,15 @@ class ServiceWorkerProxy
     params(
       env: T::Hash[String, T.untyped],
       path: String,
-      query_string: String,
+      query_string: T.nilable(String),
     ).returns(T::Hash[String, T.untyped])
   end
-  def rewrite_env(env, path:, query_string: "")
+  def rewrite_env(env, path:, query_string: nil)
     env.merge(
       "PATH_INFO" => path,
       "REQUEST_PATH" => path,
-      "REQUEST_URI" => [path, query_string].compact_blank.join("?"),
-      "QUERY_STRING" => query_string,
+      "REQUEST_URI" => [path, query_string].compact.join("?"),
+      "QUERY_STRING" => query_string || "",
     )
   end
 end

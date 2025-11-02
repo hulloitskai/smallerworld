@@ -17,12 +17,15 @@ class ViteRuby
     ).returns(T.type_parameter(:U))
   end
   def self.without_dev_server(&block)
-    prev_disabled = dev_server_disabled
-    self.dev_server_disabled = true
-    begin
+    if dev_server_disabled
       yield
-    ensure
-      self.dev_server_disabled = prev_disabled
+    else
+      self.dev_server_disabled = true
+      begin
+        yield
+      ensure
+        self.dev_server_disabled = false
+      end
     end
   end
 
@@ -32,12 +35,15 @@ class ViteRuby
     ).returns(T.type_parameter(:U))
   end
   def self.without_auto_build(&block)
-    prev_disabled = auto_build_disabled
-    self.auto_build_disabled = true
-    begin
+    if auto_build_disabled
       yield
-    ensure
-      self.auto_build_disabled = prev_disabled
+    else
+      self.auto_build_disabled = true
+      begin
+        yield
+      ensure
+        self.auto_build_disabled = false
+      end
     end
   end
 
@@ -50,7 +56,7 @@ class ViteRuby
 
     sig { returns(T::Boolean) }
     def dev_server_running?
-      !ViteRuby.dev_server_disabled? && super
+      !ViteRuby.dev_server_disabled && super
     end
   end
   prepend DisableDevServerSupport
@@ -66,7 +72,8 @@ class ViteRuby
       # == Methods
       sig { params(env: T::Hash[String, T.untyped]).returns(T::Boolean) }
       def vite_should_handle?(env)
-        !url_or_referrer_forces_ssr?(env) && !!super
+        uri = env.fetch("REQUEST_URI")
+        !uri_forces_ssr?(uri) && !!super
       end
 
       sig { returns(T::Boolean) }
@@ -85,16 +92,16 @@ class ViteRuby
         end
       end
 
-      sig { params(env: T::Hash[String, T.untyped]).returns(T::Boolean) }
-      def url_or_referrer_forces_ssr?(env)
-        return true if uri_forces_ssr?(env["REQUEST_URI"])
+      # sig { params(env: T::Hash[String, T.untyped]).returns(T::Boolean) }
+      # def url_or_referrer_forces_ssr?(env)
+      #   return true if uri_forces_ssr?(env["REQUEST_URI"])
 
-        if (referrer = env["HTTP_REFERER"])
-          uri_forces_ssr?(referrer)
-        else
-          false
-        end
-      end
+      #   if (referrer = env["HTTP_REFERER"])
+      #     uri_forces_ssr?(referrer)
+      #   else
+      #     false
+      #   end
+      # end
     end
     prepend DisableDevServerSupport
   end
@@ -115,5 +122,31 @@ class ViteRuby
       end
     end
     prepend DisableAutoBuildSupport
+
+    # module InertiaSSRSupport
+    #   extend T::Sig
+    #   extend T::Helpers
+
+    #   requires_ancestor { Manifest }
+
+    #   def resolve_entries(*names, **options)
+    #     entries = super
+    #     if inerta_ssr_enabled?
+    #       entries.transform_values do |paths|
+    #         paths.map { |path| path + "?ssr=1" }
+    #       end
+    #     else
+    #       entries
+    #     end
+    #   end
+
+    #   private
+
+    #   sig { returns(T::Boolean) }
+    #   def inerta_ssr_enabled?
+    #     InertiaRails.configuration.ssr_enabled
+    #   end
+    # end
+    # prepend InertiaSSRSupport
   end
 end

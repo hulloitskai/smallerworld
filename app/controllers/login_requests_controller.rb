@@ -22,16 +22,17 @@ class LoginRequestsController < ApplicationController
       )
     end
     if login_request.save
-      if !Rails.env.production?
-        render(json: {
-          "loginRequest" => LoginRequestSerializer.one(login_request),
-        })
+      data = if Rails.env.production?
+        {}
       else
-        render(json: {})
+        { "loginRequest" => LoginRequestSerializer.one(login_request) }
       end
+      render(json: data, status: :created)
     else
       render(
-        json: { errors: login_request.form_errors },
+        json: {
+          errors: login_request.form_errors,
+        },
         status: :unprocessable_entity,
       )
     end
