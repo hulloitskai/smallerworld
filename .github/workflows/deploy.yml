@@ -1,4 +1,3 @@
-name: deploy
 run-name: "Deploy from ${{ github.event.workflow_run.head_branch }} (${{ github.event.workflow_run.head_commit.message }})"
 
 on:
@@ -6,6 +5,9 @@ on:
     workflows: [check]
     branches: [main]
     types: [completed]
+
+permissions:
+  contents: read
 
 concurrency:
   group: "${{ github.event.workflow_run.head_branch }}-${{ github.event.workflow_run.conclusion }}"
