@@ -68,10 +68,14 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
+      - name: Install dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libjemalloc-dev libvips
       - name: Set up mise
         uses: jdx/mise-action@v2
-        with:
-          install: true
+        env:
+          MISE_VERBOSE: "1"
       - name: Cache Bundler
         uses: actions/cache@v4
         with:
