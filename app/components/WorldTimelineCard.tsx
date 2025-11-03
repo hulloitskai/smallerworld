@@ -54,8 +54,9 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
       <ScrollArea
         {...{ viewportRef }}
         type="hover"
-        className={classes.scrollArea}
         scrollbarSize={6}
+        mih={44}
+        className={classes.scrollArea}
       >
         {twoWeeksAgo && (
           <MiniCalendar

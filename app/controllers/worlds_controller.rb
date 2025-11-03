@@ -96,18 +96,20 @@ class WorldsController < ApplicationController
     time_zone = ActiveSupport::TimeZone.new(time_zone_name)
     start_time = (time_zone.today - 13.days).beginning_of_day
     timeline_posts = scoped do
-      tz = time_zone.tzinfo.name
+      tzname = time_zone.tzinfo.name
+      distinct_sql = Post.sanitize_sql_array([
+        "DISTINCT ON (DATE(created_at AT TIME ZONE :tzname)) " \
+          "DATE(created_at AT TIME ZONE :tzname) AS date, emoji",
+        tzname:,
+      ])
+      order_sql = Post.sanitize_sql_array([
+        "DATE(created_at AT TIME ZONE :tzname), created_at DESC",
+        tzname:,
+      ])
       current_user.posts
         .where(created_at: start_time..)
-        .select(Arel.sql(
-          "DISTINCT ON (DATE(created_at AT TIME ZONE :tz)) " \
-            "DATE(created_at AT TIME ZONE :tz) AS date, emoji",
-          tz:,
-        ))
-        .order(Arel.sql(
-          "DATE(created_at AT TIME ZONE :tz), created_at DESC",
-          tz:,
-        ))
+        .select(Arel.sql(distinct_sql))
+        .order(Arel.sql(order_sql))
     end
     timeline = timeline_posts
       .map do |post|
