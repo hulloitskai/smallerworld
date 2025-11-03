@@ -27,6 +27,7 @@ FileUtils.chdir APP_ROOT do
   # and get an expectable outcome.
   #
   # Add necessary setup steps to this file.
+
   puts "=> Installing devtools"
   system!("mise", "install")
 
