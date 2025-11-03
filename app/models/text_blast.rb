@@ -59,7 +59,7 @@ class TextBlast < ApplicationRecord
             phone: { possible: true, types: :mobile, extensions: false }
 
   # == Callbacks
-  before_validation :set_phone_number_from_friend, if: :friend_changed?
+  before_validation :assign_phone_number_from_friend, if: :friend_changed?
   after_create :send_later, unless: :sent?
 
   # == Methods
@@ -90,7 +90,7 @@ class TextBlast < ApplicationRecord
 
   # == Callback handlers
   sig { void }
-  def set_phone_number_from_friend
+  def assign_phone_number_from_friend
     self[:phone_number] = friend!.phone_number
   end
 end

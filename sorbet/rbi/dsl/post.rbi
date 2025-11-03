@@ -1289,6 +1289,9 @@ class Post
     def restore_quoted_post_id!; end
 
     sig { void }
+    def restore_spotify_track_id!; end
+
+    sig { void }
     def restore_title!; end
 
     sig { void }
@@ -1367,6 +1370,12 @@ class Post
     def saved_change_to_quoted_post_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_spotify_track_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_spotify_track_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_title; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -1389,6 +1398,51 @@ class Post
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_visibility?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def spotify_track_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def spotify_track_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def spotify_track_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def spotify_track_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def spotify_track_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def spotify_track_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def spotify_track_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def spotify_track_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def spotify_track_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def spotify_track_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def spotify_track_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def spotify_track_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def spotify_track_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def spotify_track_id_was; end
+
+    sig { void }
+    def spotify_track_id_will_change!; end
 
     sig { returns(T.nilable(::String)) }
     def title; end
@@ -1602,6 +1656,9 @@ class Post
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_quoted_post_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_spotify_track_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_title?(from: T.unsafe(nil), to: T.unsafe(nil)); end

@@ -11,6 +11,7 @@ export interface PostFormValues {
   pinned_until: string | null;
   friend_notifiability: Record<string, "hidden" | "muted" | "notify">;
   encouragement_id: string | null;
+  spotify_track_url: string;
 }
 
 export interface PostFormSubmission {
@@ -24,6 +25,7 @@ export interface PostFormSubmission {
     hidden_from_ids: string[];
     friend_ids_to_notify: string[];
     encouragement_id: string | null;
+    spotify_track_url: string | null;
     quoted_post_id?: string | null;
   };
 }
@@ -41,7 +43,14 @@ const postFormValuesIsEmpty = ({
     return false;
   }
   const contentValues = Object.values(
-    pick(otherValues, "title", "pinned_until", "emoji", "images_uploads"),
+    pick(
+      otherValues,
+      "title",
+      "pinned_until",
+      "emoji",
+      "images_uploads",
+      "spotify_track_url",
+    ),
   );
   return contentValues.every(value =>
     typeof value === "string" ? !value.trim() : isEmpty(value),

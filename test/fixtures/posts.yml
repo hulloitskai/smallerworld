@@ -17,6 +17,7 @@
 #  author_id        :uuid             not null
 #  encouragement_id :uuid
 #  quoted_post_id   :uuid
+#  spotify_track_id :string
 #
 # Indexes
 #

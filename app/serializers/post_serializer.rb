@@ -9,6 +9,7 @@ class PostSerializer < ApplicationSerializer
              :body_html,
              :emoji,
              :pinned_until,
+             :spotify_track_id,
              type: { type: "PostType" },
              visibility: { type: "PostVisibility" },
              snippet: { type: :string },

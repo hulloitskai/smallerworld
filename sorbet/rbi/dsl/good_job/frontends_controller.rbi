@@ -13,6 +13,7 @@ class GoodJob::FrontendsController
     include ::ActionText::ContentHelper
     include ::ActionText::TagHelper
     include ::InertiaRails::Helper
+    include ::InertiaRails::AssetHelper
     include ::ViteRails::TagHelpers
     include ::ActionController::Base::HelperMethods
     include ::GoodJob::IconsHelper

@@ -16,7 +16,9 @@ import { type PropsWithChildren } from "react";
 import MutedIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 import HiddenIcon from "~icons/heroicons/eye-slash-20-solid";
+import LinkIcon from "~icons/heroicons/link-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
+import SpotifyIcon from "~icons/ri/spotify-fill";
 
 import { isAndroid, isIos, useBrowserDetection } from "~/helpers/browsers";
 import { prettyFriendName } from "~/helpers/friends";
@@ -140,8 +142,15 @@ const PostForm: FC<PostFormProps> = props => {
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
-    const { title, body_html, emoji, images, visibility, pinned_until } =
-      post ?? {};
+    const {
+      title,
+      body_html,
+      emoji,
+      images,
+      visibility,
+      pinned_until,
+      spotify_track_id,
+    } = post ?? {};
     return {
       title: title ?? "",
       body_html: body_html ?? "",
@@ -155,6 +164,9 @@ const PostForm: FC<PostFormProps> = props => {
         ? buildFriendNotifiability(subscribedFriends, audienceData)
         : {},
       encouragement_id: encouragement?.id ?? post?.encouragement?.id ?? null,
+      spotify_track_url: spotify_track_id
+        ? `https://open.spotify.com/track/${spotify_track_id}`
+        : "",
     };
   }, [post, encouragement, subscribedFriends, audienceData]);
   const {
@@ -190,6 +202,7 @@ const PostForm: FC<PostFormProps> = props => {
             pinned_until,
             visibility,
             friend_notifiability,
+            spotify_track_url,
             ...values
           }) => {
             invariant(audienceData, "Missing audience data");
@@ -198,7 +211,7 @@ const PostForm: FC<PostFormProps> = props => {
               hidden: hiddenFromIds = [],
               notify: friendIdsToNotify = [],
             } = invertBy(friend_notifiability);
-            return {
+            const submission = {
               post: {
                 ...values,
                 emoji: emoji || null,
@@ -208,6 +221,7 @@ const PostForm: FC<PostFormProps> = props => {
                   ? formatDateString(pinned_until)
                   : null,
                 visibility,
+                spotify_track_url: spotify_track_url || null,
                 ...(visibility === "only_me"
                   ? {
                       hidden_from_ids: [],
@@ -222,6 +236,7 @@ const PostForm: FC<PostFormProps> = props => {
                     }),
               },
             };
+            return submission;
           },
         }
       : {
@@ -235,6 +250,7 @@ const PostForm: FC<PostFormProps> = props => {
             visibility,
             encouragement_id,
             friend_notifiability,
+            spotify_track_url,
             ...values
           }) => {
             invariant(postType, "Missing post type");
@@ -242,12 +258,13 @@ const PostForm: FC<PostFormProps> = props => {
               hidden: hiddenFromIds = [],
               notify: friendIdsToNotify = [],
             } = invertBy(friend_notifiability);
-            return {
+            const submission = {
               post: {
                 ...values,
                 type: postType,
                 emoji: emoji || null,
                 title: showTitleInput ? title || null : null,
+                spotify_track_url: spotify_track_url || null,
                 images: map(images_uploads, "signedId"),
                 quoted_post_id: quotedPost?.id ?? null,
                 pinned_until: pinned_until
@@ -267,6 +284,10 @@ const PostForm: FC<PostFormProps> = props => {
                     }),
               },
             };
+            if (spotify_track_url !== null) {
+              submission.post.spotify_track_url = spotify_track_url;
+            }
+            return submission;
           },
           transformErrors: ({ image, ...errors }) => ({
             ...errors,
@@ -286,6 +307,7 @@ const PostForm: FC<PostFormProps> = props => {
       if (!("post" in props)) {
         reset();
         setShowImageInput(false);
+        setShowSpotifyInput(false);
         editorRef.current?.commands.clearContent();
         clearDraft();
         void mutateRoute(routes.worldEncouragements.index);
@@ -305,6 +327,7 @@ const PostForm: FC<PostFormProps> = props => {
     setEditorMounted(false);
     setEditorKey(prev => prev + 1);
     setShowImageInput(false);
+    setShowSpotifyInput(false);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const updateFromDraft = (): boolean => {
     const draftValues = loadDraftValues();
@@ -315,6 +338,7 @@ const PostForm: FC<PostFormProps> = props => {
     setEditorMounted(false);
     setEditorKey(prev => prev + 1);
     setShowImageInput(!isEmpty(draftValues.images_uploads));
+    setShowSpotifyInput(draftValues.spotify_track_url !== null);
     return true;
   };
   useDidUpdate(() => {
@@ -348,6 +372,11 @@ const PostForm: FC<PostFormProps> = props => {
 
   // == Body text empty state
   const [bodyTextEmpty, setBodyTextEmpty] = useState(true);
+
+  // == Spotify
+  const [showSpotifyInput, setShowSpotifyInput] = useState(
+    !!post?.spotify_track_id,
+  );
 
   // == Image
   const [showImageInput, setShowImageInput] = useState(() =>
@@ -551,74 +580,10 @@ const PostForm: FC<PostFormProps> = props => {
                 data-vaul-no-drag
               />
             )}
-            {quotedPost ? (
-              <QuotedPostCard post={quotedPost} />
-            ) : (
-              <>
-                {showImageInput || !isEmpty(values.images_uploads) ? (
-                  <ScrollArea
-                    scrollbars="x"
-                    offsetScrollbars="present"
-                    className={classes.imagesScrollArea}
-                    w={formStackWidth}
-                  >
-                    <Reorder.Group<Upload>
-                      values={values.images_uploads}
-                      axis="x"
-                      layoutScroll={editorMounted}
-                      onReorder={uploads => {
-                        setFieldValue("images_uploads", uploads);
-                      }}
-                    >
-                      {values.images_uploads.map((upload, i) => (
-                        <ReorderableImageInput
-                          key={upload.signedId}
-                          value={upload}
-                          previewFit="contain"
-                          onChange={value => {
-                            setTouched(touchedFields => ({
-                              ...touchedFields,
-                              images_uploads: true,
-                            }));
-                            if (value) {
-                              setFieldValue(`images_uploads.${i}`, value);
-                            } else {
-                              removeListItem("images_uploads", i);
-                            }
-                          }}
-                          h={IMAGE_INPUT_SIZE}
-                          w={IMAGE_INPUT_SIZE}
-                          draggable={values.images_uploads.length > 1}
-                        />
-                      ))}
-                      {values.images_uploads.length < 4 && (
-                        <motion.li
-                          key={newImageInputKey}
-                          layout="position"
-                          layoutScroll={editorMounted}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                        >
-                          <ImageInput
-                            key={newImageInputKey}
-                            onChange={value => {
-                              if (value) {
-                                setTouched(touchedFields => ({
-                                  ...touchedFields,
-                                  images_uploads: true,
-                                }));
-                                insertListItem("images_uploads", value);
-                                setNewImageInputKey(prev => prev + 1);
-                              }
-                            }}
-                            h={IMAGE_INPUT_SIZE}
-                            w={IMAGE_INPUT_SIZE}
-                          />
-                        </motion.li>
-                      )}
-                    </Reorder.Group>
-                  </ScrollArea>
-                ) : (
+            {quotedPost && <QuotedPostCard post={quotedPost} />}
+            {!quotedPost && (!showSpotifyInput || !showImageInput) && (
+              <Group justify="center" gap="xs">
+                {!showImageInput && (
                   <Button
                     size="compact-sm"
                     style={{ alignSelf: "center" }}
@@ -630,7 +595,112 @@ const PostForm: FC<PostFormProps> = props => {
                     attach an image
                   </Button>
                 )}
-              </>
+                {!showSpotifyInput && (
+                  <Button
+                    size="compact-sm"
+                    style={{ alignSelf: "center" }}
+                    leftSection={<SpotifyIcon />}
+                    onClick={() => {
+                      setShowSpotifyInput(true);
+                    }}
+                  >
+                    add a spotify song
+                  </Button>
+                )}
+              </Group>
+            )}
+            {showSpotifyInput && (
+              <TextInput
+                {...getInputProps("spotify_track_url")}
+                leftSection={<LinkIcon />}
+                placeholder="https://open.spotify.com/track/..."
+                autoComplete="off"
+                inputContainer={children => (
+                  <Group
+                    gap="xs"
+                    className={classes.spotifyTrackInputContainer}
+                  >
+                    {children}
+                    <Button
+                      leftSection={<RemoveIcon />}
+                      variant="subtle"
+                      color="red"
+                      size="compact-sm"
+                      className={classes.removeSpotifyTrackButton}
+                      onClick={() => {
+                        setShowSpotifyInput(false);
+                        setFieldValue("spotify_track_url", "");
+                      }}
+                    >
+                      remove
+                    </Button>
+                  </Group>
+                )}
+              />
+            )}
+            {(showImageInput || !isEmpty(values.images_uploads)) && (
+              <ScrollArea
+                scrollbars="x"
+                offsetScrollbars="present"
+                className={classes.imagesScrollArea}
+                w={formStackWidth}
+              >
+                <Reorder.Group<Upload>
+                  values={values.images_uploads}
+                  axis="x"
+                  layoutScroll={editorMounted}
+                  onReorder={uploads => {
+                    setFieldValue("images_uploads", uploads);
+                  }}
+                >
+                  {values.images_uploads.map((upload, i) => (
+                    <ReorderableImageInput
+                      key={upload.signedId}
+                      value={upload}
+                      previewFit="contain"
+                      onChange={value => {
+                        setTouched(touchedFields => ({
+                          ...touchedFields,
+                          images_uploads: true,
+                        }));
+                        if (value) {
+                          setFieldValue(`images_uploads.${i}`, value);
+                        } else {
+                          removeListItem("images_uploads", i);
+                        }
+                      }}
+                      h={IMAGE_INPUT_SIZE}
+                      w={IMAGE_INPUT_SIZE}
+                      draggable={values.images_uploads.length > 1}
+                    />
+                  ))}
+                  {values.images_uploads.length < 4 && (
+                    <motion.li
+                      key={newImageInputKey}
+                      layout="position"
+                      layoutScroll={editorMounted}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                    >
+                      <ImageInput
+                        key={newImageInputKey}
+                        onChange={value => {
+                          if (value) {
+                            setTouched(touchedFields => ({
+                              ...touchedFields,
+                              images_uploads: true,
+                            }));
+                            insertListItem("images_uploads", value);
+                            setNewImageInputKey(prev => prev + 1);
+                          }
+                        }}
+                        h={IMAGE_INPUT_SIZE}
+                        w={IMAGE_INPUT_SIZE}
+                      />
+                    </motion.li>
+                  )}
+                </Reorder.Group>
+              </ScrollArea>
             )}
           </Stack>
         </Group>

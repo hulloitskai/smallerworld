@@ -154,3 +154,15 @@
     margin-right: 6px;
   }
 }
+
+.spotifyTrackInputContainer {
+  :global(.mantine-Input-wrapper) {
+    flex-grow: 1;
+  }
+}
+
+.removeSpotifyTrackButton {
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: 6px;
+  }
+}

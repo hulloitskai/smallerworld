@@ -1,4 +1,5 @@
 import { Image, Overlay, Spoiler, Text, Typography } from "@mantine/core";
+import { Paper } from "@mantine/core";
 
 import ExpandIcon from "~icons/heroicons/chevron-down-20-solid";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
@@ -29,6 +30,7 @@ export interface PostCardProps extends BoxProps {
 const IMAGE_MAX_WIDTH = 340;
 const IMAGE_MAX_HEIGHT = 280;
 const IMAGE_FLIP_BOUNDARY = 125;
+const SPOTIFY_EMBED_HEIGHT = 152;
 
 const PostCard: FC<PostCardProps> = ({
   post,
@@ -185,6 +187,22 @@ const PostCard: FC<PostCardProps> = ({
                 <Title order={3} size="h4">
                   {post.title}
                 </Title>
+              )}
+              {post.spotify_track_id && (
+                <Paper
+                  component="iframe"
+                  data-testid="embed-iframe"
+                  src={`https://open.spotify.com/embed/track/${post.spotify_track_id}`}
+                  title="Spotify player"
+                  width="100%"
+                  height={SPOTIFY_EMBED_HEIGHT}
+                  frameBorder="0"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                  shadow="lg"
+                  mb={4}
+                />
               )}
               <Spoiler
                 maxHeight={380}
