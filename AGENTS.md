@@ -3,7 +3,7 @@
 ## Essential Commands
 
 - Format and lint with `bin/fix` before committing; it installs tooling with the project's versions.
-- Reset JS/TS tooling drift by running `npm ci` and matching the Node version in `.nvmrc`.
+- Reset JS/TS tooling drift by running `npm ci` and matching the Node version defined in `mise.toml` (run `mise install`).
 - Execute the full test suite with `bin/test`; do not call Rails test runners directly.
 - If the pre-push hook fails because of a failed dependency audit, push with `git push --no-verify`.
 

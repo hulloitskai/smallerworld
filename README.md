@@ -6,7 +6,7 @@ _your new secret blog, for close friends only._
 
 ```bash
 # install tools
-brew install docker rbenv nodenv watchman overmind
+brew install docker mise watchman
 
 # install libraries
 brew install libvips
@@ -14,6 +14,8 @@ brew install libvips
 # set up environment
 git clone git@github.com:hulloitskai/smallerworld
 cd smallerworld
+mise trust
+mise install
 bin/setup
 ```
 

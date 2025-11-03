@@ -1,0 +1,7 @@
+[tools]
+  node = "22.13.1"
+  ruby = "3.4.1"
+  overmind = "2.5.1"
+
+[env]
+  RUBY_CONFIGURE_OPTS = "--with-jemalloc"

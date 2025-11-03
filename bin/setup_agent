@@ -10,6 +10,21 @@ def system!(*args)
   system(*args, exception: true)
 end
 
+unless ENV["MISE_ENV_LOADED"]
+  Dir.chdir(APP_ROOT) do
+    unless system("command -v mise", out: File::NULL)
+      abort("mise isn't installed. Install it (e.g. brew install mise) before running bin/setup_agent.")
+    end
+
+    puts "=> Installing runtime tool versions"
+    system!("mise", "trust", "--yes", "mise.toml")
+    system!("mise", "install")
+    puts "Runtime tools installed"
+
+    exec(ENV.to_h.merge("MISE_ENV_LOADED" => "1"), "mise", "exec", "--", __FILE__, *ARGV)
+  end
+end
+
 # == Command
 FileUtils.chdir APP_ROOT do
   # This script is a way to set up or update your development environment
@@ -18,18 +33,8 @@ FileUtils.chdir APP_ROOT do
   #
   # Add necessary setup steps to this file.
 
-  puts "=> Installing Ruby"
-  system("command -v rbenv", out: File::NULL) && \
-    system!("rbenv install --skip-existing")
-  puts "Ruby installed"
-
   puts "\n=> Installing Ruby dependencies"
   system("bundle check") || system!("bundle install")
-
-  puts "\n=> Installing Node"
-  system("command -v nodenv", out: File::NULL) && \
-    system!("nodenv install --skip-existing")
-  puts "Node installed"
 
   puts "\n=> Installing Node dependencies"
   system!("npm install") &&

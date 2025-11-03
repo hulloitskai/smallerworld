@@ -11,13 +11,12 @@ def system!(*args)
 end
 
 # == Command
-if ["", nil].include?(ENV["CI"]) &&
-    !system("docker info", out: File::NULL, err: File::NULL)
+unless !system("docker info", out: File::NULL, err: File::NULL)
   if `uname`.strip == "Darwin"
     puts "Starting Docker..."
     system("open -a Docker")
     sleep 2 # wait for Docker to boot
-  else
+  elsif !ENV["CI"]
     abort("Docker isn't running! Please start Docker and try again.")
   end
 end
@@ -28,19 +27,11 @@ FileUtils.chdir APP_ROOT do
   # and get an expectable outcome.
   #
   # Add necessary setup steps to this file.
-
-  puts "=> Installing Ruby"
-  system("command -v rbenv", out: File::NULL) && \
-    system!("rbenv install --skip-existing")
-  puts "Ruby installed"
+  puts "=> Installing devtools"
+  system!("mise", "install")
 
   puts "\n=> Installing Ruby dependencies"
   system("bundle check") || system!("bundle install")
-
-  puts "\n=> Installing Node"
-  system("command -v nodenv", out: File::NULL) && \
-    system!("nodenv install --skip-existing")
-  puts "Node installed"
 
   puts "\n=> Installing Node dependencies"
   if ENV["CI"]
@@ -79,14 +70,7 @@ FileUtils.chdir APP_ROOT do
   puts "\n=> Removing old logs and tempfiles"
   system! "bin/rails log:clear tmp:clear"
   puts "Files removed"
-
-  if db_pid
-    puts "\n=> Stopping database"
-    Process.kill("-INT", Process.getpgid(db_pid))
-    Process.waitpid(db_pid)
-    puts "Database stopped"
-  end
-rescue
+ensure
   if db_pid
     puts "\n=> Stopping database"
     Process.kill("-INT", Process.getpgid(db_pid))

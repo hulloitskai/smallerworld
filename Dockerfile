@@ -1,117 +1,82 @@
 # syntax = docker/dockerfile:1.2
 # check=error=true
 
+# Build this image with:
+#   docker build -t smallerworld:latest .
+#   docker build -t smallerworld:debug --build-arg DEBUG=1 .
+
 # == System
 # NOTE: We separate system dependencies from application dependencies (see
 # base layer) to speed up builds when only application dependencies change.
 FROM debian:bookworm-slim AS system
-ENV OVERMIND_VERSION=2.5.1
-ENV STARSHIP_VERSION=1.20.1
-ENV DEVTOOLS="vim less"
-ENV LIBRARIES="libvips"
+ARG DEBUG=""
 
-# Configure workdir
+# Configure workdir and shell
 WORKDIR /app
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Ensure packages are cached
 RUN rm /etc/apt/apt.conf.d/docker-clean
 
-# Install runtime programs and dependencies
+# Install system dependencies
 RUN --mount=type=cache,target=/var/cache,sharing=locked \
   --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
   apt-get update -yq && \
-  echo "ca-certificates tmux $DEVTOOLS $LIBRARIES" | xargs apt-get install -yq --no-install-recommends && \
+  echo "ca-certificates vim less tmux" | xargs apt-get install -yq --no-install-recommends && \
   apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false llvm && \
-  rm -r /var/log/* && \
-  tmux -V
+  rm -r /var/log/* /var/lib/apt/lists/*
+ENV EDITOR=vi
 
-# Install Ruby and Bundler
-COPY .ruby-version ./
-ENV LANG=C.UTF-8 GEM_HOME=/usr/local/bundle
-ENV BUNDLE_SILENCE_ROOT_WARNING=1 BUNDLE_APP_CONFIG="$GEM_HOME" BUNDLE_PATH="/usr/local/bundle" BUNDLE_DEPLOYMENT="1" PATH="$GEM_HOME/bin:$PATH"
+# Install devtools with mise
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CONFIG_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV MISE_VERBOSE="${DEBUG:+1}"
+ENV PATH="/mise/shims:$PATH"
+COPY mise.toml ./
 RUN --mount=type=cache,target=/var/cache,sharing=locked \
   --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-  BUILD_DEPS="git curl build-essential zlib1g-dev libssl-dev libgmp-dev libyaml-dev libjemalloc-dev" set -eux && \
-  RUNTIME_DEPS="libyaml-0-2 libjemalloc2" && \
+  BUILD_DEPS="build-essential curl zlib1g-dev libffi-dev libyaml-dev libjemalloc-dev" \
+  RUNTIMES_DEPS="libyaml-0-2 libjemalloc2"; \
+  set -eux && \
   apt-get update -yq && \
-  echo $BUILD_DEPS $RUNTIME_DEPS | xargs apt-get install -yq --no-install-recommends; \
-  git clone --depth 1 https://github.com/rbenv/ruby-build.git && \
-  PREFIX=/tmp ./ruby-build/install.sh && \
-  mkdir -p "$GEM_HOME" && chmod 1777 "$GEM_HOME" && \
-  RUBY_CONFIGURE_OPTS=--with-jemalloc /tmp/bin/ruby-build "$(cat .ruby-version)" /usr/local && \
+  echo $BUILD_DEPS $RUNTIMES_DEPS | xargs apt-get install -yq --no-install-recommends; \
+  curl https://mise.run | sh && \
+  mise trust && \
+  mise install && \
   echo $BUILD_DEPS | xargs apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  rm -r ./ruby-build /tmp/* /var/log/* && \
-  ruby --version && gem --version && bundle --version
-
-# Install NodeJS
-COPY .node-version ./
-RUN --mount=type=cache,target=/var/cache,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-  BUILD_DEPS="git curl" set -eux && \
-  apt-get update -yq && \
-  echo $BUILD_DEPS | xargs apt-get install -yq --no-install-recommends; \
-  git clone --depth 1 https://github.com/nodenv/node-build.git && \
-  PREFIX=/tmp ./node-build/install.sh && \
-  /tmp/bin/node-build "$(cat .node-version)" /usr/local && \
-  echo $BUILD_DEPS | xargs apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  rm -r ./node-build /var/log/* && \
-  node --version && npm --version
-
-# Install Overmind
-RUN --mount=type=cache,target=/var/cache,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-  BUILD_DEPS="curl" set -eux && \
-  apt-get update -yq && \
-  echo $BUILD_DEPS | xargs apt-get install -yq --no-install-recommends; \
-  curl -Lo /usr/bin/overmind.gz https://github.com/DarthSim/overmind/releases/download/v$OVERMIND_VERSION/overmind-v$OVERMIND_VERSION-linux-amd64.gz && \
-  gzip -d /usr/bin/overmind.gz && \
-  chmod u+x /usr/bin/overmind && \
-  echo $BUILD_DEPS | xargs apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  rm -r /var/log/* && \
-  overmind --version
-
-# Configure shell
-ENV SHELL=/bin/bash
-RUN --mount=type=cache,target=/var/cache,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-  BUILD_DEPS="curl" set -eux && \
-  apt-get update -yq && \
-  echo $BUILD_DEPS | xargs apt-get install -yq --no-install-recommends; \
-  curl -sS https://starship.rs/install.sh | sh -s -- -y -v="v$STARSHIP_VERSION" && \
-  echo $BUILD_DEPS | xargs apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  rm -r /tmp/* /var/log/* && \
-  starship --version
-COPY .bash_profile .inputrc /root/
-COPY starship.toml /root/.config/starship.toml
-
+  rm -r /var/log/* /var/lib/apt/lists/*
 
 # == Base (without built assets)
 FROM system AS base
 
 # Install Ruby dependencies
 COPY Gemfile Gemfile.lock ./
-ENV BUNDLE_WITHOUT="development test"
+ENV BUNDLE_DEPLOYMENT=1 GEM_HOME=/usr/local/bundle BUNDLE_PATH=/usr/local/bundle
 RUN --mount=type=cache,target=/var/cache,sharing=locked \
   --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
   BUILD_DEPS="build-essential libreadline-dev libyaml-dev libjemalloc-dev libpq-dev git" \
-  RUNTIME_DEPS="libpq5" set -eux && \
+  RUNTIME_DEPS="libpq5 libvips"; \
+  set -eux && \
   apt-get update -yq && \
   echo $BUILD_DEPS $RUNTIME_DEPS | xargs apt-get install -yq --no-install-recommends; \
-  BUNDLE_IGNORE_MESSAGES=1 bundle install && \
+  BUNDLE_IGNORE_MESSAGES=1 BUNDLE_WITHOUT="development test" bundle install && \
   echo $BUILD_DEPS | xargs apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  rm -r /var/log/* && \
+  rm -r /var/log/* /var/lib/apt/lists/* && \
   rm -r /root/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
   find "${BUNDLE_PATH}"/ruby/*/bundler/gems/ -name "*.c" -delete && \
   find "${BUNDLE_PATH}"/ruby/*/bundler/gems/ -name "*.o" -delete && \
   bundle exec bootsnap precompile --gemfile
 
+# Install NodeJS dependencies
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
+  npm ci
+
 
 # == Builder
 FROM base AS builder
-
-# Install NodeJS dependencies
-COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm,sharing=locked npm ci
 
 # Copy application code
 COPY . ./
