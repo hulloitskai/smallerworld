@@ -33,6 +33,14 @@ export const availableUserThemes = (user: User | null): UserTheme[] => {
   return Array.from(userThemes);
 };
 
+export const currentUserTheme = (): UserTheme | null => {
+  const theme = document.documentElement.getAttribute("data-user-theme");
+  if (theme && isUserTheme(theme)) {
+    return theme;
+  }
+  return null;
+};
+
 export const useUserThemes = (user: User | null): UserTheme[] =>
   useMemo(() => availableUserThemes(user), [user]);
 

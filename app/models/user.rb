@@ -39,6 +39,19 @@ class User < ApplicationRecord
   # == Constants
   ENCOURAGEMENTS_AVAILABLE_SINCE = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
   MIN_POST_COUNT_FOR_SEARCH = T.let(Rails.env.production? ? 10 : 2, Integer)
+  DARK_THEMES = T.let(
+    %w[
+      darkSky
+      forest
+      karaoke
+      lavaRave
+      aquatica
+      rush
+      phantom
+      bakudeku
+    ].freeze,
+    T::Array[String],
+  )
 
   # == FriendlyId
   friendly_id :handle, slug_column: :handle
@@ -163,6 +176,11 @@ class User < ApplicationRecord
       features << :search
     end
     features
+  end
+
+  sig { returns(T::Boolean) }
+  def dark_theme?
+    theme.present? && DARK_THEMES.include?(theme)
   end
 
   sig { returns(Encouragement::PrivateAssociationRelation) }

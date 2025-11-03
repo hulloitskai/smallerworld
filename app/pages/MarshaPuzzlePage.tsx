@@ -23,9 +23,12 @@ const MarshaPuzzlePage: PageComponent<MarshaPuzzlePageProps> = ({
   puzzleSvg,
   pathInitializers,
 }) => {
-  const { setColorScheme } = useMantineColorScheme();
+  const { setColorScheme, clearColorScheme } = useMantineColorScheme();
   useEffect(() => {
     setColorScheme("light");
+    return () => {
+      clearColorScheme();
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { width, height } = useViewportSize();

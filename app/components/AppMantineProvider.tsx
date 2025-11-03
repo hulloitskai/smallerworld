@@ -2,7 +2,7 @@ import { DEFAULT_THEME, MantineProvider } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 
 import { useCreateTheme } from "~/helpers/mantine";
-import { DARK_USER_THEMES, isUserTheme } from "~/helpers/userThemes";
+import { currentUserTheme, DARK_USER_THEMES } from "~/helpers/userThemes";
 import { type UserTheme } from "~/types";
 
 const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -16,9 +16,9 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
         if (mutation.attributeName !== "data-user-theme") {
           return;
         }
-        const theme = document.documentElement.getAttribute("data-user-theme");
-        if (theme && isUserTheme(theme)) {
-          setDetectedUserTheme(theme);
+        const userTheme = currentUserTheme();
+        if (userTheme) {
+          setDetectedUserTheme(userTheme);
         } else {
           setDetectedUserTheme(null);
         }
@@ -45,13 +45,12 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
               : theme.colors?.primary,
         },
       }}
-      defaultColorScheme={
-        detectedUserTheme
-          ? DARK_USER_THEMES.includes(detectedUserTheme)
-            ? "dark"
-            : "light"
-          : "auto"
-      }
+      defaultColorScheme="auto"
+      {...(detectedUserTheme && {
+        forceColorScheme: DARK_USER_THEMES.includes(detectedUserTheme)
+          ? "dark"
+          : "light",
+      })}
       {...(import.meta.env.RAILS_ENV === "test" && {
         env: "test",
       })}

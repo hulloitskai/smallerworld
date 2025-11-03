@@ -1,5 +1,4 @@
 import {
-  DARK_USER_THEMES,
   IMAGE_USER_THEMES,
   USER_THEME_BACKGROUND_COLORS,
   USER_THEME_BACKGROUND_GRADIENTS,
@@ -18,24 +17,18 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
   const [videoSuspended, setVideoSuspended] = useState(false);
 
   // == Apply theme on document body
-  const { setColorScheme } = useMantineColorScheme();
-  useEffect(() => {
+  useDidUpdate(() => {
     if (theme) {
       document.documentElement.setAttribute("data-user-theme", theme);
       document.body.style.setProperty(
         "--mantine-color-body",
         USER_THEME_BACKGROUND_COLORS[theme],
       );
-      const themeColorScheme = DARK_USER_THEMES.includes(theme)
-        ? "dark"
-        : "light";
-      setColorScheme(themeColorScheme);
     } else {
       document.documentElement.removeAttribute("data-user-theme");
       document.body.style.removeProperty("--mantine-color-body");
-      setColorScheme("auto");
     }
-  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [theme]);
 
   return (
     <UserThemeContext.Provider
