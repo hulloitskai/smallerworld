@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
   lang="en"
-  <% if (user = Current.user) %>
+  <% if (user = current_user) %>
     <%== %(data-mantine-color-scheme="#{user.dark_theme? ? "dark" : "light"}") %>
     <%== %(data-user-theme="#{user.theme}") %>
   <% end %>

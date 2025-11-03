@@ -25,6 +25,9 @@ module AuthenticatesUsers
 
     # == Exception handling
     rescue_from NotAuthenticated, with: :handle_not_authenticated
+
+    # == Helpers
+    helper_method :current_user
   end
 
   private
