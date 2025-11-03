@@ -35,8 +35,7 @@ import {
   type PostFormValues,
   usePostDraftValues,
 } from "~/helpers/posts/form";
-import { currentTimeZone } from "~/helpers/utils";
-import { useWorldFriends } from "~/helpers/world";
+import { mutateWorldTimeline, useWorldFriends } from "~/helpers/world";
 import {
   type Encouragement,
   type Post,
@@ -324,11 +323,7 @@ const PostForm: FC<PostFormProps> = props => {
       void mutateWorldPosts();
       void mutateRoute(routes.worldPosts.pinned);
       void mutateRoute(routes.worldPosts.audience, { id: post.id });
-      void mutateRoute(routes.world.timeline, {
-        query: {
-          time_zone: currentTimeZone(),
-        },
-      });
+      void mutateWorldTimeline();
       if ("onPostCreated" in props) {
         props.onPostCreated?.(post);
       } else if ("onPostUpdated" in props) {

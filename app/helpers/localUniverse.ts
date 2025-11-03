@@ -14,9 +14,7 @@ export interface LocalUniversePostsData {
 }
 
 export interface LocalUniversePostsOptions
-  extends SWRInfiniteConfiguration<LocalUniversePostsData> {
-  limit?: number;
-}
+  extends SWRInfiniteConfiguration<LocalUniversePostsData> {}
 
 const localUniversePostsGetKey =
   (): SWRInfiniteKeyLoader<LocalUniversePostsData> => {

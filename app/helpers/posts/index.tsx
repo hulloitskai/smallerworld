@@ -107,7 +107,6 @@ export interface WorldPostsOptions
   type?: PostType | null;
   date?: string | null;
   searchQuery?: string;
-  limit?: number;
 }
 
 export const useWorldPosts = (options?: WorldPostsOptions) => {

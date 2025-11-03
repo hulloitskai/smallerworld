@@ -16,9 +16,7 @@ export interface UniversePostsData {
 }
 
 export interface UniversePostsOptions
-  extends SWRInfiniteConfiguration<UniversePostsData> {
-  limit?: number;
-}
+  extends SWRInfiniteConfiguration<UniversePostsData> {}
 
 const universePostsGetKey = (): SWRInfiniteKeyLoader<UniversePostsData> => {
   return (index, previousPageData): string | null => {

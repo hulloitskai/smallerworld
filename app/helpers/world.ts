@@ -1,4 +1,4 @@
-import { type SWRConfiguration } from "swr";
+import { mutate, type SWRConfiguration } from "swr";
 
 import {
   type Activity,
@@ -48,4 +48,18 @@ export const useWorldFriends = (
     friends,
     ...swrResponse,
   };
+};
+
+export const mutateWorldTimeline = async (): Promise<void> => {
+  await mutate(
+    key => {
+      if (typeof key !== "string") {
+        return false;
+      }
+      const url = hrefToUrl(key);
+      return url.pathname === routes.world.timeline.path();
+    },
+    undefined,
+    { revalidate: true },
+  );
 };

@@ -45,6 +45,7 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
           },
         }
       : null,
+    keepPreviousData: true,
   });
   const { timeline = {} } = data ?? {};
 
@@ -89,6 +90,13 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
           />
         )}
       </ScrollArea>
+      <LoadingOverlay
+        visible={!data}
+        overlayProps={{
+          backgroundOpacity: 0,
+          blur: 1,
+        }}
+      />
     </Card>
   );
 };
