@@ -380,26 +380,27 @@ class Post < ApplicationRecord
   def create_notifications!
     return if visibility == :only_me
 
+    delay = NOTIFICATION_DELAY if previously_new_record?
     friends = friends_to_notify
     friends
       .notifiable
       .where.not(id: notifications.select(:recipient_id))
       .select(:id).find_each do |friend|
-        notifications.create!(recipient: friend, push_delay: NOTIFICATION_DELAY)
+        notifications.create!(recipient: friend, push_delay: delay)
       end
     friends
       .text_only
       .where.not(id: text_blasts.select(:friend_id))
       .find_each do |friend|
-        text_blasts.create!(friend:, send_delay: NOTIFICATION_DELAY)
+        text_blasts.create!(friend:, send_delay: delay)
       end
     if visibility == :public
       notifications.find_or_create_by!(recipient: nil) do |notification|
-        notification.push_delay = NOTIFICATION_DELAY
+        notification.push_delay = delay
       end
       User.subscribed_to_public_posts.find_each do |user|
         notifications.find_or_create_by!(recipient: user) do |notification|
-          notification.push_delay = NOTIFICATION_DELAY
+          notification.push_delay = delay
         end
       end
     end
