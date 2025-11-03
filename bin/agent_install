@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+sudo apt-get update -y
+sudo apt-get install -y libjemalloc-dev libyaml-dev libpq-dev
+if ! command -v mise > /dev/null; then
+  curl https://mise.run | sh
+  echo "eval \"\$(/home/ubuntu/.local/bin/mise activate bash)\"" >> ~/.bashrc
+  . ~/.bashrc
+fi
+mise trust
+mise x -- bin/agent_setup

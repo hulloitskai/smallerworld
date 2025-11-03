@@ -1,5 +1,5 @@
 {
-  "snapshot": "snapshot-20251030-28d0aeab-35b0-4740-9663-b941d3946aa7",
-  "install": "bin/setup_agent",
+  "snapshot": "snapshot-20251103-7695cde8-8a0d-4931-a6eb-ddea6bbb7b5a",
+  "install": "bin/agent_setup",
   "terminals": []
 }
