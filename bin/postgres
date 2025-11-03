@@ -20,5 +20,5 @@ else
     -v ./tmp/postgres:/var/lib/postgresql/data \
     -e POSTGRES_USER=supabase_admin \
     -e POSTGRES_PASSWORD=postgres \
-    supabase/postgres:15.6.1.139
+    supabase/postgres:17.6.1.016
 fi
