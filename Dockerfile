@@ -53,7 +53,7 @@ FROM system AS base
 
 # Install Ruby dependencies
 COPY Gemfile Gemfile.lock ./
-ENV BUNDLE_DEPLOYMENT=1 GEM_HOME=/usr/local/bundle BUNDLE_PATH=/usr/local/bundle
+ENV BUNDLE_DEPLOYMENT=1 GEM_HOME=/usr/local/bundle BUNDLE_PATH=/usr/local/bundle BUNDLE_WITHOUT="development test"
 RUN --mount=type=cache,target=/var/cache,sharing=locked \
   --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
   BUILD_DEPS="build-essential libreadline-dev libyaml-dev libjemalloc-dev libpq-dev git" \
@@ -61,7 +61,7 @@ RUN --mount=type=cache,target=/var/cache,sharing=locked \
   set -eux && \
   apt-get update -yq && \
   echo $BUILD_DEPS $RUNTIME_DEPS | xargs apt-get install -yq --no-install-recommends; \
-  BUNDLE_IGNORE_MESSAGES=1 BUNDLE_WITHOUT="development test" bundle install && \
+  BUNDLE_IGNORE_MESSAGES=1 bundle install && \
   echo $BUILD_DEPS | xargs apt-get purge -yq --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
   rm -r /var/log/* /var/lib/apt/lists/* && \
   rm -r /root/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
