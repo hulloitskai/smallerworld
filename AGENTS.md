@@ -26,4 +26,5 @@ Update the source configs instead of editing these outputs (e.g., adjust auto-im
 ## Sub-Guides
 
 - Detailed frontend, TypeScript, and Rails model instructions live in `app/AGENTS.md`.
+- For Supabase business-intelligence requests (e.g., summarizing daily posts or similar analytics), follow `docs/Business Intelligence.md`.
 - Create additional `AGENTS.md` files inside subdirectories that need their own rules; agents read the nearest guide.

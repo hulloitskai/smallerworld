@@ -2,7 +2,7 @@ check:
   parallel: true
   commands:
     check-prettier:
-      files: &modified-files git ls-files -m
+      files: &modified-files git ls-files -mo --exclude-standard
       run: npx prettier --check {files}
       glob: "*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}"
       tags: js
@@ -28,7 +28,7 @@ check:
 fix:
   commands:
     fix-prettier:
-      files: &modified-files git ls-files -m
+      files: &modified-files git ls-files -mo --exclude-standard
       run: npx prettier --write {files}
       glob: "*.{js,jsx,ts,tsx,css,md,html,json,yaml,yml}"
       tags: js
