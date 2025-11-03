@@ -24,7 +24,7 @@
 
   // == Rubocop
   "rubocop.mode": "enableViaGemfile",
-  "rubocop.bundleCommandPath": "bin/bundle",
+  "rubocop.bundleCommandPath": "mise x -- bundle",
 
   // == YAML
   "yaml.schemas": {

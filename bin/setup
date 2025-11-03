@@ -52,19 +52,21 @@ FileUtils.chdir APP_ROOT do
   end
 
   db_pid = nil
-  unless ENV["CI"] || File.exist?("tmp/pids/postgres.cid")
-    puts "\n=> Starting database"
-    db_pid = spawn("bin/postgres", pgroup: true)
-    system! "bin/wait_for_postgres_ready"
-  end
+  unless ARGV.include?("--without-database")
+    unless ENV["CI"] || File.exist?("tmp/pids/postgres.cid")
+      puts "\n=> Starting database"
+      db_pid = spawn("bin/postgres", pgroup: true)
+      system! "bin/wait_for_postgres_ready"
+    end
 
-  puts "\n=> Preparing database"
-  system! "bin/rails db:prepare"
-  puts "Database ready"
+    puts "\n=> Preparing database"
+    system! "bin/rails db:prepare"
+    puts "Database ready"
 
-  unless ENV["CI"]
-    puts "\n=> Running deployment tasks"
-    system! "bin/rails after_party:run"
+    unless ENV["CI"]
+      puts "\n=> Running deployment tasks"
+      system! "bin/rails after_party:run"
+    end
   end
 
   puts "\n=> Removing old logs and tempfiles"

@@ -89,7 +89,7 @@ jobs:
           key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
           restore-keys: ${{ runner.os }}-npm-
       - name: Set up environment
-        run: bin/setup
+        run: bin/setup --without-database
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       - name: Build source maps
