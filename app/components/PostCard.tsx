@@ -201,7 +201,8 @@ const PostCard: FC<PostCardProps> = ({
                   allowFullScreen
                   loading="lazy"
                   shadow="lg"
-                  mb={4}
+                  mt={2}
+                  mb={8}
                 />
               )}
               <Spoiler
