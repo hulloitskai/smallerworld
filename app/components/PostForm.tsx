@@ -72,11 +72,7 @@ const POST_TITLE_PLACEHOLDERS: Partial<Record<PostType, string>> = {
   poem: "the invisible mirror",
   invitation: "bake night 2!!",
 };
-
 const POST_TYPES_WITH_TITLE = Object.keys(POST_TITLE_PLACEHOLDERS);
-
-const IMAGE_INPUT_SIZE = 140;
-
 const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   journal_entry: "today felt kind of surreal. almost like a dream...",
   poem: "broken silver eyes cry me a thousand mirrors\nbeautiful reflections of personal nightmares\nthe sort i save for my therapist's office\nand of course the pillowcase i water every night",
@@ -85,6 +81,9 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   question: "liberty village food recs??",
   follow_up: "um, actually...",
 };
+const IMAGE_INPUT_SIZE = 140;
+const SPOTIFY_TRACK_URL_PATTERN =
+  /^https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)(\?.*)?$/;
 
 const PostForm: FC<PostFormProps> = props => {
   const newPostType = "newPostType" in props ? props.newPostType : undefined;
@@ -221,7 +220,9 @@ const PostForm: FC<PostFormProps> = props => {
                   ? formatDateString(pinned_until)
                   : null,
                 visibility,
-                spotify_track_url: spotify_track_url || null,
+                spotify_track_id: spotify_track_url
+                  ? parseSpotifyTrackId(spotify_track_url)
+                  : null,
                 ...(visibility === "only_me"
                   ? {
                       hidden_from_ids: [],
@@ -258,7 +259,7 @@ const PostForm: FC<PostFormProps> = props => {
               hidden: hiddenFromIds = [],
               notify: friendIdsToNotify = [],
             } = invertBy(friend_notifiability);
-            const submission = {
+            return {
               post: {
                 ...values,
                 type: postType,
@@ -269,6 +270,9 @@ const PostForm: FC<PostFormProps> = props => {
                 quoted_post_id: quotedPost?.id ?? null,
                 pinned_until: pinned_until
                   ? formatDateString(pinned_until)
+                  : null,
+                spotify_track_id: spotify_track_url
+                  ? parseSpotifyTrackId(spotify_track_url)
                   : null,
                 visibility,
                 ...(visibility === "only_me"
@@ -284,10 +288,6 @@ const PostForm: FC<PostFormProps> = props => {
                     }),
               },
             };
-            if (spotify_track_url !== null) {
-              submission.post.spotify_track_url = spotify_track_url;
-            }
-            return submission;
           },
           transformErrors: ({ image, ...errors }) => ({
             ...errors,
@@ -295,6 +295,13 @@ const PostForm: FC<PostFormProps> = props => {
           }),
         }),
     initialValues,
+    validate: {
+      spotify_track_url: value => {
+        if (!SPOTIFY_TRACK_URL_PATTERN.test(value)) {
+          return "Invalid Spotify track link";
+        }
+      },
+    },
     onValuesChange: (values, previous) => {
       if (isEqual(values, previous)) {
         return;
@@ -326,8 +333,8 @@ const PostForm: FC<PostFormProps> = props => {
     reset();
     setEditorMounted(false);
     setEditorKey(prev => prev + 1);
-    setShowImageInput(false);
-    setShowSpotifyInput(false);
+    setShowImageInput(post ? !isEmpty(post.images) : false);
+    setShowSpotifyInput(!!post?.spotify_track_id);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const updateFromDraft = (): boolean => {
     const draftValues = loadDraftValues();
@@ -1079,3 +1086,8 @@ const ScrollableTableContainer: FC<PropsWithChildren> = ({ children }) => (
     {children}
   </ScrollArea.Autosize>
 );
+
+const parseSpotifyTrackId = (trackUrl: string): string | null => {
+  const matches = trackUrl.match(SPOTIFY_TRACK_URL_PATTERN);
+  return matches?.[1] ?? null;
+};

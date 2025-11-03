@@ -42,3 +42,9 @@
   top: 0;
   position: absolute;
 }
+
+.video {
+  &[data-suspended] {
+    display: none;
+  }
+}

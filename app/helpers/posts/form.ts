@@ -25,7 +25,7 @@ export interface PostFormSubmission {
     hidden_from_ids: string[];
     friend_ids_to_notify: string[];
     encouragement_id: string | null;
-    spotify_track_url: string | null;
+    spotify_track_id: string | null;
     quoted_post_id?: string | null;
   };
 }

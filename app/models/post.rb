@@ -62,9 +62,6 @@ class Post < ApplicationRecord
   sig { returns(T.nilable(T::Array[String])) }
   attr_accessor :friend_ids_to_notify
 
-  sig { returns(T.nilable(String)) }
-  attr_accessor :spotify_track_url
-
   sig { returns(String) }
   def body_text
     fragment = Nokogiri::HTML5.fragment(body_html)
@@ -171,8 +168,6 @@ class Post < ApplicationRecord
   validate :validate_no_nested_quoting, if: :quoted_post?
 
   # == Callbacks
-  before_validation :assign_spotify_track_id_from_url,
-                    if: :spotify_track_url_assigned?
   after_save :create_notifications!, if: :send_notifications?
   after_save :save_images_ids!, if: :images_changed?
 
@@ -433,25 +428,6 @@ class Post < ApplicationRecord
   end
 
   private
-
-  # == Callback handlers
-  sig { void }
-  def assign_spotify_track_id_from_url
-    self.spotify_track_id = if (url = spotify_track_url.presence)
-      begin
-        SpotifyService.track_id_from_url(url)
-      rescue => error
-        errors.add(:spotify_track_url, :invalid, message: error.message)
-        nil
-      end
-    end
-  end
-
-  # == Helpers
-  sig { returns(T::Boolean) }
-  def spotify_track_url_assigned?
-    !!@spotify_track_url
-  end
 
   # == Helpers
   sig { params(text: String).returns(String) }

@@ -13,56 +13,55 @@ import classes from "./UserThemeProvider.module.css";
 export interface UserThemeProviderProps extends PropsWithChildren {}
 
 const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<UserTheme | null>(null);
+  const [userTheme, setUserTheme] = useState<UserTheme | null>(null);
   const [videoSuspended, setVideoSuspended] = useState(false);
 
   // == Apply theme on document body
   useDidUpdate(() => {
-    if (theme) {
-      document.documentElement.setAttribute("data-user-theme", theme);
+    if (userTheme) {
+      document.documentElement.setAttribute("data-user-theme", userTheme);
       document.body.style.setProperty(
         "--mantine-color-body",
-        USER_THEME_BACKGROUND_COLORS[theme],
+        USER_THEME_BACKGROUND_COLORS[userTheme],
       );
     } else {
       document.documentElement.removeAttribute("data-user-theme");
       document.body.style.removeProperty("--mantine-color-body");
     }
-  }, [theme]);
+  }, [userTheme]);
 
   return (
-    <UserThemeContext.Provider
-      value={{ userTheme: theme, setUserTheme: setTheme }}
-    >
-      {!!theme && (
+    <UserThemeContext.Provider value={{ userTheme, setUserTheme }}>
+      {!!userTheme && (
         <Box
           className={classes.backdrop}
           role="backdrop"
           style={{
-            backgroundImage: themeBackgroundMedia(theme),
-            backgroundColor: USER_THEME_BACKGROUND_COLORS[theme],
+            backgroundImage: userThemeBackgroundMediaSrc(userTheme),
+            backgroundColor: USER_THEME_BACKGROUND_COLORS[userTheme],
           }}
         >
-          {IMAGE_USER_THEMES.includes(theme) ? (
+          {IMAGE_USER_THEMES.includes(userTheme) ? (
             <div className={classes.imageContainer}>
               <img
                 className={classes.image}
-                src={userThemeBackgroundImageSrc(theme)}
+                src={userThemeBackgroundImageSrc(userTheme)}
               />
               <div
                 className={classes.imageBackdrop}
                 style={{
-                  backgroundImage: themeBackgroundMedia(theme),
+                  backgroundImage: userThemeBackgroundMediaSrc(userTheme),
                 }}
               />
             </div>
           ) : (
-            <video
+            <Box
+              component="video"
               autoPlay
               muted
               loop
               playsInline
-              src={userThemeBackgroundVideoSrc(theme)}
+              src={userThemeBackgroundVideoSrc(userTheme)}
               onSuspend={({ currentTarget }) => {
                 if (!videoSuspended && currentTarget.paused) {
                   currentTarget.play().then(undefined, reason => {
@@ -75,7 +74,8 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
                   });
                 }
               }}
-              {...(videoSuspended && { style: { display: "none" } })}
+              className={classes.video}
+              mod={{ suspended: videoSuspended }}
             />
           )}
         </Box>
@@ -87,9 +87,9 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
 
 export default UserThemeProvider;
 
-const themeBackgroundMedia = (theme: UserTheme) => {
-  const src = IMAGE_USER_THEMES.includes(theme)
-    ? userThemeBackgroundImageSrc(theme)
-    : userThemeBackgroundVideoSrc(theme);
-  return `url(${src}), ${USER_THEME_BACKGROUND_GRADIENTS[theme]}`;
+const userThemeBackgroundMediaSrc = (userTheme: UserTheme): string => {
+  const src = IMAGE_USER_THEMES.includes(userTheme)
+    ? userThemeBackgroundImageSrc(userTheme)
+    : userThemeBackgroundVideoSrc(userTheme);
+  return `url(${src}), ${USER_THEME_BACKGROUND_GRADIENTS[userTheme]}`;
 };
