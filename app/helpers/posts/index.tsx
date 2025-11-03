@@ -73,6 +73,7 @@ export interface WorldPostsData {
 
 interface WorldPostParams {
   type?: PostType | null;
+  date?: string | null;
   searchQuery?: string;
 }
 
@@ -80,9 +81,12 @@ const worldPostsGetKey = (
   params?: WorldPostParams,
 ): SWRInfiniteKeyLoader<WorldPostsData> => {
   return (index, previousPageData): string | null => {
-    const query: Record<string, any> = {};
+    const query: Record<string, string> = {};
     if (params?.type) {
       query.type = params.type;
+    }
+    if (params?.date) {
+      query.date = DateTime.fromISO(params.date).toLocal().toISO();
     }
     if (params?.searchQuery) {
       query.q = params.searchQuery;
@@ -92,7 +96,7 @@ const worldPostsGetKey = (
       if (!next) {
         return null;
       }
-      query.page = next;
+      query.page = next.toString();
     }
     return routes.worldPosts.index.path({ query });
   };
@@ -101,6 +105,7 @@ const worldPostsGetKey = (
 export interface WorldPostsOptions
   extends SWRInfiniteConfiguration<WorldPostsData> {
   type?: PostType | null;
+  date?: string | null;
   searchQuery?: string;
   limit?: number;
 }
@@ -130,20 +135,29 @@ export const useWorldPosts = (options?: WorldPostsOptions) => {
 // TODO: Account for type param
 export const mutateWorldPosts = async (): Promise<void> => {
   const postsPath = routes.worldPosts.index.path();
-  const searchQueries = new Set<string>();
+  const mutations: Promise<void>[] = [];
   for (const path of cache.keys()) {
     const url = hrefToUrl(path);
     if (url.pathname === postsPath) {
-      const searchQuery = url.searchParams.get("q");
-      if (searchQuery) {
-        searchQueries.add(searchQuery);
-      }
+      const getKey: SWRInfiniteKeyLoader<WorldPostsData> = (
+        index,
+        previousPageData,
+      ) => {
+        const query: Record<string, string> = {};
+        url.searchParams.forEach((value, key) => {
+          query[key] = value;
+        });
+        if (previousPageData) {
+          const { next } = previousPageData.pagination;
+          if (!next) {
+            return null;
+          }
+          query.page = next.toString();
+        }
+        return routes.worldPosts.index.path({ query });
+      };
+      mutations.push(mutate(unstable_serialize(getKey)));
     }
   }
-  const mutations = [undefined, ...searchQueries].map(searchQuery =>
-    mutate<WorldPostsData>(
-      unstable_serialize(worldPostsGetKey({ searchQuery })),
-    ),
-  );
   await Promise.all(mutations);
 };

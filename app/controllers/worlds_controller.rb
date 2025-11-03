@@ -88,4 +88,28 @@ class WorldsController < ApplicationController
       content_type: "application/manifest+json",
     )
   end
+
+  # GET /world/timeline
+  def timeline
+    current_user = authenticate_user!
+    time_zone_name = params.fetch(:time_zone)
+    time_zone = ActiveSupport::TimeZone.new(time_zone_name)
+    today = time_zone.today
+    start_time = (today - 13.days).beginning_of_day
+    posts = current_user.posts
+      .where(created_at: start_time..)
+      .select(Arel.sql(
+        "DISTINCT ON (DATE(created_at AT TIME ZONE :tz)) DATE(created_at AT TIME ZONE :tz) AS date, emoji", # rubocop:disable Layout/LineLength
+        tz: time_zone.tzinfo.name,
+      ))
+      .order(Arel.sql(
+        "DATE(created_at AT TIME ZONE :tz), created_at DESC",
+        tz: time_zone.tzinfo.name,
+      ))
+    timeline = {}
+    posts.each do |post|
+      timeline[post["date"]] = { emoji: post.emoji }
+    end
+    render(json: { timeline: })
+  end
 end

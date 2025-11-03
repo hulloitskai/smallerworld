@@ -1,0 +1,57 @@
+.scrollArea {
+  :global(.mantine-ScrollArea-viewport) {
+    padding-block: 4px;
+    /* padding-right: 24px; */
+  }
+}
+
+.calendar {
+  padding-inline: 8px;
+
+  :global(.mantine-MiniCalendar-control) {
+    display: none;
+  }
+
+  :global(.mantine-MiniCalendar-day) {
+    border-radius: var(--mantine-radius-md);
+    position: relative;
+    padding-block: 6px;
+    padding-inline: 4px;
+
+    &[disabled] {
+      background-color: transparent;
+      cursor: default;
+    }
+
+    &:not([disabled]):not([data-selected]) {
+      @mixin dark-user-theme {
+        @mixin hover {
+          background-color: var(--mantine-color-primary-light);
+        }
+      }
+    }
+
+    &[data-emoji] {
+      flex-direction: row;
+      column-gap: 3px;
+      align-items: start;
+
+      :global(.mantine-MiniCalendar-dayNumber) {
+        font-size: 0.75em;
+      }
+
+      &::after {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 4px;
+        content: attr(data-emoji);
+        font-family: var(--font-family-emoji);
+        font-size: var(--mantine-font-size-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

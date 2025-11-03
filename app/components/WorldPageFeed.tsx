@@ -16,6 +16,7 @@ import { type PostType } from "~/types";
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
+import WorldTimelineCard from "./WorldTimelineCard";
 
 import classes from "./WorldPageFeed.module.css";
 
@@ -36,12 +37,14 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // == Load posts
+  const [date, setDate] = useState<string | null>(null);
   const [postType, setPostType] = useState<PostType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
   const { posts, setSize, hasMorePosts, isValidating } = useWorldPosts({
     searchQuery: debouncedSearchQuery,
     type: postType,
+    date,
   });
 
   return (
@@ -92,20 +95,27 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
           />
         )}
       </Transition>
+      <WorldTimelineCard {...{ date }} onDateChange={setDate} />
       {postType && (
-        <Badge
-          className={classes.typeBadge}
-          variant="outline"
-          leftSection={
-            <Box component={POST_TYPE_TO_ICON[postType]} fz={10.5} />
-          }
-          rightSection={<CloseOutlineIcon />}
-          onClick={() => {
-            setPostType(null);
-          }}
-        >
-          {POST_TYPE_TO_LABEL[postType]}
-        </Badge>
+        <Group justify="center" gap={6}>
+          <Text size="xs" c="dimmed">
+            {" "}
+            filter by:
+          </Text>
+          <Badge
+            className={classes.typeBadge}
+            variant="filled"
+            leftSection={
+              <Box component={POST_TYPE_TO_ICON[postType]} fz={10.5} />
+            }
+            rightSection={<CloseOutlineIcon />}
+            onClick={() => {
+              setPostType(null);
+            }}
+          >
+            {POST_TYPE_TO_LABEL[postType]}
+          </Badge>
+        </Group>
       )}
       {posts ? (
         isEmpty(posts) ? (

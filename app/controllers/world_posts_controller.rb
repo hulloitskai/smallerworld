@@ -9,7 +9,7 @@ class WorldPostsController < ApplicationController
   before_action :authenticate_user!
 
   # == Actions
-  # GET /world/posts?type=...&q=...
+  # GET /world/posts?type=...&date=...&q=...
   def index
     current_user = authenticate_user!
     posts = authorized_scope(current_user.posts)
@@ -17,7 +17,15 @@ class WorldPostsController < ApplicationController
       .with_quoted_post_and_attached_images
       .with_encouragement
     if (type = params[:type])
+      raise "Invalid type: #{type}" unless type.is_a?(String)
+
       posts = posts.where(type:)
+    end
+    if (date = params[:date])
+      raise "Invalid date: #{date}" unless date.is_a?(String)
+
+      time = date.to_time or raise "Invalid date: #{date}"
+      posts = posts.where(created_at: time.all_day)
     end
     ordering = { created_at: :desc, id: :asc }
     pagy, paginated_posts = if (query = params[:q])

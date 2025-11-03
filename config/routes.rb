@@ -112,6 +112,7 @@ Rails.application.routes.draw do
   scope export: { namespace: "world" } do
     resource :world, only: %i[show edit], constraints: { format: "html" }
     resource :world, only: :update, constraints: { format: "json" } do
+      get :timeline
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end
