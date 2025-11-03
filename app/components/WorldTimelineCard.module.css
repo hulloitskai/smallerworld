@@ -18,6 +18,11 @@
     padding-block: 6px;
     padding-inline: 4px;
 
+    &[data-selected] {
+      color: var(--mantine-primary-color-contrast);
+      background-color: var(--mantine-primary-color-filled);
+    }
+
     &[disabled] {
       background-color: transparent;
       cursor: default;
@@ -46,6 +51,8 @@
         right: 0;
         bottom: 4px;
         content: attr(data-emoji);
+        line-height: 1;
+        vertical-align: top;
         font-family: var(--font-family-emoji);
         font-size: var(--mantine-font-size-sm);
         display: flex;
