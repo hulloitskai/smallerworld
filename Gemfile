@@ -170,6 +170,9 @@ gem "words_counted", "~> 1.0"
 # Send SMS with Twilio
 gem "twilio-ruby", "~> 7.5"
 
+# Fetch Spotify metadata
+gem "rspotify", "~> 2.12"
+
 group :development, :test do
   # Debug code with debug
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -238,4 +241,3 @@ group :test do
   gem "capybara-playwright-driver"
   gem "rack-test"
 end
-

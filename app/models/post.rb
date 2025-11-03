@@ -164,8 +164,11 @@ class Post < ApplicationRecord
   validates :title, absence: true, unless: :title_visible?
   validates :quoted_post, presence: true, if: :follow_up?
   validates :quoted_post, absence: true, unless: :follow_up?
+  validates :spotify_track_id, presence: true, allow_nil: true
   validates :images_ids, length: { maximum: 4 }, absence: { if: :follow_up? }
   validate :validate_no_nested_quoting, if: :quoted_post?
+  validate :validate_spotify_track_id,
+           if: %i[spotify_track_id? spotify_track_id_changed?]
 
   # == Callbacks
   after_save :create_notifications!, if: :send_notifications?
@@ -456,6 +459,18 @@ class Post < ApplicationRecord
         :quoted_post,
         :invalid,
         message: "cannot also contain a quoted post",
+      )
+    end
+  end
+
+  sig { void }
+  def validate_spotify_track_id
+    track_id = spotify_track_id or return
+    unless SpotifyService.get_track(track_id)
+      errors.add(
+        :spotify_track_id,
+        :invalid,
+        message: "invalid Spotify track",
       )
     end
   end

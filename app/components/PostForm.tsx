@@ -289,15 +289,16 @@ const PostForm: FC<PostFormProps> = props => {
               },
             };
           },
-          transformErrors: ({ image, ...errors }) => ({
-            ...errors,
-            image_upload: image,
-          }),
         }),
+    transformErrors: ({ image, spotify_track_id, ...errors }) => ({
+      ...errors,
+      image_upload: image,
+      spotify_track_url: spotify_track_id,
+    }),
     initialValues,
     validate: {
       spotify_track_url: value => {
-        if (!SPOTIFY_TRACK_URL_PATTERN.test(value)) {
+        if (value && !SPOTIFY_TRACK_URL_PATTERN.test(value)) {
           return "Invalid Spotify track link";
         }
       },
