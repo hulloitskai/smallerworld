@@ -1,8 +1,6 @@
 import { ScrollArea } from "@mantine/core";
 import { MiniCalendar } from "@mantine/dates";
 
-import { useCurrentTimeZone } from "~/helpers/utils";
-
 import classes from "./WorldTimelineCard.module.css";
 import "@mantine/dates/styles.css";
 
@@ -16,7 +14,7 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   onDateChange,
   ...otherProps
 }) => {
-  const twoWeeksAgo = useTwoWeeksAgo();
+  const startDate = useTwoWeeksAgo();
   const viewportRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -33,15 +31,14 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   }, []);
 
   // == Load timeline
-  const timeZone = useCurrentTimeZone();
   const { data } = useRouteSWR<{
     timeline: Record<string, { emoji: string | null }>;
   }>(routes.world.timeline, {
     descriptor: "load timeline",
-    params: timeZone
+    params: startDate
       ? {
           query: {
-            time_zone: timeZone,
+            start_date: DateTime.fromISO(startDate).toLocal().toISO(),
           },
         }
       : null,
@@ -58,11 +55,11 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
         mih={44}
         className={classes.scrollArea}
       >
-        {twoWeeksAgo && (
+        {startDate && (
           <MiniCalendar
             size="xs"
             numberOfDays={14}
-            defaultDate={twoWeeksAgo}
+            defaultDate={startDate}
             getDayProps={date => {
               const activity = timeline[date];
               if (activity) {
@@ -91,13 +88,6 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
           />
         )}
       </ScrollArea>
-      <LoadingOverlay
-        visible={!data}
-        overlayProps={{
-          backgroundOpacity: 0,
-          blur: 1,
-        }}
-      />
     </Card>
   );
 };

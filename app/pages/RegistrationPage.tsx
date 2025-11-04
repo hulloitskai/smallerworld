@@ -10,7 +10,7 @@ import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { CANONICAL_DOMAIN } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import { useTimeZone } from "~/helpers/time";
+import { currentTimeZone } from "~/helpers/time";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type Image, type Upload, type UserTheme } from "~/types";
 
@@ -22,9 +22,6 @@ const ICON_IMAGE_INPUT_SIZE = 110;
 
 const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
   const { url: pageUrl } = usePage();
-
-  // == Time zone
-  const timeZone = useTimeZone();
 
   // == Form
   const [shouldDeriveHandle, setShouldDeriveHandle] = useState(true);
@@ -41,13 +38,12 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       allow_friend_sharing: false,
     },
     transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => {
-      invariant(timeZone, "Missing time zone");
       return {
         user: {
           ...values,
           handle: prefixed_handle.replace(/^@/, ""),
           page_icon: page_icon_upload?.signedId ?? "",
-          time_zone_name: timeZone,
+          time_zone: currentTimeZone(),
         },
       };
     },
@@ -89,7 +85,6 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
   const [pageIconPreview, setPageIconPreview] = useState<Image | null>(null);
 
   const signupDisabled =
-    !timeZone ||
     !values.name ||
     values.prefixed_handle.length <= 1 ||
     !values.page_icon_upload;

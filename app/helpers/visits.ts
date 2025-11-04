@@ -1,5 +1,7 @@
 import { useDocumentVisibility } from "@mantine/hooks";
 
+import { currentTimeZone } from "./time";
+
 export const useTrackVisit = (): void => {
   const visibility = useDocumentVisibility();
   const currentUser = useCurrentUser();
@@ -21,11 +23,10 @@ export const useTrackVisit = (): void => {
     if (visibility !== "visible") {
       return;
     }
-    const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
     const timeout = setTimeout(() => {
       void trigger({
         visit: {
-          time_zone_name: timeZone,
+          time_zone: currentTimeZone(),
         },
       });
       if ("clearAppBadge" in navigator) {

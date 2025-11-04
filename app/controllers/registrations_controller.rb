@@ -33,7 +33,7 @@ class RegistrationsController < ApplicationController
       name
       handle
       page_icon
-      time_zone_name
+      time_zone
       hide_stats
       hide_neko
       allow_friend_sharing

@@ -21,10 +21,10 @@ class WorldPostsController < ApplicationController
 
       posts = posts.where(type:)
     end
-    if (date = params[:date])
-      raise "Invalid date: #{date}" unless date.is_a?(String)
+    if (value = params[:date])
+      raise "Invalid date: #{value}" unless value.is_a?(String)
 
-      time = date.to_time or raise "Invalid date: #{date}"
+      time = value.to_time or raise "Invalid date: #{value}"
       posts = posts.where(created_at: time.all_day)
     end
     ordering = { created_at: :desc, id: :asc }

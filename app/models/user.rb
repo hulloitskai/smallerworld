@@ -56,11 +56,6 @@ class User < ApplicationRecord
   # == FriendlyId
   friendly_id :handle, slug_column: :handle
 
-  sig { returns(ActiveSupport::TimeZone) }
-  def time_zone
-    ActiveSupport::TimeZone.new(time_zone_name)
-  end
-
   # == Attributes
   sig { returns(Phonelib::Phone) }
   def phone
@@ -141,6 +136,24 @@ class User < ApplicationRecord
   scope :subscribed_to_public_posts, -> {
     where(handle: handles_subscribed_to_public_posts)
   }
+
+  # == Time zone
+  sig { returns(ActiveSupport::TimeZone) }
+  def time_zone
+    ActiveSupport::TimeZone.new(time_zone_name)
+  end
+
+  sig do
+    params(value: T.any(String, ActiveSupport::TimeZone)).returns(T.untyped)
+  end
+  def time_zone=(value)
+    self.time_zone_name = case value
+    when String
+      value
+    when ActiveSupport::TimeZone
+      value.tzinfo.name
+    end
+  end
 
   # == Methods
   sig { returns(T::Boolean) }

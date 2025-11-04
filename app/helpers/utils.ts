@@ -62,16 +62,3 @@ export const withTrailingSlash = (href: string): string => {
   }
   return base + "/";
 };
-
-export const currentTimeZone = (): string => {
-  const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
-  return timeZone;
-};
-
-export const useCurrentTimeZone = (): string | undefined => {
-  const [timeZone, setTimeZone] = useState<string>();
-  useEffect(() => {
-    setTimeZone(currentTimeZone());
-  }, []);
-  return timeZone;
-};

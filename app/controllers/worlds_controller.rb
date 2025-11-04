@@ -89,28 +89,36 @@ class WorldsController < ApplicationController
     )
   end
 
-  # GET /world/timeline
+  # GET /world/timeline?start_date=...
   def timeline
     current_user = authenticate_user!
-    time_zone_name = params[:time_zone] or raise "Missing time zone"
-    time_zone = ActiveSupport::TimeZone.new(time_zone_name)
-    start_time = (time_zone.today - 13.days).beginning_of_day
+    start_date = scoped do
+      value = params[:start_date] or raise "Missing start date"
+      raise "Invalid start date: #{value}" unless value.is_a?(String)
+
+      value.to_time or raise "Invalid start date: #{value}"
+    end
+    if start_date < 1.year.ago
+      raise "Start date must be within the last year"
+    end
+
     timeline_posts = scoped do
-      tzname = time_zone.tzinfo.name
-      distinct_sql = Post.sanitize_sql_array([
-        "DISTINCT ON (DATE(created_at AT TIME ZONE :tzname)) " \
-          "DATE(created_at AT TIME ZONE :tzname) AS date, emoji",
-        tzname:,
+      offset = start_date.formatted_offset
+      select_sql = Post.sanitize_sql_array([
+        "DISTINCT ON (DATE(created_at AT TIME ZONE INTERVAL :offset)) " \
+          "DATE(created_at AT TIME ZONE INTERVAL :offset) AS date, emoji",
+        offset:,
       ])
       order_sql = Post.sanitize_sql_array([
-        "DATE(created_at AT TIME ZONE :tzname), created_at DESC",
-        tzname:,
+        "DATE(created_at AT TIME ZONE INTERVAL :offset), created_at DESC",
+        offset:,
       ])
       current_user.posts
-        .where(created_at: start_time..)
-        .select(Arel.sql(distinct_sql))
+        .where(created_at: start_date..)
+        .select(select_sql)
         .order(Arel.sql(order_sql))
     end
+
     timeline = timeline_posts
       .map do |post|
         date = T.cast(post["date"], Date)

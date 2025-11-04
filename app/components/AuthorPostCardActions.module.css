@@ -28,6 +28,7 @@
 .statsList {
   --list-lh: 1;
   --list-spacing: 4px;
+  --list-marker-gap: 0px;
 
   :global(.mantine-List-item) {
     --li-align: top;
