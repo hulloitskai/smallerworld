@@ -115,7 +115,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
             <Menu
               width={180}
               position="bottom-end"
-              arrowOffset={16}
+              arrowOffset={20}
               trigger="click-hover"
               opened={menuOpened}
               onChange={setMenuOpened}
@@ -358,77 +358,3 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
     </MenuItem>
   );
 };
-
-// interface SendInvitationMenuItemProps {
-//   invitationUrl: string | undefined;
-// }
-
-// const SendInvitationMenuItem: FC<SendInvitationMenuItemProps> = ({
-//   invitationUrl,
-// }) => {
-//   const invitationShareData = useInvitationShareData(invitationUrl);
-//   return (
-//     <Menu.Sub
-//       position="left-start"
-//       arrowOffset={12}
-//       closeDelay={100}
-//       disabled={!invitationUrl}
-//     >
-//       <Menu.Sub.Target>
-//         <Menu.Sub.Item
-//           leftSection={invitationUrl ? <SendIcon /> : <Loader size="xs" />}
-//         >
-//           send invite link
-//         </Menu.Sub.Item>
-//       </Menu.Sub.Target>
-//       <Menu.Sub.Dropdown>
-//         <CopyButton value={invitationUrl ?? ""}>
-//           {({ copied, copy }) => (
-//             <Menu.Item
-//               leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-//               closeMenuOnClick={false}
-//               disabled={!invitationUrl}
-//               onClick={copy}
-//             >
-//               {copied ? "link copied!" : "copy link"}
-//             </Menu.Item>
-//           )}
-//         </CopyButton>
-//         <Menu.Item
-//           leftSection={<QrCodeIcon />}
-//           disabled={!invitationUrl}
-//           onClick={() => {
-//             if (!invitationUrl) {
-//               throw new Error("Missing invitation URL");
-//             }
-//             openModal({
-//               title: "invite friend via QR code",
-//               children: (
-//                 <Stack align="center" justify="center" pb="md">
-//                   <Text size="sm" c="dimmed" display="block">
-//                     get your friend to scan this QR code, so they can add your
-//                     page to their home screen :)
-//                   </Text>
-//                   <PlainQRCode value={invitationUrl} />
-//                 </Stack>
-//               ),
-//             });
-//           }}
-//         >
-//           show QR code
-//         </Menu.Item>
-//         {invitationShareData && (
-//           <Menu.Item
-//             leftSection={<ShareIcon />}
-//             closeMenuOnClick={false}
-//             onClick={() => {
-//               void navigator.share(invitationShareData);
-//             }}
-//           >
-//             share via...
-//           </Menu.Item>
-//         )}
-//       </Menu.Sub.Dropdown>
-//     </Menu.Sub>
-//   );
-// };

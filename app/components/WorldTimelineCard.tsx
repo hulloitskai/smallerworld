@@ -4,7 +4,7 @@ import { MiniCalendar } from "@mantine/dates";
 import { useCurrentTimeZone } from "~/helpers/utils";
 
 import classes from "./WorldTimelineCard.module.css";
-import "@mantine/dates/styles.layer.css";
+import "@mantine/dates/styles.css";
 
 export interface WorldTimelineCardProps extends BoxProps {
   date: string | null;

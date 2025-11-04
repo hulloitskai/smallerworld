@@ -53,7 +53,7 @@ import LazyPostEditor from "./LazyPostEditor";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostForm.module.css";
-import "@mantine/dates/styles.layer.css";
+import "@mantine/dates/styles.css";
 
 export type PostFormProps =
   | {
@@ -582,11 +582,11 @@ const PostForm: FC<PostFormProps> = props => {
                 required
                 withAsterisk={false}
                 popoverProps={{
+                  arrowOffset: 20,
                   portalProps: {
                     target: vaulPortalTarget,
                   },
                 }}
-                data-vaul-no-drag
               />
             )}
             {quotedPost && <QuotedPostCard post={quotedPost} />}

@@ -1,12 +1,9 @@
-// @ts-check
-
 import js from "@eslint/js";
-// @ts-expect-error eslint-plugin-import is not typed
-import _import from "eslint-plugin-import";
-import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
+import importPlugin from "eslint-plugin-import";
+import reactPlugin from "eslint-plugin-react";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
+import reactRefreshPlugin from "eslint-plugin-react-refresh";
+import simpleImportSortPlugin from "eslint-plugin-simple-import-sort";
 import { readFileSync } from "fs";
 import ts from "typescript-eslint";
 
@@ -72,15 +69,15 @@ export default ts.config(
   },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
-    ..._import.flatConfigs.recommended,
-    ..._import.flatConfigs.typescript,
+    ...importPlugin.flatConfigs.recommended,
+    ...importPlugin.flatConfigs.typescript,
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
     },
     plugins: {
-      "simple-import-sort": simpleImportSort,
-      import: _import,
+      "simple-import-sort": simpleImportSortPlugin,
+      import: importPlugin,
     },
     rules: {
       "simple-import-sort/imports": [
@@ -126,15 +123,14 @@ export default ts.config(
   },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
-    // @ts-expect-error react.configs.flat should not be undefined
-    ...react.configs.flat.recommended,
+    ...reactPlugin.configs.flat.recommended,
     settings: {
       react: {
         version: "detect",
       },
     },
     plugins: {
-      "react-refresh": reactRefresh,
+      "react-refresh": reactRefreshPlugin,
     },
     rules: {
       "react/react-in-jsx-scope": "off",
@@ -146,11 +142,11 @@ export default ts.config(
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
-      "react-hooks": reactHooks,
+      "react-hooks": reactHooksPlugin,
     },
     // @ts-expect-error react-hooks is not typed
     rules: {
-      ...reactHooks.configs.recommended.rules,
+      ...reactHooksPlugin.configs.recommended.rules,
       "react-hooks/exhaustive-deps": [
         "warn",
         {

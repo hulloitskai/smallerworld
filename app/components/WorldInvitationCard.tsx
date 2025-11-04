@@ -74,7 +74,7 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
               <Menu
                 width={180}
                 position="bottom-end"
-                arrowOffset={16}
+                arrowOffset={20}
                 trigger="click-hover"
                 opened={menuOpened}
                 onChange={setMenuOpened}
