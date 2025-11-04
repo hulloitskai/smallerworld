@@ -21,12 +21,12 @@ const UserThemeProvider: FC<UserThemeProviderProps> = ({ children }) => {
     if (userTheme) {
       document.documentElement.setAttribute("data-user-theme", userTheme);
       document.body.style.setProperty(
-        "--mantine-color-body",
+        "--user-theme-background-color",
         USER_THEME_BACKGROUND_COLORS[userTheme],
       );
     } else {
       document.documentElement.removeAttribute("data-user-theme");
-      document.body.style.removeProperty("--mantine-color-body");
+      document.body.style.removeProperty("--user-theme-background-color");
     }
   }, [userTheme]);
 

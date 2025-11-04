@@ -15,22 +15,6 @@
         background-color: var(--mantine-color-dark-7);
       }
     }
-
-    &[data-variant="default"] {
-      @mixin dark-user-theme {
-        background-color: var(--mantine-color-body);
-        border-color: alpha(var(--mantine-color-white), 0.2);
-
-        &[data-disabled] {
-          color: alpha(var(--mantine-color-white), 0.3);
-          border-color: transparent;
-        }
-
-        @mixin hover {
-          background-color: lighten(var(--mantine-color-body), 0.1);
-        }
-      }
-    }
   }
 
   .buttonLabel {
@@ -63,10 +47,10 @@
     align-items: start;
     padding-bottom: 6px;
 
-    @mixin light-user-theme {
+    /* @mixin light-user-theme {
       @mixin clamp-lightness background-color, var(--mantine-color-body), 75,
         100;
-    }
+    } */
   }
 
   .modal[data-full-screen] {
@@ -112,19 +96,10 @@
   }
 
   .modalContent {
-    @mixin light-user-theme {
+    /* @mixin light-user-theme {
       @mixin clamp-lightness background-color, var(--mantine-color-body), 75,
         100;
-    }
-  }
-
-  .badge {
-    &[data-variant="default"] {
-      @mixin dark-user-theme {
-        background-color: var(--mantine-color-body);
-        border-color: alpha(var(--mantine-color-white), 0.2);
-      }
-    }
+    } */
   }
 
   .badgeLabel {
@@ -132,8 +107,27 @@
     font-family: var(--mantine-font-family-headings);
   }
 
+  .paper {
+    --paper-border-color: light-dark(
+      var(--mantine-color-gray-3),
+      var(--mantine-color-dark-6)
+    );
+
+    @mixin dark-user-theme {
+      --paper-border-color: alpha(var(--mantine-color-default-border), 0.4);
+    }
+  }
+
   .card {
-    border-color: light-dark(
+    @mixin dark {
+      background-color: var(--mantine-color-dark-8);
+    }
+
+    @mixin dark-user-theme {
+      background-color: var(--mantine-color-body);
+    }
+
+    /* border-color: light-dark(
       var(--mantine-color-gray-4),
       var(--mantine-color-dark-4)
     );
@@ -143,7 +137,6 @@
     }
 
     @mixin dark-user-theme {
-      background-color: alpha(var(--mantine-color-black), 0.4);
       border-color: alpha(var(--mantine-color-white), 0.2);
 
       &::before {
@@ -163,11 +156,11 @@
           content: none;
         }
       }
-    }
+    } */
   }
 
   .cardSection {
-    &[data-with-border] {
+    /* &[data-with-border] {
       @mixin dark {
         border-color: var(--mantine-color-dark-6);
       }
@@ -177,7 +170,7 @@
           border-color: alpha(var(--mantine-color-white), 0.2);
         }
       }
-    }
+    } */
   }
 
   .dropdown {
@@ -186,9 +179,8 @@
     }
 
     @mixin dark-user-theme {
-      background-color: alpha(var(--mantine-color-black), 0.4);
-      border-color: alpha(var(--mantine-color-white), 0.2);
-      backdrop-filter: blur(rem(8px));
+      background-color: var(--mantine-color-body);
+      --popover-border-color: var(--mantine-color-default-border);
     }
   }
 
@@ -203,12 +195,12 @@
   }
 
   .alert {
-    &[data-variant="default"] {
+    /* &[data-variant="default"] {
       @mixin dark-user-theme {
         background-color: var(--mantine-color-body);
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
-    }
+    } */
   }
 
   .alertBody {
@@ -264,26 +256,30 @@
     }
 
     :where(hr) {
+      @mixin dark {
+        border-color: var(--mantine-color-dark-4);
+      }
+
       @mixin dark-user-theme {
-        border-color: alpha(var(--mantine-color-white), 0.2);
+        border-color: alpha(var(--mantine-color-default-border), 0.5);
       }
     }
   }
 
   .divider {
     --divider-color: light-dark(
-      var(--mantine-color-gray-4),
-      var(--mantine-color-dark-4)
+      var(--mantine-color-gray-3),
+      var(--mantine-color-dark-5)
     );
 
     @mixin dark-user-theme {
-      --divider-color: alpha(var(--mantine-color-white), 0.2);
+      --divider-color: var(--mantine-color-default-border);
     }
   }
 
   .menuDivider {
     @mixin dark-user-theme {
-      border-color: alpha(var(--mantine-color-white), 0.2);
+      border-color: var(--mantine-color-default-border);
     }
   }
 
@@ -294,7 +290,7 @@
 
     @mixin dark-user-theme {
       background-color: var(--mantine-color-body);
-      border-color: alpha(var(--mantine-color-white), 0.2);
+      border-color: var(--mantine-color-default-border);
     }
   }
 
@@ -329,8 +325,18 @@
     font-family: var(--mantine-font-family-headings);
   }
 
-  .popoverDropdown:not(.menuDropdown) {
-    @mixin dark {
+  .popoverDropdown {
+    --popover-border-color: light-dark(
+      var(--mantine-color-gray-3),
+      var(--mantine-color-dark-6)
+    );
+
+    @mixin dark-user-theme {
+      --popover-border-color: var(--mantine-color-default-border);
+      background-color: var(--mantine-color-body);
+    }
+
+    /* @mixin dark {
       --popover-border-color: var(--mantine-color-dark-6);
       background-color: var(--mantine-color-dark-8);
     }
@@ -339,8 +345,20 @@
       --popover-border-color: alpha(var(--mantine-color-white), 0.2);
       background-color: var(--mantine-color-body);
       backdrop-filter: blur(rem(8px));
-    }
+    } */
   }
+
+  /* .popoverDropdown:not(.menuDropdown) {
+    @mixin dark {
+      --popover-border-color: var(--mantine-color-dark-6);
+      background-color: var(--mantine-color-dark-8);
+    }
+
+    @mixin dark-user-theme {
+      --popover-border-color: var(--mantine-color-default-border);
+      background-color: var(--mantine-color-body);
+    }
+  } */
 
   .richTextEditorContent {
     @mixin light {
@@ -367,19 +385,11 @@
     }
   }
 
-  .closeButton {
-    @mixin where-dark-user-theme {
-      @mixin hover {
-        background-color: alpha(var(--mantine-color-black), 0.2);
-      }
-    }
-  }
-
   .checkbox {
     @mixin dark-user-theme {
       &:not([data-checked]) :global(.mantine-Checkbox-input) {
-        background-color: transparent;
-        border-color: alpha(var(--mantine-color-white), 0.2);
+        background-color: lighten(var(--mantine-color-body), 0.1);
+        border-color: var(--mantine-color-default-border);
       }
     }
   }
@@ -390,16 +400,24 @@
     );
     padding-bottom: var(--safe-area-inset-bottom, 0px);
 
-    @mixin light-user-theme {
+    /* @mixin light-user-theme {
       @mixin clamp-lightness background-color, var(--mantine-color-body), 75,
         100;
-    }
+    } */
   }
 
   .table {
     :global(.mantine-Table-tr) {
       @mixin dark-user-theme {
-        border-color: alpha(var(--mantine-color-white), 0.1);
+        border-color: alpha(var(--mantine-color-default-border), 0.4);
+      }
+    }
+  }
+
+  .closeButton {
+    @mixin dark-user-theme {
+      @mixin hover {
+        background-color: alpha(var(--mantine-color-black), 0.2);
       }
     }
   }

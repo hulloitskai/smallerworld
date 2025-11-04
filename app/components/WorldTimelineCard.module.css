@@ -33,7 +33,7 @@
     &:not([disabled]):not([data-selected]) {
       @mixin dark-user-theme {
         @mixin hover {
-          background-color: var(--mantine-color-primary-light);
+          background-color: var(--mantine-primary-color-light);
         }
       }
     }
@@ -75,6 +75,11 @@
 }
 
 .postStreakBadge {
+  --mantine-color-default-border: alpha(
+    var(--mantine-color-orange-outline),
+    0.8
+  );
+
   position: absolute;
   bottom: -10px;
   left: 0;
@@ -85,12 +90,8 @@
     cursor: pointer;
 
     @mixin hover {
-      background-color: var(--mantine-color-primary-filled-hover);
+      background-color: var(--mantine-primary-color-filled-hover);
     }
-  }
-
-  &[data-variant="default"] {
-    border-color: alpha(var(--mantine-color-orange-outline), 0.8);
   }
 
   :global(.mantine-Badge-label) {

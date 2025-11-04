@@ -24,7 +24,7 @@
 }
 
 .menuItemSection {
-  color: var(--mantine-color-primary-outline);
+  color: var(--mantine-primary-color-outline);
 }
 
 .menuItemLabel {
@@ -35,7 +35,7 @@
 .menuItemDraftIcon {
   font-size: var(--mantine-font-size-md);
   color: light-dark(
-    var(--mantine-color-primary-filled),
+    var(--mantine-primary-color-filled),
     var(--mantine-color-white)
   );
 }
@@ -45,7 +45,7 @@
   box-shadow: var(--mantine-shadow-lg);
 
   &[data-expanded] {
-    background-color: var(--mantine-color-primary-filled-hover);
+    background-color: var(--mantine-primary-color-filled-hover);
   }
 }
 
@@ -54,8 +54,8 @@
   box-shadow: var(--mantine-shadow-lg);
   overflow: visible;
   background-color: var(--mantine-color-white);
-  color: var(--mantine-color-primary-filled);
-  border-color: var(--mantine-color-primary-filled);
+  color: var(--mantine-primary-color-filled);
+  border-color: var(--mantine-primary-color-filled);
 
   @mixin hover {
     background-color: light-dark(
@@ -84,7 +84,7 @@
     min-height: var(--indicator-size);
     padding-inline: 0px;
     font-size: 12px;
-    color: var(--mantine-color-primary-filled);
+    color: var(--mantine-primary-color-filled);
     box-shadow: var(--mantine-shadow-sm);
   }
 }
@@ -93,10 +93,10 @@
   pointer-events: auto;
   padding: 4px 8px;
   height: unset;
-  background-color: var(--mantine-color-primary-light);
+  background-color: var(--mantine-primary-color-light);
   border-color: light-dark(
-    var(--mantine-color-primary-filled),
-    var(--mantine-color-primary-7)
+    var(--mantine-primary-color-filled),
+    var(--mantine-primary-color-7)
   );
   backdrop-filter: blur(rem(4px));
 

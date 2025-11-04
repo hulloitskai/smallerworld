@@ -1,5 +1,5 @@
 .title {
-  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  color: var(--mantine-color-bright);
   videocalloute: 38px;
   font-weight: 900;
   line-height: 1.2;
@@ -18,8 +18,8 @@
 
 .emph {
   color: light-dark(
-    var(--mantine-color-primary-7),
-    var(--mantine-color-primary-4)
+    var(--mantine-primary-color-7),
+    var(--mantine-primary-color-4)
   );
 }
 

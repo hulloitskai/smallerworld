@@ -21,6 +21,7 @@ import {
   NavLink,
   NumberInput,
   Overlay,
+  Paper,
   PasswordInput,
   PinInput,
   Popover,
@@ -40,7 +41,7 @@ import { type Rect, useSafeViewportRect } from "./safeArea";
 import classes from "./mantine.module.css";
 import "./mantine.css";
 
-export type CustomColors = "primary" | "accent" | "rose" | DefaultMantineColor;
+export type CustomColors = "accent" | "rose" | DefaultMantineColor;
 
 declare module "@mantine/core" {
   export interface MantineThemeColorsOverride {
@@ -79,7 +80,6 @@ const createTheme = (
       rose: ROSE_COLORS,
       primary: ROSE_COLORS,
       accent: DEFAULT_THEME.colors.lime,
-      resumeAccent: DEFAULT_THEME.colors.indigo,
     },
     primaryColor: "primary",
     defaultRadius: "lg",
@@ -118,7 +118,6 @@ const createTheme = (
           variant: "light",
         },
         classNames: {
-          root: classes.badge,
           label: classes.badgeLabel,
         },
       }),
@@ -353,6 +352,11 @@ const createTheme = (
       Table: Table.extend({
         classNames: {
           table: classes.table,
+        },
+      }),
+      Paper: Paper.extend({
+        classNames: {
+          root: classes.paper,
         },
       }),
     },

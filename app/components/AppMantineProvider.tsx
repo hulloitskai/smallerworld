@@ -39,10 +39,9 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
         ...theme,
         colors: {
           ...theme.colors,
-          primary:
-            detectedUserTheme === "bakudeku"
-              ? DEFAULT_THEME.colors.orange
-              : theme.colors?.primary,
+          ...(detectedUserTheme === "bakudeku" && {
+            primary: DEFAULT_THEME.colors.orange,
+          }),
         },
       }}
       defaultColorScheme="auto"

@@ -18,7 +18,7 @@
   box-shadow: var(--mantine-shadow-lg);
 
   &[data-expanded] {
-    background-color: var(--mantine-color-primary-filled-hover);
+    background-color: var(--mantine-primary-color-filled-hover);
   }
 
   /* == Shimmer effect */
@@ -68,5 +68,5 @@
   width: var(--badge-size);
   height: var(--badge-size);
   background-color: var(--mantine-color-white);
-  color: var(--mantine-color-primary-filled);
+  color: var(--mantine-primary-color-filled);
 }

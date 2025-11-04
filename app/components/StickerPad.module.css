@@ -5,7 +5,7 @@
   transition: border-color 150ms ease-in-out;
 
   &[data-dragging-over] {
-    border-color: var(--mantine-color-primary-outline);
+    border-color: var(--mantine-primary-color-outline);
   }
 }
 
@@ -27,6 +27,6 @@
 
   &[data-dragging-over] {
     opacity: 0.5;
-    color: var(--mantine-color-primary-outline);
+    color: var(--mantine-primary-color-outline);
   }
 }

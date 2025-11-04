@@ -33,10 +33,10 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
     >
       <Menu.Target>
         <Badge
-          className={classes.target}
           variant="default"
           size="lg"
           leftSection={<MenuIcon />}
+          className={classes.target}
         >
           menu
         </Badge>

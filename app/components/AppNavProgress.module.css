@@ -9,9 +9,6 @@
   }
 
   @mixin dark-user-theme {
-    background-color: alpha(
-      light-dark(var(--mantine-color-black), var(--mantine-color-white)),
-      0.2
-    );
+    background-color: alpha(var(--mantine-color-bright), 0.2);
   }
 }

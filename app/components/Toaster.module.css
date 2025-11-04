@@ -53,7 +53,7 @@
   }
 
   [data-title] {
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+    color: var(--mantine-color-bright);
     font-size: var(--mantine-font-size-sm);
   }
 

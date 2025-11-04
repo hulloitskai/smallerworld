@@ -15,7 +15,7 @@
   :global(.mantine-Badge-section)[data-position="left"] {
     @mixin emoji;
 
-    font-size: var(--mantine-font-size-md);
+    font-size: var(--mantine-font-size-lg);
   }
 }
 
@@ -39,7 +39,7 @@
     font-size: 11px;
     margin-inline-end: 8px;
     color: light-dark(
-      var(--mantine-color-primary-filled),
+      var(--mantine-primary-color-filled),
       var(--mantine-color-white)
     );
   }

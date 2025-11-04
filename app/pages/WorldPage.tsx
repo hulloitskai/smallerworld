@@ -239,7 +239,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           <Menu.Target>
             <ActionIcon
               pos="absolute"
-              top={-6}
+              top={pendingJoinRequests > 0 ? 0 : -6}
               right={0}
               className={classes.menuButton}
             >

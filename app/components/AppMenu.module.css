@@ -16,17 +16,17 @@
   text-transform: none;
 
   &[data-expanded] {
-    border-color: var(--mantine-color-primary-filled);
+    border-color: var(--mantine-primary-color-filled);
   }
 
-  @mixin dark-user-theme {
+  /* @mixin dark-user-theme {
     background-color: alpha(var(--mantine-color-black), 0.4);
     backdrop-filter: blur(rem(8px));
 
     &:not([data-expanded]) {
       border-color: alpha(var(--mantine-color-white), 0.2);
     }
-  }
+  } */
 }
 
 .icon {

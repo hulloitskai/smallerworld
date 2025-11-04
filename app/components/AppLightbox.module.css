@@ -42,7 +42,7 @@
     &:not(:disabled) {
       @mixin hover {
         :global(.mantine-ActionIcon-icon) {
-          color: var(--mantine-color-primary-outline);
+          color: var(--mantine-primary-color-outline);
         }
       }
     }

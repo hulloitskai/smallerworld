@@ -7,24 +7,20 @@
 
 .segmentedControl {
   box-shadow: var(--mantine-shadow-xl);
-
-  @mixin light {
-    background-color: var(--mantine-color-gray-2);
-  }
-
-  @mixin dark {
-    background-color: var(--mantine-color-dark-9);
-  }
+  background-color: light-dark(
+    var(--mantine-color-gray-2),
+    var(--mantine-color-dark-9)
+  );
 
   @mixin light-user-theme {
-    @mixin clamp-lightness background-color, var(--mantine-color-body), 75, 100;
+    @mixin clamp-lightness --sc-color, var(--user-theme-background-color), 30,
+      65;
+    background-color: lighten(var(--mantine-color-body), 0.5);
   }
 
   @mixin dark-user-theme {
-    background-color: alpha(var(--mantine-color-black), 0.7);
-    backdrop-filter: blur(rem(8px));
-
     @mixin clamp-lightness --sc-color, var(--mantine-color-body), 35, 60;
+    background-color: darken(var(--mantine-color-body), 0.5);
   }
 
   :global(.mantine-SegmentedControl-label) {

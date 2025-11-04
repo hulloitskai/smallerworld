@@ -7,7 +7,7 @@
   align-self: center;
   padding-inline: 6px;
   border-radius: var(--mantine-radius-md);
-  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  color: var(--mantine-color-bright);
 
   :global(.mantine-Button-label) {
     font-size: var(--mantine-font-size-sm);

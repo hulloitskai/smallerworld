@@ -13,7 +13,7 @@
   }
 
   &[data-checked] {
-    border-color: var(--mantine-color-primary-outline);
+    border-color: var(--mantine-primary-color-outline);
   }
 }
 

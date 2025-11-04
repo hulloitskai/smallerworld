@@ -10,7 +10,7 @@
     inset: 0;
     z-index: -1;
     content: "";
-    backdrop-filter: blur(light-dark(rem(4px), rem(8px)));
+    backdrop-filter: blur(rem(8px));
     border-radius: var(--paper-radius);
   }
 
@@ -23,7 +23,7 @@
   border-style: dashed;
 
   @mixin light {
-    border-color: var(--mantine-color-primary-4);
+    border-color: var(--mantine-primary-color-4);
   }
 
   :global(.mantine-ActionIcon-icon) {
