@@ -102,8 +102,9 @@ class WorldsController < ApplicationController
       raise "Start date must be within the last year"
     end
 
+    time_zone = ActiveSupport::TimeZone.new(start_date.utc_offset)
     timeline_posts = scoped do
-      offset = start_date.formatted_offset
+      offset = time_zone.formatted_offset
       select_sql = Post.sanitize_sql_array([
         "DISTINCT ON (DATE(created_at AT TIME ZONE INTERVAL :offset)) " \
           "DATE(created_at AT TIME ZONE INTERVAL :offset) AS date, emoji",
@@ -120,17 +121,39 @@ class WorldsController < ApplicationController
         .to_a
     end
 
-    timeline = timeline_posts
-      .map do |post|
-        date = T.cast(post["date"], Date)
-        [date.to_s, { emoji: post.emoji }]
-      end
-      .to_h
-    post_streak, posted_today = current_user.post_streak
+    timeline = build_timeline(timeline_posts, time_zone:)
+    post_streak, posted_today = current_user.post_streak(time_zone:)
     render(json: {
       timeline:,
       "postStreak" => post_streak,
       "postedToday" => posted_today,
     })
+  end
+
+  private
+
+  sig do
+    params(
+      posts_with_date: T::Array[Post],
+      time_zone: ActiveSupport::TimeZone,
+    ).returns(T::Hash[
+        String,
+        { emoji: T.nilable(String), streak: T::Boolean },
+      ])
+  end
+  def build_timeline(posts_with_date, time_zone:)
+    timeline = posts_with_date.map do |post|
+      date = T.cast(post["date"], Date)
+      [date.to_s, { emoji: post.emoji, streak: T.let(false, T::Boolean) }]
+    end.to_h
+    today = time_zone.today
+    today_or_yesterday = (today - 1)..today
+    posts_with_date.reverse_each do |post|
+      date = T.cast(post["date"], Date)
+      if date.in?(today_or_yesterday) || timeline.include?((date + 1).to_s)
+        timeline.fetch(date.to_s)[:streak] = true
+      end
+    end
+    timeline
   end
 end

@@ -12,7 +12,7 @@
 }
 
 .calendar {
-  padding-inline: 8px;
+  padding-inline: 6px;
 
   :global(.mantine-MiniCalendar-control) {
     display: none;
@@ -20,6 +20,7 @@
 
   :global(.mantine-MiniCalendar-day) {
     border-radius: var(--mantine-radius-md);
+    border: rem(1px) solid transparent;
     position: relative;
     padding-block: 6px;
     padding-inline: 4px;
@@ -60,6 +61,16 @@
         justify-content: center;
       }
     }
+
+    &[data-streak] {
+      &[data-selected] {
+        border-color: var(--mantine-color-orange-outline);
+      }
+
+      &:not([data-selected]) {
+        color: var(--mantine-color-orange-text);
+      }
+    }
   }
 }
 
@@ -76,6 +87,10 @@
     @mixin hover {
       background-color: var(--mantine-color-primary-filled-hover);
     }
+  }
+
+  &[data-variant="default"] {
+    border-color: alpha(var(--mantine-color-orange-outline), 0.8);
   }
 
   :global(.mantine-Badge-label) {

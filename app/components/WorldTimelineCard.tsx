@@ -34,7 +34,7 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
 
   // == Load timeline
   const { data } = useRouteSWR<{
-    timeline: Record<string, { emoji: string | null }>;
+    timeline: Record<string, { emoji: string | null; streak: boolean }>;
     postStreak: number;
     postedToday: boolean;
   }>(routes.world.timeline, {
@@ -70,6 +70,9 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
                 return {
                   ...(activity.emoji && {
                     "data-emoji": activity.emoji,
+                  }),
+                  ...(activity.streak && {
+                    "data-streak": activity.streak,
                   }),
                 };
               }
