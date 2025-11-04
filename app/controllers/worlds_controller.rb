@@ -150,7 +150,7 @@ class WorldsController < ApplicationController
     today_or_yesterday = (today - 1)..today
     posts_with_date.reverse_each do |post|
       date = T.cast(post["date"], Date)
-      if date.in?(today_or_yesterday) || timeline.include?((date + 1).to_s)
+      if date.in?(today_or_yesterday) || timeline.dig((date + 1).to_s, :streak)
         timeline.fetch(date.to_s)[:streak] = true
       end
     end
