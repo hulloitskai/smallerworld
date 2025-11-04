@@ -1,6 +1,8 @@
 import { ScrollArea } from "@mantine/core";
 import { MiniCalendar } from "@mantine/dates";
 
+import { openNewPostModal } from "~/helpers/posts";
+
 import classes from "./WorldTimelineCard.module.css";
 import "@mantine/dates/styles.css";
 
@@ -33,6 +35,8 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   // == Load timeline
   const { data } = useRouteSWR<{
     timeline: Record<string, { emoji: string | null }>;
+    postStreak: number;
+    postedToday: boolean;
   }>(routes.world.timeline, {
     descriptor: "load timeline",
     params: startDate
@@ -44,10 +48,10 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
       : null,
     keepPreviousData: true,
   });
-  const { timeline = {} } = data ?? {};
+  const { timeline = {}, postStreak, postedToday } = data ?? {};
 
   return (
-    <Card withBorder padding={0} shadow="lg" {...otherProps}>
+    <Card withBorder className={classes.card} {...otherProps}>
       <ScrollArea
         {...{ viewportRef }}
         type="hover"
@@ -88,6 +92,23 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
           />
         )}
       </ScrollArea>
+      {!!postStreak && (
+        <Badge
+          size="xs"
+          leftSection="🔥"
+          variant={postedToday ? "default" : "filled"}
+          className={classes.postStreakBadge}
+          mod={{ clickable: !postedToday }}
+          onClick={() => {
+            if (!postedToday) {
+              openNewPostModal({ postType: "journal_entry" });
+            }
+          }}
+        >
+          {!postedToday && <>continue your </>}
+          {postStreak}-day {postedToday && <>writing </>}streak!
+        </Badge>
+      )}
     </Card>
   );
 };

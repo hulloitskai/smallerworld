@@ -24,14 +24,15 @@
 #
 # Indexes
 #
-#  index_posts_for_search           ((((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))) USING gin
-#  index_posts_on_author_id         (author_id)
-#  index_posts_on_encouragement_id  (encouragement_id) UNIQUE
-#  index_posts_on_hidden_from_ids   (hidden_from_ids) USING gin
-#  index_posts_on_pinned_until      (pinned_until)
-#  index_posts_on_quoted_post_id    (quoted_post_id)
-#  index_posts_on_type              (type)
-#  index_posts_on_visibility        (visibility)
+#  index_posts_for_search                   ((((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))) USING gin
+#  index_posts_on_author_id                 (author_id)
+#  index_posts_on_author_id_and_created_at  (author_id,created_at)
+#  index_posts_on_encouragement_id          (encouragement_id) UNIQUE
+#  index_posts_on_hidden_from_ids           (hidden_from_ids) USING gin
+#  index_posts_on_pinned_until              (pinned_until)
+#  index_posts_on_quoted_post_id            (quoted_post_id)
+#  index_posts_on_type                      (type)
+#  index_posts_on_visibility                (visibility)
 #
 # Foreign Keys
 #

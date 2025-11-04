@@ -254,6 +254,53 @@ class User < ApplicationRecord
     disabled_platforms
   end
 
+  sig do
+    params(time_zone: ActiveSupport::TimeZone).returns([Integer, T::Boolean])
+  end
+  def post_streak(time_zone: self.time_zone)
+    sql = <<~SQL.squish
+      WITH daily_posts AS (
+        SELECT DISTINCT DATE(posts.created_at AT TIME ZONE INTERVAL :offset) AS user_date
+        FROM posts
+        WHERE posts.author_id = :user_id
+      ),
+      numbered_posts AS (
+        SELECT
+          user_date,
+          ROW_NUMBER() OVER (ORDER BY user_date)::int AS rn
+        FROM daily_posts
+      ),
+      grouped_posts AS (
+        SELECT
+          MAX(user_date) AS end_date,
+          COUNT(*) AS streak_length
+        FROM numbered_posts
+        GROUP BY user_date - rn
+      )
+      SELECT
+        streak_length,
+        end_date
+      FROM grouped_posts
+      WHERE end_date >= DATE(NOW() AT TIME ZONE INTERVAL :offset - INTERVAL '1 day')
+      ORDER BY end_date DESC
+      LIMIT 1
+    SQL
+    interpolated_sql = Post.sanitize_sql_array([sql, {
+      user_id: id,
+      offset: time_zone.formatted_offset,
+    },])
+    result = Post.connection.exec_query(interpolated_sql)
+    if result.rows.empty?
+      [0, false]
+    else
+      row = result.first
+      streak = T.cast(row["streak_length"], Integer)
+      end_date = T.cast(row["end_date"], Date)
+      posted_today = end_date == time_zone.today
+      [streak, posted_today]
+    end
+  end
+
   # == Helpers
   sig { params(phone_number: String).returns(T.nilable(User)) }
   def self.find_by_phone_number(phone_number)

@@ -117,6 +117,7 @@ class WorldsController < ApplicationController
         .where(created_at: start_date..)
         .select(select_sql)
         .order(Arel.sql(order_sql))
+        .to_a
     end
 
     timeline = timeline_posts
@@ -125,6 +126,11 @@ class WorldsController < ApplicationController
         [date.to_s, { emoji: post.emoji }]
       end
       .to_h
-    render(json: { timeline: })
+    post_streak, posted_today = current_user.post_streak
+    render(json: {
+      timeline:,
+      "postStreak" => post_streak,
+      "postedToday" => posted_today,
+    })
   end
 end

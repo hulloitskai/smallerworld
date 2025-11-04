@@ -1,3 +1,9 @@
+.card {
+  padding: 0;
+  box-shadow: var(--mantine-shadow-lg);
+  overflow: visible;
+}
+
 .scrollArea {
   :global(.mantine-ScrollArea-viewport) {
     padding-block: 4px;
@@ -54,5 +60,29 @@
         justify-content: center;
       }
     }
+  }
+}
+
+.postStreakBadge {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+
+  &[data-clickable] {
+    cursor: pointer;
+
+    @mixin hover {
+      background-color: var(--mantine-color-primary-filled-hover);
+    }
+  }
+
+  :global(.mantine-Badge-label) {
+    font-weight: 500;
+  }
+
+  :global(.mantine-Badge-section)[data-position="left"] {
+    @mixin emoji;
   }
 }

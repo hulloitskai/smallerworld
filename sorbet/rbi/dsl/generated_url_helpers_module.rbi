@@ -280,6 +280,9 @@ module GeneratedUrlHelpersModule
   def test_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def timeline_world_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def universe_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

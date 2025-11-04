@@ -9,6 +9,7 @@ import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 import { prettyFriendName } from "~/helpers/friends";
 import { NEKO_SIZE } from "~/helpers/neko";
 import {
+  openNewPostModal,
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
   POST_TYPES,
@@ -22,7 +23,6 @@ import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
 import FeedbackNeko from "./FeedbackNeko";
 import PostCard from "./PostCard";
-import PostForm from "./PostForm";
 
 import classes from "./WorldPageFloatingActions.module.css";
 
@@ -171,19 +171,10 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                           ),
                         })}
                         onClick={() => {
-                          openModal({
-                            title: `new ${POST_TYPE_TO_LABEL[postType]}`,
-                            size: "var(--container-size-xs)",
-                            children: (
-                              <PostForm
-                                newPostType={postType}
-                                encouragement={latestEncouragement}
-                                onPostCreated={post => {
-                                  closeAllModals();
-                                  onPostCreated?.(post);
-                                }}
-                              />
-                            ),
+                          openNewPostModal({
+                            postType,
+                            encouragement: latestEncouragement,
+                            onPostCreated,
                           });
                         }}
                       >

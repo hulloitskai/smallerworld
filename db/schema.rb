@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_26_190000) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_04_164837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -309,6 +309,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_26_190000) do
     t.uuid "encouragement_id"
     t.string "spotify_track_id"
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
+    t.index ["author_id", "created_at"], name: "index_posts_on_author_id_and_created_at"
     t.index ["author_id"], name: "index_posts_on_author_id"
     t.index ["encouragement_id"], name: "index_posts_on_encouragement_id", unique: true
     t.index ["hidden_from_ids"], name: "index_posts_on_hidden_from_ids", using: :gin

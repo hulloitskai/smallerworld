@@ -9,6 +9,7 @@ import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { mutateWorldPosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
+import { mutateWorldTimeline } from "~/helpers/world";
 import { type PostReaction, type PostShare, type WorldPost } from "~/types";
 
 import { type FriendProfile } from "../types/generated";
@@ -87,6 +88,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
         void mutateWorldPosts();
         void mutateRoute(routes.worldPosts.pinned);
         void mutateRoute(routes.worldEncouragements.index);
+        void mutateWorldTimeline();
       },
     },
   );

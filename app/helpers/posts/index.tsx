@@ -15,7 +15,15 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
 import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
-import { type PostType, type PostVisibility, type WorldPost } from "~/types";
+import PostForm from "~/components/PostForm";
+import {
+  type Encouragement,
+  type PostType,
+  type PostVisibility,
+  type WorldPost,
+} from "~/types";
+
+import { POST_TYPE_TO_LABEL } from "./formatting";
 
 export { POST_TYPE_TO_LABEL, POST_VISIBILITY_TO_LABEL } from "./formatting";
 
@@ -159,4 +167,31 @@ export const mutateWorldPosts = async (): Promise<void> => {
     }
   }
   await Promise.all(mutations);
+};
+
+export interface NewPostModalOptions {
+  postType: PostType;
+  encouragement?: Encouragement;
+  onPostCreated?: (post: WorldPost) => void;
+}
+
+export const openNewPostModal = ({
+  postType,
+  encouragement,
+  onPostCreated,
+}: NewPostModalOptions): void => {
+  openModal({
+    title: `new ${POST_TYPE_TO_LABEL[postType]}`,
+    size: "var(--container-size-xs)",
+    children: (
+      <PostForm
+        newPostType={postType}
+        {...{ encouragement }}
+        onPostCreated={post => {
+          closeAllModals();
+          onPostCreated?.(post);
+        }}
+      />
+    ),
+  });
 };
