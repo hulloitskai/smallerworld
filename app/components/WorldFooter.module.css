@@ -13,14 +13,15 @@
   );
 
   @mixin light-user-theme {
-    @mixin clamp-lightness --sc-color, var(--user-theme-background-color), 30,
-      65;
+    @mixin clamp-lightness --sc-color, var(--user-theme-background-color), 60,
+      75;
     background-color: lighten(var(--mantine-color-body), 0.5);
   }
 
   @mixin dark-user-theme {
-    @mixin clamp-lightness --sc-color, var(--mantine-color-body), 35, 60;
-    background-color: darken(var(--mantine-color-body), 0.5);
+    @mixin clamp-lightness --sc-color, var(--user-theme-background-color), 40,
+      65;
+    background-color: darken(var(--mantine-color-body), 0.3);
   }
 
   :global(.mantine-SegmentedControl-label) {
