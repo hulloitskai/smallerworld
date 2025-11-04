@@ -44,6 +44,12 @@ export default {
           "line-height": "1",
           "vertical-align": "middle",
         },
+        "clamp-lightness": (_mixin, property, color, min, max) => ({
+          [property]: `hsl(from ${color} h s clamp(${min}, l, ${max}))`,
+          "@supports (color: hsl(from red h s calc(l - 20%)))": {
+            [property]: `hsl(from ${color} h s clamp(${min}%, l, ${max}%))`,
+          },
+        }),
       },
     },
     "postcss-simple-vars": {

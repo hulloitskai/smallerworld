@@ -2,7 +2,7 @@
   --yarl__color_backdrop: alpha(var(--mantine-color-black), 0.8);
 
   :global(.yarl__container) {
-    backdrop-filter: blur(rem(3px));
+    backdrop-filter: blur(rem(4px));
     padding-top: var(--safe-area-inset-top, 0px);
     padding-bottom: var(--safe-area-inset-bottom, 0px);
   }

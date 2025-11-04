@@ -10,7 +10,7 @@
     inset: 0;
     z-index: -1;
     content: "";
-    backdrop-filter: blur(light-dark(rem(8px), rem(12px)));
+    backdrop-filter: blur(light-dark(rem(4px), rem(8px)));
     border-radius: var(--paper-radius);
   }
 

@@ -8,47 +8,19 @@
 .segmentedControl {
   box-shadow: var(--mantine-shadow-xl);
 
-  /* Enforce minimum lightness of 75% for light user themes */
-  @mixin light-user-theme {
-    --min-lightness: 75;
-
-    background-color: hsl(
-      from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
-    );
-
-    /* Use @supports to add in support for old syntax that requires % units to
-            be specified in lightness calculations. This is required for
-            Safari >= 16.4+ and < 18.0 */
-    @supports (color: hsl(from red h s calc(l - 20%))) {
-      background-color: hsl(
-        from var(--mantine-color-body) h s
-          clamp(calc(var(--min-lightness) * 1%), l, 100%)
-      );
-    }
-  }
-
   @mixin dark {
     background-color: var(--mantine-color-dark-9);
   }
 
+  @mixin light-user-theme {
+    @mixin clamp-lightness background-color, var(--mantine-color-body), 75, 100;
+  }
+
   @mixin dark-user-theme {
-    background-color: alpha(var(--mantine-color-black), 0.6);
-    backdrop-filter: blur(rem(4px));
+    background-color: alpha(var(--mantine-color-black), 0.7);
+    backdrop-filter: blur(rem(8px));
 
-    --min-lightness: 20;
-    --sc-color: hsl(
-      from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
-    );
-
-    /* Use @supports to add in support for old syntax that requires % units to
-              be specified in lightness calculations. This is required for
-              Safari >= 16.4+ and < 18.0 */
-    @supports (color: hsl(from red h s calc(l - 20%))) {
-      --sc-color: hsl(
-        from var(--mantine-color-body) h s
-          clamp(calc(var(--min-lightness) * 1%), l, 100%)
-      );
-    }
+    @mixin clamp-lightness --sc-color, var(--mantine-color-body), 35, 60;
   }
 
   :global(.mantine-SegmentedControl-label) {

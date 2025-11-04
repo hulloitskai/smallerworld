@@ -7,8 +7,8 @@
 
   &[data-post-visibility="only_me"] {
     background-color: light-dark(
-      alpha(var(--mantine-color-white), 0.2),
-      alpha(var(--mantine-color-black), 0.1)
+      alpha(var(--mantine-color-white), 0.4),
+      alpha(var(--mantine-color-black), 0.2)
     );
 
     &::before {
@@ -16,7 +16,7 @@
       inset: 0;
       z-index: -1;
       content: "";
-      backdrop-filter: blur(light-dark(rem(8px), rem(12px)));
+      backdrop-filter: blur(light-dark(rem(4px), rem(8px)));
     }
 
     &[data-with-border] {

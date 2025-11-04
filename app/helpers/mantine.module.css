@@ -63,23 +63,9 @@
     align-items: start;
     padding-bottom: 6px;
 
-    /* Enforce minimum lightness of 75% for light user themes */
     @mixin light-user-theme {
-      --min-lightness: 75;
-
-      background-color: hsl(
-        from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
-      );
-
-      /* Use @supports to add in support for old syntax that requires % units to
-          be specified in lightness calculations. This is required for
-          Safari >= 16.4+ and < 18.0 */
-      @supports (color: hsl(from red h s calc(l - 20%))) {
-        background-color: hsl(
-          from var(--mantine-color-body) h s
-            clamp(calc(var(--min-lightness) * 1%), l, 100%)
-        );
-      }
+      @mixin clamp-lightness background-color, var(--mantine-color-body), 75,
+        100;
     }
   }
 
@@ -126,23 +112,9 @@
   }
 
   .modalContent {
-    /* Enforce minimum lightness of 75% for light user themes */
     @mixin light-user-theme {
-      --min-lightness: 75;
-
-      background-color: hsl(
-        from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
-      );
-
-      /* Use @supports to add in support for old syntax that requires % units to
-      be specified in lightness calculations. This is required for
-      Safari >= 16.4+ and < 18.0 */
-      @supports (color: hsl(from red h s calc(l - 20%))) {
-        background-color: hsl(
-          from var(--mantine-color-body) h s
-            clamp(calc(var(--min-lightness) * 1%), l, 100%)
-        );
-      }
+      @mixin clamp-lightness background-color, var(--mantine-color-body), 75,
+        100;
     }
   }
 
@@ -418,23 +390,9 @@
     );
     padding-bottom: var(--safe-area-inset-bottom, 0px);
 
-    /* Enforce minimum lightness of 75% for light user themes */
     @mixin light-user-theme {
-      --min-lightness: 75;
-
-      background-color: hsl(
-        from var(--mantine-color-body) h s clamp(var(--min-lightness), l, 100)
-      );
-
-      /* Use @supports to add in support for old syntax that requires % units to
-          be specified in lightness calculations. This is required for
-          Safari >= 16.4+ and < 18.0 */
-      @supports (color: hsl(from red h s calc(l - 20%))) {
-        background-color: hsl(
-          from var(--mantine-color-body) h s
-            clamp(calc(var(--min-lightness) * 1%), l, 100%)
-        );
-      }
+      @mixin clamp-lightness background-color, var(--mantine-color-body), 75,
+        100;
     }
   }
 
