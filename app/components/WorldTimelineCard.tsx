@@ -11,12 +11,14 @@ export interface WorldTimelineCardProps extends BoxProps {
   onDateChange: (date: string | null) => void;
 }
 
+const WEEKS_TO_SHOW = 4;
+
 const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   date,
   onDateChange,
   ...otherProps
 }) => {
-  const startDate = useTwoWeeksAgo();
+  const startDate = useWeeksAgo(WEEKS_TO_SHOW);
   const viewportRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -62,7 +64,7 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
         {startDate && (
           <MiniCalendar
             size="xs"
-            numberOfDays={14}
+            numberOfDays={WEEKS_TO_SHOW * 7 + 1}
             defaultDate={startDate}
             getDayProps={date => {
               const activity = timeline[date];
@@ -118,10 +120,10 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
 
 export default WorldTimelineCard;
 
-const useTwoWeeksAgo = (): string | undefined => {
+const useWeeksAgo = (weeks: number): string | undefined => {
   const [today, setToday] = useState<string>();
   useEffect(() => {
-    setToday(DateTime.now().minus({ days: 13 }).toISODate());
-  }, []);
+    setToday(DateTime.now().minus({ weeks }).toISODate());
+  }, [weeks]);
   return today;
 };

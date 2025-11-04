@@ -137,7 +137,9 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             </Title>
             {!currentFriend ? null : isStandalone === undefined ? (
               <Skeleton style={{ alignSelf: "center", width: "unset" }}>
-                <Button>some placeholder</Button>
+                <Button style={{ visibility: "hidden" }}>
+                  some placeholder
+                </Button>
               </Skeleton>
             ) : isStandalone &&
               !outOfPWAScope &&

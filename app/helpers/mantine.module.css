@@ -379,7 +379,7 @@
 
   .skeleton {
     &:where([data-visible])::after {
-      @mixin where-dark-user-theme {
+      @mixin dark-user-theme {
         background-color: alpha(var(--mantine-color-white), 0.2);
       }
     }
