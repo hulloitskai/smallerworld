@@ -26,15 +26,8 @@
 }
 
 .emoji {
-  --font-size: var(--mantine-font-size-lg);
-
-  font-family: var(--font-family-emoji);
-  font-size: var(--font-size);
-  vertical-align: middle;
-
-  @mixin safari-only {
-    font-size: calc(var(--font-size) * 0.8);
-  }
+  @mixin emoji;
+  font-size: var(--mantine-font-size-lg);
 }
 
 .actionSeparator {

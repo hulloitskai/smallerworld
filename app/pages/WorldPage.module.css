@@ -37,15 +37,8 @@
 }
 
 .friendEmoji {
-  --font-size: var(--mantine-font-size-md);
-
-  font-size: var(--font-size);
-  vertical-align: middle;
-  line-height: var(--mantine-line-height-xs);
-
-  @mixin safari-only {
-    font-size: calc(var(--font-size) * 0.8);
-  }
+  @mixin emoji;
+  font-size: var(--mantine-font-size-md);
 }
 
 .installInstructionsList {

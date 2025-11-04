@@ -12,23 +12,17 @@
   flex-shrink: 0;
   padding-inline: 3px;
 
-  :global(.mantine-Badge-section) {
-    --font-size: var(--mantine-font-size-md);
+  :global(.mantine-Badge-section)[data-position="left"] {
+    @mixin emoji;
 
-    font-family: var(--font-family-emoji);
-    font-size: var(--font-size);
-    vertical-align: middle;
-
-    @mixin safari-only {
-      font-size: calc(var(--font-size) * 0.8);
-    }
+    font-size: var(--mantine-font-size-md);
   }
 }
 
 .statsIcon {
   color: var(--mantine-color-dimmed);
   margin-right: 3px;
-  font-size: 12px;
+  font-size: var(--mantine-font-size-xs);
 }
 
 .statsList {

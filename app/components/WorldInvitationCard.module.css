@@ -5,15 +5,8 @@
 }
 
 .emoji {
-  --font-size: var(--mantine-font-size-md);
-
-  font-family: var(--font-family-emoji);
-  font-size: var(--font-size);
-  vertical-align: middle;
-
-  @mixin safari-only {
-    font-size: calc(var(--font-size) * 0.8);
-  }
+  @mixin emoji;
+  font-size: var(--mantine-font-size-md);
 }
 
 .group {
@@ -36,15 +29,8 @@
   --badge-radius: var(--mantine-radius-md);
 
   :global(.mantine-Badge-section)[data-position="left"] {
-    --font-size: var(--mantine-font-size-xs);
-
-    font-family: var(--font-family-emoji);
-    font-size: var(--font-size);
-    vertical-align: middle;
-
-    @mixin safari-only {
-      font-size: calc(var(--font-size) * 0.8);
-    }
+    @mixin emoji;
+    font-size: var(--mantine-font-size-xs);
   }
 }
 

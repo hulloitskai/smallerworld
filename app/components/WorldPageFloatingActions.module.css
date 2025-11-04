@@ -108,13 +108,7 @@
 }
 
 .encouragementEmoji {
-  --font-size: var(--mantine-font-size-md);
+  @mixin emoji;
 
-  font-family: var(--font-family-emoji);
-  font-size: var(--font-size);
-  vertical-align: middle;
-
-  @mixin safari-only {
-    font-size: calc(var(--font-size) * 0.8);
-  }
+  font-size: var(--mantine-font-size-md);
 }

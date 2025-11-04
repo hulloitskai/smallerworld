@@ -38,7 +38,7 @@
 
     &[data-emoji] {
       flex-direction: row;
-      column-gap: 3px;
+      column-gap: 2px;
       align-items: start;
 
       :global(.mantine-MiniCalendar-dayNumber) {
@@ -46,15 +46,14 @@
       }
 
       &::after {
+        @mixin emoji;
+
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 4px;
+        bottom: 2px;
         content: attr(data-emoji);
-        line-height: 1;
-        vertical-align: top;
-        font-family: var(--font-family-emoji);
-        font-size: var(--mantine-font-size-sm);
+        font-size: var(--mantine-font-size-lg);
         display: flex;
         align-items: center;
         justify-content: center;

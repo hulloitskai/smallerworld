@@ -33,10 +33,16 @@ export default {
             "@mixin-content": {},
           },
         },
-        "safari-only": {
-          "_::-webkit-full-page-media, _:future, :root &": {
-            "@mixin-content": {},
-          },
+        // "safari-only": {
+        //   "_::-webkit-full-page-media, _:future, :root &": {
+        //     "@mixin-content": {},
+        //   },
+        // },
+        emoji: {
+          "font-family": "var(--font-family-emoji)",
+          "font-size-adjust": "0.5",
+          "line-height": "1",
+          "vertical-align": "middle",
         },
       },
     },
