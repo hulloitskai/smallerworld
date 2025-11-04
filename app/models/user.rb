@@ -281,7 +281,6 @@ class User < ApplicationRecord
         streak_length,
         end_date
       FROM grouped_posts
-      WHERE end_date >= DATE(NOW() AT TIME ZONE INTERVAL :offset - INTERVAL '1 day')
       ORDER BY end_date DESC
       LIMIT 1
     SQL
@@ -289,16 +288,17 @@ class User < ApplicationRecord
       user_id: id,
       offset: time_zone.formatted_offset,
     },])
+
     result = Post.connection.exec_query(interpolated_sql)
-    if result.rows.empty?
-      [0, false]
-    else
-      row = result.first
-      streak = T.cast(row["streak_length"], Integer)
-      end_date = T.cast(row["end_date"], Date)
-      posted_today = end_date == time_zone.today
-      [streak, posted_today]
-    end
+    return [0, false] if result.rows.empty?
+
+    row = result.first
+    streak = T.cast(row["streak_length"], Integer)
+    end_date = T.cast(row["end_date"], Date)
+    return [0, false] if end_date < (time_zone.today - 1)
+
+    posted_today = end_date == time_zone.today
+    [streak, posted_today]
   end
 
   # == Helpers

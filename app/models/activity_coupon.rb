@@ -65,9 +65,11 @@ class ActivityCoupon < ApplicationRecord
   after_create :create_notification!
 
   # == Scopes
-  scope :expired, -> { where("expires_at <= NOW()") }
+  scope :expired, -> { where(expires_at: ..Time.current) }
   scope :redeemed, -> { where.not(redeemed_at: nil) }
-  scope :active, -> { where("expires_at > NOW()").where(redeemed_at: nil) }
+  scope :active, -> {
+    where("expires_at > ?", Time.current).where(redeemed_at: nil)
+  }
   scope :without_recent_notification, -> {
     recently_notified_ids = joins(:notifications)
       .where("notifications.created_at > ?", 1.week.ago)

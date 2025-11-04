@@ -35,111 +35,102 @@ class UserTest < ActiveSupport::TestCase
   include ActiveSupport::Testing::TimeHelpers
 
   setup do
-    @user = users(:testy)
-    @user.posts.delete_all
+    @user = T.let(users(:noposts), User)
+    @usertz = T.let(@user.time_zone, ActiveSupport::TimeZone)
   end
 
   test "post_streak returns zero when no posts exist" do
-    travel_to Time.utc(2024, 5, 5, 12) do
+    travel_to @usertz.local(2024, 5, 5, 12) do
       streak, posted_today = @user.post_streak
-
       assert_equal 0, streak
       assert_not posted_today
     end
   end
 
   test "post_streak counts consecutive days including today" do
-    travel_to Time.utc(2024, 5, 5, 16) do
-      tz = @user.time_zone
+    travel_to @usertz.local(2024, 5, 5, 16) do
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>hello today</p>",
         visibility: :public,
-        created_at: tz.local(2024, 5, 5, 9, 15),
+        created_at: @usertz.local(2024, 5, 5, 9, 15),
       )
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>another today</p>",
         visibility: :public,
-        created_at: tz.local(2024, 5, 5, 10, 30),
+        created_at: @usertz.local(2024, 5, 5, 10, 30),
       )
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>yesterday</p>",
         visibility: :public,
-        created_at: tz.local(2024, 5, 4, 20, 30),
+        created_at: @usertz.local(2024, 5, 4, 20, 30),
       )
 
       streak, posted_today = @user.post_streak
-
       assert_equal 2, streak
       assert posted_today
     end
   end
 
   test "post_streak counts consecutive days when today is missing" do
-    travel_to Time.utc(2024, 5, 5, 16) do
-      tz = @user.time_zone
+    travel_to @usertz.local(2024, 5, 5, 16) do
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>yesterday</p>",
         visibility: :public,
-        created_at: tz.local(2024, 5, 4, 9, 0),
+        created_at: @usertz.local(2024, 5, 4, 9, 0),
       )
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>two days ago</p>",
         visibility: :public,
-        created_at: tz.local(2024, 5, 3, 9, 0),
+        created_at: @usertz.local(2024, 5, 3, 9, 0),
       )
 
       streak, posted_today = @user.post_streak
-
       assert_equal 2, streak
       assert_not posted_today
     end
   end
 
   test "post_streak stops counting when a day is skipped" do
-    travel_to Time.utc(2024, 5, 5, 16) do
-      tz = @user.time_zone
+    travel_to @usertz.local(2024, 5, 5, 16) do
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>today</p>",
         visibility: :public,
-        created_at: tz.local(2024, 5, 5, 9, 0),
+        created_at: @usertz.local(2024, 5, 5, 9, 0),
       )
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>two days ago</p>",
         visibility: :public,
-        created_at: tz.local(2024, 5, 3, 9, 0),
+        created_at: @usertz.local(2024, 5, 3, 9, 0),
       )
 
       streak, posted_today = @user.post_streak
-
       assert_equal 1, streak
       assert posted_today
     end
   end
 
   test "post_streak respects the provided timezone" do
-    travel_to Time.utc(2024, 5, 5, 10) do
+    travel_to @usertz.local(2024, 5, 5, 10) do
       @user.posts.create!(
         type: "journal_entry",
         body_html: "<p>late night</p>",
         visibility: :public,
-        created_at: Time.utc(2024, 5, 4, 23, 30),
+        created_at: @usertz.local(2024, 5, 4, 23, 30),
       )
 
       streak, posted_today = @user.post_streak
-
       assert_equal 1, streak
       assert_not posted_today
 
-      auckland = ActiveSupport::TimeZone["Pacific/Auckland"]
-      streak, posted_today = @user.post_streak(time_zone: auckland)
-
+      singapore = ActiveSupport::TimeZone["Asia/Singapore"]
+      streak, posted_today = @user.post_streak(time_zone: singapore)
       assert_equal 1, streak
       assert posted_today
     end

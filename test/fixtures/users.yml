@@ -37,3 +37,14 @@ testy:
   theme: "darkSky"
   created_at: "<%= 1.day.ago %>"
   updated_at: "<%= 1.day.ago %>"
+
+noposts:
+  handle: noposts
+  name: Mr No Posts
+  hide_stats: false
+  hide_neko: false
+  allow_friend_sharing: false
+  phone_number: "+14168554753"
+  time_zone_name: "America/Toronto"
+  created_at: "<%= 1.day.ago %>"
+  updated_at: "<%= 1.day.ago %>"

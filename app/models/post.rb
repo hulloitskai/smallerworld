@@ -181,7 +181,7 @@ class Post < ApplicationRecord
   scope :visible_to_chosen_family, -> {
     where(visibility: %i[public friends chosen_family])
   }
-  scope :currently_pinned, -> { where("pinned_until > NOW()") }
+  scope :currently_pinned, -> { where("pinned_until > ?", Time.current) }
   scope :not_hidden_from, ->(friend) {
     friend = T.let(friend, T.any(Friend, String))
     where("NOT (? = ANY(hidden_from_ids))", friend)
