@@ -966,7 +966,7 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
             </Text>
           </Group>
         </Table.Td>
-        <Table.Td w={0} pos="relative">
+        <Table.Td w={1} pos="relative">
           <SegmentedControl
             {...{ value }}
             {...inputProps}
