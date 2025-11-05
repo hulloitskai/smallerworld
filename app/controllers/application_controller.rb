@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   include SharesApplicationProps
   include SimulatesExpiredPage unless Rails.env.production?
   include NPlusOneDetection
+  include RendersUserThemes
 
   # == Errors
   class AuthenticationRequired < StandardError

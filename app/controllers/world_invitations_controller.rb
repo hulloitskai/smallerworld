@@ -11,7 +11,7 @@ class WorldInvitationsController < ApplicationController
     current_user = authenticate_user!
     respond_to do |format|
       format.html do
-        render(inertia: "WorldInvitationsPage")
+        render(inertia: "WorldInvitationsPage", user_theme: current_user.theme)
       end
       format.json do
         pending_invitations = current_user.invitations

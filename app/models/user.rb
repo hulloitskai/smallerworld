@@ -191,11 +191,6 @@ class User < ApplicationRecord
     features
   end
 
-  sig { returns(T::Boolean) }
-  def dark_theme?
-    theme.present? && DARK_THEMES.include?(theme)
-  end
-
   sig { returns(Encouragement::PrivateAssociationRelation) }
   def encouragements_since_last_poem_or_journal_entry
     transaction do

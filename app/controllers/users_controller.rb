@@ -33,7 +33,7 @@ class UsersController < ApplicationController
     unless params[:manifest_icon_type] == "generic"
       props["faviconLinks"] = user_favicon_links(user)
     end
-    render(inertia: "UserPage", props:)
+    render(inertia: "UserPage", user_theme: user.theme, props:)
   end
 
   # GET /@:handle/join

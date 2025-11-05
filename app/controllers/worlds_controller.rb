@@ -28,7 +28,7 @@ class WorldsController < ApplicationController
     end
     pending_join_requests = current_user.join_requests.pending.count
     paused_friend_ids = current_user.friends.paused.pluck(:id)
-    render(inertia: "WorldPage", props: {
+    render(inertia: "WorldPage", user_theme: current_user.theme, props: {
       "faviconLinks" => user_favicon_links(current_user),
       "latestFriendEmojis" => latest_friends.map(&:emoji),
       "pendingJoinRequests" => pending_join_requests,
@@ -41,7 +41,7 @@ class WorldsController < ApplicationController
   # GET /world/edit
   def edit
     current_user = authenticate_user!
-    render(inertia: "EditWorldPage", props: {
+    render(inertia: "EditWorldPage", user_theme: current_user.theme, props: {
       "hideStats" => current_user.hide_stats,
       "hideNeko" => current_user.hide_neko,
       "allowFriendSharing" => current_user.allow_friend_sharing,

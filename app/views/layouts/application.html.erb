@@ -1,13 +1,5 @@
 <!DOCTYPE html>
-<html
-  lang="en"
-  <% if (user = current_user) %>
-    <%== %(data-mantine-color-scheme="#{user.dark_theme? ? "dark" : "light"}") %>
-    <% if (theme = user.theme) %>
-      <%== %(data-user-theme="#{theme}") %>
-    <% end %>
-  <% end %>
->
+<html lang="en" <%= tag.attributes(@root_attributes) if defined?(@root_attributes) %>>
   <head>
     <%# == Inertia page-specific head %>
     <%== inertia_ssr_head %>

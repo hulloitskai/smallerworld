@@ -12,9 +12,13 @@ class WorldFriendsController < ApplicationController
     respond_to do |format|
       format.html do
         pending_invitations = current_user.invitations.pending.count
-        render(inertia: "WorldFriendsPage", props: {
-          "pendingInvitationsCount": pending_invitations,
-        })
+        render(
+          inertia: "WorldFriendsPage",
+          user_theme: current_user.theme,
+          props: {
+            "pendingInvitationsCount": pending_invitations,
+          },
+        )
       end
       format.json do
         friends = current_user.friends
