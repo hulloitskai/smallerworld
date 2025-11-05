@@ -12,7 +12,7 @@
 .group {
   :global(.mantine-Button-section) {
     &[data-position="left"] {
-      margin-right: 6px;
+      margin-right: calc(var(--mantine-spacing-xs) / 2);
     }
   }
 }
@@ -38,12 +38,12 @@
   --button-radius: var(--mantine-radius-md);
 
   :global(.mantine-Button-section)[data-position="left"] {
-    margin-right: 6px;
+    margin-right: calc(var(--mantine-spacing-xs) / 2);
   }
 }
 
 .detailsButton {
   :global(.mantine-Button-section)[data-position="left"] {
-    margin-right: 6px;
+    margin-right: calc(var(--mantine-spacing-xs) / 2);
   }
 }

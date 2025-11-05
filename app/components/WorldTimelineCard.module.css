@@ -12,7 +12,7 @@
 }
 
 .calendar {
-  padding-inline: 6px;
+  padding-inline: calc(var(--mantine-spacing-xs) / 2);
 
   :global(.mantine-MiniCalendar-control) {
     display: none;

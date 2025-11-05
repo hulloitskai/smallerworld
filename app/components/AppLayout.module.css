@@ -35,8 +35,7 @@
 }
 
 .breadcrumbSeparator {
-  margin-left: 6px;
-  margin-right: 6px;
+  margin-inline: calc(var(--mantine-spacing-xs) / 2);
 
   @mixin light {
     color: var(--mantine-color-gray-5);

@@ -5,7 +5,7 @@
 
 .authorButton {
   align-self: center;
-  padding-inline: 6px;
+  padding-inline: calc(var(--mantine-spacing-xs) / 2);
   border-radius: var(--mantine-radius-md);
   color: var(--mantine-color-white);
 

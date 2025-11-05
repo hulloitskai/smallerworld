@@ -744,7 +744,7 @@ const PostForm: FC<PostFormProps> = props => {
             >
               {transitionStyle => (
                 <Accordion
-                  variant="separated"
+                  variant="filled"
                   className={classes.friendNotifiabilityAccordion}
                   style={transitionStyle}
                 >

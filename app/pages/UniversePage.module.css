@@ -44,7 +44,7 @@
 }
 
 .dividerText {
-  margin-right: 6px;
+  margin-right: calc(var(--mantine-spacing-xs) / 2);
 
   @mixin dark {
     color: alpha(var(--mantine-color-white), 0.8);

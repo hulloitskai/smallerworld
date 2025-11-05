@@ -8,7 +8,7 @@
 
   :global(.mantine-Button-section) {
     &[data-position="left"] {
-      margin-right: 6px;
+      margin-right: calc(var(--mantine-spacing-xs) / 2);
     }
   }
 }

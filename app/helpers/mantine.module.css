@@ -45,7 +45,7 @@
   .modalHeader {
     min-height: 0px;
     align-items: start;
-    padding-bottom: 6px;
+    padding-bottom: calc(var(--mantine-spacing-xs) / 2);
 
     /* @mixin light-user-theme {
       @mixin clamp-lightness background-color, var(--mantine-color-body), 75,
@@ -222,7 +222,7 @@
   }
 
   .drawerHeader {
-    padding-bottom: 6px;
+    padding-bottom: calc(var(--mantine-spacing-xs) / 2);
   }
 
   .typography {

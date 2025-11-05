@@ -66,7 +66,7 @@
 }
 
 .encouragementCard {
-  padding: rem(6px) var(--mantine-spacing-xs);
+  padding: calc(var(--mantine-spacing-xs) / 2) var(--mantine-spacing-xs);
   border-style: dashed;
 
   @mixin light-user-theme {
@@ -76,29 +76,53 @@
 
 .friendNotifiabilityAccordion {
   :global(.mantine-Accordion-item) {
-    @mixin dark-user-theme {
-      background-color: transparent;
-      border-color: alpha(var(--mantine-color-white), 0.2);
+    &[data-active] {
+      background-color: light-dark(
+        var(--mantine-color-gray-1),
+        var(--mantine-color-dark-9)
+      );
+
+      @mixin dark-user-theme {
+        background-color: alpha(var(--mantine-color-black), 0.3);
+      }
     }
+  }
+
+  :global(.mantine-Accordion-control) {
+    justify-content: center;
+    column-gap: var(--mantine-spacing-xs);
+    border-radius: var(--mantine-radius-default);
+
+    &:not([data-active]) {
+      @mixin hover {
+        background-color: var(--mantine-color-default-hover);
+      }
+    }
+
+    /* &[data-active] {
+      :global(.mantine-Accordion-label) {
+        transition: padding-block 0.2s ease-in-out;
+        padding-block: var(--mantine-spacing-sm);
+      }
+    } */
   }
 
   :global(.mantine-Accordion-icon) {
     font-size: var(--mantine-font-size-xs);
+    margin-right: 0;
   }
 
   :global(.mantine-Accordion-label) {
+    flex-grow: 0;
+    flex-basis: auto;
     font-family: var(--mantine-font-family-headings);
     font-size: var(--mantine-font-size-sm);
-    padding-block: var(--mantine-spacing-sm);
-  }
-
-  :global(.mantine-Accordion-panel) {
-    padding-block: 0px;
+    padding-block: var(--mantine-spacing-xs);
   }
 
   :global(.mantine-Accordion-content) {
-    padding-top: 0;
-    padding-bottom: var(--mantine-spacing-sm);
+    padding-top: calc(var(--mantine-spacing-xs) / 2);
+    padding-bottom: var(--mantine-spacing-xs);
   }
 }
 
@@ -106,6 +130,7 @@
   :global(.mantine-Table-th) {
     font-size: var(--mantine-font-size-xs);
     padding-block: 8px;
+    background-color: transparent;
   }
 }
 
@@ -144,7 +169,7 @@
 
 .friendNotifiabilityPresetButton {
   :global(.mantine-Button-section)[data-position="left"] {
-    margin-right: 6px;
+    margin-right: calc(var(--mantine-spacing-xs) / 2);
   }
 }
 
@@ -156,6 +181,6 @@
 
 .removeSpotifyTrackButton {
   :global(.mantine-Button-section)[data-position="left"] {
-    margin-right: 6px;
+    margin-right: calc(var(--mantine-spacing-xs) / 2);
   }
 }
