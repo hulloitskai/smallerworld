@@ -156,7 +156,7 @@ const TrackUserPostSeen: FC<TrackUserPostSeenProps> = ({ post, children }) => {
           descriptor: "mark post as seen",
           failSilently: true,
         }).then(({ authorId }) => {
-          mutateUserPagePosts(authorId, currentFriend.access_token);
+          void mutateUserPagePosts(authorId);
         });
       }, 1000);
       return () => {

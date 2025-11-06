@@ -1,6 +1,7 @@
 import { useNetwork } from "@mantine/hooks";
 import { createContext, useContext } from "react";
 import { mutate } from "swr";
+import { cache } from "swr/_internal";
 import useSWRInfinite, {
   type SWRInfiniteConfiguration,
   type SWRInfiniteKeyLoader,
@@ -19,14 +20,19 @@ export interface UserPagePostsData {
   pagination: { next: string | null };
 }
 
+interface UserPostsGetKeyOptions {
+  friendAccessToken?: string;
+}
+
 const userPagePostsGetKey = (
   userId: string,
-  friendAccessToken?: string,
+  options?: UserPostsGetKeyOptions,
 ): SWRInfiniteKeyLoader<UserPagePostsData> => {
   return (index, previousPageData): string | null => {
-    const query: Record<string, any> = {
-      friend_token: friendAccessToken,
-    };
+    const query: Record<string, any> = {};
+    if (options?.friendAccessToken) {
+      query.friend_token = options.friendAccessToken;
+    }
     if (previousPageData) {
       const { next } = previousPageData.pagination;
       if (!next) {
@@ -49,7 +55,9 @@ export const useUserPagePosts = (
   const { online } = useNetwork();
   const { ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<UserPagePostsData>(
-    userPagePostsGetKey(userId, currentFriend?.access_token),
+    userPagePostsGetKey(userId, {
+      friendAccessToken: currentFriend?.access_token,
+    }),
     (path: string) =>
       fetchRoute(path, {
         descriptor: "load posts",
@@ -70,13 +78,33 @@ export const useUserPagePosts = (
   return { posts, hasMorePosts, ...swrResponse };
 };
 
-export const mutateUserPagePosts = (
-  userId: string,
-  friendAccessToken?: string,
-) => {
-  void mutate(
-    unstable_serialize(userPagePostsGetKey(userId, friendAccessToken)),
-  );
+export const mutateUserPagePosts = async (userId: string): Promise<void> => {
+  const postsPath = routes.worldPosts.index.path();
+  const mutations: Promise<void>[] = [];
+  for (const path of cache.keys()) {
+    const url = hrefToUrl(path);
+    if (url.pathname === postsPath) {
+      const getKey: SWRInfiniteKeyLoader<UserPagePostsData> = (
+        index,
+        previousPageData,
+      ) => {
+        const query: Record<string, string> = {};
+        url.searchParams.forEach((value, key) => {
+          query[key] = value;
+        });
+        if (previousPageData) {
+          const { next } = previousPageData.pagination;
+          if (!next) {
+            return null;
+          }
+          query.page = next.toString();
+        }
+        return routes.userPosts.index.path({ user_id: userId, query });
+      };
+      mutations.push(mutate(unstable_serialize(getKey)));
+    }
+  }
+  await Promise.all(mutations);
 };
 
 export interface UserPageDialogState {

@@ -35,7 +35,6 @@ import SpotifyIcon from "~icons/ri/spotify-fill";
 import { isAndroid, isIos, useBrowserDetection } from "~/helpers/browsers";
 import { prettyFriendName } from "~/helpers/friends";
 import {
-  mutateWorldPosts,
   NONPRIVATE_POST_VISIBILITIES,
   POST_VISIBILITIES,
   POST_VISIBILITY_DESCRIPTORS,
@@ -47,7 +46,11 @@ import {
   type PostFormValues,
   usePostDraftValues,
 } from "~/helpers/posts/form";
-import { mutateWorldTimeline, useWorldFriends } from "~/helpers/world";
+import {
+  mutateWorldPosts,
+  mutateWorldTimeline,
+  useWorldFriends,
+} from "~/helpers/worldPage";
 import {
   type Encouragement,
   type Post,

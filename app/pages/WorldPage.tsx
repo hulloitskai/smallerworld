@@ -30,9 +30,9 @@ import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPa
 import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
 import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
-import { useWorldPosts } from "~/helpers/posts";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { useWebPush } from "~/helpers/webPush";
+import { useWorldPosts } from "~/helpers/worldPage";
 import { type User } from "~/types";
 
 import classes from "./WorldPage.module.css";

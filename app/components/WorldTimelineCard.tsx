@@ -1,7 +1,7 @@
 import { ScrollArea } from "@mantine/core";
 import { MiniCalendar } from "@mantine/dates";
 
-import { openNewPostModal } from "~/helpers/posts";
+import { openNewPostModal } from "~/helpers/worldPage";
 
 import classes from "./WorldTimelineCard.module.css";
 import "@mantine/dates/styles.css";

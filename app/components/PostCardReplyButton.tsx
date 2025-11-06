@@ -61,7 +61,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
     failSilently: true,
     ...(friend && {
       onSuccess: ({ authorId }) => {
-        mutateUserPagePosts(authorId, friend.access_token);
+        void mutateUserPagePosts(authorId);
       },
     }),
   });

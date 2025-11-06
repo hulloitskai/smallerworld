@@ -4,7 +4,7 @@ import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
 import { prettyFriendName } from "~/helpers/friends";
-import { useWorldActivities } from "~/helpers/world";
+import { useWorldActivities } from "~/helpers/worldPage";
 import { type ActivityCoupon, type WorldFriend } from "~/types";
 
 import ActivityCard from "./ActivityCard";

@@ -8,8 +8,8 @@ import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import { mutateWorldPosts, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { mutateWorldTimeline } from "~/helpers/world";
+import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
+import { mutateWorldPosts, mutateWorldTimeline } from "~/helpers/worldPage";
 import { type PostReaction, type PostShare, type WorldPost } from "~/types";
 
 import { type FriendProfile } from "../types/generated";

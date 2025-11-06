@@ -1,6 +1,6 @@
 import { Image } from "@mantine/core";
 
-import { useLocalUniversePosts } from "~/helpers/localUniverse";
+import { useLocalUniversePosts } from "~/helpers/localUniversePage";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
 import { type LocalUniversePageProps } from "~/pages/LocalUniversePage";
 
