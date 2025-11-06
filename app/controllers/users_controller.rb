@@ -60,7 +60,8 @@ class UsersController < ApplicationController
         offset:,
       ])
       order_sql = Post.sanitize_sql_array([
-        "DATE(posts.created_at AT TIME ZONE INTERVAL :offset), posts.created_at DESC", # rubocop:disable Layout/LineLength
+        "DATE(posts.created_at AT TIME ZONE INTERVAL :offset), " \
+          "posts.created_at DESC",
         offset:,
       ])
       scope = user.posts.where(created_at: start_date..)

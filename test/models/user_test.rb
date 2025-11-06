@@ -39,11 +39,10 @@ class UserTest < ActiveSupport::TestCase
     @usertz = T.let(@user.time_zone, ActiveSupport::TimeZone)
   end
 
-  test "post_streak returns zero when no posts exist" do
+  test "post_streak returns nil when no posts exist" do
     travel_to @usertz.local(2024, 5, 5, 12) do
-      streak, posted_today = @user.post_streak
-      assert_equal 0, streak
-      assert_not posted_today
+      streak = @user.post_streak
+      assert_nil streak
     end
   end
 
@@ -68,9 +67,9 @@ class UserTest < ActiveSupport::TestCase
         created_at: @usertz.local(2024, 5, 4, 20, 30),
       )
 
-      streak, posted_today = @user.post_streak
-      assert_equal 2, streak
-      assert posted_today
+      streak = @user.post_streak
+      assert_equal 2, streak.length
+      assert streak.posted_today
     end
   end
 
@@ -89,9 +88,9 @@ class UserTest < ActiveSupport::TestCase
         created_at: @usertz.local(2024, 5, 3, 9, 0),
       )
 
-      streak, posted_today = @user.post_streak
-      assert_equal 2, streak
-      assert_not posted_today
+      streak = @user.post_streak
+      assert_equal 2, streak.length
+      assert_not streak.posted_today
     end
   end
 
@@ -110,9 +109,9 @@ class UserTest < ActiveSupport::TestCase
         created_at: @usertz.local(2024, 5, 3, 9, 0),
       )
 
-      streak, posted_today = @user.post_streak
-      assert_equal 1, streak
-      assert posted_today
+      streak = @user.post_streak
+      assert_equal 1, streak.length
+      assert streak.posted_today
     end
   end
 
@@ -125,14 +124,14 @@ class UserTest < ActiveSupport::TestCase
         created_at: @usertz.local(2024, 5, 4, 23, 30),
       )
 
-      streak, posted_today = @user.post_streak
-      assert_equal 1, streak
-      assert_not posted_today
+      streak = @user.post_streak
+      assert_equal 1, streak.length
+      assert_not streak.posted_today
 
       singapore = ActiveSupport::TimeZone["Asia/Singapore"]
-      streak, posted_today = @user.post_streak(time_zone: singapore)
-      assert_equal 1, streak
-      assert posted_today
+      streak = @user.post_streak(time_zone: singapore)
+      assert_equal 1, streak.length
+      assert streak.posted_today
     end
   end
 end
