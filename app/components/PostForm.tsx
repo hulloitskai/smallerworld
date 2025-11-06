@@ -7,6 +7,7 @@ import {
   Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { type Reset } from "@mantine/form";
 import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import {
@@ -140,8 +141,9 @@ const PostForm: FC<PostFormProps> = props => {
   const browserDetection = useBrowserDetection();
 
   // == Draft values
-  const [loadDraftValues, saveDraftValues, clearDraft] =
+  const [draftValues, saveDraftValues, clearDraft] =
     usePostDraftValues(newPostType);
+  const draftLoadedRef = useRef(false);
 
   // == Post audience
   const { data: audienceData } = useRouteSWR<{
@@ -176,6 +178,16 @@ const PostForm: FC<PostFormProps> = props => {
         : "",
     };
   }, [post, encouragement, subscribedFriends, audienceData]);
+  const resetEditor = () => {
+    setEditorMounted(false);
+    setEditorKey(prev => prev + 1);
+  };
+  const resetFormAndEditor = (reset: Reset) => {
+    draftLoadedRef.current = false;
+    reset();
+    loadDraftOnce();
+    resetEditor();
+  };
   const {
     setFieldValue,
     insertListItem,
@@ -327,10 +339,7 @@ const PostForm: FC<PostFormProps> = props => {
     },
     onSuccess: ({ post }, { reset }) => {
       if (!("post" in props)) {
-        reset();
-        setShowImageInput(false);
-        setShowSpotifyInput(false);
-        editorRef.current?.commands.clearContent();
+        resetFormAndEditor(reset);
         clearDraft();
         void mutateRoute(routes.worldEncouragements.index);
       }
@@ -345,41 +354,34 @@ const PostForm: FC<PostFormProps> = props => {
       }
     },
   });
-  const resetFormAndEditor = useCallback(() => {
-    reset();
-    setEditorMounted(false);
-    setEditorKey(prev => prev + 1);
-    setShowImageInput(post ? !isEmpty(post.images) : false);
-    setShowSpotifyInput(!!post?.spotify_track_id);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const updateFromDraft = (): boolean => {
-    const draftValues = loadDraftValues();
-    if (!draftValues) {
-      return false;
+  watch("images_uploads", ({ value }) => {
+    if (!showImageInput && !isEmpty(value)) {
+      setShowImageInput(true);
     }
-    setValues(draftValues);
-    setEditorMounted(false);
-    setEditorKey(prev => prev + 1);
-    setShowImageInput(!isEmpty(draftValues.images_uploads));
-    setShowSpotifyInput(draftValues.spotify_track_url !== null);
-    return true;
+  });
+  watch("spotify_track_url", ({ value }) => {
+    setShowSpotifyInput(!!value);
+  });
+  const loadDraftOnce = (): boolean => {
+    if (!post && draftValues && !draftLoadedRef.current) {
+      setValues(draftValues);
+      draftLoadedRef.current = true;
+      return true;
+    }
+    return false;
   };
+  useDidUpdate(() => {
+    if (loadDraftOnce()) {
+      resetEditor();
+    }
+  }, [draftValues]); // eslint-disable-line react-hooks/exhaustive-deps
   useDidUpdate(() => {
     if (isEqual(initialValues, getInitialValues())) {
       return;
     }
     setInitialValues(initialValues);
-    resetFormAndEditor();
+    resetFormAndEditor(reset);
   }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    updateFromDraft();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  useDidUpdate(() => {
-    const updated = updateFromDraft();
-    if (!updated) {
-      resetFormAndEditor();
-    }
-  }, [postType]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Update friend notifiability when visibility changes
   watch("visibility", ({ value, previousValue }) => {
@@ -575,7 +577,7 @@ const PostForm: FC<PostFormProps> = props => {
                 initialValue={values.body_html}
                 placeholder={bodyPlaceholder}
                 contentProps={{
-                  mih: 144,
+                  className: classes.editorContent,
                   ...(browserDetection &&
                     (isIos(browserDetection) ||
                       isAndroid(browserDetection)) && {

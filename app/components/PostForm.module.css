@@ -191,3 +191,9 @@
     margin-right: calc(var(--mantine-spacing-xs) / 2);
   }
 }
+
+.editorContent {
+  [contenteditable] {
+    min-height: 144px;
+  }
+}

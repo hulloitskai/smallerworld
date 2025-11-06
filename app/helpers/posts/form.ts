@@ -51,7 +51,6 @@ const postFormValuesIsEmpty = ({
       "emoji",
       "images_uploads",
       "spotify_track_url",
-      "visible_to_ids",
     ),
   );
   return contentValues.every(value =>
@@ -62,25 +61,13 @@ const postFormValuesIsEmpty = ({
 export const usePostDraftValues = (
   postType: PostType | null | undefined,
 ): [
-  () => PostFormValues | undefined,
+  PostFormValues | undefined,
   (values: PostFormValues) => void,
   () => void,
 ] => {
-  const [, setDraft, clearDraft] = useLocalStorage<PostDraft | undefined>({
+  const [draft, setDraft, clearDraft] = useLocalStorage<PostDraft | undefined>({
     key: "new_post_draft",
-    getInitialValueInEffect: false,
   });
-  const loadValues = (): PostFormValues | undefined => {
-    const serializedDraft = localStorage.getItem("new_post_draft");
-    if (!serializedDraft) {
-      return;
-    }
-    const draft: PostDraft = JSON.parse(serializedDraft);
-    if (draft.postType !== postType) {
-      return;
-    }
-    return draft.values;
-  };
   const saveValues = useThrottledCallback((values: PostFormValues) => {
     if (!postType) {
       return;
@@ -93,7 +80,8 @@ export const usePostDraftValues = (
       clearDraft();
     }
   }, 500);
-  return [loadValues, saveValues, clearDraft];
+  const values = draft?.postType === postType ? draft?.values : undefined;
+  return [values, saveValues, clearDraft];
 };
 
 export const useSavedDraftType = (): PostType | undefined => {
