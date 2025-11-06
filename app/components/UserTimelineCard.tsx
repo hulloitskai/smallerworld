@@ -1,15 +1,15 @@
 import { useTimelineStartDate } from "~/helpers/timeline";
-import { openNewPostModal } from "~/helpers/worldPage";
-import { type PostStreak } from "~/types";
 
 import TimelineCard from "./TimelineCard";
 
-export interface WorldTimelineCardProps extends BoxProps {
+export interface UserTimelineCardProps extends BoxProps {
+  userId: string;
   date: string | null;
   onDateChange: (date: string | null) => void;
 }
 
-const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
+const UserTimelineCard: FC<UserTimelineCardProps> = ({
+  userId,
   date,
   onDateChange,
   ...otherProps
@@ -17,28 +17,24 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   const startDate = useTimelineStartDate();
   const { data } = useRouteSWR<{
     timeline: Record<string, { emoji: string | null; streak: boolean }>;
-    postStreak: PostStreak | null;
-  }>(routes.world.timeline, {
+  }>(routes.users.timeline, {
     descriptor: "load timeline",
     params: startDate
       ? {
+          id: userId,
           query: {
             start_date: DateTime.fromISO(startDate).toLocal().toISO(),
           },
         }
       : null,
-    keepPreviousData: true,
   });
-  const { timeline, postStreak } = data ?? {};
+  const { timeline } = data ?? {};
   return (
     <TimelineCard
-      {...{ date, onDateChange, startDate, timeline, postStreak }}
-      onContinueStreak={() => {
-        openNewPostModal({ postType: "journal_entry" });
-      }}
+      {...{ date, onDateChange, startDate, timeline }}
       {...otherProps}
     />
   );
 };
 
-export default WorldTimelineCard;
+export default UserTimelineCard;

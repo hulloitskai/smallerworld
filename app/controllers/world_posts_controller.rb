@@ -9,7 +9,7 @@ class WorldPostsController < ApplicationController
   before_action :authenticate_user!
 
   # == Actions
-  # GET /world/posts?type=...&date=...&q=...
+  # GET /world/posts?date=...&type=...&q=...
   def index
     current_user = authenticate_user!
     scope = authorized_scope(current_user.posts)
@@ -21,10 +21,10 @@ class WorldPostsController < ApplicationController
 
       scope = scope.where(type:)
     end
-    if (value = params[:date])
-      raise "Invalid date: #{value}" unless value.is_a?(String)
+    if (date_param = params[:date])
+      raise "Invalid date: #{date_param}" unless date_param.is_a?(String)
 
-      time = value.to_time or raise "Invalid date: #{value}"
+      time = date_param.to_time or raise "Invalid date: #{date_param}"
       scope = scope.where(created_at: time.all_day)
     end
     ordering = { created_at: :desc, id: :asc }

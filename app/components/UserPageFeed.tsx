@@ -13,6 +13,7 @@ import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 import PublicPostCardActions from "./PublicPostCardActions";
+import UserTimelineCard from "./UserTimelineCard";
 
 export interface UserPageFeedProps extends BoxProps {}
 
@@ -28,12 +29,15 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
   const queryParams = useQueryParams();
   const { pushRegistration } = useWebPush();
 
+  const [date, setDate] = useState<string | null>(null);
+
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useUserPagePosts(
     user.id,
+    { date },
   );
   const longerThan24HoursSinceLastPost = useMemo(() => {
-    if (!posts) {
+    if (!posts || date) {
       return false;
     }
     const [lastPost] = posts;
@@ -42,7 +46,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
     }
     const timestamp = DateTime.fromISO(lastPost.created_at);
     return DateTime.now().diff(timestamp, "hours").hours > 24;
-  }, [posts]);
+  }, [posts, date]);
 
   const showEncouragementCard =
     !!currentFriend &&
@@ -66,6 +70,7 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
           }}
         />
       )}
+      <UserTimelineCard userId={user.id} {...{ date }} onDateChange={setDate} />
       {posts ? (
         isEmpty(posts) ? (
           <Card withBorder>

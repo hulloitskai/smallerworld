@@ -3,13 +3,19 @@
 
 class UserPostsController < ApplicationController
   # == Actions
-  # GET /users/:user_id/posts
+  # GET /users/:user_id/posts?date=...
   def index
     user = load_user
     scope = user.posts
       .with_attached_images
       .with_quoted_post_and_attached_images
       .with_encouragement
+    if (date_param = params[:date])
+      raise "Invalid date: #{date_param}" unless date_param.is_a?(String)
+
+      time = date_param.to_time or raise "Invalid date: #{date_param}"
+      scope = scope.where(created_at: time.all_day)
+    end
     pagy, posts = if (friend = current_friend)
       paginate_posts(scope.visible_to(friend))
     else

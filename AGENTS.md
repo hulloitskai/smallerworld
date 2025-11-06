@@ -56,3 +56,12 @@
 Prefer updating source configs (e.g., `vite.config.ts`, `config/routes.rb`,
 migrations) and regenerating, but direct edits are acceptable when they’re the
 safest, fastest fix.
+
+## New Learnings
+
+- Timeline UI now relies on `app/helpers/timeline.ts` plus the shared
+  `TimelineCard` component; reuse those instead of reimplementing scroll +
+  start-date logic.
+- User timelines are served from `UsersController#timeline` (JSON). Keep
+  response parity with `WorldsController#timeline` and mask non-public emojis
+  for anonymous viewers.

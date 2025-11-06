@@ -283,6 +283,9 @@ module GeneratedPathHelpersModule
   def test_submit_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def timeline_user_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def timeline_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

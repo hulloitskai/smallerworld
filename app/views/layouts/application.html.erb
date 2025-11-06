@@ -71,11 +71,10 @@
     <%# == Mantine %>
     <script data-mantine-script>
       try {
-        if (document.documentElement.getAttribute("data-mantine-color-scheme")) {
-          return;
+        if (!document.documentElement.getAttribute("data-mantine-color-scheme")) {
+          var computedColorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.setAttribute("data-mantine-color-scheme", computedColorScheme);
         }
-        var computedColorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-        document.documentElement.setAttribute("data-mantine-color-scheme", computedColorScheme);
       } catch (e) {}
     </script>
 

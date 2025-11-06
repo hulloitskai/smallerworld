@@ -256,7 +256,7 @@ class User < ApplicationRecord
   end
 
   sig do
-    params(time_zone: ActiveSupport::TimeZone).returns([Integer, T::Boolean])
+    params(time_zone: ActiveSupport::TimeZone).returns(T.nilable(PostStreak))
   end
   def post_streak(time_zone: self.time_zone)
     sql = <<~SQL.squish
@@ -291,15 +291,15 @@ class User < ApplicationRecord
     },])
 
     result = Post.connection.exec_query(interpolated_sql)
-    return [0, false] if result.rows.empty?
+    return if result.rows.empty?
 
     row = result.first
-    streak = T.cast(row["streak_length"], Integer)
+    length = T.cast(row["streak_length"], Integer)
     end_date = T.cast(row["end_date"], Date)
-    return [0, false] if end_date < (time_zone.today - 1)
+    return if end_date < (time_zone.today - 1)
 
     posted_today = end_date == time_zone.today
-    [streak, posted_today]
+    PostStreak.new(length:, posted_today:)
   end
 
   # == Helpers

@@ -22,6 +22,7 @@ export interface UserPagePostsData {
 
 interface UserPostsGetKeyOptions {
   friendAccessToken?: string;
+  date?: string | null;
 }
 
 const userPagePostsGetKey = (
@@ -32,6 +33,9 @@ const userPagePostsGetKey = (
     const query: Record<string, any> = {};
     if (options?.friendAccessToken) {
       query.friend_token = options.friendAccessToken;
+    }
+    if (options?.date) {
+      query.date = DateTime.fromISO(options.date).toLocal().toISO();
     }
     if (previousPageData) {
       const { next } = previousPageData.pagination;
@@ -45,7 +49,9 @@ const userPagePostsGetKey = (
 };
 
 export interface UserPagePostsOptions
-  extends SWRInfiniteConfiguration<UserPagePostsData> {}
+  extends SWRInfiniteConfiguration<UserPagePostsData> {
+  date?: string | null;
+}
 
 export const useUserPagePosts = (
   userId: string,
@@ -53,10 +59,11 @@ export const useUserPagePosts = (
 ) => {
   const currentFriend = useCurrentFriend();
   const { online } = useNetwork();
-  const { ...swrConfiguration } = options ?? {};
+  const { date, ...swrConfiguration } = options ?? {};
   const { data, ...swrResponse } = useSWRInfinite<UserPagePostsData>(
     userPagePostsGetKey(userId, {
       friendAccessToken: currentFriend?.access_token,
+      date: date ?? null,
     }),
     (path: string) =>
       fetchRoute(path, {
@@ -79,7 +86,7 @@ export const useUserPagePosts = (
 };
 
 export const mutateUserPagePosts = async (userId: string): Promise<void> => {
-  const postsPath = routes.worldPosts.index.path();
+  const postsPath = routes.userPosts.index.path({ user_id: userId });
   const mutations: Promise<void>[] = [];
   for (const path of cache.keys()) {
     const url = hrefToUrl(path);
@@ -158,4 +165,18 @@ export const openUserPageInstallationInstructionsInMobileSafari = ({
     query: instructionsQuery,
   });
   openUrlInMobileSafari(instructionsPath);
+};
+
+export const mutateUserTimeline = async (userId: string): Promise<void> => {
+  await mutate(
+    key => {
+      if (typeof key !== "string") {
+        return false;
+      }
+      const url = hrefToUrl(key);
+      return url.pathname === routes.users.timeline.path({ id: userId });
+    },
+    undefined,
+    { revalidate: true },
+  );
 };

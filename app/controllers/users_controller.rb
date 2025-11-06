@@ -4,12 +4,13 @@
 class UsersController < ApplicationController
   include RendersUserFavicons
   include GeneratesManifest
+  include BuildsTimeline
 
   # == Filters
   before_action :authenticate_friend!, only: :manifest
 
   # == Actions
-  # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user) # rubocop:disable Layout/LineLength
+  # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user)&friend_token=... # rubocop:disable Layout/LineLength
   def show
     user = load_user(scope: User.with_attached_page_icon)
     if (current_user = self.current_user)
@@ -34,6 +35,48 @@ class UsersController < ApplicationController
       props["faviconLinks"] = user_favicon_links(user)
     end
     render(inertia: "UserPage", user_theme: user.theme, props:)
+  end
+
+  # GET /users/:id/timeline?friend_token=...
+  def timeline
+    user = load_user
+    start_date = scoped do
+      value = params[:start_date] or raise "Missing start date"
+      raise "Invalid start date: #{value}" unless value.is_a?(String)
+
+      value.to_time or raise "Invalid start date: #{value}"
+    end
+    if start_date < 1.year.ago
+      raise "Start date must be within the last year"
+    end
+
+    time_zone = ActiveSupport::TimeZone.new(start_date.utc_offset)
+    timeline_posts = scoped do
+      offset = time_zone.formatted_offset
+      select_sql = Post.sanitize_sql_array([
+        "DISTINCT ON (DATE(posts.created_at AT TIME ZONE INTERVAL :offset)) " \
+          "DATE(posts.created_at AT TIME ZONE INTERVAL :offset) AS date, " \
+          "posts.emoji, posts.visibility",
+        offset:,
+      ])
+      order_sql = Post.sanitize_sql_array([
+        "DATE(posts.created_at AT TIME ZONE INTERVAL :offset), posts.created_at DESC", # rubocop:disable Layout/LineLength
+        offset:,
+      ])
+      scope = user.posts.where(created_at: start_date..)
+      scope = if (friend = current_friend)
+        scope.visible_to(friend)
+      else
+        scope.visible_to_friends
+      end
+      scope
+        .select(select_sql)
+        .order(Arel.sql(order_sql))
+        .to_a
+    end
+
+    timeline = build_timeline(timeline_posts, time_zone:)
+    render(json: { timeline: })
   end
 
   # GET /@:handle/join
