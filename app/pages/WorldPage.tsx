@@ -15,13 +15,13 @@ import { useModals } from "@mantine/modals";
 
 import EllipsisHorizontalIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
+import HeartIcon from "~icons/heroicons/heart-20-solid";
 
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
-import SingleDayFontHead from "~/components/SingleDayFontHead";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import WorldFooter from "~/components/WorldFooter";
 import WorldPageFeed from "~/components/WorldPageFeed";
@@ -235,74 +235,78 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             </Group>
           </Stack>
         </Stack>
-        <Menu width={228} position="bottom-end" arrowOffset={20}>
-          <Menu.Target>
-            <ActionIcon
-              pos="absolute"
-              top={pendingJoinRequests > 0 ? 0 : -6}
-              right={0}
-              className={classes.menuButton}
-            >
-              <Indicator
-                className={classes.menuIndicator}
-                label={pendingJoinRequests}
-                size={16}
-                offset={-4}
-                disabled={!pendingJoinRequests}
+        <Group
+          pos="absolute"
+          top={pendingJoinRequests > 0 ? 0 : -6}
+          right={0}
+          gap={2}
+          align="start"
+        >
+          {!currentUser.membership_tier && <SupportButton />}
+          <Menu width={228} position="bottom-end" arrowOffset={20}>
+            <Menu.Target>
+              <ActionIcon className={classes.menuButton}>
+                <Indicator
+                  className={classes.menuIndicator}
+                  label={pendingJoinRequests}
+                  size={16}
+                  offset={-4}
+                  disabled={!pendingJoinRequests}
+                >
+                  <MenuIcon />
+                </Indicator>
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <LinkItem
+                leftSection={<EditIcon />}
+                href={routes.world.edit.path()}
               >
-                <MenuIcon />
-              </Indicator>
-            </ActionIcon>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <LinkItem
-              leftSection={<EditIcon />}
-              href={routes.world.edit.path()}
-            >
-              customize your page
-            </LinkItem>
-            <LinkItem
-              leftSection={<OpenExternalIcon />}
-              href={withTrailingSlash(
-                routes.users.show.path({ id: currentUser.handle }),
-              )}
-            >
-              view public profile
-            </LinkItem>
-            <LinkItem
-              className={classes.joinRequestMenuItem}
-              leftSection={<JoinRequestIcon />}
-              href={routes.worldJoinRequests.index.path()}
-              {...(pendingJoinRequests > 0 && {
-                rightSection: (
-                  <Badge variant="filled" px={6} py={0}>
-                    {pendingJoinRequests}
-                  </Badge>
-                ),
-              })}
-            >
-              view join requests
-            </LinkItem>
-            {isStandalone && <LogoutItem />}
-            <Menu.Divider />
-            <Menu.Item
-              component="div"
-              disabled
-              className={classes.menuContactItem}
-            >
-              <Anchor
-                href={routes.feedback.redirect.path()}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                size="xs"
-                inline
-                data-canny-link
+                customize your page
+              </LinkItem>
+              <LinkItem
+                leftSection={<OpenExternalIcon />}
+                href={withTrailingSlash(
+                  routes.users.show.path({ id: currentUser.handle }),
+                )}
               >
-                got feedback or feature requests?
-              </Anchor>
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+                view public profile
+              </LinkItem>
+              <LinkItem
+                className={classes.joinRequestMenuItem}
+                leftSection={<JoinRequestIcon />}
+                href={routes.worldJoinRequests.index.path()}
+                {...(pendingJoinRequests > 0 && {
+                  rightSection: (
+                    <Badge variant="filled" px={6} py={0}>
+                      {pendingJoinRequests}
+                    </Badge>
+                  ),
+                })}
+              >
+                view join requests
+              </LinkItem>
+              {isStandalone && <LogoutItem />}
+              <Menu.Divider />
+              <Menu.Item
+                component="div"
+                disabled
+                className={classes.menuContactItem}
+              >
+                <Anchor
+                  href={routes.feedback.redirect.path()}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  size="xs"
+                  inline
+                  data-canny-link
+                >
+                  got feedback or feature requests?
+                </Anchor>
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
       </Box>
       {isStandalone && webPushPermission === "denied" && (
         <Alert
@@ -406,20 +410,17 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           pushRegistration === null &&
           webPushSupported !== false &&
           webPushPermission !== "denied" && (
-            <>
-              <SingleDayFontHead />
-              <Overlay backgroundOpacity={0} blur={3}>
-                <Group justify="center" align="end" gap="xs">
-                  <Text className={classes.notificationsRequiredIndicatorText}>
-                    pretty&nbsp;please? 👉&#8288;👈
-                  </Text>
-                  <Image
-                    src={swirlyUpArrowSrc}
-                    className={classes.notificationsRequiredIndicatorArrow}
-                  />
-                </Group>
-              </Overlay>
-            </>
+            <Overlay backgroundOpacity={0} blur={3}>
+              <Group justify="center" align="end" gap="xs">
+                <Text className={classes.notificationsRequiredIndicatorText}>
+                  pretty&nbsp;please? 👉&#8288;👈
+                </Text>
+                <Image
+                  src={swirlyUpArrowSrc}
+                  className={classes.notificationsRequiredIndicatorArrow}
+                />
+              </Group>
+            </Overlay>
           )}
       </Box>
     </Stack>
@@ -458,6 +459,49 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         }}
       />
     </>
+  );
+};
+
+const SupportButton: FC = () => {
+  const [autoOpened, setAutoOpened] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  useEffect(() => {
+    const delay = 1400;
+    const showTimeout = setTimeout(() => {
+      setAutoOpened(true);
+    }, delay);
+    const hideTimeout = setTimeout(() => {
+      setAutoOpened(false);
+    }, delay + 2400);
+
+    return () => {
+      clearTimeout(showTimeout);
+      clearTimeout(hideTimeout);
+    };
+  }, []);
+
+  return (
+    <Tooltip
+      label="support smaller world!!"
+      opened={hovered || autoOpened}
+      position="bottom-end"
+      arrowOffset={20}
+      className={classes.supportTooltip}
+      onMouseEnter={() => {
+        setHovered(true);
+      }}
+      onMouseLeave={() => {
+        setHovered(false);
+      }}
+    >
+      <ActionIcon
+        component="a"
+        href={routes.support.redirect.path()}
+        className={classes.heartButton}
+      >
+        <HeartIcon />
+      </ActionIcon>
+    </Tooltip>
   );
 };
 

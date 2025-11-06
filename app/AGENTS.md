@@ -87,6 +87,18 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 - Treat `result.browser.is("Chrome") || result.os.is("Android")` as PWA-install
   capable—Android devices may not present as Chrome.
 
+## Icons
+
+- Import icons from the `~icons/...` alias (e.g.,
+  `~icons/heroicons/heart-20-solid`) so we benefit from tree-shaking and
+  consistent bundles; avoid package-level wildcard imports.
+- Match the size suffix on the icon (`-20-`, `-24-`, etc.) to the Mantine
+  component you’re rendering it in—`ActionIcon` instances should typically use
+  the 20px variants we already rely on.
+- Slot icons through Mantine props like `leftSection`, `rightSection`, or inside
+  `ActionIcon` instead of applying custom wrappers—Mantine handles spacing,
+  focus, and colors for us.
+
 ## Auth & Real-Time Hooks
 
 - `useCurrentUser()` and `useCurrentFriend()` expose the two authentication

@@ -10,7 +10,6 @@ import {
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import SingleDayFontHead from "~/components/SingleDayFontHead";
 import UniversePageFeed from "~/components/UniversePageFeed";
 import UniversePageInstallAlert from "~/components/UniversePageInstallAlert";
 import UniversePageNotificationsButton from "~/components/UniversePageNotificationsButton";
@@ -128,23 +127,20 @@ const UniversePage: PageComponent<UniversePageProps> = () => {
       </RemoveScroll>
       {isStandalone === false && <UniversePageInstallAlert />}
       {isStandalone && !outOfPWAScope && pushRegistration === null && (
-        <>
-          <Overlay backgroundOpacity={0} blur={3} pos="fixed">
-            <SingleDayFontHead />
-            <Stack align="center" justify="center" pos="absolute" inset={0}>
-              <UniversePageNotificationsButton />
-              <Group justify="center" align="end" gap="xs">
-                <Text className={classes.notificationsRequiredIndicatorText}>
-                  pretty&nbsp;please? 👉&#8288;👈
-                </Text>
-                <Image
-                  src={swirlyUpArrowSrc}
-                  className={classes.notificationsRequiredIndicatorArrow}
-                />
-              </Group>
-            </Stack>
-          </Overlay>
-        </>
+        <Overlay backgroundOpacity={0} blur={3} pos="fixed">
+          <Stack align="center" justify="center" pos="absolute" inset={0}>
+            <UniversePageNotificationsButton />
+            <Group justify="center" align="end" gap="xs">
+              <Text className={classes.notificationsRequiredIndicatorText}>
+                pretty&nbsp;please? 👉&#8288;👈
+              </Text>
+              <Image
+                src={swirlyUpArrowSrc}
+                className={classes.notificationsRequiredIndicatorArrow}
+              />
+            </Group>
+          </Stack>
+        </Overlay>
       )}
     </>
   );

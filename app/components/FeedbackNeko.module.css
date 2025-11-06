@@ -12,6 +12,10 @@
   }
 }
 
+.tooltip {
+  font-family: var(--font-family-cute);
+}
+
 .cannyContainer {
   :global(#canny-scroll-element) {
     display: none;

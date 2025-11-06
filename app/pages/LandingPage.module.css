@@ -72,7 +72,7 @@
 }
 
 .videoCalloutLabel {
-  font-family: "Single Day", Manrope, cursive;
+  font-family: var(--font-family-cute);
   font-size: 24px;
   line-height: 1.1;
 
@@ -93,7 +93,7 @@
 }
 
 .demoWorldLabel {
-  font-family: "Single Day", Manrope, cursive;
+  font-family: var(--font-family-cute);
   font-size: 24px;
   line-height: 1.1;
 }

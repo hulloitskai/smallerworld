@@ -9,7 +9,6 @@ import shareRealStuffSrc from "~/assets/images/share-real-stuff.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import SingleDayFontHead from "~/components/SingleDayFontHead";
 
 import classes from "./LandingPage.module.css";
 
@@ -124,7 +123,6 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           </Transition>
         </Box>
         <Box className={classes.videoCallout}>
-          <SingleDayFontHead />
           <Stack className={classes.videoCalloutStack}>
             <Text className={classes.videoCalloutLabel}>
               why i made this :)
@@ -185,7 +183,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           bottomSection={
             <Stack align="center">
               <Image src={shareRealStuffSrc} radius="default" />
-              <HoverCard width={354} withArrow shadow="md">
+              <HoverCard width={354} shadow="md">
                 <HoverCard.Target>
                   <Badge size="lg">but wait... what do i post???</Badge>
                 </HoverCard.Target>

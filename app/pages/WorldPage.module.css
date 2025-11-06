@@ -61,7 +61,7 @@
 }
 
 .notificationsRequiredIndicatorText {
-  font-family: "Single Day", Manrope, cursive;
+  font-family: var(--font-family-cute);
   font-size: 24px;
   line-height: 1.1;
   max-width: 120px;
@@ -76,6 +76,36 @@
 
 .menuButton {
   overflow: visible;
+}
+
+.heartButton {
+  animation: heartWiggle 5s ease-in-out infinite;
+  animation-delay: 2s;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes heartWiggle {
+  0%,
+  85% {
+    transform: rotate(0deg);
+  }
+
+  90% {
+    transform: rotate(-8deg);
+  }
+
+  93% {
+    transform: rotate(6deg);
+  }
+
+  96% {
+    transform: rotate(-4deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 .menuIndicator {
@@ -140,4 +170,8 @@
   :global(.mantine-Alert-title) {
     font-weight: 600 !important;
   }
+}
+
+.supportTooltip {
+  font-family: var(--font-family-cute);
 }

@@ -1061,7 +1061,6 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
                           ? "text notification sent"
                           : "send text notification"
                       }
-                      withArrow
                     >
                       <Group gap={0}>
                         <PhoneIcon />
@@ -1075,7 +1074,6 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
                           ? "push notification sent"
                           : "send push notification"
                       }
-                      withArrow
                     >
                       <Group gap={0}>
                         <NotificationIcon />

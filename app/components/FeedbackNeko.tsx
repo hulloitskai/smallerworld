@@ -9,7 +9,6 @@ import FeedbackIcon from "~icons/heroicons/megaphone-20-solid";
 import { useContact } from "~/helpers/contact";
 import { readingTimeFor } from "~/helpers/utils";
 
-import SingleDayFontHead from "./SingleDayFontHead";
 import SleepyNeko, { type SleepyNekoProps } from "./SleepyNeko";
 
 import classes from "./FeedbackNeko.module.css";
@@ -48,39 +47,31 @@ const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
     }
   }, [index]);
   return (
-    <>
-      <SingleDayFontHead />
-      <Tooltip
-        withArrow
-        label={line}
-        opened={!!line}
-        disabled={!line || !isEmpty(modals)}
-        styles={{
-          tooltip: {
-            fontFamily: '"Single Day", Manrope, cursive',
-          },
+    <Tooltip
+      label={line}
+      opened={!!line}
+      disabled={!line || !isEmpty(modals)}
+      className={classes.tooltip}
+    >
+      <SleepyNeko
+        style={[{ cursor: "pointer", pointerEvents: "auto" }, style]}
+        onClick={() => {
+          const featureRequestsBoardToken = requireMeta(
+            "canny-feature-requests-board-token",
+          );
+          const bugsBoardToken = requireMeta("canny-bugs-board-token");
+          openModal({
+            title: "give feedback <3",
+            children: (
+              <FeedbackModalBody
+                {...{ featureRequestsBoardToken, bugsBoardToken }}
+              />
+            ),
+          });
         }}
-      >
-        <SleepyNeko
-          style={[{ cursor: "pointer", pointerEvents: "auto" }, style]}
-          onClick={() => {
-            const featureRequestsBoardToken = requireMeta(
-              "canny-feature-requests-board-token",
-            );
-            const bugsBoardToken = requireMeta("canny-bugs-board-token");
-            openModal({
-              title: "give feedback <3",
-              children: (
-                <FeedbackModalBody
-                  {...{ featureRequestsBoardToken, bugsBoardToken }}
-                />
-              ),
-            });
-          }}
-          {...otherProps}
-        />
-      </Tooltip>
-    </>
+        {...otherProps}
+      />
+    </Tooltip>
   );
 };
 

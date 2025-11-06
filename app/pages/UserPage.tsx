@@ -6,7 +6,6 @@ import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import SingleDayFontHead from "~/components/SingleDayFontHead";
 import UserPageDialogStateProvider from "~/components/UserPageDialogStateProvider";
 import UserPageFeed from "~/components/UserPageFeed";
 import UserPageFloatingActions from "~/components/UserPageFloatingActions";
@@ -256,20 +255,17 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
           pushRegistration === null &&
           webPushSupported !== false &&
           webPushPermission !== "denied" && (
-            <>
-              <SingleDayFontHead />
-              <Overlay backgroundOpacity={0} blur={3}>
-                <Group justify="center" align="end" gap="xs">
-                  <Text className={classes.notificationsRequiredIndicatorText}>
-                    help {user.name} stay connected with you 🫶
-                  </Text>
-                  <Image
-                    src={swirlyUpArrowSrc}
-                    className={classes.notificationsRequiredIndicatorArrow}
-                  />
-                </Group>
-              </Overlay>
-            </>
+            <Overlay backgroundOpacity={0} blur={3}>
+              <Group justify="center" align="end" gap="xs">
+                <Text className={classes.notificationsRequiredIndicatorText}>
+                  help {user.name} stay connected with you 🫶
+                </Text>
+                <Image
+                  src={swirlyUpArrowSrc}
+                  className={classes.notificationsRequiredIndicatorArrow}
+                />
+              </Group>
+            </Overlay>
           )}
       </Box>
     </Stack>
