@@ -137,6 +137,7 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                       label={<DraftIcon />}
                       size={16}
                       offset={4}
+                      color="white"
                       disabled={!newPostDraftType}
                     >
                       <Button

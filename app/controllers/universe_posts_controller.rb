@@ -6,9 +6,9 @@ class UniversePostsController < ApplicationController
   # GET /universe/posts
   def index
     posts = Post
-      .with_quoted_post_and_attached_images
+      .publicly_visible
       .where(id: Post.user_created.select(:id))
-      .visible_to_public
+      .with_quoted_post_and_attached_images
     pagy, paginated_posts = pagy_keyset(
       posts.order(created_at: :desc, id: :asc),
       limit: 5,

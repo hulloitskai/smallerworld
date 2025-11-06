@@ -13,38 +13,44 @@ class LocalUniversePostsController < ApplicationController
       .associated_friends
       .where.not(user_id: current_user.id)
     chosen_family_friends = associated_friends.chosen_family
-    other_friends = associated_friends.where.not(chosen_family: true)
-    posts = Post
+    general_friends = associated_friends.where.not(chosen_family: true)
+    scope = Post
       .with_attached_images
       .with_quoted_post_and_attached_images
       .with_encouragement
       .includes(:author)
-      .visible_to_public
+      .publicly_visible
       .where(id: Post.user_created.select(:id))
       .or(
         Post
           .where(author_id: current_user.id)
-          .where.not(visibility: :only_me),
+          .where.not(visibility: :secret),
       )
       .or(
         Post
-          .where(author_id: other_friends.select(:user_id))
-          .where("NOT hidden_from_ids && ARRAY(?)", other_friends.select(:id))
-          .visible_to_friends,
+          .visible_to_friends
+          .where(author_id: general_friends.select(:user_id))
+          .where(
+            "NOT hidden_from_ids && ARRAY(?)",
+            general_friends.select(:id),
+          ),
       )
       .or(
         Post
+          .visible_to_chosen_family
           .where(author_id: chosen_family_friends.select(:user_id))
           .where(
-            "NOT hidden_from_ids && ARRAY(?)", chosen_family_friends.select(:id)
-          )
-          .visible_to_chosen_family,
+            "NOT hidden_from_ids && ARRAY(?)",
+            chosen_family_friends.select(:id),
+          ),
+      ).or(
+        Post
+          .secretly_visible
+          .where(author_id: associated_friends.select(:user_id))
+          .where("visible_to_ids && ARRAY(?)", associated_friends.select(:id)),
       )
-    pagy, paginated_posts = pagy_keyset(
-      posts.order(created_at: :desc, id: :asc),
-      limit: 5,
-    )
-    post_ids = paginated_posts.map(&:id)
+    pagy, posts = paginate_posts(scope)
+    post_ids = posts.map(&:id)
     views_by_post_id = PostView
       .where(post_id: post_ids, friend: associated_friends)
       .group(:post_id)
@@ -66,7 +72,7 @@ class LocalUniversePostsController < ApplicationController
     associated_friends_by_user_id = associated_friends
       .select(:id, :user_id, :access_token)
       .index_by(&:user_id)
-    serialized_posts = paginated_posts.map do |post|
+    serialized_posts = posts.map do |post|
       associated_friend = associated_friends_by_user_id[post.author_id]
       author = T.let(post.author!, User)
       if author == current_user
@@ -94,5 +100,25 @@ class LocalUniversePostsController < ApplicationController
         next: pagy.next,
       },
     })
+  end
+
+  private
+
+  # == Helpers
+  sig do
+    params(scope: T.any(
+      Post::PrivateRelation,
+      Post::PrivateCollectionProxy,
+      Post::PrivateAssociationRelation,
+    )).returns([
+      Pagy::Keyset,
+      T::Array[Post],
+    ])
+  end
+  def paginate_posts(scope)
+    pagy_keyset(
+      scope.order(created_at: :desc, id: :asc),
+      limit: 5,
+    )
   end
 end

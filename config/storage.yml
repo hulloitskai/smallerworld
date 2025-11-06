@@ -10,6 +10,7 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
+# prettier-ignore
 tigris:
   service: S3
   endpoint: <%= Rails.application.credentials.tigris!.endpoint if Rails.env.production? && Rails.application.credentials_available? %>

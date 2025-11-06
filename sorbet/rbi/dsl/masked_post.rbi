@@ -711,6 +711,9 @@ class MaskedPost
     def preload(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def publicly_visible(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def readonly(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -734,6 +737,12 @@ class MaskedPost
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def rewhere(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def secretly_visible(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def secretly_visible_to(*args, &blk); end
+
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
     sig { params(blk: T.proc.params(record: ::MaskedPost).returns(BasicObject)).returns(T::Array[::MaskedPost]) }
     def select(*args, &blk); end
@@ -754,13 +763,13 @@ class MaskedPost
     def user_created(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def visible_to(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def visible_to_chosen_family(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def visible_to_friends(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def visible_to_public(*args, &blk); end
 
     sig { returns(PrivateAssociationRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateAssociationRelation) }
@@ -1332,6 +1341,9 @@ class MaskedPost
     sig { void }
     def restore_visibility!; end
 
+    sig { void }
+    def restore_visible_to_ids!; end
+
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_author_id; end
 
@@ -1427,6 +1439,12 @@ class MaskedPost
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_visibility?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def saved_change_to_visible_to_ids; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_visible_to_ids?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def spotify_track_id; end
@@ -1653,6 +1671,51 @@ class MaskedPost
     sig { void }
     def visibility_will_change!; end
 
+    sig { returns(T::Array[::String]) }
+    def visible_to_ids; end
+
+    sig { params(value: T::Array[::String]).returns(T::Array[::String]) }
+    def visible_to_ids=(value); end
+
+    sig { returns(T::Boolean) }
+    def visible_to_ids?; end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def visible_to_ids_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def visible_to_ids_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def visible_to_ids_came_from_user?; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def visible_to_ids_change; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def visible_to_ids_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def visible_to_ids_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def visible_to_ids_in_database; end
+
+    sig { returns(T.nilable([T::Array[::String], T::Array[::String]])) }
+    def visible_to_ids_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def visible_to_ids_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def visible_to_ids_previously_was; end
+
+    sig { returns(T.nilable(T::Array[::String])) }
+    def visible_to_ids_was; end
+
+    sig { void }
+    def visible_to_ids_will_change!; end
+
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_author_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
@@ -1700,6 +1763,9 @@ class MaskedPost
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_visibility?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_visible_to_ids?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods
@@ -1806,6 +1872,9 @@ class MaskedPost
     def preload(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def publicly_visible(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def readonly(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
@@ -1829,6 +1898,12 @@ class MaskedPost
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def rewhere(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def secretly_visible(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def secretly_visible_to(*args, &blk); end
+
     sig { params(args: T.untyped).returns(PrivateRelation) }
     sig { params(blk: T.proc.params(record: ::MaskedPost).returns(BasicObject)).returns(T::Array[::MaskedPost]) }
     def select(*args, &blk); end
@@ -1849,13 +1924,13 @@ class MaskedPost
     def user_created(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def visible_to(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def visible_to_chosen_family(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def visible_to_friends(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def visible_to_public(*args, &blk); end
 
     sig { returns(PrivateRelationWhereChain) }
     sig { params(args: T.untyped).returns(PrivateRelation) }

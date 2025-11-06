@@ -16,6 +16,7 @@
 #
 default: &default
   adapter: &adapter postgis
+  # prettier-ignore
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i + 1 + 1 + 2 + ENV.fetch("GOOD_JOB_MAX_THREADS", 2).to_i %>
   timeout: 5000
 
@@ -60,5 +61,6 @@ test:
 production:
   adapter: *adapter
   database: smallerworld_production
+  # prettier-ignore
   url: <%= Rails.application.credentials.database!.url if Rails.env.production? && Rails.application.credentials_available? %>
   reaping_frequency: 10

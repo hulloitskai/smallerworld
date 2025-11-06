@@ -1,20 +1,51 @@
 # Cursor Rules
 
-## Essential Commands
+## Do
 
-- Format and lint with `bin/fix` before committing; it installs tooling with the project's versions.
-- Reset JS/TS tooling drift by running `npm ci` and matching the Node version defined in `mise.toml` (run `mise install`).
-- Run Rails and Bundler commands via `mise exec -- …` so they pick up the project's Ruby/Bundler versions (for example, `mise exec -- bin/rails db:migrate`).
-- Execute the full test suite with `bin/test`; do not call Rails test runners directly.
-- If the pre-push hook fails because of a failed dependency audit, push with `git push --no-verify`.
+- Use `mise exec -- …` for any Rails or Bundler command, and start scaffolding
+  with `mise exec -- bin/rails generate …`.
+- Run `bin/fix` before committing and keep diffs tightly focused on the
+  requested change.
+- Run `bin/test` for the code you touch (use targeted suites when obvious).
+- Reset JS/TS tooling drift with `npm ci` and `mise install` whenever
+  dependencies change.
+- Call out which changes are yours versus pre-existing when summarizing work.
+- Prefer straightforward implementations; only add abstractions or memoization
+  after profiling shows a need.
 
-## Change Management
+## Don’t
 
-- Default to the simplest implementation—only introduce abstractions or memoization when profiling proves the need.
-- When cleaning code, separate existing logic from your additions and confirm scope before removing anything.
-- Highlight which changes are new versus pre-existing when summarizing work.
+- Introduce new dependencies or bypass hooks unless explicitly approved
+  (`git push --no-verify` is only for dependency-audit failures).
+- Remove existing logic without agreeing on scope and replacement.
+- Skip regeneration steps when tooling already exists to recreate derived files.
 
-## Generated Assets (Hands Off)
+## Commands
+
+- `mise exec -- bin/rails generate …` — required path for new migrations,
+  models, and similar scaffolds.
+- `mise exec -- bin/rails db:migrate` — apply migrations with project-managed
+  Ruby/Bundler versions.
+- `bin/fix` — formatter/linter suite.
+- `bin/test` — primary test runner.
+- `npm ci` + `mise install` — align Node tooling when working on frontend
+  dependencies.
+
+## Regenerate Outputs
+
+- After editing `config/routes.rb`, run\
+  `mise exec -- bin/rails js_from_routes:generate JS_FROM_ROUTES_FORCE=1`.
+- After editing serializers, run\
+  `mise exec -- bin/rails types_from_serializers:generate TYPES_FROM_SERIALIZERS_FORCE=1`.
+
+## Structure & References
+
+- Frontend, TypeScript, and Rails model conventions: `app/AGENTS.md`.
+- Supabase business-intelligence workflows: `docs/Business Intelligence.md`.
+- Add nested `AGENTS.md` files in subdirectories that need overrides—the nearest
+  file to the change takes precedence.
+
+## Generated Outputs
 
 - `typings/generated/auto-import.d.ts`
 - `app/helpers/routes/generated/**/*.ts`
@@ -22,10 +53,6 @@
 - `sorbet/rbi/dsl/**/*.rbi`
 - Any path containing `generated` or marked as auto-generated
 
-Update the source configs instead of editing these outputs (e.g., adjust auto-imports via `vite.config.ts`, routing via `config/routes.rb`, and database changes via migrations).
-
-## Sub-Guides
-
-- Detailed frontend, TypeScript, and Rails model instructions live in `app/AGENTS.md`.
-- For Supabase business-intelligence requests (e.g., summarizing daily posts or similar analytics), follow `docs/Business Intelligence.md`.
-- Create additional `AGENTS.md` files inside subdirectories that need their own rules; agents read the nearest guide.
+Prefer updating source configs (e.g., `vite.config.ts`, `config/routes.rb`,
+migrations) and regenerating, but direct edits are acceptable when they’re the
+safest, fastest fix.

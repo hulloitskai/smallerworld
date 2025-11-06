@@ -9,12 +9,23 @@ import {
 import { DateInput } from "@mantine/dates";
 import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
-import { difference, invertBy, map, sortBy } from "lodash-es";
+import {
+  difference,
+  invertBy,
+  isEmpty,
+  isEqual,
+  keyBy,
+  map,
+  mapValues,
+  sortBy,
+  uniq,
+} from "lodash-es";
 import { type DraggableProps, motion, Reorder } from "motion/react";
 import { type PropsWithChildren } from "react";
 
 import MutedIcon from "~icons/heroicons/bell-slash-20-solid";
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
+import VisibleIcon from "~icons/heroicons/eye-20-solid";
 import HiddenIcon from "~icons/heroicons/eye-slash-20-solid";
 import LinkIcon from "~icons/heroicons/link-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
@@ -40,6 +51,7 @@ import {
   type Encouragement,
   type Post,
   type PostType,
+  type PostVisibility,
   type Upload,
   type WorldFriend,
   type WorldPost,
@@ -81,6 +93,7 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   question: "liberty village food recs??",
   follow_up: "um, actually...",
 };
+const NONSECRET_VISIBILITIES: PostVisibility[] = ["public", "friends"];
 const IMAGE_INPUT_SIZE = 140;
 const SPOTIFY_TRACK_URL_PATTERN =
   /^https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)(\?.*)?$/;
@@ -134,6 +147,7 @@ const PostForm: FC<PostFormProps> = props => {
   const { data: audienceData } = useRouteSWR<{
     hiddenFromIds: string[];
     notifiedIds: string[];
+    visibleToIds: string[];
   }>(routes.worldPosts.audience, {
     params: post ? { id: post.id } : null,
     descriptor: "load post audience",
@@ -141,15 +155,9 @@ const PostForm: FC<PostFormProps> = props => {
 
   // == Form
   const initialValues = useMemo<PostFormValues>(() => {
-    const {
-      title,
-      body_html,
-      emoji,
-      images,
-      visibility,
-      pinned_until,
-      spotify_track_id,
-    } = post ?? {};
+    const { title, body_html, emoji, images, pinned_until, spotify_track_id } =
+      post ?? {};
+    const visibility = post?.visibility ?? "friends";
     return {
       title: title ?? "",
       body_html: body_html ?? "",
@@ -157,10 +165,10 @@ const PostForm: FC<PostFormProps> = props => {
       images_uploads: images
         ? images.map<Upload>(image => ({ signedId: image.signed_id }))
         : [],
-      visibility: visibility ?? "friends",
+      visibility,
       pinned_until: pinned_until ?? "",
       friend_notifiability: subscribedFriends
-        ? buildFriendNotifiability(subscribedFriends, audienceData)
+        ? buildFriendNotifiability(subscribedFriends, visibility, audienceData)
         : {},
       encouragement_id: encouragement?.id ?? post?.encouragement?.id ?? null,
       spotify_track_url: spotify_track_id
@@ -184,6 +192,7 @@ const PostForm: FC<PostFormProps> = props => {
     isTouched,
     errors,
     getInitialValues,
+    watch,
   } = useForm<
     { post: WorldPost },
     PostFormValues,
@@ -208,8 +217,10 @@ const PostForm: FC<PostFormProps> = props => {
             const { notifiedIds } = audienceData;
             const {
               hidden: hiddenFromIds = [],
+              muted: mutedIds = [],
               notify: friendIdsToNotify = [],
             } = invertBy(friend_notifiability);
+            const visibleToIds = uniq(mutedIds.concat(friendIdsToNotify));
             const submission = {
               post: {
                 ...values,
@@ -223,17 +234,18 @@ const PostForm: FC<PostFormProps> = props => {
                 spotify_track_id: spotify_track_url
                   ? parseSpotifyTrackId(spotify_track_url)
                   : null,
-                ...(visibility === "only_me"
+                friend_ids_to_notify: difference(
+                  friendIdsToNotify,
+                  notifiedIds,
+                ),
+                ...(visibility === "secret"
                   ? {
                       hidden_from_ids: [],
-                      friend_ids_to_notify: [],
+                      visible_to_ids: visibleToIds,
                     }
                   : {
                       hidden_from_ids: hiddenFromIds,
-                      friend_ids_to_notify: difference(
-                        friendIdsToNotify,
-                        notifiedIds,
-                      ),
+                      visible_to_ids: [],
                     }),
               },
             };
@@ -257,8 +269,10 @@ const PostForm: FC<PostFormProps> = props => {
             invariant(postType, "Missing post type");
             const {
               hidden: hiddenFromIds = [],
+              muted: mutedIds = [],
               notify: friendIdsToNotify = [],
             } = invertBy(friend_notifiability);
+            const visibleToIds = uniq(mutedIds.concat(friendIdsToNotify));
             return {
               post: {
                 ...values,
@@ -275,16 +289,16 @@ const PostForm: FC<PostFormProps> = props => {
                   ? parseSpotifyTrackId(spotify_track_url)
                   : null,
                 visibility,
-                ...(visibility === "only_me"
+                encouragement_id,
+                friend_ids_to_notify: friendIdsToNotify,
+                ...(visibility === "secret"
                   ? {
-                      encouragement_id: null,
                       hidden_from_ids: [],
-                      friend_ids_to_notify: [],
+                      visible_to_ids: visibleToIds,
                     }
                   : {
-                      encouragement_id,
                       hidden_from_ids: hiddenFromIds,
-                      friend_ids_to_notify: friendIdsToNotify,
+                      visible_to_ids: [],
                     }),
               },
             };
@@ -366,9 +380,23 @@ const PostForm: FC<PostFormProps> = props => {
       resetFormAndEditor();
     }
   }, [postType]); // eslint-disable-line react-hooks/exhaustive-deps
-  const { ref: formStackSizingRef, width: formStackWidth } =
-    useElementSize<HTMLDivElement>();
-  const formStackRef = useMergedRef(formStackSizingRef);
+
+  // == Update friend notifiability when visibility changes
+  watch("visibility", ({ value, previousValue }) => {
+    if (
+      NONSECRET_VISIBILITIES.includes(value) &&
+      NONSECRET_VISIBILITIES.includes(previousValue ?? "")
+    ) {
+      return;
+    }
+    if (!subscribedFriends) {
+      return;
+    }
+    setFieldValue(
+      "friend_notifiability",
+      buildFriendNotifiability(subscribedFriends, value, audienceData),
+    );
+  });
 
   // == Post visibilities
   const postVisibilities = ["invitation", "question"].includes(postType)
@@ -413,6 +441,9 @@ const PostForm: FC<PostFormProps> = props => {
     return [notifyingNone, mutingNone];
   }, [values, subscribedFriends]);
 
+  const { ref: formStackSizingRef, width: formStackWidth } =
+    useElementSize<HTMLDivElement>();
+  const formStackRef = useMergedRef(formStackSizingRef);
   const emojiInput = (
     <EmojiPopover
       position="right"
@@ -447,11 +478,7 @@ const PostForm: FC<PostFormProps> = props => {
     <form onSubmit={submit}>
       <Stack>
         {encouragement && (
-          <Transition
-            mounted={
-              !!values.encouragement_id && values.visibility !== "only_me"
-            }
-          >
+          <Transition mounted={!!values.encouragement_id}>
             {transitionStyle => (
               <Stack gap={4} style={transitionStyle}>
                 <Card withBorder className={classes.encouragementCard}>
@@ -736,12 +763,7 @@ const PostForm: FC<PostFormProps> = props => {
                 {POST_VISIBILITY_DESCRIPTORS[values.visibility]}
               </Text>
             </Stack>
-            <Transition
-              transition="pop"
-              mounted={
-                values.visibility !== "only_me" && !isEmpty(subscribedFriends)
-              }
-            >
+            <Transition transition="pop" mounted={!isEmpty(subscribedFriends)}>
               {transitionStyle => (
                 <Accordion
                   variant="filled"
@@ -754,61 +776,78 @@ const PostForm: FC<PostFormProps> = props => {
                     </Accordion.Control>
                     <Accordion.Panel>
                       <Stack gap={4}>
-                        <Group gap={8} justify="center">
-                          <Button
-                            size="compact-xs"
-                            leftSection={<MutedIcon />}
-                            disabled={currentlyNotifyingNone}
-                            className={classes.friendNotifiabilityPresetButton}
-                            onClick={() => {
-                              setFieldValue("friend_notifiability", prevValue =>
-                                mapValues(prevValue, prevNotifiability =>
-                                  prevNotifiability === "notify"
-                                    ? "muted"
-                                    : prevNotifiability,
-                                ),
-                              );
-                            }}
-                          >
-                            mute notifications
-                          </Button>
-                          <Button
-                            size="compact-xs"
-                            leftSection={<NotificationIcon />}
-                            disabled={currentlyMutingNone}
-                            className={classes.friendNotifiabilityPresetButton}
-                            onClick={() => {
-                              const friendsById = keyBy(
-                                subscribedFriends,
-                                "id",
-                              );
-                              setFieldValue("friend_notifiability", prevValue =>
-                                mapValues(
-                                  prevValue,
-                                  (prevNotifiability, friendId) => {
-                                    const friend = friendsById[friendId];
-                                    if (!friend) {
-                                      return prevNotifiability;
-                                    }
-                                    if (
-                                      prevNotifiability !== "muted" ||
-                                      friend.notifiable !== "push"
-                                    ) {
-                                      return prevNotifiability;
-                                    }
-                                    return "notify";
-                                  },
-                                ),
-                              );
-                            }}
-                          >
-                            notify all
-                          </Button>
-                        </Group>
+                        <Transition mounted={values.visibility !== "secret"}>
+                          {transitionStyle => (
+                            <Group
+                              gap={8}
+                              justify="center"
+                              style={transitionStyle}
+                            >
+                              <Button
+                                size="compact-xs"
+                                leftSection={<MutedIcon />}
+                                disabled={currentlyNotifyingNone}
+                                className={
+                                  classes.friendNotifiabilityPresetButton
+                                }
+                                onClick={() => {
+                                  setFieldValue(
+                                    "friend_notifiability",
+                                    prevValue =>
+                                      mapValues(prevValue, prevNotifiability =>
+                                        prevNotifiability === "notify"
+                                          ? "muted"
+                                          : prevNotifiability,
+                                      ),
+                                  );
+                                }}
+                              >
+                                mute notifications
+                              </Button>
+                              <Button
+                                size="compact-xs"
+                                leftSection={<NotificationIcon />}
+                                disabled={currentlyMutingNone}
+                                className={
+                                  classes.friendNotifiabilityPresetButton
+                                }
+                                onClick={() => {
+                                  const friendsById = keyBy(
+                                    subscribedFriends,
+                                    "id",
+                                  );
+                                  setFieldValue(
+                                    "friend_notifiability",
+                                    prevValue =>
+                                      mapValues(
+                                        prevValue,
+                                        (prevNotifiability, friendId) => {
+                                          const friend = friendsById[friendId];
+                                          if (!friend) {
+                                            return prevNotifiability;
+                                          }
+                                          if (
+                                            prevNotifiability !== "muted" ||
+                                            friend.notifiable !== "push"
+                                          ) {
+                                            return prevNotifiability;
+                                          }
+                                          return "notify";
+                                        },
+                                      ),
+                                  );
+                                }}
+                              >
+                                notify all
+                              </Button>
+                            </Group>
+                          )}
+                        </Transition>
                         {subscribedFriends && (
                           <FriendNotifiabilityTables
                             postId={post?.id}
                             friends={subscribedFriends}
+                            visibility={values.visibility}
                             getSegmentedControlInputProps={friend =>
                               getInputProps(`friend_notifiability.${friend.id}`)
                             }
@@ -887,25 +926,39 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
 
 const buildFriendNotifiability = (
   friends: WorldFriend[],
-  audienceData: { hiddenFromIds: string[]; notifiedIds: string[] } | undefined,
+  visibility: PostVisibility,
+  audienceData:
+    | {
+        hiddenFromIds: string[];
+        notifiedIds: string[];
+        visibleToIds: string[];
+      }
+    | undefined,
 ): Record<string, "hidden" | "muted" | "notify"> =>
   mapValues(keyBy(friends, "id"), friend =>
     audienceData
-      ? audienceData.hiddenFromIds.includes(friend.id)
+      ? audienceData.notifiedIds.includes(friend.id)
+        ? "notify"
+        : visibility === "secret"
+          ? audienceData.visibleToIds.includes(friend.id)
+            ? "muted"
+            : "hidden"
+          : audienceData.hiddenFromIds.includes(friend.id)
+            ? "hidden"
+            : "muted"
+      : visibility === "secret"
         ? "hidden"
-        : audienceData.notifiedIds.includes(friend.id)
-          ? "notify"
-          : "muted"
-      : friend.paused_since
-        ? "hidden"
-        : friend.notifiable === "push"
-          ? "notify"
-          : "muted",
+        : friend.paused_since
+          ? "hidden"
+          : friend.notifiable === "push"
+            ? "notify"
+            : "muted",
   );
 
 interface FriendNotifiabilityTableProps {
   postId: string | undefined;
   friends: WorldFriend[];
+  visibility: PostVisibility;
   getSegmentedControlInputProps: (friend: WorldFriend) => {
     value?: any;
     onChange: any;
@@ -915,12 +968,14 @@ interface FriendNotifiabilityTableProps {
 const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
   postId,
   friends,
+  visibility,
   getSegmentedControlInputProps,
 }) => {
   // == Post audience
   const { data: audienceData } = useRouteSWR<{
     hiddenFromIds: string[];
     notifiedIds: string[];
+    visibleToIds: string[];
   }>(routes.worldPosts.audience, {
     params: postId ? { id: postId } : null,
     descriptor: "load post audience",
@@ -986,8 +1041,12 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
                     {
                       value: "muted",
                       label: (
-                        <Tooltip label="don't notify" withArrow>
-                          <MutedIcon />
+                        <Tooltip label="show, don't notify" withArrow>
+                          {visibility === "secret" ? (
+                            <VisibleIcon />
+                          ) : (
+                            <MutedIcon />
+                          )}
                         </Tooltip>
                       ),
                     },

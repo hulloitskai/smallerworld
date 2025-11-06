@@ -2,23 +2,29 @@
 
 ## Overview
 
-Create a background job that sends notifications for active activity coupons, with timezone-aware scheduling to run at 8am in each user's local timezone.
+Create a background job that sends notifications for active activity coupons,
+with timezone-aware scheduling to run at 8am in each user's local timezone.
 
 ## Requirements Analysis
 
 ### 1. Job Functionality
 
 - **Daily execution**: Run once per day at midnight GMT
-- **Timezone-aware scheduling**: Schedule individual notifications for 8am in each user's timezone
-- **Notification logic**: Send notifications only if no notification was created for the activity coupon within the last 7 days
-- **Active coupon filtering**: Only process coupons that are still active (not expired, not redeemed)
+- **Timezone-aware scheduling**: Schedule individual notifications for 8am in
+  each user's timezone
+- **Notification logic**: Send notifications only if no notification was created
+  for the activity coupon within the last 7 days
+- **Active coupon filtering**: Only process coupons that are still active (not
+  expired, not redeemed)
 
 ### 2. Data Structure Analysis
 
-- **ActivityCoupon**: Has `expires_at`, `redeemed_at`, belongs to `activity` and `friend`
+- **ActivityCoupon**: Has `expires_at`, `redeemed_at`, belongs to `activity` and
+  `friend`
 - **Activity**: Belongs to `user` (who has timezone)
 - **User**: Has `time_zone_name` field for timezone information
-- **Notification**: Has `created_at`, belongs to `noticeable` (ActivityCoupon) and `recipient` (Friend)
+- **Notification**: Has `created_at`, belongs to `noticeable` (ActivityCoupon)
+  and `recipient` (Friend)
 - **Friend**: Receives notifications for activity coupons
 
 ### 3. Existing Patterns
@@ -68,8 +74,10 @@ Create a background job that sends notifications for active activity coupons, wi
 
 **New scope and helper**:
 
-- `without_recent_notification` - Finds activity coupons without notifications in last 7 days
-- `has_recent_notification?` - Helper method to check if notification was created within last 7 days
+- `without_recent_notification` - Finds activity coupons without notifications
+  in last 7 days
+- `has_recent_notification?` - Helper method to check if notification was
+  created within last 7 days
 
 **File**: `app/jobs/send_activity_coupon_reminder_job.rb`
 

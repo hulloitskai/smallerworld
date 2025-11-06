@@ -6,25 +6,20 @@ class UserPostsController < ApplicationController
   # GET /users/:user_id/posts
   def index
     user = load_user
-    posts = user.posts
+    scope = user.posts
       .with_attached_images
       .with_quoted_post_and_attached_images
       .with_encouragement
-    if (friend = current_friend)
-      posts = posts.not_hidden_from(friend)
-      posts = posts.visible_to_friends unless friend.chosen_family?
-    end
-    pagy, paginated_posts = pagy_keyset(
-      posts.order(created_at: :desc, id: :asc),
-      limit: 5,
-    )
-    paginated_posts = T.cast(paginated_posts, T::Array[Post])
-    unless current_friend
-      paginated_posts.map! do |post|
-        post.visibility == :public ? post : post.becomes(MaskedPost)
+    pagy, posts = if (friend = current_friend)
+      paginate_posts(scope.visible_to(friend))
+    else
+      paginate_posts(scope.visible_to_friends).tap do |_, posts|
+        posts.map! do |post|
+          post.visibility == :public ? post : post.becomes(MaskedPost)
+        end
       end
     end
-    post_ids = paginated_posts.map(&:id)
+    post_ids = posts.map(&:id)
     repliers_by_post_id = PostReplyReceipt
       .where(post_id: post_ids)
       .group(:post_id)
@@ -46,7 +41,7 @@ class UserPostsController < ApplicationController
             .where(post_id: post_ids, friend:)
             .pluck(:post_id)
             .to_set
-        paginated_posts.map do |post|
+        posts.map do |post|
           repliers = repliers_by_post_id.fetch(post.id, 0)
           seen = views_by_post_id.include?(post.id)
           replied = replied_post_ids.include?(post.id)
@@ -54,7 +49,7 @@ class UserPostsController < ApplicationController
           UserFriendPostSerializer.one(friend_post)
         end
       else
-        paginated_posts.map do |post|
+        posts.map do |post|
           repliers = repliers_by_post_id.fetch(post.id, 0)
           public_post = UserPublicPost.new(post:, repliers:)
           UserPublicPostSerializer.one(public_post)
@@ -71,19 +66,19 @@ class UserPostsController < ApplicationController
   # GET /users/:user_id/posts/pinned
   def pinned
     user = load_user
-    posts = user.posts.currently_pinned
+    scope = user.posts.currently_pinned
       .with_attached_images
       .with_quoted_post_and_attached_images
-    unless (friend = current_friend) && friend.chosen_family?
-      posts = posts.visible_to_friends
-    end
-    posts = posts.order(pinned_until: :asc, created_at: :asc).to_a
-    post_ids = posts.map(&:id)
-    unless current_friend
-      posts.map! do |post|
-        post.visibility == :public ? post : post.becomes(MaskedPost)
+    posts = if (friend = current_friend)
+      load_pinned_posts(scope.visible_to(friend))
+    else
+      load_pinned_posts(scope.visible_to_friends).tap do |posts|
+        posts.map! do |post|
+          post.visibility == :public ? post : post.becomes(MaskedPost)
+        end
       end
     end
+    post_ids = posts.map(&:id)
     repliers_by_post_id = PostReplyReceipt
       .where(post_id: post_ids)
       .group(:post_id)
@@ -136,5 +131,33 @@ class UserPostsController < ApplicationController
   end
   def load_post(scope: Post.all)
     scope.find(params.fetch(:id))
+  end
+
+  sig do
+    params(scope: T.any(
+      Post::PrivateRelation,
+      Post::PrivateCollectionProxy,
+      Post::PrivateAssociationRelation,
+    )).returns([
+      Pagy::Keyset,
+      T::Array[Post],
+    ])
+  end
+  def paginate_posts(scope)
+    pagy_keyset(
+      scope.order(created_at: :desc, id: :asc),
+      limit: 5,
+    )
+  end
+
+  sig do
+    params(scope: T.any(
+      Post::PrivateRelation,
+      Post::PrivateCollectionProxy,
+      Post::PrivateAssociationRelation,
+    )).returns(T::Array[Post])
+  end
+  def load_pinned_posts(scope)
+    scope.currently_pinned.order(pinned_until: :asc, created_at: :asc).to_a
   end
 end

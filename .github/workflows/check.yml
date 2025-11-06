@@ -21,9 +21,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
     steps:
       - name: Checkout
@@ -54,7 +52,8 @@ jobs:
         run: bin/setup
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-      - name: Scan for common Rails security vulnerabilities using static analysis
+      - name:
+          Scan for common Rails security vulnerabilities using static analysis
         run: bundle exec brakeman --no-pager
       - name: Check lints and formatting
         run: bin/check --all-files

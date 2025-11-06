@@ -12,5 +12,5 @@ export const POST_VISIBILITY_TO_LABEL: Record<PostVisibility, string> = {
   public: "public",
   friends: "friends",
   chosen_family: "chosen family",
-  only_me: "only me",
+  secret: "secret",
 };

@@ -12,6 +12,7 @@
 #  title            :string
 #  type             :string           not null
 #  visibility       :string           not null
+#  visible_to_ids   :uuid             default([]), not null, is an Array
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  author_id        :uuid             not null
@@ -30,6 +31,7 @@
 #  index_posts_on_quoted_post_id            (quoted_post_id)
 #  index_posts_on_type                      (type)
 #  index_posts_on_visibility                (visibility)
+#  index_posts_on_visible_to_ids            (visible_to_ids) USING gin
 #
 # Foreign Keys
 #

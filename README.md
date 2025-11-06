@@ -72,8 +72,8 @@ bin/setup
 - [x] better cta for user page welcome modal
 - [x] make it easy for new users to request to join peppercoat's world
   - demo vibes on landing page?
-- [x] features + feedback area of smaller world (click on the door to enter
-      the shared area)
+- [x] features + feedback area of smaller world (click on the door to enter the
+      shared area)
 - [x] closeable prompt to open your world on mobile with qr code when on desktop
 - [x] add android/ios chrome add-to-homescreen instructions
 - [x] service worker versioning

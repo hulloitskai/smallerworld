@@ -23,6 +23,7 @@ export interface PostFormSubmission {
     visibility: PostVisibility;
     pinned_until: string | null;
     hidden_from_ids: string[];
+    visible_to_ids: string[];
     friend_ids_to_notify: string[];
     encouragement_id: string | null;
     spotify_track_id: string | null;
@@ -50,6 +51,7 @@ const postFormValuesIsEmpty = ({
       "emoji",
       "images_uploads",
       "spotify_track_url",
+      "visible_to_ids",
     ),
   );
   return contentValues.every(value =>

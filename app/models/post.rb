@@ -15,6 +15,7 @@
 #  title            :string
 #  type             :string           not null
 #  visibility       :string           not null
+#  visible_to_ids   :uuid             default([]), not null, is an Array
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  author_id        :uuid             not null
@@ -33,6 +34,7 @@
 #  index_posts_on_quoted_post_id            (quoted_post_id)
 #  index_posts_on_type                      (type)
 #  index_posts_on_visibility                (visibility)
+#  index_posts_on_visible_to_ids            (visible_to_ids) USING gin
 #
 # Foreign Keys
 #
@@ -58,7 +60,7 @@ class Post < ApplicationRecord
   enumerize :type,
             in: %i[journal_entry poem invitation question follow_up],
             predicates: true
-  enumerize :visibility, in: %i[public friends chosen_family only_me]
+  enumerize :visibility, in: %i[public friends chosen_family secret]
 
   sig { returns(T.nilable(T::Array[String])) }
   attr_accessor :friend_ids_to_notify
@@ -167,24 +169,42 @@ class Post < ApplicationRecord
   validates :quoted_post, absence: true, unless: :follow_up?
   validates :spotify_track_id, presence: true, allow_nil: true
   validates :images_ids, length: { maximum: 4 }, absence: { if: :follow_up? }
+  validate :validate_hidden_from_ids
+  validate :validate_visible_to_ids
   validate :validate_no_nested_quoting, if: :quoted_post?
   validate :validate_spotify_track_id,
            if: %i[spotify_track_id? spotify_track_id_changed?]
 
   # == Callbacks
+  before_validation :remove_invalid_hidden_from_ids,
+                    if: %i[hidden_from_ids? hidden_from_ids_changed?]
+  before_validation :remove_invalid_visible_to_ids,
+                    if: %i[visible_to_ids? visible_to_ids_changed?]
   after_save :create_notifications!, if: :send_notifications?
   after_save :save_images_ids!, if: :images_changed?
 
   # == Scopes
-  scope :visible_to_public, -> { where(visibility: :public) }
+  scope :publicly_visible, -> { where(visibility: :public) }
   scope :visible_to_friends, -> { where(visibility: %i[public friends]) }
   scope :visible_to_chosen_family, -> {
     where(visibility: %i[public friends chosen_family])
   }
+  scope :secretly_visible, -> { where(visibility: :secret) }
   scope :currently_pinned, -> { where("pinned_until > ?", Time.current) }
   scope :not_hidden_from, ->(friend) {
-    friend = T.let(friend, T.any(Friend, String))
-    where("NOT (? = ANY(hidden_from_ids))", friend)
+    friend = T.let(friend, Friend)
+    allowed_visibilities = %i[public friends]
+    allowed_visibilities << :chosen_family if friend.chosen_family?
+    where(visibility: allowed_visibilities)
+      .where("NOT (? = ANY(hidden_from_ids))", friend)
+  }
+  scope :secretly_visible_to, ->(friend) {
+    friend = T.cast(friend, Friend)
+    where(visibility: :secret).where("? = ANY(visible_to_ids)", friend.id)
+  }
+  scope :visible_to, ->(friend) {
+    friend = T.cast(friend, Friend)
+    not_hidden_from(friend).or(secretly_visible_to(friend))
   }
   scope :user_created, -> {
     joins(:author)
@@ -365,11 +385,11 @@ class Post < ApplicationRecord
 
   sig { returns(Friend::PrivateAssociationRelation) }
   def friends_to_notify
-    friends = if (friend_ids = friend_ids_to_notify)
+    friends = if (notify_ids = friend_ids_to_notify)
       subscribed_type = quoted_post&.type || type
-      author_friends
-        .where(id: friend_ids)
-        .subscribed_to(subscribed_type)
+      scope = author_friends.where(id: notify_ids)
+      scope = scope.where(id: visible_to_ids) if visibility == :secret
+      scope.subscribed_to(subscribed_type)
     else
       author_friends.none
     end
@@ -379,7 +399,7 @@ class Post < ApplicationRecord
 
   sig { void }
   def create_notifications!
-    return if visibility == :only_me
+    return if visibility == :secret && friend_ids_to_notify.blank?
 
     delay = NOTIFICATION_DELAY if previously_new_record?
     friends = friends_to_notify
@@ -435,6 +455,11 @@ class Post < ApplicationRecord
   private
 
   # == Helpers
+  sig { params(friend_ids: T::Array[String]).returns(T::Array[String]) }
+  def select_author_friend_ids(friend_ids)
+    author_friends.where(id: friend_ids).pluck(:id)
+  end
+
   sig { params(text: String).returns(String) }
   def snip(text)
     "> " + text.split("\n").join("\n> ")
@@ -475,5 +500,38 @@ class Post < ApplicationRecord
         message: "invalid Spotify track",
       )
     end
+  end
+
+  sig { void }
+  def validate_hidden_from_ids
+    if visibility == :secret && hidden_from_ids.present?
+      errors.add(
+        :hidden_from_ids,
+        :invalid,
+        message: "cannot be set for secret posts",
+      )
+    end
+  end
+
+  sig { void }
+  def validate_visible_to_ids
+    if visibility != :secret && visible_to_ids.present?
+      errors.add(
+        :visible_to_ids,
+        :invalid,
+        message: "can only be set for secret posts",
+      )
+    end
+  end
+
+  # == Callback handlers
+  sig { void }
+  def remove_invalid_hidden_from_ids
+    self.hidden_from_ids = select_author_friend_ids(hidden_from_ids)
+  end
+
+  sig { void }
+  def remove_invalid_visible_to_ids
+    self.visible_to_ids = select_author_friend_ids(visible_to_ids)
   end
 end

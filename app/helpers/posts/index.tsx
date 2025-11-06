@@ -35,7 +35,7 @@ export const POST_TYPES: PostType[] = [
 ];
 
 export const POST_VISIBILITIES: PostVisibility[] = [
-  "only_me",
+  "secret",
   "friends",
   "public",
   // "chosen_family",
@@ -49,7 +49,7 @@ export const NONPRIVATE_POST_VISIBILITIES: PostVisibility[] = [
 export const POST_VISIBILITY_DESCRIPTORS: Record<PostVisibility, string> = {
   public: "anyone can see this post",
   friends: "only friends you invite can see this post",
-  only_me: "nobody else can see this post",
+  secret: "only visible to you and selected friends",
   chosen_family: "UNIMPLEMENTED",
 };
 
@@ -71,7 +71,7 @@ export const POST_VISIBILITY_TO_ICON: Record<
   public: PublicIcon,
   friends: FriendsIcon,
   chosen_family: ChosenFamilyIcon,
-  only_me: LockIcon,
+  secret: LockIcon,
 };
 
 export interface WorldPostsData {

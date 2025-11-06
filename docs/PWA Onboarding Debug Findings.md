@@ -2,7 +2,9 @@
 
 ## Problem Summary
 
-The PWA installation prompt isn't appearing when users complete registration and land on their newly created world page. The issue is caused by a PWA scope mismatch during the registration flow.
+The PWA installation prompt isn't appearing when users complete registration and
+land on their newly created world page. The issue is caused by a PWA scope
+mismatch during the registration flow.
 
 ## Root Cause Analysis
 
@@ -11,17 +13,20 @@ The PWA installation prompt isn't appearing when users complete registration and
 1. User installs an existing world on their phone as a PWA
 2. Inside that world, they tap "Create Your Own World" (found in `AppMenu.tsx`)
 3. This opens a registration page in a new in-app browser
-4. After registering, they should land on their newly created world page with an install prompt
+4. After registering, they should land on their newly created world page with an
+   install prompt
 
 ### The Issue
 
-The registration page redirects using `location.href = routes.world.show.path()` without carrying PWA scope information, causing the PWA scope detection to fail.
+The registration page redirects using `location.href = routes.world.show.path()`
+without carrying PWA scope information, causing the PWA scope detection to fail.
 
 ## Technical Details
 
 ### PWA Scope Detection Logic
 
-In `app/helpers/pwa.ts`, the `useOutOfPWAScope()` function checks if the current URL starts with the `pwa_scope` query parameter:
+In `app/helpers/pwa.ts`, the `useOutOfPWAScope()` function checks if the current
+URL starts with the `pwa_scope` query parameter:
 
 ```typescript
 export const useOutOfPWAScope = (): boolean => {
@@ -38,7 +43,8 @@ export const useOutOfPWAScope = (): boolean => {
 
 ### World Page Install Logic
 
-In `WorldPage.tsx`, the install modal only shows when specific conditions are met:
+In `WorldPage.tsx`, the install modal only shows when specific conditions are
+met:
 
 ```typescript
 useEffect(() => {
@@ -58,7 +64,8 @@ useEffect(() => {
 }, [isStandalone, browserDetection, install]);
 ```
 
-The key condition `(!isStandalone || outOfPWAScope)` fails when `outOfPWAScope` is `true`.
+The key condition `(!isStandalone || outOfPWAScope)` fails when `outOfPWAScope`
+is `true`.
 
 ### PWA Scope Management
 
@@ -69,7 +76,8 @@ The key condition `(!isStandalone || outOfPWAScope)` fails when `outOfPWAScope` 
 
 ## The Fix
 
-Updated `RegistrationPage.tsx` to include the PWA scope parameter in the redirect URL:
+Updated `RegistrationPage.tsx` to include the PWA scope parameter in the
+redirect URL:
 
 ```typescript
 onSuccess: () => {
@@ -103,8 +111,12 @@ onSuccess: () => {
 
 ## Alternative Solutions Considered
 
-1. **Modify `useOutOfPWAScope()`** - Could fall back to meta tag scope when no query param exists
-2. **Use `router.visit()` with scope** - Would require ensuring manifest loads properly
-3. **Client-side scope detection** - More complex but would handle edge cases better
+1. **Modify `useOutOfPWAScope()`** - Could fall back to meta tag scope when no
+   query param exists
+2. **Use `router.visit()` with scope** - Would require ensuring manifest loads
+   properly
+3. **Client-side scope detection** - More complex but would handle edge cases
+   better
 
-The chosen solution is minimal and follows the existing pattern used by `PWAScopedLink` components.
+The chosen solution is minimal and follows the existing pattern used by
+`PWAScopedLink` components.

@@ -12,31 +12,31 @@ class WorldPostsController < ApplicationController
   # GET /world/posts?type=...&date=...&q=...
   def index
     current_user = authenticate_user!
-    posts = authorized_scope(current_user.posts)
+    scope = authorized_scope(current_user.posts)
       .with_attached_images
       .with_quoted_post_and_attached_images
       .with_encouragement
     if (type = params[:type])
       raise "Invalid type: #{type}" unless type.is_a?(String)
 
-      posts = posts.where(type:)
+      scope = scope.where(type:)
     end
     if (value = params[:date])
       raise "Invalid date: #{value}" unless value.is_a?(String)
 
       time = value.to_time or raise "Invalid date: #{value}"
-      posts = posts.where(created_at: time.all_day)
+      scope = scope.where(created_at: time.all_day)
     end
     ordering = { created_at: :desc, id: :asc }
-    pagy, paginated_posts = if (query = params[:q])
-      posts = posts.search(query).order(ordering)
-      pagy(posts, limit: POSTS_PER_PAGE)
+    pagy, posts = if (query = params[:q])
+      scope = scope.search(query).order(ordering)
+      pagy(scope, limit: POSTS_PER_PAGE)
     else
-      posts = posts.order(ordering)
-      pagy_keyset(posts, limit: POSTS_PER_PAGE)
+      scope = scope.order(ordering)
+      pagy_keyset(scope, limit: POSTS_PER_PAGE)
     end
     render(json: {
-      posts: WorldPostSerializer.many(paginated_posts),
+      posts: WorldPostSerializer.many(posts),
       pagination: {
         next: pagy.next,
       },
@@ -85,6 +85,7 @@ class WorldPostsController < ApplicationController
     render(json: {
       "hiddenFromIds" => post.hidden_from_ids,
       "notifiedIds" => notified_ids,
+      "visibleToIds" => post.visible_to_ids,
     })
   end
 
@@ -104,6 +105,7 @@ class WorldPostsController < ApplicationController
       images: [],
       friend_ids_to_notify: [],
       hidden_from_ids: [],
+      visible_to_ids: [],
     ])
     post = current_user.posts.build(**post_params)
     if post.save
@@ -133,6 +135,7 @@ class WorldPostsController < ApplicationController
       images: [],
       friend_ids_to_notify: [],
       hidden_from_ids: [],
+      visible_to_ids: [],
     ])
     if post.update(post_params)
       render(json: {

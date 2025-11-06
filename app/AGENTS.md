@@ -2,17 +2,40 @@
 
 ## Scope
 
-- This guide covers work inside `app/components`, `app/pages`, `app/helpers`, `app/entrypoints`, `app/types`, and other shared frontend/rails directories under `app/`.
-- Add more granular `AGENTS.md` files inside subfolders (e.g., `app/components/AGENTS.md`) when a sub-area needs overrides.
+- Applies to work inside `app/components`, `app/pages`, `app/helpers`,
+  `app/entrypoints`, `app/types`, `app/models`, and other shared frontend/Rails
+  directories under `app/`.
+- Add more granular `AGENTS.md` files inside subfolders when a sub-area needs
+  overrides.
 
-## Frontend Execution Checklist
+## Do
 
-- Prefer inline logic over `useMemo`/`useCallback` unless a measured performance issue requires memoization.
-- Declare all functions—including exports—as arrow expressions (`const fn = () => {}`).
-- When array access is guaranteed, assert non-null with `arr[index]!` so TypeScript understands the invariant.
-- Leverage auto-imported globals; check `typings/generated/auto-import.d.ts` before adding manual imports.
+- Keep component logic straightforward; reach for `useMemo`/`useCallback` only
+  when profiling shows a benefit.
+- Declare every function (including exports) as an arrow expression, e.g.,
+  `const fn = () => {}`.
+- Assert guaranteed array access with `arr[index]!` so TypeScript understands
+  the invariant.
+- Check `typings/generated/auto-import.d.ts` before adding manual imports.
+- Build pages with `PageComponent<Props>` and extend `SharedPageProps` when
+  relevant.
+- Lean on existing helpers for routing, data fetching, PWA scope, and real-time
+  features instead of rolling custom utilities.
 
-## Component & Page Patterns
+## Don’t
+
+- Bypass shared helpers (routes, requests, links, etc.) when an existing wrapper
+  already handles the pattern.
+- Leave event handlers with non-descriptive parameters—avoid single-letter
+  variables like `e`.
+
+## Commands
+
+- After changing models or scopes under `app/models`, run\
+  `mise exec -- bin/tapioca dsl` to refresh Sorbet RBI files. Rerun outside the
+  sandbox if it fails due to missing DB access.
+
+## Component & Page Pattern
 
 ```tsx
 import { Button } from "@mantine/core";
@@ -33,45 +56,46 @@ ComponentName.layout = page => <SomeLayout>{page}</SomeLayout>;
 export default ComponentName;
 ```
 
-- Pages should use `PageComponent<PropsType>` and extend `SharedPageProps` when applicable.
-
 ## Data Fetching & Mutations
 
 ```tsx
 const { data, error, mutate } = useRouteSWR<ResponseType>(
   routes.endpoint.path(),
   {
-    descriptor: "descriptive name",
+    descriptor: "load user",
     keepPreviousData: true,
   },
 );
 
 const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
-  descriptor: "action description",
+  descriptor: "create post",
 });
 ```
 
-- Choose descriptive `descriptor` strings; they appear in logs and debugging tools.
+- Choose user-friendly `descriptor` strings—they appear in logs _and_ in error
+  toasts (e.g., `"failed to load user"`), so they should read well in both
+  contexts.
 
 ## Navigation & PWA
 
-- Use `const { url: pageUrl } = usePage();` inside pages; helpers may use `url` when context is singular.
-- Preserve `pwa_scope` and other query params when redirecting—`queryParamsFromPath(pageUrl)` helps when passing `{ query }`.
-- Prefer `PWAScopedLink` for internal navigation to keep scope consistent.
-- Android devices may not report as Chrome; treat `result.browser.is("Chrome") || result.os.is("Android")` as PWA-install capable.
+- Use `const { url: pageUrl } = usePage();` inside pages; helpers can reference
+  `url` when the context is singular.
+- Preserve `pwa_scope` and related params on redirects
+  (`queryParamsFromPath(pageUrl)` helps when passing `{ query }`).
+- Prefer `PWAScopedLink` for internal navigation so users stay inside the
+  correct scope.
+- Treat `result.browser.is("Chrome") || result.os.is("Android")` as PWA-install
+  capable—Android devices may not present as Chrome.
 
 ## Auth & Real-Time Hooks
 
-- `useCurrentUser()` and `useCurrentFriend()` expose the two authentication paths.
-- Gate admin-only UI with `useIsAdmin()`.
-- Real-time: `useSubscription` for ActionCable, `useWebPush` for notifications, and let SWR revalidate on window focus instead of manual refreshes.
-
-## Rails Models & Sorbet
-
-- When editing `app/models`, run `bin/tapioca dsl` after changing associations or scopes so Sorbet gains updated RBI files.
-- The command needs database access; rerun once the DB is available if it fails during sandboxed work.
+- `useCurrentUser()` and `useCurrentFriend()` expose the two authentication
+  paths.
+- For live updates, use `useSubscription` for ActionCable, `useWebPush` for
+  notifications, and rely on SWR’s focus revalidation instead of manual
+  refreshes.
 
 ## Naming Conventions
 
-- Prefer descriptive names for event parameters in callbacks. Use `event` instead of abbreviations like `e`.
-- Example: `onClick={(event) => { event.preventDefault(); /* ... */ }}`
+- Prefer descriptive callback parameters. Example:\
+  `onClick={(event) => { event.preventDefault(); /* … */ }}`

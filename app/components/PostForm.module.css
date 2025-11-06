@@ -77,13 +77,21 @@
 .friendNotifiabilityAccordion {
   :global(.mantine-Accordion-item) {
     &[data-active] {
-      background-color: light-dark(
+      --accordion-bg: light-dark(
         var(--mantine-color-gray-1),
         var(--mantine-color-dark-9)
       );
 
       @mixin dark-user-theme {
-        background-color: alpha(var(--mantine-color-black), 0.3);
+        --accordion-bg: darken(var(--mantine-color-body), 0.3);
+      }
+
+      background-color: var(--accordion-bg);
+
+      .friendNotifiabilityTable {
+        :global(.mantine-Table-th) {
+          background-color: var(--accordion-bg);
+        }
       }
     }
   }
@@ -121,7 +129,7 @@
   }
 
   :global(.mantine-Accordion-content) {
-    padding-top: calc(var(--mantine-spacing-xs) / 2);
+    padding-top: 0;
     padding-bottom: var(--mantine-spacing-xs);
   }
 }
@@ -130,7 +138,6 @@
   :global(.mantine-Table-th) {
     font-size: var(--mantine-font-size-xs);
     padding-block: 8px;
-    background-color: transparent;
   }
 }
 

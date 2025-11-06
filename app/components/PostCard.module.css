@@ -5,7 +5,7 @@
     border-color: var(--mantine-primary-color-outline);
   }
 
-  &[data-post-visibility="only_me"] {
+  &[data-post-visibility="secret"] {
     @mixin light {
       background-color: alpha(var(--mantine-color-gray-5), 0.2);
       --paper-border-color: var(--mantine-color-gray-4);

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_04_164837) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_06_145440) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -308,6 +308,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_04_164837) do
     t.uuid "images_ids", default: [], null: false, array: true
     t.uuid "encouragement_id"
     t.string "spotify_track_id"
+    t.uuid "visible_to_ids", default: [], null: false, array: true
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
     t.index ["author_id", "created_at"], name: "index_posts_on_author_id_and_created_at"
     t.index ["author_id"], name: "index_posts_on_author_id"
@@ -317,6 +318,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_04_164837) do
     t.index ["quoted_post_id"], name: "index_posts_on_quoted_post_id"
     t.index ["type"], name: "index_posts_on_type"
     t.index ["visibility"], name: "index_posts_on_visibility"
+    t.index ["visible_to_ids"], name: "index_posts_on_visible_to_ids", using: :gin
   end
 
   create_table "push_registrations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
