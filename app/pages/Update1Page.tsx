@@ -111,7 +111,7 @@ const Update1Page: PageComponent<Update1PageProps> = () => (
             style: {
               fontStyle: "italic",
               ...(active && {
-                backgroundColor: "var(--mantine-primary-color-filled)",
+                backgroundColor: "var(--mantine-color-primary-filled)",
               }),
             },
             children: data.value,

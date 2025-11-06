@@ -2,6 +2,7 @@ import { type InertiaLinkProps } from "@inertiajs/react";
 import { Image, Loader, type MenuItemProps, Text } from "@mantine/core";
 
 import MenuIcon from "~icons/heroicons/bars-3-20-solid";
+import ChatIcon from "~icons/heroicons/chat-bubble-left-right-20-solid";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
 import logoSrc from "~/assets/images/logo.png";
@@ -133,14 +134,14 @@ const ContactItem: FC<ContactItemProps> = ({ onClose, ...otherProps }) => {
 
   return (
     <Menu.Item
-      leftSection={loading ? <Loader size={12} /> : <SendIcon />}
+      leftSection={loading ? <Loader size={12} /> : <ChatIcon />}
       closeMenuOnClick={false}
       onClick={() => {
         contact();
       }}
       {...otherProps}
     >
-      contact the creator :)
+      contact the developer
     </Menu.Item>
   );
 };

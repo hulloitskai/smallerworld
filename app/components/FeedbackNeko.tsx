@@ -3,6 +3,7 @@ import { useModals } from "@mantine/modals";
 
 import ChatIcon from "~icons/heroicons/chat-bubble-left-right-20-solid";
 import ReportIcon from "~icons/heroicons/hand-raised-20-solid";
+import HeartIcon from "~icons/heroicons/heart-20-solid";
 import FeedbackIcon from "~icons/heroicons/megaphone-20-solid";
 
 import { useContact } from "~/helpers/contact";
@@ -15,15 +16,18 @@ import classes from "./FeedbackNeko.module.css";
 
 export interface FeedbackNekoProps extends Omit<SleepyNekoProps, "onClick"> {}
 
-const LINES = [
-  "it's me, neko, the feedback cat...",
-  "tap on me to give feedback :)",
+const LINES = ["give me your feedback!!", "...or your money 💸😻"];
+const SUPPORTER_LINES = [
+  "give me your feedback!!",
+  "...and thanks for supporting us ❤️",
 ];
 
 const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
   const { modals } = useModals();
   const [index, setIndex] = useState(-1);
-  const line = LINES[index];
+  const currentUser = useCurrentUser();
+  const lines = currentUser?.membership_tier ? SUPPORTER_LINES : LINES;
+  const line = lines[index];
   useEffect(() => {
     const text = LINES[index];
     if (index === -1) {
@@ -172,6 +176,18 @@ const FeedbackModalBody: FC<FeedbackModalBodyProps> = ({
         }}
       >
         contact the developer
+      </Button>
+      <Divider label="love smaller world?" />
+      <Button
+        component="a"
+        href={routes.support.redirect.path()}
+        size="xl"
+        leftSection={<HeartIcon />}
+        variant="gradient"
+        gradient={{ from: "var(--gradient-from)", to: "var(--gradient-to)" }}
+        className={cn(classes.button, classes.supportButton)}
+      >
+        support smaller world
       </Button>
     </Stack>
   );

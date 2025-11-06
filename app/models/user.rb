@@ -175,7 +175,13 @@ class User < ApplicationRecord
 
   sig { returns(T::Set[Symbol]) }
   def feature_flags
-    self.class.feature_flags_for(handle)
+    overrides&.feature_flags || Set.new
+  end
+
+  # One of: :supporter, :believer
+  sig { returns(T.nilable(Symbol)) }
+  def membership_tier
+    overrides&.membership_tier
   end
 
   sig { returns(T::Set[Symbol]) }
@@ -303,30 +309,40 @@ class User < ApplicationRecord
     find_by(phone_number:)
   end
 
-  sig { params(handle: String).returns(T::Set[Symbol]) }
-  def self.feature_flags_for(handle)
-    @feature_flags ||= Hash.new do |hash, key|
-      hash[key] = if (flags = Rails.application.credentials
-        .dig(:feature_flags, key))
-        flags.map(&:to_sym).to_set
-      else
-        Set.new
+  sig { params(handle: String).returns(T.nilable(UserOverrides)) }
+  def self.overrides_for(handle)
+    @overrides_by_handle = T.let(
+      @overrides_by_handle,
+      T.nilable(T::Hash[String, UserOverrides]),
+    )
+    @overrides_by_handle ||= scoped do
+      overrides = Rails.application.credentials.user_overrides.to_h
+      overrides.transform_values! do |settings|
+        flags_value = settings.feature_flags || []
+        UserOverrides.new(
+          feature_flags: flags_value.map(&:to_sym).to_set,
+          membership_tier: settings.membership_tier&.to_sym,
+        )
       end
+      overrides.with_indifferent_access
     end
-    @feature_flags[handle]
+    @overrides_by_handle[handle]
   end
 
+  # WARNING: NOT IMPLEMENTED!
   sig { returns(T::Set[String]) }
   def self.handles_subscribed_to_public_posts
-    @handles_subscribed_to_public_posts ||= scoped do
-      all_flags = Rails.application.credentials.feature_flags or next Set.new
-      handles = all_flags.filter_map do |handle, flags|
-        if flags.include?("public_post_notifications")
-          handle
-        end
-      end
-      handles.to_set
-    end
+    Set.new
+    # @handles_subscribed_to_public_posts ||= scoped do
+    #   all_flags = Rails.application.credentials.feature_flags or next Set.new
+    #   handles = all_flags.filter_map do |handle, flags|
+    #     if flags.include?("public_post_notifications")
+    #       handle
+    #     end
+    #     @overrides_by_handle
+    #   end
+    #   handles.to_set
+    # end
   end
 
   private
@@ -338,6 +354,11 @@ class User < ApplicationRecord
       .where(type: %i[poem journal_entry])
       .reverse_chronological
       .pick(:created_at)
+  end
+
+  sig { returns(T.nilable(UserOverrides)) }
+  def overrides
+    self.class.overrides_for(handle)
   end
 
   # == Validators

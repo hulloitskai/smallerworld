@@ -170,6 +170,9 @@ gem "words_counted", "~> 1.0"
 # Send SMS with Twilio
 gem "twilio-ruby", "~> 7.5"
 
+# Manage money with Money Rails
+gem "money-rails", "~> 1.15"
+
 # Fetch Spotify metadata
 gem "rspotify", "~> 2.12"
 

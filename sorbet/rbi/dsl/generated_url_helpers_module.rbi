@@ -271,6 +271,9 @@ module GeneratedUrlHelpersModule
   def stats_world_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def support_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def test_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

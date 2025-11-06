@@ -373,11 +373,12 @@ Rails.application.routes.draw do
       "https://smallerworld.sentry.io/issues/",
       status: 302,
     )
-    get "/feedback" =>  "feedback#redirect", export: true
+    get "/feedback" => "feedback#redirect", export: true
     get "/analytics" => redirect(
       "https://app.amplitude.com/analytics/smallerworld/home",
       status: 302,
     )
+    get "/support" => "support#redirect", export: true
     get "/shortlinks" => redirect(
       "https://app.dub.co/smallerworld/links",
       status: 302,

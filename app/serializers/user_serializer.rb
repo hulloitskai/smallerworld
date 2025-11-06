@@ -3,5 +3,7 @@
 
 class UserSerializer < UserProfileSerializer
   # == Attributes
-  attributes :created_at, :phone_number
+  attributes :created_at,
+             :phone_number,
+             membership_tier: { type: '"supporter" | "believer"' }
 end

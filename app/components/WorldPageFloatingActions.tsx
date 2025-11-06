@@ -134,7 +134,6 @@ const WorldPageFloatingActions: FC<WorldPageFloatingActionsProps> = ({
                   <Menu.Target>
                     <Indicator
                       className={classes.newPostDraftIndicator}
-                      color="white"
                       label={<DraftIcon />}
                       size={16}
                       offset={4}

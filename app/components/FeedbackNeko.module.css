@@ -17,3 +17,17 @@
     display: none;
   }
 }
+
+.supportButton {
+  --gradient-from: #f48c8c;
+  --gradient-to: #c6f871;
+
+  @mixin light {
+    color: var(--mantine-color-black);
+  }
+
+  @mixin dark {
+    @mixin clamp-lightness --gradient-from, #f48c8c, 20, 40;
+    @mixin clamp-lightness --gradient-to, #c6f871, 20, 30;
+  }
+}

@@ -271,6 +271,9 @@ module GeneratedPathHelpersModule
   def stats_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def support_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def test_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

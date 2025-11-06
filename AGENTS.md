@@ -4,6 +4,7 @@
 
 - Format and lint with `bin/fix` before committing; it installs tooling with the project's versions.
 - Reset JS/TS tooling drift by running `npm ci` and matching the Node version defined in `mise.toml` (run `mise install`).
+- Run Rails and Bundler commands via `mise exec -- …` so they pick up the project's Ruby/Bundler versions (for example, `mise exec -- bin/rails db:migrate`).
 - Execute the full test suite with `bin/test`; do not call Rails test runners directly.
 - If the pre-push hook fails because of a failed dependency audit, push with `git push --no-verify`.
 
