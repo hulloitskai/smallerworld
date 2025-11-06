@@ -35,6 +35,16 @@
       border-style: dashed;
     }
   }
+
+  &[data-post-visibility="public"] {
+    box-shadow: 0px 0px var(--mantine-spacing-md) 0px
+      alpha(var(--mantine-color-primary-filled), 0.4);
+
+    @mixin dark-user-theme {
+      box-shadow: 0px 0px var(--mantine-spacing-md) 0px
+        alpha(var(--mantine-color-primary-outline), 0.7);
+    }
+  }
 }
 
 .emoji {
