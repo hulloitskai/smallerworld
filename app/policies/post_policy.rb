@@ -61,7 +61,7 @@ class PostPolicy < ApplicationPolicy
     return false unless friend.user! == post.author!
     return false if post.hidden_from_ids.include?(friend.id)
 
-    case post.visibility
+    case post.visibility.to_sym
     when :public, :friends
       true
     when :chosen_family

@@ -71,8 +71,23 @@ class WorldPostsController < ApplicationController
   def viewers
     post = load_post
     authorize!(post)
+    views = PostView
+      .where(
+        id: PostView
+          .where(post:)
+          .select("DISTINCT ON (friend_id) id")
+          .order("friend_id, created_at DESC"),
+      )
+      .reverse_chronological
+      .includes(:friend)
+    viewers = views.map do |view|
+      PostViewer.new(
+        friend: view.friend!,
+        last_viewed_at: view.created_at,
+      )
+    end
     render(json: {
-      viewers: FriendProfileSerializer.many(post.viewers),
+      viewers: PostViewerSerializer.many(viewers),
     })
   end
 

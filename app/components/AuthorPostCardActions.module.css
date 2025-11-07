@@ -1,13 +1,3 @@
-.dullButton {
-  @mixin dark {
-    color: var(--mantine-color-dark-2);
-
-    @mixin hover {
-      background-color: var(--mantine-color-dark-6);
-    }
-  }
-}
-
 .reactionBadge {
   flex-shrink: 0;
   padding-inline: 3px;
@@ -43,4 +33,9 @@
       var(--mantine-color-white)
     );
   }
+}
+
+.postViewersTableEmojiCell {
+  width: 1px;
+  padding-right: 0;
 }

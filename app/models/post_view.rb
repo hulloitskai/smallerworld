@@ -28,6 +28,11 @@ class PostView < ApplicationRecord
   belongs_to :post, inverse_of: :views
   belongs_to :friend
 
+  sig { returns(Friend) }
+  def friend!
+    friend or raise ActiveRecord::RecordNotFound, "Missing associated friend"
+  end
+
   # == Validations
   validates :friend, uniqueness: { scope: :post }
 end

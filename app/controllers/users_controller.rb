@@ -52,6 +52,12 @@ class UsersController < ApplicationController
 
     time_zone = ActiveSupport::TimeZone.new(start_date.utc_offset)
     timeline_posts = scoped do
+      scope = user.posts.where(created_at: start_date..)
+      scope = if (friend = current_friend)
+        scope.visible_to(friend)
+      else
+        scope.visible_to_friends
+      end
       offset = time_zone.formatted_offset
       select_sql = Post.sanitize_sql_array([
         "DISTINCT ON (DATE(posts.created_at AT TIME ZONE INTERVAL :offset)) " \
@@ -64,12 +70,6 @@ class UsersController < ApplicationController
           "posts.created_at DESC",
         offset:,
       ])
-      scope = user.posts.where(created_at: start_date..)
-      scope = if (friend = current_friend)
-        scope.visible_to(friend)
-      else
-        scope.visible_to_friends
-      end
       scope
         .select(select_sql)
         .order(Arel.sql(order_sql))

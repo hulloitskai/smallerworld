@@ -1,18 +1,24 @@
-import { HoverCard, Loader, Text } from "@mantine/core";
+import { CopyButton, HoverCard, Loader, Table, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
 
 import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
+import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
+import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { mutateWorldPosts, mutateWorldTimeline } from "~/helpers/worldPage";
-import { type PostReaction, type PostShare, type WorldPost } from "~/types";
+import {
+  type PostReaction,
+  type PostShare,
+  type PostViewer,
+  type WorldPost,
+} from "~/types";
 
-import { type FriendProfile } from "../types/generated";
 import DrawerModal from "./DrawerModal";
 import PostForm from "./PostForm";
 
@@ -31,6 +37,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   onFollowUpDrawerModalOpened,
 }) => {
   const { ref, inViewport } = useInViewport();
+  const currentUser = useCurrentUser();
 
   // == Stats clicked count
   const [statsClickedCount, setStatsClickedCount] = useState(0);
@@ -242,6 +249,22 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             >
               follow-up
             </Menu.Item>
+            {currentUser?.supported_features.includes("debug") && (
+              <>
+                <Menu.Divider />
+                <CopyButton value={post.id}>
+                  {({ copied, copy }) => (
+                    <Menu.Item
+                      leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
+                      closeMenuOnClick={false}
+                      onClick={copy}
+                    >
+                      {copied ? "post id copied!" : "copy post id"}
+                    </Menu.Item>
+                  )}
+                </CopyButton>
+              </>
+            )}
           </Menu.Dropdown>
         </Menu>
       </Group>
@@ -327,7 +350,7 @@ interface PostViewersModalBodyProps {
 }
 
 const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ post }) => {
-  const { data } = useRouteSWR<{ viewers: FriendProfile[] }>(
+  const { data } = useRouteSWR<{ viewers: PostViewer[] }>(
     routes.worldPosts.viewers,
     {
       params: {
@@ -343,16 +366,30 @@ const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ post }) => {
         isEmpty(viewers) ? (
           <EmptyCard itemLabel="viewers" />
         ) : (
-          <List size="sm">
-            {viewers.map(viewer => (
-              <List.Item
-                key={viewer.id}
-                icon={viewer.emoji ?? <Space w={14} />}
-              >
-                {viewer.name}
-              </List.Item>
-            ))}
-          </List>
+          <Table>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th />
+                <Table.Th>name</Table.Th>
+                <Table.Th>last viewed at</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {viewers.map(viewer => (
+                <Table.Tr key={viewer.id}>
+                  <Table.Td className={classes.postViewersTableEmojiCell}>
+                    {viewer.emoji}
+                  </Table.Td>
+                  <Table.Td>{viewer.name}</Table.Td>
+                  <Table.Td>
+                    <Time format={DateTime.DATETIME_MED} inherit tt="lowercase">
+                      {viewer.last_viewed_at}
+                    </Time>
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
         )
       ) : (
         <Stack gap={4} align="start">
