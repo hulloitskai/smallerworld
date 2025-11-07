@@ -242,7 +242,7 @@ const PostForm: FC<PostFormProps> = props => {
                 title: title || null,
                 images: map(images_uploads, "signedId"),
                 pinned_until: pinned_until
-                  ? formatDateString(pinned_until)
+                  ? formatPinnedUntil(pinned_until)
                   : null,
                 visibility,
                 spotify_track_id: spotify_track_url
@@ -297,7 +297,7 @@ const PostForm: FC<PostFormProps> = props => {
                 images: map(images_uploads, "signedId"),
                 quoted_post_id: quotedPost?.id ?? null,
                 pinned_until: pinned_until
-                  ? formatDateString(pinned_until)
+                  ? formatPinnedUntil(pinned_until)
                   : null,
                 spotify_track_id: spotify_track_url
                   ? parseSpotifyTrackId(spotify_track_url)
@@ -882,8 +882,9 @@ const PostForm: FC<PostFormProps> = props => {
 
 export default PostForm;
 
-const formatDateString = (dateString: string): string => {
+const formatPinnedUntil = (dateString: string): string => {
   const date = DateTime.fromISO(dateString, { zone: "local" });
+  date.set({ hour: 23, minute: 59, second: 59, millisecond: 0 });
   return date.toISO();
 };
 
