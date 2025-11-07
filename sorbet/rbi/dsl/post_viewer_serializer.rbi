@@ -6,6 +6,6 @@
 
 
 class PostViewerSerializer
-  sig { returns(T.untyped) }
+  sig { returns(PostViewer) }
   def post_viewer; end
 end
