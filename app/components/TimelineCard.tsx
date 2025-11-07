@@ -28,12 +28,11 @@ const TimelineCard: FC<TimelineCardProps> = ({
 }) => {
   const activities = timeline ?? {};
   const viewportRef = useRef<HTMLDivElement>(null);
-  const timeZone = useTimeZone();
   const streakDates = useMemo(() => {
-    if (!postStreak || postStreak.length === 0 || !timeZone) {
-      return undefined;
+    if (!postStreak || postStreak.length === 0) {
+      return;
     }
-    const today = DateTime.now().setZone(timeZone).startOf("day");
+    const today = DateTime.local().startOf("day");
     const streakEnd = postStreak.posted_today
       ? today
       : today.minus({ days: 1 });
@@ -41,7 +40,7 @@ const TimelineCard: FC<TimelineCardProps> = ({
       streakEnd.minus({ days: index }).toISODate(),
     );
     return new Set(dates);
-  }, [postStreak, timeZone]);
+  }, [postStreak]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
