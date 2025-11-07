@@ -1,6 +1,5 @@
 import { Badge, Card, ScrollArea } from "@mantine/core";
 import { MiniCalendar } from "@mantine/dates";
-import { DateTime } from "luxon";
 
 import { useTimeZone } from "~/helpers/time";
 import { TIMELINE_WEEKS_TO_SHOW } from "~/helpers/timeline";
