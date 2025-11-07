@@ -18,7 +18,7 @@ const UserTimelineCard: FC<UserTimelineCardProps> = ({
   const startDate = useTimelineStartDate();
   const timeZone = useTimeZone();
   const { data } = useRouteSWR<{
-    timeline: Record<string, { emoji: string | null; streak: boolean }>;
+    timeline: Record<string, { emoji: string | null }>;
   }>(routes.users.timeline, {
     descriptor: "load timeline",
     params:

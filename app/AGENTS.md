@@ -16,7 +16,8 @@
   `const fn = () => {}`.
 - Assert guaranteed array access with `arr[index]!` so TypeScript understands
   the invariant.
-- Check `typings/generated/auto-import.d.ts` before adding manual imports.
+- Check the auto-import definitions in `typings/generated/auto-imports.d.ts`
+  before adding manual imports.
 - Build pages with `PageComponent<Props>` and extend `SharedPageProps` when
   relevant.
 - Lean on existing helpers for routing, data fetching, PWA scope, and real-time

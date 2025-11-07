@@ -69,7 +69,7 @@ class UsersController < ApplicationController
       end
     end
 
-    timeline = build_timeline(timeline_posts, time_zone:)
+    timeline = build_timeline(timeline_posts)
     render(json: { timeline: })
   end
 
