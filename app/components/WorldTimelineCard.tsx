@@ -1,3 +1,4 @@
+import { useTimeZone } from "~/helpers/time";
 import { useTimelineStartDate } from "~/helpers/timeline";
 import { openNewPostModal } from "~/helpers/worldPage";
 import { type PostStreak } from "~/types";
@@ -15,18 +16,21 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   ...otherProps
 }) => {
   const startDate = useTimelineStartDate();
+  const timeZone = useTimeZone();
   const { data } = useRouteSWR<{
     timeline: Record<string, { emoji: string | null; streak: boolean }>;
     postStreak: PostStreak | null;
   }>(routes.world.timeline, {
     descriptor: "load timeline",
-    params: startDate
-      ? {
-          query: {
-            start_date: DateTime.fromISO(startDate).toLocal().toISO(),
-          },
-        }
-      : null,
+    params:
+      startDate && timeZone
+        ? {
+            query: {
+              start_date: startDate,
+              time_zone: timeZone,
+            },
+          }
+        : null,
     keepPreviousData: true,
   });
   const { timeline, postStreak } = data ?? {};

@@ -1,3 +1,4 @@
+import { useTimeZone } from "~/helpers/time";
 import { useTimelineStartDate } from "~/helpers/timeline";
 
 import TimelineCard from "./TimelineCard";
@@ -15,18 +16,21 @@ const UserTimelineCard: FC<UserTimelineCardProps> = ({
   ...otherProps
 }) => {
   const startDate = useTimelineStartDate();
+  const timeZone = useTimeZone();
   const { data } = useRouteSWR<{
     timeline: Record<string, { emoji: string | null; streak: boolean }>;
   }>(routes.users.timeline, {
     descriptor: "load timeline",
-    params: startDate
-      ? {
-          id: userId,
-          query: {
-            start_date: DateTime.fromISO(startDate).toLocal().toISO(),
-          },
-        }
-      : null,
+    params:
+      startDate && timeZone
+        ? {
+            id: userId,
+            query: {
+              start_date: startDate,
+              time_zone: timeZone,
+            },
+          }
+        : null,
   });
   const { timeline } = data ?? {};
   return (

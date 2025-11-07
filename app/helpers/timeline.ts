@@ -6,7 +6,7 @@ export const useTimelineStartDate = (): string | undefined => {
   const [startDate, setStartDate] = useState<string>();
   useEffect(() => {
     setStartDate(
-      DateTime.now().minus({ weeks: TIMELINE_WEEKS_TO_SHOW }).toISODate(),
+      DateTime.local().minus({ weeks: TIMELINE_WEEKS_TO_SHOW }).toISODate(),
     );
   }, []);
   return startDate;

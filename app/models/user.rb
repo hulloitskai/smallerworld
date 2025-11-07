@@ -264,7 +264,7 @@ class User < ApplicationRecord
   def post_streak(time_zone: self.time_zone)
     sql = <<~SQL.squish
       WITH daily_posts AS (
-        SELECT DISTINCT DATE(posts.created_at AT TIME ZONE INTERVAL :offset) AS user_date
+        SELECT DISTINCT DATE(posts.created_at AT TIME ZONE :tz) AS user_date
         FROM posts
         WHERE posts.author_id = :user_id
       ),
@@ -288,10 +288,10 @@ class User < ApplicationRecord
       ORDER BY end_date DESC
       LIMIT 1
     SQL
-    interpolated_sql = Post.sanitize_sql_array([sql, {
-      user_id: id,
-      offset: time_zone.formatted_offset,
-    },])
+    interpolated_sql = Post.sanitize_sql_array([
+      sql,
+      { user_id: id, tz: time_zone.name },
+    ])
 
     result = Post.connection.exec_query(interpolated_sql)
     return if result.rows.empty?

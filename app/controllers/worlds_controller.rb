@@ -2,9 +2,9 @@
 # frozen_string_literal: true
 
 class WorldsController < ApplicationController
-  include RendersUserFavicons
   include GeneratesManifest
-  include BuildsTimeline
+  include RendersUserFavicons
+  include RendersTimeline
 
   # == Filters
   before_action :authenticate_user!
@@ -90,38 +90,27 @@ class WorldsController < ApplicationController
     )
   end
 
-  # GET /world/timeline?start_date=...
+  # GET /world/timeline?start_date=...&time_zone=...
   def timeline
     current_user = authenticate_user!
-    start_date = scoped do
-      value = params[:start_date] or raise "Missing start date"
-      raise "Invalid start date: #{value}" unless value.is_a?(String)
-
-      value.to_time or raise "Invalid start date: #{value}"
-    end
-    if start_date < 1.year.ago
-      raise "Start date must be within the last year"
-    end
-
-    time_zone = ActiveSupport::TimeZone.new(start_date.utc_offset)
+    time_zone = find_timeline_time_zone!
+    start_date = find_timeline_start_date!(time_zone:)
     timeline_posts = scoped do
-      offset = time_zone.formatted_offset
       select_sql = Post.sanitize_sql_array([
-        "DISTINCT ON (DATE(created_at AT TIME ZONE INTERVAL :offset)) " \
-          "DATE(created_at AT TIME ZONE INTERVAL :offset) AS date, emoji",
-        offset:,
+        "DISTINCT ON (DATE(created_at AT TIME ZONE :tz)) " \
+          "DATE(created_at AT TIME ZONE :tz) AS date, emoji",
+        tz: time_zone.name,
       ])
       order_sql = Post.sanitize_sql_array([
-        "DATE(created_at AT TIME ZONE INTERVAL :offset), created_at DESC",
-        offset:,
+        "DATE(created_at AT TIME ZONE :tz), created_at DESC",
+        tz: time_zone.name,
       ])
       current_user.posts
-        .where(created_at: start_date..)
+        .where(created_at: start_date.in_time_zone(time_zone)..)
         .select(select_sql)
         .order(Arel.sql(order_sql))
         .to_a
     end
-
     timeline = build_timeline(timeline_posts, time_zone:)
     post_streak = current_user.post_streak(time_zone:)
     render(json: {

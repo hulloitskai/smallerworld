@@ -2,9 +2,9 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  include RendersUserFavicons
   include GeneratesManifest
-  include BuildsTimeline
+  include RendersUserFavicons
+  include RendersTimeline
 
   # == Filters
   before_action :authenticate_friend!, only: :manifest
@@ -37,43 +37,36 @@ class UsersController < ApplicationController
     render(inertia: "UserPage", user_theme: user.theme, props:)
   end
 
-  # GET /users/:id/timeline?friend_token=...
+  # GET /users/:id/timeline?friend_token=...&start_date=...&time_zone=...
   def timeline
     user = load_user
-    start_date = scoped do
-      value = params[:start_date] or raise "Missing start date"
-      raise "Invalid start date: #{value}" unless value.is_a?(String)
-
-      value.to_time or raise "Invalid start date: #{value}"
-    end
-    if start_date < 1.year.ago
-      raise "Start date must be within the last year"
-    end
-
-    time_zone = ActiveSupport::TimeZone.new(start_date.utc_offset)
+    time_zone = find_timeline_time_zone!
+    start_date = find_timeline_start_date!(time_zone:)
     timeline_posts = scoped do
-      scope = user.posts.where(created_at: start_date..)
+      scope = user.posts.where(created_at: start_date.in_time_zone(time_zone)..)
       scope = if (friend = current_friend)
         scope.visible_to(friend)
       else
         scope.visible_to_friends
       end
-      offset = time_zone.formatted_offset
-      select_sql = Post.sanitize_sql_array([
-        "DISTINCT ON (DATE(posts.created_at AT TIME ZONE INTERVAL :offset)) " \
-          "DATE(posts.created_at AT TIME ZONE INTERVAL :offset) AS date, " \
-          "posts.emoji, posts.visibility",
-        offset:,
-      ])
-      order_sql = Post.sanitize_sql_array([
-        "DATE(posts.created_at AT TIME ZONE INTERVAL :offset), " \
-          "posts.created_at DESC",
-        offset:,
-      ])
-      scope
-        .select(select_sql)
-        .order(Arel.sql(order_sql))
-        .to_a
+      scoped do
+        tz = time_zone.name
+        select_sql = Post.sanitize_sql_array([
+          "DISTINCT ON (DATE(posts.created_at AT TIME ZONE :tz)) " \
+            "DATE(posts.created_at AT TIME ZONE :tz) AS date, " \
+            "posts.emoji, posts.visibility",
+          tz:,
+        ])
+        order_sql = Post.sanitize_sql_array([
+          "DATE(posts.created_at AT TIME ZONE :tz), " \
+            "posts.created_at DESC",
+          tz:,
+        ])
+        scope
+          .select(select_sql)
+          .order(Arel.sql(order_sql))
+          .to_a
+      end
     end
 
     timeline = build_timeline(timeline_posts, time_zone:)
