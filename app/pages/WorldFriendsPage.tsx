@@ -194,7 +194,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
                   {children}
                   <LoadingOverlay
                     visible={!miniSearchReady}
-                    overlayProps={{ radius: "xl", blur: 8 }}
+                    overlayProps={{ radius: "xl" }}
                   />
                 </>
               )}

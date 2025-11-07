@@ -97,7 +97,6 @@ const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
   question: "liberty village food recs??",
   follow_up: "um, actually...",
 };
-const NONSECRET_VISIBILITIES: PostVisibility[] = ["public", "friends"];
 const IMAGE_INPUT_SIZE = 140;
 const SPOTIFY_TRACK_URL_PATTERN =
   /^https:\/\/open\.spotify\.com\/track\/([a-zA-Z0-9]+)(\?.*)?$/;
@@ -389,8 +388,8 @@ const PostForm: FC<PostFormProps> = props => {
   // == Update friend notifiability when visibility changes
   watch("visibility", ({ value, previousValue }) => {
     if (
-      NONSECRET_VISIBILITIES.includes(value) &&
-      NONSECRET_VISIBILITIES.includes(previousValue ?? "")
+      NONPRIVATE_POST_VISIBILITIES.includes(value) &&
+      NONPRIVATE_POST_VISIBILITIES.includes(previousValue ?? "")
     ) {
       return;
     }
@@ -402,11 +401,6 @@ const PostForm: FC<PostFormProps> = props => {
       buildFriendNotifiability(subscribedFriends, value, audienceData),
     );
   });
-
-  // == Post visibilities
-  const postVisibilities = ["invitation", "question"].includes(postType)
-    ? NONPRIVATE_POST_VISIBILITIES
-    : POST_VISIBILITIES;
 
   // == Pinned until
   const vaulPortalTarget = useVaulPortalTarget();
@@ -750,7 +744,7 @@ const PostForm: FC<PostFormProps> = props => {
             <Stack gap={4}>
               <SegmentedControl
                 {...getInputProps("visibility")}
-                data={postVisibilities.map(visibility => ({
+                data={POST_VISIBILITIES.map(visibility => ({
                   label: (
                     <Group gap={6} justify="center">
                       <Box
@@ -1096,7 +1090,10 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
               classes.friendNotifiabilitySegmentedControl,
             )}
           />
-          <LoadingOverlay visible={!!postId && !audienceData} />
+          <LoadingOverlay
+            visible={!!postId && !audienceData}
+            overlayProps={{ backgroundOpacity: 0 }}
+          />
         </Table.Td>
       </Table.Tr>
     );

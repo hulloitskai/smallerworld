@@ -141,7 +141,7 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
         </Stack>
         <LoadingOverlay
           visible={deletingInvitation}
-          style={{ borderRadius: "var(--mantine-radius-default)" }}
+          overlayProps={{ radius: "default" }}
         />
       </Card>
       <EditInvitationDrawer
