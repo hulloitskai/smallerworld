@@ -18,7 +18,7 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   const startDate = useTimelineStartDate();
   const timeZone = useTimeZone();
   const { data } = useRouteSWR<{
-    timeline: Record<string, { emoji: string | null; streak: boolean }>;
+    timeline: Record<string, { emoji: string | null }>;
     postStreak: PostStreak | null;
   }>(routes.world.timeline, {
     descriptor: "load timeline",
@@ -36,7 +36,13 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
   const { timeline, postStreak } = data ?? {};
   return (
     <TimelineCard
-      {...{ date, onDateChange, startDate, timeline, postStreak }}
+      {...{
+        date,
+        onDateChange,
+        startDate,
+        timeline,
+        postStreak,
+      }}
       onContinueStreak={() => {
         openNewPostModal({ postType: "journal_entry" });
       }}

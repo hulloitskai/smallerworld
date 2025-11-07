@@ -111,7 +111,7 @@ class WorldsController < ApplicationController
         .order(Arel.sql(order_sql))
         .to_a
     end
-    timeline = build_timeline(timeline_posts, time_zone:)
+    timeline = build_timeline(timeline_posts)
     post_streak = current_user.post_streak(time_zone:)
     render(json: {
       timeline:,

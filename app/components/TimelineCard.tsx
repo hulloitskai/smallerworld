@@ -1,6 +1,8 @@
 import { Badge, Card, ScrollArea } from "@mantine/core";
 import { MiniCalendar } from "@mantine/dates";
+import { DateTime } from "luxon";
 
+import { useTimeZone } from "~/helpers/time";
 import { TIMELINE_WEEKS_TO_SHOW } from "~/helpers/timeline";
 import { type PostStreak } from "~/types";
 
@@ -11,9 +13,7 @@ export interface TimelineCardProps extends BoxProps {
   date: string | null;
   onDateChange: (date: string | null) => void;
   startDate: string | undefined;
-  timeline:
-    | Record<string, { emoji: string | null; streak: boolean }>
-    | undefined;
+  timeline: Record<string, { emoji: string | null }> | undefined;
   postStreak?: PostStreak | null;
   onContinueStreak?: () => void;
 }
@@ -29,6 +29,20 @@ const TimelineCard: FC<TimelineCardProps> = ({
 }) => {
   const activities = timeline ?? {};
   const viewportRef = useRef<HTMLDivElement>(null);
+  const timeZone = useTimeZone();
+  const streakDates = useMemo(() => {
+    if (!postStreak || postStreak.length === 0 || !timeZone) {
+      return undefined;
+    }
+    const today = DateTime.now().setZone(timeZone).startOf("day");
+    const streakEnd = postStreak.posted_today
+      ? today
+      : today.minus({ days: 1 });
+    const dates = Array.from({ length: postStreak.length }, (_, index) =>
+      streakEnd.minus({ days: index }).toISODate(),
+    );
+    return new Set(dates);
+  }, [postStreak, timeZone]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -61,12 +75,13 @@ const TimelineCard: FC<TimelineCardProps> = ({
             getDayProps={calendarDate => {
               const activity = activities[calendarDate];
               if (activity) {
+                const isStreakDay = streakDates?.has(calendarDate);
                 return {
                   ...(activity.emoji && {
                     "data-emoji": activity.emoji,
                   }),
-                  ...(activity.streak && {
-                    "data-streak": activity.streak,
+                  ...(isStreakDay && {
+                    "data-streak": true,
                   }),
                 };
               }
