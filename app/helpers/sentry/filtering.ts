@@ -31,7 +31,7 @@ export const beforeSend = (
       originalException.response instanceof Response
     ) {
       const { response } = originalException;
-      if (response.status >= 500 && response.status < 600) {
+      if (response.status > 501 && response.status < 600) {
         return null;
       }
     } else {
