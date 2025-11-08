@@ -369,22 +369,41 @@ const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ post }) => {
           <Table>
             <Table.Thead>
               <Table.Tr>
-                <Table.Th />
                 <Table.Th>name</Table.Th>
                 <Table.Th>last viewed at</Table.Th>
+                <Table.Th>reacts</Table.Th>
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
               {viewers.map(viewer => (
                 <Table.Tr key={viewer.id}>
-                  <Table.Td className={classes.postViewersTableEmojiCell}>
-                    {viewer.emoji}
+                  <Table.Td>
+                    <Group gap={4}>
+                      <span className={classes.postViewersTableEmoji}>
+                        {viewer.emoji}
+                      </span>
+                      <span>{viewer.name}</span>
+                    </Group>
                   </Table.Td>
-                  <Table.Td>{viewer.name}</Table.Td>
                   <Table.Td>
                     <Time format={DateTime.DATETIME_MED} inherit tt="lowercase">
                       {viewer.last_viewed_at}
                     </Time>
+                  </Table.Td>
+                  <Table.Td>
+                    <Group
+                      wrap="wrap"
+                      className={classes.postViewersTableReactionGroup}
+                    >
+                      {viewer.reaction_emojis.map(emoji => (
+                        <span
+                          className={classes.postViewersTableEmoji}
+                          key={emoji}
+                        >
+                          {emoji}
+                        </span>
+                      ))}
+                    </Group>
                   </Table.Td>
                 </Table.Tr>
               ))}

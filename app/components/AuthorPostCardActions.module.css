@@ -35,7 +35,14 @@
   }
 }
 
-.postViewersTableEmojiCell {
-  width: 1px;
-  padding-right: 0;
+.postViewersTableEmoji {
+  @mixin emoji;
+
+  font-size: var(--mantine-font-size-lg);
+}
+
+.postViewersTableReactionGroup {
+  column-gap: 6px;
+  row-gap: 2px;
+  max-width: 100px;
 }

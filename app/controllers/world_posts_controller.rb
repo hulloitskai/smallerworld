@@ -80,10 +80,17 @@ class WorldPostsController < ApplicationController
       )
       .reverse_chronological
       .includes(:friend)
+    reactions_by_friend_id = PostReaction
+      .where(post: post)
+      .group(:friend_id)
+      .pluck(:friend_id, Arel.sql("ARRAY_AGG(emoji ORDER BY created_at)"))
+      .to_h
     viewers = views.map do |view|
+      reaction_emojis = reactions_by_friend_id.fetch(view.friend_id, [])
       PostViewer.new(
         friend: view.friend!,
         last_viewed_at: view.created_at,
+        reaction_emojis:,
       )
     end
     render(json: {

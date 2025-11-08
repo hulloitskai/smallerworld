@@ -3,7 +3,8 @@
 
 class PostViewerSerializer < ApplicationSerializer
   # == Attributes
-  attributes last_viewed_at: { type: :string }
+  attributes last_viewed_at: { type: :string },
+             reaction_emojis: { type: "string[]" }
 
   # == Associations
   flat_one :friend, serializer: FriendProfileSerializer
