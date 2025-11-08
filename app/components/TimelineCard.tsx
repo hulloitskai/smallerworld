@@ -1,7 +1,6 @@
 import { Badge, Card, ScrollArea } from "@mantine/core";
 import { MiniCalendar } from "@mantine/dates";
 
-import { useTimeZone } from "~/helpers/time";
 import { TIMELINE_WEEKS_TO_SHOW } from "~/helpers/timeline";
 import { type PostStreak } from "~/types";
 
