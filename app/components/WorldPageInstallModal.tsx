@@ -88,7 +88,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
             ) {
               if (isStandalone && outOfPWAScope) {
                 const pwaScope = getPWAScope();
-                const instructionsPath = withTrailingSlash(
+                const installationPath = withTrailingSlash(
                   routes.world.show.path({
                     query: {
                       intent: "installation_instructions",
@@ -96,7 +96,7 @@ const ModalBody: FC<ModalBodyProps> = ({ modalId, currentUser }) => {
                     },
                   }),
                 );
-                location.href = instructionsPath;
+                location.href = installationPath;
               } else {
                 openWorldPageInstallationInstructionsModal({ currentUser });
                 closeModal(modalId);

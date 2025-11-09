@@ -207,13 +207,10 @@ class Friend < ApplicationRecord
     end
     installation_url = user.shortlink_url(
       friend_token: access_token,
-      intent: "installation_instructions",
+      trailing_slash: true,
     )
-    <<~EOF
-      hi, #{fun_name}! here's your secret link to #{user_possessive} world: #{installation_url}
-
-      we'll send you occasional text updates, but if you're a REAL ONE you can click the link to install #{user_possessive} world for real-time life updates.
-    EOF
+    "hi, #{fun_name}! here's your secret link to #{user_possessive} world: " \
+      "#{installation_url}"
   end
 
   sig { void }

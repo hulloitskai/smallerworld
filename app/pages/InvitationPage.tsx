@@ -1,7 +1,5 @@
 import { Image, Text } from "@mantine/core";
 
-import TextIcon from "~icons/heroicons/chat-bubble-bottom-center-text-20-solid";
-
 import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
 import AcceptInvitationForm from "~/components/AcceptInvitationForm";
@@ -37,7 +35,8 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
   existingFriend,
   autofillPhoneNumber,
 }) => {
-  const [invitationSent, setInvitationSent] = useState(false);
+  useUserTheme(user.theme);
+  // const [invitationSent, setInvitationSent] = useState(false);
   return (
     <Stack gap="lg" pb="xs">
       <Stack gap="sm">
@@ -82,8 +81,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
       )}
       <Stack gap={8} align="center" my="xs">
         <Text size="sm" ta="center" maw={320}>
-          you can get updates from me thru text, OR you can get my world as a
-          wee app on your phone :)
+          get my world as a wee app on your phone :)
         </Text>
         <HomescreenPreview
           pageName={user.name}
@@ -91,7 +89,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
           arrowLabel="it's me!"
         />
       </Stack>
-      {invitationSent ? (
+      {/* {invitationSent ? (
         <Alert
           variant="default"
           icon={<TextIcon />}
@@ -100,26 +98,32 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
         >
           check your messages for your personal link to my world :)
         </Alert>
-      ) : (
-        <Card withBorder>
-          <Stack gap={8}>
-            <Text>
-              if all this sounds dope to you, drop your # below, and we&apos;ll
-              send you a private link you can use to access my world.
-            </Text>
-            <AcceptInvitationForm
-              {...{
-                user,
-                invitation,
-              }}
-              initialPhoneNumber={autofillPhoneNumber}
-              onInvitationAccepted={() => {
-                setInvitationSent(true);
-              }}
-            />
-          </Stack>
-        </Card>
-      )}
+      ) : ( */}
+      <Card withBorder className={classes.joinCard}>
+        <Stack gap={8}>
+          <Text>ready to join my world?</Text>
+          <AcceptInvitationForm
+            {...{
+              user,
+              invitation,
+            }}
+            initialPhoneNumber={autofillPhoneNumber}
+            onInvitationAccepted={friendAccessToken => {
+              const installationPath = withTrailingSlash(
+                routes.users.show.path({
+                  id: user.handle,
+                  query: {
+                    friend_token: friendAccessToken,
+                    intent: "installation_instructions",
+                  },
+                }),
+              );
+              router.visit(installationPath);
+            }}
+          />
+        </Stack>
+      </Card>
+      {/* )} */}
     </Stack>
   );
 };

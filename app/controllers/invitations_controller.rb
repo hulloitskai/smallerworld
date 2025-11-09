@@ -9,7 +9,7 @@ class InvitationsController < ApplicationController
     )
     if invitation
       user = invitation.user!
-      featured_post = user.posts.chronological.last
+      featured_post = user.posts.visible_to_friends.chronological.last
       friend = invitation.friend
       autofill_phone_number = friend&.phone_number || current_user&.phone_number
       render(inertia: "InvitationPage", props: {
@@ -37,8 +37,10 @@ class InvitationsController < ApplicationController
     end
     friend.attributes = friend_params
     if friend.save
-      friend.send_installation_message!
-      render(json: {})
+      # friend.send_installation_message!
+      render(json: {
+        "friendAccessToken" => friend.access_token,
+      })
     else
       render(
         json: { errors: friend.form_errors },

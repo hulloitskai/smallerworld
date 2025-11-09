@@ -12,8 +12,8 @@ import { type Invitation, type User } from "~/types";
 export interface AcceptInvitationFormProps extends BoxProps {
   user: User;
   invitation: Invitation;
-  initialPhoneNumber?: string | null;
-  onInvitationAccepted: () => void;
+  initialPhoneNumber: string | null;
+  onInvitationAccepted: (friendAccessToken: string) => void;
 }
 
 const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
@@ -39,7 +39,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
     };
   }
   const { getInputProps, setFieldValue, submitting, submit } = useForm<
-    {},
+    { friendAccessToken: string },
     FormValues,
     (values: FormValues) => FormSubmission
   >({
@@ -68,8 +68,8 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
         }
       },
     },
-    onSuccess: () => {
-      onInvitationAccepted();
+    onSuccess: ({ friendAccessToken }) => {
+      onInvitationAccepted(friendAccessToken);
     },
   });
 
@@ -115,6 +115,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
         <Stack gap={6}>
           <Button
             type="submit"
+            variant="filled"
             loading={submitting}
             leftSection={<PhoneIcon />}
           >
