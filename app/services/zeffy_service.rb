@@ -17,7 +17,7 @@ class ZeffyService < ApplicationService
   def initialize
     super
     @conn = Faraday.new("https://api.zeffy.com") do |f|
-      f.response(:logger, Rails.logger)
+      f.response(:logger, Rails.logger, bodies: true, errors: true)
       f.request(:json)
       f.response(:json)
     end

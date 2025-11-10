@@ -19,7 +19,7 @@ class GreenApiService < ApplicationService
     super
     credentials = self.class.credentials!
     @conn = Faraday.new(credentials.api_url!) do |f|
-      f.response(:logger, Rails.logger)
+      f.response(:logger, Rails.logger, bodies: true, errors: true)
       f.request(:json)
       f.response(:json)
     end

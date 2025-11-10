@@ -16,10 +16,7 @@ class SpotifyService < ApplicationService
   def initialize
     super
     credentials = self.class.credentials!
-    RSpotify.authenticate(
-      credentials.client_id!,
-      credentials.client_secret!,
-    )
+    RSpotify.authenticate(credentials.client_id!, credentials.client_secret!)
   end
 
   # == Methods
