@@ -11,6 +11,9 @@ class User
   extend CommonRelationMethods
   extend GeneratedRelationMethods
 
+  sig { returns(T.nilable(Enumerize::Value)) }
+  def membership_tier; end
+
   sig { returns(ActiveStorage::Attached::One) }
   def page_icon; end
 
@@ -23,6 +26,9 @@ class User
   def to_ary; end
 
   class << self
+    sig { returns(Enumerize::Attribute) }
+    def membership_tier; end
+
     sig { params(attributes: T.untyped, block: T.nilable(T.proc.params(object: ::User).void)).returns(::User) }
     def new(attributes = nil, &block); end
   end
@@ -1068,16 +1074,16 @@ class User
     sig { void }
     def id_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def membership_tier; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: T.untyped).returns(T.untyped) }
     def membership_tier=(value); end
 
     sig { returns(T::Boolean) }
     def membership_tier?; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def membership_tier_before_last_save; end
 
     sig { returns(T.untyped) }
@@ -1086,28 +1092,28 @@ class User
     sig { returns(T::Boolean) }
     def membership_tier_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def membership_tier_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def membership_tier_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def membership_tier_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def membership_tier_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def membership_tier_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def membership_tier_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def membership_tier_previously_was; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def membership_tier_was; end
 
     sig { void }
@@ -1389,7 +1395,7 @@ class User
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_id_value?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def saved_change_to_membership_tier; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

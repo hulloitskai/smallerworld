@@ -59,6 +59,8 @@ class User < ApplicationRecord
   friendly_id :handle, slug_column: :handle
 
   # == Attributes
+  enumerize :membership_tier, in: %i[supporter believer]
+
   sig { returns(Phonelib::Phone) }
   def phone
     Phonelib.parse(phone_number)
@@ -181,9 +183,9 @@ class User < ApplicationRecord
   end
 
   # One of: :supporter, :believer
-  sig { returns(T.nilable(Symbol)) }
+  sig { returns(T.nilable(Enumerize::Value)) }
   def membership_tier
-    overrides&.membership_tier || super&.to_sym
+    overrides&.membership_tier || super
   end
 
   sig { returns(T::Set[Symbol]) }
@@ -324,9 +326,12 @@ class User < ApplicationRecord
       overrides = Rails.application.credentials.user_overrides.to_h
       overrides.transform_values! do |settings|
         flags_value = settings.feature_flags || []
+        membership_tier = if (value = settings.membership_tier)
+          self.membership_tier.find_value(value)
+        end
         UserOverrides.new(
           feature_flags: flags_value.map(&:to_sym).to_set,
-          membership_tier: settings.membership_tier&.to_sym,
+          membership_tier:,
         )
       end
       overrides.with_indifferent_access
