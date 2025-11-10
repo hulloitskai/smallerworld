@@ -193,7 +193,7 @@
 }
 
 .editorContent {
-  [contenteditable] {
+  [contenteditable="true"] {
     min-height: 144px;
   }
 }
