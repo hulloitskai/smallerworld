@@ -13,6 +13,9 @@ module GeneratedPathHelpersModule
   def accept_invitation_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def activate_membership_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def activity_coupons_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -272,6 +275,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def support_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def support_success_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def test_path(*args); end

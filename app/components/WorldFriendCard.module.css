@@ -41,3 +41,15 @@
     margin-right: calc(var(--mantine-spacing-xs) / 2);
   }
 }
+
+.friendNotifiabilityEmoji {
+  @mixin emoji;
+
+  margin-left: 2px;
+}
+
+.friendNotifiabilityButtonEmoji {
+  @mixin emoji;
+
+  margin-left: 4px;
+}

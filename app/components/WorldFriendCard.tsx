@@ -238,14 +238,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                   {prettyFriendName(friend)}
                 </span>{" "}
                 didn&apos;t join your world{" "}
-                <span
-                  style={{
-                    marginLeft: rem(2),
-                    fontFamily: "var(--font-family-emoji)",
-                  }}
-                >
-                  😔
-                </span>
+                <span className={classes.friendNotifiabilityEmoji}>😔</span>
               </Text>
             </Group>
             <Button
@@ -257,14 +250,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
               }}
             >
               give them another chance{" "}
-              <span
-                style={{
-                  fontFamily: "var(--font-family-emoji)",
-                  marginLeft: rem(4),
-                }}
-              >
-                💞
-              </span>
+              <span className={classes.friendNotifiabilityButtonEmoji}>💞</span>
             </Button>
           </Overlay>
         )}

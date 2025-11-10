@@ -13,6 +13,9 @@ module GeneratedUrlHelpersModule
   def accept_invitation_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def activate_membership_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def activity_coupons_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -269,6 +272,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def stats_world_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def support_success_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def support_url(*args); end

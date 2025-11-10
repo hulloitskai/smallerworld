@@ -172,6 +172,12 @@
   }
 }
 
+.pushNotificationsDisabledAlertEmoji {
+  @mixin emoji;
+
+  margin-left: 2px;
+}
+
 .supportTooltip {
   font-family: var(--font-family-cute);
 }

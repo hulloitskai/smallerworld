@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_06_145440) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_10_193347) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -385,8 +385,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_145440) do
     t.string "api_token"
     t.boolean "hide_neko", null: false
     t.boolean "allow_friend_sharing", null: false
+    t.string "membership_tier"
     t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["handle"], name: "index_users_on_handle", unique: true
+    t.index ["membership_tier"], name: "index_users_on_membership_tier"
     t.index ["notifications_last_cleared_at"], name: "index_users_on_notifications_last_cleared_at"
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
   end

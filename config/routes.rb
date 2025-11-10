@@ -363,6 +363,16 @@ Rails.application.routes.draw do
             only: :show,
             constraints: { format: "html" }
 
+  # == Memberships
+  resource(
+    :membership,
+    only: [],
+    constraints: { format: "json" },
+    export: true,
+  ) do
+    post :activate
+  end
+
   # == Pages
   root "landing#show", export: true
   scope constraints: { format: "html" } do
@@ -379,7 +389,10 @@ Rails.application.routes.draw do
       "https://app.amplitude.com/analytics/smallerworld/home",
       status: 302,
     )
-    get "/support" => "support#redirect", export: true
+    get "/support" => "support#redirect",
+        constraints: { format: "html" },
+        export: true
+    get "/support/success" => "support#success", constraints: { format: "html" }
     get "/shortlinks" => redirect(
       "https://app.dub.co/smallerworld/links",
       status: 302,

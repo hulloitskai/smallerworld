@@ -1,0 +1,5 @@
+.heartEmoji {
+  @mixin emoji;
+
+  margin-left: 2px;
+}

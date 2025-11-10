@@ -12,6 +12,7 @@
 #  handle                        :string           not null
 #  hide_neko                     :boolean          not null
 #  hide_stats                    :boolean          not null
+#  membership_tier               :string
 #  name                          :string           not null
 #  notifications_last_cleared_at :datetime
 #  phone_number                  :string           not null
@@ -25,6 +26,7 @@
 #
 #  index_users_on_api_token                      (api_token) UNIQUE
 #  index_users_on_handle                         (handle) UNIQUE
+#  index_users_on_membership_tier                (membership_tier)
 #  index_users_on_notifications_last_cleared_at  (notifications_last_cleared_at)
 #  index_users_on_phone_number                   (phone_number) UNIQUE
 #
@@ -181,7 +183,7 @@ class User < ApplicationRecord
   # One of: :supporter, :believer
   sig { returns(T.nilable(Symbol)) }
   def membership_tier
-    overrides&.membership_tier
+    overrides&.membership_tier || super&.to_sym
   end
 
   sig { returns(T::Set[Symbol]) }

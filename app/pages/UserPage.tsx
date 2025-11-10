@@ -232,12 +232,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
             <Text inherit>
               enable notifications to be a part of {possessive(user.name)}{" "}
               support system, and receive timely hangout invitations{" "}
-              <span
-                style={{
-                  fontFamily: "var(--font-family-emoji)",
-                  marginLeft: rem(2),
-                }}
-              >
+              <span className={classes.pushNotificationsDisabledAlertEmoji}>
                 😎
               </span>
             </Text>

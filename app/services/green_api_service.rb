@@ -19,6 +19,7 @@ class GreenApiService < ApplicationService
     super
     credentials = self.class.credentials!
     @conn = Faraday.new(credentials.api_url!) do |f|
+      f.response(:logger, Rails.logger)
       f.request(:json)
       f.response(:json)
     end
@@ -40,7 +41,7 @@ class GreenApiService < ApplicationService
     response.body["existsWhatsapp"]
   end
 
-  # == Helper
+  # == Helpers
   sig { returns(T::Boolean) }
   def self.credentials_available?
     Rails.application.credentials.green_api.present?

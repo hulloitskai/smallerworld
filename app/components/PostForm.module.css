@@ -74,6 +74,12 @@
   }
 }
 
+.encouragementEmoji {
+  @mixin emoji;
+
+  margin-right: 3px;
+}
+
 .friendNotifiabilityAccordion {
   :global(.mantine-Accordion-item) {
     &[data-active] {

@@ -322,12 +322,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             <Text inherit>
               you won&apos;t know when friends send you writing prompts or react
               to your posts{" "}
-              <span
-                style={{
-                  fontFamily: "var(--font-family-emoji)",
-                  marginLeft: rem(2),
-                }}
-              >
+              <span className={classes.pushNotificationsDisabledAlertEmoji}>
                 😢
               </span>
             </Text>
