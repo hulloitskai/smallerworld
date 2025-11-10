@@ -33,8 +33,10 @@ const PostEditor: FC<PostEditorProps> = ({
   contentProps,
   ...otherProps
 }) => {
+  const vaulPortalTarget = useVaulPortalTarget();
+
   // == Editor
-  const [html, setHtml] = useState(initialValue);
+  const htmlRef = useRef(initialValue);
   const [showUnlink, setShowUnlink] = useState(false);
   const editor = useEditor(
     {
@@ -52,19 +54,19 @@ const PostEditor: FC<PostEditorProps> = ({
       },
       content: initialValue,
       autofocus: true,
-      immediatelyRender: !import.meta.env.SSR,
       onCreate: ({ editor }) => {
         editor.commands.focus("end");
-        if (!!html && editor.getHTML() !== html) {
-          editor.commands.setContent(html);
+        if (!!htmlRef.current && editor.getHTML() !== htmlRef.current) {
+          editor.commands.setContent(htmlRef.current);
         }
         onEditorCreated?.(editor);
       },
       onUpdate: props => {
         const { editor } = props;
-        setHtml(editor.getHTML());
+        const html = editor.getHTML();
+        htmlRef.current = html;
         onUpdate?.(props);
-        onChange?.(editor.getHTML());
+        onChange?.(html);
       },
       onSelectionUpdate: ({ editor }) => {
         const attributes = editor.getAttributes("link");
@@ -73,9 +75,6 @@ const PostEditor: FC<PostEditorProps> = ({
     },
     [],
   );
-
-  // == Link editor
-  const vaulPortalTarget = useVaulPortalTarget();
 
   return (
     <RichTextEditor
