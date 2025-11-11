@@ -26,17 +26,16 @@ Rails.application.routes.draw do
 
   # == Attachments
   resources :files,
-            only: :show,
             param: :signed_id,
+            only: :show,
             constraints: { format: "json" },
             export: true
-  resources(
-    :images,
-    only: :show,
-    param: :signed_id,
-    constraints: { format: "json" },
-    export: true,
-  ) do
+  resources :images,
+            param: :signed_id,
+            only: :show,
+            constraints: { format: "json" },
+            export: true
+  resources :images, param: :signed_id, only: [], export: true do
     member do
       get :download
     end
