@@ -15,6 +15,7 @@
 #  paused_since                  :datetime
 #  phone_number                  :string
 #  subscribed_post_types         :string           not null, is an Array
+#  time_zone_name                :string           not null
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #  deprecated_join_request_id    :uuid
@@ -26,7 +27,6 @@
 #  index_friends_name_uniqueness                   (name,user_id) UNIQUE
 #  index_friends_on_access_token                   (access_token) UNIQUE
 #  index_friends_on_chosen_family                  (chosen_family)
-#  index_friends_on_deprecated_join_request_id     (deprecated_join_request_id)
 #  index_friends_on_invitation_id                  (invitation_id)
 #  index_friends_on_notifications_last_cleared_at  (notifications_last_cleared_at)
 #  index_friends_on_phone_number                   (phone_number)
@@ -35,7 +35,6 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (deprecated_join_request_id => join_requests.id)
 #  fk_rails_...  (invitation_id => invitations.id)
 #  fk_rails_...  (user_id => users.id)
 #
@@ -44,9 +43,11 @@ class Friend < ApplicationRecord
   include NormalizesPhoneNumber
   include Notifiable
   include Noticeable
+  include HasTimeZone
   include PgSearch::Model
 
-  # == Attributes
+  # == Attributes ==
+
   enumerize :subscribed_post_types,
             in: Post.type.values,
             multiple: true,
@@ -62,20 +63,8 @@ class Friend < ApplicationRecord
     [emoji, name].compact.join(" ")
   end
 
-  # == Tokens
-  generates_token_for :invite
+  # == Associations ==
 
-  sig { returns(String) }
-  def generate_deprecated_invite_token
-    generate_token_for(:invite)
-  end
-
-  sig { params(token: String).returns(Friend) }
-  def self.find_by_deprecated_invite_token!(token)
-    find_by_token_for!(:invite, token)
-  end
-
-  # == Associations
   belongs_to :user
   has_many :user_posts, through: :user, source: :posts
 
@@ -107,20 +96,24 @@ class Friend < ApplicationRecord
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
-  # == Normalizations
+  # == Normalizations ==
+
   strips_text :name
   removes_blank :emoji
   normalizes_phone_number :phone_number
 
-  # == Validations
+  # == Validations ==
+
   validates :name, presence: true, uniqueness: { scope: :user }
   validates :emoji, emoji: true, allow_nil: true
   validates :phone_number,
             phone: { possible: true, types: :mobile, extensions: false },
             uniqueness: { scope: :user, message: "already joined" },
             allow_nil: true
+  validates_time_zone_name
 
-  # == Scopes
+  # == Scopes ==
+
   scope :active, -> { where(paused_since: nil) }
   scope :paused, -> { where.not(paused_since: nil) }
   scope :paused_during, ->(interval) {
@@ -143,7 +136,8 @@ class Friend < ApplicationRecord
       .where.not(phone_number: nil)
   }
 
-  # == Search
+  # == Search ==
+
   pg_search_scope :search,
                   against: %i[emoji name],
                   using: {
@@ -152,10 +146,12 @@ class Friend < ApplicationRecord
                     },
                   }
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create_commit :create_notification!
 
-  # == Noticeable
+  # == Noticeable ==
+
   sig do
     override
       .params(recipient: T.nilable(NotificationRecipient))
@@ -197,7 +193,8 @@ class Friend < ApplicationRecord
     LegacyFriendNotificationPayloadSerializer.one(payload)
   end
 
-  # == Installation
+  # == Installation ==
+
   sig { returns(String) }
   def installation_message
     user = user!
@@ -219,7 +216,8 @@ class Friend < ApplicationRecord
     TwilioService.send_message(to:, body: installation_message)
   end
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(ActiveSupport::TimeWithZone) }
   def last_active_at
     notifications_last_cleared_at || created_at
@@ -245,7 +243,8 @@ class Friend < ApplicationRecord
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
   def latest_user_post_created_at
     user_posts.reverse_chronological.pick(:created_at)

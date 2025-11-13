@@ -36,9 +36,11 @@ class User < ApplicationRecord
   include NormalizesPhoneNumber
   include Notifiable
   include ImageHelpers
+  include HasTimeZone
   include PgSearch::Model
 
-  # == Constants
+  # == Constants ==
+
   ENCOURAGEMENTS_AVAILABLE_SINCE = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
   MIN_POST_COUNT_FOR_SEARCH = T.let(Rails.env.production? ? 10 : 2, Integer)
   DARK_THEMES = T.let(
@@ -66,7 +68,8 @@ class User < ApplicationRecord
     Phonelib.parse(phone_number)
   end
 
-  # == Associations
+  # == Associations ==
+
   has_many :sessions, dependent: :destroy
   has_many :friends, dependent: :destroy
   has_many :encouragements, through: :friends, dependent: :destroy
@@ -79,7 +82,8 @@ class User < ApplicationRecord
   has_many :activities, dependent: :destroy
   has_many :activity_coupons, through: :activities, source: :coupons
 
-  # == Attachments
+  # == Attachments ==
+
   has_one_attached :page_icon
 
   sig { returns(T::Boolean) }
@@ -101,11 +105,13 @@ class User < ApplicationRecord
     page_icon_blob!.becomes(Image)
   end
 
-  # == Normalizations
+  # == Normalizations ==
+
   strips_text :name
   normalizes_phone_number :phone_number, :reply_to_number
 
-  # == Validations
+  # == Validations ==
+
   validates :name,
             :handle,
             :page_icon,
@@ -121,13 +127,15 @@ class User < ApplicationRecord
   validates :handle,
             length: { minimum: 2 },
             exclusion: { in: %i[kai], message: "is reserved" }
-  validate :validate_time_zone_name
   validate :validate_opaque_page_icon, if: %i[page_icon? page_icon_changed?]
+  validates_time_zone_name
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create :create_welcome_post!
 
-  # == Search
+  # == Search ==
+
   pg_search_scope :search,
                   against: %i[name],
                   using: {
@@ -136,30 +144,14 @@ class User < ApplicationRecord
                     },
                   }
 
-  # == Scopes
+  # == Scopes ==
+
   scope :subscribed_to_public_posts, -> {
     where(handle: handles_subscribed_to_public_posts)
   }
 
-  # == Time zone
-  sig { returns(ActiveSupport::TimeZone) }
-  def time_zone
-    ActiveSupport::TimeZone.new(time_zone_name)
-  end
+  # == Methods ==
 
-  sig do
-    params(value: T.any(String, ActiveSupport::TimeZone)).returns(T.untyped)
-  end
-  def time_zone=(value)
-    self.time_zone_name = case value
-    when String
-      value
-    when ActiveSupport::TimeZone
-      value.tzinfo.name
-    end
-  end
-
-  # == Methods
   sig { returns(T::Boolean) }
   def admin?
     Admin.phone_numbers.include?(phone_number)
@@ -299,7 +291,8 @@ class User < ApplicationRecord
     PostStreak.new(length:, posted_today:)
   end
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(phone_number: String).returns(T.nilable(User)) }
   def self.find_by_phone_number(phone_number)
     phone_number = normalize_value_for(:phone_number, phone_number)
@@ -347,7 +340,8 @@ class User < ApplicationRecord
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
   def latest_poem_or_journal_created_at
     posts
@@ -361,13 +355,7 @@ class User < ApplicationRecord
     self.class.overrides_for(handle)
   end
 
-  # == Validators
-  sig { void }
-  def validate_time_zone_name
-    unless ActiveSupport::TimeZone.new(time_zone_name)
-      errors.add(:time_zone_name, :invalid, message: "invalid time zone")
-    end
-  end
+  # == Validators ==
 
   sig { void }
   def validate_opaque_page_icon
