@@ -118,9 +118,6 @@ module GeneratedPathHelpersModule
   def marsha_puzzle_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def messaging_platforms_user_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def new_local_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

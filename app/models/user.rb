@@ -252,16 +252,6 @@ class User < ApplicationRecord
     Friend.where(phone_number:)
   end
 
-  sig { returns(T::Array[Symbol]) }
-  def disabled_messaging_platforms
-    disabled_platforms = T.let([], T::Array[Symbol])
-    if GreenApiService.enabled? &&
-        !GreenApiService.reachable_on_whatsapp?(phone_number) == false
-      disabled_platforms << :whatsapp
-    end
-    disabled_platforms
-  end
-
   sig do
     params(time_zone: ActiveSupport::TimeZone).returns(T.nilable(PostStreak))
   end

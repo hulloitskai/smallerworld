@@ -238,7 +238,6 @@ Rails.application.routes.draw do
     member do
       get :timeline
       post :request_invitation
-      get :messaging_platforms
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end

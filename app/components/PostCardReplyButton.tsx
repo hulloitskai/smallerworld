@@ -5,7 +5,6 @@ import {
   MESSAGING_PLATFORM_TO_ICON,
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
-  type MessagingPlatform,
 } from "~/helpers/messaging";
 import { mutateUserPagePosts } from "~/helpers/userPages";
 import {
@@ -33,17 +32,6 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
   const currentFriend = useCurrentFriend();
   const friend = asFriend ?? currentFriend;
   const vaulPortalTarget = useVaulPortalTarget();
-
-  // == Load available messaging platforms
-  const { data } = useRouteSWR<{
-    disabledMessagingPlatforms: MessagingPlatform[];
-  }>(routes.users.messagingPlatforms, {
-    params: {
-      id: author.id,
-    },
-    descriptor: "load messaging platforms",
-  });
-  const { disabledMessagingPlatforms } = data ?? {};
 
   // == Mark as replied
   const { trigger: markReplied, mutating: markingReplied } = useRouteMutation<{
@@ -129,13 +117,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
                         : post.reply_snippet,
                       platform,
                     )}
-                    disabled={disabledMessagingPlatforms?.includes(platform)}
-                    onClick={event => {
-                      if (disabledMessagingPlatforms?.includes(platform)) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        return;
-                      }
+                    onClick={() => {
                       void markReplied();
                     }}
                   >

@@ -79,14 +79,6 @@ class UsersController < ApplicationController
     redirect_to(user_path(user, intent: "join"))
   end
 
-  # GET /users/:id/messaging_platforms
-  def messaging_platforms
-    user = load_user
-    render(json: {
-      "disabledMessagingPlatforms" => user.disabled_messaging_platforms,
-    })
-  end
-
   # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def manifest
     current_friend = authenticate_friend!
