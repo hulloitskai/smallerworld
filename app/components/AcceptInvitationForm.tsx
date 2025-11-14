@@ -7,6 +7,7 @@ import {
   parsePhoneFromParts,
   parsePhoneIntoParts,
 } from "~/helpers/phone";
+import { currentTimeZone } from "~/helpers/time";
 import { type Invitation, type User } from "~/types";
 
 export interface AcceptInvitationFormProps extends BoxProps {
@@ -54,6 +55,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
       return {
         friend: {
           phone_number: phoneNumber,
+          time_zone: currentTimeZone(),
         },
       };
     },

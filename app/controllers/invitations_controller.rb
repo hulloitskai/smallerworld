@@ -36,7 +36,7 @@ class InvitationsController < ApplicationController
       format.json do
         invitation = find_invitation
         user = invitation.user!
-        friend_params = params.expect(friend: [:phone_number])
+        friend_params = params.expect(friend: %i[phone_number time_zone])
         friend = user.friends.find_or_initialize_by(invitation:) do |f|
           f.emoji = invitation.invitee_emoji
           f.name = invitation.invitee_name
