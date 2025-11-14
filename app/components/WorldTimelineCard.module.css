@@ -90,7 +90,12 @@
     cursor: pointer;
 
     @mixin hover {
-      background-color: var(--mantine-primary-color-filled-hover);
+      &[data-posted-today] {
+        background-color: lighten(var(--mantine-color-body), 0.15);
+      }
+      &:not([data-posted-today]) {
+        background-color: var(--mantine-primary-color-filled-hover);
+      }
     }
   }
 

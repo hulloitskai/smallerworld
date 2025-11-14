@@ -1,6 +1,7 @@
 import { Badge, Card, ScrollArea } from "@mantine/core";
 import { MiniCalendar } from "@mantine/dates";
 
+import { confetti, particlePositionFor } from "~/helpers/particles";
 import { TIMELINE_WEEKS_TO_SHOW } from "~/helpers/timeline";
 import { type PostStreak } from "~/types";
 
@@ -26,7 +27,10 @@ const TimelineCard: FC<TimelineCardProps> = ({
   ...otherProps
 }) => {
   const activities = timeline ?? {};
+  const badgeRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+
+  // == Streak dates
   const streakDates = useMemo(() => {
     if (!postStreak || postStreak.length === 0) {
       return;
@@ -103,14 +107,39 @@ const TimelineCard: FC<TimelineCardProps> = ({
       </ScrollArea>
       {postStreak && (
         <Badge
+          ref={badgeRef}
           size="xs"
           leftSection="🔥"
           variant={postStreak.posted_today ? "default" : "filled"}
           className={classes.postStreakBadge}
           {...(onContinueStreak && {
-            mod: { clickable: !postStreak.posted_today },
+            mod: {
+              clickable: true,
+              "posted-today": postStreak.posted_today,
+            },
             onClick: () => {
-              onContinueStreak();
+              if (!postStreak.posted_today) {
+                onContinueStreak();
+              } else {
+                const badge = badgeRef.current;
+                if (badge) {
+                  void confetti({
+                    position: particlePositionFor(badge),
+                    spread: 200,
+                    ticks: 60,
+                    gravity: 1,
+                    startVelocity: 18,
+                    count: 12,
+                    scalar: 2,
+                    shapes: ["emoji"],
+                    shapeOptions: {
+                      emoji: {
+                        value: "🔥",
+                      },
+                    },
+                  });
+                }
+              }
             },
           })}
         >
