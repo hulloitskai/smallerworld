@@ -225,6 +225,7 @@ class Post < ApplicationRecord
   scope :with_quoted_post_and_attached_images, -> {
     includes(quoted_post: [images_attachments: :blob])
   }
+  scope :with_author, -> { includes(:author) }
 
   # == Noticeable ==
 

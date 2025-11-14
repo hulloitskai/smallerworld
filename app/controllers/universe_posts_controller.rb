@@ -19,10 +19,6 @@ class UniversePostsController < ApplicationController
         chosen_family_friends = associated_friends.chosen_family
         general_friends = associated_friends.where.not(chosen_family: true)
         scope = Post
-          .with_attached_images
-          .with_quoted_post_and_attached_images
-          .with_encouragement
-          .includes(:author)
           .publicly_visible
           .where(id: Post.user_created.select(:id))
           .or(
@@ -56,6 +52,10 @@ class UniversePostsController < ApplicationController
                 associated_friends.select(:id),
               ),
           )
+          .with_attached_images
+          .with_quoted_post_and_attached_images
+          .with_encouragement
+          .with_author
         pagy, posts = paginate_posts(scope)
         post_ids = posts.map(&:id)
         views_by_post_id = PostView

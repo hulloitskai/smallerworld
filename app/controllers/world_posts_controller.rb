@@ -21,23 +21,28 @@ class WorldPostsController < ApplicationController
           .with_attached_images
           .with_quoted_post_and_attached_images
           .with_encouragement
+          .with_author
         if (type = params[:type])
-          raise "Invalid type: #{type}" unless type.is_a?(String)
-
-          scope = scope.where(type:)
+          if type.is_a?(String)
+            scope = scope.where(type:)
+          else
+            raise "Invalid type: #{type}"
+          end
         end
         if (date_param = params[:date])
-          raise "Invalid date: #{date_param}" unless date_param.is_a?(String)
-
-          time = date_param.to_time or raise "Invalid date: #{date_param}"
-          scope = scope.where(created_at: time.all_day)
+          if date_param.is_a?(String)
+            time = date_param.to_time or raise "Invalid date: #{date_param}"
+            scope = scope.where(created_at: time.all_day)
+          else
+            raise "Invalid date: #{date_param}" unless date_param.is_a?(String)
+          end
         end
         ordering = { created_at: :desc, id: :asc }
         pagy, posts = if (query = params[:q])
-          scope = scope.search(query).order(ordering)
+          scope = scope.search(query).order(**ordering)
           pagy(scope, limit: POSTS_PER_PAGE)
         else
-          scope = scope.order(ordering)
+          scope = scope.order(**ordering)
           pagy_keyset(scope, limit: POSTS_PER_PAGE)
         end
         render(json: {
@@ -96,7 +101,7 @@ class WorldPostsController < ApplicationController
               .order("friend_id, created_at DESC"),
           )
           .reverse_chronological
-          .includes(:friend)
+          .with_friend
         reactions_by_friend_id = PostReaction
           .where(post: post)
           .group(:friend_id)

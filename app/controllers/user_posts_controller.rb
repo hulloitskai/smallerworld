@@ -14,10 +14,12 @@ class UserPostsController < ApplicationController
           .with_quoted_post_and_attached_images
           .with_encouragement
         if (date_param = params[:date])
-          raise "Invalid date: #{date_param}" unless date_param.is_a?(String)
-
-          time = date_param.to_time or raise "Invalid date: #{date_param}"
-          scope = scope.where(created_at: time.all_day)
+          if date_param.is_a?(String)
+            time = date_param.to_time or raise "Invalid date: #{date_param}"
+            scope = scope.where(created_at: time.all_day)
+          else
+            raise "Invalid date: #{date_param}"
+          end
         end
         pagy, posts = if (friend = current_friend)
           paginate_posts(scope.visible_to(friend))

@@ -37,4 +37,8 @@ class PostView < ApplicationRecord
   # == Validations ==
 
   validates :friend, uniqueness: { scope: :post }
+
+  # == Scopes ==
+
+  scope :with_friend, -> { includes(:friend) }
 end
