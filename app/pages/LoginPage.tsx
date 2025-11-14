@@ -2,6 +2,8 @@ import { Input, InputBase, PinInput, Text } from "@mantine/core";
 import { randomId } from "@mantine/hooks";
 import { IMaskInput } from "react-imask";
 
+import RetryIcon from "~icons/heroicons/arrow-path-20-solid";
+
 import AppLayout from "~/components/AppLayout";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { mustParsePhoneFromParts, parsePhoneFromParts } from "~/helpers/phone";
@@ -152,12 +154,13 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
               }}
               required
               withAsterisk={false}
+              disabled={showLoginCodeInput}
               styles={{
                 label: { marginBottom: rem(4) },
                 wrapper: { flexGrow: 1 },
               }}
               inputContainer={children => (
-                <Group gap={8} align="start">
+                <Group gap={8} align="center">
                   <InputBase
                     {...getInputProps("country_code")}
                     component={IMaskInput}
@@ -168,9 +171,22 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
                     variant="default"
                     required
                     withAsterisk={false}
+                    disabled={showLoginCodeInput}
                     w={60}
                   />
                   {children}
+                  <Transition mounted={showLoginCodeInput}>
+                    {transitionStyle => (
+                      <ActionIcon
+                        onClick={() => {
+                          setShowLoginCodeInput(false);
+                        }}
+                        style={transitionStyle}
+                      >
+                        <RetryIcon />
+                      </ActionIcon>
+                    )}
+                  </Transition>
                 </Group>
               )}
             />

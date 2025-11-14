@@ -1,0 +1,42 @@
+summer_friend:
+  user: testy
+  name: "Summer Pal"
+  emoji: "🌞"
+  phone_number: "+14165550101"
+  access_token: "summerpal123"
+  chosen_family: true
+  subscribed_post_types:
+    - journal_entry
+    - poem
+  time_zone_name: "America/Toronto"
+  notifications_last_cleared_at: "<%= 3.days.ago %>"
+  created_at: "<%= 5.days.ago %>"
+  updated_at: "<%= 2.days.ago %>"
+
+bookworm_friend:
+  user: noposts
+  name: "Bookworm Buddy"
+  emoji: "📚"
+  phone_number: "+14165550102"
+  access_token: "bookwormtoken"
+  chosen_family: false
+  subscribed_post_types:
+    - journal_entry
+    - question
+    - follow_up
+  time_zone_name: "America/New_York"
+  paused_since: "<%= 1.day.ago %>"
+  created_at: "<%= 4.days.ago %>"
+  updated_at: "<%= 1.day.ago %>"
+
+global_friend:
+  user: testy
+  name: "Global Explorer"
+  emoji: "🌍"
+  access_token: "globalexplore"
+  chosen_family: false
+  subscribed_post_types:
+    - journal_entry
+  time_zone_name: "Europe/London"
+  created_at: "<%= 6.days.ago %>"
+  updated_at: "<%= 6.days.ago %>"

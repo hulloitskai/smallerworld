@@ -10,13 +10,43 @@ if [ -z "$CI" ]; then
   ./bin/boot_docker
 fi
 
-# Configure Overmind and Rails test command
-export OVERMIND_ENV=test RAILS_ENV=test NODE_ENV=production RAILS_PORT=3001 INERTIA_PORT=13715
-if [ -z "$@" ]; then
-  export RAILS_TEST_CMD=test:all
-else
-  export RAILS_TEST_CMD="test $@"
+# Configure test command
+TEST_CMD="test:all"
+REMAINING_ARGS=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --unit-only)
+      if [ "$TEST_CMD" != "test:all" ]; then
+        echo "Only one of --unit-only or --system-only can be provided" >&2
+        exit 1
+      fi
+      TEST_CMD="test"
+      shift
+      ;;
+    --system-only)
+      if [ "$TEST_CMD" != "test:all" ]; then
+        echo "Only one of --unit-only or --system-only can be provided" >&2
+        exit 1
+      fi
+      TEST_CMD="test:system"
+      shift
+      ;;
+    --)
+      shift
+      REMAINING_ARGS+=("$@")
+      break
+      ;;
+    *)
+      REMAINING_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+RAILS_TEST_CMD="$TEST_CMD -d"
+if [ ${#REMAINING_ARGS[@]} -gt 0 ]; then
+  RAILS_TEST_CMD="$RAILS_TEST_CMD ${REMAINING_ARGS[*]}"
 fi
+export RAILS_TEST_CMD
 
 # Select Procfile
 PROCFILE=./Procfile.test
@@ -24,11 +54,12 @@ if [ -n "$CI" ]; then
   PROCFILE=./Procfile.ci-test
 fi
 
+# Launch overmind
 set +e
-
-trap "exit 0" INT
+trap "exit 1" INT
 EXIT_CODE=0
-./bin/overmind start -f "$PROCFILE" || EXIT_CODE=$?
+export RAILS_ENV=test NODE_ENV=production RAILS_PORT=3001 INERTIA_PORT=13715
+OVERMIND_ENV=test ./bin/overmind start -f "$PROCFILE" || EXIT_CODE=$?
 if [ "$EXIT_CODE" -eq 0 ]; then
   echo "Tests passed" >&2
 else

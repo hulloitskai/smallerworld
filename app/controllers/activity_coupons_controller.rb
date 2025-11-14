@@ -26,12 +26,11 @@ class ActivityCouponsController < ApplicationController
   def create
     respond_to do |format|
       format.json do
-        activity_id, friend_id = params
-          .require(:activity_coupon)
-          .fetch_values(:activity_id, :friend_id)
-        activity = Activity.find(activity_id)
+        activity_coupon_params = params
+          .expect(activity_coupon: %i[activity_id friend_id])
+        activity = Activity.find(activity_coupon_params.fetch(:activity_id))
         authorize!(activity, to: :manage?)
-        friend = Friend.find(friend_id)
+        friend = Friend.find(activity_coupon_params.fetch(:friend_id))
         authorize!(friend, to: :manage?)
         activity_coupon = friend.activity_coupons.create!(activity:)
         render(

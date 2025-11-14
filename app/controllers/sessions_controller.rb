@@ -25,11 +25,13 @@ class SessionsController < ApplicationController
   def create
     respond_to do |format|
       format.json do
-        phone_number, login_code = params
-          .require(:login)
-          .fetch_values(:phone_number, :login_code)
-        if (login_request = LoginRequest.find_valid(phone_number:, login_code:))
-          registered = if (user = User.find_by_phone_number(phone_number))
+        login_params = params.expect(login: %i[phone_number login_code])
+        if (login_request = LoginRequest.find_valid(
+          **login_params.to_h.symbolize_keys,
+        ))
+          registered = if (user = User.find_by_phone_number(
+            login_request.phone_number,
+          ))
             start_new_session_for!(user)
             true
           else
