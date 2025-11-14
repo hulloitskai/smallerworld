@@ -16,30 +16,47 @@ const ErrorPage: PageComponent<ErrorPageProps> = ({
   description,
   error,
   title,
-}) => (
-  <Stack align="center">
-    <Badge variant="outline" color="red">
-      status {code}
-    </Badge>
-    <Stack align="center" gap={2} ta="center">
-      <Title size="h2">{title}</Title>
-      <Text c="dimmed">{description}</Text>
+}) => {
+  const [hasPreviousPage, setHasPreviousPage] = useState<boolean>();
+  useEffect(() => {
+    setHasPreviousPage(history.length > 1);
+  }, []);
+  return (
+    <Stack align="center">
+      <Badge variant="outline" color="red">
+        status {code}
+      </Badge>
+      <Stack align="center" gap={2} ta="center">
+        <Title size="h2">{title}</Title>
+        <Text c="dimmed">{description}</Text>
+      </Stack>
+      {!!error && (
+        <Code block tt="none" style={{ alignSelf: "stretch" }}>
+          error: {error}
+        </Code>
+      )}
+      <Transition mounted={typeof hasPreviousPage === "boolean"}>
+        {transitionStyle => (
+          <Button
+            leftSection={<BackIcon />}
+            onClick={() => {
+              if (hasPreviousPage) {
+                history.back();
+              } else {
+                router.visit(routes.start.redirect.path());
+              }
+            }}
+            style={transitionStyle}
+          >
+            {hasPreviousPage
+              ? "back to previous page"
+              : "back to smaller world"}
+          </Button>
+        )}
+      </Transition>
     </Stack>
-    {!!error && (
-      <Code block tt="none" style={{ alignSelf: "stretch" }}>
-        error: {error}
-      </Code>
-    )}
-    <Button
-      leftSection={<BackIcon />}
-      onClick={() => {
-        history.back();
-      }}
-    >
-      back to previous page
-    </Button>
-  </Stack>
-);
+  );
+};
 
 ErrorPage.layout = page => (
   <AppLayout<ErrorPageProps>
