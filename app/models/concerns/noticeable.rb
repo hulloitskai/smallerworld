@@ -11,8 +11,6 @@ module Noticeable
 
   # == Type Aliases ==
 
-  NotificationRecipient = T.type_alias { T.all(ApplicationRecord, Notifiable) }
-
   included do
     T.bind(self, T.class_of(ActiveRecord::Base))
 
@@ -23,10 +21,6 @@ module Noticeable
 
   # == Interface ==
 
-  sig do
-    abstract
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(NotificationMessage)
-  end
+  sig { abstract.params(recipient: Notifiable).returns(NotificationMessage) }
   def notification_message(recipient:); end
 end

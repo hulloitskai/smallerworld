@@ -7,24 +7,22 @@ import {
 } from "@mantine/core";
 
 import AppLayout from "~/components/AppLayout";
-import LocalUniversePageFeed from "~/components/LocalUniversePageFeed";
+import UniversePageFeed from "~/components/UniversePageFeed";
 import WorldFooter from "~/components/WorldFooter";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import { useWebPush } from "~/helpers/webPush";
-import { type LocalUniverseWorld, type User } from "~/types";
+import { type UniverseWorld, type User } from "~/types";
 
-import classes from "./LocalUniversePage.module.css";
+import classes from "./UniversePage.module.css";
 
-export interface LocalUniversePageProps extends SharedPageProps {
+export interface UniversePageProps extends SharedPageProps {
   currentUser: User;
   hideStats: boolean;
 }
 
 const ICON_SIZE = 80;
 
-const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
-  currentUser,
-}) => {
+const UniversePage: PageComponent<UniversePageProps> = ({ currentUser }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
   const {
     pushRegistration,
@@ -34,8 +32,8 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
   useUserTheme(currentUser.theme);
 
   // == Load worlds
-  const { data } = useRouteSWR<{ worlds: LocalUniverseWorld[] }>(
-    routes.localUniverse.worlds,
+  const { data } = useRouteSWR<{ worlds: UniverseWorld[] }>(
+    routes.universe.worlds,
     {
       descriptor: "load worlds",
     },
@@ -46,7 +44,7 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
     <Stack gap="lg" py="md">
       <Stack gap="sm">
         <Title size="h2" className={classes.pageTitle} mx="md">
-          your universe
+          smaller universe
         </Title>
         {worlds && isEmpty(worlds) ? (
           <Container size="xs" w="100%">
@@ -118,7 +116,7 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
         />
       </Container>
       <Container size="xs" w="100%">
-        <LocalUniversePageFeed />
+        <UniversePageFeed />
       </Container>
     </Stack>
   );
@@ -139,8 +137,8 @@ const LocalUniversePage: PageComponent<LocalUniversePageProps> = ({
   );
 };
 
-LocalUniversePage.layout = page => (
-  <AppLayout<LocalUniversePageProps>
+UniversePage.layout = page => (
+  <AppLayout<UniversePageProps>
     title="your universe"
     manifestUrl={routes.world.manifest.path()}
     pwaScope={withTrailingSlash(routes.world.show.path())}
@@ -151,10 +149,10 @@ LocalUniversePage.layout = page => (
   </AppLayout>
 );
 
-export default LocalUniversePage;
+export default UniversePage;
 
 interface WorldIconProps extends BoxProps {
-  world: LocalUniverseWorld;
+  world: UniverseWorld;
 }
 
 const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => (

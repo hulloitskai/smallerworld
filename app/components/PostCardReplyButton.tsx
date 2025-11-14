@@ -6,7 +6,7 @@ import {
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
-import { mutateUserPagePosts } from "~/helpers/userPages";
+import { mutateUserPagePosts } from "~/helpers/users";
 import {
   type AssociatedFriend,
   type Author,

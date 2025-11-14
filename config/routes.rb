@@ -139,17 +139,17 @@ Rails.application.routes.draw do
             only: :index,
             export: true
 
-  # == Local Universe ==
+  # == Universe ==
 
   resource(
-    :local_universe,
+    :universe,
     path: "/world/universe",
     only: :show,
-    export: { namespace: "localUniverse" },
+    export: { namespace: "universe" },
   ) do
     get :worlds
   end
-  resources :local_universe_posts,
+  resources :universe_posts,
             path: "/world/universe/posts",
             only: :index,
             export: true

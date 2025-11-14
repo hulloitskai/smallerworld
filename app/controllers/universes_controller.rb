@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class LocalUniversesController < ApplicationController
+class UniversesController < ApplicationController
   # == Filters ==
 
   before_action :authenticate_user!
@@ -12,7 +12,7 @@ class LocalUniversesController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        render(inertia: "LocalUniversePage")
+        render(inertia: "UniversePage")
       end
     end
   end
@@ -50,7 +50,7 @@ class LocalUniversesController < ApplicationController
           else
             0
           end
-          LocalUniverseWorld.new(
+          UniverseWorld.new(
             user:,
             uncleared_notification_count:,
             last_post_created_at: user[:last_post_created_at],
@@ -58,7 +58,7 @@ class LocalUniversesController < ApplicationController
           )
         end
         render(json: {
-          worlds: LocalUniverseWorldSerializer.many(worlds),
+          worlds: UniverseWorldSerializer.many(worlds),
           "hideStats" => current_user.hide_stats,
         })
       end

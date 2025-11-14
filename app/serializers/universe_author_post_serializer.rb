@@ -1,14 +1,14 @@
 # typed: true
 # frozen_string_literal: true
 
-class LocalUniverseAuthorPostSerializer < LocalUniversePublicPostSerializer
+class UniverseAuthorPostSerializer < UniversePublicPostSerializer
   # == Configuration ==
 
   object_as :post
 
   # == Type ==
 
-  attribute :local_universe_post_type, type: '"author"' do
+  attribute :universe_post_type, type: '"author"' do
     "author"
   end
 

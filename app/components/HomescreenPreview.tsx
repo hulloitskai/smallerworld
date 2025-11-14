@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import backgroundSrc from "~/assets/images/homescreen-preview-background.jpg";
 
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 
 import classes from "./HomescreenPreview.module.css";
 

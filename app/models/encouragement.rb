@@ -52,23 +52,21 @@ class Encouragement < ApplicationRecord
 
   # == Noticeable ==
 
-  sig do
-    override.params(recipient: T.nilable(NotificationRecipient))
-      .returns(NotificationMessage)
-  end
+  sig { override.params(recipient: Notifiable).returns(NotificationMessage) }
   def notification_message(recipient:)
-    unless  recipient.is_a?(User)
-      raise "Invalid recipient for #{self.class} notification: " \
-        "#{recipient.inspect}"
+    case recipient
+    when User
+      friend = friend!
+      NotificationMessage.new(
+        title: "#{friend.name} wants to hear from u!",
+        body: [emoji, message].join(" "),
+        target_url: Rails.application.routes.url_helpers.world_url(
+          trailing_slash: true,
+        ),
+      )
+    else
+      raise "Invalid notification recipient: #{recipient.inspect}"
     end
-    friend = friend!
-    NotificationMessage.new(
-      title: "#{friend.name} wants to hear from u!",
-      body: [emoji, message].join(" "),
-      target_url: Rails.application.routes.url_helpers.world_url(
-        trailing_slash: true,
-      ),
-    )
   end
 
   # == Methods ==

@@ -1,6 +1,6 @@
 import { useTimeZone } from "~/helpers/time";
 import { useTimelineStartDate } from "~/helpers/timeline";
-import { openNewPostModal } from "~/helpers/worldPage";
+import { openNewPostModal } from "~/helpers/world";
 import { type PostStreak } from "~/types";
 
 import TimelineCard from "./TimelineCard";

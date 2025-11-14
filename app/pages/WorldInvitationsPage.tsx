@@ -1,7 +1,7 @@
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldInvitationCard from "~/components/WorldInvitationCard";
-import { useWorldActivities } from "~/helpers/worldPage";
+import { useWorldActivities } from "~/helpers/world";
 import { type User, type WorldInvitation } from "~/types";
 
 export interface WorldInvitationsPageProps extends SharedPageProps {

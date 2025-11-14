@@ -2,9 +2,9 @@ import { useInViewport } from "@mantine/hooks";
 import { type PropsWithChildren } from "react";
 
 import { NEKO_SIZE } from "~/helpers/neko";
-import { mutateUserPagePosts, useUserPagePosts } from "~/helpers/userPages";
+import { type UserPageProps } from "~/helpers/userPage";
+import { mutateUserPagePosts, useUserPosts } from "~/helpers/users";
 import { useWebPush } from "~/helpers/webPush";
-import { type UserPageProps } from "~/pages/UserPage";
 import { type UserFriendPost } from "~/types";
 
 import EncouragementCard from "./EncouragementCard";
@@ -32,10 +32,9 @@ const UserPageFeed: FC<UserPageFeedProps> = props => {
   const [date, setDate] = useState<string | null>(null);
 
   // == Load posts
-  const { posts, hasMorePosts, setSize, isValidating } = useUserPagePosts(
-    user.id,
-    { date },
-  );
+  const { posts, hasMorePosts, setSize, isValidating } = useUserPosts(user.id, {
+    date,
+  });
   const longerThan24HoursSinceLastPost = useMemo(() => {
     if (!posts || date) {
       return false;

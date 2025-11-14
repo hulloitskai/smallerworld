@@ -1,14 +1,14 @@
 # typed: true
 # frozen_string_literal: true
 
-class LocalUniverseFriendPostSerializer < LocalUniversePublicPostSerializer
+class UniverseFriendPostSerializer < UniversePublicPostSerializer
   # == Configuration ==
 
   object_as :post
 
   # == Type ==
 
-  attribute :local_universe_post_type, type: '"friend"' do
+  attribute :universe_post_type, type: '"friend"' do
     "friend"
   end
 

@@ -11,7 +11,7 @@ import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { CANONICAL_DOMAIN } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { currentTimeZone } from "~/helpers/time";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import { type Image, type Upload, type UserTheme } from "~/types";
 
 import classes from "./RegistrationPage.module.css";

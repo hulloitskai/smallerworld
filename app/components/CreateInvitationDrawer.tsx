@@ -15,7 +15,7 @@ import {
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
-import { useWorldActivities } from "~/helpers/worldPage";
+import { useWorldActivities } from "~/helpers/world";
 import { type Activity, type Invitation, type JoinRequest } from "~/types";
 
 import ActivityCard from "./ActivityCard";

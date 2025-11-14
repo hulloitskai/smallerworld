@@ -7,7 +7,7 @@ class UniverseWorldSerializer < ApplicationSerializer
   attributes user_id: { type: :string },
              user_handle: { type: :string },
              user_name: { type: :string },
-             post_count: { type: :number },
+             uncleared_notification_count: { type: :number },
              last_post_created_at: { type: :string, nullable: true },
              associated_friend_access_token: { type: :string, nullable: true }
 

@@ -1,7 +1,7 @@
 import {
   type UserPageDialogState,
   UserPageDialogStateContext,
-} from "~/helpers/userPages";
+} from "~/helpers/userPage";
 
 const UserPageDialogStateProvider = ({ children }: PropsWithChildren) => {
   const [opened, setOpened] = useState(false);

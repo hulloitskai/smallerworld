@@ -152,34 +152,29 @@ class Friend < ApplicationRecord
 
   # == Noticeable ==
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(NotificationMessage)
-  end
+  sig { override.params(recipient: Notifiable).returns(NotificationMessage) }
   def notification_message(recipient:)
-    unless recipient.is_a?(User)
-      raise "Invalid recipient for #{self.class} notification: " \
-        "#{recipient.inspect}"
-    end
-    if push_registrations.exists?
-      NotificationMessage.new(
-        title: "#{fun_name} installed your world!",
-        body: "#{name} installed your world on their phone :)",
-        target_url: Rails.application.routes.url_helpers.world_friends_url(
-          friend_id: id,
-          trailing_slash: true,
-        ),
-      )
+    case recipient
+    when User
+      if push_registrations.exists?
+        NotificationMessage.new(
+          title: "#{fun_name} installed your world!",
+          body: "#{name} installed your world on their phone :)",
+          target_url: Rails.application.routes.url_helpers
+            .world_friends_url(friend_id: id, trailing_slash: true),
+        )
+      else
+        NotificationMessage.new(
+          title: "#{fun_name} joined your world!",
+          body: "#{name} subscribed to text updates",
+          target_url: Rails.application.routes.url_helpers.world_friends_url(
+            friend_id: id,
+            trailing_slash: true,
+          ),
+        )
+      end
     else
-      NotificationMessage.new(
-        title: "#{fun_name} joined your world!",
-        body: "#{name} subscribed to text updates",
-        target_url: Rails.application.routes.url_helpers.world_friends_url(
-          friend_id: id,
-          trailing_slash: true,
-        ),
-      )
+      raise "Invalid notification recipient: #{recipient.inspect}"
     end
   end
 

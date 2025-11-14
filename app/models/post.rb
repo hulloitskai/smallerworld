@@ -228,11 +228,7 @@ class Post < ApplicationRecord
 
   # == Noticeable ==
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(NotificationMessage)
-  end
+  sig { override.params(recipient: Notifiable).returns(NotificationMessage) }
   def notification_message(recipient:)
     title = "new #{type.humanize(capitalize: false)}"
     author = author!
@@ -258,9 +254,9 @@ class Post < ApplicationRecord
         trailing_slash: true,
       )
     when User
-      url_helpers.local_universe_url(post_id: id)
+      url_helpers.universe_url(post_id: id)
     else
-      raise "Invalid recipient: #{recipient.inspect}"
+      raise "Invalid notification recipient: #{recipient.inspect}"
     end
     NotificationMessage.new(title:, body:, image: cover_image, target_url:)
   end
@@ -394,16 +390,13 @@ class Post < ApplicationRecord
       .find_each do |friend|
         text_blasts.create!(friend:, send_delay: delay)
       end
-    if visibility == :public
-      notifications.find_or_create_by!(recipient: nil) do |notification|
-        notification.push_delay = delay
-      end
-      User.subscribed_to_public_posts.find_each do |user|
-        notifications.find_or_create_by!(recipient: user) do |notification|
-          notification.push_delay = delay
-        end
-      end
-    end
+    # if visibility == :public
+    #   User.subscribed_to_public_posts.find_each do |user|
+    #     notifications.find_or_create_by!(recipient: user) do |notification|
+    #       notification.push_delay = delay
+    #     end
+    #   end
+    # end
   end
 
   # sig { void }

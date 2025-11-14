@@ -70,12 +70,6 @@ module GeneratedUrlHelpersModule
   def invitation_world_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def local_universe_posts_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def local_universe_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def login_requests_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -274,6 +268,12 @@ module GeneratedUrlHelpersModule
   def timeline_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def universe_posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def universe_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def unpause_world_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -337,5 +337,5 @@ module GeneratedUrlHelpersModule
   def world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def worlds_local_universe_url(*args); end
+  def worlds_universe_url(*args); end
 end

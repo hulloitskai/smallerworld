@@ -17,20 +17,11 @@ import UserPageRefreshButton from "~/components/UserPageRefreshButton";
 import { UserPageRequestInvitationAlert } from "~/components/UserPageRequestInvitationAlert";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { type UserPageProps } from "~/helpers/userPage";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import { useWebPush } from "~/helpers/webPush";
-import { type Encouragement, type UserProfile } from "~/types";
 
 import classes from "./UserPage.module.css";
-
-export interface UserPageProps extends SharedPageProps {
-  user: UserProfile;
-  replyToNumber: string | null;
-  lastSentEncouragement: Encouragement | null;
-  invitationRequested: boolean;
-  hideNeko: boolean;
-  allowFriendSharing: boolean;
-}
 
 const ICON_SIZE = 96;
 

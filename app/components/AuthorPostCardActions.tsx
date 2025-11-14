@@ -11,7 +11,7 @@ import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { mutateWorldPosts, mutateWorldTimeline } from "~/helpers/worldPage";
+import { mutateWorldPosts, mutateWorldTimeline } from "~/helpers/world";
 import {
   type PostReaction,
   type PostShare,

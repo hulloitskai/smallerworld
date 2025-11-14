@@ -3,9 +3,11 @@ import { useModals } from "@mantine/modals";
 
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 
-import { useUserPageDialogOpened } from "~/helpers/userPages";
+import {
+  type UserPageProps,
+  useUserPageDialogOpened,
+} from "~/helpers/userPage";
 import { useWebPush } from "~/helpers/webPush";
-import { type UserPageProps } from "~/pages/UserPage";
 import { type ActivityCoupon, type UserPost } from "~/types";
 
 import ActivityCouponsCarousel from "./ActivityCouponsCarousel";

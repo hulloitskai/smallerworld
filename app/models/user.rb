@@ -318,7 +318,7 @@ class User < ApplicationRecord
   # WARNING: NOT IMPLEMENTED!
   sig { returns(T::Set[String]) }
   def self.handles_subscribed_to_public_posts
-    Set.new
+    raise NotImplementedError, "Not implemented"
     # @handles_subscribed_to_public_posts ||= scoped do
     #   all_flags = Rails.application.credentials.feature_flags or next Set.new
     #   handles = all_flags.filter_map do |handle, flags|

@@ -6,7 +6,7 @@ import CloseIcon from "~icons/heroicons/x-mark";
 import CloseOutlineIcon from "~icons/heroicons/x-mark-20-solid";
 
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { useWorldPosts } from "~/helpers/worldPage";
+import { useWorldPosts } from "~/helpers/world";
 import { type WorldPageProps } from "~/pages/WorldPage";
 import { type PostType } from "~/types";
 

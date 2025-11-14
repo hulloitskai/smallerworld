@@ -8,7 +8,7 @@ import HomescreenPreview from "~/components/HomescreenPreview";
 import PostCard from "~/components/PostCard";
 import { prettyFriendName } from "~/helpers/friends";
 import { prettyInviteeName } from "~/helpers/invitations";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import {
   type FriendProfile,
   type Invitation,

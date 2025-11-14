@@ -5,7 +5,7 @@ import AppLayout from "~/components/AppLayout";
 import HomeScreenPreview from "~/components/HomescreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import { type Image, type Upload, type User } from "~/types";
 
 import classes from "./EditWorldPage.module.css";

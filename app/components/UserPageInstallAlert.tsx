@@ -10,9 +10,9 @@ import {
 } from "~/helpers/browsers";
 import {
   openUserPageInstallationInstructionsInMobileSafari,
+  type UserPageProps,
   useUserPageDialogOpened,
-} from "~/helpers/userPages";
-import { type UserPageProps } from "~/pages/UserPage";
+} from "~/helpers/userPage";
 import { type Friend } from "~/types/generated";
 
 import BrowserNotSupportedText from "./BrowserNotSupportedText";

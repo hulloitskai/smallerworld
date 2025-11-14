@@ -1,8 +1,8 @@
 import { Image } from "@mantine/core";
 
-import { useLocalUniversePosts } from "~/helpers/localUniversePage";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { type LocalUniversePageProps } from "~/pages/LocalUniversePage";
+import { useUniversePosts } from "~/helpers/universe";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
+import { type UniversePageProps } from "~/pages/UniversePage";
 
 import AuthorPostCardActions from "./AuthorPostCardActions";
 import FriendPostCardActions from "./FriendPostCardActions";
@@ -10,25 +10,24 @@ import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 import PublicPostCardActions from "./PublicPostCardActions";
 
-import classes from "./LocalUniversePageFeed.module.css";
+import classes from "./UniversePageFeed.module.css";
 
-export interface LocalUniversePageFeedProps extends BoxProps {}
+export interface UniversePageFeedProps extends BoxProps {}
 
 const AUTHOR_ICON_SIZE = 26;
 
-const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
+const UniversePageFeed: FC<UniversePageFeedProps> = ({
   className,
   ...otherProps
 }) => {
-  const { currentUser, hideStats } = usePageProps<LocalUniversePageProps>();
+  const { currentUser, hideStats } = usePageProps<UniversePageProps>();
   const queryParams = useQueryParams();
 
   // == Load posts
-  const { posts, hasMorePosts, setSize, isValidating } =
-    useLocalUniversePosts();
+  const { posts, hasMorePosts, setSize, isValidating } = useUniversePosts();
 
   return (
-    <Stack className={cn("LocalUniversePageFeed", className)} {...otherProps}>
+    <Stack className={cn("UniversePageFeed", className)} {...otherProps}>
       {posts ? (
         isEmpty(posts) ? (
           <Card withBorder>
@@ -52,8 +51,7 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                           routes.users.show.path({
                             id: post.author.handle,
                             query: {
-                              ...(post.local_universe_post_type ===
-                                "friend" && {
+                              ...(post.universe_post_type === "friend" && {
                                 friend_token:
                                   post.associated_friend.access_token,
                               }),
@@ -82,14 +80,14 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
                   {...{ post }}
                   focus={queryParams.post_id === post.id}
                   actions={
-                    post.local_universe_post_type === "author" ? (
+                    post.universe_post_type === "author" ? (
                       <AuthorPostCardActions
                         {...{
                           post,
                           hideStats,
                         }}
                       />
-                    ) : post.local_universe_post_type === "friend" ? (
+                    ) : post.universe_post_type === "friend" ? (
                       <FriendPostCardActions
                         {...{ post }}
                         author={post.author}
@@ -121,4 +119,4 @@ const LocalUniversePageFeed: FC<LocalUniversePageFeedProps> = ({
   );
 };
 
-export default LocalUniversePageFeed;
+export default UniversePageFeed;

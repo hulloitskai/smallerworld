@@ -70,12 +70,6 @@ module GeneratedPathHelpersModule
   def invitation_world_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def local_universe_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def local_universe_posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def login_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -274,6 +268,12 @@ module GeneratedPathHelpersModule
   def timeline_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def universe_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def universe_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def unpause_world_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -337,5 +337,5 @@ module GeneratedPathHelpersModule
   def world_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def worlds_local_universe_path(*args); end
+  def worlds_universe_path(*args); end
 end

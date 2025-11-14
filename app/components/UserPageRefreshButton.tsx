@@ -1,7 +1,7 @@
 import { type ActionIconProps } from "@mantine/core";
 
-import { useUserPagePosts } from "~/helpers/userPages";
-import { type UserPageProps } from "~/pages/UserPage";
+import { type UserPageProps } from "~/helpers/userPage";
+import { useUserPosts } from "~/helpers/users";
 
 export interface UserPageRefreshButtonProps
   extends Omit<ActionIconProps, "children"> {
@@ -20,7 +20,7 @@ const UserPageRefreshButton: FC<UserPageRefreshButtonProps> = ({
     mutate: mutatePosts,
     isValidating,
     posts,
-  } = useUserPagePosts(userId, {
+  } = useUserPosts(userId, {
     revalidateOnMount: false,
   });
 

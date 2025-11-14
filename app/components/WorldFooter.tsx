@@ -7,8 +7,8 @@ import {
 
 import logoSrc from "~/assets/images/logo.png";
 
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
-import { type LocalUniversePageProps } from "~/pages/LocalUniversePage";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
+import { type UniversePageProps } from "~/pages/UniversePage";
 import { type WorldPageProps } from "~/pages/WorldPage";
 
 import classes from "./WorldFooter.module.css";
@@ -23,7 +23,7 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
     const {
       url,
       props: { currentUser },
-    } = usePage<WorldPageProps | LocalUniversePageProps>();
+    } = usePage<WorldPageProps | UniversePageProps>();
     const [value, setValue] = useState<"world" | "universe">(() =>
       urlValue(url),
     );
@@ -78,7 +78,7 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
               case "universe":
                 setValue(value);
                 startTransition(() => {
-                  router.visit(routes.localUniverse.show.path());
+                  router.visit(routes.universe.show.path());
                 });
                 break;
             }
@@ -105,4 +105,4 @@ const NavItem: FC<NavItemLabel> = ({ text, icon }) => (
 );
 
 const urlValue = (url: string): "world" | "universe" =>
-  url.startsWith(routes.localUniverse.show.path()) ? "universe" : "world";
+  url.startsWith(routes.universe.show.path()) ? "universe" : "world";

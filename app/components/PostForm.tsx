@@ -50,7 +50,7 @@ import {
   mutateWorldPosts,
   mutateWorldTimeline,
   useWorldFriends,
-} from "~/helpers/worldPage";
+} from "~/helpers/world";
 import {
   type Encouragement,
   type Post,

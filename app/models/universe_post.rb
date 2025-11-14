@@ -1,7 +1,7 @@
 # typed: true
 # frozen_string_literal: true
 
-class LocalUniversePost < T::Struct
+class UniversePost < T::Struct
   # == Properties ==
 
   const :post, Post

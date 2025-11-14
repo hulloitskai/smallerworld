@@ -3,8 +3,10 @@ import { useModals } from "@mantine/modals";
 
 import RequestInvitationIcon from "~icons/heroicons/hand-raised-20-solid";
 
-import { useUserPageDialogOpened } from "~/helpers/userPages";
-import { type UserPageProps } from "~/pages/UserPage";
+import {
+  type UserPageProps,
+  useUserPageDialogOpened,
+} from "~/helpers/userPage";
 
 import RequestInvitationDrawerModal from "./RequestInvitationDrawerModal";
 

@@ -15,7 +15,7 @@ import {
 } from "~/helpers/posts";
 import { useSavedDraftType } from "~/helpers/posts/form";
 import { useWebPush } from "~/helpers/webPush";
-import { openNewPostModal } from "~/helpers/worldPage";
+import { openNewPostModal } from "~/helpers/world";
 import { type WorldPageProps } from "~/pages/WorldPage";
 import { type Encouragement, type WorldPost } from "~/types";
 

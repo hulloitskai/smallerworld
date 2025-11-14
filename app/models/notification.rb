@@ -43,8 +43,13 @@ class Notification < ApplicationRecord
   belongs_to :noticeable, polymorphic: true
   belongs_to :recipient,
              polymorphic: true,
-             optional: true,
              inverse_of: :received_notifications
+
+  sig { returns(Notifiable) }
+  def recipient!
+    recipient or
+      raise ActiveRecord::RecordNotFound, "Missing associated recipient"
+  end
 
   sig { returns(Noticeable) }
   def noticeable!
@@ -60,7 +65,6 @@ class Notification < ApplicationRecord
 
   scope :to_friends, -> { where(recipient_type: "Friend") }
   scope :to_users, -> { where(recipient_type: "User") }
-  scope :to_anonymous, -> { where(recipient_type: nil) }
   scope :delivered, -> { where.not(delivered_at: nil) }
   scope :undelivered, -> { where(delivered_at: nil) }
 
@@ -89,7 +93,7 @@ class Notification < ApplicationRecord
 
   sig { returns(NotificationMessage) }
   def message
-    noticeable!.notification_message(recipient:)
+    noticeable!.notification_message(recipient: recipient!)
   end
   delegate :title, :body, :image, to: :message
 

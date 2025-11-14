@@ -1,5 +1,4 @@
 import { useNetwork } from "@mantine/hooks";
-import { createContext, useContext } from "react";
 import { mutate } from "swr";
 import { cache } from "swr/_internal";
 import useSWRInfinite, {
@@ -8,14 +7,11 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
-import { type Friend, type UserPost, type UserProfile } from "~/types";
-
-import { openUrlInMobileSafari } from "./browsers";
-import { queryParamsFromPath } from "./inertia/routing";
+import { type UserPost } from "~/types";
 
 export const USER_ICON_RADIUS_RATIO = 4.5;
 
-export interface UserPagePostsData {
+export interface UserPostsData {
   posts: UserPost[];
   pagination: { next: string | null };
 }
@@ -25,10 +21,10 @@ interface UserPostsGetKeyOptions {
   date?: string | null;
 }
 
-const userPagePostsGetKey = (
+const userPostsGetKey = (
   userId: string,
   options?: UserPostsGetKeyOptions,
-): SWRInfiniteKeyLoader<UserPagePostsData> => {
+): SWRInfiniteKeyLoader<UserPostsData> => {
   return (index, previousPageData): string | null => {
     const query: Record<string, any> = {};
     if (options?.friendAccessToken) {
@@ -48,20 +44,17 @@ const userPagePostsGetKey = (
   };
 };
 
-export interface UserPagePostsOptions
-  extends SWRInfiniteConfiguration<UserPagePostsData> {
+export interface UserPostsOptions
+  extends SWRInfiniteConfiguration<UserPostsData> {
   date?: string | null;
 }
 
-export const useUserPagePosts = (
-  userId: string,
-  options?: UserPagePostsOptions,
-) => {
+export const useUserPosts = (userId: string, options?: UserPostsOptions) => {
   const currentFriend = useCurrentFriend();
   const { online } = useNetwork();
   const { date, ...swrConfiguration } = options ?? {};
-  const { data, ...swrResponse } = useSWRInfinite<UserPagePostsData>(
-    userPagePostsGetKey(userId, {
+  const { data, ...swrResponse } = useSWRInfinite<UserPostsData>(
+    userPostsGetKey(userId, {
       friendAccessToken: currentFriend?.access_token,
       date: date ?? null,
     }),
@@ -91,7 +84,7 @@ export const mutateUserPagePosts = async (userId: string): Promise<void> => {
   for (const path of cache.keys()) {
     const url = hrefToUrl(path);
     if (url.pathname === postsPath) {
-      const getKey: SWRInfiniteKeyLoader<UserPagePostsData> = (
+      const getKey: SWRInfiniteKeyLoader<UserPostsData> = (
         index,
         previousPageData,
       ) => {
@@ -112,59 +105,6 @@ export const mutateUserPagePosts = async (userId: string): Promise<void> => {
     }
   }
   await Promise.all(mutations);
-};
-
-export interface UserPageDialogState {
-  opened: boolean;
-  setOpened: (opened: boolean) => void;
-}
-
-export const UserPageDialogStateContext = createContext<
-  UserPageDialogState | undefined
->(undefined);
-
-const useUserPageDialogState = (): UserPageDialogState => {
-  const state = useContext(UserPageDialogStateContext);
-  if (!state) {
-    throw new Error(
-      "useUserPageDialogState must be used within a UserPageDialogStateProvider",
-    );
-  }
-  return state;
-};
-
-export const useUserPageDialogOpened = (opened?: boolean): boolean => {
-  const state = useUserPageDialogState();
-  useEffect(() => {
-    if (typeof opened === "boolean") {
-      state.setOpened(opened);
-    }
-  }, [opened]); // eslint-disable-line react-hooks/exhaustive-deps
-  return state.opened;
-};
-
-interface UserPageInstallationInstructionsInMobileSafariSettings {
-  currentFriend: Friend;
-  user: UserProfile;
-}
-
-export const openUserPageInstallationInstructionsInMobileSafari = ({
-  currentFriend,
-  user,
-}: UserPageInstallationInstructionsInMobileSafariSettings) => {
-  const instructionsQuery: Record<string, string> = {
-    friend_token: currentFriend.access_token,
-    intent: "installation_instructions",
-  };
-  const { manifest_icon_type } = queryParamsFromPath(location.href);
-  if (manifest_icon_type) {
-    instructionsQuery.manifest_icon_type = manifest_icon_type;
-  }
-  const instructionsPath = routes.users.show.path({
-    id: user.handle,
-    query: instructionsQuery,
-  });
-  openUrlInMobileSafari(instructionsPath);
 };
 
 export const mutateUserTimeline = async (userId: string): Promise<void> => {

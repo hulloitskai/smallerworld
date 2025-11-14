@@ -84,29 +84,25 @@ class ActivityCoupon < ApplicationRecord
 
   # == Noticeable ==
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(NotificationMessage)
-  end
+  sig { override.params(recipient: Notifiable).returns(NotificationMessage) }
   def notification_message(recipient:)
-    unless recipient.is_a?(Friend)
-      raise "Invalid recipient for #{self.class} notification: " \
-        "#{recipient.inspect}"
+    case recipient
+    when Friend
+      activity = activity!
+      NotificationMessage.new(
+        title: "You've got a coupon for: #{activity.name}",
+        body: "This coupon expires in " \
+          "#{ExpiryFormatter.relative_to_now(expires_at)}, redeem it soon!",
+        target_url: Rails.application.routes.url_helpers.user_url(
+          user!,
+          friend_token: recipient.access_token,
+          anchor: "#invitations",
+          trailing_slash: true,
+        ),
+      )
+    else
+      raise "Invalid notification recipient: #{recipient.inspect}"
     end
-
-    activity = activity!
-    NotificationMessage.new(
-      title: "You've got a coupon for: #{activity.name}",
-      body: "This coupon expires in " \
-        "#{ExpiryFormatter.relative_to_now(expires_at)}, redeem it soon!",
-      target_url: Rails.application.routes.url_helpers.user_url(
-        user!,
-        friend_token: recipient.access_token,
-        anchor: "#invitations",
-        trailing_slash: true,
-      ),
-    )
   end
 
   # == Methods ==

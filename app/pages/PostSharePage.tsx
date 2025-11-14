@@ -9,7 +9,7 @@ import AppLayout from "~/components/AppLayout";
 import PostCard from "~/components/PostCard";
 import PostSharePageRequestInvitationAlert from "~/components/PostSharePageRequestInvitationAlert";
 import PublicPostCardActions from "~/components/PublicPostCardActions";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/userPages";
+import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import {
   type FriendProfile,
   type UserPost,
