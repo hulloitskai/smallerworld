@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PushRegistrationSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :created_at,
              :device_id,

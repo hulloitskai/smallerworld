@@ -5,7 +5,8 @@ class ApplicationSerializer < Oj::Serializer
   include TypesFromSerializers::DSL
   include Routing
 
-  # == Rendering
+  # == Rendering ==
+
   def render_as_hash(item, options = nil)
     super.compact
   end

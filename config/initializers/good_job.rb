@@ -6,7 +6,7 @@ Rails.application.configure do
     config.smaller_number_is_higher_priority = true
     config.max_threads = ENV.fetch("GOOD_JOB_MAX_THREADS", 2).to_i
 
-    # == Cron jobs
+    # == Cron Jobs
     config.enable_cron = true
     config.cron = {
       "active_storage/cleanup_blobs": {

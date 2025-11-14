@@ -3,57 +3,47 @@
 
 # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
-  # == Redirects
+  # == Redirects ==
+
   constraints SubdomainConstraint do
     get "(*any)" => redirect(subdomain: "", status: 302)
   end
 
-  # == Errors
-  scope controller: :errors, constraints: { format: %w[html json] } do
+  # == Errors ==
+
+  scope controller: :errors do
     get "/401", action: :unauthorized
     get "/404", action: :not_found
     get "/422", action: :unprocessable_entity
     get "/500", action: :internal_server_error
   end
 
-  # == Healthcheck
-  defaults constraints: { format: "json" }, export: true do
+  # == Healthcheck ==
+
+  defaults export: true do
     Healthcheck.routes(self)
   end
 
-  # == Good Job
+  # == Good Job ==
+
   mount GoodJob::Engine => "/good_job"
 
-  # == Attachments
-  resources :files,
-            param: :signed_id,
-            only: :show,
-            constraints: { format: "json" },
-            export: true
-  resources :images,
-            param: :signed_id,
-            only: :show,
-            constraints: { format: "json" },
-            export: true
-  resources :images, param: :signed_id, only: [], export: true do
+  # == Attachments ==
+
+  resources :files, param: :signed_id, only: :show, export: true
+  resources :images, param: :signed_id, only: :show, export: true do
     member do
       get :download
     end
   end
 
-  # == Contact
-  resource :contact_url,
-           only: :show,
-           constraints: { format: "json" },
-           export: { namespace: "contactUrl" }
+  # == Contact ==
 
-  # == Push subscriptions
-  resources(
-    :push_subscriptions,
-    only: :create,
-    constraints: { format: "json" },
-    export: true,
-  ) do
+  resource :contact_url, only: :show, export: true
+
+  # == Push Subscriptions ==
+
+  resources :push_subscriptions, only: :create, export: true do
     collection do
       get :public_key
       post :lookup
@@ -63,68 +53,51 @@ Rails.application.routes.draw do
     end
   end
 
-  # == Notifications
-  resources(
-    :notifications,
-    only: [],
-    constraints: { format: "json" },
-    export: true,
-  ) do
+  # == Notifications ==
+
+  resources :notifications, only: [], export: true do
     collection do
       post :mark_delivered
     end
-    member do
-      post :delivered, export: false
-    end
   end
 
-  # == Visits
-  post "/visit" => "visits#track", constraints: { format: "json" }, export: true
+  # == Visits ==
 
-  # == Login requests
-  resources :login_requests,
-            only: :create,
-            constraints: { format: "json" },
-            export: true
+  resources :visits, only: :create, export: true
 
-  # == Sessions
-  scope export: { namespace: "session" } do
-    get "/login" => "sessions#new", constraints: { format: "html" }
-    scope constraints: { format: "json" } do
-      post "/login" => "sessions#create"
-      post "/logout" => "sessions#destroy"
-    end
+  # == Login Requests ==
+
+  resources :login_requests, only: :create, export: true
+
+  # == Sessions ==
+
+  scope controller: :sessions, export: true do
+    get "/login", action: :new
+    post "/login", action: :create
+    post "/logout", action: :destroy
   end
 
-  # == Registrations
-  scope export: { namespace: "registration" } do
-    get "/signup" => "registrations#new", constraints: { format: "html" }
-    post "/signup" => "registrations#create", constraints: { format: "json" }
+  # == Registrations ==
+
+  scope controller: :registrations, export: true do
+    get "/signup", action: :new
+    post "/signup", action: :create
   end
 
-  # == Start
-  get "/start" => "start#redirect",
-      constraints: { format: :html },
-      export: { namespace: "start" }
+  # == Start ==
 
-  # == World
-  scope export: { namespace: "world" } do
-    resource :world, only: %i[show edit], constraints: { format: "html" }
-    resource :world, only: :update, constraints: { format: "json" } do
-      get :timeline
-      get "manifest.webmanifest" => :manifest, constraints: { format: "" }
-    end
+  get "/start" => "start#redirect", export: true
+
+  # == World ==
+
+  resource :world, only: %i[show edit update], export: { namespace: "world" } do
+    get :timeline
+    get "manifest.webmanifest" => :manifest, constraints: { format: "" }
   end
-  resources :world_posts,
-            path: "/world/posts",
-            only: :index,
-            constraints: { format: "html" },
-            export: true
   resources(
     :world_posts,
     path: "/world/posts",
-    only: %i[create update destroy],
-    constraints: { format: "json" },
+    only: %i[index create update destroy],
     export: true,
   ) do
     collection do
@@ -137,14 +110,10 @@ Rails.application.routes.draw do
       post :share
     end
   end
-  get "/world/friends" => "world_friends#index",
-      constraints: { format: "html" },
-      export: true
   resources(
     :world_friends,
     path: "/world/friends",
-    only: %i[create update destroy],
-    constraints: { format: "json" },
+    only: %i[index create update destroy],
     export: true,
   ) do
     member do
@@ -153,45 +122,29 @@ Rails.application.routes.draw do
       post :unpause
     end
   end
-  get "/world/join_requests" => "world_join_requests#index",
-      constraints: { format: %w[html json] },
-      export: true
   resources :world_join_requests,
             path: "/world/join_requests",
-            only: :destroy,
-            constraints: { format: "json" },
+            only: %i[index destroy],
             export: true
   resources :world_invitations,
             path: "/world/invitations",
-            only: :index,
-            constraints: { format: %w[html json] },
-            export: true
-  resources :world_invitations,
-            path: "/world/invitations",
-            only: %i[create update destroy],
-            constraints: { format: "json" },
+            only: %i[index create update destroy],
             export: true
   resources :world_activities,
             path: "/world/activities",
             only: %i[index create],
-            constraints: { format: "json" },
             export: true
   resources :world_encouragements,
             path: "/world/encouragements",
             only: :index,
-            constraints: { format: "json" },
             export: true
 
-  # == Local universe
-  resource :local_universe,
-           path: "/world/universe",
-           only: :show,
-           constraints: { format: "html" },
-           export: { namespace: "localUniverse" }
+  # == Local Universe ==
+
   resource(
     :local_universe,
     path: "/world/universe",
-    constraints: { format: "json" },
+    only: :show,
     export: { namespace: "localUniverse" },
   ) do
     get :worlds
@@ -199,33 +152,25 @@ Rails.application.routes.draw do
   resources :local_universe_posts,
             path: "/world/universe/posts",
             only: :index,
-            constraints: { format: "json" },
             export: true
 
-  # == Friend notification settings
+  # == Friend Notification Settings ==
+
   resource :friend_notification_settings,
            only: %i[show update],
-           constraints: { format: "json" },
            export: true
 
-  # == Invitations
-  resources :invitations,
-            only: :show,
-            constraints: { format: "html" },
-            export: true
-  resources(
-    :invitations,
-    only: [],
-    constraints: { format: "json" },
-    export: true,
-  ) do
+  # == Invitations ==
+
+  resources :invitations, only: :show, export: true do
     member do
       post :accept
     end
   end
 
-  # == Posts
-  resources :posts, only: [], constraints: { format: "json" }, export: true do
+  # == Posts ==
+
+  resources :posts, only: [], export: true do
     member do
       post :share
       post :mark_seen
@@ -233,24 +178,21 @@ Rails.application.routes.draw do
     end
   end
 
-  # == Users
-  resources :users, only: [], constraints: { format: "json" }, export: true do
+  # == Users ==
+
+  resources :users, only: [], export: true do
     member do
       get :timeline
       post :request_invitation
       get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end
-  get "/@:id" => "users#show",
-      as: :user,
-      constraints: { format: "html" },
-      export: true
-  get "/@:id/join" => "users#join", constraints: { format: "html" }
+  get "/@:id" => "users#show", as: :user, export: true
+  get "/@:id/join" => "users#join"
   resources(
     :user_posts,
     path: "/users/:user_id/posts",
     only: :index,
-    constraints: { format: "json" },
     export: true,
   ) do
     collection do
@@ -261,150 +203,107 @@ Rails.application.routes.draw do
     :user_activity_coupons,
     path: "/users/:user_id/activity_coupons",
     only: :index,
-    constraints: { format: "json" },
     export: true,
   )
 
-  # == Post reactions
+  # == Post Reactions ==
+
   resources :post_reactions,
             path: "/posts/:post_id/reactions",
             only: %i[index create],
-            constraints: { format: "json" },
             export: true
   resources :post_reactions,
             only: :destroy,
-            constraints: { format: "json" },
             export: true
 
-  # == Post stickers
+  # == Post Stickers ==
+
   resources :post_stickers,
             path: "/posts/:post_id/stickers",
             only: %i[index create],
-            constraints: { format: "json" },
             export: true
   resources :post_stickers,
             only: %i[update destroy],
-            constraints: { format: "json" },
             export: true
 
-  # == Post shares
-  resources :post_shares,
-            only: :show,
-            constraints: { format: "html" },
-            export: true
+  # == Post Shares ==
 
-  # == Encouragements
-  resources :encouragements,
-            only: :create,
-            constraints: { format: "json" },
-            export: true
+  resources :post_shares, only: :show, export: true
 
-  # == Activities & coupons
-  resources(
-    :activity_coupons,
-    only: :create,
-    constraints: { format: "json" },
-    export: true,
-  ) do
+  # == Encouragements ==
+
+  resources :encouragements, only: :create, export: true
+
+  # == Activities & Coupons ==
+
+  resources :activity_coupons, only: :create, export: true do
     member do
       post :mark_as_redeemed
     end
   end
 
-  # == Universe
-  resource :universe,
-           only: :show,
-           constraints: { format: "html" },
-           export: { namespace: "universe" }
-  resource(
-    :universe,
-    constraints: { format: "json" },
-    export: { namespace: "universe" },
-  ) do
-    get :worlds
-    get "manifest.webmanifest" => :manifest, constraints: { format: "" }
-  end
-  resources :universe_posts,
-            path: "/universe/posts",
-            only: :index,
-            constraints: { format: "json" },
-            export: true
+  # == Canny ==
 
-  # == Api
-  resources :api_posts,
-            path: "/api/posts",
-            only: :create,
-            constraints: { format: "json" }
+  post "/canny/sso_token" => "canny#sso_token", export: true
 
-  # == Canny
-  post "/canny/sso_token" => "canny#sso_token",
-       constraints: { format: "json" },
-       export: true
+  # == Policies ==
 
-  # == Policies
-  get "/policies" => "policies#show",
-      constraints: { format: "html" },
-      export: true
+  get "/policies" => "policies#show", export: true
 
-  # == Announcements
+  # == Announcements ==
+
   resources :announcements,
             only: :index,
-            constraints: { format: %w[html json] },
             export: true
   resources :announcements,
             only: :create,
-            constraints: { format: "json" },
             export: true
 
-  # == Marsha puzzle
-  resources :marsha_puzzles,
-            only: :show,
-            constraints: { format: "html" }
+  # == Marsha Puzzle ==
 
-  # == Memberships
+  resources :marsha_puzzles, only: :show
+
+  # == Memberships ==
+
   resource(
     :membership,
     only: [],
-    constraints: { format: "json" },
     export: true,
   ) do
     post :activate
   end
 
-  # == Pages
-  root "landing#show", export: true
-  scope constraints: { format: "html" } do
-    get "/src" => redirect(
-      "https://github.com/hulloitskai/smallerworld",
-      status: 302,
-    )
-    get "/sentry" => redirect(
-      "https://smallerworld.sentry.io/issues/",
-      status: 302,
-    )
-    get "/feedback" => "feedback#redirect", export: true
-    get "/analytics" => redirect(
-      "https://app.amplitude.com/analytics/smallerworld/home",
-      status: 302,
-    )
-    get "/support" => "support#redirect",
-        constraints: { format: "html" },
-        export: true
-    get "/support/success" => "support#success", constraints: { format: "html" }
-    get "/shortlinks" => redirect(
-      "https://app.dub.co/smallerworld/links",
-      status: 302,
-    )
-    inertia "/update1" => "Update1Page"
-  end
+  # == Pages ==
 
-  # == Devtools
+  root "landing#show", export: true
+  get "/src" => redirect(
+    "https://github.com/hulloitskai/smallerworld",
+    status: 302,
+  )
+  get "/sentry" => redirect(
+    "https://smallerworld.sentry.io/issues/",
+    status: 302,
+  )
+  get "/feedback" => "feedback#redirect", export: true
+  get "/analytics" => redirect(
+    "https://app.amplitude.com/analytics/smallerworld/home",
+    status: 302,
+  )
+  get "/support" => "support#redirect", export: true
+  get "/support/success" => "support#success"
+  get "/shortlinks" => redirect(
+    "https://app.dub.co/smallerworld/links",
+    status: 302,
+  )
+  inertia "/update1" => "Update1Page"
+
+  # == Devtools ==
+
   if Rails.env.development?
     scope export: { namespace: "test" } do
-      get "/test" => "test#show", constraints: { format: "html" }
-      post "/test/submit" => "test#submit", constraints: { format: "json" }
+      get "/test" => "test#show"
+      post "/test/submit" => "test#submit"
     end
-    get "/mailcatcher" => redirect("//localhost:1080", status: 302),
-        constraints: { format: "html" }
+    get "/mailcatcher" => redirect("//localhost:1080", status: 302)
   end
 end

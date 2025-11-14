@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class ActivityTemplateSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   attributes id: { type: :string },
              emoji: { type: :string, nullable: true },
              name: { type: :string },

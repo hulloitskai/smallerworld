@@ -27,7 +27,8 @@ class JoinRequest < ApplicationRecord
   include NormalizesPhoneNumber
   include Noticeable
 
-  # == Associations
+  # == Associations ==
+
   belongs_to :user
   has_one :invitation, dependent: :nullify
   has_one :friend, through: :invitation
@@ -42,24 +43,29 @@ class JoinRequest < ApplicationRecord
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
-  # == Normalizations
+  # == Normalizations ==
+
   strips_text :name
   normalizes_phone_number :phone_number
 
-  # == Validations
+  # == Validations ==
+
   validates :name, :phone_number, presence: true
   validates :phone_number, uniqueness: { scope: :user }
 
-  # == Scopes
+  # == Scopes ==
+
   scope :pending, -> {
     where.missing(:invitation)
       .where.not(id: where.associated(:deprecated_friend))
   }
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create :create_notification!
 
-  # == Noticeable
+  # == Noticeable ==
+
   sig do
     override
       .params(recipient: T.nilable(NotificationRecipient))
@@ -80,19 +86,8 @@ class JoinRequest < ApplicationRecord
     )
   end
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(T::Hash[String, T.untyped])
-  end
-  def legacy_notification_payload(recipient)
-    payload = JoinRequestNotificationPayload.new(
-      join_request: self,
-    )
-    LegacyJoinRequestNotificationPayloadSerializer.one(payload)
-  end
+  # == Methods ==
 
-  # == Methods
   sig { void }
   def create_notification!
     notifications.create!(recipient: user!)

@@ -11,7 +11,8 @@ class ApplicationRecord < ActiveRecord::Base
   include Logging
   include FormErrors
 
-  # == Constants
+  # == Constants ==
+
   # Support runtime type-checking for Sorbet-generated types.
   PrivateRelation = ActiveRecord::Relation
   PrivateRelationWhereChain = ActiveRecord::Relation
@@ -19,14 +20,17 @@ class ApplicationRecord < ActiveRecord::Base
   PrivateAssociationRelationWhereChain = ActiveRecord::AssociationRelation
   PrivateCollectionProxy = ActiveRecord::Associations::CollectionProxy
 
-  # == Configuration
+  # == Configuration ==
+
   primary_abstract_class
 
-  # == Scopes
+  # == Scopes ==
+
   scope :chronological, -> { order(:created_at) }
   scope :reverse_chronological, -> { order(created_at: :desc) }
 
-  # == Pattern matching
+  # == Pattern Matching ==
+
   sig do
     params(keys: T.nilable(T::Array[Symbol]))
       .returns(T::Hash[Symbol, T.untyped])
@@ -35,7 +39,8 @@ class ApplicationRecord < ActiveRecord::Base
     serializable_hash(only: keys || []).symbolize_keys!
   end
 
-  # == Logging
+  # == Logging ==
+
   sig { override.returns(T::Array[String]) }
   def log_tags
     tags = super

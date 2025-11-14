@@ -27,7 +27,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Activity < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :user
   has_many :coupons, class_name: "ActivityCoupon", dependent: :destroy
 
@@ -36,9 +37,11 @@ class Activity < ApplicationRecord
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
-  # == Normalizations
+  # == Normalizations ==
+
   removes_blank :emoji
 
-  # == Validations
+  # == Validations ==
+
   validates :emoji, emoji: true, allow_nil: true
 end

@@ -25,7 +25,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Notification < ApplicationRecord
-  # == Attributes
+  # == Attributes ==
+
   sig { returns(T.nilable(ActiveSupport::Duration)) }
   attr_accessor :push_delay
 
@@ -37,7 +38,8 @@ class Notification < ApplicationRecord
   sig { returns(T::Boolean) }
   def delivered? = delivered_at?
 
-  # == Associations
+  # == Associations ==
+
   belongs_to :noticeable, polymorphic: true
   belongs_to :recipient,
              polymorphic: true,
@@ -50,17 +52,20 @@ class Notification < ApplicationRecord
       raise ActiveRecord::RecordNotFound, "Missing associated noticeable"
   end
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create :push_later, unless: :pushed?
 
-  # == Scopes
+  # == Scopes ==
+
   scope :to_friends, -> { where(recipient_type: "Friend") }
   scope :to_users, -> { where(recipient_type: "User") }
   scope :to_anonymous, -> { where(recipient_type: nil) }
   scope :delivered, -> { where.not(delivered_at: nil) }
   scope :undelivered, -> { where(delivered_at: nil) }
 
-  # == Delivery token
+  # == Delivery Token ==
+
   generates_token_for :delivery do
     delivered?
   end
@@ -80,22 +85,13 @@ class Notification < ApplicationRecord
     deprecated_delivery_token || generate_delivery_token
   end
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(NotificationMessage) }
   def message
     noticeable!.notification_message(recipient:)
   end
   delegate :title, :body, :image, to: :message
-
-  sig { returns(String) }
-  def legacy_type
-    noticeable!.legacy_notification_type(recipient)
-  end
-
-  sig { returns(T.nilable(T::Hash[String, T.untyped])) }
-  def legacy_payload
-    noticeable!.legacy_notification_payload(recipient)
-  end
 
   sig { void }
   def push

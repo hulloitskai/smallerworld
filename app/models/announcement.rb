@@ -15,19 +15,23 @@
 class Announcement < ApplicationRecord
   include NormalizesPhoneNumber
 
-  # == Normalizations
+  # == Normalizations ==
+
   normalizes_phone_number :test_recipient_phone_number
 
-  # == Validations
+  # == Validations ==
+
   validates :message, presence: true
   validates :test_recipient_phone_number,
             phone: { possible: true, types: :mobile, extensions: false },
             allow_nil: true
 
-  # == Callbacks
+  # == Callbacks ==
+
   before_create :send_now
 
-  # == Methods
+  # == Methods ==
+
   sig { void }
   def send_now
     if (phone_number = test_recipient_phone_number)

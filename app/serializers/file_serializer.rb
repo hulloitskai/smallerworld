@@ -2,11 +2,13 @@
 # frozen_string_literal: true
 
 class FileSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   identifier
   object_as :blob, model: "ActiveStorage::Blob"
 
-  # == Attributes
+  # == Attributes ==
+
   attributes :filename, :byte_size, signed_id: { type: :string }
 
   attribute :src, type: :string do

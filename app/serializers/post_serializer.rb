@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :created_at,
              :title,
@@ -15,7 +16,8 @@ class PostSerializer < ApplicationSerializer
              snippet: { type: :string },
              reply_snippet: { type: :string }
 
-  # == Associations
+  # == Associations ==
+
   has_many :ordered_images, as: :images, serializer: ImageSerializer
   has_one :quoted_post, serializer: QuotedPostSerializer, nullable: true
   has_one :encouragement,

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostPolicy < ApplicationPolicy
-  # == Rules
+  # == Rules ==
+
   def show?
     post = T.cast(record, Post)
     if (friend = self.friend)
@@ -42,7 +43,8 @@ class PostPolicy < ApplicationPolicy
     friend_can_view?(post, friend!)
   end
 
-  # == Scopes
+  # == Scopes ==
+
   relation_scope do |relation|
     relation = T.cast(relation, Post::PrivateRelation)
     if (friend = self.friend)

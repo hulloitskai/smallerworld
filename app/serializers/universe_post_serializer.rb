@@ -2,9 +2,11 @@
 # frozen_string_literal: true
 
 class UniversePostSerializer < PostSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :post
 
-  # == Associations
+  # == Associations ==
+
   has_one :author, serializer: AuthorSerializer
 end

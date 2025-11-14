@@ -2,9 +2,14 @@
 # frozen_string_literal: true
 
 class PoliciesController < ApplicationController
-  # == Actions
+  # == Actions ==
+
   # GET /policies
   def show
-    render(inertia: "PoliciesPage")
+    respond_to do |format|
+      format.html do
+        render(inertia: "PoliciesPage")
+      end
+    end
   end
 end

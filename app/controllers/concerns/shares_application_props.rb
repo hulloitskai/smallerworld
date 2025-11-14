@@ -6,7 +6,8 @@ module SharesApplicationProps
   extend T::Helpers
   extend ActiveSupport::Concern
 
-  # == Constants
+  # == Constants ==
+
   SHARED_FAVICON_LINKS = [
     {
       "head-key" => "favicon",
@@ -27,7 +28,8 @@ module SharesApplicationProps
     },
   ]
 
-  # == Annotations
+  # == Annotations ==
+
   requires_ancestor { ApplicationController }
 
   included do

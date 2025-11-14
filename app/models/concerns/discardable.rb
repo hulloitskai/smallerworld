@@ -17,11 +17,13 @@ module Discardable
       RequiresColumn::ClassMethods,
     ))
 
-    # == Configuration
+    # == Configuration ==
+
     requires_column :discarded_at
   end
 
-  # == Interface
+  # == Interface ==
+
   sig { abstract.returns(T.nilable(::ActiveSupport::TimeWithZone)) }
   def discarded_at; end
 

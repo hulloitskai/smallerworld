@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostShareSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes share_snippet: { type: :string }
 end

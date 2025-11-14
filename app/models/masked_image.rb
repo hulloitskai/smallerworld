@@ -22,10 +22,12 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class MaskedImage < Image
-  # == Constants
+  # == Constants ==
+
   MASKED_SIZE = 32
 
-  # == Methods
+  # == Methods ==
+
   sig { override.returns(String) }
   def src
     variant = self.variant(resize_to_limit: [MASKED_SIZE, MASKED_SIZE])

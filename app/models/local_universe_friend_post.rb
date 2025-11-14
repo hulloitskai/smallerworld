@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class LocalUniverseFriendPost < T::Struct
-  # == Properties
+  # == Properties ==
+
   const :post, Post
   delegate_missing_to :post
 

@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class WorldFriendsController < ApplicationController
-  # == Filters
+  # == Filters ==
+
   before_action :authenticate_user!
 
-  # == Actions
+  # == Actions ==
+
   # GET /world/friends
   def index
     current_user = authenticate_user!
@@ -34,94 +36,115 @@ class WorldFriendsController < ApplicationController
 
   # PUT /world/friends/:id
   def update
-    friend = load_friend
-    authorize!(friend)
-    friend_params = params.expect(friend: %i[emoji name])
-    if friend.update(friend_params)
-      render(json: {
-        friend: FriendSerializer.one(friend),
-      })
-    else
-      render(
-        json: {
-          errors: friend.form_errors,
-        },
-        status: :unprocessable_entity,
-      )
+    respond_to do |format|
+      format.json do
+        friend = find_friend
+        authorize!(friend)
+        friend_params = params.expect(friend: %i[emoji name])
+        if friend.update(friend_params)
+          render(json: {
+            friend: FriendSerializer.one(friend),
+          })
+        else
+          render(
+            json: {
+              errors: friend.form_errors,
+            },
+            status: :unprocessable_entity,
+          )
+        end
+      end
     end
   end
 
   # POST /world/friends/:id/pause
   def pause
-    friend = load_friend
-    authorize!(friend)
-    if friend.update(paused_since: Time.current)
-      render(json: {
-        friend: FriendSerializer.one(friend),
-      })
-    else
-      render(
-        json: { errors: friend.form_errors },
-        status: :unprocessable_entity,
-      )
+    respond_to do |format|
+      format.json do
+        friend = find_friend
+        authorize!(friend)
+        if friend.update(paused_since: Time.current)
+          render(json: {
+            friend: FriendSerializer.one(friend),
+          })
+        else
+          render(
+            json: { errors: friend.form_errors },
+            status: :unprocessable_entity,
+          )
+        end
+      end
     end
   end
 
   # POST /world/friends/:id/unpause
   def unpause
-    friend = load_friend
-    authorize!(friend)
-    if friend.update(paused_since: nil)
-      render(json: {
-        friend: FriendSerializer.one(friend),
-      })
-    else
-      render(
-        json: {
-          errors: friend.form_errors,
-        },
-        status: :unprocessable_entity,
-      )
+    respond_to do |format|
+      format.json do
+        friend = find_friend
+        authorize!(friend)
+        if friend.update(paused_since: nil)
+          render(json: {
+            friend: FriendSerializer.one(friend),
+          })
+        else
+          render(
+            json: {
+              errors: friend.form_errors,
+            },
+            status: :unprocessable_entity,
+          )
+        end
+      end
     end
   end
 
   # DELETE /world/friends/:id
   def destroy
-    friend = load_friend
-    authorize!(friend)
-    friend.destroy!
-    render(json: {})
+    respond_to do |format|
+      format.json do
+        friend = find_friend
+        authorize!(friend)
+        friend.destroy!
+        render(json: {})
+      end
+    end
   end
 
   # GET /world/friends/:id/invitation
   def invitation
-    friend = load_friend
-    authorize!(friend)
-    invitation = friend.invitation || scoped do
-      created_at = friend.created_at
-      friend.transaction do |invitation|
-        invitation = friend.create_invitation!(
-          user: friend.user!,
-          invitee_name: friend.name,
-          invitee_emoji: friend.emoji,
-          created_at:,
-          updated_at: created_at,
-          join_request_id: friend.deprecated_join_request_id,
-        )
-        friend.save!
-        invitation
+    respond_to do |format|
+      format.json do
+        friend = find_friend
+        authorize!(friend)
+        invitation = friend.invitation || scoped do
+          created_at = friend.created_at
+          friend.transaction do |invitation|
+            invitation = friend.create_invitation!(
+              user: friend.user!,
+              invitee_name: friend.name,
+              invitee_emoji: friend.emoji,
+              created_at:,
+              updated_at: created_at,
+              join_request_id: friend.deprecated_join_request_id,
+            )
+            friend.save!
+            invitation
+          end
+        end
+        render(json: {
+          "invitation" => WorldInvitationSerializer.one(invitation),
+        })
       end
     end
-    render(json: {
-      "invitation" => WorldInvitationSerializer.one(invitation),
-    })
   end
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(scope: Friend::PrivateRelation).returns(Friend) }
-  def load_friend(scope: Friend.all)
+  def find_friend(scope: Friend.all)
     scope.find(params.fetch(:id))
   end
 end

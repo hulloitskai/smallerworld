@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class UserPolicy < ApplicationPolicy
-  # == Rules
+  # == Rules ==
+
   def manage?
     user! == record
   end

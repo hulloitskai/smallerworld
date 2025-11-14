@@ -9,14 +9,16 @@ module Hashable
   abstract!
   requires_ancestor { ActiveRecord::Base }
 
-  # == Methods
+  # == Methods ==
+
   sig { overridable.returns(T::Hash[T.any(Symbol, String), T.untyped]) }
   def to_hash = build_hash
 
   sig { returns(T::Hash[T.any(Symbol, String), T.untyped]) }
   def to_h = to_hash
 
-  # == Helpers
+  # == Helpers ==
+
   sig do
     params(options: T.untyped)
       .returns(T::Hash[T.any(Symbol, String), T.untyped])

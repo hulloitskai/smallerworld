@@ -10,7 +10,8 @@ module RendersUserFavicons
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(user: User).returns(T::Array[T::Hash[String, String]]) }
   def user_favicon_links(user)
     icon_blob = user.page_icon_blob!

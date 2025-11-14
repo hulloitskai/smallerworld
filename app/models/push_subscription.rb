@@ -20,14 +20,17 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PushSubscription < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   has_many :registrations, class_name: "PushRegistration", dependent: :destroy
 
-  # == Validations
+  # == Validations ==
+
   validates :endpoint, uniqueness: { message: "already registered" }
   validates :registrations, presence: true
 
-  # == Methods
+  # == Methods ==
+
   sig { params(message: String, urgency: T.nilable(Symbol)).void }
   def push_message(message, urgency: nil)
     options = { urgency: }.compact
@@ -76,7 +79,8 @@ class PushSubscription < ApplicationRecord
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T.untyped) }
   def web_push_credentials
     Rails.application.credentials.web_push!

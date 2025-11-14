@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_10_193347) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,12 +94,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_10_193347) do
     t.datetime "paused_since", precision: nil
     t.string "subscribed_post_types", null: false, array: true
     t.boolean "chosen_family", null: false
-    t.uuid "deprecated_join_request_id"
     t.datetime "notifications_last_cleared_at", precision: nil
     t.uuid "invitation_id"
+    t.uuid "deprecated_join_request_id"
+    t.string "time_zone_name", null: false
     t.index ["access_token"], name: "index_friends_on_access_token", unique: true
     t.index ["chosen_family"], name: "index_friends_on_chosen_family"
-    t.index ["deprecated_join_request_id"], name: "index_friends_on_deprecated_join_request_id"
     t.index ["invitation_id"], name: "index_friends_on_invitation_id"
     t.index ["name", "user_id"], name: "index_friends_name_uniqueness", unique: true
     t.index ["notifications_last_cleared_at"], name: "index_friends_on_notifications_last_cleared_at"
@@ -382,11 +382,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_10_193347) do
     t.string "time_zone_name", null: false
     t.boolean "hide_stats", null: false
     t.string "reply_to_number"
-    t.string "api_token"
     t.boolean "hide_neko", null: false
     t.boolean "allow_friend_sharing", null: false
     t.string "membership_tier"
-    t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["handle"], name: "index_users_on_handle", unique: true
     t.index ["membership_tier"], name: "index_users_on_membership_tier"
     t.index ["notifications_last_cleared_at"], name: "index_users_on_notifications_last_cleared_at"
@@ -400,7 +398,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_10_193347) do
   add_foreign_key "activity_coupons", "friends"
   add_foreign_key "encouragements", "friends"
   add_foreign_key "friends", "invitations"
-  add_foreign_key "friends", "join_requests", column: "deprecated_join_request_id"
   add_foreign_key "friends", "users"
   add_foreign_key "invitations", "users"
   add_foreign_key "join_requests", "users"

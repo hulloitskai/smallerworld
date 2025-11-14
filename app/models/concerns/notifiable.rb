@@ -12,7 +12,8 @@ module Notifiable
   included do
     T.bind(self, T.class_of(ActiveRecord::Base))
 
-    # == Associations
+    # == Associations ==
+
     has_many :push_registrations,
              as: :owner,
              dependent: :destroy
@@ -22,7 +23,8 @@ module Notifiable
              as: :recipient,
              dependent: :destroy
 
-    # == Scopes
+    # == Scopes ==
+
     scope :unnotifiable, -> {
       where.missing(:push_registrations)
     }
@@ -33,7 +35,8 @@ module Notifiable
     }
   end
 
-  # == Interface
+  # == Interface ==
+
   sig { abstract.returns(T.nilable(Time)) }
   def notifications_last_cleared_at; end
 
@@ -43,7 +46,8 @@ module Notifiable
   sig { abstract.returns(::PushRegistration::PrivateCollectionProxy) }
   def push_registrations; end
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(T::Boolean) }
   def notifiable?
     push_registrations.any?

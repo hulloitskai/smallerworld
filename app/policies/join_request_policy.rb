@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class JoinRequestPolicy < ApplicationPolicy
-  # == Rules
+  # == Rules ==
+
   def manage?
     join_request = T.let(record, JoinRequest)
     join_request.user! == user!

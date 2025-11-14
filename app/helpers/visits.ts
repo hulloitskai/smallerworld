@@ -11,7 +11,7 @@ export const useTrackVisit = (): void => {
     : currentUser
       ? {}
       : null;
-  const { trigger } = useRouteMutation<{}>(routes.visits.track, {
+  const { trigger } = useRouteMutation<{}>(routes.visits.create, {
     descriptor: "track visit",
     params,
     failSilently: true,

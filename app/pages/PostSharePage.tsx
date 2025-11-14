@@ -87,7 +87,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
                   <Button
                     component={PWAScopedLink}
                     target="_blank"
-                    href={routes.session.new.path()}
+                    href={routes.sessions.new.path()}
                     leftSection="😍"
                     styles={{
                       section: {

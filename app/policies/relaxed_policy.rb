@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class RelaxedPolicy < ApplicationPolicy
-  # == Rules
+  # == Rules ==
+
   def index? = true
   def show? = true
 end

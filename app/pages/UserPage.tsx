@@ -189,7 +189,7 @@ const UserPage: PageComponent<UserPageProps> = ({ user }) => {
                   <Button
                     component={PWAScopedLink}
                     target="_blank"
-                    href={routes.session.new.path()}
+                    href={routes.sessions.new.path()}
                     leftSection="😍"
                     styles={{
                       section: {

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class TwilioService < ApplicationService
-  # == Configuration
+  # == Configuration ==
+
   sig { override.returns(T::Boolean) }
   def self.enabled?
     return false unless credentials_available?
@@ -10,7 +11,8 @@ class TwilioService < ApplicationService
     Twilio.account_sid.present? && Twilio.auth_token.present?
   end
 
-  # == Initialization
+  # == Initialization ==
+
   sig { void }
   def initialize
     super
@@ -20,14 +22,16 @@ class TwilioService < ApplicationService
   sig { returns(Twilio::REST::Client) }
   attr_reader :client
 
-  # == Methods
+  # == Methods ==
+
   sig { params(to: String, body: String).returns(T.untyped) }
   def self.send_message(to:, body:)
     from = credentials!.sender_number!
     instance.client.messages.create(from:, to:, body:)
   end
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def self.credentials_available?
     Rails.application.credentials.twilio.present?

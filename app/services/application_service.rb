@@ -7,13 +7,15 @@ class ApplicationService
   include Logging
   include Singleton
 
-  # == Configuration
+  # == Configuration ==
+
   sig { overridable.returns(T::Boolean) }
   def self.enabled?
     true
   end
 
-  # == Initialization
+  # == Initialization ==
+
   sig { void }
   def initialize
     raise "#{self.class} is not enabled" unless self.class.enabled?

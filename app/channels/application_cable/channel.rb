@@ -6,11 +6,13 @@ module ApplicationCable
     extend T::Sig
     extend T::Helpers
 
-    # == Exception handlers
+    # == Exception Handlers ==
+
     rescue_from Exception, with: :reject_exception
     rescue_from ActionPolicy::Unauthorized, with: :reject_unauthorized
 
-    # == Methods
+    # == Methods ==
+
     sig { params(message: String).returns(TrueClass) }
     def reject_with(message)
       transmit({ error: message })
@@ -31,7 +33,8 @@ module ApplicationCable
 
     private
 
-    # == Helpers
+    # == Helpers ==
+
     sig { params(error: ActionPolicy::Unauthorized).void }
     def reject_unauthorized(error)
       reject_with("Not authorized")

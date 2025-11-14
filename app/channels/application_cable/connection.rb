@@ -6,10 +6,12 @@ module ApplicationCable
     extend T::Sig
     extend T::Helpers
 
-    # == Configuration
+    # == Configuration ==
+
     identified_by :current_user, :current_friend
 
-    # == Connection
+    # == Connection ==
+
     sig { void }
     def connect
       if (friend = find_verified_friend) || (user = find_verified_user)
@@ -22,7 +24,8 @@ module ApplicationCable
 
     private
 
-    # == Helpers
+    # == Helpers ==
+
     sig { returns(T.nilable(User)) }
     def find_verified_user
       if (id = cookies.signed[:session_id]) && (session = Session.find_by(id:))

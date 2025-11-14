@@ -5,7 +5,8 @@ class ApplicationPolicy < ActionPolicy::Base
   extend T::Sig
   extend T::Helpers
 
-  # == Context
+  # == Context ==
+
   # Configure additional authorization contexts here
   # (`user` is added by default).
   #
@@ -15,16 +16,19 @@ class ApplicationPolicy < ActionPolicy::Base
   authorize :user, allow_nil: true
   authorize :friend, optional: true
 
-  # == Pre-checks
+  # == Pre-checks ==
+
   pre_check :allow_admins!
 
-  # == Rules
+  # == Rules ==
+
   undef_method :create?
 
   sig { returns(T::Boolean) }
   def administrate? = false
 
-  # == Scopes
+  # == Scopes ==
+
   scope_matcher :frozen_record_relation, FrozenRecord::Scope
 
   relation_scope do |relation|
@@ -45,7 +49,8 @@ class ApplicationPolicy < ActionPolicy::Base
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { void }
   def allow_admins!
     allow! if user&.admin?

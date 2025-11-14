@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class InvitationSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :invitee_name,
              :invitee_emoji,

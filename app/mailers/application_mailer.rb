@@ -5,13 +5,15 @@ class ApplicationMailer < ActionMailer::Base
   extend T::Sig
   extend T::Helpers
 
-  # == Configuration
+  # == Configuration ==
+
   default from: :default_sender, reply_to: :default_reply_to
   layout "mailer"
 
   protected
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(String) }
   def default_sender
     credentials.sender!
@@ -24,7 +26,8 @@ class ApplicationMailer < ActionMailer::Base
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(value: T.untyped).returns(T.untyped) }
   def compute_default(value)
     value.is_a?(Symbol) ? send(value) : super

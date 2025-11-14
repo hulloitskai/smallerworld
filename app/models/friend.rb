@@ -183,16 +183,6 @@ class Friend < ApplicationRecord
     end
   end
 
-  sig do
-    override
-      .params(recipient: T.nilable(T.all(ApplicationRecord, Notifiable)))
-      .returns(T::Hash[String, T.untyped])
-  end
-  def legacy_notification_payload(recipient)
-    payload = FriendNotificationPayload.new(friend: self)
-    LegacyFriendNotificationPayloadSerializer.one(payload)
-  end
-
   # == Installation ==
 
   sig { returns(String) }

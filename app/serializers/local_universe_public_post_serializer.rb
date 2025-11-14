@@ -2,14 +2,17 @@
 # frozen_string_literal: true
 
 class LocalUniversePublicPostSerializer < PostSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :post
 
-  # == Type
+  # == Type ==
+
   attribute :local_universe_post_type, type: '"public"' do
     "public"
   end
 
-  # == Associations
+  # == Associations ==
+
   has_one :author, serializer: AuthorSerializer
 end

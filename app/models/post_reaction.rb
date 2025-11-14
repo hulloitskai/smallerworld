@@ -27,7 +27,8 @@
 class PostReaction < ApplicationRecord
   include Noticeable
 
-  # == Associations
+  # == Associations ==
+
   belongs_to :post, inverse_of: :reactions
   has_one :post_author, through: :post, source: :author
   belongs_to :friend
@@ -47,15 +48,18 @@ class PostReaction < ApplicationRecord
     post_author or raise ActiveRecord::RecordNotFound, "Missing post author"
   end
 
-  # == Validations
+  # == Validations ==
+
   validates :emoji,
             presence: true,
             uniqueness: { scope: %i[post friend], message: "already added" }
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create :create_notification!, unless: :friend_already_reacted_to_post?
 
-  # == Noticeable
+  # == Noticeable ==
+
   sig do
     override
       .params(recipient: T.nilable(NotificationRecipient))
@@ -77,17 +81,8 @@ class PostReaction < ApplicationRecord
     )
   end
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(T.nilable(T::Hash[String, T.untyped]))
-  end
-  def legacy_notification_payload(recipient)
-    payload = PostReactionNotificationPayload.new(reaction: self)
-    LegacyPostReactionNotificationPayloadSerializer.one(payload)
-  end
+  # == Methods ==
 
-  # == Methods
   sig { void }
   def create_notification!
     notifications.create!(recipient: post_author!)
@@ -95,7 +90,8 @@ class PostReaction < ApplicationRecord
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def friend_already_reacted_to_post?
     reactions = post!.reactions

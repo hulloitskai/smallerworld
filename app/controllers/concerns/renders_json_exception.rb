@@ -10,7 +10,8 @@ module RendersJsonException
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(exception: Exception).returns(String) }
   def format_json_exception(exception)
     case exception
@@ -21,7 +22,8 @@ module RendersJsonException
     end
   end
 
-  # == Rescue handlers
+  # == Rescue Handlers ==
+
   sig { params(exception: Exception).void }
   def render_json_exception(exception)
     render(

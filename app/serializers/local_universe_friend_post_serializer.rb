@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class LocalUniverseFriendPostSerializer < LocalUniversePublicPostSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :post
 
-  # == Type
+  # == Type ==
+
   attribute :local_universe_post_type, type: '"friend"' do
     "friend"
   end
@@ -14,12 +16,14 @@ class LocalUniverseFriendPostSerializer < LocalUniversePublicPostSerializer
     "friend"
   end
 
-  # == Attributes
+  # == Attributes ==
+
   attributes reply_to_number: { type: :string },
              replied: { type: :boolean },
              seen: { type: :boolean },
              repliers: { type: :number }
 
-  # == Associations
+  # == Associations ==
+
   has_one :associated_friend, serializer: AssociatedFriendSerializer
 end

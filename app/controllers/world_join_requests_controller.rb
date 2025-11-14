@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class WorldJoinRequestsController < ApplicationController
-  # == Filters
+  # == Filters ==
+
   before_action :authenticate_user!
 
-  # == Actions
+  # == Actions ==
+
   # GET /world/join_requests
   def index
     current_user = authenticate_user!
@@ -26,15 +28,20 @@ class WorldJoinRequestsController < ApplicationController
 
   # DELETE /world/join_requests/:id
   def destroy
-    join_request = load_join_request
-    authorize!(join_request)
-    join_request.destroy!
-    render(json: {})
+    respond_to do |format|
+      format.json do
+        join_request = load_join_request
+        authorize!(join_request)
+        join_request.destroy!
+        render(json: {})
+      end
+    end
   end
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(scope: JoinRequest::PrivateRelation).returns(JoinRequest) }
   def load_join_request(scope: JoinRequest.all)
     scope.find(params.fetch(:id))

@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 class PositionSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   attributes x: { type: :number }, y: { type: :number }
 end

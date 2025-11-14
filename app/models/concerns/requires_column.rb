@@ -14,7 +14,8 @@ module RequiresColumn
 
     requires_ancestor { T.class_of(ActiveRecord::Base) }
 
-    # == Helpers
+    # == Helpers ==
+
     sig { params(column_names: T.any(Symbol, String)).void }
     def requires_column(*column_names)
       return unless Rails.server? || Rails.console?

@@ -3,10 +3,12 @@
 
 module ActiveStorage
   class CleanupBlobsJob < ApplicationJob
-    # == Configuration
+    # == Configuration ==
+
     good_job_control_concurrency_with key: name, total_limit: 1
 
-    # == Job
+    # == Job ==
+
     sig { void }
     def perform
       ActiveStorage::Blob

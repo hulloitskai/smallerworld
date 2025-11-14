@@ -2,21 +2,31 @@
 # frozen_string_literal: true
 
 class SupportController < ApplicationController
-  # == Filters
+  # == Filters ==
+
   before_action :authenticate_user!, only: :success
 
-  # == Actions
+  # == Actions ==
+
   # GET /support
   def redirect
-    redirect_to(
-      "https://www.zeffy.com/ticketing/join-our-community",
-      allow_other_host: true,
-      status: :found,
-    )
+    respond_to do |format|
+      format.html do
+        redirect_to(
+          "https://www.zeffy.com/ticketing/join-our-community",
+          allow_other_host: true,
+          status: :found,
+        )
+      end
+    end
   end
 
   # GET /support/success
   def success
-    render(inertia: "PaymentSuccessPage")
+    respond_to do |format|
+      format.html do
+        render(inertia: "PaymentSuccessPage")
+      end
+    end
   end
 end

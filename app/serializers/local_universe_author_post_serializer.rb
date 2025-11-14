@@ -2,17 +2,21 @@
 # frozen_string_literal: true
 
 class LocalUniverseAuthorPostSerializer < LocalUniversePublicPostSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :post
 
-  # == Type
+  # == Type ==
+
   attribute :local_universe_post_type, type: '"author"' do
     "author"
   end
 
-  # == Attributes
+  # == Attributes ==
+
   attributes :updated_at, hidden_from_ids: { type: "string[]" }
 
-  # == Associations
+  # == Associations ==
+
   has_one :encouragement, serializer: EncouragementSerializer, nullable: true
 end

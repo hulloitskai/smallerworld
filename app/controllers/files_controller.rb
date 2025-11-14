@@ -2,18 +2,26 @@
 # frozen_string_literal: true
 
 class FilesController < ApplicationController
-  # == Actions
+  # == Actions ==
+
   # GET /files/:signed_id
   def show
-    blob = load_blob
-    render(json: { file: FileSerializer.one(blob) })
+    respond_to do |format|
+      format.json do
+        blob = find_blob!
+        render(json: {
+          file: FileSerializer.one(blob),
+        })
+      end
+    end
   end
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(scope: T.untyped).returns(ActiveStorage::Blob) }
-  def load_blob(scope: ActiveStorage::Blob.all)
+  def find_blob!(scope: ActiveStorage::Blob.all)
     scope.find_signed!(params.fetch(:signed_id))
   end
 end

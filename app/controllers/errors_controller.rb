@@ -2,53 +2,72 @@
 # frozen_string_literal: true
 
 class ErrorsController < ApplicationController
-  # == Actions
+  # == Actions ==
+
   # GET /404
   def not_found
-    render_error_page(
-      status: :not_found,
-      title: "page not found",
-      description: "the page you were looking for doesn't exist!",
-    )
+    respond_to do |format|
+      format.html do
+        render_error_page(
+          status: :not_found,
+          title: "page not found",
+          description: "the page you were looking for doesn't exist!",
+        )
+      end
+    end
   end
 
   # GET /500
   def internal_server_error
-    render_error_page(
-      status: :internal_server_error,
-      title: "internal error",
-      description:
-        "sorry about this, but something went wrong while processing this " \
-        "request! our team has been notified.",
-      error: exception,
-    )
+    respond_to do |format|
+      format.html do
+        render_error_page(
+          status: :internal_server_error,
+          title: "internal error",
+          description:
+            "sorry about this, but something went wrong while processing " \
+            "your request! our team has been notified.",
+          error: exception,
+        )
+      end
+    end
   end
 
   # GET /422
   def unprocessable_entity
-    render_error_page(
-      status: :unprocessable_entity,
-      title: "change rejected",
-      description:
-        "the change you wanted was rejected. maybe you tried to change " \
-        "something you didn't have access to?",
-      error: exception,
-    )
+    respond_to do |format|
+      format.html do
+        render_error_page(
+          status: :unprocessable_entity,
+          title: "change rejected",
+          description:
+            "the change you wanted was rejected. maybe you tried to change " \
+            "something you didn't have access to?",
+          error: exception,
+        )
+      end
+    end
   end
 
   # GET /401
   def unauthorized
-    render_error_page(
-      status: :unauthorized,
-      title: "unauthorized",
-      description:
-        "you're not allowed to access this resource or perform this action.",
-    )
+    respond_to do |format|
+      format.html do
+        render_error_page(
+          status: :unauthorized,
+          title: "unauthorized",
+          description:
+            "you're not allowed to access this resource or perform this " \
+            "action.",
+        )
+      end
+    end
   end
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig do
     params(
       status: Symbol,

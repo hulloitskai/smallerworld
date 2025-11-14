@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 class EncouragementNotificationPayload < T::Struct
-  # == Properties
+  # == Properties ==
+
   const :encouragement, Encouragement
 end

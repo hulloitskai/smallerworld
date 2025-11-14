@@ -26,7 +26,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
   // == Form
   const [shouldDeriveHandle, setShouldDeriveHandle] = useState(true);
   const { values, getInputProps, submitting, submit, setFieldValue } = useForm({
-    action: routes.registration.create,
+    action: routes.registrations.create,
     descriptor: "complete signup",
     initialValues: {
       name: "",

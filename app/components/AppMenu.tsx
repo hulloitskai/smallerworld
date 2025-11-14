@@ -60,7 +60,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
         ) : (
           <>
             <LinkItem
-              href={routes.registration.new.path()}
+              href={routes.registrations.new.path()}
               leftSection={<Image src={logoSrc} h="100%" w="unset" />}
             >
               create your world
@@ -68,7 +68,7 @@ const AppMenu: FC<AppMenuProps> = ({ ...otherProps }) => {
             <Menu.Item
               leftSection={<SignInIcon />}
               component={Link}
-              href={routes.session.new.path()}
+              href={routes.sessions.new.path()}
             >
               sign in
             </Menu.Item>
@@ -98,7 +98,7 @@ interface LogoutItemProps extends BoxProps {
 
 const LogoutItem: FC<LogoutItemProps> = ({ onClose, ...otherProps }) => {
   // == Logout
-  const { trigger, mutating } = useRouteMutation(routes.session.destroy, {
+  const { trigger, mutating } = useRouteMutation(routes.sessions.destroy, {
     descriptor: "sign out",
     onSuccess: () => {
       location.href = routes.landing.show.path();

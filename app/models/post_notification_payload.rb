@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostNotificationPayload < T::Struct
-  # == Properties
+  # == Properties ==
+
   const :post, Post
   const :friend_access_token, String
 end

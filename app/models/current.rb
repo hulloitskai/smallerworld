@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class Current < ActiveSupport::CurrentAttributes
-  # == Attributes
+  # == Attributes ==
+
   attribute :session
   delegate :user, to: :session, allow_nil: true
 end

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostReactionSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :friend_id, :emoji
 end

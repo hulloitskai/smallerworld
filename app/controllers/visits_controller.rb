@@ -2,15 +2,20 @@
 # frozen_string_literal: true
 
 class VisitsController < ApplicationController
-  # == Filters
+  # == Filters ==
+
   before_action :require_authentication!
 
-  # == Actions
+  # == Actions ==
+
   # POST /visits
-  def track
+  def create
     visit_params = params.expect(visit: :time_zone)
     if (friend = current_friend)
-      friend.update!(notifications_last_cleared_at: Time.current)
+      friend.update!(
+        notifications_last_cleared_at: Time.current,
+        **visit_params,
+      )
     elsif (user = current_user)
       user.update!(
         notifications_last_cleared_at: Time.current,

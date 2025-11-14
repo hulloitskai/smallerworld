@@ -2,12 +2,15 @@
 # frozen_string_literal: true
 
 class WorldPostSerializer < PostSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :post
 
-  # == Attributes
+  # == Attributes ==
+
   attributes :updated_at
 
-  # == Associations
+  # == Associations ==
+
   has_one :encouragement, serializer: EncouragementSerializer, nullable: true
 end

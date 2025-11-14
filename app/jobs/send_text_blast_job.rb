@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class SendTextBlastJob < ApplicationJob
-  # == Configuration
+  # == Configuration ==
+
   good_job_control_concurrency_with(
     key: -> {
       T.bind(self, SendTextBlastJob)
@@ -12,7 +13,8 @@ class SendTextBlastJob < ApplicationJob
     total_limit: 1,
   )
 
-  # == Job
+  # == Job ==
+
   sig { params(text_blast: TextBlast).void }
   def perform(text_blast)
     text_blast.send_now

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class JoinedUser < T::Struct
-  # == Properties
+  # == Properties ==
+
   const :user, User
   delegate_missing_to :user
 

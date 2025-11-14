@@ -21,36 +21,44 @@
 class LoginRequest < ApplicationRecord
   include NormalizesPhoneNumber
 
-  # == Constants
+  # == Constants ==
+
   EXPIRATION_DURATION = 5.minutes
 
-  # == Attributes
+  # == Attributes ==
+
   attribute :login_code, default: -> { generate_login_code }
 
   sig { returns(T::Boolean) }
   def completed? = completed_at?
 
-  # == Tokens
+  # == Tokens ==
+
   generates_token_for :registration
 
-  # == Normalizations
+  # == Normalizations ==
+
   normalizes_phone_number :phone_number
 
-  # == Validations
+  # == Validations ==
+
   validates :phone_number,
             presence: true,
             phone: { possible: true, types: :mobile, extensions: false }
 
-  # == Callbacks
+  # == Callbacks ==
+
   before_create :deliver_login_code, if: :should_deliver_login_code?
 
-  # == Scopes
+  # == Scopes ==
+
   scope :incomplete, -> { where(completed_at: nil) }
   scope :valid, -> {
     incomplete.where("created_at > ?", EXPIRATION_DURATION.ago)
   }
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(T.nilable(String)) }
   def verified_phone_number
     phone_number if completed?
@@ -81,7 +89,8 @@ class LoginRequest < ApplicationRecord
     generate_token_for(:registration)
   end
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(String) }
   def self.generate_login_code
     format("%06d", rand(0..999_999))

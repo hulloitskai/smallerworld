@@ -44,7 +44,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class MaskedPost < Post
-  # == Attributes
+  # == Attributes ==
+
   sig { override.returns(T.nilable(String)) }
   def title
     title = super or return
@@ -84,7 +85,8 @@ class MaskedPost < Post
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(sentence: String).returns(String) }
   def mask_sentence(sentence)
     seed_faker_once

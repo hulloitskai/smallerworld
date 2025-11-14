@@ -47,16 +47,19 @@ class Post < ApplicationRecord
   include Noticeable
   include PgSearch::Model
 
-  # == Constants
+  # == Constants ==
+
   NOTIFICATION_DELAY = T.let(
     Rails.env.production? ? 1.minute : 5.seconds,
     ActiveSupport::Duration,
   )
 
-  # == Configuration
+  # == Configuration ==
+
   self.inheritance_column = nil
 
-  # == Attributes
+  # == Attributes ==
+
   enumerize :type,
             in: %i[journal_entry poem invitation question follow_up],
             predicates: true
@@ -124,7 +127,8 @@ class Post < ApplicationRecord
     snippet + "\n\n"
   end
 
-  # == Search
+  # == Search ==
+
   pg_search_scope :search,
                   against: %i[emoji title body_html],
                   using: {
@@ -133,7 +137,8 @@ class Post < ApplicationRecord
                     },
                   }
 
-  # == Associations
+  # == Associations ==
+
   belongs_to :author, class_name: "User"
   has_many :author_friends, through: :author, source: :friends
 
@@ -154,14 +159,17 @@ class Post < ApplicationRecord
   sig { returns(T::Boolean) }
   def quoted_post? = quoted_post_id?
 
-  # == Attachments
+  # == Attachments ==
+
   has_many_attached :images
 
-  # == Normalizations
+  # == Normalizations ==
+
   strips_text :title
   removes_blank :emoji
 
-  # == Validations
+  # == Validations ==
+
   validates :emoji, emoji: true, allow_nil: true
   validates :type, :body_html, presence: true
   validates :title, absence: true, unless: :title_visible?
@@ -175,7 +183,8 @@ class Post < ApplicationRecord
   validate :validate_spotify_track_id,
            if: %i[spotify_track_id? spotify_track_id_changed?]
 
-  # == Callbacks
+  # == Callbacks ==
+
   before_validation :remove_invalid_hidden_from_ids,
                     if: %i[hidden_from_ids? hidden_from_ids_changed?]
   before_validation :remove_invalid_visible_to_ids,
@@ -183,7 +192,8 @@ class Post < ApplicationRecord
   after_save :create_notifications!, if: :send_notifications?
   after_save :save_images_ids!, if: :images_changed?
 
-  # == Scopes
+  # == Scopes ==
+
   scope :publicly_visible, -> { where(visibility: :public) }
   scope :visible_to_friends, -> { where(visibility: %i[public friends]) }
   scope :visible_to_chosen_family, -> {
@@ -216,7 +226,8 @@ class Post < ApplicationRecord
     includes(quoted_post: [images_attachments: :blob])
   }
 
-  # == Noticeable
+  # == Noticeable ==
+
   sig do
     override
       .params(recipient: T.nilable(NotificationRecipient))
@@ -249,7 +260,7 @@ class Post < ApplicationRecord
     when User
       url_helpers.local_universe_url(post_id: id)
     else
-      url_helpers.universe_url(post_id: id, trailing_slash: true)
+      raise "Invalid recipient: #{recipient.inspect}"
     end
     NotificationMessage.new(title:, body:, image: cover_image, target_url:)
   end
@@ -276,41 +287,8 @@ class Post < ApplicationRecord
     [title, body, cta].compact.join("\n\n")
   end
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(String)
-  end
-  def legacy_notification_type(recipient)
-    if recipient.nil?
-      "UniversePost"
-    else
-      "Post"
-    end
-  end
+  # == Methods ==
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(T.nilable(T::Hash[String, T.untyped]))
-  end
-  def legacy_notification_payload(recipient)
-    case recipient
-    when Friend
-      payload = PostNotificationPayload.new(
-        post: self,
-        friend_access_token: recipient.access_token,
-      )
-      LegacyPostNotificationPayloadSerializer.one(payload)
-    when nil
-      payload = UniversePostNotificationPayload.new(post: self)
-      LegacyUniversePostNotificationPayloadSerializer.one(payload)
-    else
-      raise ArgumentError, "Invalid recipient: #{recipient.inspect}"
-    end
-  end
-
-  # == Methods
   sig { returns(T::Boolean) }
   def user_created?
     updated_at > (author!.created_at + 1.second)
@@ -377,7 +355,8 @@ class Post < ApplicationRecord
     end
   end
 
-  # == Notifications
+  # == Notifications ==
+
   sig { returns(T::Boolean) }
   def send_notifications?
     user_created? && (friend_ids_to_notify.present? || visibility == :public)
@@ -454,7 +433,8 @@ class Post < ApplicationRecord
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(friend_ids: T::Array[String]).returns(T::Array[String]) }
   def select_author_friend_ids(friend_ids)
     author_friends.where(id: friend_ids).pluck(:id)
@@ -478,7 +458,8 @@ class Post < ApplicationRecord
     end
   end
 
-  # == Validators
+  # == Validators ==
+
   sig { void }
   def validate_no_nested_quoting
     if (quoted_post = self.quoted_post) && quoted_post.quoted_post?
@@ -524,7 +505,8 @@ class Post < ApplicationRecord
     end
   end
 
-  # == Callback handlers
+  # == Callback Handlers ==
+
   sig { void }
   def remove_invalid_hidden_from_ids
     self.hidden_from_ids = select_author_friend_ids(hidden_from_ids)

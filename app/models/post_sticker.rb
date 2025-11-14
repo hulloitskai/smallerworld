@@ -27,7 +27,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PostSticker < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :post
   belongs_to :friend
 
@@ -36,7 +37,8 @@ class PostSticker < ApplicationRecord
     friend or raise ActiveRecord::RecordNotFound, "Missing friend"
   end
 
-  # == Attributes
+  # == Attributes ==
+
   sig { returns(Position) }
   def relative_position
     Position.new(x: relative_position_x, y: relative_position_y)
@@ -59,7 +61,8 @@ class PostSticker < ApplicationRecord
     end
   end
 
-  # == Validations
+  # == Validations ==
+
   validates :relative_position_x,
             :relative_position_y,
             numericality: {

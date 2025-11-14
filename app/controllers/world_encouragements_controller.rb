@@ -2,16 +2,22 @@
 # frozen_string_literal: true
 
 class WorldEncouragementsController < ApplicationController
-  # == Filters
+  # == Filters ==
+
   before_action :authenticate_user!
 
-  # == Actions
+  # == Actions ==
+
   # GET /world/encouragements
   def index
-    user = authenticate_user!
-    encouragements = user.encouragements_since_last_poem_or_journal_entry
-    render(json: {
-      encouragements: EncouragementSerializer.many(encouragements),
-    })
+    respond_to do |format|
+      format.json do
+        user = authenticate_user!
+        encouragements = user.encouragements_since_last_poem_or_journal_entry
+        render(json: {
+          encouragements: EncouragementSerializer.many(encouragements),
+        })
+      end
+    end
   end
 end

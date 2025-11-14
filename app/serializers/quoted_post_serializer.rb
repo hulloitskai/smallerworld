@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class QuotedPostSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :post
 
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :created_at,
              :title,
@@ -14,6 +16,7 @@ class QuotedPostSerializer < ApplicationSerializer
              :pinned_until,
              type: { type: "PostType" }
 
-  # == Associations
+  # == Associations ==
+
   has_many :ordered_images, as: :images, serializer: ImageSerializer
 end

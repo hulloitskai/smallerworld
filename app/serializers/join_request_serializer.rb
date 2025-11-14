@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class JoinRequestSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :name, :phone_number, :created_at
 end

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostStickerPolicy < RelaxedPolicy
-  # == Rules
+  # == Rules ==
+
   def manage?
     sticker = T.cast(record, PostSticker)
     sticker.friend! == friend!

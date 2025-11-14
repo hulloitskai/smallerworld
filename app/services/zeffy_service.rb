@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class ZeffyService < ApplicationService
-  # == Configuration
+  # == Configuration ==
+
   sig { override.returns(T::Boolean) }
   def self.enabled?
     return false unless credentials_available?
@@ -12,7 +13,8 @@ class ZeffyService < ApplicationService
       credentials.ticketing_id.present?
   end
 
-  # == Initialization
+  # == Initialization ==
+
   sig { void }
   def initialize
     super
@@ -26,7 +28,8 @@ class ZeffyService < ApplicationService
   sig { returns(Faraday::Connection) }
   attr_reader :conn
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(T::Array[T::Hash[String, T.untyped]]) }
   def self.list_pending_guests
     credentials = credentials!
@@ -72,7 +75,8 @@ class ZeffyService < ApplicationService
     response.body.dig("result", "data", "data")
   end
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def self.credentials_available?
     Rails.application.credentials.zeffy.present?

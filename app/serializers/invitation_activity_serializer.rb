@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class InvitationActivitySerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :activity
 
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :name, :emoji
 end

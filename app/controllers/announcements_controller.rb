@@ -4,7 +4,8 @@
 class AnnouncementsController < ApplicationController
   include AdminsOnly
 
-  # == Actions
+  # == Actions ==
+
   # GET /announcements
   def index
     respond_to do |format|
@@ -23,13 +24,17 @@ class AnnouncementsController < ApplicationController
 
   # POST /announcements
   def create
-    announcement_params = params.expect(announcement: %i[
-      message
-      test_recipient_phone_number
-    ])
-    announcement = Announcement.create!(announcement_params)
-    render(json: {
-      announcement: AnnouncementSerializer.one(announcement),
-    })
+    respond_to do |format|
+      format.json do
+        announcement_params = params.expect(announcement: %i[
+          message
+          test_recipient_phone_number
+        ])
+        announcement = Announcement.create!(announcement_params)
+        render(json: {
+          announcement: AnnouncementSerializer.one(announcement),
+        })
+      end
+    end
   end
 end

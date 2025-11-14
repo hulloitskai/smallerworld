@@ -4,7 +4,8 @@
 class NotificationMessage < T::Struct
   extend T::Sig
 
-  # == Properties
+  # == Properties ==
+
   const :title, String
   const :body, T.nilable(String)
   const :image, T.nilable(Image)

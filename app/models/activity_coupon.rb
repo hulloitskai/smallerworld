@@ -30,13 +30,15 @@
 class ActivityCoupon < ApplicationRecord
   include Noticeable
 
-  # == Attributes
+  # == Attributes ==
+
   attribute :expires_at, default: -> { 1.month.from_now }
 
   sig { returns(T::Boolean) }
   def redeemed? = redeemed_at?
 
-  # == Associations
+  # == Associations ==
+
   belongs_to :friend
   belongs_to :activity
   has_one :user, through: :activity
@@ -58,13 +60,16 @@ class ActivityCoupon < ApplicationRecord
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
-  # == Validations
+  # == Validations ==
+
   validate :validate_no_other_identical_active_coupons
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create :create_notification!
 
-  # == Scopes
+  # == Scopes ==
+
   scope :expired, -> { where(expires_at: ..Time.current) }
   scope :redeemed, -> { where.not(redeemed_at: nil) }
   scope :active, -> {
@@ -77,7 +82,8 @@ class ActivityCoupon < ApplicationRecord
     where.not(id: recently_notified_ids)
   }
 
-  # == Noticeable
+  # == Noticeable ==
+
   sig do
     override
       .params(recipient: T.nilable(NotificationRecipient))
@@ -103,7 +109,8 @@ class ActivityCoupon < ApplicationRecord
     )
   end
 
-  # == Methods
+  # == Methods ==
+
   sig { void }
   def create_notification!
     notifications.create!(recipient: friend!)
@@ -121,7 +128,8 @@ class ActivityCoupon < ApplicationRecord
 
   private
 
-  # == Validators
+  # == Validators ==
+
   sig { void }
   def validate_no_other_identical_active_coupons
     if friend!.activity_coupons.active.where.not(id:).exists?(activity:)

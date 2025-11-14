@@ -13,7 +13,8 @@ class ApplicationModel
     extend T::Helpers
   end
 
-  # == Conversions
+  # == Conversions ==
+
   sig { overridable.returns(T::Hash[T.any(Symbol, String), T.untyped]) }
   def to_hash
     attributes.with_indifferent_access
@@ -22,7 +23,8 @@ class ApplicationModel
   sig { returns(T::Hash[T.any(Symbol, String), T.untyped]) }
   def to_h = to_hash
 
-  # == Pattern matching
+  # == Pattern Matching ==
+
   sig do
     params(keys: T.nilable(T::Array[Symbol]))
       .returns(T::Hash[Symbol, T.untyped])

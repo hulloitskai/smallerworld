@@ -2,9 +2,11 @@
 # frozen_string_literal: true
 
 class FriendNotificationSettingsSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :friend
 
-  # == Attributes
+  # == Attributes ==
+
   attributes subscribed_post_types: { type: "PostType[]" }
 end

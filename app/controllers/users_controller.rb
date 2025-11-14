@@ -6,83 +6,98 @@ class UsersController < ApplicationController
   include RendersUserFavicons
   include RendersTimeline
 
-  # == Filters
+  # == Filters ==
+
   before_action :authenticate_friend!, only: :manifest
 
-  # == Actions
+  # == Actions ==
+
   # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user)&friend_token=... # rubocop:disable Layout/LineLength
   def show
-    user = load_user(scope: User.with_attached_page_icon)
-    if (current_user = self.current_user)
-      invitation_requested = user
-        .join_requests
-        .exists?(phone_number: current_user.phone_number)
+    respond_to do |format|
+      format.html do
+        user = find_user(scope: User.with_attached_page_icon)
+        if (current_user = self.current_user)
+          invitation_requested = user
+            .join_requests
+            .exists?(phone_number: current_user.phone_number)
+        end
+        if (friend = current_friend)
+          reply_to_number = user.reply_to_number || user.phone_number
+          last_sent_encouragement = friend.latest_visible_encouragement
+        end
+        props = {
+          user: UserProfileSerializer.one(user),
+          "replyToNumber" => reply_to_number,
+          "lastSentEncouragement" => EncouragementSerializer
+            .one_if(last_sent_encouragement),
+          "invitationRequested" => invitation_requested || false,
+          "hideNeko" => user.hide_neko,
+          "allowFriendSharing" => user.allow_friend_sharing,
+        }
+        unless params[:manifest_icon_type] == "generic"
+          props["faviconLinks"] = user_favicon_links(user)
+        end
+        render(inertia: "UserPage", user_theme: user.theme, props:)
+      end
     end
-    if (friend = current_friend)
-      reply_to_number = user.reply_to_number || user.phone_number
-      last_sent_encouragement = friend.latest_visible_encouragement
-    end
-    props = {
-      user: UserProfileSerializer.one(user),
-      "replyToNumber" => reply_to_number,
-      "lastSentEncouragement" => EncouragementSerializer
-        .one_if(last_sent_encouragement),
-      "invitationRequested" => invitation_requested || false,
-      "hideNeko" => user.hide_neko,
-      "allowFriendSharing" => user.allow_friend_sharing,
-    }
-    unless params[:manifest_icon_type] == "generic"
-      props["faviconLinks"] = user_favicon_links(user)
-    end
-    render(inertia: "UserPage", user_theme: user.theme, props:)
   end
 
   # GET /users/:id/timeline?friend_token=...&start_date=...&time_zone=...
   def timeline
-    user = load_user
-    time_zone = find_timeline_time_zone!
-    start_date = find_timeline_start_date!(time_zone:)
-    timeline_posts = scoped do
-      scope = user.posts.where(created_at: start_date.in_time_zone(time_zone)..)
-      scope = if (friend = current_friend)
-        scope.visible_to(friend)
-      else
-        scope.visible_to_friends
-      end
-      scoped do
-        tz = time_zone.name
-        select_sql = Post.sanitize_sql_array([
-          "DISTINCT ON (DATE(posts.created_at AT TIME ZONE :tz)) " \
-            "DATE(posts.created_at AT TIME ZONE :tz) AS date, " \
-            "posts.emoji, posts.visibility",
-          tz:,
-        ])
-        order_sql = Post.sanitize_sql_array([
-          "DATE(posts.created_at AT TIME ZONE :tz), " \
-            "posts.created_at DESC",
-          tz:,
-        ])
-        scope
-          .select(select_sql)
-          .order(Arel.sql(order_sql))
-          .to_a
+    respond_to do |format|
+      format.json do
+        user = find_user
+        time_zone = find_timeline_time_zone!
+        start_date = find_timeline_start_date!(time_zone:)
+        timeline_posts = scoped do
+          scope = user.posts
+            .where(created_at: start_date.in_time_zone(time_zone)..)
+          scope = if (friend = current_friend)
+            scope.visible_to(friend)
+          else
+            scope.visible_to_friends
+          end
+          scoped do
+            tz = time_zone.name
+            select_sql = Post.sanitize_sql_array([
+              "DISTINCT ON (DATE(posts.created_at AT TIME ZONE :tz)) " \
+                "DATE(posts.created_at AT TIME ZONE :tz) AS date, " \
+                "posts.emoji, posts.visibility",
+              tz:,
+            ])
+            order_sql = Post.sanitize_sql_array([
+              "DATE(posts.created_at AT TIME ZONE :tz), " \
+                "posts.created_at DESC",
+              tz:,
+            ])
+            scope
+              .select(select_sql)
+              .order(Arel.sql(order_sql))
+              .to_a
+          end
+        end
+
+        timeline = build_timeline(timeline_posts)
+        render(json: { timeline: })
       end
     end
-
-    timeline = build_timeline(timeline_posts)
-    render(json: { timeline: })
   end
 
   # GET /@:handle/join
   def join
-    user = load_user
-    redirect_to(user_path(user, intent: "join"))
+    respond_to do |format|
+      format.html do
+        user = find_user
+        redirect_to(user_path(user, intent: "join"))
+      end
+    end
   end
 
   # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
   def manifest
     current_friend = authenticate_friend!
-    user = load_user(scope: User.with_attached_page_icon)
+    user = find_user(scope: User.with_attached_page_icon)
     icons =
       if params[:icon_type] == "generic"
         brand_manifest_icons
@@ -140,33 +155,38 @@ class UsersController < ApplicationController
 
   # POST /users/:id/request_invitation
   def request_invitation
-    user = load_user
-    join_request_params = params.expect(join_request: %i[name phone_number])
-    phone_number = join_request_params.delete(:phone_number)
-    join_request = user.join_requests.find_or_initialize_by(phone_number:)
-    if join_request.persisted? &&
-        user.friends.exists?(join_request_id: join_request.id) ||
-        user.friends.exists?(phone_number:)
-      raise "You have already been invited"
-    end
+    respond_to do |format|
+      format.json do
+        user = find_user
+        join_request_params = params.expect(join_request: %i[name phone_number])
+        phone_number = join_request_params.delete(:phone_number)
+        join_request = user.join_requests.find_or_initialize_by(phone_number:)
+        if join_request.persisted? &&
+            user.friends.exists?(join_request_id: join_request.id) ||
+            user.friends.exists?(phone_number:)
+          raise "You have already been invited"
+        end
 
-    if join_request.update(join_request_params)
-      render(json: {
-        "joinRequest" => JoinRequestSerializer.one(join_request),
-      })
-    else
-      render(
-        json: { errors: join_request.form_errors },
-        status: :unprocessable_entity,
-      )
+        if join_request.update(join_request_params)
+          render(json: {
+            "joinRequest" => JoinRequestSerializer.one(join_request),
+          })
+        else
+          render(
+            json: { errors: join_request.form_errors },
+            status: :unprocessable_entity,
+          )
+        end
+      end
     end
   end
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(scope: User::PrivateRelation).returns(User) }
-  def load_user(scope: User.all)
+  def find_user(scope: User.all)
     scope.friendly.find(params.fetch(:id))
   end
 end

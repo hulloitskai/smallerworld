@@ -5,10 +5,12 @@ class ScheduleActivityCouponReminderJob < ApplicationJob
   extend T::Sig
   extend T::Helpers
 
-  # == Configuration
+  # == Configuration ==
+
   good_job_control_concurrency_with(key: name, total_limit: 1)
 
-  # == Job
+  # == Job ==
+
   sig { void }
   def perform
     # For each active coupon without recent notification

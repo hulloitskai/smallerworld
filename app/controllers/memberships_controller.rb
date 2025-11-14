@@ -2,28 +2,35 @@
 # frozen_string_literal: true
 
 class MembershipsController < ApplicationController
-  # == Filters
+  # == Filters ==
+
   before_action :authenticate_user!
 
-  # == Actions
+  # == Actions ==
+
   # POST /membership/activate
   def activate
-    current_user = authenticate_user!
-    pending_guests = ZeffyService.list_pending_guests
-    matching_guest = find_matching_guest(pending_guests)
-    if matching_guest
-      ZeffyService.check_in_guest(matching_guest.fetch("id"))
-      membership_tier = membership_tier_from_guest_rate(matching_guest)
-      current_user.update!(membership_tier:)
+    respond_to do |format|
+      format.json do
+        current_user = authenticate_user!
+        pending_guests = ZeffyService.list_pending_guests
+        matching_guest = find_matching_guest(pending_guests)
+        if matching_guest
+          ZeffyService.check_in_guest(matching_guest.fetch("id"))
+          membership_tier = membership_tier_from_guest_rate(matching_guest)
+          current_user.update!(membership_tier:)
+        end
+        render(json: {
+          "membershipTier" => current_user.membership_tier,
+        })
+      end
     end
-    render(json: {
-      "membershipTier" => current_user.membership_tier,
-    })
   end
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig do
     params(pending_guests: T::Array[T::Hash[String, T.untyped]])
       .returns(T.nilable(T::Hash[String, T.untyped]))

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class ActivitySerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :name, :emoji, :description, :location_name, :template_id
 end

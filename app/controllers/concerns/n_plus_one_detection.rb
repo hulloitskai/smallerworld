@@ -11,13 +11,15 @@ module NPlusOneDetection
   included do
     T.bind(self, T.class_of(ActionController::Base))
 
-    # == Filters
+    # == Filters ==
+
     around_action :n_plus_one_detection if defined?(Prosopite)
   end
 
   private
 
-  # == Filter handlers
+  # == Filter Handlers ==
+
   sig { params(block: T.proc.void).void }
   def n_plus_one_detection(&block)
     Prosopite.scan

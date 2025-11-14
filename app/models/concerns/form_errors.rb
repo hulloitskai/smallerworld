@@ -8,11 +8,13 @@ module FormErrors
 
   abstract!
 
-  # == Interface
+  # == Interface ==
+
   sig { abstract.returns(ActiveModel::Errors) }
   def errors; end
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(T::Hash[String, String]) }
   def form_errors
     errors = {}

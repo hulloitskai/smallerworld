@@ -2,14 +2,17 @@
 # frozen_string_literal: true
 
 class UserPublicPostSerializer < PostSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :post
 
-  # == Type
+  # == Type ==
+
   attribute :user_post_type, type: '"public"' do
     "public"
   end
 
-  # == Attributes
+  # == Attributes ==
+
   attributes repliers: { type: :number }
 end

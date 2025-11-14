@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class UserSerializer < UserProfileSerializer
-  # == Attributes
+  # == Attributes ==
+
   attributes :created_at,
              :phone_number,
              membership_tier: { type: '"supporter" | "believer"' }

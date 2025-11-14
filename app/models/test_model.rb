@@ -4,10 +4,12 @@
 class TestModel < ApplicationModel
   include FormErrors
 
-  # == Attributes
+  # == Attributes ==
+
   attribute :name, :string
   attribute :birthday, :date
 
-  # == Validations
+  # == Validations ==
+
   validates :name, inclusion: { in: %w[George] }, presence: true
 end

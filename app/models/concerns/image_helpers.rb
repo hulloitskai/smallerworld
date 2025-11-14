@@ -12,7 +12,8 @@ module ImageHelpers
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(blob: ActiveStorage::Blob).returns(T::Boolean) }
   def image_blob_is_opaque?(blob)
     blob.open do |file|

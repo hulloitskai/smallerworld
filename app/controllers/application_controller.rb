@@ -16,20 +16,23 @@ class ApplicationController < ActionController::Base
   include NPlusOneDetection
   include RendersUserThemes
 
-  # == Errors
+  # == Errors ==
+
   class AuthenticationRequired < StandardError
     def initialize(message = "Missing friend access token")
       super
     end
   end
 
-  # == Filters
+  # == Filters ==
+
   around_action :with_error_context
   if Rails.env.development? && !InertiaRails.configuration.ssr_enabled
     around_action :with_ssr
   end
 
-  # == Pagy
+  # == Pagy ==
+
   sig do
     params(pagy: Pagy, absolute: T::Boolean)
       .returns(T::Hash[Symbol, T.untyped])
@@ -40,7 +43,8 @@ class ApplicationController < ActionController::Base
     metadata
   end
 
-  # == Exception handling
+  # == Exception Handling ==
+
   rescue_from RuntimeError,
               ActiveRecord::RecordNotSaved,
               with: :handle_runtime_error
@@ -53,7 +57,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def signed_in?
     current_user.present?
@@ -68,7 +73,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # == Filter handlers
+  # == Filter Handlers ==
+
   sig { returns(T.any(Friend, User)) }
   def require_authentication!
     current_friend || current_user or raise AuthenticationRequired
@@ -144,7 +150,8 @@ class ApplicationController < ActionController::Base
     render_json_exception(exception)
   end
 
-  # == Rescue handlers
+  # == Rescue Handlers ==
+
   sig { params(error: ActionPolicy::Unauthorized).void }
   def handle_unauthorized(error)
     if request.format.json?

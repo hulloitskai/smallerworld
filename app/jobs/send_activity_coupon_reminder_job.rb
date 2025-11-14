@@ -5,7 +5,8 @@ class SendActivityCouponReminderJob < ApplicationJob
   extend T::Sig
   extend T::Helpers
 
-  # == Configuration
+  # == Configuration ==
+
   good_job_control_concurrency_with(
     key: -> {
       T.bind(self, SendActivityCouponReminderJob)
@@ -15,7 +16,8 @@ class SendActivityCouponReminderJob < ApplicationJob
     total_limit: 1,
   )
 
-  # == Job
+  # == Job ==
+
   sig { params(coupon: ActivityCoupon).void }
   def perform(coupon)
     if (recent_notification = coupon.recent_notification)

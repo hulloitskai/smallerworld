@@ -2,16 +2,21 @@
 # frozen_string_literal: true
 
 class StartController < ApplicationController
-  # == Actions
+  # == Actions ==
+
   # GET /start
   def redirect
-    next_path = if signed_in?
-      world_path(trailing_slash: true)
-    elsif valid_registration_token?
-      signup_path
-    else
-      root_path
+    respond_to do |format|
+      format.html do
+        next_path = if signed_in?
+          world_path(trailing_slash: true)
+        elsif valid_registration_token?
+          signup_path
+        else
+          root_path
+        end
+        redirect_to(next_path)
+      end
     end
-    redirect_to(next_path)
   end
 end

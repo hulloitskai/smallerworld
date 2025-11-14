@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class EncouragementSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :created_at, :emoji, :message
 
-  # == Associations
+  # == Associations ==
+
   has_one :friend, serializer: EncouragementFriendSerializer
 end

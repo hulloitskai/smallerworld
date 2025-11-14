@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class HealthcheckSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :checker, model: "Healthcheck::Checker"
 
-  # == Attributes
+  # == Attributes ==
+
   attribute :status, type: :string do
     checker.errored? ? "error" : "ok"
   end

@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class AssociatedFriendSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :friend
 
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :access_token
 end

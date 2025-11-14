@@ -51,7 +51,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
     },
     ...(showLoginCodeInput
       ? {
-          action: routes.session.create,
+          action: routes.sessions.create,
           descriptor: "sign in",
           transformValues: ({ login_code, ...phonePartsValues }) => {
             const phoneNumber = mustParsePhoneFromParts(phonePartsValues);
@@ -87,7 +87,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
           );
           location.href = worldPath;
         } else {
-          const registrationPath = routes.registration.new.path({ query });
+          const registrationPath = routes.registrations.new.path({ query });
           router.visit(registrationPath);
         }
       } else {

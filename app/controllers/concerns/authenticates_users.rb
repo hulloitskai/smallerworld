@@ -10,7 +10,8 @@ module AuthenticatesUsers
 
   requires_ancestor { ActionController::Base }
 
-  # == Errors
+  # == Errors ==
+
   class NotAuthenticated < StandardError
     def initialize(message = "Not authenticated")
       super
@@ -20,19 +21,23 @@ module AuthenticatesUsers
   included do
     T.bind(self, T.class_of(ActionController::Base))
 
-    # == Filters
+    # == Filters ==
+
     before_action :resume_session
 
-    # == Exception handling
+    # == Exception Handling ==
+
     rescue_from NotAuthenticated, with: :handle_not_authenticated
 
-    # == Helpers
+    # == Helpers ==
+
     helper_method :current_user
   end
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def authenticated?
     !!resume_session
@@ -108,13 +113,15 @@ module AuthenticatesUsers
       .present?
   end
 
-  # == Filter handlers
+  # == Filter Handlers ==
+
   sig { returns(T.nilable(Session)) }
   def resume_session
     Current.session ||= find_session_by_cookie
   end
 
-  # == Rescue handlers
+  # == Rescue Handlers ==
+
   sig { params(error: NotAuthenticated).void }
   def handle_not_authenticated(error)
     respond_to do |format|

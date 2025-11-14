@@ -31,7 +31,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PushRegistration < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :owner, polymorphic: true, optional: true
   belongs_to :push_subscription, inverse_of: :registrations
   delegate :service_worker_version, to: :push_subscription
@@ -42,20 +43,21 @@ class PushRegistration < ApplicationRecord
       raise ActiveRecord::RecordNotFound, "Missing associated push subscription"
   end
 
-  # == Validations
+  # == Validations ==
+
   validates :push_subscription, uniqueness: { scope: :owner }
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create :create_friend_notification!
   after_create :create_activity_coupon_notification!
 
-  # == Methods
+  # == Methods ==
+
   sig { params(notification: Notification, urgency: T.nilable(Symbol)).void }
   def push(notification, urgency: nil)
     serializer = if service_worker_version.to_i > 1
       NotificationSerializer
-    elsif notification.legacy_payload.present?
-      LegacyNotificationSerializer
     else
       return
     end
@@ -88,7 +90,8 @@ class PushRegistration < ApplicationRecord
     push_subscription!.push_payload(payload.compact, urgency: :high)
   end
 
-  # == Callback handlers
+  # == Callback Handlers ==
+
   sig { void }
   def create_friend_notification!
     transaction do
@@ -113,7 +116,8 @@ class PushRegistration < ApplicationRecord
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T.nilable(String)) }
   def page_icon_url
     owner = self.owner

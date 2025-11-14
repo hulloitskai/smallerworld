@@ -2,11 +2,13 @@
 # frozen_string_literal: true
 
 class PostStickerSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :friend_id,
              :emoji
 
-  # == Associations
+  # == Associations ==
+
   has_one :relative_position, serializer: PositionSerializer
 end

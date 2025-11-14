@@ -25,7 +25,8 @@
 class Encouragement < ApplicationRecord
   include Noticeable
 
-  # == Associations
+  # == Associations ==
+
   belongs_to :friend
   has_one :user, through: :friend
 
@@ -39,15 +40,18 @@ class Encouragement < ApplicationRecord
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
-  # == Validations
+  # == Validations ==
+
   validates :emoji, emoji: true
   validates :message, presence: true, length: { maximum: 240 }
   validate :validate_no_other_encouragement_in_last_12_hours
 
-  # == Callbacks
+  # == Callbacks ==
+
   after_create :create_notification!
 
-  # == Noticeable
+  # == Noticeable ==
+
   sig do
     override.params(recipient: T.nilable(NotificationRecipient))
       .returns(NotificationMessage)
@@ -67,17 +71,8 @@ class Encouragement < ApplicationRecord
     )
   end
 
-  sig do
-    override
-      .params(recipient: T.nilable(NotificationRecipient))
-      .returns(T::Hash[String, T.untyped])
-  end
-  def legacy_notification_payload(recipient)
-    payload = EncouragementNotificationPayload.new(encouragement: self)
-    LegacyEncouragementNotificationPayloadSerializer.one(payload)
-  end
+  # == Methods ==
 
-  # == Methods
   sig { void }
   def create_notification!
     notifications.create!(recipient: user!)
@@ -85,7 +80,8 @@ class Encouragement < ApplicationRecord
 
   private
 
-  # == Validators
+  # == Validators ==
+
   sig { void }
   def validate_no_other_encouragement_in_last_12_hours
     other_encouragements = friend!

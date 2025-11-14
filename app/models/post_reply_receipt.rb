@@ -23,7 +23,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PostReplyReceipt < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :post
   belongs_to :friend
 end

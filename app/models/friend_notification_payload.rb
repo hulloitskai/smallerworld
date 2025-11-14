@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 class FriendNotificationPayload < T::Struct
-  # == Properties
+  # == Properties ==
+
   const :friend, Friend
 end

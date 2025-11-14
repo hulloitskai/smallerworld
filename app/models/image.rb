@@ -24,7 +24,8 @@
 class Image < ActiveStorage::Blob
   extend T::Sig
 
-  # == Constants
+  # == Constants ==
+
   NOTIFICATION_SIZE = 720
   MAX_SIZE = 2400
   SIZES = [320, NOTIFICATION_SIZE, 1400, MAX_SIZE]
@@ -40,7 +41,8 @@ class Image < ActiveStorage::Blob
     format: "webp",
   }
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(String) }
   def src
     if gif?
@@ -76,7 +78,8 @@ class Image < ActiveStorage::Blob
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(representation: T.untyped).returns(String) }
   def representation_path(representation)
     Rails.application.routes

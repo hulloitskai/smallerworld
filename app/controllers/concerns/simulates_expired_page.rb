@@ -6,7 +6,8 @@ module SimulatesExpiredPage
   extend T::Helpers
   extend ActiveSupport::Concern
 
-  # == Annotations
+  # == Annotations ==
+
   requires_ancestor { ActionController::Base }
   requires_ancestor { ActionController::RequestForgeryProtection }
 
@@ -24,7 +25,8 @@ module SimulatesExpiredPage
     end
   end
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def testing_expired_page?
     params[:simulate_expired_page].truthy?

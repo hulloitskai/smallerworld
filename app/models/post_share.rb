@@ -24,7 +24,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PostShare < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :post
   has_one :post_author, through: :post, source: :author
   belongs_to :sharer, polymorphic: true
@@ -54,10 +55,12 @@ class PostShare < ApplicationRecord
     post_author or raise ActiveRecord::RecordNotFound, "Missing post author"
   end
 
-  # == Validations
+  # == Validations ==
+
   validates :sharer_type, inclusion: { in: %w[User Friend] }
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(String) }
   def share_snippet
     shortlink = ShortlinkService.url_helpers.post_share_url(self)

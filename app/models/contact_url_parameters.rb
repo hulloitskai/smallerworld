@@ -2,11 +2,13 @@
 # frozen_string_literal: true
 
 class ContactUrlParameters < ApplicationParameters
-  # == Attributes
+  # == Attributes ==
+
   attribute :subject, :string
   attribute :body, :string
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(T.nilable(T::Hash[Symbol, String])) }
   def mailto_params
     { subject:, body: }.compact_blank.presence

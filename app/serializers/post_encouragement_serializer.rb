@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class PostEncouragementSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :encouragement
 
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :emoji, :message
 end

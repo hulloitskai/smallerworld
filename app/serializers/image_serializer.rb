@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class ImageSerializer < FileSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :image
 
-  # == Attributes
+  # == Attributes ==
+
   attributes src: { type: :string },
              srcset: { type: :string, nullable: true },
              dimensions: { type: "Dimensions", nullable: true }

@@ -6,7 +6,8 @@ class ApplicationJob < ActiveJob::Base
   extend T::Helpers
   include GoodJob::ActiveJobExtensions::Concurrency
 
-  # == Configuration
+  # == Configuration ==
+
   # Automatically retry jobs that encountered a deadlock/
   retry_on ActiveRecord::Deadlocked
 

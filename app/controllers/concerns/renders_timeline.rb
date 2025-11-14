@@ -9,7 +9,7 @@ module RendersTimeline
 
   private
 
-  # == Helpers
+  # == Helpers ==
 
   sig { returns(ActiveSupport::TimeZone) }
   def find_timeline_time_zone!

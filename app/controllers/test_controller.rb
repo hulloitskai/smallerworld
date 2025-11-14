@@ -2,24 +2,33 @@
 # frozen_string_literal: true
 
 class TestController < ApplicationController
-  # == Actions
+  # == Actions ==
+
   # GET /test
   def show
-    name = "Big Joe"
-    render(inertia: "TestPage", props: { name: })
+    respond_to do |format|
+      format.html do
+        name = "Big Joe"
+        render(inertia: "TestPage", props: { name: })
+      end
+    end
   end
 
   # POST /test/submit
   def submit
-    model_params = params.expect(model: %i[name birthday])
-    model = TestModel.new(model_params)
-    if model.valid?
-      render(json: { model: })
-    else
-      render(
-        json: { errors: model.form_errors },
-        status: :unprocessable_entity,
-      )
+    respond_to do |format|
+      format.json do
+        model_params = params.expect(model: %i[name birthday])
+        model = TestModel.new(model_params)
+        if model.valid?
+          render(json: { model: })
+        else
+          render(
+            json: { errors: model.form_errors },
+            status: :unprocessable_entity,
+          )
+        end
+      end
     end
   end
 end

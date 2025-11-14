@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 class FriendSerializer < FriendProfileSerializer
-  # == Attributes
+  # == Attributes ==
+
   attributes :created_at, :access_token
 end

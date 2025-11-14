@@ -6,10 +6,12 @@ class ApplicationFrozenRecord < FrozenRecord::Base
   extend T::Helpers
   include GlobalID::Identification
 
-  # == Constants
+  # == Constants ==
+
   GeneratedRelationMethods = FrozenRecord::Scope
 
-  # == Configuration
+  # == Configuration ==
+
   self.abstract_class = true
   self.base_path = Rails.root.join("config/records")
 end

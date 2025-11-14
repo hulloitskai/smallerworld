@@ -8,12 +8,14 @@ module GeneratesManifest
 
   requires_ancestor { ActionController::Base }
 
-  # == Constants
+  # == Constants ==
+
   BRAND_MANIFEST_ICON_PREFIX = "web-app-manifest"
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { params(user: User).returns(T::Array[T.untyped]) }
   def user_manifest_icons(user)
     icon_blob = user.page_icon_blob!

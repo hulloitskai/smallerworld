@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 class UniversePostNotificationPayload < T::Struct
-  # == Properties
+  # == Properties ==
+
   const :post, Post
 end

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostViewer < T::Struct
-  # == Properties
+  # == Properties ==
+
   const :friend, Friend
   const :last_viewed_at, Time
   const :reaction_emojis, T::Array[String]

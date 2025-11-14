@@ -27,7 +27,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Invitation < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :user
   has_many :user_friends, through: :user, source: :friends
 
@@ -39,25 +40,29 @@ class Invitation < ApplicationRecord
   belongs_to :join_request, class_name: "JoinRequest", optional: true
   has_one :friend, dependent: :nullify
 
-  # == Validations
+  # == Validations ==
+
   validates :invitee_name,
             presence: true,
             uniqueness: { scope: :user, name: "already invited" }
   validates :invitee_emoji, emoji: true, allow_nil: true
   validate :validate_not_existing_friend_name, unless: :existing_friend?
 
-  # == Scopes
+  # == Scopes ==
+
   scope :pending, -> { where.missing(:friend) }
 
   private
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def existing_friend?
     !!friend
   end
 
-  # == Validators
+  # == Validators ==
+
   sig { void }
   def validate_not_existing_friend_name
     if user_friends.exists?(name: invitee_name)

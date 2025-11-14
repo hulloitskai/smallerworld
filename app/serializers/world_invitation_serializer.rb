@@ -2,9 +2,11 @@
 # frozen_string_literal: true
 
 class WorldInvitationSerializer < InvitationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :invitation
 
-  # == Attributes
+  # == Attributes ==
+
   attributes :created_at
 end

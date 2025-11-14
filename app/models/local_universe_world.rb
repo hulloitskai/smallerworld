@@ -4,7 +4,8 @@
 class LocalUniverseWorld < T::Struct
   extend T::Sig
 
-  # == Properties
+  # == Properties ==
+
   const :user, User
   delegate :page_icon_image, to: :user
   delegate :id, :handle, :name, to: :user, prefix: true

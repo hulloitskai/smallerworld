@@ -28,9 +28,6 @@ module GeneratedPathHelpersModule
   def announcements_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def api_posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def audience_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -43,16 +40,7 @@ module GeneratedPathHelpersModule
   def contact_url_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def delivered_notification_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def download_image_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def edit_local_universe_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def edit_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_world_path(*args); end
@@ -118,16 +106,10 @@ module GeneratedPathHelpersModule
   def marsha_puzzle_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_local_universe_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def new_rails_conductor_inbound_email_source_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def new_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pause_world_friend_path(*args); end
@@ -292,12 +274,6 @@ module GeneratedPathHelpersModule
   def timeline_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def universe_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def universe_posts_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def unpause_world_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -325,7 +301,7 @@ module GeneratedPathHelpersModule
   def viewers_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def visit_path(*args); end
+  def visits_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_activities_path(*args); end
@@ -362,7 +338,4 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def worlds_local_universe_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
-  def worlds_universe_path(*args); end
 end

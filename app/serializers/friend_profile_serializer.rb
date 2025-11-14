@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class FriendProfileSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :friend
 
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :name, :emoji
 end

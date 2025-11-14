@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PushNotificationJob < ApplicationJob
-  # == Configuration
+  # == Configuration ==
+
   good_job_control_concurrency_with(
     key: -> {
       T.bind(self, PushNotificationJob)
@@ -12,7 +13,8 @@ class PushNotificationJob < ApplicationJob
     total_limit: 1,
   )
 
-  # == Job
+  # == Job ==
+
   sig { params(notification: Notification).void }
   def perform(notification)
     notification.push

@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class WorldFriendSerializer < FriendProfileSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :friend
 
-  # == Attributes
+  # == Attributes ==
+
   attributes :paused_since,
              subscribed_post_types: {
                type: '"journal_entry" | "poem" | "invitation" | "question"',
@@ -20,7 +22,8 @@ class WorldFriendSerializer < FriendProfileSerializer
     end
   end
 
-  # == Associations
+  # == Associations ==
+
   has_many :active_activity_coupons,
            serializer: FriendActivityCouponSerializer
 end

@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class PostReactionPolicy < RelaxedPolicy
-  # == Rules
+  # == Rules ==
+
   def manage?
     reaction = T.cast(record, PostReaction)
     reaction.friend! == friend!

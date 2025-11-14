@@ -8,14 +8,16 @@ class ShortlinkService < ApplicationService
 
     private
 
-    # == Helpers
+    # == Helpers ==
+
     sig { override.returns(T::Hash[Symbol, T.untyped]) }
     def default_url_options
       ShortlinkService.shortlink_url_options
     end
   end
 
-  # == Methods
+  # == Methods ==
+
   sig { returns(T::Hash[Symbol, T.untyped]) }
   def self.shortlink_url_options
     if Rails.env.production?

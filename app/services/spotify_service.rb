@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class SpotifyService < ApplicationService
-  # == Configuration
+  # == Configuration ==
+
   sig { override.returns(T::Boolean) }
   def self.enabled?
     return false unless credentials_available?
@@ -11,7 +12,8 @@ class SpotifyService < ApplicationService
     credentials.client_id.present? && credentials.client_secret.present?
   end
 
-  # == Initialization
+  # == Initialization ==
+
   sig { void }
   def initialize
     super
@@ -19,7 +21,8 @@ class SpotifyService < ApplicationService
     RSpotify.authenticate(credentials.client_id!, credentials.client_secret!)
   end
 
-  # == Methods
+  # == Methods ==
+
   sig { params(id: String).returns(T.nilable(RSpotify::Track)) }
   def self.get_track(id)
     authenticated do
@@ -29,7 +32,8 @@ class SpotifyService < ApplicationService
     end
   end
 
-  # == Helpers
+  # == Helpers ==
+
   sig { returns(T::Boolean) }
   def self.credentials_available?
     Rails.application.credentials.spotify.present?

@@ -24,7 +24,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class PostView < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :post, inverse_of: :views
   belongs_to :friend
 
@@ -33,6 +34,7 @@ class PostView < ApplicationRecord
     friend or raise ActiveRecord::RecordNotFound, "Missing associated friend"
   end
 
-  # == Validations
+  # == Validations ==
+
   validates :friend, uniqueness: { scope: :post }
 end

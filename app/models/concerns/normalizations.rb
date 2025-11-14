@@ -16,7 +16,8 @@ module Normalizations
     requires_ancestor { T.class_of(ActiveRecord::Base) }
     requires_ancestor { ActiveRecord::Normalization::ClassMethods }
 
-    # == Helpers
+    # == Helpers ==
+
     sig { params(attributes: T.any(Symbol, String)).void }
     def removes_blank(*attributes)
       normalizes(*T.unsafe(attributes), with: ->(value) { value.presence })

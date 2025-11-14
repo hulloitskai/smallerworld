@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class NotificationMessageSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :message, model: "NotificationMessage"
 
-  # == Attributes
+  # == Attributes ==
+
   attributes title: { type: :string },
              body: { type: :string, nullable: true },
              target_url: { type: :string, nullable: true }

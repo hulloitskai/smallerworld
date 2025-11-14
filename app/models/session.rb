@@ -23,7 +23,8 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Session < ApplicationRecord
-  # == Associations
+  # == Associations ==
+
   belongs_to :user
 
   sig { returns(User) }
@@ -31,9 +32,11 @@ class Session < ApplicationRecord
     user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
-  # == Validations
+  # == Validations ==
+
   validates :ip_address, :user_agent, presence: true
 
-  # == Scopes
+  # == Scopes ==
+
   scope :with_user, -> { includes(:user) }
 end

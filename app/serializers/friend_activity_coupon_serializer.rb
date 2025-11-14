@@ -2,10 +2,12 @@
 # frozen_string_literal: true
 
 class FriendActivityCouponSerializer < ApplicationSerializer
-  # == Configuration
+  # == Configuration ==
+
   object_as :activity_coupon
 
-  # == Attributes
+  # == Attributes ==
+
   identifier
   attributes :id, :expires_at, :activity_id
 end

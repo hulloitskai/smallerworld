@@ -2,9 +2,14 @@
 # frozen_string_literal: true
 
 class LandingController < ApplicationController
-  # == Actions
+  # == Actions ==
+
   # GET /
   def show
-    render(inertia: "LandingPage")
+    respond_to do |format|
+      format.html do
+        render(inertia: "LandingPage")
+      end
+    end
   end
 end

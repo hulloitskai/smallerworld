@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class FriendPolicy < ApplicationPolicy
-  # == Rules
+  # == Rules ==
+
   def manage?
     friend = T.let(record, Friend)
     friend.user == user!

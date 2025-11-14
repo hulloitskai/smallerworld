@@ -2,7 +2,8 @@
 # frozen_string_literal: true
 
 class JoinedUserSerializer < ApplicationSerializer
-  # == Attributes
+  # == Attributes ==
+
   identifier type: :string
   attributes name: { type: :string },
              handle: { type: :string },

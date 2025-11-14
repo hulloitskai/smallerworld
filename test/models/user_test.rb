@@ -8,7 +8,6 @@
 #
 #  id                            :uuid             not null, primary key
 #  allow_friend_sharing          :boolean          not null
-#  api_token                     :string
 #  handle                        :string           not null
 #  hide_neko                     :boolean          not null
 #  hide_stats                    :boolean          not null
@@ -24,7 +23,6 @@
 #
 # Indexes
 #
-#  index_users_on_api_token                      (api_token) UNIQUE
 #  index_users_on_handle                         (handle) UNIQUE
 #  index_users_on_membership_tier                (membership_tier)
 #  index_users_on_notifications_last_cleared_at  (notifications_last_cleared_at)

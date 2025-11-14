@@ -27,7 +27,8 @@
 class TextBlast < ApplicationRecord
   include NormalizesPhoneNumber
 
-  # == Attributes
+  # == Attributes ==
+
   sig { returns(T.nilable(ActiveSupport::Duration)) }
   attr_accessor :send_delay
 
@@ -36,7 +37,8 @@ class TextBlast < ApplicationRecord
     sent_at?
   end
 
-  # == Associations
+  # == Associations ==
+
   belongs_to :post
   belongs_to :friend
 
@@ -50,19 +52,23 @@ class TextBlast < ApplicationRecord
     friend or raise ActiveRecord::RecordNotFound, "Missing associated friend"
   end
 
-  # == Normalizations
+  # == Normalizations ==
+
   normalizes_phone_number :phone_number
 
-  # == Validations
+  # == Validations ==
+
   validates :phone_number,
             presence: true,
             phone: { possible: true, types: :mobile, extensions: false }
 
-  # == Callbacks
+  # == Callbacks ==
+
   before_validation :assign_phone_number_from_friend, if: :friend_changed?
   after_create :send_later, unless: :sent?
 
-  # == Methods
+  # == Methods ==
+
   sig { void }
   def send_now
     TwilioService.send_message(
@@ -88,7 +94,8 @@ class TextBlast < ApplicationRecord
 
   private
 
-  # == Callback handlers
+  # == Callback Handlers ==
+
   sig { void }
   def assign_phone_number_from_friend
     self[:phone_number] = friend!.phone_number
