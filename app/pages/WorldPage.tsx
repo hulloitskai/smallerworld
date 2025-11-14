@@ -136,7 +136,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           <Image
             className={classes.pageIcon}
             src={currentUser.page_icon.src}
-            srcSet={currentUser.page_icon.srcset ?? undefined}
+            {...(!!currentUser.page_icon.srcset && {
+              srcSet: currentUser.page_icon.srcset,
+            })}
             w={ICON_SIZE}
             h={ICON_SIZE}
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}

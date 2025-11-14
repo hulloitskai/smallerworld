@@ -44,7 +44,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
           <Image
             className={classes.pageIcon}
             src={user.page_icon.src}
-            srcSet={user.page_icon.srcset ?? undefined}
+            {...(!!user.page_icon.srcset && { srcSet: user.page_icon.srcset })}
             w={ICON_SIZE}
             h={ICON_SIZE}
             radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}

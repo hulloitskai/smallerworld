@@ -183,7 +183,7 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => (
         <Image
           className={classes.worldPageIcon}
           src={world.page_icon.src}
-          srcSet={world.page_icon.srcset ?? undefined}
+          {...(!!world.page_icon.srcset && { srcSet: world.page_icon.srcset })}
           w={ICON_SIZE}
           h={ICON_SIZE}
           radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}

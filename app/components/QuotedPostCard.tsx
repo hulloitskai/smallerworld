@@ -123,7 +123,7 @@ const PostImage: FC<PostImageProps> = ({ image, ...otherProps }) => {
     <Image
       className={classes.image}
       src={image.src}
-      srcSet={image.srcset ?? undefined}
+      {...(!!image.srcset && { srcSet: image.srcset })}
       fit="contain"
       radius="md"
       onClick={() => {

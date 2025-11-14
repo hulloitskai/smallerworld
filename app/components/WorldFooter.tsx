@@ -47,9 +47,11 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
                   icon={
                     <Image
                       src={currentUser.page_icon.src}
-                      srcSet={currentUser.page_icon.srcset ?? undefined}
+                      {...(!!currentUser.page_icon.srcset && {
+                        srcSet: currentUser.page_icon.srcset,
+                      })}
                       h={WORLD_ICON_SIZE}
-                      w="unset"
+                      w={WORLD_ICON_SIZE}
                       radius={WORLD_ICON_SIZE / USER_ICON_RADIUS_RATIO}
                     />
                   }

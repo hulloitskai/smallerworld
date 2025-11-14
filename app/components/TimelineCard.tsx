@@ -108,9 +108,9 @@ const TimelineCard: FC<TimelineCardProps> = ({
           variant={postStreak.posted_today ? "default" : "filled"}
           className={classes.postStreakBadge}
           {...(onContinueStreak && {
-            mod: { clickable: !!postStreak.posted_today },
+            mod: { clickable: !postStreak.posted_today },
             onClick: () => {
-              onContinueStreak?.();
+              onContinueStreak();
             },
           })}
         >
