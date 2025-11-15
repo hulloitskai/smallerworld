@@ -19,7 +19,7 @@ export const useContact = (
   const contact = useCallback(() => {
     setResult(result => ({ ...result, loading: true }));
     const { onTriggered, ...params } = options ?? {};
-    fetchRoute<{ mailto: string; sms: string }>(routes.contactUrls.show, {
+    fetchRoute<{ mailto: string; sms: string }>(routes.contactUrl.show, {
       descriptor: "load contact info",
       params: { query: params },
     })

@@ -1,6 +1,6 @@
 import { useTimeZone } from "~/helpers/time";
 import { useTimelineStartDate } from "~/helpers/timeline";
-import { openNewPostModal } from "~/helpers/world";
+import { openNewWorldPostModal } from "~/helpers/world";
 import { type PostStreak } from "~/types";
 
 import TimelineCard from "./TimelineCard";
@@ -44,7 +44,7 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
         postStreak,
       }}
       onContinueStreak={() => {
-        openNewPostModal({ postType: "journal_entry" });
+        openNewWorldPostModal({ postType: "journal_entry" });
       }}
       {...otherProps}
     />

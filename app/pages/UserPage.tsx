@@ -296,7 +296,7 @@ UserPage.layout = page => (
     manifestUrl={({ currentFriend, user }, { url }) => {
       const { manifest_icon_type } = queryParamsFromPath(url);
       return currentFriend
-        ? routes.users.manifest.path({
+        ? routes.userManifests.show.path({
             id: user.handle,
             query: {
               friend_token: currentFriend.access_token,

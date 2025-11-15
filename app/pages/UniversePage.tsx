@@ -11,6 +11,7 @@ import UniversePageFeed from "~/components/UniversePageFeed";
 import WorldFooter from "~/components/WorldFooter";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import { useWebPush } from "~/helpers/webPush";
+import { manifestUrlForUser } from "~/helpers/world";
 import { type UniverseWorld, type User } from "~/types";
 
 import classes from "./UniversePage.module.css";
@@ -140,7 +141,7 @@ const UniversePage: PageComponent<UniversePageProps> = ({ currentUser }) => {
 UniversePage.layout = page => (
   <AppLayout<UniversePageProps>
     title="your universe"
-    manifestUrl={routes.world.manifest.path()}
+    manifestUrl={({ currentUser }) => manifestUrlForUser(currentUser)}
     pwaScope={withTrailingSlash(routes.world.show.path())}
     footer={<WorldFooter />}
     padding={0}

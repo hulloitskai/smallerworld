@@ -11,7 +11,11 @@ import CloseIcon from "~icons/heroicons/x-mark";
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldFriendCard from "~/components/WorldFriendCard";
-import { useWorldActivities, useWorldFriends } from "~/helpers/world";
+import {
+  manifestUrlForUser,
+  useWorldActivities,
+  useWorldFriends,
+} from "~/helpers/world";
 import { type User, type WorldFriend } from "~/types";
 
 import classes from "./WorldFriendsPage.module.css";
@@ -274,7 +278,7 @@ const WorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
 WorldFriendsPage.layout = page => (
   <AppLayout<WorldFriendsPageProps>
     title="your friends"
-    manifestUrl={routes.world.manifest.path()}
+    manifestUrl={({ currentUser }) => manifestUrlForUser(currentUser)}
     pwaScope={withTrailingSlash(routes.world.show.path())}
     withContainer
     containerSize="xs"

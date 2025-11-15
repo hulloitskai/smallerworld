@@ -13,6 +13,7 @@ import {
   type ActivityTemplate,
   type Encouragement,
   type PostType,
+  type User,
   type WorldFriend,
   type WorldPost,
 } from "~/types";
@@ -178,7 +179,7 @@ export interface NewPostModalOptions {
   onPostCreated?: (post: WorldPost) => void;
 }
 
-export const openNewPostModal = ({
+export const openNewWorldPostModal = ({
   postType,
   encouragement,
   onPostCreated,
@@ -198,3 +199,8 @@ export const openNewPostModal = ({
     ),
   });
 };
+
+export const manifestUrlForUser = (user: User): string =>
+  user.supported_features.includes("new_pwa")
+    ? routes.manifest.show.path()
+    : routes.worldManifest.show.path();

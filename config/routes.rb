@@ -37,9 +37,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # == Manifest ==
+
+  resource :manifest, only: :show, export: { namespace: "manifest" }
+
   # == Contact ==
 
-  resource :contact_url, only: :show, export: true
+  resource :contact_url, only: :show, export: { namespace: "contactUrl" }
 
   # == Push Subscriptions ==
 
@@ -92,8 +96,11 @@ Rails.application.routes.draw do
 
   resource :world, only: %i[show edit update], export: { namespace: "world" } do
     get :timeline
-    get "manifest.webmanifest" => :manifest, constraints: { format: "" }
   end
+  resource :world_manifest,
+           path: "/world/manifest",
+           only: :show,
+           export: { namespace: "worldManifest" }
   resources(
     :world_posts,
     path: "/world/posts",
@@ -184,7 +191,6 @@ Rails.application.routes.draw do
     member do
       get :timeline
       post :request_invitation
-      get "manifest.webmanifest" => :manifest, constraints: { format: "" }
     end
   end
   get "/@:id" => "users#show", as: :user, export: true
@@ -199,6 +205,10 @@ Rails.application.routes.draw do
       get :pinned
     end
   end
+  resource :user_manifest,
+           path: "/users/:user_id/manifest",
+           only: :show,
+           export: true
   resources(
     :user_activity_coupons,
     path: "/users/:user_id/activity_coupons",

@@ -85,6 +85,9 @@ module GeneratedUrlHelpersModule
   def mailcatcher_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def manifest_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def mark_as_redeemed_activity_coupon_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -32,7 +32,7 @@ import WorldPageNotificationsButton from "~/components/WorldPageNotificationsBut
 import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
 import { useWebPush } from "~/helpers/webPush";
-import { useWorldPosts } from "~/helpers/world";
+import { manifestUrlForUser, useWorldPosts } from "~/helpers/world";
 import { type User } from "~/types";
 
 import classes from "./WorldPage.module.css";
@@ -505,8 +505,7 @@ const SupportButton: FC = () => {
 WorldPage.layout = page => (
   <AppLayout<WorldPageProps>
     title="your world"
-    manifestUrl={routes.world.manifest.path()}
-    pwaScope={withTrailingSlash(routes.world.show.path())}
+    manifestUrl={({ currentUser }) => manifestUrlForUser(currentUser)}
     withContainer
     containerSize="xs"
     withGutter
@@ -527,30 +526,28 @@ const CheckableListItem: FC<CheckableListItemProps> = ({
   checked,
   children,
   ...otherProps
-}) => {
-  return (
-    <List.Item
-      className={cn(classes.checkableListItem, className)}
-      icon={
-        <Checkbox
-          checked={checked === true}
-          {...(checked === "partial" && {
-            indeterminate: true,
-            icon: props => (
-              <EllipsisHorizontalIcon {...omit(props, "indeterminate")} />
-            ),
-          })}
-          radius="sm"
-          readOnly
-        />
-      }
-      mod={{ checked }}
-      {...otherProps}
-    >
-      {children}
-    </List.Item>
-  );
-};
+}) => (
+  <List.Item
+    className={cn(classes.checkableListItem, className)}
+    icon={
+      <Checkbox
+        checked={checked === true}
+        {...(checked === "partial" && {
+          indeterminate: true,
+          icon: props => (
+            <EllipsisHorizontalIcon {...omit(props, "indeterminate")} />
+          ),
+        })}
+        radius="sm"
+        readOnly
+      />
+    }
+    mod={{ checked }}
+    {...otherProps}
+  >
+    {children}
+  </List.Item>
+);
 
 interface LogoutItemProps extends BoxProps {}
 

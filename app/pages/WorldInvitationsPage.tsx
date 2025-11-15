@@ -1,7 +1,7 @@
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
 import WorldInvitationCard from "~/components/WorldInvitationCard";
-import { useWorldActivities } from "~/helpers/world";
+import { manifestUrlForUser, useWorldActivities } from "~/helpers/world";
 import { type User, type WorldInvitation } from "~/types";
 
 export interface WorldInvitationsPageProps extends SharedPageProps {
@@ -72,7 +72,7 @@ const WorldInvitationsPage: PageComponent<WorldInvitationsPageProps> = ({
 WorldInvitationsPage.layout = page => (
   <AppLayout<WorldInvitationsPageProps>
     title="your pending invitations"
-    manifestUrl={routes.world.manifest.path()}
+    manifestUrl={({ currentUser }) => manifestUrlForUser(currentUser)}
     pwaScope={withTrailingSlash(routes.world.show.path())}
     withContainer
     containerSize="xs"

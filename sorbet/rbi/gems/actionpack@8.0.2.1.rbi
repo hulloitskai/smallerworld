@@ -731,6 +731,9 @@ module AbstractController::Collector
   def webm(*_arg0, **_arg1, &_arg2); end
 
   # source://actionpack//lib/abstract_controller/collector.rb#11
+  def webmanifest(*_arg0, **_arg1, &_arg2); end
+
+  # source://actionpack//lib/abstract_controller/collector.rb#11
   def webp(*_arg0, **_arg1, &_arg2); end
 
   # source://actionpack//lib/abstract_controller/collector.rb#11

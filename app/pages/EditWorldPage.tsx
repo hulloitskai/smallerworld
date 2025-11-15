@@ -6,6 +6,7 @@ import HomeScreenPreview from "~/components/HomescreenPreview";
 import ImageInput from "~/components/ImageInput";
 import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
 import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
+import { manifestUrlForUser } from "~/helpers/world";
 import { type Image, type Upload, type User } from "~/types";
 
 import classes from "./EditWorldPage.module.css";
@@ -170,7 +171,11 @@ const EditWorldPage: PageComponent<EditWorldPageProps> = ({
 };
 
 EditWorldPage.layout = page => (
-  <AppLayout title="customize your page">
+  <AppLayout<EditWorldPageProps>
+    title="customize your page"
+    manifestUrl={({ currentUser }) => manifestUrlForUser(currentUser)}
+    pwaScope={withTrailingSlash(routes.world.show.path())}
+  >
     <Center>{page}</Center>
   </AppLayout>
 );

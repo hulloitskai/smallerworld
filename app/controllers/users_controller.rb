@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  include GeneratesManifest
   include RendersUserFavicons
   include RendersTimeline
 
@@ -12,7 +11,7 @@ class UsersController < ApplicationController
 
   # == Actions ==
 
-  # GET /@:handle?intent=(join|installation_instructions)&manifest_icon_type=(generic|user)&friend_token=... # rubocop:disable Layout/LineLength
+  # GET /@:id?intent=(join|installation_instructions)&manifest_icon_type=(generic|user)&friend_token=... # rubocop:disable Layout/LineLength
   def show
     respond_to do |format|
       format.html do
@@ -84,7 +83,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # GET /@:handle/join
+  # GET /@:id/join
   def join
     respond_to do |format|
       format.html do
@@ -92,40 +91,6 @@ class UsersController < ApplicationController
         redirect_to(user_path(user, intent: "join"))
       end
     end
-  end
-
-  # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
-  def manifest
-    current_friend = authenticate_friend!
-    user = find_user(scope: User.with_attached_page_icon)
-    icons =
-      if params[:icon_type] == "generic"
-        brand_manifest_icons
-      else
-        user_manifest_icons(user)
-      end
-    render(
-      json: {
-        id: user_path(user, friend_token: current_friend.access_token),
-        name: "#{user.name}'s world",
-        short_name: user.name,
-        description: "life updates, personal invitations, poems, and more!",
-        icons:,
-        display: "standalone",
-        start_url: user_path(
-          user,
-          friend_token: current_friend.access_token,
-          trailing_slash: true,
-        ),
-        scope: user_path(user, trailing_slash: true),
-        # start_url: user_path(
-        #   user.id,
-        #   friend_token: current_friend.access_token,
-        # ),
-        # scope: user_path(user.id),
-      },
-      content_type: "application/manifest+json",
-    )
   end
 
   # # GET /users/joined
