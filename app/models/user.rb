@@ -292,12 +292,8 @@ class User < ApplicationRecord
     find_by(phone_number:)
   end
 
-  sig { params(handle: String).returns(T.nilable(UserOverrides)) }
-  def self.overrides_for(handle)
-    @overrides_by_handle = T.let(
-      @overrides_by_handle,
-      T.nilable(T::Hash[String, UserOverrides]),
-    )
+  sig { returns(T::Hash[String, UserOverrides]) }
+  private_class_method def self.overrides_by_handle
     @overrides_by_handle ||= scoped do
       overrides = Rails.application.credentials.user_overrides.to_h
       overrides.transform_values! do |settings|
@@ -312,23 +308,23 @@ class User < ApplicationRecord
       end
       overrides.with_indifferent_access
     end
-    @overrides_by_handle[handle]
   end
 
-  # WARNING: NOT IMPLEMENTED!
+  sig { params(handle: String).returns(T.nilable(UserOverrides)) }
+  def self.overrides_for(handle)
+    overrides_by_handle[handle]
+  end
+
   sig { returns(T::Set[String]) }
   def self.handles_subscribed_to_public_posts
-    raise NotImplementedError, "Not implemented"
-    # @handles_subscribed_to_public_posts ||= scoped do
-    #   all_flags = Rails.application.credentials.feature_flags or next Set.new
-    #   handles = all_flags.filter_map do |handle, flags|
-    #     if flags.include?("public_post_notifications")
-    #       handle
-    #     end
-    #     @overrides_by_handle
-    #   end
-    #   handles.to_set
-    # end
+    @handles_subscribed_to_public_posts ||=
+      overrides_by_handle
+        .filter_map do |handle, user|
+          if user.feature_flags.include?(:public_post_notifications)
+            handle
+          end
+        end
+        .to_set
   end
 
   private

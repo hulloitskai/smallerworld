@@ -5,10 +5,6 @@ class UsersController < ApplicationController
   include RendersUserFavicons
   include RendersTimeline
 
-  # == Filters ==
-
-  before_action :authenticate_friend!, only: :manifest
-
   # == Actions ==
 
   # GET /@:id?intent=(join|installation_instructions)&manifest_icon_type=(generic|user)&friend_token=... # rubocop:disable Layout/LineLength

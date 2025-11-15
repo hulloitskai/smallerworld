@@ -379,25 +379,35 @@ class Post < ApplicationRecord
 
     delay = NOTIFICATION_DELAY if previously_new_record?
     friends = friends_to_notify
+    notified_friend_ids = T.let([], T::Array[String])
     friends
       .notifiable
       .where.not(id: notifications.select(:recipient_id))
       .select(:id).find_each do |friend|
         notifications.create!(recipient: friend, push_delay: delay)
+        notified_friend_ids << friend.id
       end
     friends
       .text_only
       .where.not(id: text_blasts.select(:friend_id))
       .find_each do |friend|
         text_blasts.create!(friend:, send_delay: delay)
+        notified_friend_ids << friend.id
       end
-    # if visibility == :public
-    #   User.subscribed_to_public_posts.find_each do |user|
-    #     notifications.find_or_create_by!(recipient: user) do |notification|
-    #       notification.push_delay = delay
-    #     end
-    #   end
-    # end
+    if visibility == :public
+      notified_user_ids = Friend
+        .where(id: notified_friend_ids)
+        .select(:user_id)
+        .distinct
+      User
+        .subscribed_to_public_posts
+        .where.not(id: notified_user_ids)
+        .find_each do |user|
+          notifications.find_or_create_by!(recipient: user) do |notification|
+            notification.push_delay = delay
+          end
+        end
+    end
   end
 
   # sig { void }
