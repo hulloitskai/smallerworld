@@ -11,7 +11,7 @@ class UserManifestsController < ApplicationController
   # == Actions ==
 
   # GET /users/:id/manifest.webmanifest?friend_token=...&icon_type=(generic|user) # rubocop:disable Layout/LineLength
-  def manifest
+  def show
     current_friend = authenticate_friend!
     user = find_user(scope: User.with_attached_page_icon)
     icons = if params[:icon_type] == "generic"
