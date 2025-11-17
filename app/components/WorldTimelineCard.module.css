@@ -33,7 +33,7 @@
     &:not([disabled]):not([data-selected]) {
       @mixin dark-user-theme {
         @mixin hover {
-          background-color: var(--mantine-primary-color-light);
+          background-color: var(--mantine-color-primary-light);
         }
       }
     }
@@ -94,7 +94,7 @@
         background-color: lighten(var(--mantine-color-body), 0.15);
       }
       &:not([data-posted-today]) {
-        background-color: var(--mantine-primary-color-filled-hover);
+        background-color: var(--mantine-color-primary-filled-hover);
       }
     }
   }

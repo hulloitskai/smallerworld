@@ -29,7 +29,7 @@
     font-size: 11px;
     margin-inline-end: 8px;
     color: light-dark(
-      var(--mantine-primary-color-filled),
+      var(--mantine-color-primary-filled),
       var(--mantine-color-white)
     );
   }

@@ -23,7 +23,7 @@
     }
 
     &:focus {
-      border-color: var(--mantine-primary-color-outline);
+      border-color: var(--mantine-color-primary-outline);
     }
 
     &:not(:focus) {

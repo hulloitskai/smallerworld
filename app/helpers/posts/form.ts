@@ -73,10 +73,14 @@ export const usePostDraftValues = (
       return;
     }
     if (!postFormValuesIsEmpty(values)) {
-      console.debug("Saving draft...", { postType, values });
+      if (!(import.meta.env.RAILS_ENV === "production")) {
+        console.debug("Saving draft...", { postType, values });
+      }
       setDraft({ postType, values });
     } else {
-      console.debug("Clearing draft...", { postType });
+      if (!(import.meta.env.RAILS_ENV === "production")) {
+        console.debug("Clearing draft...", { postType });
+      }
       clearDraft();
     }
   }, 500);

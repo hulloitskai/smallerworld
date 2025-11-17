@@ -18,8 +18,8 @@
 
 .emph {
   color: light-dark(
-    var(--mantine-primary-color-7),
-    var(--mantine-primary-color-4)
+    var(--mantine-color-primary-7),
+    var(--mantine-color-primary-4)
   );
 }
 

@@ -16,7 +16,7 @@
   text-transform: none;
 
   &[data-expanded] {
-    border-color: var(--mantine-primary-color-filled);
+    border-color: var(--mantine-color-primary-filled);
   }
 
   /* @mixin dark-user-theme {

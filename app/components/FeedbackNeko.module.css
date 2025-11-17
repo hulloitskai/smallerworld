@@ -5,8 +5,8 @@
   &[data-variant="default"] {
     :global(.mantine-Button-section)[data-position="left"] {
       color: light-dark(
-        var(--mantine-primary-color-filled),
-        var(--mantine-primary-color-outline)
+        var(--mantine-color-primary-filled),
+        var(--mantine-color-primary-outline)
       );
     }
   }

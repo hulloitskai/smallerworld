@@ -2,7 +2,7 @@
   box-shadow: none;
 
   &[data-focus] {
-    border-color: var(--mantine-primary-color-outline);
+    border-color: var(--mantine-color-primary-outline);
   }
 }
 
@@ -29,7 +29,7 @@
   font-family: var(--mantine-font-family-headings);
 
   &[data-pinned] {
-    color: alpha(var(--mantine-primary-color-light-color), 0.8);
+    color: alpha(var(--mantine-color-primary-light-color), 0.8);
   }
 }
 

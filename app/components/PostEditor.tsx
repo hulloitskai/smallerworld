@@ -72,6 +72,9 @@ const PostEditor: FC<PostEditorProps> = ({
         const attributes = editor.getAttributes("link");
         setShowUnlink(!!attributes.href);
       },
+      onDestroy: () => {
+        console.info("Destroying editor...");
+      },
     },
     [],
   );

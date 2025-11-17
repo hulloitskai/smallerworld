@@ -2,7 +2,7 @@
   overflow: visible;
 
   &[data-focus] {
-    border-color: var(--mantine-primary-color-outline);
+    border-color: var(--mantine-color-primary-outline);
   }
 
   &[data-post-visibility="secret"] {
@@ -77,7 +77,7 @@
   font-family: var(--mantine-font-family-headings);
 
   &[data-pinned] {
-    color: alpha(var(--mantine-primary-color-light-color), 0.8);
+    color: alpha(var(--mantine-color-primary-light-color), 0.8);
   }
 }
 
@@ -140,7 +140,7 @@
   }
 
   &[data-highlight] {
-    color: var(--mantine-primary-color-light-color);
+    color: var(--mantine-color-primary-light-color);
   }
 }
 
