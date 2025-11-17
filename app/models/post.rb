@@ -382,7 +382,11 @@ class Post < ApplicationRecord
     notified_friend_ids = T.let([], T::Array[String])
     friends
       .notifiable
-      .where.not(id: notifications.select(:recipient_id))
+      .where.not(
+        id: notifications
+          .where(recipient_type: "Friend")
+          .select(:recipient_id),
+      )
       .select(:id).find_each do |friend|
         notifications.create!(recipient: friend, push_delay: delay)
         notified_friend_ids << friend.id
@@ -397,15 +401,17 @@ class Post < ApplicationRecord
     if visibility == :public
       notified_user_ids = Friend
         .where(id: notified_friend_ids)
-        .select(:user_id)
-        .distinct
+        .select("DISTINCT user_id")
       User
         .subscribed_to_public_posts
         .where.not(id: notified_user_ids)
+        .where.not(
+          id: notifications
+            .where(recipient_type: "User")
+            .select(:recipient_id),
+        )
         .find_each do |user|
-          notifications.find_or_create_by!(recipient: user) do |notification|
-            notification.push_delay = delay
-          end
+          notifications.create!(recipient: user, push_delay: delay)
         end
     end
   end
