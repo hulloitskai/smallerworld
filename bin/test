@@ -11,21 +11,21 @@ if [ -z "$CI" ]; then
 fi
 
 # Configure test command
-TEST_CMD="test:all"
+TEST_CMD="test"
 REMAINING_ARGS=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    --unit-only)
-      if [ "$TEST_CMD" != "test:all" ]; then
-        echo "Only one of --unit-only or --system-only can be provided" >&2
+    --all)
+      if [ "$TEST_CMD" == "test:system" ]; then
+        echo "Only one of --all or --system can be provided" >&2
         exit 1
       fi
       TEST_CMD="test"
       shift
       ;;
-    --system-only)
-      if [ "$TEST_CMD" != "test:all" ]; then
-        echo "Only one of --unit-only or --system-only can be provided" >&2
+    --system)
+      if [ "$TEST_CMD" == "test:all" ]; then
+        echo "Only one of --all or --system can be provided" >&2
         exit 1
       fi
       TEST_CMD="test:system"
@@ -52,6 +52,8 @@ export RAILS_TEST_CMD
 PROCFILE=./Procfile.test
 if [ -n "$CI" ]; then
   PROCFILE=./Procfile.ci-test
+elif [ "$TEST_CMD" != "test" ]; then
+  PROCFILE=./Procfile.system-test
 fi
 
 # Launch overmind

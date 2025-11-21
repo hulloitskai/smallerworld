@@ -1,4 +1,4 @@
-testy_avatar:
-  name: page_icon
-  record: testy (User)
+testy_world_icon:
+  name: icon
+  record: testy_world (World)
   blob: cat_blob

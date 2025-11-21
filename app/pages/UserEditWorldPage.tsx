@@ -133,7 +133,7 @@ const UserEditWorldPage: PageComponent<UserEditWorldPageProps> = ({
                 <ImageInput
                   {...getInputProps("icon_upload")}
                   cropToAspect={1}
-                  label="your page icon"
+                  label="your world's icon"
                   center
                   h={ICON_IMAGE_INPUT_SIZE}
                   w={ICON_IMAGE_INPUT_SIZE}

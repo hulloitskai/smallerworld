@@ -58,7 +58,7 @@ jobs:
       - name: Check lints and formatting
         run: bin/check --all-files
       - name: Run tests
-        run: bin/test
+        run: bin/test --all
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       - name: Keep screenshots from failed system tests

@@ -176,22 +176,22 @@ class World < ApplicationRecord
   def post_streak(time_zone: owner!.time_zone)
     sql = <<~SQL.squish
       WITH daily_posts AS (
-        SELECT DISTINCT DATE(posts.created_at AT TIME ZONE :tz) AS user_date
+        SELECT DISTINCT DATE(posts.created_at AT TIME ZONE :tz) AS local_date
         FROM posts
-        WHERE posts.author_id = :user_id
+        WHERE posts.world_id = :world_id
       ),
       numbered_posts AS (
         SELECT
-          user_date,
-          ROW_NUMBER() OVER (ORDER BY user_date)::int AS rn
+          local_date,
+          ROW_NUMBER() OVER (ORDER BY local_date)::int AS rn
         FROM daily_posts
       ),
       grouped_posts AS (
         SELECT
-          MAX(user_date) AS end_date,
+          MAX(local_date) AS end_date,
           COUNT(*) AS streak_length
         FROM numbered_posts
-        GROUP BY user_date - rn
+        GROUP BY local_date - rn
       )
       SELECT
         streak_length,
@@ -202,7 +202,7 @@ class World < ApplicationRecord
     SQL
     interpolated_sql = Post.sanitize_sql_array([
       sql,
-      { user_id: id, tz: time_zone.name },
+      { world_id: id, tz: time_zone.name },
     ])
 
     result = Post.connection.exec_query(interpolated_sql)

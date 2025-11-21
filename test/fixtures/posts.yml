@@ -45,6 +45,7 @@
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 post_with_title_and_emoji:
   author: testy
+  world: testy_world
   type: "journal_entry"
   title: "Hello World"
   emoji: "👋"
@@ -53,6 +54,7 @@ post_with_title_and_emoji:
 
 post_with_emoji:
   author: testy
+  world: testy_world
   type: "journal_entry"
   emoji: "👋"
   body_html: "<p>This is a post with an emoji.</p>"
@@ -60,6 +62,7 @@ post_with_emoji:
 
 post_without_title_or_emoji:
   author: testy
+  world: testy_world
   type: "journal_entry"
   body_html: "<p>This is a post without a title or an emoji.</p>"
   visibility: "public"

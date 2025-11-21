@@ -39,7 +39,7 @@
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 summer_friend:
-  user: testy
+  world: testy_world
   name: "Summer Pal"
   emoji: "🌞"
   phone_number: "+14165550101"
@@ -54,7 +54,7 @@ summer_friend:
   updated_at: "<%= 2.days.ago %>"
 
 bookworm_friend:
-  user: noposts
+  world: noposts_world
   name: "Bookworm Buddy"
   emoji: "📚"
   phone_number: "+14165550102"
@@ -70,7 +70,7 @@ bookworm_friend:
   updated_at: "<%= 1.day.ago %>"
 
 global_friend:
-  user: testy
+  world: testy_world
   name: "Global Explorer"
   emoji: "🌍"
   access_token: "globalexplore"

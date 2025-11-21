@@ -21,15 +21,20 @@ class RegistrationsTest < ApplicationSystemTestCase
 
     # Attach the file to the upload input
     attach_file(
-      "your page icon",
+      "your world's icon",
       Rails.public_path.join("web-app-manifest-512x512.png"),
     )
+    click_link_or_button "continue"
 
     # Submit the form
     click_link_or_button "complete signup"
 
     # Wait for redirection to world_path
-    assert_current_path user_world_path(trailing_slash: true), wait: 15.seconds
+    post_registration_path = user_world_path(
+      intent: "install",
+      trailing_slash: true,
+    )
+    assert_current_path post_registration_path, wait: 15.seconds
 
     # Assert welcome post visible
     assert_text "welcome to my smaller world!"
