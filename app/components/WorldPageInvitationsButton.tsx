@@ -70,7 +70,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
     };
   }, [pushRegistration]);
   const { data: activityCouponsData } = useRouteSWR<{
-    activityCoupons: ActivityCoupon[];
+    coupons: ActivityCoupon[];
   }>(routes.worldActivityCoupons.index, {
     params:
       currentFriend && !!replyToNumber
@@ -84,7 +84,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
     descriptor: "load activity coupons",
     keepPreviousData: true,
   });
-  const { activityCoupons = [] } = activityCouponsData ?? {};
+  const { coupons = [] } = activityCouponsData ?? {};
 
   // == Drawer modal
   const [drawerModalOpened, setDrawerModalOpened] = useState(false);
@@ -98,7 +98,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
   // == Page dialog
   useWorldPageDialogOpened(drawerModalOpened);
 
-  const invitationCount = pinnedPosts.length + activityCoupons.length;
+  const invitationCount = pinnedPosts.length + coupons.length;
   return (
     <>
       <Transition transition="pop" mounted={invitationCount > 0}>
@@ -107,7 +107,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
             label={<>{world.owner_name} sent you an activity coupon!</>}
             opened={
               !!pushRegistration &&
-              !isEmpty(activityCoupons) &&
+              !isEmpty(coupons) &&
               isEmpty(modals) &&
               !drawerModalOpened &&
               showActivityCouponTooltip
@@ -139,7 +139,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
         }}
       >
         <Stack gap="lg">
-          {!isEmpty(activityCoupons) && !!currentFriend && !!replyToNumber && (
+          {!isEmpty(coupons) && !!currentFriend && !!replyToNumber && (
             <Box className={classes.activityCouponsContainer}>
               <Stack gap="md">
                 <Box px="md">
@@ -155,8 +155,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
                   </Text>
                 </Box>
                 <ActivityCouponsCarousel
-                  {...{ currentFriend, replyToNumber, world }}
-                  coupons={activityCoupons}
+                  {...{ currentFriend, replyToNumber, world, coupons }}
                 />
               </Stack>
             </Box>

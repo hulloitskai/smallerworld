@@ -27,7 +27,7 @@ class ActivityCouponsController < ApplicationController
     respond_to do |format|
       format.json do
         activity_coupon_params = params
-          .expect(activity_coupon: %i[activity_id friend_id])
+          .expect(coupon: %i[activity_id friend_id])
         activity = Activity.find(activity_coupon_params.fetch(:activity_id))
         authorize!(activity, to: :manage?)
         friend = Friend.find(activity_coupon_params.fetch(:friend_id))

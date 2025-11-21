@@ -55,11 +55,11 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
 
   // == Create coupon
   const { trigger, mutating } = useRouteMutation<{
-    activityCoupon: ActivityCoupon;
+    coupon: ActivityCoupon;
   }>(routes.activityCoupons.create, {
     descriptor: "create activity coupon",
     serializeData: attributes => ({ activity_coupon: attributes }),
-    onSuccess: ({ activityCoupon: { activity } }) => {
+    onSuccess: ({ coupon: { activity } }) => {
       onClose?.();
       toast.success(`you gave ${prettyFriendName(friend)} a coupon!`, {
         ...(!!activity.emoji && { icon: activity.emoji }),
