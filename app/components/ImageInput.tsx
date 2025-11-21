@@ -102,12 +102,6 @@ const ImageInput: FC<ImageInputProps> = ({
   const loading: boolean = uploading || (!!value && !image);
 
   const inputId = useId();
-  const accept = useMemo(() => {
-    if (cropToAspect) {
-      return CROPPABLE_IMAGE_TYPES;
-    }
-    return [...CROPPABLE_IMAGE_TYPES, ...UNCROPPABLE_IMAGE_TYPES];
-  }, [cropToAspect]);
   const {
     className: previewClassName,
     style: previewStyle,
@@ -132,7 +126,7 @@ const ImageInput: FC<ImageInputProps> = ({
         />
         <Dropzone
           className={classes.dropzone}
-          {...{ accept }}
+          accept={[...CROPPABLE_IMAGE_TYPES, ...UNCROPPABLE_IMAGE_TYPES]}
           multiple={false}
           onDrop={files => {
             const file = first(files);
