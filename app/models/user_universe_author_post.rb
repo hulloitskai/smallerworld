@@ -8,7 +8,7 @@ class UserUniverseAuthorPost < T::Struct
   # == Properties ==
 
   const :post, Post
-  delegate :updated_at, :hidden_from_ids, to: :post
+  delegate :updated_at, :hidden_from_ids, :world, :encouragement, to: :post
 
   # == Methods ==
 

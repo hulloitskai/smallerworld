@@ -8,6 +8,8 @@ class UserUniversePublicPost < T::Struct
   # == Properties ==
 
   const :post, T.any(Post, MaskedPost)
+  delegate :world, to: :post
+
   const :seen, T::Boolean
 
   # == Methods ==

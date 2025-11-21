@@ -8,6 +8,8 @@ class UserUniverseFriendPost < T::Struct
   # == Properties ==
 
   const :post, Post
+  delegate :world, to: :post
+
   const :associated_friend, Friend
   const :reply_to_number, String
   const :repliers, Integer
