@@ -19,7 +19,7 @@
     border-color: var(--mantine-color-primary-filled);
   }
 
-  /* @mixin dark-user-theme {
+  /* @mixin dark-world-theme {
     background-color: alpha(var(--mantine-color-black), 0.4);
     backdrop-filter: blur(rem(8px));
 

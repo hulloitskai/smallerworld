@@ -6,7 +6,7 @@ import {
   type FriendNotificationSettingsFormSubmission,
   type FriendNotificationSettingsFormValues,
   useFriendNotificationSettingsForm,
-} from "~/helpers/friendNotificationSettings";
+} from "~/helpers/friends";
 import {
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
@@ -17,15 +17,15 @@ import { type Friend, type FriendNotificationSettings } from "~/types";
 import classes from "./FriendNotificationSettingsForm.module.css";
 
 export interface FriendNotificationSettingsFormProps {
-  friend: Friend;
+  currentFriend: Friend;
   notificationSettings: FriendNotificationSettings;
 }
 
 const FriendNotificationSettingsForm: FC<
   FriendNotificationSettingsFormProps
-> = ({ friend, notificationSettings }) => {
+> = ({ currentFriend, notificationSettings }) => {
   const form = useFriendNotificationSettingsForm({
-    friend,
+    currentFriend,
     notificationSettings,
     onSuccess: () => {
       toast.success("notification preferences updated");

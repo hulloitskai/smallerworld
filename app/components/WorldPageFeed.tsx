@@ -1,170 +1,126 @@
-import { Loader, Text } from "@mantine/core";
+import { useInViewport } from "@mantine/hooks";
+import { type PropsWithChildren } from "react";
 
-import HideIcon from "~icons/heroicons/chevron-up-20-solid";
-import NewIcon from "~icons/heroicons/pencil-square-20-solid";
-import CloseIcon from "~icons/heroicons/x-mark";
-import CloseOutlineIcon from "~icons/heroicons/x-mark-20-solid";
+import { NEKO_SIZE } from "~/helpers/neko";
+import { useWebPush } from "~/helpers/webPush";
+import {
+  mutateWorldPosts,
+  useWorldPosts,
+  type WorldPageProps,
+} from "~/helpers/worlds";
+import { type WorldFriendPost } from "~/types";
 
-import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { useWorldPosts } from "~/helpers/world";
-import { type WorldPageProps } from "~/pages/WorldPage";
-import { type PostType } from "~/types";
-
-import AuthorPostCardActions from "./AuthorPostCardActions";
+import EncouragementCard from "./EncouragementCard";
+import FeedbackNeko from "./FeedbackNeko";
+import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
+import PublicPostCardActions from "./PublicPostCardActions";
 import WorldTimelineCard from "./WorldTimelineCard";
 
-import classes from "./WorldPageFeed.module.css";
+export interface WorldPageFeedProps extends BoxProps {}
 
-export interface WorldPageFeedProps extends BoxProps {
-  showSearch: boolean;
-  hideSearch: () => void;
-}
-
-const WorldPageFeed: FC<WorldPageFeedProps> = ({
-  showSearch,
-  hideSearch,
-  ...otherProps
-}) => {
-  const { hideStats } = usePageProps<WorldPageProps>();
+const WorldPageFeed: FC<WorldPageFeedProps> = props => {
+  const { currentFriend, world, replyToNumber, lastSentEncouragement } =
+    usePageProps<WorldPageProps>();
   const queryParams = useQueryParams();
+  const { pushRegistration } = useWebPush();
 
-  // == Input
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [date, setDate] = useState<string | null>(null);
 
   // == Load posts
-  const [date, setDate] = useState<string | null>(null);
-  const [postType, setPostType] = useState<PostType | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery] = useDebouncedValue(searchQuery, 500);
-  const { posts, setSize, hasMorePosts, isValidating } = useWorldPosts({
-    searchQuery: debouncedSearchQuery,
-    type: postType,
-    date,
-  });
+  const { posts, hasMorePosts, setSize, isValidating } = useWorldPosts(
+    world.id,
+    {
+      date,
+    },
+  );
+  const longerThan24HoursSinceLastPost = useMemo(() => {
+    if (!posts || date) {
+      return false;
+    }
+    const [lastPost] = posts;
+    if (!lastPost) {
+      return true;
+    }
+    const timestamp = DateTime.fromISO(lastPost.created_at);
+    return DateTime.now().diff(timestamp, "hours").hours > 24;
+  }, [posts, date]);
 
+  const showEncouragementCard =
+    !!currentFriend &&
+    (!!lastSentEncouragement || longerThan24HoursSinceLastPost);
   return (
-    <Stack {...otherProps}>
-      <Transition transition="slide-down" mounted={showSearch}>
-        {transitionStyle => (
-          <TextInput
-            ref={inputRef}
-            leftSection={<SearchIcon />}
-            rightSection={
-              isValidating ? (
-                <Loader size="xs" />
-              ) : (
-                <Tooltip
-                  label={searchQuery ? "clear search" : "hide search"}
-                  openDelay={600}
-                >
-                  <ActionIcon
-                    {...(searchQuery
-                      ? {
-                          color: "red",
-                          onClick: () => {
-                            setSearchQuery("");
-                            inputRef.current?.focus();
-                          },
-                        }
-                      : {
-                          onClick: hideSearch,
-                        })}
-                  >
-                    {searchQuery ? <CloseIcon /> : <HideIcon />}
-                  </ActionIcon>
-                </Tooltip>
-              )
-            }
-            placeholder="search your posts"
-            autoFocus
-            value={searchQuery}
-            style={transitionStyle}
-            onChange={({ currentTarget }) =>
-              setSearchQuery(currentTarget.value)
-            }
-            onBlur={({ currentTarget }) => {
-              if (currentTarget.value === "") {
-                hideSearch();
-              }
-            }}
-          />
-        )}
-      </Transition>
-      <WorldTimelineCard {...{ date }} onDateChange={setDate} />
-      {postType && (
-        <Group justify="center" gap={6}>
-          <Text size="xs" c="dimmed">
-            {" "}
-            filter by:
-          </Text>
-          <Badge
-            className={classes.typeBadge}
-            variant="filled"
-            leftSection={
-              <Box component={POST_TYPE_TO_ICON[postType]} fz={10.5} />
-            }
-            rightSection={<CloseOutlineIcon />}
-            onClick={() => {
-              setPostType(null);
-            }}
-          >
-            {POST_TYPE_TO_LABEL[postType]}
-          </Badge>
-        </Group>
+    <Stack {...props}>
+      {showEncouragementCard && (
+        <EncouragementCard
+          {...{
+            world,
+            currentFriend,
+            lastSentEncouragement,
+          }}
+          showNeko={!!pushRegistration}
+          onEncouragementCreated={() => {
+            router.reload({
+              only: ["lastSentEncouragement"],
+              async: true,
+            });
+          }}
+        />
       )}
+      <WorldTimelineCard
+        worldId={world.id}
+        friendAccessToken={currentFriend?.access_token}
+        {...{ date }}
+        onDateChange={setDate}
+      />
       {posts ? (
         isEmpty(posts) ? (
-          debouncedSearchQuery ? (
-            <EmptyCard itemLabel="results" />
-          ) : (
-            <Card withBorder>
-              <Stack justify="center" gap={2} ta="center" mih={60}>
-                <Title order={4} lh="xs">
-                  no posts yet!
-                </Title>
-                <Text size="sm">
-                  create a new post with the{" "}
-                  <Badge
-                    variant="filled"
-                    mx={4}
-                    px={4}
-                    styles={{
-                      root: {
-                        verticalAlign: "middle",
-                      },
-                      label: { display: "flex", alignItems: "center" },
-                    }}
-                  >
-                    <NewIcon />
-                  </Badge>{" "}
-                  button :)
-                </Text>
-              </Stack>
-            </Card>
-          )
+          <Card withBorder>
+            <Stack justify="center" gap={2} ta="center" mih={60}>
+              <Title order={4} lh="xs">
+                no posts yet!
+              </Title>
+            </Stack>
+          </Card>
         ) : (
           <>
-            {posts.map(post => (
-              <PostCard
-                key={post.id}
-                {...{ post }}
-                focus={queryParams.post_id === post.id}
-                actions={
-                  <AuthorPostCardActions
-                    {...{
-                      post,
-                      hideStats,
-                    }}
+            {posts.map((post, index) => {
+              const children = (
+                <Box pos="relative">
+                  <PostCard
+                    {...{ post }}
+                    blurContent={!currentFriend && post.visibility !== "public"}
+                    focus={queryParams.post_id === post.id}
+                    actions={
+                      post.user_post_type === "friend" && replyToNumber ? (
+                        <FriendPostCardActions
+                          {...{ world, post, replyToNumber }}
+                        />
+                      ) : (
+                        <PublicPostCardActions postId={post.id} />
+                      )
+                    }
                   />
-                }
-                highlightType={post.type === postType}
-                onTypeClick={() => {
-                  setPostType(post.type === postType ? null : post.type);
-                }}
-              />
-            ))}
+                  {!world.hide_neko &&
+                    !showEncouragementCard &&
+                    index === 0 && (
+                      <FeedbackNeko
+                        pos="absolute"
+                        top={(post.encouragement ? 36 : 3) - NEKO_SIZE}
+                        right="var(--mantine-spacing-lg)"
+                      />
+                    )}
+                </Box>
+              );
+              return post.user_post_type === "friend" ? (
+                <TrackUserPostSeen key={post.id} {...{ post }}>
+                  {children}
+                </TrackUserPostSeen>
+              ) : (
+                children
+              );
+            })}
             {hasMorePosts && (
               <LoadMoreButton
                 loading={isValidating}
@@ -184,3 +140,34 @@ const WorldPageFeed: FC<WorldPageFeedProps> = ({
 };
 
 export default WorldPageFeed;
+
+interface TrackUserPostSeenProps extends PropsWithChildren {
+  post: WorldFriendPost;
+}
+
+const TrackUserPostSeen: FC<TrackUserPostSeenProps> = ({ post, children }) => {
+  const { currentFriend } = usePageProps<WorldPageProps>();
+  const { ref, inViewport } = useInViewport<HTMLDivElement>();
+  useEffect(() => {
+    if (currentFriend && !post.seen && inViewport) {
+      const timeout = setTimeout(() => {
+        void fetchRoute<{ worldId: string }>(routes.posts.markSeen, {
+          params: {
+            id: post.id,
+            query: {
+              friend_token: currentFriend.access_token,
+            },
+          },
+          descriptor: "mark post as seen",
+          failSilently: true,
+        }).then(({ worldId }) => {
+          void mutateWorldPosts(worldId);
+        });
+      }, 1000);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [inViewport]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <div {...{ ref }}>{children}</div>;
+};

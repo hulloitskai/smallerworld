@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   include SharesApplicationProps
   include SimulatesExpiredPage unless Rails.env.production?
   include NPlusOneDetection
-  include RendersUserThemes
+  include RendersWorldThemes
 
   # == Errors ==
 
@@ -135,7 +135,7 @@ class ApplicationController < ActionController::Base
         if valid_registration_token?
           redirect_to(new_rails_conductor_inbound_email_path)
         else
-          redirect_to(login_path, alert: "Please sign in to continue")
+          redirect_to(new_session_path, alert: "please sign in to continue")
         end
       end
       format.any do
@@ -166,7 +166,7 @@ class ApplicationController < ActionController::Base
     if request.format.json?
       render(
         json: { error: error.record.errors.full_messages.first },
-        status: :unprocessable_entity,
+        status: :unprocessable_content,
       )
     else
       raise

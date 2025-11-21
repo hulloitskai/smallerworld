@@ -2,7 +2,7 @@ import { Popover, Text } from "@mantine/core";
 
 import { NEKO_SIZE } from "~/helpers/neko";
 import { confetti, particlePositionFor } from "~/helpers/particles";
-import { type Encouragement, type Friend, type UserProfile } from "~/types";
+import { type Encouragement, type Friend, type WorldProfile } from "~/types";
 
 import FeedbackNeko from "./FeedbackNeko";
 
@@ -11,8 +11,8 @@ import classes from "./EncouragementCard.module.css";
 export interface EncouragementCardProps
   extends BoxProps,
     Pick<EncouragementPopoverProps, "onEncouragementCreated"> {
+  world: WorldProfile;
   currentFriend: Friend;
-  user: UserProfile;
   lastSentEncouragement: Encouragement | null;
   showNeko?: boolean;
 }
@@ -31,8 +31,8 @@ const PRESETS: EncouragementPreset[] = [
 ];
 
 const EncouragementCard: FC<EncouragementCardProps> = ({
+  world,
   currentFriend,
-  user,
   lastSentEncouragement,
   onEncouragementCreated,
   showNeko = true,
@@ -75,7 +75,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
       {lastSentEncouragement ? (
         <Stack gap={4} align="center" ta="center">
           <Text ff="heading">
-            you sent {user.name} a {lastSentEncouragement.emoji}!
+            you sent {world.owner_name} a {lastSentEncouragement.emoji}!
           </Text>
           <Text size="xs" c="dimmed">
             you can send another nudge in{" "}
@@ -87,7 +87,7 @@ const EncouragementCard: FC<EncouragementCardProps> = ({
       ) : (
         <Stack gap={8} align="center">
           <Text ff="heading" size="sm" fw={500} ta="center">
-            help encourage {user.name} to share!
+            help encourage {world.owner_name} to share!
           </Text>
           <Group gap="xs">
             {PRESETS.map(({ emoji, message }) => (

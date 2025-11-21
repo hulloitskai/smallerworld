@@ -25,7 +25,7 @@ class TestController < ApplicationController
         else
           render(
             json: { errors: model.form_errors },
-            status: :unprocessable_entity,
+            status: :unprocessable_content,
           )
         end
       end

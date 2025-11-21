@@ -1,3 +1,43 @@
+# rubocop:disable Layout/LineLength, Lint/RedundantCopDisableDirective
+# == Schema Information
+#
+# Table name: friends
+#
+#  id                            :uuid             not null, primary key
+#  access_token                  :string           not null
+#  chosen_family                 :boolean          not null
+#  emoji                         :string
+#  name                          :string           not null
+#  notifications_last_cleared_at :datetime
+#  paused_since                  :datetime
+#  phone_number                  :string
+#  subscribed_post_types         :string           not null, is an Array
+#  time_zone_name                :string           not null
+#  created_at                    :datetime         not null
+#  updated_at                    :datetime         not null
+#  deprecated_join_request_id    :uuid
+#  deprecated_user_id            :uuid
+#  invitation_id                 :uuid
+#  world_id                      :uuid             not null
+#
+# Indexes
+#
+#  index_friends_name_uniqueness                   (world_id,name) UNIQUE
+#  index_friends_on_access_token                   (access_token) UNIQUE
+#  index_friends_on_deprecated_user_id             (deprecated_user_id)
+#  index_friends_on_invitation_id                  (invitation_id)
+#  index_friends_on_notifications_last_cleared_at  (notifications_last_cleared_at)
+#  index_friends_on_phone_number                   (phone_number)
+#  index_friends_on_world_id                       (world_id)
+#  index_friends_phone_number_uniqueness           (world_id,phone_number) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (deprecated_user_id => users.id)
+#  fk_rails_...  (invitation_id => invitations.id)
+#  fk_rails_...  (world_id => worlds.id)
+#
+# rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 summer_friend:
   user: testy
   name: "Summer Pal"

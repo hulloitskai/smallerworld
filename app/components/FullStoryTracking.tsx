@@ -32,10 +32,10 @@ const FullStoryTracking: FC = () => {
         void FullStory("setIdentityAsync", { anonymous: true });
       };
     } else if (currentUser) {
-      const { id, name, handle } = currentUser;
+      const { id, name } = currentUser;
       void FullStory("setIdentityAsync", {
         uid: id,
-        properties: { displayName: name, handle, type: "user" },
+        properties: { displayName: name, type: "user" },
         schema: {
           properties: {
             type: "string",

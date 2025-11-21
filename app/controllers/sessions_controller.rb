@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
         pwa_scope = params[:pwa_scope]
         if signed_in?
           redirect_to(
-            world_path(pwa_scope:, trailing_slash: true),
+            user_world_path(pwa_scope:, trailing_slash: true),
             notice: "You are already signed in :)",
           )
         else
@@ -45,7 +45,7 @@ class SessionsController < ApplicationController
             json: {
               errors: { login_code: "Invalid login code" },
             },
-            status: :unprocessable_entity,
+            status: :unprocessable_content,
           )
         end
       end

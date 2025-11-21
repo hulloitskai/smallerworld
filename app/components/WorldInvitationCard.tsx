@@ -3,7 +3,7 @@ import { openConfirmModal } from "@mantine/modals";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
-import { type Activity, type WorldInvitation } from "~/types";
+import { type Activity, type UserWorldInvitation } from "~/types";
 
 import EditInvitationDrawer from "./EditInvitationDrawer";
 
@@ -11,7 +11,7 @@ import classes from "./WorldInvitationCard.module.css";
 
 export interface WorldInvitationCardProps {
   activitiesById: Record<string, Activity>;
-  invitation: WorldInvitation;
+  invitation: UserWorldInvitation;
 }
 
 const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
@@ -35,14 +35,14 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
 
   // == Remove invitation
   const { trigger: deleteInvitation, mutating: deletingInvitation } =
-    useRouteMutation(routes.worldInvitations.destroy, {
+    useRouteMutation(routes.userWorldInvitations.destroy, {
       params: {
         id: invitation.id,
       },
       descriptor: "cancel invitation",
       onSuccess: () => {
         toast.success("invitation cancelled");
-        void mutateRoute(routes.worldInvitations.index);
+        void mutateRoute(routes.userWorldInvitations.index);
       },
     });
 

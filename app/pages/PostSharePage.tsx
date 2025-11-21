@@ -9,20 +9,21 @@ import AppLayout from "~/components/AppLayout";
 import PostCard from "~/components/PostCard";
 import PostSharePageRequestInvitationAlert from "~/components/PostSharePageRequestInvitationAlert";
 import PublicPostCardActions from "~/components/PublicPostCardActions";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
+import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
+import { useWorldTheme } from "~/helpers/worldThemes";
 import {
   type FriendProfile,
-  type UserPost,
-  type UserProfile,
-  type UserPublicPost,
+  type WorldProfile,
+  type WorldPublicPost,
 } from "~/types";
+import type WorldPost from "~/types/WorldPost";
 
 import classes from "./PostSharePage.module.css";
-import userPageClasses from "./UserPage.module.css";
+import worldPageClasses from "./WorldPage.module.css";
 
 export interface PostSharePageProps extends SharedPageProps {
-  user: UserProfile;
-  post: UserPublicPost;
+  world: WorldProfile;
+  post: WorldPublicPost;
   sharer: FriendProfile | null;
   invitationRequested: boolean;
 }
@@ -30,45 +31,45 @@ export interface PostSharePageProps extends SharedPageProps {
 const ICON_SIZE = 96;
 
 const PostSharePage: PageComponent<PostSharePageProps> = ({
-  user,
+  world,
   post,
   sharer,
 }) => {
+  useWorldTheme(world.theme);
+
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
-
-  // == User theme
-  useUserTheme(user.theme);
 
   return (
     <Stack>
       <Box pos="relative">
         <Stack gap="sm">
           <Image
-            className={userPageClasses.pageIcon}
-            src={user.page_icon.src}
-            {...(!!user.page_icon.srcset && { srcSet: user.page_icon.srcset })}
+            className={worldPageClasses.worldIcon}
+            src={world.icon.src}
+            {...(!!world.icon.srcset && { srcSet: world.icon.srcset })}
             w={ICON_SIZE}
             h={ICON_SIZE}
-            radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
+            radius={ICON_SIZE / WORLD_ICON_RADIUS_RATIO}
             {...(currentFriend && {
               onClick: () => {
-                const pageUrl = normalizeUrl(
-                  routes.users.show.path({
-                    id: user.handle,
+                const worldPath = withTrailingSlash(
+                  routes.worlds.show.path({
+                    id: world.handle,
                     query: {
                       friend_token: currentFriend.access_token,
                     },
                   }),
                 );
+                const pageUrl = normalizeUrl(worldPath);
                 void navigator.clipboard.writeText(pageUrl).then(() => {
                   toast.success("page url copied");
                 });
               },
             })}
           />
-          <Title className={userPageClasses.pageTitle} size="h2">
-            {possessive(user.name)} world
+          <Title className={worldPageClasses.worldName} size="h2">
+            {world.name}
           </Title>
         </Stack>
         {!currentUser && (
@@ -118,12 +119,12 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
       </Box>
       <Alert className={classes.sharerAlert} icon={<MailIcon />}>
         <Text inherit span fw={600}>
-          {(sharer ?? user).name}
+          {sharer?.name ?? world.owner_name}
         </Text>{" "}
         shared{" "}
         {sharer ? (
           <Text inherit span fw={600}>
-            {possessive(user.name)}
+            {world.name}
           </Text>
         ) : (
           "a"
@@ -142,10 +143,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
 
 PostSharePage.layout = page => (
   <AppLayout<PostSharePageProps>
-    title={({ post, user }) => [
-      `${possessive(user.name)} world`,
-      postTitleSnippet(post),
-    ]}
+    title={({ post, world }) => [world.name, postTitleSnippet(post)]}
     withContainer
     containerSize="xs"
     withGutter
@@ -156,5 +154,5 @@ PostSharePage.layout = page => (
 
 export default PostSharePage;
 
-const postTitleSnippet = (post: UserPost) =>
+const postTitleSnippet = (post: WorldPost) =>
   truncate(post.title ?? post.snippet, { length: 24 });

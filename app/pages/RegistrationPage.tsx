@@ -5,14 +5,15 @@ import { IMaskInput } from "react-imask";
 import ProfileIcon from "~icons/heroicons/user-circle-20-solid";
 
 import AppLayout from "~/components/AppLayout";
-import HomeScreenPreview from "~/components/HomescreenPreview";
 import ImageInput from "~/components/ImageInput";
-import UserThemeRadioGroup from "~/components/UserThemeRadioGroup";
+import WorldHomescreenPreview from "~/components/WorldHomescreenPreview";
+import WorldThemeRadioGroup from "~/components/WorldThemeRadioGroup";
 import { CANONICAL_DOMAIN } from "~/helpers/app";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { currentTimeZone } from "~/helpers/time";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
-import { type Image, type Upload, type UserTheme } from "~/types";
+import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
+import { isWorldTheme, useWorldTheme } from "~/helpers/worldThemes";
+import { type Image, type Upload } from "~/types";
 
 import classes from "./RegistrationPage.module.css";
 
@@ -21,7 +22,8 @@ export interface RegistrationPageProps extends SharedPageProps {}
 const ICON_IMAGE_INPUT_SIZE = 110;
 
 const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
-  const { url: pageUrl } = usePage();
+  const { url: pagePath } = usePage();
+  const currentUser = useCurrentUser();
 
   // == Form
   const [shouldDeriveHandle, setShouldDeriveHandle] = useState(true);
@@ -29,28 +31,52 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
     action: routes.registrations.create,
     descriptor: "complete signup",
     initialValues: {
-      name: "",
+      name: currentUser?.name ?? "",
       prefixed_handle: "",
-      page_icon_upload: null as Upload | null,
-      theme: "" as UserTheme | "",
+      icon_upload: null as Upload | null,
+      theme: "",
       hide_stats: false,
       hide_neko: false,
       allow_friend_sharing: false,
     },
-    transformValues: ({ prefixed_handle, page_icon_upload, ...values }) => {
-      return {
-        user: {
-          ...values,
+    transformValues: ({
+      prefixed_handle,
+      icon_upload,
+      hide_stats,
+      hide_neko,
+      allow_friend_sharing,
+      theme,
+      name,
+    }) => ({
+      user: {
+        name,
+        time_zone: currentTimeZone(),
+        world_attributes: {
           handle: prefixed_handle.replace(/^@/, ""),
-          page_icon: page_icon_upload?.signedId ?? "",
-          time_zone: currentTimeZone(),
+          icon: icon_upload?.signedId ?? "",
+          hide_stats,
+          hide_neko,
+          allow_friend_sharing,
+          theme: theme || null,
         },
-      };
-    },
-    transformErrors: ({ page_icon, handle, ...errors }) => ({
+      },
+    }),
+    transformErrors: ({
+      "world.handle": prefixed_handle,
+      "world.icon": icon_upload,
+      "world.theme": theme,
+      "world.allow_friend_sharing": allow_friend_sharing,
+      "world.hide_stats": hide_stats,
+      "world.hide_neko": hide_neko,
+      ...errors
+    }) => ({
       ...errors,
-      prefixed_handle: handle,
-      page_icon_upload: page_icon,
+      prefixed_handle,
+      icon_upload,
+      theme,
+      allow_friend_sharing,
+      hide_stats,
+      hide_neko,
     }),
     validate: {
       name: hasLength({ max: 30 }, "Must be less than 30 characters"),
@@ -62,10 +88,17 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
       },
     },
     onSuccess: () => {
-      // Use location.href instead of router.visit in order to force browser
-      // to load new page metadata for pin-to-homescreen + PWA detection.
-      const query = queryParamsFromPath(pageUrl);
-      const worldPath = withTrailingSlash(routes.world.show.path({ query }));
+      // NOTE: Use location.href instead of router.visit in order to force
+      // browser to load new page metadata for pin-to-homescreen + PWA
+      // detection.
+      const worldPath = withTrailingSlash(
+        routes.userWorld.show.path({
+          query: {
+            ...queryParamsFromPath(pagePath),
+            intent: "install",
+          },
+        }),
+      );
       location.href = worldPath;
     },
   });
@@ -78,31 +111,31 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
     }
   }, [values.name]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // == User theme preview
-  useUserTheme(values.theme || null);
+  // == World theme preview
+  useWorldTheme(isWorldTheme(values.theme) ? values.theme : null);
 
-  // == Page icon preview
-  const [pageIconPreview, setPageIconPreview] = useState<Image | null>(null);
+  // == World icon preview
+  const [iconPreview, setPageIconPreview] = useState<Image | null>(null);
 
-  const signupDisabled =
-    !values.name ||
-    values.prefixed_handle.length <= 1 ||
-    !values.page_icon_upload;
+  const submitDisabled =
+    !values.name || values.prefixed_handle.length <= 1 || !values.icon_upload;
   return (
     <Card w="100%" maw={380} withBorder>
       <Card.Section inheritPadding withBorder py="md">
         <Stack align="center" gap={8}>
           <Title size="h4" lh="xs" ta="center">
-            let&apos;s build your page :)
+            let&apos;s create your world :)
           </Title>
-          <Stack gap={4} align="center">
-            <HomeScreenPreview
-              pageName={values.name}
-              pageIcon={pageIconPreview}
-              arrowLabel="your page!"
+          <Stack align="center" gap={6} my="sm">
+            <WorldHomescreenPreview
+              world={{
+                icon: iconPreview ?? undefined,
+                owner_name: values.name,
+              }}
+              arrowLabel="your world!"
             />
             <Text ta="center" size="xs" c="dimmed" fw={600}>
-              pov: your friend's homescreen in 10 minutes
+              pov: your friend&apos;s homescreen in 10 minutes
             </Text>
           </Stack>
         </Stack>
@@ -141,7 +174,7 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                     {children}
                     {!!values.prefixed_handle && (
                       <Text size="xs" c="dimmed">
-                        your page will live at:{" "}
+                        your world will live at:{" "}
                         <Text span inherit c="primary">
                           {CANONICAL_DOMAIN}/{values.prefixed_handle}
                         </Text>
@@ -152,16 +185,17 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
                 required
               />
               <ImageInput
-                {...getInputProps("page_icon_upload")}
-                label="your page icon"
+                {...getInputProps("icon_upload")}
+                label="your world's icon"
+                cropToAspect={1}
                 center
                 h={ICON_IMAGE_INPUT_SIZE}
                 w={ICON_IMAGE_INPUT_SIZE}
-                radius={ICON_IMAGE_INPUT_SIZE / USER_ICON_RADIUS_RATIO}
+                radius={ICON_IMAGE_INPUT_SIZE / WORLD_ICON_RADIUS_RATIO}
                 required
                 onPreviewChange={setPageIconPreview}
               />
-              <UserThemeRadioGroup {...getInputProps("theme")} />
+              <WorldThemeRadioGroup {...getInputProps("theme")} />
               <InputWrapper
                 className={classes.advancedSettingsWrapper}
                 label="advanced settings"
@@ -188,9 +222,10 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
             <Stack gap={6}>
               <Button
                 type="submit"
+                variant="filled"
                 leftSection={<ProfileIcon />}
                 loading={submitting}
-                disabled={signupDisabled}
+                disabled={submitDisabled}
               >
                 complete signup
               </Button>

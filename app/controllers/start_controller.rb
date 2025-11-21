@@ -9,9 +9,9 @@ class StartController < ApplicationController
     respond_to do |format|
       format.html do
         next_path = if signed_in?
-          world_path(trailing_slash: true)
+          user_world_path(trailing_slash: true)
         elsif valid_registration_token?
-          signup_path
+          new_registration_path
         else
           root_path
         end

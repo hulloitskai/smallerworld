@@ -11,6 +11,7 @@ class PostSerializer < ApplicationSerializer
              :emoji,
              :pinned_until,
              :spotify_track_id,
+             :world_id,
              type: { type: "PostType" },
              visibility: { type: "PostVisibility" },
              snippet: { type: :string },

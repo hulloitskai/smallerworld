@@ -28,7 +28,7 @@ class Encouragement < ApplicationRecord
   # == Associations ==
 
   belongs_to :friend
-  has_one :user, through: :friend
+  has_one :world_owner, through: :friend
 
   sig { returns(Friend) }
   def friend!
@@ -36,8 +36,8 @@ class Encouragement < ApplicationRecord
   end
 
   sig { returns(User) }
-  def user!
-    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
+  def world_owner!
+    world_owner or raise ActiveRecord::RecordNotFound, "Missing world owner"
   end
 
   # == Validations ==
@@ -60,9 +60,8 @@ class Encouragement < ApplicationRecord
       NotificationMessage.new(
         title: "#{friend.name} wants to hear from u!",
         body: [emoji, message].join(" "),
-        target_url: Rails.application.routes.url_helpers.world_url(
-          trailing_slash: true,
-        ),
+        target_url: Rails.application.routes.url_helpers
+          .user_world_path(trailing_slash: true),
       )
     else
       raise "Invalid notification recipient: #{recipient.inspect}"
@@ -73,7 +72,7 @@ class Encouragement < ApplicationRecord
 
   sig { void }
   def create_notification!
-    notifications.create!(recipient: user!)
+    notifications.create!(recipient: world_owner!)
   end
 
   private

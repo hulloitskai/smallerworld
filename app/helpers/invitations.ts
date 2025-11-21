@@ -6,15 +6,15 @@ export const formatInvitationMessage = (invitationUrl: string): string =>
   "here's an invitation to my smaller world (a secret blog just for friends)" +
   `: ${invitationUrl}`;
 
-export const useInvitationMessage = (
+export const useInvitationShortlink = (
   invitation: Invitation,
 ): string | undefined => {
-  const [invitationMessage, setInvitationMessage] = useState<string>();
+  const [shortlink, setShortlink] = useState<string>();
   useEffect(() => {
     const shortlink = invitationShortlink(invitation);
-    setInvitationMessage(formatInvitationMessage(shortlink));
+    setShortlink(shortlink);
   }, [invitation]);
-  return invitationMessage;
+  return shortlink;
 };
 
 export const useInvitationShareData = (

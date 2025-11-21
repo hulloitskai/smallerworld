@@ -56,16 +56,14 @@ module AuthenticatesUsers
   sig { returns(T.nilable(Session)) }
   def find_session_by_cookie
     if (id = cookies.signed[:session_id])
-      Session
-        .with_user
-        .merge(User.with_attached_page_icon)
-        .find_by(id:)
+      Session.with_user.find_by(id:)
     end
   end
 
   sig { returns(String) }
   def after_authentication_url
-    session.delete(:return_to_after_authenticating) || world_path
+    session.delete(:return_to_after_authenticating) ||
+      user_world_path(trailing_slash: true)
   end
 
   sig { params(user: User).returns(Session) }
@@ -127,10 +125,18 @@ module AuthenticatesUsers
     respond_to do |format|
       format.html do
         session[:return_to_after_authenticating] = request.url
-        redirect_to(login_path, alert: "please sign in to continue.")
+        redirect_to(
+          new_session_path,
+          alert: "please sign in to continue.",
+        )
       end
       format.json do
-        render(json: { error: error.message }, status: :unauthorized)
+        render(
+          json: {
+            error: error.message,
+          },
+          status: :unauthorized,
+        )
       end
     end
   end

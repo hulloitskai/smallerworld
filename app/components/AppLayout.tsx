@@ -24,7 +24,7 @@ import AppHeader, { type AppHeaderProps } from "./AppHeader";
 import AppMeta, { type AppMetaProps } from "./AppMeta";
 import PageContainer from "./PageContainer";
 import PageLayout from "./PageLayout";
-import UserThemeProvider from "./UserThemeProvider";
+import WorldThemeProvider from "./WorldThemeProvider";
 
 import classes from "./AppLayout.module.css";
 
@@ -33,10 +33,11 @@ export interface AppLayoutProps<PageProps extends SharedPageProps>
       AppMetaProps,
       "title" | "description" | "imageUrl" | "manifestUrl" | "pwaScope"
     >,
-    Omit<AppInnerProps, "breadcrumbs" | "logoHref"> {
+    Omit<AppInnerProps, "breadcrumbs" | "logoHref" | "footer"> {
   title?: DynamicProp<PageProps, AppMetaProps["title"]>;
   description?: DynamicProp<PageProps, AppMetaProps["description"]>;
   breadcrumbs?: DynamicProp<PageProps, (AppBreadcrumb | null | false)[]>;
+  footer?: DynamicProp<PageProps, ReactNode>;
   withContainer?: boolean;
   containerSize?: MantineSize | (string & {}) | number;
   containerProps?: ContainerProps;
@@ -61,6 +62,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   imageUrl: imageUrlProp,
   noIndex,
   breadcrumbs: breadcrumbsProp,
+  footer: footerProp,
   logoHref: logoHrefProp,
   manifestUrl: manifestUrlProp,
   pwaScope: pwaScopeProp,
@@ -81,8 +83,9 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
       : [];
   }, [breadcrumbsProp, page]);
 
-  // == Header
+  // == Header, Footer
   const logoHref = useResolveDynamicProp(logoHrefProp);
+  const footer = useResolveDynamicProp(footerProp);
 
   return (
     <>
@@ -90,12 +93,15 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
         {...{ title, description, imageUrl, noIndex, manifestUrl, pwaScope }}
       />
       <PageLayout>
-        <UserThemeProvider>
+        <WorldThemeProvider>
           <PWALoadingRemoveScroll>
-            <AppInner {...{ breadcrumbs, logoHref }} {...appShellProps} />
+            <AppInner
+              {...{ breadcrumbs, logoHref, footer }}
+              {...appShellProps}
+            />
             <PWALoadingOverlay />
           </PWALoadingRemoveScroll>
-        </UserThemeProvider>
+        </WorldThemeProvider>
       </PageLayout>
     </>
   );

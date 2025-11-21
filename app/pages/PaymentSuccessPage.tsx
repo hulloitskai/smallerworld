@@ -40,7 +40,7 @@ const PaymentSuccessPage: PageComponent<PaymentSuccessPageProps> = () => {
               </Text>
               <Button
                 component={Link}
-                href={withTrailingSlash(routes.world.show.path())}
+                href={withTrailingSlash(routes.userWorld.show.path())}
                 leftSection={<BackIcon />}
               >
                 back to my world

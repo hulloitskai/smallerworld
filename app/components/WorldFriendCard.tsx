@@ -9,7 +9,7 @@ import ResumeIcon from "~icons/heroicons/play-20-solid";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 
 import { prettyFriendName } from "~/helpers/friends";
-import { type Activity, type WorldFriend } from "~/types";
+import { type Activity, type UserWorldFriendProfile } from "~/types";
 
 import ActivityCouponDrawer from "./ActivityCouponDrawer";
 import EditFriendForm from "./EditFriendForm";
@@ -19,7 +19,7 @@ import classes from "./WorldFriendCard.module.css";
 
 export interface WorldFriendCardProps {
   activitiesById: Record<string, Activity>;
-  friend: WorldFriend;
+  friend: UserWorldFriendProfile;
 }
 
 const WorldFriendCard: FC<WorldFriendCardProps> = ({
@@ -44,7 +44,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
 
   // == Remove friend
   const { trigger: deleteFriend, mutating: deletingFriend } = useRouteMutation(
-    routes.worldFriends.destroy,
+    routes.userWorldFriends.destroy,
     {
       params: {
         id: friend.id,
@@ -52,7 +52,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
       descriptor: "remove friend",
       onSuccess: () => {
         toast.success("friend removed");
-        void mutateRoute(routes.worldFriends.index);
+        void mutateRoute(routes.userWorldFriends.index);
       },
     },
   );
@@ -276,7 +276,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
 export default WorldFriendCard;
 
 interface PauseFriendItemProps {
-  friend: WorldFriend;
+  friend: UserWorldFriendProfile;
   onFriendPaused: () => void;
 }
 
@@ -284,19 +284,22 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
   friend,
   onFriendPaused,
 }) => {
-  const { trigger, mutating } = useRouteMutation(routes.worldFriends.pause, {
-    params: {
-      id: friend.id,
+  const { trigger, mutating } = useRouteMutation(
+    routes.userWorldFriends.pause,
+    {
+      params: {
+        id: friend.id,
+      },
+      descriptor: "pause friend",
+      onSuccess: () => {
+        void mutateRoute(routes.userWorldFriends.index);
+        toast.success(`${prettyFriendName(friend)} was paused`, {
+          description: `they will not see new posts you create until you unpause them`,
+        });
+        onFriendPaused();
+      },
     },
-    descriptor: "pause friend",
-    onSuccess: () => {
-      void mutateRoute(routes.worldFriends.index);
-      toast.success(`${prettyFriendName(friend)} was paused`, {
-        description: `they will not see new posts you create until you unpause them`,
-      });
-      onFriendPaused();
-    },
-  });
+  );
 
   return (
     <MenuItem
@@ -312,7 +315,7 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
 };
 
 interface UnpauseFriendItemProps {
-  friend: WorldFriend;
+  friend: UserWorldFriendProfile;
   onFriendUnpaused: () => void;
 }
 
@@ -320,17 +323,20 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
   friend,
   onFriendUnpaused,
 }) => {
-  const { trigger, mutating } = useRouteMutation(routes.worldFriends.unpause, {
-    params: { id: friend.id },
-    descriptor: "unpause friend",
-    onSuccess: () => {
-      void mutateRoute(routes.worldFriends.index);
-      toast.success(`${prettyFriendName(friend)} was unpaused`, {
-        description: `they will see new posts you create`,
-      });
-      onFriendUnpaused();
+  const { trigger, mutating } = useRouteMutation(
+    routes.userWorldFriends.unpause,
+    {
+      params: { id: friend.id },
+      descriptor: "unpause friend",
+      onSuccess: () => {
+        void mutateRoute(routes.userWorldFriends.index);
+        toast.success(`${prettyFriendName(friend)} was unpaused`, {
+          description: `they will see new posts you create`,
+        });
+        onFriendUnpaused();
+      },
     },
-  });
+  );
 
   return (
     <MenuItem

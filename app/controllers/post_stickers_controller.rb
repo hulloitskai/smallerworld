@@ -12,7 +12,7 @@ class PostStickersController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        post = find_post
+        post = find_post!
         stickers = authorized_scope(post.stickers).chronological
         render(json: {
           stickers: PostStickerSerializer.many(stickers),
@@ -26,7 +26,7 @@ class PostStickersController < ApplicationController
     respond_to do |format|
       format.json do
         current_friend = authenticate_friend!
-        post = find_post
+        post = find_post!
         sticker_params = params.expect(sticker: [
           :id,
           :emoji,
@@ -48,7 +48,7 @@ class PostStickersController < ApplicationController
   def update
     respond_to do |format|
       format.json do
-        sticker = find_sticker
+        sticker = find_sticker!
         authorize!(sticker)
         sticker.update!(params.expect(sticker: [relative_position: %i[x y]]))
         render(json: { sticker: PostStickerSerializer.one(sticker) })
@@ -60,7 +60,7 @@ class PostStickersController < ApplicationController
   def destroy
     respond_to do |format|
       format.json do
-        sticker = find_sticker
+        sticker = find_sticker!
         authorize!(sticker)
         sticker.destroy!
         render(json: { "postId": sticker.post_id })
@@ -73,12 +73,12 @@ class PostStickersController < ApplicationController
   # == Helpers ==
 
   sig { params(scope: Post::PrivateRelation).returns(Post) }
-  def find_post(scope: Post.all)
+  def find_post!(scope: Post.all)
     scope.find(params.fetch(:post_id))
   end
 
   sig { params(scope: PostSticker::PrivateRelation).returns(PostSticker) }
-  def find_sticker(scope: PostSticker.all)
+  def find_sticker!(scope: PostSticker.all)
     scope.find(params.fetch(:id))
   end
 end

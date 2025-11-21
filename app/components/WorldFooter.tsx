@@ -7,23 +7,23 @@ import {
 
 import logoSrc from "~/assets/images/logo.png";
 
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
-import { type UniversePageProps } from "~/pages/UniversePage";
-import { type WorldPageProps } from "~/pages/WorldPage";
+import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
+import { type UserUniversePageProps } from "~/pages/UserUniversePage";
+import { type UserWorldPageProps } from "~/pages/UserWorldPage";
+import { type World } from "~/types";
 
 import classes from "./WorldFooter.module.css";
 
 export interface WorldFooterProps
-  extends Omit<AppShellFooterProps, "children"> {}
+  extends Omit<AppShellFooterProps, "children"> {
+  world: World | null;
+}
 
 const WORLD_ICON_SIZE = 18;
 
 const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
-  ({ className, ...otherProps }, ref) => {
-    const {
-      url,
-      props: { currentUser },
-    } = usePage<WorldPageProps | UniversePageProps>();
+  ({ world, className, ...otherProps }, ref) => {
+    const { url } = usePage<UserWorldPageProps | UserUniversePageProps>();
     const [value, setValue] = useState<"world" | "universe">(() =>
       urlValue(url),
     );
@@ -45,15 +45,19 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
                 <NavItem
                   text="your world"
                   icon={
-                    <Image
-                      src={currentUser.page_icon.src}
-                      {...(!!currentUser.page_icon.srcset && {
-                        srcSet: currentUser.page_icon.srcset,
-                      })}
-                      h={WORLD_ICON_SIZE}
-                      w={WORLD_ICON_SIZE}
-                      radius={WORLD_ICON_SIZE / USER_ICON_RADIUS_RATIO}
-                    />
+                    world?.icon ? (
+                      <Image
+                        src={world.icon.src}
+                        {...(!!world.icon.srcset && {
+                          srcSet: world.icon.srcset,
+                        })}
+                        h={WORLD_ICON_SIZE}
+                        w={WORLD_ICON_SIZE}
+                        radius={WORLD_ICON_SIZE / WORLD_ICON_RADIUS_RATIO}
+                      />
+                    ) : (
+                      <Image src={logoSrc} h={WORLD_ICON_SIZE} w="unset" />
+                    )
                   }
                 />
               ),
@@ -74,13 +78,13 @@ const WorldFooter = forwardRef<HTMLDivElement, WorldFooterProps>(
               case "world":
                 setValue(value);
                 startTransition(() => {
-                  router.visit(withTrailingSlash(routes.world.show.path()));
+                  router.visit(withTrailingSlash(routes.userWorld.show.path()));
                 });
                 break;
               case "universe":
                 setValue(value);
                 startTransition(() => {
-                  router.visit(routes.universe.show.path());
+                  router.visit(routes.userUniverse.show.path());
                 });
                 break;
             }
@@ -107,4 +111,4 @@ const NavItem: FC<NavItemLabel> = ({ text, icon }) => (
 );
 
 const urlValue = (url: string): "world" | "universe" =>
-  url.startsWith(routes.universe.show.path()) ? "universe" : "world";
+  url.startsWith(routes.userUniverse.show.path()) ? "universe" : "world";

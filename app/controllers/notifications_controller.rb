@@ -26,7 +26,7 @@ class NotificationsController < ApplicationController
   # == Helpers ==
 
   sig { params(scope: Notification::PrivateRelation).returns(Notification) }
-  def find_notification(scope: Notification.all)
+  def find_notification!(scope: Notification.all)
     scope.find(params.fetch(:id))
   end
 end

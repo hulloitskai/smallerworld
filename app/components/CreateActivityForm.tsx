@@ -32,7 +32,7 @@ const CreateActivityForm: FC<CreateActivityFormProps> = ({
     typeof initialValues,
     (values: FormValues) => FormSubmission
   >({
-    action: routes.worldActivities.create,
+    action: routes.userWorldActivities.create,
     descriptor: "set up activity",
     initialValues,
     transformValues: values => ({

@@ -15,7 +15,7 @@ const COUPON_CARD_WIDTH = 320;
 export interface ActivityCouponsCarouselProps
   extends Pick<
       ActivityCouponCardProps,
-      "currentFriend" | "replyToNumber" | "user"
+      "currentFriend" | "replyToNumber" | "world"
     >,
     BoxProps {
   coupons: ActivityCoupon[];
@@ -24,7 +24,7 @@ export interface ActivityCouponsCarouselProps
 const ActivityCouponsCarousel: FC<ActivityCouponsCarouselProps> = ({
   currentFriend,
   replyToNumber,
-  user,
+  world,
   coupons,
   className,
   ...otherProps
@@ -42,7 +42,7 @@ const ActivityCouponsCarousel: FC<ActivityCouponsCarouselProps> = ({
       {coupons.map(coupon => (
         <Carousel.Slide key={coupon.id}>
           <ActivityCouponCard
-            {...{ currentFriend, replyToNumber, user, coupon }}
+            {...{ currentFriend, replyToNumber, world, coupon }}
             onCouponRedeemed={() => {}}
           />
         </Carousel.Slide>

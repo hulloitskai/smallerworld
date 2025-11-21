@@ -1,54 +1,31 @@
-.pageTitle {
-  line-height: 1.2;
-  text-align: center;
-}
-
-.pageIcon {
+.worldIcon {
   align-self: center;
   object-fit: cover;
   flex: unset;
   box-shadow: var(--mantine-shadow-lg);
 }
 
-.menuContactItem {
-  padding-block: 4px;
-  background-color: transparent;
-  cursor: default;
-  opacity: 1;
+.worldName {
   text-align: center;
+  line-height: var(--mantine-line-height-xs);
 }
 
-.avatarGroup {
-  :global(.mantine-Avatar-root) {
-    box-shadow: var(--mantine-shadow-xs);
+.publicProfileAlert {
+  margin-bottom: var(--mantine-spacing-xl);
+  align-self: stretch;
+
+  :global(.mantine-Alert-body) {
+    row-gap: 4px;
+  }
+}
+
+.installModal {
+  :global(.mantine-Modal-header) {
+    min-height: rem(40);
   }
 
-  :global(.mantine-Avatar-placeholder) {
-    background-color: transparent;
-  }
-}
-
-.friendIcon {
-  font-size: var(--mantine-font-size-sm);
-  color: light-dark(
-    var(--mantine-color-primary-filled),
-    var(--mantine-color-white)
-  );
-}
-
-.friendEmoji {
-  @mixin emoji;
-  font-size: var(--mantine-font-size-md);
-}
-
-.installInstructionsList {
-  font-weight: 500;
-  display: flex;
-  flex-direction: column;
-  gap: var(--mantine-spacing-md);
-
-  :global(.mantine-List-itemWrapper) {
-    margin-right: 22px;
+  :global(.mantine-Modal-title) {
+    line-height: var(--mantine-line-height-xs) !important;
   }
 }
 
@@ -64,7 +41,7 @@
   font-family: var(--font-family-cute);
   font-size: 24px;
   line-height: 1.1;
-  max-width: 120px;
+  max-width: 140px;
   text-align: right;
   position: relative;
   top: 8px;
@@ -72,93 +49,6 @@
   @mixin dark {
     color: var(--mantine-color-white);
   }
-}
-
-.menuButton {
-  overflow: visible;
-}
-
-.heartButton {
-  animation: heartWiggle 5s ease-in-out infinite;
-  animation-delay: 2s;
-  transform-origin: center;
-  will-change: transform;
-}
-
-@keyframes heartWiggle {
-  0%,
-  85% {
-    transform: rotate(0deg);
-  }
-
-  90% {
-    transform: rotate(-8deg);
-  }
-
-  93% {
-    transform: rotate(6deg);
-  }
-
-  96% {
-    transform: rotate(-4deg);
-  }
-
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
-.menuIndicator {
-  :global(.mantine-Indicator-indicator) {
-    font-weight: 600;
-    font-family: var(--mantine-font-family-headings);
-    min-height: var(--indicator-size);
-    padding-inline: 0px;
-    z-index: 99;
-  }
-}
-
-.joinRequestMenuItem {
-  :global(.mantine-Menu-itemSection) {
-    &[data-position="right"] {
-      width: var(--mantine-spacing-lg);
-    }
-  }
-}
-
-.checkableListItem {
-  &[data-checked] {
-    text-decoration: line-through;
-
-    :global(.mantine-Checkbox-icon) {
-      &::after {
-        content: "";
-        width: var(--dot-size);
-        height: var(--dot-size);
-        background-color: var(--mantine-color-white);
-        border-radius: var(--mantine-radius-md);
-      }
-    }
-  }
-}
-
-.onboardingAlert {
-  @mixin dark-user-theme {
-    backdrop-filter: blur(rem(8px));
-  }
-
-  :global(.mantine-Alert-icon) {
-    margin-right: var(--mantine-spacing-xs);
-  }
-
-  :global(.mantine-Alert-body) {
-    row-gap: var(--mantine-spacing-xs);
-  }
-}
-
-.friendButton {
-  border-radius: var(--mantine-radius-xl);
-  display: block;
 }
 
 .pushNotificationsDisabledAlert {
@@ -176,8 +66,4 @@
   @mixin emoji;
 
   margin-left: 2px;
-}
-
-.supportTooltip {
-  font-family: var(--font-family-cute);
 }

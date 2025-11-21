@@ -11,12 +11,15 @@ import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { mutateWorldPosts, mutateWorldTimeline } from "~/helpers/world";
+import { mutateUserWorldPosts } from "~/helpers/userWorld";
+import { mutateWorldTimeline } from "~/helpers/worlds";
 import {
   type PostReaction,
   type PostShare,
   type PostViewer,
-  type WorldPost,
+  type UserUniverseAuthorPost,
+  type UserWorldPost,
+  type World,
 } from "~/types";
 
 import DrawerModal from "./DrawerModal";
@@ -25,16 +28,18 @@ import PostForm from "./PostForm";
 import classes from "./AuthorPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
-export interface AuthorPostCardActionsProps {
-  post: WorldPost;
-  hideStats: boolean;
+export interface AuthorPostCardActionsProps extends Omit<BoxProps, "children"> {
+  post: UserWorldPost | UserUniverseAuthorPost;
+  world: World;
   onFollowUpDrawerModalOpened?: () => void;
 }
 
 const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   post,
-  hideStats,
+  world,
   onFollowUpDrawerModalOpened,
+  className,
+  ...otherProps
 }) => {
   const { ref, inViewport } = useInViewport();
   const currentUser = useCurrentUser();
@@ -58,9 +63,9 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     notifiedFriends: number;
     viewers: number;
     repliers: number;
-  }>(routes.worldPosts.stats, {
+  }>(routes.userWorldPosts.stats, {
     descriptor: "load post stats",
-    params: !hideStats && inViewport ? { id: post.id } : null,
+    params: !world.hide_stats && inViewport ? { id: post.id } : null,
     keepPreviousData: true,
     refreshInterval: 5000,
     isVisible: () => inViewport,
@@ -70,7 +75,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   const { data: reactionsData } = useRouteSWR<{ reactions: PostReaction[] }>(
     routes.postReactions.index,
     {
-      params: !hideStats && inViewport ? { post_id: post.id } : null,
+      params: !world.hide_stats && inViewport ? { post_id: post.id } : null,
       descriptor: "load reactions",
       keepPreviousData: true,
       refreshInterval: 5000,
@@ -84,21 +89,22 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
   );
 
   // == Delete post
-  const { trigger: deletePost, mutating: deletingPost } = useRouteMutation(
-    routes.worldPosts.destroy,
-    {
-      params: {
-        id: post.id,
-      },
-      descriptor: "delete post",
-      onSuccess: () => {
-        void mutateWorldPosts();
-        void mutateRoute(routes.worldPosts.pinned);
-        void mutateRoute(routes.worldEncouragements.index);
-        void mutateWorldTimeline();
-      },
+  const { trigger: deletePost, mutating: deletingPost } = useRouteMutation<{
+    worldId: string | null;
+  }>(routes.userWorldPosts.destroy, {
+    params: {
+      id: post.id,
     },
-  );
+    descriptor: "delete post",
+    onSuccess: ({ worldId }) => {
+      void mutateUserWorldPosts();
+      void mutateRoute(routes.userWorldPosts.pinned);
+      void mutateRoute(routes.userWorldEncouragements.index);
+      if (worldId) {
+        void mutateWorldTimeline(worldId);
+      }
+    },
+  });
 
   const [followUpDrawerModalOpened, setFollowUpModalDrawerOpened] =
     useState(false);
@@ -106,7 +112,13 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
     useState(false);
   return (
     <>
-      <Group {...{ ref }} align="start" gap={3}>
+      <Group
+        {...{ ref }}
+        align="start"
+        gap={3}
+        className={cn("AuthorPostCardActions", className)}
+        {...otherProps}
+      >
         <Group align="start" gap={3} style={{ flexGrow: 1 }}>
           {(!!statsData?.notifiedFriends || !!statsData?.viewers) && (
             <>
@@ -122,7 +134,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
                         if (updatedCount === 10) {
                           openModal({
                             title: "post viewers",
-                            children: <PostViewersModalBody {...{ post }} />,
+                            children: <PostViewersModalBody postId={post.id} />,
                           });
                           return 0;
                         }
@@ -197,7 +209,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
               onClick={() => {
                 openModal({
                   title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
-                  size: "var(--container-size-xs)",
+                  size: "var(--containjer-size-xs)",
                   children: (
                     <PostForm
                       {...{ post }}
@@ -237,7 +249,7 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             >
               delete post
             </Menu.Item>
-            <ShareMenuItem {...{ post }} />
+            <ShareMenuItem postId={post.id} />
             <Menu.Divider />
             <Menu.Item
               leftSection={<FollowUpIcon />}
@@ -296,16 +308,16 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
 export default AuthorPostCardActions;
 
 interface ShareMenuItemProps {
-  post: WorldPost;
+  postId: string;
 }
 
-const ShareMenuItem: FC<ShareMenuItemProps> = ({ post }) => {
+const ShareMenuItem: FC<ShareMenuItemProps> = ({ postId }) => {
   const [copied, setCopied] = useState(false);
   const { trigger, mutating } = useRouteMutation<{ share: PostShare }>(
-    routes.worldPosts.share,
+    routes.userWorldPosts.share,
     {
       params: {
-        id: post.id,
+        id: postId,
       },
       descriptor: "share post",
       onSuccess: ({ share }) => {
@@ -346,17 +358,17 @@ const ShareMenuItem: FC<ShareMenuItemProps> = ({ post }) => {
 };
 
 interface PostViewersModalBodyProps {
-  post: WorldPost;
+  postId: string;
 }
 
-const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ post }) => {
+const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ postId }) => {
   const { data } = useRouteSWR<{ viewers: PostViewer[] }>(
-    routes.worldPosts.viewers,
+    routes.userWorldPosts.viewers,
     {
       params: {
-        id: post.id,
+        id: postId,
       },
-      descriptor: "load post viewers",
+      descriptor: "load viewers",
     },
   );
   const { viewers } = data ?? {};

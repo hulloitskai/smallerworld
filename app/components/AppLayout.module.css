@@ -24,7 +24,7 @@
   min-height: calc(100vh - var(--app-shell-header-height, 0px));
   padding-top: var(--app-shell-padding);
 
-  :where([data-user-theme]) & {
+  :where([data-world-theme]) & {
     background: none;
   }
 }

@@ -3,33 +3,33 @@ export default {
     "postcss-preset-mantine": {
       autoRem: true,
       mixins: {
-        "user-theme": {
-          "[data-user-theme] &": {
+        "world-theme": {
+          "[data-world-theme] &": {
             "@mixin-content": {},
           },
         },
-        "where-user-theme": {
-          ":where([data-user-theme]) &": {
+        "where-world-theme": {
+          ":where([data-world-theme]) &": {
             "@mixin-content": {},
           },
         },
-        "light-user-theme": {
-          "[data-mantine-color-scheme='light'][data-user-theme] &": {
+        "light-world-theme": {
+          "[data-mantine-color-scheme='light'][data-world-theme] &": {
             "@mixin-content": {},
           },
         },
-        "where-light-user-theme": {
-          ":where([data-mantine-color-scheme='light'][data-user-theme]) &": {
+        "where-light-world-theme": {
+          ":where([data-mantine-color-scheme='light'][data-world-theme]) &": {
             "@mixin-content": {},
           },
         },
-        "dark-user-theme": {
-          "[data-mantine-color-scheme='dark'][data-user-theme] &": {
+        "dark-world-theme": {
+          "[data-mantine-color-scheme='dark'][data-world-theme] &": {
             "@mixin-content": {},
           },
         },
-        "where-dark-user-theme": {
-          ":where([data-mantine-color-scheme='dark'][data-user-theme]) &": {
+        "where-dark-world-theme": {
+          ":where([data-mantine-color-scheme='dark'][data-world-theme]) &": {
             "@mixin-content": {},
           },
         },

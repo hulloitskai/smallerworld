@@ -1,59 +1,36 @@
-import { type InertiaLinkProps } from "@inertiajs/react";
-import {
-  Avatar,
-  Image,
-  Indicator,
-  type ListItemProps,
-  Loader,
-  type MenuItemProps,
-  Overlay,
-  RemoveScroll,
-  Text,
-} from "@mantine/core";
+import { Image, Overlay, Popover, RemoveScroll, Text } from "@mantine/core";
 import { useWindowEvent } from "@mantine/hooks";
 import { useModals } from "@mantine/modals";
-
-import EllipsisHorizontalIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
-import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
-import HeartIcon from "~icons/heroicons/heart-20-solid";
 
 import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
-import WorldFooter from "~/components/WorldFooter";
+import WorldPageDialogStateProvider from "~/components/WorldPageDialogStateProvider";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
-import { openWorldPageInstallationInstructionsModal } from "~/components/WorldPageInstallationInstructionsModal";
-import { openWorldPageInstallModal } from "~/components/WorldPageInstallModal";
-import WorldPageNotificationsButton from "~/components/WorldPageNotificationsButton";
-import { isDesktop, useBrowserDetection } from "~/helpers/browsers";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
+import WorldPageInstallAlert from "~/components/WorldPageInstallAlert";
+import WorldPageInvitationsButton from "~/components/WorldPageInvitationsButton";
+import WorldPageJoinRequestAlert from "~/components/WorldPageJoinRequestAlert";
+import WorldPageNotificationsButtonCard from "~/components/WorldPageNotificationsButtonCard";
+import WorldPageRefreshButton from "~/components/WorldPageRefreshButton";
+import { queryParamsFromPath } from "~/helpers/inertia/routing";
+import { openWorldPageInstallModal } from "~/helpers/install";
 import { useWebPush } from "~/helpers/webPush";
-import { manifestUrlForUser, useWorldPosts } from "~/helpers/world";
-import { type User } from "~/types";
+import { WORLD_ICON_RADIUS_RATIO, type WorldPageProps } from "~/helpers/worlds";
+import { useWorldTheme } from "~/helpers/worldThemes";
 
 import classes from "./WorldPage.module.css";
 
-export interface WorldPageProps extends SharedPageProps {
-  currentUser: User;
-  latestFriendEmojis: (string | null)[];
-  pendingJoinRequests: number;
-  hideStats: boolean;
-  hideNeko: boolean;
-}
+const WORLD_ICON_SIZE = 96;
 
-const ICON_SIZE = 96;
+const WorldPage: PageComponent<WorldPageProps> = ({ world }) => {
+  const worldTheme = useWorldTheme(world.theme);
 
-const WorldPage: PageComponent<WorldPageProps> = ({
-  currentUser,
-  latestFriendEmojis,
-  pendingJoinRequests,
-}) => {
   const { isStandalone, outOfPWAScope } = usePWA();
-  const userTheme = useUserTheme(currentUser.theme);
+  const currentUser = useCurrentUser();
+  const currentFriend = useCurrentFriend();
   const {
     pushRegistration,
     supported: webPushSupported,
@@ -68,247 +45,159 @@ const WorldPage: PageComponent<WorldPageProps> = ({
     router.reload({
       only: [
         "currentUser",
+        "currentFriend",
         "faviconLinks",
-        "hideStats",
-        "hideNeko",
-        "pendingJoinRequests",
-        "latestFriendEmojis",
+        "user",
+        "world",
+        "lastSentEncouragement",
       ],
       async: true,
     });
   });
 
-  // == Browser detection
-  const browserDetection = useBrowserDetection();
-
-  // == PWA installation
-  const { install: installPWA } = usePWA();
-
-  // == Auto-open install modal on mobile
-  const queryParams = useQueryParams();
+  // == Auto-open install modal
   const { modals } = useModals();
   useEffect(() => {
-    if (isStandalone === undefined || !isEmpty(modals)) {
-      return;
+    const { intent } = queryParamsFromPath(location.href);
+    if (isEmpty(modals) && currentFriend && intent === "install") {
+      openWorldPageInstallModal(world);
     }
-    if (queryParams.intent === "installation_instructions") {
-      openWorldPageInstallationInstructionsModal({ currentUser });
-    } else if (
-      queryParams.intent === "install" ||
-      ((!isStandalone || outOfPWAScope) &&
-        (installPWA || (browserDetection && !isDesktop(browserDetection))))
-    ) {
-      openWorldPageInstallModal({ currentUser });
-    }
-  }, [isStandalone, browserDetection, installPWA]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // == Posts
-  const { posts } = useWorldPosts();
-  const hasOneUserCreatedPost = useMemo<boolean | undefined>(() => {
-    if (posts) {
-      const accountCreatedAt = DateTime.fromISO(currentUser.created_at);
-      const cutoff = accountCreatedAt.plus({ seconds: 1 });
-      return posts.some(post => {
-        const updatedAt = DateTime.fromISO(post.updated_at);
-        return updatedAt > cutoff;
-      });
-    }
-  }, [posts]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // == Search
-  const [searchActive, setSearchActive] = useState(false);
-
-  // == Add friend modal
-  const [addFriendModalOpened, setAddFriendModalOpened] = useState(false);
-
-  // == Link items
-  interface LinkItemProps
-    extends MenuItemProps,
-      Omit<InertiaLinkProps, "color" | "style"> {}
-  const LinkItem: FC<LinkItemProps> = props => (
-    <Menu.Item component={Link} {...props} />
-  );
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const body = (
-    <Stack gap="lg">
+    <Stack>
+      {currentUser?.id === world.owner_id && !currentFriend && (
+        <Alert className={classes.publicProfileAlert}>
+          <Group gap="xs" justify="space-between">
+            <Group align="start" gap={8}>
+              <Box component={PublicIcon} style={{ flexShrink: 0 }} mt={4} />
+              <Text ff="heading" fw={700}>
+                your public profile
+              </Text>
+            </Group>
+            <Button
+              component={Link}
+              href={withTrailingSlash(routes.userWorld.show.path())}
+              variant="white"
+              leftSection={<BackIcon />}
+              style={{ flexShrink: 0 }}
+              mt={4}
+            >
+              back to your world
+            </Button>
+          </Group>
+        </Alert>
+      )}
       <Box pos="relative">
         <Stack gap="sm">
           <Image
-            className={classes.pageIcon}
-            src={currentUser.page_icon.src}
-            {...(!!currentUser.page_icon.srcset && {
-              srcSet: currentUser.page_icon.srcset,
+            className={classes.worldIcon}
+            src={world.icon.src}
+            {...(!!world.icon.srcset && { srcSet: world.icon.srcset })}
+            w={WORLD_ICON_SIZE}
+            h={WORLD_ICON_SIZE}
+            radius={WORLD_ICON_SIZE / WORLD_ICON_RADIUS_RATIO}
+            {...(currentFriend && {
+              onClick: () => {
+                const pageUrl = normalizeUrl(
+                  routes.worlds.show.path({
+                    id: world.handle,
+                    query: {
+                      friend_token: currentFriend.access_token,
+                    },
+                  }),
+                );
+                void navigator.clipboard.writeText(pageUrl).then(() => {
+                  toast.success("page url copied");
+                });
+              },
             })}
-            w={ICON_SIZE}
-            h={ICON_SIZE}
-            radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
-            onClick={() => {
-              const pageUrl = normalizeUrl(
-                withTrailingSlash(routes.world.show.path()),
-              );
-              void navigator.clipboard.writeText(pageUrl).then(() => {
-                toast.success("page url copied");
-              });
-            }}
           />
           <Stack gap={4}>
-            <Title className={classes.pageTitle} size="h2">
-              {possessive(currentUser.name)} world
+            <Title size="h2" className={classes.worldName}>
+              {world.name}
             </Title>
-            <Group gap="xs" justify="center">
-              {(!isStandalone ||
-                outOfPWAScope ||
-                pushRegistration !== null ||
-                webPushSupported === false ||
-                webPushPermission === "denied") && (
-                <>
-                  <Transition
-                    transition="slide-up"
-                    mounted={
-                      currentUser.supported_features.includes("search") &&
-                      !searchActive
-                    }
-                  >
-                    {transitionStyle => (
-                      <ActionIcon
-                        size="lg"
-                        variant="light"
-                        style={transitionStyle}
-                        onClick={() => {
-                          setSearchActive(true);
-                        }}
-                        {...(userTheme === "bakudeku" && {
-                          variant: "filled",
-                        })}
-                      >
-                        <SearchIcon />
-                      </ActionIcon>
-                    )}
-                  </Transition>
-                  <Button
-                    component={Link}
-                    href={routes.worldFriends.index.path()}
-                    {...(userTheme === "bakudeku" && {
+            {!currentFriend ? null : isStandalone === undefined ? (
+              <Skeleton style={{ alignSelf: "center", width: "unset" }}>
+                <Button style={{ visibility: "hidden" }}>
+                  some placeholder
+                </Button>
+              </Skeleton>
+            ) : isStandalone &&
+              !outOfPWAScope &&
+              webPushPermission !== "denied" ? (
+              <Group gap="xs" justify="center">
+                <WorldPageNotificationsButtonCard {...{ currentFriend }} />
+                {pushRegistration && (
+                  <WorldPageRefreshButton
+                    {...(worldTheme === "bakudeku" && {
                       variant: "filled",
                     })}
-                    leftSection={
-                      !isEmpty(latestFriendEmojis) ? (
-                        <Avatar.Group className={classes.avatarGroup}>
-                          {latestFriendEmojis.map((emoji, index) => (
-                            <Avatar key={index} size="sm">
-                              {emoji ? (
-                                <Box className={classes.friendEmoji}>
-                                  {emoji}
-                                </Box>
-                              ) : (
-                                <Box
-                                  component={UserIcon}
-                                  className={classes.friendIcon}
-                                />
-                              )}
-                            </Avatar>
-                          ))}
-                        </Avatar.Group>
-                      ) : (
-                        <FriendsIcon />
-                      )
-                    }
-                    className={classes.friendButton}
-                    onClick={event => {
-                      if (isEmpty(latestFriendEmojis)) {
-                        event.preventDefault();
-                        setAddFriendModalOpened(true);
-                      }
-                    }}
-                  >
-                    {!isEmpty(latestFriendEmojis)
-                      ? "your friends"
-                      : "invite a friend!"}
-                  </Button>
-                </>
-              )}
-              {isStandalone && !outOfPWAScope && (
-                <WorldPageNotificationsButton
-                  {...(userTheme === "bakudeku" && {
+                  />
+                )}
+              </Group>
+            ) : (
+              <Group gap="xs" justify="center">
+                <WorldPageInvitationsButton
+                  {...(worldTheme === "bakudeku" && {
                     variant: "filled",
                   })}
                 />
-              )}
-            </Group>
+                {isStandalone && !outOfPWAScope && (
+                  <WorldPageRefreshButton
+                    {...(worldTheme === "bakudeku" && {
+                      variant: "filled",
+                    })}
+                  />
+                )}
+              </Group>
+            )}
           </Stack>
         </Stack>
-        <Group
-          pos="absolute"
-          top={pendingJoinRequests > 0 ? 0 : -6}
-          right={0}
-          gap={2}
-          align="start"
-        >
-          {!currentUser.membership_tier && <SupportButton />}
-          <Menu width={228} position="bottom-end" arrowOffset={20}>
-            <Menu.Target>
-              <ActionIcon className={classes.menuButton}>
-                <Indicator
-                  className={classes.menuIndicator}
-                  label={pendingJoinRequests}
-                  size={16}
-                  offset={-4}
-                  disabled={!pendingJoinRequests}
-                >
-                  <MenuIcon />
-                </Indicator>
+        {(isStandalone === true || !currentUser) && (
+          <Popover position="bottom-end" arrowOffset={20} width={228}>
+            <Popover.Target>
+              <ActionIcon pos="absolute" top={0} right={0} size="lg">
+                <Image src={logoSrc} h={26} w="unset" />
               </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <LinkItem
-                leftSection={<EditIcon />}
-                href={routes.world.edit.path()}
-              >
-                customize your page
-              </LinkItem>
-              <LinkItem
-                leftSection={<OpenExternalIcon />}
-                href={withTrailingSlash(
-                  routes.users.show.path({ id: currentUser.handle }),
-                )}
-              >
-                view public profile
-              </LinkItem>
-              <LinkItem
-                className={classes.joinRequestMenuItem}
-                leftSection={<JoinRequestIcon />}
-                href={routes.worldJoinRequests.index.path()}
-                {...(pendingJoinRequests > 0 && {
-                  rightSection: (
-                    <Badge variant="filled" px={6} py={0}>
-                      {pendingJoinRequests}
-                    </Badge>
-                  ),
-                })}
-              >
-                view join requests
-              </LinkItem>
-              {isStandalone && <LogoutItem />}
-              <Menu.Divider />
-              <Menu.Item
-                component="div"
-                disabled
-                className={classes.menuContactItem}
-              >
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Stack gap="xs">
+                <Stack gap={8}>
+                  <Text ta="center" ff="heading" fw={600}>
+                    wanna make your own smaller world?
+                  </Text>
+                  <Button
+                    component={PWAScopedLink}
+                    target="_blank"
+                    href={routes.sessions.new.path()}
+                    leftSection="😍"
+                    styles={{
+                      section: {
+                        fontSize: "var(--mantine-font-size-lg)",
+                      },
+                    }}
+                  >
+                    create your world
+                  </Button>
+                </Stack>
+                <Divider mt={4} mx="calc(-1 * var(--mantine-spacing-xs))" />
                 <Anchor
                   href={routes.feedback.redirect.path()}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                   size="xs"
                   inline
+                  ta="center"
+                  ff="heading"
                   data-canny-link
                 >
                   got feedback or feature requests?
                 </Anchor>
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
+              </Stack>
+            </Popover.Dropdown>
+          </Popover>
+        )}
       </Box>
       {isStandalone && webPushPermission === "denied" && (
         <Alert
@@ -322,10 +211,10 @@ const WorldPage: PageComponent<WorldPageProps> = ({
         >
           <Stack gap={2} lh={1.3}>
             <Text inherit>
-              you won&apos;t know when friends send you writing prompts or react
-              to your posts{" "}
+              enable notifications to be a part of {world.name} support system,
+              and receive timely hangout invitations{" "}
               <span className={classes.pushNotificationsDisabledAlertEmoji}>
-                😢
+                😎
               </span>
             </Text>
             <Text inherit fz="xs" c="dimmed">
@@ -335,73 +224,8 @@ const WorldPage: PageComponent<WorldPageProps> = ({
           </Stack>
         </Alert>
       )}
-      {(!isStandalone ||
-        outOfPWAScope ||
-        pushRegistration !== null ||
-        webPushPermission === "denied") &&
-        (hasOneUserCreatedPost === false ||
-          (!!latestFriendEmojis && latestFriendEmojis.length < 3)) && (
-          <Alert
-            className={classes.onboardingAlert}
-            variant="outline"
-            title={
-              <Group gap={8}>
-                <Image src={logoSrc} w={20} />
-                <Text inherit mt={1}>
-                  let&apos;s bring your world to life!
-                </Text>
-              </Group>
-            }
-          >
-            <List>
-              <CheckableListItem
-                checked={
-                  latestFriendEmojis.length >= 3
-                    ? true
-                    : isEmpty(latestFriendEmojis)
-                      ? false
-                      : "partial"
-                }
-              >
-                invite{" "}
-                <span
-                  style={{
-                    ...(!isEmpty(latestFriendEmojis) &&
-                      latestFriendEmojis.length < 3 && {
-                        opacity: 0.5,
-                        textDecoration: "line-through",
-                      }),
-                  }}
-                >
-                  3 friends
-                </span>{" "}
-                <span
-                  style={{
-                    fontWeight: 500,
-                    ...(isEmpty(latestFriendEmojis) &&
-                      latestFriendEmojis.length < 3 && {
-                        display: "none",
-                      }),
-                  }}
-                >
-                  {3 - latestFriendEmojis.length} more{" "}
-                  {inflect("friend", 3 - latestFriendEmojis.length)}{" "}
-                </span>
-                to join your world 👯
-              </CheckableListItem>
-              <CheckableListItem checked={!!hasOneUserCreatedPost}>
-                write your first post! ✍️
-              </CheckableListItem>
-            </List>
-          </Alert>
-        )}
       <Box pos="relative">
-        <WorldPageFeed
-          {...{ showSearch: searchActive }}
-          hideSearch={() => {
-            setSearchActive(false);
-          }}
-        />
+        <WorldPageFeed />
         {isStandalone &&
           !outOfPWAScope &&
           pushRegistration === null &&
@@ -410,7 +234,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({
             <Overlay backgroundOpacity={0} blur={3}>
               <Group justify="center" align="end" gap="xs">
                 <Text className={classes.notificationsRequiredIndicatorText}>
-                  pretty&nbsp;please? 👉&#8288;👈
+                  help {world.owner_name} stay connected with you 🫶
                 </Text>
                 <Image
                   src={swirlyUpArrowSrc}
@@ -435,143 +259,51 @@ const WorldPage: PageComponent<WorldPageProps> = ({
       >
         {body}
       </RemoveScroll>
-      <WorldPageFloatingActions
-        onPostCreated={() => {
-          scrollTo({ top: 0, behavior: "smooth" });
-        }}
-      />
-      {isStandalone && !outOfPWAScope && pushRegistration && (
-        <WelcomeBackToast subject={currentUser} />
+      {isStandalone && !outOfPWAScope && (
+        <>
+          <WorldPageFloatingActions />
+          {currentFriend && pushRegistration && (
+            <WelcomeBackToast subject={currentFriend} />
+          )}
+        </>
       )}
-      <CreateInvitationDrawer
-        opened={addFriendModalOpened}
-        onClose={() => {
-          setAddFriendModalOpened(false);
-        }}
-        onInvitationCreated={() => {
-          router.reload({
-            only: ["latestFriends"],
-            async: true,
-          });
-        }}
-      />
+      {(isStandalone === false || outOfPWAScope) && (
+        <>
+          {currentFriend ? (
+            <WorldPageInstallAlert />
+          ) : (
+            <WorldPageJoinRequestAlert />
+          )}
+        </>
+      )}
     </>
-  );
-};
-
-const SupportButton: FC = () => {
-  const [autoOpened, setAutoOpened] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  useEffect(() => {
-    const delay = 1400;
-    const showTimeout = setTimeout(() => {
-      setAutoOpened(true);
-    }, delay);
-    const hideTimeout = setTimeout(() => {
-      setAutoOpened(false);
-    }, delay + 2400);
-
-    return () => {
-      clearTimeout(showTimeout);
-      clearTimeout(hideTimeout);
-    };
-  }, []);
-
-  return (
-    <Tooltip
-      label="support smaller world!!"
-      opened={hovered || autoOpened}
-      position="bottom-end"
-      arrowOffset={20}
-      className={classes.supportTooltip}
-      onMouseEnter={() => {
-        setHovered(true);
-      }}
-      onMouseLeave={() => {
-        setHovered(false);
-      }}
-    >
-      <ActionIcon
-        component="a"
-        href={routes.support.redirect.path()}
-        className={classes.heartButton}
-      >
-        <HeartIcon />
-      </ActionIcon>
-    </Tooltip>
   );
 };
 
 WorldPage.layout = page => (
   <AppLayout<WorldPageProps>
-    title="your world"
-    manifestUrl={({ currentUser }) => manifestUrlForUser(currentUser)}
+    title={({ world }) => world.name}
+    manifestUrl={({ currentFriend, world }, { url }) => {
+      const { manifest_icon_type } = queryParamsFromPath(url);
+      return currentFriend
+        ? routes.worldManifests.show.path({
+            world_id: world.id,
+            query: {
+              friend_token: currentFriend.access_token,
+              icon_type: manifest_icon_type,
+            },
+          })
+        : null;
+    }}
+    pwaScope={({ world }) =>
+      withTrailingSlash(routes.worlds.show.path({ id: world.handle }))
+    }
     withContainer
     containerSize="xs"
     withGutter
-    footer={<WorldFooter />}
   >
-    {page}
+    <WorldPageDialogStateProvider>{page}</WorldPageDialogStateProvider>
   </AppLayout>
 );
 
 export default WorldPage;
-
-interface CheckableListItemProps extends Omit<ListItemProps, "icon"> {
-  checked: boolean | "partial";
-}
-
-const CheckableListItem: FC<CheckableListItemProps> = ({
-  className,
-  checked,
-  children,
-  ...otherProps
-}) => (
-  <List.Item
-    className={cn(classes.checkableListItem, className)}
-    icon={
-      <Checkbox
-        checked={checked === true}
-        {...(checked === "partial" && {
-          indeterminate: true,
-          icon: props => (
-            <EllipsisHorizontalIcon {...omit(props, "indeterminate")} />
-          ),
-        })}
-        radius="sm"
-        readOnly
-      />
-    }
-    mod={{ checked }}
-    {...otherProps}
-  >
-    {children}
-  </List.Item>
-);
-
-interface LogoutItemProps extends BoxProps {}
-
-const LogoutItem: FC<LogoutItemProps> = ({ ...otherProps }) => {
-  // == Logout
-  const { trigger, mutating } = useRouteMutation(routes.sessions.destroy, {
-    descriptor: "sign out",
-    onSuccess: () => {
-      const worldPath = withTrailingSlash(routes.world.show.path());
-      location.href = worldPath;
-    },
-  });
-
-  return (
-    <Menu.Item
-      pos="relative"
-      leftSection={mutating ? <Loader size={12} /> : <SignOutIcon />}
-      closeMenuOnClick={false}
-      onClick={() => {
-        void trigger();
-      }}
-      {...otherProps}
-    >
-      sign out
-    </Menu.Item>
-  );
-};

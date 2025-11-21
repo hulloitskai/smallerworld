@@ -38,11 +38,13 @@ class ActivityCoupon < ApplicationRecord
   def redeemed? = redeemed_at?
 
   # == Associations ==
+  has_many :notifications, as: :noticeable, dependent: :destroy
 
   belongs_to :friend
+  has_many :friend_activity_coupons, through: :friend, source: :activity_coupons
+
   belongs_to :activity
-  has_one :user, through: :activity
-  has_many :notifications, as: :noticeable, dependent: :destroy
+  has_one :world, through: :activity
 
   sig { returns(Friend) }
   def friend!
@@ -53,11 +55,6 @@ class ActivityCoupon < ApplicationRecord
   def activity!
     activity or raise ActiveRecord::RecordNotFound,
                       "Missing associated activity"
-  end
-
-  sig { returns(User) }
-  def user!
-    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
   end
 
   # == Validations ==
@@ -93,8 +90,8 @@ class ActivityCoupon < ApplicationRecord
         title: "You've got a coupon for: #{activity.name}",
         body: "This coupon expires in " \
           "#{ExpiryFormatter.relative_to_now(expires_at)}, redeem it soon!",
-        target_url: Rails.application.routes.url_helpers.user_url(
-          user!,
+        target_url: Rails.application.routes.url_helpers.world_url(
+          activity.world!,
           friend_token: recipient.access_token,
           anchor: "#invitations",
           trailing_slash: true,
@@ -128,7 +125,7 @@ class ActivityCoupon < ApplicationRecord
 
   sig { void }
   def validate_no_other_identical_active_coupons
-    if friend!.activity_coupons.active.where.not(id:).exists?(activity:)
+    if friend_activity_coupons.active.where.not(id:).exists?(activity:)
       errors.add(
         :base,
         :uniqueness,

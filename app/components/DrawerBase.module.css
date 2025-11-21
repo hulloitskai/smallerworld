@@ -13,7 +13,7 @@
   z-index: 190;
   max-height: 80%;
 
-  @mixin light-user-theme {
+  @mixin light-world-theme {
     @mixin clamp-lightness background-color, var(--bg), 75, 100;
   }
 }
@@ -34,7 +34,7 @@
 
   --bg: var(--mantine-color-body);
   background-color: var(--bg);
-  @mixin light-user-theme {
+  @mixin light-world-theme {
     @mixin clamp-lightness background-color, var(--bg), 75, 100;
   }
 

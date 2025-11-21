@@ -31,7 +31,7 @@
     }
 
     &:not([disabled]):not([data-selected]) {
-      @mixin dark-user-theme {
+      @mixin dark-world-theme {
         @mixin hover {
           background-color: var(--mantine-color-primary-light);
         }

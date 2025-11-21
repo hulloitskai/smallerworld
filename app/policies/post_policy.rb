@@ -18,9 +18,9 @@ class PostPolicy < ApplicationPolicy
   def share?
     post = T.cast(record, Post)
     if (friend = self.friend)
-      user = friend.user!
+      world = friend.world!
       friend_can_view?(post, friend) &&
-        (post.visibility == :public || user.allow_friend_sharing?)
+        (post.visibility == :public || world.allow_friend_sharing?)
     elsif (user = self.user)
       user == post.author!
     else
@@ -60,7 +60,7 @@ class PostPolicy < ApplicationPolicy
 
   sig { params(post: Post, friend: Friend).returns(T::Boolean) }
   def friend_can_view?(post, friend)
-    return false unless friend.user! == post.author!
+    return false unless friend.world_owner! == post.author!
     return false if post.hidden_from_ids.include?(friend.id)
 
     case post.visibility.to_sym

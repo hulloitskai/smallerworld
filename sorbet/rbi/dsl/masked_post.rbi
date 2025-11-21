@@ -409,20 +409,6 @@ class MaskedPost
     sig { params(value: T.nilable(::User)).void }
     def author=(value); end
 
-    sig { returns(T::Array[T.untyped]) }
-    def author_friend_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def author_friend_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :author_friends, through: :author`.
-    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
-    sig { returns(::Friend::PrivateCollectionProxy) }
-    def author_friends; end
-
-    sig { params(value: T::Enumerable[::Friend]).void }
-    def author_friends=(value); end
-
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def build_author(*args, &blk); end
 
@@ -431,6 +417,9 @@ class MaskedPost
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def build_quoted_post(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def build_world(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
     def create_author(*args, &blk); end
@@ -449,6 +438,12 @@ class MaskedPost
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_quoted_post!(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world!(*args, &blk); end
 
     sig { returns(T.nilable(::Encouragement)) }
     def encouragement; end
@@ -527,6 +522,9 @@ class MaskedPost
     sig { returns(T.nilable(::Post)) }
     def reload_quoted_post; end
 
+    sig { returns(T.nilable(::World)) }
+    def reload_world; end
+
     sig { returns(T::Array[T.untyped]) }
     def reply_receipt_ids; end
 
@@ -549,6 +547,9 @@ class MaskedPost
 
     sig { void }
     def reset_quoted_post; end
+
+    sig { void }
+    def reset_world; end
 
     sig { returns(T::Array[T.untyped]) }
     def share_ids; end
@@ -605,6 +606,26 @@ class MaskedPost
 
     sig { params(value: T::Enumerable[::PostView]).void }
     def views=(value); end
+
+    sig { returns(T.nilable(::World)) }
+    def world; end
+
+    sig { params(value: T.nilable(::World)).void }
+    def world=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def world_friend_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def world_friend_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `Post` class because it declared `has_many :world_friends, through: :world`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::Friend::PrivateCollectionProxy) }
+    def world_friends; end
+
+    sig { params(value: T::Enumerable[::Friend]).void }
+    def world_friends=(value); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -1347,6 +1368,9 @@ class MaskedPost
     sig { void }
     def restore_visible_to_ids!; end
 
+    sig { void }
+    def restore_world_id!; end
+
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_author_id; end
 
@@ -1448,6 +1472,12 @@ class MaskedPost
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_visible_to_ids?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_world_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_world_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
     def spotify_track_id; end
@@ -1769,6 +1799,54 @@ class MaskedPost
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_visible_to_ids?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_world_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def world_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def world_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def world_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def world_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def world_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def world_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def world_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def world_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def world_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_was; end
+
+    sig { void }
+    def world_id_will_change!; end
   end
 
   module GeneratedRelationMethods

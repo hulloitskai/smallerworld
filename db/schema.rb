@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_19_102552) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -46,13 +46,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
     t.string "name", null: false
     t.string "emoji"
     t.string "template_id"
-    t.uuid "user_id", null: false
+    t.uuid "deprecated_user_id", null: false
     t.text "description", null: false
     t.string "location_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "template_id"], name: "index_activities_on_user_id_and_template_id", unique: true
-    t.index ["user_id"], name: "index_activities_on_user_id"
+    t.uuid "world_id", null: false
+    t.index ["deprecated_user_id"], name: "index_activities_on_deprecated_user_id"
+    t.index ["world_id", "template_id"], name: "index_activities_uniqueness", unique: true
+    t.index ["world_id"], name: "index_activities_on_world_id"
   end
 
   create_table "activity_coupons", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -87,7 +89,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
     t.string "name", null: false
     t.string "emoji"
     t.string "phone_number"
-    t.uuid "user_id", null: false
+    t.uuid "deprecated_user_id"
     t.string "access_token", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -98,14 +100,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
     t.uuid "invitation_id"
     t.uuid "deprecated_join_request_id"
     t.string "time_zone_name", null: false
+    t.uuid "world_id", null: false
     t.index ["access_token"], name: "index_friends_on_access_token", unique: true
-    t.index ["chosen_family"], name: "index_friends_on_chosen_family"
+    t.index ["deprecated_user_id"], name: "index_friends_on_deprecated_user_id"
     t.index ["invitation_id"], name: "index_friends_on_invitation_id"
-    t.index ["name", "user_id"], name: "index_friends_name_uniqueness", unique: true
     t.index ["notifications_last_cleared_at"], name: "index_friends_on_notifications_last_cleared_at"
     t.index ["phone_number"], name: "index_friends_on_phone_number"
-    t.index ["user_id", "phone_number"], name: "index_friends_phone_number_uniqueness", unique: true
-    t.index ["user_id"], name: "index_friends_on_user_id"
+    t.index ["world_id", "name"], name: "index_friends_name_uniqueness", unique: true
+    t.index ["world_id", "phone_number"], name: "index_friends_phone_number_uniqueness", unique: true
+    t.index ["world_id"], name: "index_friends_on_world_id"
   end
 
   create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -198,26 +201,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
   end
 
   create_table "invitations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
+    t.uuid "deprecated_user_id"
     t.string "invitee_name", null: false
     t.string "invitee_emoji"
     t.uuid "offered_activity_ids", default: [], null: false, array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "join_request_id"
-    t.index ["invitee_name", "user_id"], name: "index_invitations_invitee_name_uniqueness", unique: true
+    t.uuid "world_id", null: false
+    t.index ["deprecated_user_id"], name: "index_invitations_on_deprecated_user_id"
     t.index ["join_request_id"], name: "index_invitations_on_join_request_id"
-    t.index ["user_id"], name: "index_invitations_on_user_id"
+    t.index ["world_id", "invitee_name"], name: "index_invitations_invitee_name_uniqueness", unique: true
+    t.index ["world_id"], name: "index_invitations_on_world_id"
   end
 
   create_table "join_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
+    t.uuid "deprecated_user_id"
     t.string "name", null: false
     t.string "phone_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "phone_number"], name: "index_join_requests_uniqueness", unique: true
-    t.index ["user_id"], name: "index_join_requests_on_user_id"
+    t.uuid "world_id", null: false
+    t.index ["deprecated_user_id"], name: "index_join_requests_on_deprecated_user_id"
+    t.index ["world_id", "phone_number"], name: "index_join_requests_uniqueness", unique: true
+    t.index ["world_id"], name: "index_join_requests_on_world_id"
   end
 
   create_table "login_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -309,6 +316,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
     t.uuid "encouragement_id"
     t.string "spotify_track_id"
     t.uuid "visible_to_ids", default: [], null: false, array: true
+    t.uuid "world_id"
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
     t.index ["author_id", "created_at"], name: "index_posts_on_author_id_and_created_at"
     t.index ["author_id"], name: "index_posts_on_author_id"
@@ -319,6 +327,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
     t.index ["type"], name: "index_posts_on_type"
     t.index ["visibility"], name: "index_posts_on_visibility"
     t.index ["visible_to_ids"], name: "index_posts_on_visible_to_ids", using: :gin
+    t.index ["world_id"], name: "index_posts_on_world_id"
   end
 
   create_table "push_registrations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -373,34 +382,52 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
-    t.string "handle", null: false
+    t.string "deprecated_handle"
     t.string "phone_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "notifications_last_cleared_at", precision: nil
-    t.string "theme"
+    t.string "deprecated_theme"
     t.string "time_zone_name", null: false
-    t.boolean "hide_stats", null: false
-    t.string "reply_to_number"
-    t.boolean "hide_neko", null: false
-    t.boolean "allow_friend_sharing", null: false
+    t.boolean "deprecated_hide_stats"
+    t.string "deprecated_reply_to_number"
+    t.boolean "deprecated_hide_neko"
+    t.boolean "deprecated_allow_friend_sharing"
     t.string "membership_tier"
-    t.index ["handle"], name: "index_users_on_handle", unique: true
+    t.index ["deprecated_handle"], name: "index_users_on_deprecated_handle", unique: true
     t.index ["membership_tier"], name: "index_users_on_membership_tier"
     t.index ["notifications_last_cleared_at"], name: "index_users_on_notifications_last_cleared_at"
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
   end
 
+  create_table "worlds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "allow_friend_sharing", null: false
+    t.string "handle", null: false
+    t.boolean "hide_neko", null: false
+    t.boolean "hide_stats", null: false
+    t.string "reply_to_number_override"
+    t.string "theme"
+    t.uuid "owner_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["handle"], name: "index_worlds_on_handle", unique: true
+    t.index ["owner_id"], name: "index_worlds_on_owner_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "activities", "users"
+  add_foreign_key "activities", "users", column: "deprecated_user_id"
+  add_foreign_key "activities", "worlds"
   add_foreign_key "activity_coupons", "activities"
   add_foreign_key "activity_coupons", "friends"
   add_foreign_key "encouragements", "friends"
   add_foreign_key "friends", "invitations"
-  add_foreign_key "friends", "users"
-  add_foreign_key "invitations", "users"
-  add_foreign_key "join_requests", "users"
+  add_foreign_key "friends", "users", column: "deprecated_user_id"
+  add_foreign_key "friends", "worlds"
+  add_foreign_key "invitations", "users", column: "deprecated_user_id"
+  add_foreign_key "invitations", "worlds"
+  add_foreign_key "join_requests", "users", column: "deprecated_user_id"
+  add_foreign_key "join_requests", "worlds"
   add_foreign_key "post_reactions", "friends"
   add_foreign_key "post_reactions", "posts"
   add_foreign_key "post_reply_receipts", "friends"
@@ -413,8 +440,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_035701) do
   add_foreign_key "posts", "encouragements"
   add_foreign_key "posts", "posts", column: "quoted_post_id"
   add_foreign_key "posts", "users", column: "author_id"
+  add_foreign_key "posts", "worlds"
   add_foreign_key "push_registrations", "push_subscriptions"
   add_foreign_key "sessions", "users"
   add_foreign_key "text_blasts", "friends"
   add_foreign_key "text_blasts", "posts"
+  add_foreign_key "worlds", "users", column: "owner_id"
 end

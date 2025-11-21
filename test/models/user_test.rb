@@ -6,24 +6,24 @@
 #
 # Table name: users
 #
-#  id                            :uuid             not null, primary key
-#  allow_friend_sharing          :boolean          not null
-#  handle                        :string           not null
-#  hide_neko                     :boolean          not null
-#  hide_stats                    :boolean          not null
-#  membership_tier               :string
-#  name                          :string           not null
-#  notifications_last_cleared_at :datetime
-#  phone_number                  :string           not null
-#  reply_to_number               :string
-#  theme                         :string
-#  time_zone_name                :string           not null
-#  created_at                    :datetime         not null
-#  updated_at                    :datetime         not null
+#  id                              :uuid             not null, primary key
+#  deprecated_allow_friend_sharing :boolean
+#  deprecated_handle               :string
+#  deprecated_hide_neko            :boolean
+#  deprecated_hide_stats           :boolean
+#  deprecated_reply_to_number      :string
+#  deprecated_theme                :string
+#  membership_tier                 :string
+#  name                            :string           not null
+#  notifications_last_cleared_at   :datetime
+#  phone_number                    :string           not null
+#  time_zone_name                  :string           not null
+#  created_at                      :datetime         not null
+#  updated_at                      :datetime         not null
 #
 # Indexes
 #
-#  index_users_on_handle                         (handle) UNIQUE
+#  index_users_on_deprecated_handle              (deprecated_handle) UNIQUE
 #  index_users_on_membership_tier                (membership_tier)
 #  index_users_on_notifications_last_cleared_at  (notifications_last_cleared_at)
 #  index_users_on_phone_number                   (phone_number) UNIQUE

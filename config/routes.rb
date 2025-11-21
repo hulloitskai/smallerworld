@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   scope controller: :errors do
     get "/401", action: :unauthorized
     get "/404", action: :not_found
-    get "/422", action: :unprocessable_entity
+    get "/422", action: :unprocessable_content
     get "/500", action: :internal_server_error
   end
 
@@ -37,12 +37,28 @@ Rails.application.routes.draw do
     end
   end
 
-  # == Manifest ==
+  # == PWA ==
 
-  get "/manifest.webmanifest",
-      to: "manifests#show",
-      constraints: { format: "" },
-      export: { namespace: "manifest" }
+  scope constraints: { format: :webmanifest } do
+    scope path: "/worlds/:world_id", module: :worlds, as: :world do
+      get "/manifest.webmanifest",
+          to: "manifests#show",
+          as: :manifest,
+          export: { namespace: "worldManifests" }
+    end
+    scope module: :users, as: :user do
+      get "/manifest.webmanifest",
+          to: "manifests#show",
+          as: :manifest,
+          export: { namespace: "userManifest" }
+      scope path: "/world", module: :worlds, as: :world do
+        get "/manifest.webmanifest",
+            to: "manifests#show",
+            as: :manifest,
+            export: { namespace: "userWorldManifest" }
+      end
+    end
+  end
 
   # == Contact ==
 
@@ -79,96 +95,114 @@ Rails.application.routes.draw do
   # == Sessions ==
 
   scope controller: :sessions, export: true do
-    get "/login", action: :new
-    post "/login", action: :create
+    get "/login", action: :new, as: :new_session
+    post "/login", action: :create, as: :session
     post "/logout", action: :destroy
   end
 
   # == Registrations ==
 
   scope controller: :registrations, export: true do
-    get "/signup", action: :new
-    post "/signup", action: :create
+    get "/signup", action: :new, as: :new_registration
+    post "/signup", action: :create, as: :registration
   end
 
   # == Start ==
 
   get "/start" => "start#redirect", export: true
 
-  # == World ==
+  # == Worlds ==
 
-  resource :world, only: %i[show edit update], export: { namespace: "world" } do
-    get :timeline
-  end
-  get "/world/manifest.webmanifest",
-      to: "world_manifests#show",
-      constraints: { format: "" },
-      export: { namespace: "worldManifest" }
-  resources(
-    :world_posts,
-    path: "/world/posts",
-    only: %i[index create update destroy],
-    export: true,
-  ) do
-    collection do
-      get :pinned
-    end
-    member do
-      get :audience
-      get :stats
-      get :viewers
-      post :share
-    end
-  end
-  resources(
-    :world_friends,
-    path: "/world/friends",
-    only: %i[index create update destroy],
-    export: true,
-  ) do
-    member do
-      get :invitation
-      post :pause
-      post :unpause
+  get "/@:id", to: "worlds#show", as: :world, export: true
+  get "/@:id/join", to: "worlds#join"
+  resources :worlds, only: [], export: true do
+    scope(module: :worlds) do
+      resource :timeline, only: :show, export: { namespace: "worldTimelines" }
+      resources :join_requests,
+                only: :create,
+                export: { namespace: "worldJoinRequests" }
+      resources :activity_coupons,
+                only: :index,
+                export: { namespace: "worldActivityCoupons" }
+      resources(
+        :posts,
+        only: :index,
+        export: { namespace: "worldPosts" },
+      ) do
+        collection do
+          get :pinned
+        end
+      end
     end
   end
-  resources :world_join_requests,
-            path: "/world/join_requests",
-            only: %i[index destroy],
-            export: true
-  resources :world_invitations,
-            path: "/world/invitations",
-            only: %i[index create update destroy],
-            export: true
-  resources :world_activities,
-            path: "/world/activities",
-            only: %i[index create],
-            export: true
-  resources :world_encouragements,
-            path: "/world/encouragements",
-            only: :index,
-            export: true
 
-  # == Universe ==
+  scope module: :users, as: "user" do
+    # == User World
+    resource(
+      :world,
+      only: %i[show edit update],
+      export: { namespace: "userWorld" },
+    ) do
+      scope(module: :worlds) do
+        resources :activities,
+                  only: %i[index create],
+                  export: { namespace: "userWorldActivities" }
+        resources :encouragements,
+                  only: :index,
+                  export: { namespace: "userWorldEncouragements" }
+        resources(
+          :friends,
+          only: %i[index create update destroy],
+          export: { namespace: "userWorldFriends" },
+        ) do
+          member do
+            get :invitation
+            post :pause
+            post :unpause
+          end
+        end
+        resources :invitations,
+                  only: %i[index create update destroy],
+                  export: { namespace: "userWorldInvitations" }
+        resources :join_requests,
+                  only: %i[index destroy],
+                  export: { namespace: "userWorldJoinRequests" }
+        resources(
+          :posts,
+          only: %i[index create update destroy],
+          export: { namespace: "userWorldPosts" },
+        ) do
+          collection do
+            get :pinned
+          end
+          member do
+            get :audience
+            get :stats
+            get :viewers
+            post :share
+          end
+        end
+      end
+    end
 
-  resource(
-    :universe,
-    path: "/world/universe",
-    only: :show,
-    export: { namespace: "universe" },
-  ) do
-    get :worlds
+    # == User Universe ==
+    resource(:universe, only: [], export: false) do
+      scope export: { namespace: "userUniverse" } do
+        get :worlds
+        get :posts
+      end
+    end
+    get "/world/universe",
+        to: "universes#show",
+        as: :universe,
+        export: { namespace: "userUniverse" }
   end
-  resources :universe_posts,
-            path: "/world/universe/posts",
-            only: :index,
-            export: true
 
-  # == Friend Notification Settings ==
+  # == Friend ==
 
-  resource :friend_notification_settings,
-           only: %i[show update],
-           export: true
+  resource :friend, only: :update, export: { namespace: "friend" } do
+    get :notification_settings
+  end
 
   # == Invitations ==
 
@@ -186,55 +220,24 @@ Rails.application.routes.draw do
       post :mark_seen
       post :mark_replied
     end
+    resources :post_reactions,
+              path: "/reactions",
+              only: %i[index create],
+              export: true
+    resources :post_stickers,
+              path: "/stickers",
+              only: %i[index create],
+              export: true
   end
-
-  # == Users ==
-
-  resources :users, only: [], export: true do
-    member do
-      get :timeline
-      post :request_invitation
-    end
-  end
-  get "/@:id" => "users#show", as: :user, export: true
-  get "/@:id/join" => "users#join"
-  resources(
-    :user_posts,
-    path: "/users/:user_id/posts",
-    only: :index,
-    export: true,
-  ) do
-    collection do
-      get :pinned
-    end
-  end
-  get "/users/:user_id/manifest.webmanifest",
-      to: "user_manifests#show",
-      constraints: { format: "" },
-      export: true
-  resources(
-    :user_activity_coupons,
-    path: "/users/:user_id/activity_coupons",
-    only: :index,
-    export: true,
-  )
 
   # == Post Reactions ==
 
-  resources :post_reactions,
-            path: "/posts/:post_id/reactions",
-            only: %i[index create],
-            export: true
   resources :post_reactions,
             only: :destroy,
             export: true
 
   # == Post Stickers ==
 
-  resources :post_stickers,
-            path: "/posts/:post_id/stickers",
-            only: %i[index create],
-            export: true
   resources :post_stickers,
             only: %i[update destroy],
             export: true
@@ -247,7 +250,7 @@ Rails.application.routes.draw do
 
   resources :encouragements, only: :create, export: true
 
-  # == Activities & Coupons ==
+  # == Activities Coupons ==
 
   resources :activity_coupons, only: :create, export: true do
     member do

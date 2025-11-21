@@ -8,27 +8,27 @@ class PostSharesController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        share = find_share(scope: PostShare.includes(
+        share = find_share!(scope: PostShare.includes(
           :post,
           :post_author,
           :sharer,
         ))
-        user = share.post_author!
         post = share.post!
+        world = post.world!
         repliers = PostReplyReceipt
           .where(post:)
           .distinct
           .count(:friend_id)
-        public_post = UserPublicPost.new(post:, repliers:)
+        public_post = WorldPublicPost.new(post:, repliers:)
         sharer = share.sharer!
-        if (current_user = self.current_user)
-          invitation_requested = user
+        if (user = current_user)
+          invitation_requested = world
             .join_requests
-            .exists?(phone_number: current_user.phone_number)
+            .exists?(phone_number: user.phone_number)
         end
         render(inertia: "PostSharePage", props: {
-          user: UserSerializer.one(user),
-          post: UserPublicPostSerializer.one(public_post),
+          world: WorldSerializer.one(world),
+          post: WorldPublicPostSerializer.one(public_post),
           sharer: (FriendProfileSerializer.one(sharer) if sharer.is_a?(Friend)),
           "invitationRequested" => invitation_requested || false,
         })
@@ -41,7 +41,7 @@ class PostSharesController < ApplicationController
   # == Helpers ==
 
   sig { params(scope: PostShare::PrivateRelation).returns(PostShare) }
-  def find_share(scope: PostShare.all)
+  def find_share!(scope: PostShare.all)
     scope.find(params.fetch(:id))
   end
 end

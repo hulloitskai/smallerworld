@@ -51,7 +51,7 @@ useEffect(() => {
   if (isStandalone === undefined || !isEmpty(modals)) {
     return;
   }
-  if (params.intent === "installation_instructions") {
+  if (params.intent === "install") {
     openWorldPageInstallationInstructionsModal({ currentUser });
   } else if (
     params.intent === "install" ||

@@ -64,7 +64,7 @@ class PushRegistration < ApplicationRecord
 
     payload = {
       "notification" => serializer.one(notification),
-      "pageIconUrl" => page_icon_url,
+      "pageIconUrl" => world_icon_url,
     }
     if (recipient = notification.recipient)
       payload["badgeCount"] = recipient
@@ -77,7 +77,7 @@ class PushRegistration < ApplicationRecord
   sig { void }
   def push_test_notification
     payload = {
-      "pageIconUrl" => page_icon_url,
+      "pageIconUrl" => world_icon_url,
     }
     if service_worker_version.to_i > 1
       message = NotificationMessage.new(
@@ -119,17 +119,12 @@ class PushRegistration < ApplicationRecord
   # == Helpers ==
 
   sig { returns(T.nilable(String)) }
-  def page_icon_url
+  def world_icon_url
     owner = self.owner
-    icon_blob = case owner
-    when User
-      owner.page_icon_blob
-    when Friend
-      owner.user&.page_icon_blob
-    end
-    if icon_blob
-      variant = icon_blob.variant(resize_to_fill: [192, 192])
-      Rails.application.routes.url_helpers.rails_representation_path(variant)
-    end
+    return unless owner.is_a?(User) || owner.is_a?(Friend)
+
+    blob = owner.world&.icon_blob or return
+    variant = blob.variant(resize_to_fill: [192, 192])
+    Rails.application.routes.url_helpers.rails_representation_path(variant)
   end
 end

@@ -4,8 +4,8 @@ import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
 import { prettyFriendName } from "~/helpers/friends";
-import { useWorldActivities } from "~/helpers/world";
-import { type ActivityCoupon, type WorldFriend } from "~/types";
+import { useUserWorldActivities } from "~/helpers/userWorld";
+import { type ActivityCoupon, type UserWorldFriendProfile } from "~/types";
 
 import ActivityCard from "./ActivityCard";
 import Drawer, { type DrawerProps } from "./Drawer";
@@ -17,7 +17,7 @@ const ACTIVITY_CARD_WIDTH = 320;
 
 export interface ActivityCouponDrawerProps
   extends Omit<DrawerProps, "children"> {
-  friend: WorldFriend;
+  friend: UserWorldFriendProfile;
 }
 
 const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
@@ -37,7 +37,7 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
     data: activitiesData,
     activities,
     activitiesAndTemplates,
-  } = useWorldActivities({
+  } = useUserWorldActivities({
     keepPreviousData: true,
   });
   const initialSlide = useMemo(() => {
@@ -62,9 +62,9 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
     onSuccess: ({ activityCoupon: { activity } }) => {
       onClose?.();
       toast.success(`you gave ${prettyFriendName(friend)} a coupon!`, {
-        ...(activity.emoji && { icon: activity.emoji }),
+        ...(!!activity.emoji && { icon: activity.emoji }),
       });
-      void mutateRoute(routes.worldFriends.index);
+      void mutateRoute(routes.userWorldFriends.index);
     },
   });
 

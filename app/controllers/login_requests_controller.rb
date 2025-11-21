@@ -37,7 +37,7 @@ class LoginRequestsController < ApplicationController
             json: {
               errors: login_request.form_errors,
             },
-            status: :unprocessable_entity,
+            status: :unprocessable_content,
           )
         end
       end

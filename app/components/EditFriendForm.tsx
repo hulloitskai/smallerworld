@@ -1,12 +1,12 @@
-import { type WorldFriend } from "~/types";
+import { type UserWorldFriendProfile } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
 import classes from "./EditFriendForm.module.css";
 
 export interface EditFriendFormProps extends BoxProps {
-  friend: WorldFriend;
-  onFriendUpdated?: (friend: WorldFriend) => void;
+  friend: UserWorldFriendProfile;
+  onFriendUpdated?: (friend: UserWorldFriendProfile) => void;
 }
 
 const EditFriendForm: FC<EditFriendFormProps> = ({
@@ -27,7 +27,7 @@ const EditFriendForm: FC<EditFriendFormProps> = ({
     setInitialValues,
     reset,
   } = useForm({
-    action: routes.worldFriends.update,
+    action: routes.userWorldFriends.update,
     params: {
       id: friend.id,
     },
@@ -39,8 +39,8 @@ const EditFriendForm: FC<EditFriendFormProps> = ({
         emoji: emoji || null,
       },
     }),
-    onSuccess: ({ friend }: { friend: WorldFriend }) => {
-      void mutateRoute(routes.worldFriends.index);
+    onSuccess: ({ friend }: { friend: UserWorldFriendProfile }) => {
+      void mutateRoute(routes.userWorldFriends.index);
       onFriendUpdated?.(friend);
     },
   });

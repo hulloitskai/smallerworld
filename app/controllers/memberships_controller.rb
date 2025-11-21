@@ -2,10 +2,6 @@
 # frozen_string_literal: true
 
 class MembershipsController < ApplicationController
-  # == Filters ==
-
-  before_action :authenticate_user!
-
   # == Actions ==
 
   # POST /membership/activate
@@ -37,10 +33,11 @@ class MembershipsController < ApplicationController
   end
   def find_matching_guest(pending_guests)
     current_user = authenticate_user!
+    world = current_user.world or return
     pending_guests.find do |guest|
       question_responses = guest.fetch("questionsAndNotes").presence or next
       phone_number_or_handle = question_responses.first!
-      phone_number_or_handle.downcase == current_user.handle ||
+      phone_number_or_handle.downcase == world.handle ||
         normalized_phone_number(phone_number_or_handle) ==
           current_user.phone_number
     end

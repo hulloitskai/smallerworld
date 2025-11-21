@@ -4,22 +4,23 @@ import bottomLeftArrowSrc from "~/assets/images/bottom-left-arrow.png";
 
 import AcceptInvitationForm from "~/components/AcceptInvitationForm";
 import AppLayout from "~/components/AppLayout";
-import HomescreenPreview from "~/components/HomescreenPreview";
 import PostCard from "~/components/PostCard";
+import WorldHomescreenPreview from "~/components/WorldHomescreenPreview";
 import { prettyFriendName } from "~/helpers/friends";
 import { prettyInviteeName } from "~/helpers/invitations";
-import { USER_ICON_RADIUS_RATIO } from "~/helpers/users";
+import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
+import { useWorldTheme } from "~/helpers/worldThemes";
 import {
   type FriendProfile,
   type Invitation,
   type Post,
-  type User,
+  type World,
 } from "~/types";
 
 import classes from "./InvitationPage.module.css";
 
 export interface InvitationPageProps extends SharedPageProps {
-  user: User;
+  world: World;
   invitation: Invitation;
   featuredPost: Post | null;
   existingFriend: FriendProfile | null;
@@ -29,13 +30,13 @@ export interface InvitationPageProps extends SharedPageProps {
 const ICON_SIZE = 96;
 
 const InvitationPage: PageComponent<InvitationPageProps> = ({
-  user,
+  world,
   invitation,
   featuredPost,
   existingFriend,
   autofillPhoneNumber,
 }) => {
-  useUserTheme(user.theme);
+  useWorldTheme(world.theme);
   // const [invitationSent, setInvitationSent] = useState(false);
   return (
     <Stack gap="lg" pb="xs">
@@ -43,17 +44,17 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
         <Box pos="relative" style={{ alignSelf: "center" }}>
           <Image
             className={classes.pageIcon}
-            src={user.page_icon.src}
-            {...(!!user.page_icon.srcset && { srcSet: user.page_icon.srcset })}
+            src={world.icon.src}
+            {...(!!world.icon.srcset && { srcSet: world.icon.srcset })}
             w={ICON_SIZE}
             h={ICON_SIZE}
-            radius={ICON_SIZE / USER_ICON_RADIUS_RATIO}
+            radius={ICON_SIZE / WORLD_ICON_RADIUS_RATIO}
           />
           <Image src={bottomLeftArrowSrc} className={classes.pageArrow} />
         </Box>
         <Title className={classes.pageTitle} size="h2">
           <span style={{ fontWeight: 500 }}>you&apos;re invited to</span>{" "}
-          {possessive(user.name)} world
+          {world.name}
           <span style={{ fontWeight: 500 }}>!</span>
         </Title>
       </Stack>
@@ -83,11 +84,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
         <Text size="sm" ta="center" maw={320}>
           get my world as a wee app on your phone :)
         </Text>
-        <HomescreenPreview
-          pageName={user.name}
-          pageIcon={user.page_icon}
-          arrowLabel="it's me!"
-        />
+        <WorldHomescreenPreview {...{ world }} arrowLabel="it's me!" />
       </Stack>
       {/* {invitationSent ? (
         <Alert
@@ -104,17 +101,17 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
           <Text>ready to join my world?</Text>
           <AcceptInvitationForm
             {...{
-              user,
+              world,
               invitation,
             }}
             initialPhoneNumber={autofillPhoneNumber}
             onInvitationAccepted={friendAccessToken => {
               const installationPath = withTrailingSlash(
-                routes.users.show.path({
-                  id: user.handle,
+                routes.worlds.show.path({
+                  id: world.handle,
                   query: {
                     friend_token: friendAccessToken,
-                    intent: "installation_instructions",
+                    intent: "install",
                   },
                 }),
               );
@@ -130,7 +127,7 @@ const InvitationPage: PageComponent<InvitationPageProps> = ({
 
 InvitationPage.layout = page => (
   <AppLayout<InvitationPageProps>
-    title={({ user }) => `you're invited to ${possessive(user.name)} world`}
+    title={({ world }) => `you're invited to ${world.name}`}
     withContainer
     containerSize="xs"
     withGutter

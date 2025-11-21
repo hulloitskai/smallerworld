@@ -15,8 +15,8 @@ const SentryTracking: FC = () => {
         setUser(user);
         console.info("Set Sentry user", user);
       } else if (currentUser) {
-        const { id, handle, name } = currentUser;
-        const user: User = { id, username: handle, name };
+        const { id, name } = currentUser;
+        const user: User = { id, name };
         setUser(user);
         console.info("Set Sentry user", user);
       } else {

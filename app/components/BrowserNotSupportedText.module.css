@@ -1,7 +1,0 @@
-.text {
-  font-size: var(--mantine-font-size-xs);
-  opacity: 0.6;
-  line-height: 1.2;
-  min-width: 0px;
-  flex-grow: 1;
-}

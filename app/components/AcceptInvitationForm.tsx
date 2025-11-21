@@ -8,17 +8,17 @@ import {
   parsePhoneIntoParts,
 } from "~/helpers/phone";
 import { currentTimeZone } from "~/helpers/time";
-import { type Invitation, type User } from "~/types";
+import { type Invitation, type World } from "~/types";
 
 export interface AcceptInvitationFormProps extends BoxProps {
-  user: User;
+  world: World;
   invitation: Invitation;
   initialPhoneNumber: string | null;
   onInvitationAccepted: (friendAccessToken: string) => void;
 }
 
 const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
-  user,
+  world,
   invitation,
   initialPhoneNumber,
   onInvitationAccepted,
@@ -121,7 +121,7 @@ const AcceptInvitationForm: FC<AcceptInvitationFormProps> = ({
             loading={submitting}
             leftSection={<PhoneIcon />}
           >
-            join {possessive(user.name)} world
+            join {world.name}
           </Button>
           <Text
             size="xs"

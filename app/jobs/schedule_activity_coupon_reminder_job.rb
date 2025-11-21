@@ -15,16 +15,16 @@ class ScheduleActivityCouponReminderJob < ApplicationJob
   def perform
     # For each active coupon without recent notification
     ActivityCoupon.active.without_recent_notification.find_each do |coupon|
-      user_timezone = coupon.user!.time_zone
-      user_now = user_timezone.now
-      user_8am = user_now.beginning_of_day + 8.hours
+      friend_timezone = coupon.friend!.time_zone
+      friend_now = friend_timezone.now
+      friend_8am = friend_now.beginning_of_day + 8.hours
 
       # If 8am today has already passed, schedule for tomorrow
-      user_8am += 1.day if user_now >= user_8am
+      friend_8am += 1.day if friend_now >= friend_8am
 
-      # Schedule individual job for next 8am in user's timezone
+      # Schedule individual job for next 8am in friend's timezone
       SendActivityCouponReminderJob
-        .set(wait_until: user_8am)
+        .set(wait_until: friend_8am)
         .perform_later(coupon)
     end
   end

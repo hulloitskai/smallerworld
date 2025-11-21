@@ -68,7 +68,7 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
     isDirty,
     submitting,
   } = useForm<FormData, FormValues, (values: FormValues) => FormSubmission>({
-    action: routes.worldInvitations.update,
+    action: routes.userWorldInvitations.update,
     params: { id: invitation.id },
     descriptor: "update invitation",
     initialValues,
@@ -81,7 +81,7 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
     }),
     onSuccess: ({ invitation }, { resetDirty }) => {
       resetDirty();
-      void mutateRoute(routes.worldInvitations.index);
+      void mutateRoute(routes.userWorldInvitations.index);
       onInvitationUpdated?.(invitation);
     },
   });
@@ -198,7 +198,7 @@ const EditInvitationDrawer: FC<EditInvitationDrawerProps> = ({
         <Stack gap="lg" align="center">
           <Box ta="center">
             <Title order={3} lh="xs">
-              {possessive(invitation.invitee_name)} invite link
+              {invitation.invitee_name}&apos;s invite link
             </Title>
             <Text size="sm" c="dimmed" display="block">
               get your friend to scan this QR code,

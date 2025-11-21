@@ -6,6 +6,6 @@ class JoinRequestPolicy < ApplicationPolicy
 
   def manage?
     join_request = T.let(record, JoinRequest)
-    join_request.user! == user!
+    join_request.world_owner! == user!
   end
 end

@@ -2,31 +2,30 @@ import { DEFAULT_THEME, MantineProvider } from "@mantine/core";
 import { DatesProvider } from "@mantine/dates";
 
 import { useCreateTheme } from "~/helpers/mantine";
-import { currentUserTheme, DARK_USER_THEMES } from "~/helpers/userThemes";
-import { type UserTheme } from "~/types";
+import { currentWorldTheme, DARK_WORLD_THEMES } from "~/helpers/worldThemes";
+import { type WorldTheme } from "~/types";
 
 const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
   const theme = useCreateTheme();
-  const [detectedUserTheme, setDetectedUserTheme] = useState<UserTheme | null>(
-    null,
-  );
+  const [detectedWorldTheme, setDetectedWorldTheme] =
+    useState<WorldTheme | null>(null);
   useEffect(() => {
     const observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
-        if (mutation.attributeName !== "data-user-theme") {
+        if (mutation.attributeName !== "data-world-theme") {
           return;
         }
-        const userTheme = currentUserTheme();
-        if (userTheme) {
-          setDetectedUserTheme(userTheme);
+        const worldTheme = currentWorldTheme();
+        if (worldTheme) {
+          setDetectedWorldTheme(worldTheme);
         } else {
-          setDetectedUserTheme(null);
+          setDetectedWorldTheme(null);
         }
       });
     });
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-user-theme"],
+      attributeFilter: ["data-world-theme"],
     });
     return () => {
       observer.disconnect();
@@ -39,14 +38,14 @@ const AppMantineProvider: FC<PropsWithChildren> = ({ children }) => {
         ...theme,
         colors: {
           ...theme.colors,
-          ...(detectedUserTheme === "bakudeku" && {
+          ...(detectedWorldTheme === "bakudeku" && {
             primary: DEFAULT_THEME.colors.orange,
           }),
         },
       }}
       defaultColorScheme="auto"
-      {...(detectedUserTheme && {
-        forceColorScheme: DARK_USER_THEMES.includes(detectedUserTheme)
+      {...(detectedWorldTheme && {
+        forceColorScheme: DARK_WORLD_THEMES.includes(detectedWorldTheme)
           ? "dark"
           : "light",
       })}

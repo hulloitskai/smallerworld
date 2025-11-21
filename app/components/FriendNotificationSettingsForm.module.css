@@ -1,6 +1,6 @@
 .chip {
   :global(.mantine-Chip-label) {
-    @mixin dark-user-theme {
+    @mixin dark-world-theme {
       background-color: var(--mantine-color-body);
 
       &:not([data-checked]) {

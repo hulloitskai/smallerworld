@@ -19,6 +19,7 @@
 #  encouragement_id :uuid
 #  quoted_post_id   :uuid
 #  spotify_track_id :string
+#  world_id         :uuid
 #
 # Indexes
 #
@@ -32,12 +33,14 @@
 #  index_posts_on_type                      (type)
 #  index_posts_on_visibility                (visibility)
 #  index_posts_on_visible_to_ids            (visible_to_ids) USING gin
+#  index_posts_on_world_id                  (world_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (author_id => users.id)
 #  fk_rails_...  (encouragement_id => encouragements.id)
 #  fk_rails_...  (quoted_post_id => posts.id)
+#  fk_rails_...  (world_id => worlds.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 post_with_title_and_emoji:

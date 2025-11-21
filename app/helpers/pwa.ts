@@ -82,15 +82,22 @@ const useInstallPromptEvent = ():
     BeforeInstallPromptEvent | undefined | null
   >();
   useEffect(() => {
-    const capturedEvent = window.installPromptEvent;
-    setEvent(capturedEvent ?? null);
+    if (window.installPromptEvent) {
+      setEvent(window.installPromptEvent);
+      return;
+    }
+    const failureTimeout = setTimeout(() => {
+      setEvent(null);
+    }, 3000);
     const listener = (event: Event) => {
+      clearTimeout(failureTimeout);
       event.preventDefault();
       setEvent(event as BeforeInstallPromptEvent);
     };
     addEventListener("beforeinstallprompt", listener);
     return () => {
       removeEventListener("beforeinstallprompt", listener);
+      clearTimeout(failureTimeout);
     };
   }, []);
   return event;

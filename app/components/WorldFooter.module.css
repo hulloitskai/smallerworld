@@ -12,14 +12,14 @@
     var(--mantine-color-dark-9)
   );
 
-  @mixin light-user-theme {
-    @mixin clamp-lightness --sc-color, var(--user-theme-background-color), 60,
+  @mixin light-world-theme {
+    @mixin clamp-lightness --sc-color, var(--world-theme-background-color), 60,
       75;
     background-color: lighten(var(--mantine-color-body), 0.5);
   }
 
-  @mixin dark-user-theme {
-    @mixin clamp-lightness --sc-color, var(--user-theme-background-color), 40,
+  @mixin dark-world-theme {
+    @mixin clamp-lightness --sc-color, var(--world-theme-background-color), 40,
       65;
     background-color: darken(var(--mantine-color-body), 0.3);
   }

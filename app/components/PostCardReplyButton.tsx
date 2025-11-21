@@ -6,25 +6,26 @@ import {
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
-import { mutateUserPagePosts } from "~/helpers/users";
+import { mutateWorldPosts } from "~/helpers/worlds";
 import {
   type AssociatedFriend,
-  type Author,
-  type UserFriendPost,
+  type UserUniverseFriendPost,
+  type WorldFriendPost,
+  type WorldProfile,
 } from "~/types";
 
 import classes from "./PostCardReplyButton.module.css";
 
 export interface PostCardReplyButtonProps extends ButtonProps {
-  post: UserFriendPost;
-  author: Author;
+  post: WorldFriendPost | UserUniverseFriendPost;
+  world: WorldProfile;
   replyToNumber: string;
   asFriend?: AssociatedFriend;
 }
 
 const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
+  world,
   post,
-  author,
   replyToNumber,
   asFriend,
   ...otherProps
@@ -35,7 +36,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
 
   // == Mark as replied
   const { trigger: markReplied, mutating: markingReplied } = useRouteMutation<{
-    authorId: string;
+    worldId: string | null;
   }>(routes.posts.markReplied, {
     params: {
       id: post.id,
@@ -48,8 +49,10 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
     descriptor: "mark post as replied",
     failSilently: true,
     ...(friend && {
-      onSuccess: ({ authorId }) => {
-        void mutateUserPagePosts(authorId);
+      onSuccess: ({ worldId }) => {
+        if (worldId) {
+          void mutateWorldPosts(worldId);
+        }
       },
     }),
   });
@@ -85,10 +88,7 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
           onClick={() => {
             if (!friend || !replyToNumber) {
               toast.warning(
-                <>
-                  you must be invited to {possessive(author.name)} world to
-                  reply via sms
-                </>,
+                `you must be invited to ${world.name} to reply via sms`,
               );
             }
           }}

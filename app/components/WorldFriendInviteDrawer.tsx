@@ -1,6 +1,6 @@
 import { Text } from "@mantine/core";
 
-import { type Invitation, type WorldFriend } from "~/types";
+import { type Invitation, type UserWorldFriendProfile } from "~/types";
 
 import Drawer, { type DrawerProps } from "./Drawer";
 import InvitationQRCode from "./InvitationQRCode";
@@ -10,7 +10,7 @@ import "@mantine/carousel/styles.layer.css";
 
 export interface WorldFriendInviteDrawerProps
   extends Omit<DrawerProps, "children"> {
-  friend: WorldFriend;
+  friend: UserWorldFriendProfile;
 }
 
 const WorldFriendInviteDrawer: FC<WorldFriendInviteDrawerProps> = ({
@@ -19,7 +19,7 @@ const WorldFriendInviteDrawer: FC<WorldFriendInviteDrawerProps> = ({
   ...otherProps
 }) => {
   const { data } = useRouteSWR<{ invitation: Invitation }>(
-    routes.worldFriends.invitation,
+    routes.userWorldFriends.invitation,
     {
       params: opened ? { id: friend.id } : null,
       descriptor: "load invitation details",

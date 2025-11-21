@@ -6,6 +6,6 @@ class FriendPolicy < ApplicationPolicy
 
   def manage?
     friend = T.let(record, Friend)
-    friend.user == user!
+    friend.world_owner! == user!
   end
 end

@@ -15,7 +15,7 @@ import {
   MESSAGING_PLATFORM_TO_LABEL,
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
-import { useWorldActivities } from "~/helpers/world";
+import { useUserWorldActivities } from "~/helpers/userWorld";
 import { type Activity, type Invitation, type JoinRequest } from "~/types";
 
 import ActivityCard from "./ActivityCard";
@@ -46,7 +46,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
 
   // == Load activities
   const [showActivities, setShowActivities] = useState(false);
-  const { activitiesAndTemplates } = useWorldActivities({
+  const { activitiesAndTemplates } = useUserWorldActivities({
     keepPreviousData: true,
   });
 
@@ -88,12 +88,12 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
   } = useForm<FormData, FormValues, (values: FormValues) => FormSubmission>({
     ...(invitation
       ? {
-          action: routes.worldInvitations.update,
+          action: routes.userWorldInvitations.update,
           params: { id: invitation.id },
           descriptor: "update invitation",
         }
       : {
-          action: routes.worldInvitations.create,
+          action: routes.userWorldInvitations.create,
           descriptor: "create invitation",
         }),
     initialValues,
@@ -108,8 +108,8 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
     onSuccess: ({ invitation }, { resetDirty }) => {
       setInvitation(invitation);
       setShowActivities(false);
-      void mutateRoute(routes.worldInvitations.index);
-      void mutateRoute(routes.worldJoinRequests.index);
+      void mutateRoute(routes.userWorldInvitations.index);
+      void mutateRoute(routes.userWorldJoinRequests.index);
       onInvitationCreated?.(invitation);
       resetDirty();
       setTimeout(() => {
@@ -351,7 +351,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
             <Stack gap="lg" align="center">
               <Box ta="center">
                 <Title order={3} lh="xs">
-                  {possessive(invitation.invitee_name)} invite link
+                  {invitation.invitee_name}&apos;s invite link
                 </Title>
                 <Text size="sm" c="dimmed" display="block">
                   {fromJoinRequest ? (
@@ -391,7 +391,7 @@ const CreateInvitationDrawer: FC<CreateInvitationDrawerProps> = ({
                 {transitionStyle => (
                   <Button
                     component={Link}
-                    href={withTrailingSlash(routes.world.show.path())}
+                    href={withTrailingSlash(routes.userWorld.show.path())}
                     leftSection={<BackIcon />}
                     style={transitionStyle}
                   >

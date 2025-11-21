@@ -12,7 +12,7 @@ import { type LoginRequest } from "~/types";
 export interface LoginPageProps extends SharedPageProps {}
 
 const LoginPage: PageComponent<LoginPageProps> = () => {
-  const { url: pageUrl } = usePage();
+  const { url: pagePath } = usePage();
   const [showLoginCodeInput, setShowLoginCodeInput] = useState(false);
 
   // == Form
@@ -82,10 +82,10 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
           "Missing registration status after sign in",
         );
         const { registered } = data;
-        const query = queryParamsFromPath(pageUrl);
+        const query = queryParamsFromPath(pagePath);
         if (registered) {
           const worldPath = withTrailingSlash(
-            routes.world.show.path({ query }),
+            routes.userWorld.show.path({ query }),
           );
           location.href = worldPath;
         } else {

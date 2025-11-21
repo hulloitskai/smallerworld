@@ -8,7 +8,7 @@
       0 0 5px var(--progress-section-color);
   }
 
-  @mixin dark-user-theme {
+  @mixin dark-world-theme {
     background-color: alpha(var(--mantine-color-bright), 0.2);
   }
 }

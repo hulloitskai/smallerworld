@@ -22,6 +22,7 @@
 #  encouragement_id :uuid
 #  quoted_post_id   :uuid
 #  spotify_track_id :string
+#  world_id         :uuid
 #
 # Indexes
 #
@@ -35,12 +36,14 @@
 #  index_posts_on_type                      (type)
 #  index_posts_on_visibility                (visibility)
 #  index_posts_on_visible_to_ids            (visible_to_ids) USING gin
+#  index_posts_on_world_id                  (world_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (author_id => users.id)
 #  fk_rails_...  (encouragement_id => encouragements.id)
 #  fk_rails_...  (quoted_post_id => posts.id)
+#  fk_rails_...  (world_id => worlds.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Post < ApplicationRecord
@@ -140,8 +143,6 @@ class Post < ApplicationRecord
   # == Associations ==
 
   belongs_to :author, class_name: "User"
-  has_many :author_friends, through: :author, source: :friends
-
   belongs_to :quoted_post, class_name: "Post", optional: true
   belongs_to :encouragement, optional: true
   has_many :reactions, class_name: "PostReaction", dependent: :destroy
@@ -151,9 +152,17 @@ class Post < ApplicationRecord
   has_many :shares, class_name: "PostShare", dependent: :destroy
   has_many :text_blasts, dependent: :destroy
 
+  belongs_to :world, optional: true
+  has_many :world_friends, through: :world, source: :friends
+
   sig { returns(User) }
   def author!
     author or raise ActiveRecord::RecordNotFound, "Missing author"
+  end
+
+  sig { returns(World) }
+  def world!
+    world or raise ActiveRecord::RecordNotFound, "Missing world"
   end
 
   sig { returns(T::Boolean) }
@@ -248,14 +257,14 @@ class Post < ApplicationRecord
     url_helpers = Rails.application.routes.url_helpers
     target_url = case recipient
     when Friend
-      url_helpers.user_url(
-        author,
+      url_helpers.world_url(
+        world!,
         friend_token: recipient.access_token,
         post_id: id,
         trailing_slash: true,
       )
     when User
-      url_helpers.universe_url(post_id: id)
+      url_helpers.user_universe_url(post_id: id)
     else
       raise "Invalid notification recipient: #{recipient.inspect}"
     end
@@ -264,8 +273,8 @@ class Post < ApplicationRecord
 
   sig { params(recipient: Friend).returns(String) }
   def text_message(recipient)
-    author = author!
-    title = "new #{type.humanize(capitalize: false)} from #{author.name}..."
+    world = world!
+    title = "new #{type.humanize(capitalize: false)} from #{world.name}..."
     body = ""
     if (emoji = self.emoji)
       body += "#{emoji} "
@@ -275,10 +284,11 @@ class Post < ApplicationRecord
     else
       truncated_body_text
     end
-    post_shortlink = ShortlinkService.url_helpers.user_url(
-      author,
+    post_shortlink = ShortlinkService.url_helpers.world_url(
+      world,
       post_id: id,
       friend_token: recipient.access_token,
+      trailing_slash: true,
     )
     cta = "see full post: #{post_shortlink}"
     [title, body, cta].compact.join("\n\n")
@@ -346,9 +356,9 @@ class Post < ApplicationRecord
   end
   def hidden_from
     if (hidden_from_ids = self.hidden_from_ids.presence)
-      author_friends.where(id: hidden_from_ids)
+      world_friends.where(id: hidden_from_ids)
     else
-      author_friends
+      world_friends
     end
   end
 
@@ -363,11 +373,11 @@ class Post < ApplicationRecord
   def friends_to_notify
     friends = if (notify_ids = friend_ids_to_notify)
       subscribed_type = quoted_post&.type || type
-      scope = author_friends.where(id: notify_ids)
+      scope = world_friends.where(id: notify_ids)
       scope = scope.where(id: visible_to_ids) if visibility == :secret
       scope.subscribed_to(subscribed_type)
     else
-      author_friends.none
+      world_friends.none
     end
     friends = friends.chosen_family if visibility == :chosen_family
     friends
@@ -446,8 +456,8 @@ class Post < ApplicationRecord
   # == Helpers ==
 
   sig { params(friend_ids: T::Array[String]).returns(T::Array[String]) }
-  def select_author_friend_ids(friend_ids)
-    author_friends.where(id: friend_ids).pluck(:id)
+  def select_world_friend_ids(friend_ids)
+    world_friends.where(id: friend_ids).pluck(:id)
   end
 
   sig { params(text: String).returns(String) }
@@ -519,11 +529,11 @@ class Post < ApplicationRecord
 
   sig { void }
   def remove_invalid_hidden_from_ids
-    self.hidden_from_ids = select_author_friend_ids(hidden_from_ids)
+    self.hidden_from_ids = select_world_friend_ids(hidden_from_ids)
   end
 
   sig { void }
   def remove_invalid_visible_to_ids
-    self.visible_to_ids = select_author_friend_ids(visible_to_ids)
+    self.visible_to_ids = select_world_friend_ids(visible_to_ids)
   end
 end

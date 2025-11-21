@@ -19,32 +19,39 @@
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #  deprecated_join_request_id    :uuid
+#  deprecated_user_id            :uuid
 #  invitation_id                 :uuid
-#  user_id                       :uuid             not null
+#  world_id                      :uuid             not null
 #
 # Indexes
 #
-#  index_friends_name_uniqueness                   (name,user_id) UNIQUE
+#  index_friends_name_uniqueness                   (world_id,name) UNIQUE
 #  index_friends_on_access_token                   (access_token) UNIQUE
-#  index_friends_on_chosen_family                  (chosen_family)
+#  index_friends_on_deprecated_user_id             (deprecated_user_id)
 #  index_friends_on_invitation_id                  (invitation_id)
 #  index_friends_on_notifications_last_cleared_at  (notifications_last_cleared_at)
 #  index_friends_on_phone_number                   (phone_number)
-#  index_friends_on_user_id                        (user_id)
-#  index_friends_phone_number_uniqueness           (user_id,phone_number) UNIQUE
+#  index_friends_on_world_id                       (world_id)
+#  index_friends_phone_number_uniqueness           (world_id,phone_number) UNIQUE
 #
 # Foreign Keys
 #
+#  fk_rails_...  (deprecated_user_id => users.id)
 #  fk_rails_...  (invitation_id => invitations.id)
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (world_id => worlds.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Friend < ApplicationRecord
+  extend FriendlyId
   include NormalizesPhoneNumber
   include Notifiable
   include Noticeable
   include HasTimeZone
   include PgSearch::Model
+
+  # == FriendlyId ==
+
+  friendly_id :phone_number, slug_column: :phone_number
 
   # == Attributes ==
 
@@ -65,8 +72,9 @@ class Friend < ApplicationRecord
 
   # == Associations ==
 
-  belongs_to :user
-  has_many :user_posts, through: :user, source: :posts
+  belongs_to :world
+  has_one :world_owner, through: :world, source: :owner
+  has_many :world_posts, through: :world, source: :posts
 
   has_many :activity_coupons, dependent: :destroy
   has_many :active_activity_coupons,
@@ -84,16 +92,20 @@ class Friend < ApplicationRecord
   belongs_to :invitation, optional: true
   has_one :join_request, through: :invitation
 
-  belongs_to :deprecated_join_request, class_name: "JoinRequest", optional: true
   has_many :post_reactions, dependent: :destroy
   has_many :post_reply_receipts, dependent: :destroy
   has_many :post_views, dependent: :destroy
   has_many :encouragements, dependent: :destroy
   has_many :text_blasts, dependent: :destroy
 
+  sig { returns(World) }
+  def world!
+    world or raise ActiveRecord::RecordNotFound, "Missing associated world"
+  end
+
   sig { returns(User) }
-  def user!
-    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
+  def world_owner!
+    world_owner or raise ActiveRecord::RecordNotFound, "Missing world owner"
   end
 
   # == Normalizations ==
@@ -104,11 +116,11 @@ class Friend < ApplicationRecord
 
   # == Validations ==
 
-  validates :name, presence: true, uniqueness: { scope: :user }
+  validates :name, presence: true, uniqueness: { scope: :world }
   validates :emoji, emoji: true, allow_nil: true
   validates :phone_number,
             phone: { possible: true, types: :mobile, extensions: false },
-            uniqueness: { scope: :user, message: "already joined" },
+            uniqueness: { scope: :world, message: "already joined" },
             allow_nil: true
   validates_time_zone_name
 
@@ -117,7 +129,7 @@ class Friend < ApplicationRecord
   scope :active, -> { where(paused_since: nil) }
   scope :paused, -> { where.not(paused_since: nil) }
   scope :paused_during, ->(interval) {
-    joins(:user_posts)
+    joins(:world_posts)
       .where("posts.created_at" => interval)
       .where("friends.id = ANY(posts.hidden_from_ids)")
   }
@@ -154,23 +166,22 @@ class Friend < ApplicationRecord
 
   sig { override.params(recipient: Notifiable).returns(NotificationMessage) }
   def notification_message(recipient:)
+    target_url = Rails.application.routes
+      .url_helpers
+      .user_world_friends_url(friend_id: id)
     case recipient
     when User
       if push_registrations.exists?
         NotificationMessage.new(
           title: "#{fun_name} installed your world!",
           body: "#{name} installed your world on their phone :)",
-          target_url: Rails.application.routes.url_helpers
-            .world_friends_url(friend_id: id, trailing_slash: true),
+          target_url:,
         )
       else
         NotificationMessage.new(
           title: "#{fun_name} joined your world!",
           body: "#{name} subscribed to text updates",
-          target_url: Rails.application.routes.url_helpers.world_friends_url(
-            friend_id: id,
-            trailing_slash: true,
-          ),
+          target_url:,
         )
       end
     else
@@ -182,16 +193,13 @@ class Friend < ApplicationRecord
 
   sig { returns(String) }
   def installation_message
-    user = user!
-    user_possessive = scoped do
-      name = user.name
-      name.end_with?("s") ? "#{name}'" : "#{name}'s"
-    end
-    installation_url = user.shortlink_url(
+    world = world!
+    # NOTE: trailing_slash: true only needed for /worlds/ and /@handle/ routes
+    installation_url = world.shortlink_url(
       friend_token: access_token,
       trailing_slash: true,
     )
-    "hi, #{fun_name}! here's your secret link to #{user_possessive} world: " \
+    "hi, #{fun_name}! here's your secret link to #{world.name}: " \
       "#{installation_url}"
   end
 
@@ -213,9 +221,9 @@ class Friend < ApplicationRecord
     transaction do
       visible_encouragements = encouragements
         .where("created_at > ?", 12.hours.ago)
-      if (created_at = latest_user_post_created_at)
+      if (latest_created_at = latest_world_post_created_at)
         visible_encouragements = visible_encouragements
-          .where("created_at > ?", created_at)
+          .where("created_at > ?", latest_created_at)
       end
       visible_encouragements.reverse_chronological.first
     end
@@ -223,7 +231,15 @@ class Friend < ApplicationRecord
 
   sig { void }
   def create_notification!
-    notifications.create!(recipient: user!)
+    notifications.create!(recipient: world_owner!)
+  end
+
+  # == Helpers ==
+
+  sig { params(phone_number: String).returns(T.nilable(Friend)) }
+  def self.find_by_phone_number(phone_number)
+    phone_number = normalize_value_for(:phone_number, phone_number)
+    find_by(phone_number:)
   end
 
   private
@@ -231,7 +247,7 @@ class Friend < ApplicationRecord
   # == Helpers ==
 
   sig { returns(T.nilable(ActiveSupport::TimeWithZone)) }
-  def latest_user_post_created_at
-    user_posts.reverse_chronological.pick(:created_at)
+  def latest_world_post_created_at
+    world_posts.reverse_chronological.pick(:created_at)
   end
 end

@@ -6,6 +6,6 @@ class InvitationPolicy < ApplicationPolicy
 
   def manage?
     invitation = T.let(record, Invitation)
-    invitation.user! == user!
+    invitation.world_owner! == user!
   end
 end

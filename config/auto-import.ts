@@ -68,7 +68,6 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "useNormalizeUrl",
       "withTrailingSlash",
     ],
-    "~/helpers/formatting": ["possessive"],
     "~/helpers/layouts": ["useIsMobileSize"],
     "~/helpers/userThemes": ["useUserTheme"],
     "~/helpers/vaul": ["createVaulModalPortalTarget", "useVaulPortalTarget"],

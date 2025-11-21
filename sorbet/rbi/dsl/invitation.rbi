@@ -391,8 +391,11 @@ class Invitation
     sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
     def build_join_request(*args, &blk); end
 
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def build_world(*args, &blk); end
+
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def build_user(*args, &blk); end
+    def build_world_owner(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend(*args, &blk); end
@@ -406,11 +409,17 @@ class Invitation
     sig { params(args: T.untyped, blk: T.untyped).returns(::JoinRequest) }
     def create_join_request!(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_user(*args, &blk); end
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_user!(*args, &blk); end
+    def create_world_owner(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
+    def create_world_owner!(*args, &blk); end
 
     sig { returns(T.nilable(::Friend)) }
     def friend; end
@@ -436,8 +445,11 @@ class Invitation
     sig { returns(T.nilable(::JoinRequest)) }
     def reload_join_request; end
 
+    sig { returns(T.nilable(::World)) }
+    def reload_world; end
+
     sig { returns(T.nilable(::User)) }
-    def reload_user; end
+    def reload_world_owner; end
 
     sig { void }
     def reset_friend; end
@@ -446,33 +458,42 @@ class Invitation
     def reset_join_request; end
 
     sig { void }
-    def reset_user; end
+    def reset_world; end
 
-    sig { returns(T.nilable(::User)) }
-    def user; end
+    sig { void }
+    def reset_world_owner; end
 
-    sig { params(value: T.nilable(::User)).void }
-    def user=(value); end
+    sig { returns(T.nilable(::World)) }
+    def world; end
+
+    sig { params(value: T.nilable(::World)).void }
+    def world=(value); end
 
     sig { returns(T::Boolean) }
-    def user_changed?; end
+    def world_changed?; end
 
     sig { returns(T::Array[T.untyped]) }
-    def user_friend_ids; end
+    def world_friend_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def user_friend_ids=(ids); end
+    def world_friend_ids=(ids); end
 
-    # This method is created by ActiveRecord on the `Invitation` class because it declared `has_many :user_friends, through: :user`.
+    # This method is created by ActiveRecord on the `Invitation` class because it declared `has_many :world_friends, through: :world`.
     # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
     sig { returns(::Friend::PrivateCollectionProxy) }
-    def user_friends; end
+    def world_friends; end
 
     sig { params(value: T::Enumerable[::Friend]).void }
-    def user_friends=(value); end
+    def world_friends=(value); end
+
+    sig { returns(T.nilable(::User)) }
+    def world_owner; end
+
+    sig { params(value: T.nilable(::User)).void }
+    def world_owner=(value); end
 
     sig { returns(T::Boolean) }
-    def user_previously_changed?; end
+    def world_previously_changed?; end
   end
 
   module GeneratedAssociationRelationMethods
@@ -674,6 +695,51 @@ class Invitation
 
     sig { void }
     def created_at_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_user_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def deprecated_user_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_user_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_user_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def deprecated_user_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def deprecated_user_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_user_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_user_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_user_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_user_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_user_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_user_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_user_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_user_id_was; end
+
+    sig { void }
+    def deprecated_user_id_will_change!; end
 
     sig { returns(::String) }
     def id; end
@@ -949,6 +1015,9 @@ class Invitation
     def restore_created_at!; end
 
     sig { void }
+    def restore_deprecated_user_id!; end
+
+    sig { void }
     def restore_id!; end
 
     sig { void }
@@ -970,13 +1039,19 @@ class Invitation
     def restore_updated_at!; end
 
     sig { void }
-    def restore_user_id!; end
+    def restore_world_id!; end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_deprecated_user_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_deprecated_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_id; end
@@ -1021,10 +1096,10 @@ class Invitation
     def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_user_id; end
+    def saved_change_to_world_id; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def saved_change_to_world_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(::ActiveSupport::TimeWithZone) }
     def updated_at; end
@@ -1071,53 +1146,11 @@ class Invitation
     sig { void }
     def updated_at_will_change!; end
 
-    sig { returns(::String) }
-    def user_id; end
-
-    sig { params(value: ::String).returns(::String) }
-    def user_id=(value); end
-
-    sig { returns(T::Boolean) }
-    def user_id?; end
-
-    sig { returns(T.nilable(::String)) }
-    def user_id_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def user_id_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def user_id_came_from_user?; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def user_id_change; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def user_id_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def user_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def user_id_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def user_id_previous_change; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def user_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def user_id_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def user_id_was; end
-
-    sig { void }
-    def user_id_will_change!; end
-
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_deprecated_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
@@ -1141,7 +1174,52 @@ class Invitation
     def will_save_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_user_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def will_save_change_to_world_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(::String) }
+    def world_id; end
+
+    sig { params(value: ::String).returns(::String) }
+    def world_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def world_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def world_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def world_id_came_from_user?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def world_id_change; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def world_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def world_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_in_database; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def world_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def world_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def world_id_was; end
+
+    sig { void }
+    def world_id_will_change!; end
   end
 
   module GeneratedRelationMethods

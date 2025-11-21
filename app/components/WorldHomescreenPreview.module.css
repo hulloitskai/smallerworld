@@ -1,0 +1,59 @@
+.container {
+  --hp-icon-size: 48px;
+  --hp-x-offset: 64px;
+
+  border-radius: var(--hp-radius, var(--mantine-radius-default));
+  overflow: hidden;
+}
+
+.background {
+  height: 131.5px;
+  width: unset;
+  object-fit: cover;
+  object-position: left center;
+}
+
+.appIconPositioning {
+  position: absolute;
+  top: 53px;
+  left: calc(24px + var(--hp-x-offset));
+}
+
+.appIconContainer {
+  position: relative;
+  overflow: hidden;
+  border-radius: calc(var(--hp-icon-size) / var(--hp-icon-radius-ratio));
+}
+
+.appIcon {
+  background-color: var(--mantine-color-white);
+  width: var(--hp-icon-size);
+  height: var(--hp-icon-size);
+  object-fit: cover;
+}
+
+.appLabel {
+  --label-margin: 4px;
+
+  position: absolute;
+  top: 104px;
+  left: calc(24px + var(--hp-x-offset));
+  text-align: center;
+  font-size: 8.5px;
+  width: calc(var(--hp-icon-size) + var(--label-margin) * 2);
+  margin-left: calc(var(--label-margin) * -1);
+  color: var(--mantine-color-white);
+  font-weight: 600;
+  overflow-x: clip;
+  white-space: nowrap;
+}
+
+.yourPageLabel {
+  position: absolute;
+  top: 56px;
+  left: 196px;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--mantine-color-white);
+  font-family: var(--font-family-cute);
+}

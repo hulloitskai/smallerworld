@@ -394,7 +394,7 @@ class Encouragement
     def build_friend(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def build_user(*args, &blk); end
+    def build_world_owner(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend(*args, &blk); end
@@ -403,10 +403,10 @@ class Encouragement
     def create_friend!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_user(*args, &blk); end
+    def create_world_owner(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_user!(*args, &blk); end
+    def create_world_owner!(*args, &blk); end
 
     sig { returns(T.nilable(::Friend)) }
     def friend; end
@@ -438,19 +438,19 @@ class Encouragement
     def reload_friend; end
 
     sig { returns(T.nilable(::User)) }
-    def reload_user; end
+    def reload_world_owner; end
 
     sig { void }
     def reset_friend; end
 
     sig { void }
-    def reset_user; end
+    def reset_world_owner; end
 
     sig { returns(T.nilable(::User)) }
-    def user; end
+    def world_owner; end
 
     sig { params(value: T.nilable(::User)).void }
-    def user=(value); end
+    def world_owner=(value); end
   end
 
   module GeneratedAssociationRelationMethods

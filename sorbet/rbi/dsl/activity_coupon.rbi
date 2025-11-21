@@ -408,8 +408,8 @@ class ActivityCoupon
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def build_friend(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def build_user(*args, &blk); end
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def build_world(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Activity) }
     def create_activity(*args, &blk); end
@@ -423,17 +423,31 @@ class ActivityCoupon
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend!(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_user(*args, &blk); end
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_user!(*args, &blk); end
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world!(*args, &blk); end
 
     sig { returns(T.nilable(::Friend)) }
     def friend; end
 
     sig { params(value: T.nilable(::Friend)).void }
     def friend=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def friend_activity_coupon_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def friend_activity_coupon_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `ActivityCoupon` class because it declared `has_many :friend_activity_coupons, through: :friend`.
+    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
+    sig { returns(::ActivityCoupon::PrivateCollectionProxy) }
+    def friend_activity_coupons; end
+
+    sig { params(value: T::Enumerable[::ActivityCoupon]).void }
+    def friend_activity_coupons=(value); end
 
     sig { returns(T::Boolean) }
     def friend_changed?; end
@@ -461,8 +475,8 @@ class ActivityCoupon
     sig { returns(T.nilable(::Friend)) }
     def reload_friend; end
 
-    sig { returns(T.nilable(::User)) }
-    def reload_user; end
+    sig { returns(T.nilable(::World)) }
+    def reload_world; end
 
     sig { void }
     def reset_activity; end
@@ -471,13 +485,13 @@ class ActivityCoupon
     def reset_friend; end
 
     sig { void }
-    def reset_user; end
+    def reset_world; end
 
-    sig { returns(T.nilable(::User)) }
-    def user; end
+    sig { returns(T.nilable(::World)) }
+    def world; end
 
-    sig { params(value: T.nilable(::User)).void }
-    def user=(value); end
+    sig { params(value: T.nilable(::World)).void }
+    def world=(value); end
   end
 
   module GeneratedAssociationRelationMethods

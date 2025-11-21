@@ -1,0 +1,44 @@
+# rubocop:disable Layout/LineLength, Lint/RedundantCopDisableDirective
+# == Schema Information
+#
+# Table name: worlds
+#
+#  id                       :uuid             not null, primary key
+#  allow_friend_sharing     :boolean          not null
+#  handle                   :string           not null
+#  hide_neko                :boolean          not null
+#  hide_stats               :boolean          not null
+#  reply_to_number_override :string
+#  theme                    :string
+#  created_at               :datetime         not null
+#  updated_at               :datetime         not null
+#  owner_id                 :uuid             not null
+#
+# Indexes
+#
+#  index_worlds_on_handle    (handle) UNIQUE
+#  index_worlds_on_owner_id  (owner_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (owner_id => users.id)
+#
+# rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
+testy_world:
+  owner: testy
+  handle: testy
+  hide_stats: false
+  hide_neko: false
+  allow_friend_sharing: false
+  theme: "darkSky"
+  created_at: "<%= 1.day.ago %>"
+  updated_at: "<%= 1.day.ago %>"
+
+noposts_world:
+  handle: noposts
+  owner: noposts
+  hide_stats: false
+  hide_neko: false
+  allow_friend_sharing: false
+  created_at: "<%= 1.day.ago %>"
+  updated_at: "<%= 1.day.ago %>"

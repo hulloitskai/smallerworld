@@ -63,7 +63,7 @@ class PushSubscriptionsController < ApplicationController
     respond_to do |format|
       format.json do
         owner = current_owner
-        subscription = find_subscription
+        subscription = find_subscription!
         should_remove_subscription = subscription.transaction do
           subscription.registrations.destroy_by(owner:)
           if subscription.registrations.none?
@@ -104,7 +104,7 @@ class PushSubscriptionsController < ApplicationController
     respond_to do |format|
       format.json do
         owner = current_owner
-        subscription = find_subscription
+        subscription = find_subscription!
         registration = subscription.registrations.find_by!(owner:)
         registration.push_test_notification
         render(json: {})
@@ -131,7 +131,7 @@ class PushSubscriptionsController < ApplicationController
   sig do
     params(scope: PushSubscription::PrivateRelation).returns(PushSubscription)
   end
-  def find_subscription(scope: PushSubscription.all)
+  def find_subscription!(scope: PushSubscription.all)
     endpoint = params.require(:push_subscription).fetch(:endpoint)
     scope.find_by!(endpoint:)
   end

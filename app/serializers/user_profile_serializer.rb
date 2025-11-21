@@ -9,12 +9,5 @@ class UserProfileSerializer < ApplicationSerializer
   # == Attributes ==
 
   identifier
-  attributes :name,
-             :handle,
-             theme: { type: "UserTheme", nullable: true },
-             supported_features: { type: "Feature[]" }
-
-  # == Associations ==
-
-  has_one :page_icon_image, as: :page_icon, serializer: ImageSerializer
+  attributes :name, supported_features: { type: "Feature[]" }
 end

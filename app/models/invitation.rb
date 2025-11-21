@@ -12,29 +12,38 @@
 #  offered_activity_ids :uuid             default([]), not null, is an Array
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  deprecated_user_id   :uuid
 #  join_request_id      :uuid
-#  user_id              :uuid             not null
+#  world_id             :uuid             not null
 #
 # Indexes
 #
-#  index_invitations_invitee_name_uniqueness  (invitee_name,user_id) UNIQUE
+#  index_invitations_invitee_name_uniqueness  (world_id,invitee_name) UNIQUE
+#  index_invitations_on_deprecated_user_id    (deprecated_user_id)
 #  index_invitations_on_join_request_id       (join_request_id)
-#  index_invitations_on_user_id               (user_id)
+#  index_invitations_on_world_id              (world_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (deprecated_user_id => users.id)
+#  fk_rails_...  (world_id => worlds.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Invitation < ApplicationRecord
   # == Associations ==
 
-  belongs_to :user
-  has_many :user_friends, through: :user, source: :friends
+  belongs_to :world
+  has_one :world_owner, through: :world, source: :owner
+  has_many :world_friends, through: :world, source: :friends
+
+  sig { returns(World) }
+  def world!
+    world or raise ActiveRecord::RecordNotFound, "Missing associated world"
+  end
 
   sig { returns(User) }
-  def user!
-    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
+  def world_owner!
+    world_owner or raise ActiveRecord::RecordNotFound, "Missing world owner"
   end
 
   belongs_to :join_request, class_name: "JoinRequest", optional: true
@@ -44,7 +53,7 @@ class Invitation < ApplicationRecord
 
   validates :invitee_name,
             presence: true,
-            uniqueness: { scope: :user, name: "already invited" }
+            uniqueness: { scope: :world, message: "already invited" }
   validates :invitee_emoji, emoji: true, allow_nil: true
   validate :validate_not_existing_friend_name, unless: :existing_friend?
 
@@ -65,7 +74,7 @@ class Invitation < ApplicationRecord
 
   sig { void }
   def validate_not_existing_friend_name
-    if user_friends.exists?(name: invitee_name)
+    if world_friends.exists?(name: invitee_name)
       errors.add(:invitee_name, :uniqueness, message: "already registered")
     end
   end

@@ -388,32 +388,17 @@ class PostShare
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def build_post(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def build_post_author(*args, &blk); end
-
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_post(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_post!(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_post_author(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::User) }
-    def create_post_author!(*args, &blk); end
-
     sig { returns(T.nilable(::Post)) }
     def post; end
 
     sig { params(value: T.nilable(::Post)).void }
     def post=(value); end
-
-    sig { returns(T.nilable(::User)) }
-    def post_author; end
-
-    sig { params(value: T.nilable(::User)).void }
-    def post_author=(value); end
 
     sig { returns(T::Boolean) }
     def post_changed?; end
@@ -424,17 +409,11 @@ class PostShare
     sig { returns(T.nilable(::Post)) }
     def reload_post; end
 
-    sig { returns(T.nilable(::User)) }
-    def reload_post_author; end
-
     sig { returns(T.untyped) }
     def reload_sharer; end
 
     sig { void }
     def reset_post; end
-
-    sig { void }
-    def reset_post_author; end
 
     sig { void }
     def reset_sharer; end

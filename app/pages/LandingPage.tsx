@@ -42,9 +42,10 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
             </Text>
             <Button
               component={Link}
-              href={withTrailingSlash(routes.world.show.path())}
+              href={withTrailingSlash(routes.userWorld.show.path())}
               variant="filled"
               leftSection={<Image src={logoSrc} h={24} w="unset" />}
+              m={3}
               style={{ flexShrink: 0 }}
             >
               your world
@@ -154,7 +155,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
           bottomSection={
             <Button
               component={Link}
-              href={withTrailingSlash(routes.world.show.path())}
+              href={withTrailingSlash(routes.userWorld.show.path())}
               leftSection="😍"
               variant="filled"
               radius="xl"
@@ -257,7 +258,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
         </Title>
         <Button
           component={Link}
-          href={withTrailingSlash(routes.world.show.path())}
+          href={withTrailingSlash(routes.userWorld.show.path())}
           leftSection="😍"
           size="lg"
           radius="xl"
@@ -293,7 +294,7 @@ const LandingPage: PageComponent<LandingPageProps> = () => {
                   })}
                   h={WORLD_SIZE}
                   w={WORLD_SIZE}
-                  radius={WORLD_SIZE / USER_ICON_RADIUS_RATIO}
+                  radius={WORLD_SIZE / WORLD_ICON_RADIUS_RATIO}
                 />
                 <Text className={classes.demoWorldName} size="sm">
                   {possessive(demoUser.name)} world

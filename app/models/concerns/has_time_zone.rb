@@ -46,6 +46,7 @@ module HasTimeZone
 
     sig { void }
     def validates_time_zone_name
+      validates(:time_zone_name, presence: true)
       validate(:validate_time_zone_name)
     end
   end

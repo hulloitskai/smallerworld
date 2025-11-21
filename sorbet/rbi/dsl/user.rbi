@@ -14,12 +14,6 @@ class User
   sig { returns(T.nilable(Enumerize::Value)) }
   def membership_tier; end
 
-  sig { returns(ActiveStorage::Attached::One) }
-  def page_icon; end
-
-  sig { params(attachable: T.untyped).returns(T.untyped) }
-  def page_icon=(attachable); end
-
   private
 
   sig { returns(NilClass) }
@@ -347,119 +341,14 @@ class User
   end
 
   module GeneratedAssociationMethods
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :activities`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::Activity::PrivateCollectionProxy) }
-    def activities; end
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def build_world(*args, &blk); end
 
-    sig { params(value: T::Enumerable[::Activity]).void }
-    def activities=(value); end
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world(*args, &blk); end
 
-    sig { returns(T::Array[T.untyped]) }
-    def activity_coupon_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def activity_coupon_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :activity_coupons, through: :activities`.
-    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
-    sig { returns(::ActivityCoupon::PrivateCollectionProxy) }
-    def activity_coupons; end
-
-    sig { params(value: T::Enumerable[::ActivityCoupon]).void }
-    def activity_coupons=(value); end
-
-    sig { returns(T::Array[T.untyped]) }
-    def activity_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def activity_ids=(ids); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
-    def build_page_icon_attachment(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
-    def build_page_icon_blob(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
-    def create_page_icon_attachment(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Attachment) }
-    def create_page_icon_attachment!(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
-    def create_page_icon_blob(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::ActiveStorage::Blob) }
-    def create_page_icon_blob!(*args, &blk); end
-
-    sig { returns(T::Array[T.untyped]) }
-    def encouragement_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def encouragement_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :encouragements, through: :friends`.
-    # 🔗 [Rails guide for `has_many_through` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)
-    sig { returns(::Encouragement::PrivateCollectionProxy) }
-    def encouragements; end
-
-    sig { params(value: T::Enumerable[::Encouragement]).void }
-    def encouragements=(value); end
-
-    sig { returns(T::Array[T.untyped]) }
-    def friend_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def friend_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :friends`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::Friend::PrivateCollectionProxy) }
-    def friends; end
-
-    sig { params(value: T::Enumerable[::Friend]).void }
-    def friends=(value); end
-
-    sig { returns(T::Array[T.untyped]) }
-    def invitation_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def invitation_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :invitations`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::Invitation::PrivateCollectionProxy) }
-    def invitations; end
-
-    sig { params(value: T::Enumerable[::Invitation]).void }
-    def invitations=(value); end
-
-    sig { returns(T::Array[T.untyped]) }
-    def join_request_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def join_request_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :join_requests`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::JoinRequest::PrivateCollectionProxy) }
-    def join_requests; end
-
-    sig { params(value: T::Enumerable[::JoinRequest]).void }
-    def join_requests=(value); end
-
-    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
-    def page_icon_attachment; end
-
-    sig { params(value: T.nilable(::ActiveStorage::Attachment)).void }
-    def page_icon_attachment=(value); end
-
-    sig { returns(T.nilable(::ActiveStorage::Blob)) }
-    def page_icon_blob; end
-
-    sig { params(value: T.nilable(::ActiveStorage::Blob)).void }
-    def page_icon_blob=(value); end
+    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
+    def create_world!(*args, &blk); end
 
     sig { returns(T::Array[T.untyped]) }
     def post_ids; end
@@ -517,17 +406,11 @@ class User
     sig { params(value: T::Enumerable[::Notification]).void }
     def received_notifications=(value); end
 
-    sig { returns(T.nilable(::ActiveStorage::Attachment)) }
-    def reload_page_icon_attachment; end
-
-    sig { returns(T.nilable(::ActiveStorage::Blob)) }
-    def reload_page_icon_blob; end
+    sig { returns(T.nilable(::World)) }
+    def reload_world; end
 
     sig { void }
-    def reset_page_icon_attachment; end
-
-    sig { void }
-    def reset_page_icon_blob; end
+    def reset_world; end
 
     sig { returns(T::Array[T.untyped]) }
     def session_ids; end
@@ -542,6 +425,15 @@ class User
 
     sig { params(value: T::Enumerable[::Session]).void }
     def sessions=(value); end
+
+    sig { returns(T.nilable(::World)) }
+    def world; end
+
+    sig { params(value: T.nilable(::World)).void }
+    def world=(value); end
+
+    sig { params(attributes: T.untyped).returns(T.untyped) }
+    def world_attributes=(attributes); end
   end
 
   module GeneratedAssociationRelationMethods
@@ -704,9 +596,6 @@ class User
     def with(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
-    def with_attached_page_icon(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def with_recursive(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -714,51 +603,6 @@ class User
   end
 
   module GeneratedAttributeMethods
-    sig { returns(T::Boolean) }
-    def allow_friend_sharing; end
-
-    sig { params(value: T::Boolean).returns(T::Boolean) }
-    def allow_friend_sharing=(value); end
-
-    sig { returns(T::Boolean) }
-    def allow_friend_sharing?; end
-
-    sig { returns(T.nilable(T::Boolean)) }
-    def allow_friend_sharing_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def allow_friend_sharing_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def allow_friend_sharing_came_from_user?; end
-
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def allow_friend_sharing_change; end
-
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def allow_friend_sharing_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def allow_friend_sharing_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(T::Boolean)) }
-    def allow_friend_sharing_in_database; end
-
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def allow_friend_sharing_previous_change; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def allow_friend_sharing_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(T::Boolean)) }
-    def allow_friend_sharing_previously_was; end
-
-    sig { returns(T.nilable(T::Boolean)) }
-    def allow_friend_sharing_was; end
-
-    sig { void }
-    def allow_friend_sharing_will_change!; end
-
     sig { returns(::ActiveSupport::TimeWithZone) }
     def created_at; end
 
@@ -804,140 +648,275 @@ class User
     sig { void }
     def created_at_will_change!; end
 
-    sig { returns(::String) }
-    def handle; end
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_allow_friend_sharing; end
 
-    sig { params(value: ::String).returns(::String) }
-    def handle=(value); end
+    sig { params(value: T.nilable(T::Boolean)).returns(T.nilable(T::Boolean)) }
+    def deprecated_allow_friend_sharing=(value); end
 
     sig { returns(T::Boolean) }
-    def handle?; end
+    def deprecated_allow_friend_sharing?; end
 
-    sig { returns(T.nilable(::String)) }
-    def handle_before_last_save; end
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_allow_friend_sharing_before_last_save; end
 
     sig { returns(T.untyped) }
-    def handle_before_type_cast; end
+    def deprecated_allow_friend_sharing_before_type_cast; end
 
     sig { returns(T::Boolean) }
-    def handle_came_from_user?; end
+    def deprecated_allow_friend_sharing_came_from_user?; end
 
-    sig { returns(T.nilable([::String, ::String])) }
-    def handle_change; end
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_allow_friend_sharing_change; end
 
-    sig { returns(T.nilable([::String, ::String])) }
-    def handle_change_to_be_saved; end
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_allow_friend_sharing_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def handle_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def handle_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def handle_previous_change; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def handle_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def handle_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def handle_was; end
-
-    sig { void }
-    def handle_will_change!; end
-
-    sig { returns(T::Boolean) }
-    def hide_neko; end
-
-    sig { params(value: T::Boolean).returns(T::Boolean) }
-    def hide_neko=(value); end
-
-    sig { returns(T::Boolean) }
-    def hide_neko?; end
+    def deprecated_allow_friend_sharing_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
-    def hide_neko_before_last_save; end
+    def deprecated_allow_friend_sharing_in_database; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_allow_friend_sharing_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_allow_friend_sharing_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_allow_friend_sharing_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_allow_friend_sharing_was; end
+
+    sig { void }
+    def deprecated_allow_friend_sharing_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_handle; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def deprecated_handle=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_handle?; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_handle_before_last_save; end
 
     sig { returns(T.untyped) }
-    def hide_neko_before_type_cast; end
+    def deprecated_handle_before_type_cast; end
 
     sig { returns(T::Boolean) }
-    def hide_neko_came_from_user?; end
+    def deprecated_handle_came_from_user?; end
 
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def hide_neko_change; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_handle_change; end
 
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def hide_neko_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def hide_neko_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(T::Boolean)) }
-    def hide_neko_in_database; end
-
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def hide_neko_previous_change; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_handle_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def hide_neko_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def deprecated_handle_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(T::Boolean)) }
-    def hide_neko_previously_was; end
+    sig { returns(T.nilable(::String)) }
+    def deprecated_handle_in_database; end
 
-    sig { returns(T.nilable(T::Boolean)) }
-    def hide_neko_was; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_handle_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_handle_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_handle_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_handle_was; end
 
     sig { void }
-    def hide_neko_will_change!; end
-
-    sig { returns(T::Boolean) }
-    def hide_stats; end
-
-    sig { params(value: T::Boolean).returns(T::Boolean) }
-    def hide_stats=(value); end
-
-    sig { returns(T::Boolean) }
-    def hide_stats?; end
+    def deprecated_handle_will_change!; end
 
     sig { returns(T.nilable(T::Boolean)) }
-    def hide_stats_before_last_save; end
+    def deprecated_hide_neko; end
+
+    sig { params(value: T.nilable(T::Boolean)).returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_neko=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_hide_neko?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_neko_before_last_save; end
 
     sig { returns(T.untyped) }
-    def hide_stats_before_type_cast; end
+    def deprecated_hide_neko_before_type_cast; end
 
     sig { returns(T::Boolean) }
-    def hide_stats_came_from_user?; end
+    def deprecated_hide_neko_came_from_user?; end
 
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def hide_stats_change; end
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_hide_neko_change; end
 
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def hide_stats_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def hide_stats_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(T::Boolean)) }
-    def hide_stats_in_database; end
-
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def hide_stats_previous_change; end
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_hide_neko_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def hide_stats_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def deprecated_hide_neko_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
-    def hide_stats_previously_was; end
+    def deprecated_hide_neko_in_database; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_hide_neko_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_hide_neko_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(T::Boolean)) }
-    def hide_stats_was; end
+    def deprecated_hide_neko_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_neko_was; end
 
     sig { void }
-    def hide_stats_will_change!; end
+    def deprecated_hide_neko_will_change!; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_stats; end
+
+    sig { params(value: T.nilable(T::Boolean)).returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_stats=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_hide_stats?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_stats_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def deprecated_hide_stats_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def deprecated_hide_stats_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_hide_stats_change; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_hide_stats_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_hide_stats_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_stats_in_database; end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def deprecated_hide_stats_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_hide_stats_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_stats_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def deprecated_hide_stats_was; end
+
+    sig { void }
+    def deprecated_hide_stats_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_reply_to_number; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def deprecated_reply_to_number=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_reply_to_number?; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_reply_to_number_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def deprecated_reply_to_number_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def deprecated_reply_to_number_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_reply_to_number_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_reply_to_number_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_reply_to_number_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_reply_to_number_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_reply_to_number_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_reply_to_number_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_reply_to_number_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_reply_to_number_was; end
+
+    sig { void }
+    def deprecated_reply_to_number_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_theme; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def deprecated_theme=(value); end
+
+    sig { returns(T::Boolean) }
+    def deprecated_theme?; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_theme_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def deprecated_theme_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def deprecated_theme_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_theme_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_theme_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_theme_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_theme_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_theme_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_theme_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_theme_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_theme_was; end
+
+    sig { void }
+    def deprecated_theme_will_change!; end
 
     sig { returns(::String) }
     def id; end
@@ -1209,16 +1188,16 @@ class User
     sig { void }
     def phone_number_will_change!; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def reply_to_number; end
 
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    sig { params(value: T.untyped).returns(T.untyped) }
     def reply_to_number=(value); end
 
     sig { returns(T::Boolean) }
     def reply_to_number?; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def reply_to_number_before_last_save; end
 
     sig { returns(T.untyped) }
@@ -1227,47 +1206,53 @@ class User
     sig { returns(T::Boolean) }
     def reply_to_number_came_from_user?; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def reply_to_number_change; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def reply_to_number_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def reply_to_number_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def reply_to_number_in_database; end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def reply_to_number_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def reply_to_number_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def reply_to_number_previously_was; end
 
-    sig { returns(T.nilable(::String)) }
+    sig { returns(T.untyped) }
     def reply_to_number_was; end
 
     sig { void }
     def reply_to_number_will_change!; end
 
     sig { void }
-    def restore_allow_friend_sharing!; end
-
-    sig { void }
     def restore_created_at!; end
 
     sig { void }
-    def restore_handle!; end
+    def restore_deprecated_allow_friend_sharing!; end
 
     sig { void }
-    def restore_hide_neko!; end
+    def restore_deprecated_handle!; end
 
     sig { void }
-    def restore_hide_stats!; end
+    def restore_deprecated_hide_neko!; end
+
+    sig { void }
+    def restore_deprecated_hide_stats!; end
+
+    sig { void }
+    def restore_deprecated_reply_to_number!; end
+
+    sig { void }
+    def restore_deprecated_theme!; end
 
     sig { void }
     def restore_id!; end
@@ -1291,19 +1276,10 @@ class User
     def restore_reply_to_number!; end
 
     sig { void }
-    def restore_theme!; end
-
-    sig { void }
     def restore_time_zone_name!; end
 
     sig { void }
     def restore_updated_at!; end
-
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def saved_change_to_allow_friend_sharing; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_allow_friend_sharing?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
@@ -1311,23 +1287,41 @@ class User
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_handle; end
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def saved_change_to_deprecated_allow_friend_sharing; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_handle?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def saved_change_to_deprecated_allow_friend_sharing?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def saved_change_to_hide_neko; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_hide_neko?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
-    def saved_change_to_hide_stats; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_deprecated_handle; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_hide_stats?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def saved_change_to_deprecated_handle?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def saved_change_to_deprecated_hide_neko; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_deprecated_hide_neko?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(T::Boolean), T.nilable(T::Boolean)])) }
+    def saved_change_to_deprecated_hide_stats; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_deprecated_hide_stats?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_deprecated_reply_to_number; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_deprecated_reply_to_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_deprecated_theme; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_deprecated_theme?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_id; end
@@ -1365,17 +1359,11 @@ class User
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_phone_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    sig { returns(T.nilable([T.untyped, T.untyped])) }
     def saved_change_to_reply_to_number; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_reply_to_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def saved_change_to_theme; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_theme?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_time_zone_name; end
@@ -1388,51 +1376,6 @@ class User
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_updated_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def theme; end
-
-    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
-    def theme=(value); end
-
-    sig { returns(T::Boolean) }
-    def theme?; end
-
-    sig { returns(T.nilable(::String)) }
-    def theme_before_last_save; end
-
-    sig { returns(T.untyped) }
-    def theme_before_type_cast; end
-
-    sig { returns(T::Boolean) }
-    def theme_came_from_user?; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def theme_change; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def theme_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def theme_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def theme_in_database; end
-
-    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
-    def theme_previous_change; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def theme_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def theme_previously_was; end
-
-    sig { returns(T.nilable(::String)) }
-    def theme_was; end
-
-    sig { void }
-    def theme_will_change!; end
 
     sig { returns(::String) }
     def time_zone_name; end
@@ -1525,19 +1468,25 @@ class User
     def updated_at_will_change!; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_allow_friend_sharing?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_handle?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def will_save_change_to_deprecated_allow_friend_sharing?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_hide_neko?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def will_save_change_to_deprecated_handle?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_hide_stats?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def will_save_change_to_deprecated_hide_neko?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_deprecated_hide_stats?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_deprecated_reply_to_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_deprecated_theme?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
@@ -1559,9 +1508,6 @@ class User
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_reply_to_number?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_theme?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_time_zone_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
@@ -1728,9 +1674,6 @@ class User
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
-    def with_attached_page_icon(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def with_recursive(*args, &blk); end

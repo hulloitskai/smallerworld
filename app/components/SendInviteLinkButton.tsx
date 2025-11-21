@@ -3,8 +3,8 @@ import { type ButtonProps, CopyButton } from "@mantine/core";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
 import {
-  useInvitationMessage,
   useInvitationShareData,
+  useInvitationShortlink,
 } from "~/helpers/invitations";
 import { type Invitation } from "~/types";
 
@@ -17,7 +17,7 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
   ...otherProps
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
-  const invitationMessage = useInvitationMessage(invitation);
+  const invitationShortlink = useInvitationShortlink(invitation);
   const invitationShareData = useInvitationShareData(invitation);
   return (
     <Menu width={140} portalProps={{ target: vaulPortalTarget }}>
@@ -25,15 +25,15 @@ const SendInviteLinkButton: FC<SendInviteLinkButtonProps> = ({
         <Button
           variant="filled"
           leftSection={<SendIcon />}
-          disabled={!invitationMessage}
+          disabled={!invitationShortlink || !invitationShareData}
           {...otherProps}
         >
           send invite link via...
         </Button>
       </Menu.Target>
-      {!!invitationMessage && (
+      {!!invitationShortlink && (
         <Menu.Dropdown>
-          <CopyButton value={invitationMessage}>
+          <CopyButton value={invitationShortlink}>
             {({ copied, copy }) => (
               <Menu.Item
                 leftSection={copied ? <CopiedIcon /> : <CopyIcon />}

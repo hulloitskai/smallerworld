@@ -6,21 +6,24 @@
 #
 # Table name: join_requests
 #
-#  id           :uuid             not null, primary key
-#  name         :string           not null
-#  phone_number :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  user_id      :uuid             not null
+#  id                 :uuid             not null, primary key
+#  name               :string           not null
+#  phone_number       :string           not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  deprecated_user_id :uuid
+#  world_id           :uuid             not null
 #
 # Indexes
 #
-#  index_join_requests_on_user_id  (user_id)
-#  index_join_requests_uniqueness  (user_id,phone_number) UNIQUE
+#  index_join_requests_on_deprecated_user_id  (deprecated_user_id)
+#  index_join_requests_on_world_id            (world_id)
+#  index_join_requests_uniqueness             (world_id,phone_number) UNIQUE
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (deprecated_user_id => users.id)
+#  fk_rails_...  (world_id => worlds.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class JoinRequest < ApplicationRecord
@@ -29,18 +32,25 @@ class JoinRequest < ApplicationRecord
 
   # == Associations ==
 
-  belongs_to :user
+  belongs_to :world
+  has_one :world_owner, through: :world, source: :owner
+
   has_one :invitation, dependent: :nullify
   has_one :friend, through: :invitation
   has_one :deprecated_friend,
           class_name: "Friend",
-          inverse_of: :deprecated_join_request,
+          inverse_of: false,
           foreign_key: :deprecated_join_request_id,
           dependent: :nullify
 
+  sig { returns(World) }
+  def world!
+    world or raise ActiveRecord::RecordNotFound, "Missing associated world"
+  end
+
   sig { returns(User) }
-  def user!
-    user or raise ActiveRecord::RecordNotFound, "Missing associated user"
+  def world_owner!
+    world_owner or raise ActiveRecord::RecordNotFound, "Missing world owner"
   end
 
   # == Normalizations ==
@@ -51,7 +61,7 @@ class JoinRequest < ApplicationRecord
   # == Validations ==
 
   validates :name, :phone_number, presence: true
-  validates :phone_number, uniqueness: { scope: :user }
+  validates :phone_number, uniqueness: { scope: :world }
 
   # == Scopes ==
 
@@ -85,6 +95,6 @@ class JoinRequest < ApplicationRecord
 
   sig { void }
   def create_notification!
-    notifications.create!(recipient: user!)
+    notifications.create!(recipient: world_owner!)
   end
 end

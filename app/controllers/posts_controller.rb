@@ -17,7 +17,7 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.json do
         current_friend = authenticate_friend!
-        post = find_post
+        post = find_post!
         authorize!(post)
         share = post.shares.find_or_create_by!(sharer: current_friend)
         render(json: {
@@ -32,10 +32,12 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.json do
         current_friend = authenticate_friend!
-        post = find_post
+        post = find_post!
         authorize!(post)
         post.views.find_or_create_by!(friend: current_friend)
-        render(json: { "authorId" => post.author_id })
+        render(json: {
+          "worldId" => post.world_id,
+        })
       end
     end
   end
@@ -45,10 +47,12 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.json do
         current_friend = authenticate_friend!
-        post = find_post
+        post = find_post!
         authorize!(post)
         post.reply_receipts.create!(friend: current_friend)
-        render(json: { "authorId" => post.author_id })
+        render(json: {
+          "worldId" => post.world_id,
+        })
       end
     end
   end
@@ -56,7 +60,7 @@ class PostsController < ApplicationController
   private
 
   sig { params(scope: Post::PrivateRelation).returns(Post) }
-  def find_post(scope: Post.all)
+  def find_post!(scope: Post.all)
     scope.find(params.fetch(:id))
   end
 end

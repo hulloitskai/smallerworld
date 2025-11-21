@@ -6,6 +6,17 @@ class ActivityPolicy < ApplicationPolicy
 
   def manage?
     activity = T.cast(record, Activity)
-    activity.user! == user!
+    activity.world_owner! == user!
+  end
+
+  # == Scopes ==
+
+  relation_scope do |relation|
+    relation = T.cast(relation, Activity::PrivateRelation)
+    if (user = self.user)
+      relation.where(world: user.world)
+    else
+      relation.none
+    end
   end
 end

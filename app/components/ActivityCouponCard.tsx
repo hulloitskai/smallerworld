@@ -9,7 +9,7 @@ import {
   MESSAGING_PLATFORMS,
 } from "~/helpers/messaging";
 import { confetti } from "~/helpers/particles";
-import { type ActivityCoupon, type Friend, type UserProfile } from "~/types";
+import { type ActivityCoupon, type Friend, type WorldProfile } from "~/types";
 
 import activityCardClasses from "./ActivityCard.module.css";
 import classes from "./ActivityCouponCard.module.css";
@@ -17,7 +17,7 @@ import classes from "./ActivityCouponCard.module.css";
 export interface ActivityCouponCardProps extends BoxProps {
   currentFriend: Friend;
   replyToNumber: string;
-  user: UserProfile;
+  world: WorldProfile;
   coupon: ActivityCoupon;
   onCouponRedeemed: () => void;
 }
@@ -25,7 +25,7 @@ export interface ActivityCouponCardProps extends BoxProps {
 const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
   currentFriend,
   replyToNumber,
-  user,
+  world,
   coupon,
   onCouponRedeemed,
   className,
@@ -65,8 +65,8 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
             },
           },
         });
-        void mutateRoute(routes.userActivityCoupons.index, {
-          user_id: user.id,
+        void mutateRoute(routes.worldActivityCoupons.index, {
+          world_id: world.id,
           query: {
             friend_token: currentFriend.access_token,
           },
@@ -148,7 +148,7 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
         <Popover.Dropdown>
           <Stack gap={8}>
             <Text ta="center" ff="heading" fw={500} size="sm">
-              contact {user.name} to redeem:
+              contact {world.owner_name} to redeem:
             </Text>
             <Group justify="center" gap="sm">
               {MESSAGING_PLATFORMS.map(platform => (

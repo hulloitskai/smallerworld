@@ -27,7 +27,6 @@ class PostShare < ApplicationRecord
   # == Associations ==
 
   belongs_to :post
-  has_one :post_author, through: :post, source: :author
   belongs_to :sharer, polymorphic: true
 
   sig { override.returns(T.nilable(T.any(User, Friend))) }
@@ -48,11 +47,6 @@ class PostShare < ApplicationRecord
   sig { returns(Post) }
   def post!
     post or raise ActiveRecord::RecordNotFound, "Missing associated post"
-  end
-
-  sig { returns(User) }
-  def post_author!
-    post_author or raise ActiveRecord::RecordNotFound, "Missing post author"
   end
 
   # == Validations ==

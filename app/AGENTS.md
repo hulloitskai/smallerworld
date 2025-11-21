@@ -22,6 +22,8 @@
   relevant.
 - Lean on existing helpers for routing, data fetching, PWA scope, and real-time
   features instead of rolling custom utilities.
+- When passing destructured values into child components, prefer object spread
+  syntax like `<Child {...{ value }} />`.
 
 ## Don’t
 
@@ -29,6 +31,8 @@
   already handles the pattern.
 - Leave event handlers with non-descriptive parameters—avoid single-letter
   variables like `e`.
+- Do not loosen shared component props just to work around missing data—ask for
+  the right approach (often via dynamic AppLayout props) instead.
 
 ## Commands
 

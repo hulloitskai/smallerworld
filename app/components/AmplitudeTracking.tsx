@@ -25,7 +25,6 @@ const AmplitudeTracking: FC = () => {
       setUserId(currentUser.id);
       const identifyEvent = new Identify();
       identifyEvent.set("name", currentUser.name);
-      identifyEvent.set("handle", currentUser.handle);
       identifyEvent.set("type", "user");
       identify(identifyEvent);
       return () => {

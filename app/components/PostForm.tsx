@@ -46,19 +46,18 @@ import {
   type PostFormValues,
   usePostDraftValues,
 } from "~/helpers/posts/form";
-import {
-  mutateWorldPosts,
-  mutateWorldTimeline,
-  useWorldFriends,
-} from "~/helpers/world";
+import { mutateUserUniversePosts } from "~/helpers/userUniverse";
+import { mutateUserWorldPosts, useUserWorldFriends } from "~/helpers/userWorld";
+import { mutateWorldTimeline } from "~/helpers/worlds";
 import {
   type Encouragement,
   type Post,
   type PostType,
   type PostVisibility,
   type Upload,
-  type WorldFriend,
-  type WorldPost,
+  type UserUniverseAuthorPost,
+  type UserWorldFriendProfile,
+  type UserWorldPost,
 } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
@@ -73,14 +72,14 @@ import "@mantine/dates/styles.css";
 
 export type PostFormProps =
   | {
-      post: WorldPost;
-      onPostUpdated?: (post: WorldPost) => void;
+      post: UserWorldPost | UserUniverseAuthorPost;
+      onPostUpdated?: (post: UserWorldPost) => void;
     }
   | {
       newPostType: PostType;
       encouragement?: Encouragement;
       quotedPost?: Post;
-      onPostCreated?: (post: WorldPost) => void;
+      onPostCreated?: (post: UserWorldPost) => void;
     };
 
 const POST_TITLE_PLACEHOLDERS: Partial<Record<PostType, string>> = {
@@ -123,7 +122,7 @@ const PostForm: FC<PostFormProps> = props => {
     : undefined;
 
   // == World friends
-  const { friends } = useWorldFriends();
+  const { friends } = useUserWorldFriends();
   const subscribedFriends = useMemo(
     () =>
       friends?.filter(
@@ -152,7 +151,7 @@ const PostForm: FC<PostFormProps> = props => {
     hiddenFromIds: string[];
     notifiedIds: string[];
     visibleToIds: string[];
-  }>(routes.worldPosts.audience, {
+  }>(routes.userWorldPosts.audience, {
     params: post ? { id: post.id } : null,
     descriptor: "load post audience",
   });
@@ -208,13 +207,13 @@ const PostForm: FC<PostFormProps> = props => {
     getInitialValues,
     watch,
   } = useForm<
-    { post: WorldPost },
+    { post: UserWorldPost },
     PostFormValues,
     (values: PostFormValues) => PostFormSubmission
   >({
     ...(post
       ? {
-          action: routes.worldPosts.update,
+          action: routes.userWorldPosts.update,
           params: { id: post.id },
           descriptor: "update post",
           transformValues: ({
@@ -267,7 +266,7 @@ const PostForm: FC<PostFormProps> = props => {
           },
         }
       : {
-          action: routes.worldPosts.create,
+          action: routes.userWorldPosts.create,
           descriptor: "create post",
           transformValues: ({
             emoji,
@@ -343,12 +342,15 @@ const PostForm: FC<PostFormProps> = props => {
       if (!("post" in props)) {
         resetFormAndEditor(reset);
         clearDraft();
-        void mutateRoute(routes.worldEncouragements.index);
+        void mutateRoute(routes.userWorldEncouragements.index);
       }
-      void mutateWorldPosts();
-      void mutateRoute(routes.worldPosts.pinned);
-      void mutateRoute(routes.worldPosts.audience, { id: post.id });
-      void mutateWorldTimeline();
+      void mutateUserWorldPosts();
+      void mutateUserUniversePosts();
+      void mutateRoute(routes.userWorldPosts.pinned);
+      void mutateRoute(routes.userWorldPosts.audience, { id: post.id });
+      if (post.world_id) {
+        void mutateWorldTimeline(post.world_id);
+      }
       if ("onPostCreated" in props) {
         props.onPostCreated?.(post);
       } else if ("onPostUpdated" in props) {
@@ -920,7 +922,7 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
 };
 
 const buildFriendNotifiability = (
-  friends: WorldFriend[],
+  friends: UserWorldFriendProfile[],
   visibility: PostVisibility,
   audienceData:
     | {
@@ -952,9 +954,9 @@ const buildFriendNotifiability = (
 
 interface FriendNotifiabilityTableProps {
   postId: string | undefined;
-  friends: WorldFriend[];
+  friends: UserWorldFriendProfile[];
   visibility: PostVisibility;
-  getSegmentedControlInputProps: (friend: WorldFriend) => {
+  getSegmentedControlInputProps: (friend: UserWorldFriendProfile) => {
     value?: any;
     onChange: any;
   };
@@ -971,7 +973,7 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
     hiddenFromIds: string[];
     notifiedIds: string[];
     visibleToIds: string[];
-  }>(routes.worldPosts.audience, {
+  }>(routes.userWorldPosts.audience, {
     params: postId ? { id: postId } : null,
     descriptor: "load post audience",
   });
@@ -988,7 +990,8 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
         pushableFriends.push(friend);
       }
     }
-    const sortFriends = (friends: WorldFriend[]) => sortBy(friends, "name");
+    const sortFriends = (friends: UserWorldFriendProfile[]) =>
+      sortBy(friends, "name");
     return {
       pausedFriends: sortFriends(pausedFriends),
       textOnlyFriends: sortFriends(textOnlyFriends),
@@ -996,7 +999,7 @@ const FriendNotifiabilityTables: FC<FriendNotifiabilityTableProps> = ({
     };
   }, [friends]);
 
-  const renderRow = (friend: WorldFriend) => {
+  const renderRow = (friend: UserWorldFriendProfile) => {
     const { value, ...inputProps } = getSegmentedControlInputProps(friend);
     const notified = audienceData?.notifiedIds?.includes(friend.id);
     return (

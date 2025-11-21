@@ -25,7 +25,7 @@ class EncouragementsController < ApplicationController
         else
           render(
             json: { errors: encouragement.form_errors },
-            status: :unprocessable_entity,
+            status: :unprocessable_content,
           )
         end
       end

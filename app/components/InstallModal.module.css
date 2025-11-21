@@ -1,0 +1,34 @@
+.modal {
+  :global(.mantine-Modal-title) {
+    line-height: var(--mantine-line-height-xs) !important;
+  }
+}
+
+.stepBadge {
+  :global(.mantine-Badge-section) {
+    font-family: var(--mantine-font-family-headings);
+  }
+
+  :global(.mantine-Badge-label) {
+    text-transform: none;
+  }
+}
+
+.stepImage {
+  border-radius: var(--mantine-radius-md);
+  max-width: 300px;
+}
+
+.emoji {
+  @mixin emoji;
+}
+
+.installButton {
+  box-shadow: 0px 0px var(--mantine-spacing-sm) 0px
+    alpha(var(--mantine-color-primary-filled), 0.4);
+
+  @mixin dark-world-theme {
+    box-shadow: 0px 0px var(--mantine-spacing-sm) 0px
+      alpha(var(--mantine-color-primary-outline), 0.7);
+  }
+}

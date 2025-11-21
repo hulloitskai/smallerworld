@@ -7,10 +7,7 @@ import {
   particlePositionFor,
   puffOfSmoke,
 } from "~/helpers/particles";
-import {
-  type AssociatedFriend,
-  type PostReaction /*, type PostSticker */,
-} from "~/types";
+import { type AssociatedFriend, type PostReaction } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 import PostCardReplyButton, {
@@ -22,17 +19,18 @@ import classes from "./FriendPostCardActions.module.css";
 import postCardClasses from "./PostCard.module.css";
 
 export interface FriendPostCardActionsProps
-  extends Pick<PostCardReplyButtonProps, "post" | "author" | "replyToNumber"> {
-  shareable?: boolean;
+  extends Omit<BoxProps, "children">,
+    Pick<PostCardReplyButtonProps, "post" | "world" | "replyToNumber"> {
   asFriend?: AssociatedFriend;
 }
 
 const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   post,
-  author,
+  world,
   replyToNumber,
-  shareable,
   asFriend,
+  className,
+  ...otherProps
 }) => {
   const { ref, inViewport } = useInViewport();
 
@@ -54,7 +52,14 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
   );
 
   return (
-    <Group {...{ ref }} align="start" gap={2} wrap="wrap">
+    <Group
+      {...{ ref }}
+      align="start"
+      gap={2}
+      wrap="wrap"
+      className={cn("FriendPostCardActions", className)}
+      {...otherProps}
+    >
       <Group gap={2} wrap="wrap" style={{ flexGrow: 1 }}>
         {Object.entries(reactionsByEmoji).map(([emoji, reactions]) => (
           <ReactionButton
@@ -98,11 +103,11 @@ const FriendPostCardActions: FC<FriendPostCardActionsProps> = ({
           {...{ asFriend }}
         />
         <Text className={postCardClasses.actionSeparator}>/</Text>
-        <PostCardReplyButton {...{ post, author, replyToNumber, asFriend }} />
-        {shareable && (
+        <PostCardReplyButton {...{ world, post, replyToNumber, asFriend }} />
+        {world.allow_friend_sharing && (
           <>
             <Text className={postCardClasses.actionSeparator}>/</Text>
-            <PostCardShareButton {...{ post, author }} />
+            <PostCardShareButton {...{ world, post }} />
           </>
         )}
       </Group>

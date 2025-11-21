@@ -6,17 +6,21 @@ class InvitationsController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        invitation = maybe_find_invitation(
-          scope: Invitation.includes(:user, :friend),
-        )
+        invitation = find_invitation(scope: Invitation.includes(
+          :world,
+          :friend,
+        ))
         if invitation
-          user = invitation.user!
-          featured_post = user.posts.visible_to_friends.chronological.last
+          world = invitation.world!
+          featured_post = world.posts
+            .visible_to_friends
+            .chronological
+            .last
           friend = invitation.friend
           autofill_phone_number =
             friend&.phone_number || current_user&.phone_number
-          render(inertia: "InvitationPage", props: {
-            user: UserProfileSerializer.one(user),
+          render(inertia: "InvitationPage", world_theme: world.theme, props: {
+            world: WorldSerializer.one(world),
             invitation: InvitationSerializer.one(invitation),
             friend: FriendProfileSerializer.one_if(friend),
             "featuredPost" => PostSerializer.one_if(featured_post),
@@ -34,14 +38,15 @@ class InvitationsController < ApplicationController
   def accept
     respond_to do |format|
       format.json do
-        invitation = find_invitation
-        user = invitation.user!
+        invitation = find_invitation!
         friend_params = params.expect(friend: %i[phone_number time_zone])
-        friend = user.friends.find_or_initialize_by(invitation:) do |f|
-          f.emoji = invitation.invitee_emoji
-          f.name = invitation.invitee_name
-          f.offered_activity_ids = invitation.offered_activity_ids
-        end
+        friend = invitation.world_friends
+          .find_or_initialize_by(invitation:) do |f|
+            f.world = invitation.world!
+            f.emoji = invitation.invitee_emoji
+            f.name = invitation.invitee_name
+            f.offered_activity_ids = invitation.offered_activity_ids
+          end
         friend.attributes = friend_params
         if friend.save
           # friend.send_installation_message!
@@ -51,7 +56,7 @@ class InvitationsController < ApplicationController
         else
           render(
             json: { errors: friend.form_errors },
-            status: :unprocessable_entity,
+            status: :unprocessable_content,
           )
         end
       end
@@ -63,14 +68,14 @@ class InvitationsController < ApplicationController
   # == Helpers ==
 
   sig { params(scope: Invitation::PrivateRelation).returns(Invitation) }
-  def find_invitation(scope: Invitation.all)
+  def find_invitation!(scope: Invitation.all)
     scope.find(params.fetch(:id))
   end
 
   sig do
     params(scope: Invitation::PrivateRelation).returns(T.nilable(Invitation))
   end
-  def maybe_find_invitation(scope: Invitation.all)
+  def find_invitation(scope: Invitation.all)
     scope.find_by(id: params.fetch(:id))
   end
 end

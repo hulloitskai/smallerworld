@@ -21,14 +21,14 @@ const WorldJoinRequestCard: FC<WorldJoinRequestCardProps> = ({
 }) => {
   const [deleteStarted, setDeleteStarted] = useState(false);
   const { trigger: triggerDelete } = useRouteMutation(
-    routes.worldJoinRequests.destroy,
+    routes.userWorldJoinRequests.destroy,
     {
       params: {
         id: joinRequest.id,
       },
       descriptor: "remove join request",
       onSuccess: () => {
-        void mutateRoute(routes.worldJoinRequests.index);
+        void mutateRoute(routes.userWorldJoinRequests.index);
       },
       onError: () => {
         setDeleteStarted(false);

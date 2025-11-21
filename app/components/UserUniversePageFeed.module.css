@@ -1,0 +1,15 @@
+.worldImage {
+  object-fit: cover;
+  flex: unset;
+}
+
+.worldButton {
+  align-self: center;
+  padding-inline: calc(var(--mantine-spacing-xs) / 2);
+  border-radius: var(--mantine-radius-md);
+  color: var(--mantine-color-bright);
+
+  :global(.mantine-Button-label) {
+    font-size: var(--mantine-font-size-sm);
+  }
+}

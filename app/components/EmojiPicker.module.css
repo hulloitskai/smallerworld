@@ -27,7 +27,7 @@
     }
 
     &:not(:focus) {
-      @mixin dark-user-theme {
+      @mixin dark-world-theme {
         border-color: alpha(var(--mantine-color-white), 0.2);
       }
     }

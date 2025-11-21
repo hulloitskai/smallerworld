@@ -31,13 +31,12 @@ const CannyTracking: FC = () => {
         },
       );
     } else if (currentUser) {
-      const { id, name, page_icon } = currentUser;
+      const { id, name } = currentUser;
       const user = {
         id,
         name,
         email: cannyEmail("user", id),
         created: currentUser.created_at,
-        avatarURL: page_icon.src,
       };
       Canny(
         "identify",

@@ -11,9 +11,9 @@ class RenderTest < ApplicationSystemTestCase
     assert_not_empty(find_by_id("app").find_all("*"))
   end
 
-  test "renders user page" do
-    testy = users(:testy)
-    visit user_url(testy)
+  test "renders world page" do
+    testy_world = worlds(:testy_world)
+    visit world_path(testy_world)
     assert_selector "#app"
     assert_not_empty find_by_id("app").find_all("*")
   end

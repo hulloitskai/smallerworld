@@ -34,11 +34,11 @@ class ErrorsController < ApplicationController
   end
 
   # GET /422
-  def unprocessable_entity
+  def unprocessable_content
     respond_to do |format|
       format.html do
         render_error_page(
-          status: :unprocessable_entity,
+          status: :unprocessable_content,
           title: "change rejected",
           description:
             "the change you wanted was rejected. maybe you tried to change " \
