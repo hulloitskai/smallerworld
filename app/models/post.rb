@@ -409,12 +409,13 @@ class Post < ApplicationRecord
         notified_friend_ids << friend.id
       end
     if visibility == :public
-      notified_user_ids = Friend
+      notified_world_ids = Friend
         .where(id: notified_friend_ids)
-        .select("DISTINCT user_id")
+        .select("DISTINCT world_id")
       User
         .subscribed_to_public_posts
-        .where.not(id: notified_user_ids)
+        .joins(:world)
+        .where.not(world: { id: notified_world_ids })
         .where.not(
           id: notifications
             .where(recipient_type: "User")

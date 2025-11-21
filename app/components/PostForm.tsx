@@ -879,11 +879,10 @@ const PostForm: FC<PostFormProps> = props => {
 
 export default PostForm;
 
-const formatPinnedUntil = (dateString: string): string => {
-  const date = DateTime.fromISO(dateString, { zone: "local" });
-  date.set({ hour: 23, minute: 59, second: 59, millisecond: 0 });
-  return date.toISO();
-};
+const formatPinnedUntil = (dateString: string): string =>
+  DateTime.fromISO(dateString, { zone: "local" })
+    .set({ hour: 23, minute: 59, second: 59, millisecond: 0 })
+    .toISO();
 
 interface ReorderableImageInputProps
   extends ImageInputProps,
