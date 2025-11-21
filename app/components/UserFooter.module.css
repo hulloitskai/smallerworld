@@ -24,7 +24,15 @@
     background-color: darken(var(--mantine-color-body), 0.3);
   }
 
+  :global(.mantine-SegmentedControl-control) {
+    --separator-color: var(--mantine-color-default-border);
+  }
+
   :global(.mantine-SegmentedControl-label) {
     font-weight: 600;
   }
+}
+
+.spaceEmoji {
+  @mixin emoji;
 }

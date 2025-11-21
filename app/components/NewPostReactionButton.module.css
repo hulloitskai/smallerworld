@@ -1,0 +1,8 @@
+.button {
+  flex-shrink: 0;
+  padding-right: 5px;
+
+  &[data-opened] {
+    background-color: var(--mantine-color-primary-light-hover);
+  }
+}

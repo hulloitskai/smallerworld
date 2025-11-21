@@ -39,7 +39,7 @@ Rails.application.routes.draw do
 
   # == PWA ==
 
-  scope constraints: { format: :webmanifest } do
+  scope constraints: { format: "" } do
     scope path: "/worlds/:world_id", module: :worlds, as: :world do
       get "/manifest.webmanifest",
           to: "manifests#show",
@@ -116,7 +116,7 @@ Rails.application.routes.draw do
   get "/@:id", to: "worlds#show", as: :world, export: true
   get "/@:id/join", to: "worlds#join"
   resources :worlds, only: [], export: true do
-    scope(module: :worlds) do
+    scope module: :worlds  do
       resource :timeline, only: :show, export: { namespace: "worldTimelines" }
       resources :join_requests,
                 only: :create,
@@ -143,7 +143,7 @@ Rails.application.routes.draw do
       only: %i[show edit update],
       export: { namespace: "userWorld" },
     ) do
-      scope(module: :worlds) do
+      scope module: :worlds do
         resources :activities,
                   only: %i[index create],
                   export: { namespace: "userWorldActivities" }
@@ -186,7 +186,7 @@ Rails.application.routes.draw do
     end
 
     # == User Universe ==
-    resource(:universe, only: [], export: false) do
+    resource :universe, only: [], export: false do
       scope export: { namespace: "userUniverse" } do
         get :worlds
         get :posts
@@ -196,6 +196,12 @@ Rails.application.routes.draw do
         to: "universes#show",
         as: :universe,
         export: { namespace: "userUniverse" }
+
+    # == User Spaces ==
+    get "/world/spaces",
+        to: "spaces#index",
+        as: :spaces,
+        export: { namespace: "userSpaces" }
   end
 
   # == Friend ==

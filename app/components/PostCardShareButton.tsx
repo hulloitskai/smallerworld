@@ -2,14 +2,18 @@ import { type ActionIconProps } from "@mantine/core";
 
 import ShareIcon from "~icons/heroicons/arrow-up-on-square-20-solid";
 
-import { type PostShare, type WorldProfile } from "~/types";
+import {
+  type PostShare,
+  type UserUniverseFriendPost,
+  type WorldProfile,
+} from "~/types";
 import type WorldPost from "~/types/WorldPost";
 
 import classes from "./PostCardShareButton.module.css";
 
 export interface PostCardShareButtonProps extends ActionIconProps {
   world: WorldProfile;
-  post: WorldPost;
+  post: WorldPost | UserUniverseFriendPost;
 }
 
 const PostCardShareButton: FC<PostCardShareButtonProps> = ({

@@ -4,7 +4,7 @@
 class PostReactionsController < ApplicationController
   # == Filters ==
 
-  before_action :authenticate_friend!, only: %i[create destroy]
+  before_action :require_authentication!, only: %i[create destroy]
 
   # == Actions ==
 
@@ -25,11 +25,11 @@ class PostReactionsController < ApplicationController
   def create
     respond_to do |format|
       format.json do
-        current_friend = authenticate_friend!
+        reactor = require_authentication!
         post = find_post!
         reaction_params = params.expect(reaction: [:emoji])
         reaction = post.reactions.find_or_create_by!(
-          friend: current_friend,
+          reactor:,
           **reaction_params,
         )
         render(

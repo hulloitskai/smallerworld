@@ -289,6 +289,9 @@ module GeneratedUrlHelpersModule
   def user_manifest_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def user_spaces_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def user_universe_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

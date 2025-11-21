@@ -1,14 +1,6 @@
-import { useInViewport } from "@mantine/hooks";
-import { type PropsWithChildren } from "react";
-
 import { NEKO_SIZE } from "~/helpers/neko";
 import { useWebPush } from "~/helpers/webPush";
-import {
-  mutateWorldPosts,
-  useWorldPosts,
-  type WorldPageProps,
-} from "~/helpers/worlds";
-import { type WorldFriendPost } from "~/types";
+import { useWorldPosts, type WorldPageProps } from "~/helpers/worlds";
 
 import EncouragementCard from "./EncouragementCard";
 import FeedbackNeko from "./FeedbackNeko";
@@ -86,19 +78,19 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
         ) : (
           <>
             {posts.map((post, index) => {
-              const children = (
+              return (
                 <Box pos="relative">
                   <PostCard
                     {...{ post }}
                     blurContent={!currentFriend && post.visibility !== "public"}
                     focus={queryParams.post_id === post.id}
                     actions={
-                      post.user_post_type === "friend" && replyToNumber ? (
+                      post.world_post_type === "friend" && replyToNumber ? (
                         <FriendPostCardActions
                           {...{ world, post, replyToNumber }}
                         />
                       ) : (
-                        <PublicPostCardActions postId={post.id} />
+                        <PublicPostCardActions {...{ post }} />
                       )
                     }
                   />
@@ -112,13 +104,6 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
                       />
                     )}
                 </Box>
-              );
-              return post.user_post_type === "friend" ? (
-                <TrackUserPostSeen key={post.id} {...{ post }}>
-                  {children}
-                </TrackUserPostSeen>
-              ) : (
-                children
               );
             })}
             {hasMorePosts && (
@@ -140,34 +125,3 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
 };
 
 export default WorldPageFeed;
-
-interface TrackUserPostSeenProps extends PropsWithChildren {
-  post: WorldFriendPost;
-}
-
-const TrackUserPostSeen: FC<TrackUserPostSeenProps> = ({ post, children }) => {
-  const { currentFriend } = usePageProps<WorldPageProps>();
-  const { ref, inViewport } = useInViewport<HTMLDivElement>();
-  useEffect(() => {
-    if (currentFriend && !post.seen && inViewport) {
-      const timeout = setTimeout(() => {
-        void fetchRoute<{ worldId: string }>(routes.posts.markSeen, {
-          params: {
-            id: post.id,
-            query: {
-              friend_token: currentFriend.access_token,
-            },
-          },
-          descriptor: "mark post as seen",
-          failSilently: true,
-        }).then(({ worldId }) => {
-          void mutateWorldPosts(worldId);
-        });
-      }, 1000);
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-  }, [inViewport]); // eslint-disable-line react-hooks/exhaustive-deps
-  return <div {...{ ref }}>{children}</div>;
-};

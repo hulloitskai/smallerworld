@@ -1,16 +1,9 @@
-import {
-  Image,
-  Indicator,
-  RemoveScroll,
-  ScrollArea,
-  Text,
-} from "@mantine/core";
+import { Image, Indicator, ScrollArea, Text } from "@mantine/core";
 
 import AppLayout from "~/components/AppLayout";
+import UserFooter from "~/components/UserFooter";
 import UserUniversePageFeed from "~/components/UserUniversePageFeed";
-import WorldFooter from "~/components/WorldFooter";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
-import { useWebPush } from "~/helpers/webPush";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
 import { useWorldTheme } from "~/helpers/worldThemes";
 import { type UniverseWorldProfile, type User, type World } from "~/types";
@@ -29,12 +22,6 @@ const UserUniversePage: PageComponent<UserUniversePageProps> = ({
   userWorld,
 }) => {
   useWorldTheme(userWorld?.theme ?? null);
-  const { isStandalone, outOfPWAScope } = usePWA();
-  const {
-    pushRegistration,
-    supported: webPushSupported,
-    permission: webPushPermission,
-  } = useWebPush();
 
   // == Load worlds
   const { data } = useRouteSWR<{ worlds: UniverseWorldProfile[] }>(
@@ -45,10 +32,10 @@ const UserUniversePage: PageComponent<UserUniversePageProps> = ({
   );
   const { worlds } = data ?? {};
 
-  const body = (
+  return (
     <Stack gap="lg" py="md">
       <Stack gap="sm">
-        <Title size="h2" className={classes.pageTitle} mx="md">
+        <Title size="h2" className={classes.title} mx="md">
           smaller universe
         </Title>
         {worlds && isEmpty(worlds) ? (
@@ -84,9 +71,7 @@ const UserUniversePage: PageComponent<UserUniversePageProps> = ({
                     >
                       <Stack align="center" gap={8} w="min-content">
                         <WorldIcon {...{ world }} mx="sm" />
-                        <Text ff="heading" size="sm" fw={600} ta="center">
-                          {world.name}
-                        </Text>
+                        <Text className={classes.worldName}>{world.name}</Text>
                       </Stack>
                     </Anchor>
                   ))
@@ -125,21 +110,6 @@ const UserUniversePage: PageComponent<UserUniversePageProps> = ({
       </Container>
     </Stack>
   );
-  return (
-    <>
-      <RemoveScroll
-        enabled={
-          isStandalone &&
-          !outOfPWAScope &&
-          !pushRegistration &&
-          webPushSupported !== false &&
-          webPushPermission !== "denied"
-        }
-      >
-        {body}
-      </RemoveScroll>
-    </>
-  );
 };
 
 UserUniversePage.layout = page => (
@@ -147,7 +117,9 @@ UserUniversePage.layout = page => (
     title="your universe"
     manifestUrl={({ currentUser }) => worldManifestUrlForUser(currentUser)}
     pwaScope={withTrailingSlash(routes.userWorld.show.path())}
-    footer={({ userWorld }) => <WorldFooter world={userWorld} />}
+    footer={({ currentUser, userWorld }) => (
+      <UserFooter {...{ currentUser }} world={userWorld} />
+    )}
     padding={0}
   >
     {page}
@@ -186,7 +158,7 @@ const WorldIcon: FC<WorldIconProps> = ({ world, ...otherProps }) => (
         disabled={!world.last_post_created_at}
       >
         <Image
-          className={classes.worldPageIcon}
+          className={classes.worldIcon}
           src={world.icon.src}
           {...(!!world.icon.srcset && { srcSet: world.icon.srcset })}
           w={ICON_SIZE}

@@ -70,7 +70,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
     };
   }, [pushRegistration]);
   const { data: activityCouponsData } = useRouteSWR<{
-    coupons: ActivityCoupon[];
+    activityCoupons: ActivityCoupon[];
   }>(routes.worldActivityCoupons.index, {
     params:
       currentFriend && !!replyToNumber
@@ -84,7 +84,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
     descriptor: "load activity coupons",
     keepPreviousData: true,
   });
-  const { coupons = [] } = activityCouponsData ?? {};
+  const { activityCoupons = [] } = activityCouponsData ?? {};
 
   // == Drawer modal
   const [drawerModalOpened, setDrawerModalOpened] = useState(false);
@@ -98,7 +98,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
   // == Page dialog
   useWorldPageDialogOpened(drawerModalOpened);
 
-  const invitationCount = pinnedPosts.length + coupons.length;
+  const invitationCount = pinnedPosts.length + activityCoupons.length;
   return (
     <>
       <Transition transition="pop" mounted={invitationCount > 0}>
@@ -107,7 +107,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
             label={<>{world.owner_name} sent you an activity coupon!</>}
             opened={
               !!pushRegistration &&
-              !isEmpty(coupons) &&
+              !isEmpty(activityCoupons) &&
               isEmpty(modals) &&
               !drawerModalOpened &&
               showActivityCouponTooltip
@@ -139,7 +139,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
         }}
       >
         <Stack gap="lg">
-          {!isEmpty(coupons) && !!currentFriend && !!replyToNumber && (
+          {!isEmpty(activityCoupons) && !!currentFriend && !!replyToNumber && (
             <Box className={classes.activityCouponsContainer}>
               <Stack gap="md">
                 <Box px="md">
@@ -155,7 +155,12 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
                   </Text>
                 </Box>
                 <ActivityCouponsCarousel
-                  {...{ currentFriend, replyToNumber, world, coupons }}
+                  {...{
+                    currentFriend,
+                    replyToNumber,
+                    world,
+                    activityCoupons,
+                  }}
                 />
               </Stack>
             </Box>
@@ -180,12 +185,12 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
                   {...{ post }}
                   blurContent={!currentFriend && post.visibility !== "public"}
                   actions={
-                    post.user_post_type === "friend" && replyToNumber ? (
+                    post.world_post_type === "friend" && replyToNumber ? (
                       <FriendPostCardActions
                         {...{ world, post, replyToNumber }}
                       />
                     ) : (
-                      <PublicPostCardActions postId={post.id} />
+                      <PublicPostCardActions {...{ post }} />
                     )
                   }
                 />

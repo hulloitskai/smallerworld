@@ -16,7 +16,7 @@ import { mutateWorldTimeline } from "~/helpers/worlds";
 import {
   type PostReaction,
   type PostShare,
-  type PostViewer,
+  type UserPostViewer,
   type UserUniverseAuthorPost,
   type UserWorldPost,
   type World,
@@ -362,7 +362,7 @@ interface PostViewersModalBodyProps {
 }
 
 const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ postId }) => {
-  const { data } = useRouteSWR<{ viewers: PostViewer[] }>(
+  const { data } = useRouteSWR<{ viewers: UserPostViewer[] }>(
     routes.userWorldPosts.viewers,
     {
       params: {

@@ -54,7 +54,8 @@ const UserUniversePageFeed: FC<UserUniversePageFeedProps> = ({
                             routes.worlds.show.path({
                               id: post.world_id,
                               query: {
-                                ...(post.universe_post_type === "friend" && {
+                                ...(post.user_universe_post_type ===
+                                  "friend" && {
                                   friend_token:
                                     post.associated_friend.access_token,
                                 }),
@@ -84,9 +85,10 @@ const UserUniversePageFeed: FC<UserUniversePageFeedProps> = ({
                   {...{ post }}
                   focus={queryParams.post_id === post.id}
                   actions={
-                    userWorld && post.universe_post_type === "author" ? (
+                    userWorld && post.user_universe_post_type === "author" ? (
                       <AuthorPostCardActions world={userWorld} {...{ post }} />
-                    ) : post.world && post.universe_post_type === "friend" ? (
+                    ) : post.world &&
+                      post.user_universe_post_type === "friend" ? (
                       <FriendPostCardActions
                         {...{ post }}
                         world={post.world}
@@ -94,7 +96,9 @@ const UserUniversePageFeed: FC<UserUniversePageFeedProps> = ({
                         asFriend={post.associated_friend}
                       />
                     ) : (
-                      <PublicPostCardActions postId={post.id} />
+                      post.user_universe_post_type === "public" && (
+                        <PublicPostCardActions {...{ post }} />
+                      )
                     )
                   }
                 />

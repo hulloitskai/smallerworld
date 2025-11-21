@@ -77,7 +77,7 @@ module Users::Worlds
           authorize!(post, to: :manage?)
           render(json: {
             "notifiedFriends" => post.notified_friends.count,
-            "viewers" => post.viewers.count,
+            "viewers" => post.friend_viewers.count,
             "repliers" => post.reply_receipts.distinct.count(:friend_id),
           })
         end
@@ -94,26 +94,37 @@ module Users::Worlds
             .where(
               id: PostView
                 .where(post:)
-                .select("DISTINCT ON (friend_id) id")
-                .order("friend_id, created_at DESC"),
+                .select("DISTINCT ON (viewer_type, viewer_id) id")
+                .order("viewer_type, viewer_id, created_at DESC"),
             )
             .reverse_chronological
-            .with_friend
-          reactions_by_friend_id = PostReaction
+            .with_viewer
+          reactions_by_viewer = PostReaction
             .where(post: post)
-            .group(:friend_id)
-            .pluck(:friend_id, Arel.sql("ARRAY_AGG(emoji ORDER BY created_at)"))
-            .to_h
-          viewers = views.map do |view|
-            reaction_emojis = reactions_by_friend_id.fetch(view.friend_id, [])
-            PostViewer.new(
-              friend: view.friend!,
+            .group(:reactor_type, :reactor_id)
+            .pluck(
+              :reactor_type,
+              :reactor_id,
+              Arel.sql("ARRAY_AGG(emoji ORDER BY created_at)"),
+            )
+            .each_with_object({}) do |(reactor_type, reactor_id, emojis), memo|
+              memo[[reactor_type, reactor_id]] = emojis
+            end
+          user_viewers = views.filter_map do |view|
+            next unless (viewer = view.viewer)
+
+            reaction_emojis = reactions_by_viewer.fetch(
+              [view.viewer_type, view.viewer_id],
+              [],
+            )
+            UserPostViewer.new(
+              viewer:,
               last_viewed_at: view.created_at,
               reaction_emojis:,
             )
           end
           render(json: {
-            viewers: PostViewerSerializer.many(viewers),
+            viewers: UserPostViewerSerializer.many(user_viewers),
           })
         end
       end

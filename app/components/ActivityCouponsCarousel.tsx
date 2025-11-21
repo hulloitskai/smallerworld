@@ -18,14 +18,14 @@ export interface ActivityCouponsCarouselProps
       "currentFriend" | "replyToNumber" | "world"
     >,
     BoxProps {
-  coupons: ActivityCoupon[];
+  activityCoupons: ActivityCoupon[];
 }
 
 const ActivityCouponsCarousel: FC<ActivityCouponsCarouselProps> = ({
   currentFriend,
   replyToNumber,
   world,
-  coupons,
+  activityCoupons,
   className,
   ...otherProps
 }) => {
@@ -39,11 +39,16 @@ const ActivityCouponsCarousel: FC<ActivityCouponsCarouselProps> = ({
       emblaOptions={{ align: "center" }}
       {...otherProps}
     >
-      {coupons.map(coupon => (
-        <Carousel.Slide key={coupon.id}>
+      {activityCoupons.map(activityCoupon => (
+        <Carousel.Slide key={activityCoupon.id}>
           <ActivityCouponCard
-            {...{ currentFriend, replyToNumber, world, coupon }}
-            onCouponRedeemed={() => {}}
+            {...{
+              currentFriend,
+              activityCoupon,
+              world,
+              replyToNumber,
+            }}
+            onActivityCouponRedeemed={() => {}}
           />
         </Carousel.Slide>
       ))}

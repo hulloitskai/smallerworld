@@ -16,7 +16,7 @@ class ActivityCouponsController < ApplicationController
         current_friend = authenticate_friend!
         coupons = current_friend.activity_coupons.active
         render(json: {
-          coupons: ActivityCouponSerializer.many(coupons),
+          "activityCoupons" => ActivityCouponSerializer.many(coupons),
         })
       end
     end
@@ -27,15 +27,15 @@ class ActivityCouponsController < ApplicationController
     respond_to do |format|
       format.json do
         activity_coupon_params = params
-          .expect(coupon: %i[activity_id friend_id])
+          .expect(activity_coupon: %i[activity_id friend_id])
         activity = Activity.find(activity_coupon_params.fetch(:activity_id))
         authorize!(activity, to: :manage?)
         friend = Friend.find(activity_coupon_params.fetch(:friend_id))
         authorize!(friend, to: :manage?)
-        coupon = friend.activity_coupons.create!(activity:)
+        activity_coupon = friend.activity_coupons.create!(activity:)
         render(
           json: {
-            coupon: ActivityCouponSerializer.one(coupon),
+            "activityCoupon" => ActivityCouponSerializer.one(activity_coupon),
           },
           status: :created,
         )
@@ -47,9 +47,9 @@ class ActivityCouponsController < ApplicationController
   def mark_as_redeemed
     respond_to do |format|
       format.json do
-        coupon = find_coupon!
-        authorize!(coupon)
-        coupon.mark_as_redeemed!
+        activity_coupon = find_activity_coupon!
+        authorize!(activity_coupon)
+        activity_coupon.mark_as_redeemed!
         render(json: {})
       end
     end
@@ -60,7 +60,7 @@ class ActivityCouponsController < ApplicationController
   # == Helpers ==
 
   sig { returns(ActivityCoupon) }
-  def find_coupon!
+  def find_activity_coupon!
     ActivityCoupon.find(params.fetch(:id))
   end
 end

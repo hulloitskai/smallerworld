@@ -44,7 +44,7 @@ module Worlds
           serialized_posts =
             if (friend = current_friend)
               views_by_post_id = PostView
-                .where(post_id: post_ids, friend:)
+                .where(post_id: post_ids, viewer: friend)
                 .group(:post_id)
                 .pluck(:post_id)
                 .to_set
@@ -66,9 +66,17 @@ module Worlds
                 WorldFriendPostSerializer.one(friend_post)
               end
             else
+              views_by_post_id = if (user = current_user)
+                PostView
+                  .where(post_id: post_ids, viewer: user)
+                  .group(:post_id)
+                  .pluck(:post_id)
+                  .to_set
+              end
               posts.map do |post|
                 repliers = repliers_by_post_id.fetch(post.id, 0)
-                public_post = WorldPublicPost.new(post:, repliers:)
+                seen = views_by_post_id&.include?(post.id) || false
+                public_post = WorldPublicPost.new(post:, repliers:, seen:)
                 WorldPublicPostSerializer.one(public_post)
               end
             end
@@ -113,7 +121,7 @@ module Worlds
             .to_h
           serialized_posts = if (friend = current_friend)
             views_by_post_id = PostView
-              .where(post_id: post_ids, friend:)
+              .where(post_id: post_ids, viewer: friend)
               .group(:post_id)
               .pluck(:post_id)
               .to_set
@@ -134,9 +142,17 @@ module Worlds
               WorldFriendPostSerializer.one(friend_post)
             end
           else
+            views_by_post_id = if (user = current_user)
+              PostView
+                .where(post_id: post_ids, viewer: user)
+                .group(:post_id)
+                .pluck(:post_id)
+                .to_set
+            end
             posts.map do |post|
               repliers = repliers_by_post_id.fetch(post.id, 0)
-              public_post = WorldPublicPost.new(post:, repliers:)
+              seen = views_by_post_id&.include?(post.id) || false
+              public_post = WorldPublicPost.new(post:, repliers:, seen:)
               WorldPublicPostSerializer.one(public_post)
             end
           end

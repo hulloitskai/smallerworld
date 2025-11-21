@@ -6,6 +6,6 @@ class PostReactionPolicy < RelaxedPolicy
 
   def manage?
     reaction = T.cast(record, PostReaction)
-    reaction.friend! == friend!
+    reaction.reactor! == friend || user
   end
 end

@@ -134,7 +134,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
       <PostCard
         {...{ post }}
         expanded
-        actions={<PublicPostCardActions postId={post.id} />}
+        actions={<PublicPostCardActions {...{ post }} />}
       />
       <PostSharePageRequestInvitationAlert />
     </Stack>

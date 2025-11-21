@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_21_155819) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_21_203623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -254,11 +254,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_155819) do
   create_table "post_reactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "post_id", null: false
     t.string "emoji", null: false
-    t.uuid "friend_id", null: false
+    t.uuid "deprecated_friend_id"
     t.datetime "created_at", precision: nil, null: false
-    t.index ["friend_id"], name: "index_post_reactions_on_friend_id"
-    t.index ["post_id", "friend_id", "emoji"], name: "index_post_reactions_uniqueness", unique: true
+    t.uuid "reactor_id", null: false
+    t.string "reactor_type", null: false
+    t.index ["deprecated_friend_id"], name: "index_post_reactions_on_deprecated_friend_id"
     t.index ["post_id"], name: "index_post_reactions_on_post_id"
+    t.index ["reactor_type", "reactor_id", "post_id", "emoji"], name: "index_post_reactions_uniquness", unique: true
   end
 
   create_table "post_reply_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -293,11 +295,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_155819) do
 
   create_table "post_views", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "post_id", null: false
-    t.uuid "friend_id", null: false
+    t.uuid "deprecated_friend_id"
     t.datetime "created_at", precision: nil, null: false
-    t.index ["friend_id", "post_id"], name: "index_post_views_uniqueness", unique: true
-    t.index ["friend_id"], name: "index_post_views_on_friend_id"
+    t.uuid "viewer_id", null: false
+    t.string "viewer_type", null: false
+    t.index ["deprecated_friend_id"], name: "index_post_views_on_deprecated_friend_id"
     t.index ["post_id"], name: "index_post_views_on_post_id"
+    t.index ["viewer_type", "viewer_id", "post_id"], name: "index_post_views_uniqueness", unique: true
   end
 
   create_table "posts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -440,14 +444,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_155819) do
   add_foreign_key "invitations", "worlds"
   add_foreign_key "join_requests", "users", column: "deprecated_user_id"
   add_foreign_key "join_requests", "worlds"
-  add_foreign_key "post_reactions", "friends"
   add_foreign_key "post_reactions", "posts"
   add_foreign_key "post_reply_receipts", "friends"
   add_foreign_key "post_reply_receipts", "posts"
   add_foreign_key "post_shares", "posts"
   add_foreign_key "post_stickers", "friends"
   add_foreign_key "post_stickers", "posts"
-  add_foreign_key "post_views", "friends"
   add_foreign_key "post_views", "posts"
   add_foreign_key "posts", "encouragements"
   add_foreign_key "posts", "posts", column: "quoted_post_id"

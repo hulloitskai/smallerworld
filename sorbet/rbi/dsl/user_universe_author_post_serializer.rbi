@@ -6,6 +6,6 @@
 
 
 class UserUniverseAuthorPostSerializer
-  sig { returns(Post) }
-  def post; end
+  sig { returns(UserUniverseAuthorPost) }
+  def user_universe_author_post; end
 end

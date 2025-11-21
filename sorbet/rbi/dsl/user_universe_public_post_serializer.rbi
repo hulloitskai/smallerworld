@@ -6,6 +6,6 @@
 
 
 class UserUniversePublicPostSerializer
-  sig { returns(Post) }
-  def post; end
+  sig { returns(UserUniversePublicPost) }
+  def user_universe_public_post; end
 end

@@ -7,8 +7,6 @@ class UniverseWorldProfile < T::Struct
   # == Properties ==
 
   const :world, World
-  delegate_missing_to :world
-
   const :uncleared_notification_count, Integer
   const :last_post_created_at, T.nilable(Time)
   const :associated_friend_access_token, T.nilable(String)

@@ -1,4 +1,5 @@
-import { type SVGProps } from "react";
+import { useInViewport } from "@mantine/hooks";
+import { type RefCallback, type SVGProps, useRef } from "react";
 
 import JournalEntryIcon from "~icons/basil/book-solid";
 import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
@@ -7,7 +8,12 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
 import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
-import { type PostType, type PostVisibility } from "~/types";
+import {
+  type AssociatedFriend,
+  type Post,
+  type PostType,
+  type PostVisibility,
+} from "~/types";
 
 export { POST_TYPE_TO_LABEL, POST_VISIBILITY_TO_LABEL } from "./formatting";
 
@@ -56,4 +62,45 @@ export const POST_VISIBILITY_TO_ICON: Record<
   friends: FriendsIcon,
   chosen_family: ChosenFamilyIcon,
   secret: LockIcon,
+};
+
+interface TrackPostSeenOptions {
+  skip?: boolean;
+  asFriend?: AssociatedFriend;
+}
+
+export const useTrackPostSeen = <T extends HTMLElement>(
+  post: Post,
+  options?: TrackPostSeenOptions,
+): RefCallback<T | null> => {
+  const { skip, asFriend } = options ?? {};
+  const currentFriend = useCurrentFriend();
+  const friend = asFriend ?? currentFriend;
+  const { ref, inViewport } = useInViewport<T>();
+  const markedSeenRef = useRef(false);
+  useEffect(() => {
+    if (!inViewport || skip || markedSeenRef.current) {
+      return;
+    }
+    const timeout = setTimeout(() => {
+      void fetchRoute<{ worldId: string }>(routes.posts.markSeen, {
+        params: {
+          id: post.id,
+          query: {
+            ...(friend && {
+              friend_token: friend.access_token,
+            }),
+          },
+        },
+        descriptor: "mark post as seen",
+        failSilently: true,
+      }).then(() => {
+        markedSeenRef.current = true;
+      });
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [inViewport]); // eslint-disable-line react-hooks/exhaustive-deps
+  return ref;
 };

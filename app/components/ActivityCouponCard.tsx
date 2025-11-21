@@ -16,36 +16,36 @@ import classes from "./ActivityCouponCard.module.css";
 
 export interface ActivityCouponCardProps extends BoxProps {
   currentFriend: Friend;
-  replyToNumber: string;
+  activityCoupon: ActivityCoupon;
   world: WorldProfile;
-  coupon: ActivityCoupon;
-  onCouponRedeemed: () => void;
+  replyToNumber: string;
+  onActivityCouponRedeemed: () => void;
 }
 
 const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
   currentFriend,
-  replyToNumber,
+  activityCoupon,
   world,
-  coupon,
-  onCouponRedeemed,
+  replyToNumber,
   className,
+  onActivityCouponRedeemed,
   ...otherProps
 }) => {
   const vaulPortalTarget = useVaulPortalTarget();
-  const { activity } = coupon;
+  const { activity } = activityCoupon;
 
   // == Mark coupon as redeemed
   const { trigger: triggerMarkAsRedeemed, mutating: markingAsRedeemed } =
     useRouteMutation(routes.activityCoupons.markAsRedeemed, {
       params: {
-        id: coupon.id,
+        id: activityCoupon.id,
         query: {
           friend_token: currentFriend.access_token,
         },
       },
       descriptor: "mark coupon as redeemed",
       onSuccess: () => {
-        toast.success("activity coupon marked as redeemed");
+        toast.success("coupon marked as redeemed");
         void confetti({
           position: {
             x: 50,
@@ -61,7 +61,7 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
           shapes: ["emoji"],
           shapeOptions: {
             emoji: {
-              value: coupon.activity.emoji ?? "🎟️",
+              value: activityCoupon.activity.emoji ?? "🎟️",
             },
           },
         });
@@ -71,7 +71,7 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
             friend_token: currentFriend.access_token,
           },
         });
-        onCouponRedeemed();
+        onActivityCouponRedeemed();
       },
     });
 
@@ -133,7 +133,7 @@ const ActivityCouponCard: FC<ActivityCouponCardProps> = ({
         </Box>
       </AspectRatio>
       <Text size="xs" c="dimmed">
-        expires <TimeAgo>{coupon.expires_at}</TimeAgo>
+        expires <TimeAgo>{activityCoupon.expires_at}</TimeAgo>
       </Text>
       <Popover shadow="md" portalProps={{ target: vaulPortalTarget }}>
         <Popover.Target>

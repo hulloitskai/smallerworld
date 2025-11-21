@@ -8,4 +8,5 @@ class WorldPublicPost < T::Struct
   delegate_missing_to :post
 
   const :repliers, Integer
+  const :seen, T::Boolean
 end

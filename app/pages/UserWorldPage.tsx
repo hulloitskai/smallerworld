@@ -23,11 +23,11 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
+import UserFooter from "~/components/UserFooter";
 import UserWorldPageFeed from "~/components/UserWorldPageFeed";
 import UserWorldPageFloatingActions from "~/components/UserWorldPageFloatingActions";
 import UserWorldPageNotificationsButton from "~/components/UserWorldPageNotificationsButton";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
-import WorldFooter from "~/components/WorldFooter";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { openUserWorldPageInstallModal } from "~/helpers/install";
 import {
@@ -523,7 +523,9 @@ UserWorldPage.layout = page => (
     withContainer
     containerSize="xs"
     withGutter
-    footer={({ world }) => <WorldFooter world={world} />}
+    footer={({ currentUser, world }) => (
+      <UserFooter {...{ currentUser, world }} />
+    )}
   >
     {page}
   </AppLayout>

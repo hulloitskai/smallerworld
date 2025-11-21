@@ -1,13 +1,13 @@
 # typed: strict
 # frozen_string_literal: true
 
-class PostViewerSerializer < ApplicationSerializer
+class UserPostViewerSerializer < PostReactorSerializer
+  # == Configuration ==
+
+  object_as :post_viewer
+
   # == Attributes ==
 
   attributes last_viewed_at: { type: :string },
              reaction_emojis: { type: "string[]" }
-
-  # == Associations ==
-
-  flat_one :friend, serializer: FriendProfileSerializer
 end

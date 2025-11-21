@@ -6,6 +6,6 @@
 
 
 class UserUniverseFriendPostSerializer
-  sig { returns(Post) }
-  def post; end
+  sig { returns(UserUniverseFriendPost) }
+  def user_universe_friend_post; end
 end

@@ -1,30 +1,3 @@
-.newReactionButton {
-  flex-shrink: 0;
-  padding-right: 5px;
-
-  &[data-opened] {
-    background-color: var(--mantine-color-primary-light-hover);
-  }
-}
-
-.reactionButton {
-  flex-shrink: 0;
-  padding-inline: 4px;
-
-  :global(.mantine-Button-section)[data-position="left"] {
-    @mixin emoji;
-    font-size: var(--mantine-font-size-lg);
-  }
-
-  @mixin hover {
-    background-color: initial;
-  }
-
-  &:active {
-    transform: none;
-  }
-}
-
 .stickerDrawerBody {
   padding-bottom: 0px;
 }

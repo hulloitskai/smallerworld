@@ -1,18 +1,14 @@
 # typed: true
 # frozen_string_literal: true
 
-class UserUniversePublicPostSerializer < PostSerializer
-  # == Configuration ==
+class UserUniversePublicPostSerializer < ApplicationSerializer
+  # == Attributes ==
 
-  object_as :post
-
-  # == Type ==
-
-  attribute :universe_post_type, type: '"public"' do
-    "public"
-  end
+  attributes user_universe_post_type: { type: '"public"' },
+             seen: { type: :boolean }
 
   # == Associations ==
 
+  flat_one :post, serializer: PostSerializer
   has_one :world, serializer: WorldProfileSerializer, nullable: true
 end

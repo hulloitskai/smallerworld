@@ -85,17 +85,14 @@
   left: 0;
   right: 0;
   margin-inline: auto;
+  cursor: pointer;
 
-  &[data-clickable] {
-    cursor: pointer;
-
-    @mixin hover {
-      &[data-posted-today] {
-        background-color: lighten(var(--mantine-color-body), 0.15);
-      }
-      &:not([data-posted-today]) {
-        background-color: var(--mantine-color-primary-filled-hover);
-      }
+  @mixin hover {
+    &[data-posted-today] {
+      background-color: lighten(var(--mantine-color-body), 0.15);
+    }
+    &:not([data-posted-today]) {
+      background-color: var(--mantine-color-primary-filled-hover);
     }
   }
 

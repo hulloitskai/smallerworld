@@ -289,6 +289,9 @@ module GeneratedPathHelpersModule
   def user_manifest_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def user_spaces_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def user_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

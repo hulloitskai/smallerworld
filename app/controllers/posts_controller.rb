@@ -8,7 +8,8 @@ class PostsController < ApplicationController
 
   # == Filters ==
 
-  before_action :authenticate_friend!
+  before_action :authenticate_friend!, only: %i[share mark_replied]
+  before_action :require_authentication!, only: :mark_seen
 
   # == Actions ==
 
@@ -27,14 +28,14 @@ class PostsController < ApplicationController
     end
   end
 
-  # POST /posts/:id/mark_seen?friend_token=...
+  # POST /posts/:id/mark_seen[?friend_token=...]
   def mark_seen
     respond_to do |format|
       format.json do
-        current_friend = authenticate_friend!
+        viewer = require_authentication!
         post = find_post!
         authorize!(post)
-        post.views.find_or_create_by!(friend: current_friend)
+        viewer.post_views.find_or_create_by!(post:)
         render(json: {
           "worldId" => post.world_id,
         })

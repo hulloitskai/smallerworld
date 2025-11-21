@@ -1,29 +1,18 @@
 # typed: true
 # frozen_string_literal: true
 
-class UserUniverseFriendPostSerializer < UserUniversePublicPostSerializer
-  # == Configuration ==
-
-  object_as :post
-
-  # == Type ==
-
-  attribute :universe_post_type, type: '"friend"' do
-    "friend"
-  end
-
-  attribute :user_post_type, type: '"friend"' do
-    "friend"
-  end
-
+class UserUniverseFriendPostSerializer < ApplicationSerializer
   # == Attributes ==
 
-  attributes reply_to_number: { type: :string },
+  attributes user_universe_post_type: { type: '"friend"' },
+             reply_to_number: { type: :string },
+             repliers: { type: :number },
              replied: { type: :boolean },
-             seen: { type: :boolean },
-             repliers: { type: :number }
+             seen: { type: :boolean }
 
   # == Associations ==
 
+  flat_one :post, serializer: PostSerializer
+  has_one :world, serializer: WorldProfileSerializer, nullable: true
   has_one :associated_friend, serializer: AssociatedFriendSerializer
 end

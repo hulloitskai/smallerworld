@@ -129,43 +129,40 @@ const WorldTimelineCard: FC<WorldTimelineCardProps> = ({
           />
         )}
       </ScrollArea>
-      {postStreak && (
+      {postStreak && onContinueStreak && (
         <Badge
           ref={badgeRef}
           size="xs"
           leftSection="🔥"
           variant={postStreak.posted_today ? "default" : "filled"}
           className={classes.postStreakBadge}
-          {...(onContinueStreak && {
-            mod: {
-              clickable: true,
-              "posted-today": postStreak.posted_today,
-            },
-            onClick: () => {
-              if (!postStreak.posted_today) {
-                onContinueStreak();
-              } else {
-                const badge = badgeRef.current;
-                if (badge) {
-                  void confetti({
-                    position: particlePositionFor(badge),
-                    spread: 200,
-                    ticks: 60,
-                    gravity: 1,
-                    startVelocity: 18,
-                    count: 12,
-                    scalar: 2,
-                    shapes: ["emoji"],
-                    shapeOptions: {
-                      emoji: {
-                        value: "🔥",
-                      },
+          mod={{
+            "posted-today": postStreak.posted_today,
+          }}
+          onClick={() => {
+            if (!postStreak.posted_today) {
+              onContinueStreak();
+            } else {
+              const badge = badgeRef.current;
+              if (badge) {
+                void confetti({
+                  position: particlePositionFor(badge),
+                  spread: 200,
+                  ticks: 60,
+                  gravity: 1,
+                  startVelocity: 18,
+                  count: 12,
+                  scalar: 2,
+                  shapes: ["emoji"],
+                  shapeOptions: {
+                    emoji: {
+                      value: "🔥",
                     },
-                  });
-                }
+                  },
+                });
               }
-            },
-          })}
+            }
+          }}
         >
           <>
             {!postStreak.posted_today && <>continue your </>}

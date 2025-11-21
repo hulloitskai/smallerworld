@@ -19,7 +19,12 @@ class PostSharesController < ApplicationController
           .where(post:)
           .distinct
           .count(:friend_id)
-        public_post = WorldPublicPost.new(post:, repliers:)
+        seen = if (friend = current_friend) || (user = current_user)
+          post.views.exists?(viewer: friend || user)
+        else
+          false
+        end
+        public_post = WorldPublicPost.new(post:, repliers:, seen:)
         sharer = share.sharer!
         if (user = current_user)
           invitation_requested = world

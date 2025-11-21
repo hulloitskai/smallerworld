@@ -5,5 +5,5 @@ class PostReactionSerializer < ApplicationSerializer
   # == Attributes ==
 
   identifier
-  attributes :friend_id, :emoji
+  attributes :reactor_id, :reactor_type, :emoji
 end

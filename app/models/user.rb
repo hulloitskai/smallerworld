@@ -34,6 +34,8 @@ class User < ApplicationRecord
   include NormalizesPhoneNumber
   include Notifiable
   include HasTimeZone
+  include PostReactor
+  include PostViewer
   include PgSearch::Model
 
   # == Constants ==

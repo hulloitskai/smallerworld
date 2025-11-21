@@ -8,12 +8,11 @@ class WorldFriendPostSerializer < WorldPublicPostSerializer
 
   # == Type ==
 
-  attribute :user_post_type, type: '"friend"' do
+  attribute :world_post_type, type: '"friend"' do
     "friend"
   end
 
   # == Attributes ==
 
-  attributes replied: { type: :boolean },
-             seen: { type: :boolean }
+  attributes replied: { type: :boolean }
 end

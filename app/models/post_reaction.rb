@@ -6,21 +6,22 @@
 #
 # Table name: post_reactions
 #
-#  id         :uuid             not null, primary key
-#  emoji      :string           not null
-#  created_at :datetime         not null
-#  friend_id  :uuid             not null
-#  post_id    :uuid             not null
+#  id                   :uuid             not null, primary key
+#  emoji                :string           not null
+#  reactor_type         :string           not null
+#  created_at           :datetime         not null
+#  deprecated_friend_id :uuid
+#  post_id              :uuid             not null
+#  reactor_id           :uuid             not null
 #
 # Indexes
 #
-#  index_post_reactions_on_friend_id  (friend_id)
-#  index_post_reactions_on_post_id    (post_id)
-#  index_post_reactions_uniqueness    (post_id,friend_id,emoji) UNIQUE
+#  index_post_reactions_on_deprecated_friend_id  (deprecated_friend_id)
+#  index_post_reactions_on_post_id               (post_id)
+#  index_post_reactions_uniquness                (reactor_type,reactor_id,post_id,emoji) UNIQUE
 #
 # Foreign Keys
 #
-#  fk_rails_...  (friend_id => friends.id)
 #  fk_rails_...  (post_id => posts.id)
 #
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
@@ -31,16 +32,16 @@ class PostReaction < ApplicationRecord
 
   belongs_to :post, inverse_of: :reactions
   has_one :post_author, through: :post, source: :author
-  belongs_to :friend
+  belongs_to :reactor, polymorphic: true
 
   sig { returns(Post) }
   def post!
     post or raise ActiveRecord::RecordNotFound, "Missing associated post"
   end
 
-  sig { returns(Friend) }
-  def friend!
-    friend or raise ActiveRecord::RecordNotFound, "Missing associated friend"
+  sig { returns(PostReactor) }
+  def reactor!
+    reactor or raise ActiveRecord::RecordNotFound, "Missing reactor"
   end
 
   sig { returns(User) }
@@ -52,11 +53,11 @@ class PostReaction < ApplicationRecord
 
   validates :emoji,
             presence: true,
-            uniqueness: { scope: %i[post friend], message: "already added" }
+            uniqueness: { scope: %i[post reactor], message: "already added" }
 
   # == Callbacks ==
 
-  after_create :create_notification!, unless: :friend_already_reacted_to_post?
+  after_create :create_notification!, unless: :reactor_already_reacted_to_post?
 
   # == Noticeable ==
 
@@ -64,9 +65,9 @@ class PostReaction < ApplicationRecord
   def notification_message(recipient:)
     case recipient
     when User
-      friend = friend!
+      reactor = reactor!
       NotificationMessage.new(
-        title: "#{emoji} from #{friend.name}",
+        title: "#{emoji} from #{reactor.name}",
         body: post!.compact_snippet,
         target_url: Rails.application.routes.url_helpers.user_world_path(
           post_id:,
@@ -90,11 +91,11 @@ class PostReaction < ApplicationRecord
   # == Helpers ==
 
   sig { returns(T::Boolean) }
-  def friend_already_reacted_to_post?
+  def reactor_already_reacted_to_post?
     reactions = post!.reactions
     if (id = self[:id])
       reactions = reactions.where.not(id:)
     end
-    reactions.exists?(friend: friend!)
+    reactions.exists?(reactor: reactor!)
   end
 end

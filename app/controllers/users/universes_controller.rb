@@ -5,7 +5,6 @@ module Users
   class UniversesController < ApplicationController
     # == Actions ==
 
-    # GET /universe
     # GET /world/universe
     def show
       respond_to do |format|
@@ -126,7 +125,11 @@ module Users
           pagy, posts = paginate_posts(scope)
           post_ids = posts.map(&:id)
           views_by_post_id = PostView
-            .where(post_id: post_ids, friend: associated_friends)
+            .where(post_id: post_ids)
+            .and(
+              PostView.where(viewer: associated_friends)
+                .or(PostView.where(viewer: current_user)),
+            )
             .group(:post_id)
             .pluck(:post_id)
             .to_set
@@ -149,13 +152,14 @@ module Users
           serialized_posts = posts.map do |post|
             author = T.let(post.author!, User)
             if author == current_user
-              UserUniverseAuthorPostSerializer.one(post)
+              author_post = UserUniverseAuthorPost.new(post:)
+              UserUniverseAuthorPostSerializer.one(author_post)
             elsif (world_id = post.world_id) &&
                 (associated_friend = associated_friends_by_world_id[world_id])
               seen = views_by_post_id.include?(post.id)
               replied = replied_post_ids.include?(post.id)
               repliers = repliers_by_post_id.fetch(post.id, 0)
-              friend_post = UniverseFriendPost.new(
+              friend_post = UserUniverseFriendPost.new(
                 associated_friend:,
                 reply_to_number: author.phone_number,
                 repliers:,
@@ -165,7 +169,9 @@ module Users
               )
               UserUniverseFriendPostSerializer.one(friend_post)
             else
-              UserUniversePublicPostSerializer.one(post)
+              seen = views_by_post_id.include?(post.id)
+              public_post = UserUniversePublicPost.new(post:, seen:)
+              UserUniversePublicPostSerializer.one(public_post)
             end
           end
           render(json: {

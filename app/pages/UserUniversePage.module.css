@@ -1,4 +1,4 @@
-.pageTitle {
+.title {
   text-align: center;
 
   @mixin dark {
@@ -6,7 +6,7 @@
   }
 }
 
-.worldPageIcon {
+.worldIcon {
   object-fit: cover;
   flex: unset;
   box-shadow: var(--mantine-shadow-md);
@@ -18,6 +18,14 @@
     transform: scale(1.07);
     box-shadow: var(--mantine-shadow-lg);
   }
+}
+
+.worldName {
+  font-family: var(--mantine-font-family-headings);
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .worldAnchor {

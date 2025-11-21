@@ -356,6 +356,34 @@ class User
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
     def post_ids=(ids); end
 
+    sig { returns(T::Array[T.untyped]) }
+    def post_reaction_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def post_reaction_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :post_reactions`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostReaction::PrivateCollectionProxy) }
+    def post_reactions; end
+
+    sig { params(value: T::Enumerable[::PostReaction]).void }
+    def post_reactions=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
+    def post_view_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def post_view_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :post_views`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostView::PrivateCollectionProxy) }
+    def post_views; end
+
+    sig { params(value: T::Enumerable[::PostView]).void }
+    def post_views=(value); end
+
     # This method is created by ActiveRecord on the `User` class because it declared `has_many :posts`.
     # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
     sig { returns(::Post::PrivateCollectionProxy) }

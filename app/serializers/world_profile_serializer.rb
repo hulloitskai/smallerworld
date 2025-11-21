@@ -8,11 +8,11 @@ class WorldProfileSerializer < ApplicationSerializer
 
   # == Attributes ==
 
-  attributes id: { type: :string },
-             owner_id: { type: :string },
-             handle: { type: :string },
-             allow_friend_sharing: { type: :boolean },
-             hide_neko: { type: :boolean },
+  identifier
+  attributes :owner_id,
+             :handle,
+             :allow_friend_sharing,
+             :hide_neko,
              name: { type: :string },
              theme: { type: "WorldTheme", nullable: true }
 

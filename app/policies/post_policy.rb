@@ -35,7 +35,11 @@ class PostPolicy < ApplicationPolicy
 
   def mark_seen?
     post = T.cast(record, Post)
-    friend_can_view?(post, friend!)
+    if (friend = self.friend)
+      friend_can_view?(post, friend)
+    else
+      post.visibility == :public
+    end
   end
 
   def mark_replied?
@@ -57,6 +61,8 @@ class PostPolicy < ApplicationPolicy
   end
 
   private
+
+  # == Helpers ==
 
   sig { params(post: Post, friend: Friend).returns(T::Boolean) }
   def friend_can_view?(post, friend)

@@ -343,8 +343,15 @@ class Post < ApplicationRecord
   end
 
   sig { returns(Friend::PrivateRelation) }
-  def viewers
-    Friend.where(id: views.select(:friend_id)).distinct
+  def friend_viewers
+    friend_ids = views.where(viewer_type: "Friend").select(:viewer_id)
+    Friend.where(id: friend_ids).distinct
+  end
+
+  sig { returns(User::PrivateRelation) }
+  def user_viewers
+    user_ids = views.where(viewer_type: "User").select(:viewer_id)
+    User.where(id: user_ids).distinct
   end
 
   sig { returns(PostReplyReceipt::PrivateAssociationRelation) }
@@ -413,17 +420,14 @@ class Post < ApplicationRecord
         notified_friend_ids << friend.id
       end
     if visibility == :public
-      notified_world_ids = Friend
-        .where(id: notified_friend_ids)
-        .select("DISTINCT world_id")
       User
         .subscribed_to_public_posts
         .joins(:world)
-        .where.not(world: { id: notified_world_ids })
+        .where.not(world: {
+          id: Friend.where(id: notified_friend_ids).select("DISTINCT world_id"),
+        })
         .where.not(
-          id: notifications
-            .where(recipient_type: "User")
-            .select(:recipient_id),
+          id: notifications.where(recipient_type: "User").select(:recipient_id),
         )
         .find_each do |user|
           notifications.create!(recipient: user, push_delay: delay)
@@ -443,12 +447,12 @@ class Post < ApplicationRecord
   end
 
   sig { returns(Integer) }
-  def push_missing_notifications_to_unseen_friends
+  def push_missing_notifications_to_unseen_recipients
     redelivered_notifications_count = 0
     notifications
       .undelivered
-      .where(owner_type: "Friend")
-      .where.not(owner_id: views.select(:friend_id))
+      .where.not(recipient: friend_viewers)
+      .where.not(recipient: user_viewers)
       .find_each do |notification|
         notification.push
         redelivered_notifications_count += 1
