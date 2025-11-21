@@ -28,7 +28,6 @@ import UserWorldPageFloatingActions from "~/components/UserWorldPageFloatingActi
 import UserWorldPageNotificationsButton from "~/components/UserWorldPageNotificationsButton";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import WorldFooter from "~/components/WorldFooter";
-import { useBrowserDetection } from "~/helpers/browsers";
 import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { openUserWorldPageInstallModal } from "~/helpers/install";
 import {
@@ -84,20 +83,18 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
     });
   });
 
-  // == Browser detection
-  const browserDetection = useBrowserDetection();
-
-  // == PWA installation
-  const { install: installPWA } = usePWA();
-
-  // == Auto-open install modal on mobile
+  // == Auto-open install modal
   const { modals } = useModals();
   useEffect(() => {
     const { intent } = queryParamsFromPath(location.href);
-    if (isEmpty(modals) && isStandalone === false && intent === "install") {
+    if (
+      intent === "install" &&
+      isEmpty(modals) &&
+      !matchMedia("(display-mode: standalone)").matches
+    ) {
       openUserWorldPageInstallModal(world);
     }
-  }, [isStandalone, browserDetection, installPWA]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Posts
   const { posts } = useUserWorldPosts();

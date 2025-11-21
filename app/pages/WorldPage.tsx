@@ -59,7 +59,12 @@ const WorldPage: PageComponent<WorldPageProps> = ({ world }) => {
   const { modals } = useModals();
   useEffect(() => {
     const { intent } = queryParamsFromPath(location.href);
-    if (isEmpty(modals) && currentFriend && intent === "install") {
+    if (
+      intent === "install" &&
+      isEmpty(modals) &&
+      !matchMedia("(display-mode: standalone)").matches &&
+      currentFriend
+    ) {
       openWorldPageInstallModal(world);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

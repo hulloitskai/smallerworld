@@ -27,10 +27,14 @@ const PaymentSuccessPage: PageComponent<PaymentSuccessPageProps> = () => {
       <Card withBorder>
         {typeof membershipTier !== "undefined" ? (
           !membershipTier ? (
-            <Stack align="center" gap="xs" ta="center">
+            <Stack align="center" gap={4} ta="center">
               <Text>failed to activate your membership :(</Text>
-              <ContactLink type="sms" body="i couldn't activate my membership!">
-                contact the developer for support
+              <ContactLink
+                type="sms"
+                body="i couldn't activate my membership!"
+                size="sm"
+              >
+                tell the developer!!
               </ContactLink>
             </Stack>
           ) : (
@@ -43,7 +47,7 @@ const PaymentSuccessPage: PageComponent<PaymentSuccessPageProps> = () => {
                 href={withTrailingSlash(routes.userWorld.show.path())}
                 leftSection={<BackIcon />}
               >
-                back to my world
+                back to your world
               </Button>
             </Stack>
           )

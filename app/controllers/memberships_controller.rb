@@ -33,11 +33,11 @@ class MembershipsController < ApplicationController
   end
   def find_matching_guest(pending_guests)
     current_user = authenticate_user!
-    world = current_user.world or return
+    world = current_user.world
     pending_guests.find do |guest|
       question_responses = guest.fetch("questionsAndNotes").presence or next
-      phone_number_or_handle = question_responses.first!
-      phone_number_or_handle.downcase == world.handle ||
+      phone_number_or_handle = question_responses.first!.strip.downcase
+      phone_number_or_handle == world&.handle ||
         normalized_phone_number(phone_number_or_handle) ==
           current_user.phone_number
     end

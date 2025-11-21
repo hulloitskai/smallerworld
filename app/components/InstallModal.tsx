@@ -133,8 +133,8 @@ export const InstallModalBody: FC<InstallModalBodyProps> = ({
           ) : (
             <Box ta="center">
               <Text c="dimmed">sorry, your browser is not supported :(</Text>
-              <ContactLink type="sms" body="i couldn't activate my membership!">
-                contact the creator!
+              <ContactLink type="sms" body="my browser isn't supported :(">
+                tell the developer!!
               </ContactLink>
             </Box>
           )}
