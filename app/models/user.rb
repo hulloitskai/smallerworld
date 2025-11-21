@@ -41,7 +41,7 @@ class User < ApplicationRecord
   ENCOURAGEMENTS_AVAILABLE_SINCE = Time.new(2025, 4, 11, 16, 0, 0, "-05:00")
 
   # == FriendlyId ==
-  friendly_id :phone_number, slug_column: :phone_number
+  friendly_id :phone_number, use: :slugged, slug_column: :phone_number
 
   # == Attributes ==
 
@@ -60,6 +60,10 @@ class User < ApplicationRecord
           dependent: :nullify
   accepts_nested_attributes_for :world, update_only: true
 
+  has_many :spaces,
+           inverse_of: :owner,
+           foreign_key: :owner_id,
+           dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :posts,
            dependent: :destroy,

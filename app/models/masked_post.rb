@@ -21,6 +21,7 @@
 #  author_id        :uuid             not null
 #  encouragement_id :uuid
 #  quoted_post_id   :uuid
+#  space_id         :uuid
 #  spotify_track_id :string
 #  world_id         :uuid
 #
@@ -33,6 +34,7 @@
 #  index_posts_on_hidden_from_ids           (hidden_from_ids) USING gin
 #  index_posts_on_pinned_until              (pinned_until)
 #  index_posts_on_quoted_post_id            (quoted_post_id)
+#  index_posts_on_space_id                  (space_id)
 #  index_posts_on_type                      (type)
 #  index_posts_on_visibility                (visibility)
 #  index_posts_on_visible_to_ids            (visible_to_ids) USING gin

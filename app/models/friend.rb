@@ -51,7 +51,7 @@ class Friend < ApplicationRecord
 
   # == FriendlyId ==
 
-  friendly_id :phone_number, slug_column: :phone_number
+  friendly_id :phone_number, use: :slugged, slug_column: :phone_number
 
   # == Attributes ==
 

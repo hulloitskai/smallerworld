@@ -51,7 +51,7 @@ class World < ApplicationRecord
 
   # == FriendlyId ==
 
-  friendly_id :handle, slug_column: :handle
+  friendly_id :handle, use: :slugged, slug_column: :handle
 
   # == Associations ==
 

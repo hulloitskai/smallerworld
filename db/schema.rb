@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_19_102552) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_21_155819) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -317,6 +317,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_102552) do
     t.string "spotify_track_id"
     t.uuid "visible_to_ids", default: [], null: false, array: true
     t.uuid "world_id"
+    t.uuid "space_id"
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
     t.index ["author_id", "created_at"], name: "index_posts_on_author_id_and_created_at"
     t.index ["author_id"], name: "index_posts_on_author_id"
@@ -324,6 +325,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_102552) do
     t.index ["hidden_from_ids"], name: "index_posts_on_hidden_from_ids", using: :gin
     t.index ["pinned_until"], name: "index_posts_on_pinned_until"
     t.index ["quoted_post_id"], name: "index_posts_on_quoted_post_id"
+    t.index ["space_id"], name: "index_posts_on_space_id"
     t.index ["type"], name: "index_posts_on_type"
     t.index ["visibility"], name: "index_posts_on_visibility"
     t.index ["visible_to_ids"], name: "index_posts_on_visible_to_ids", using: :gin
@@ -364,6 +366,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_102552) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "spaces", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "owner_id", null: false
+    t.string "name", null: false
+    t.text "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_id", "name"], name: "index_spaces_owner_name_uniqueness", unique: true
+    t.index ["owner_id"], name: "index_spaces_on_owner_id"
   end
 
   create_table "task_records", id: false, force: :cascade do |t|
@@ -443,6 +455,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_19_102552) do
   add_foreign_key "posts", "worlds"
   add_foreign_key "push_registrations", "push_subscriptions"
   add_foreign_key "sessions", "users"
+  add_foreign_key "spaces", "users", column: "owner_id"
   add_foreign_key "text_blasts", "friends"
   add_foreign_key "text_blasts", "posts"
   add_foreign_key "worlds", "users", column: "owner_id"
