@@ -90,7 +90,7 @@ class ActivityCoupon < ApplicationRecord
         title: "You've got a coupon for: #{activity.name}",
         body: "This coupon expires in " \
           "#{ExpiryFormatter.relative_to_now(expires_at)}, redeem it soon!",
-        target_url: Rails.application.routes.url_helpers.world_url(
+        target_url: Rails.application.routes.url_helpers.world_path(
           activity.world!,
           friend_token: recipient.access_token,
           anchor: "#invitations",

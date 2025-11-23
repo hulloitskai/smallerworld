@@ -9,6 +9,7 @@ class UserWorldFriendProfileSerializer < FriendProfileSerializer
   # == Attributes ==
 
   attributes :paused_since,
+             :phone_number,
              subscribed_post_types: {
                type: '"journal_entry" | "poem" | "invitation" | "question"',
              }

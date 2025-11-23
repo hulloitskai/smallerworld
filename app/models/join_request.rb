@@ -84,7 +84,10 @@ class JoinRequest < ApplicationRecord
         title: "#{name} wants to join your world!",
         body: "request from #{name} (#{phone_number})",
         target_url: Rails.application.routes.url_helpers
-          .world_join_requests_url(join_request_id: id, trailing_slash: true),
+          .user_world_join_requests_path(
+            world: world!,
+            join_request_id: id,
+          ),
       )
     else
       raise "Invalid notification recipient: #{recipient.inspect}"
