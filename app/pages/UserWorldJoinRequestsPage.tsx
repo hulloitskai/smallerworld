@@ -1,6 +1,6 @@
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
-import WorldJoinRequestCard from "~/components/WorldJoinRequestCard";
+import UserWorldJoinRequestCard from "~/components/UserWorldJoinRequestCard";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
 import { useWorldTheme } from "~/helpers/worldThemes";
 import { type JoinRequest, type User, type World } from "~/types";
@@ -57,7 +57,7 @@ const UserWorldJoinRequestsPage: PageComponent<
               <EmptyCard itemLabel="join requests" />
             ) : (
               pendingJoinRequests.map(joinRequest => (
-                <WorldJoinRequestCard
+                <UserWorldJoinRequestCard
                   key={joinRequest.id}
                   {...{ joinRequest }}
                   onSelectForInvitation={() => {

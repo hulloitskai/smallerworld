@@ -10,7 +10,7 @@ import CloseIcon from "~icons/heroicons/x-mark";
 
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
-import WorldFriendCard from "~/components/WorldFriendCard";
+import UserWorldFriendCard from "~/components/UserWorldFriendCard";
 import {
   useUserWorldActivities,
   useUserWorldFriends,
@@ -262,7 +262,7 @@ const UserWorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
             <EmptyCard itemLabel="results" />
           ) : (
             displayedFriends.map(friend => (
-              <WorldFriendCard
+              <UserWorldFriendCard
                 key={friend.id}
                 {...{ activitiesById, friend }}
               />

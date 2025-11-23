@@ -36,6 +36,15 @@
 
 ## Commands
 
+- `mise exec -- bin/rails generate …` — required path for new migrations,
+  models, and similar scaffolds.
+- `mise exec -- bin/rails db:migrate` — apply migrations with project-managed
+  Ruby/Bundler versions.
+- `mise exec -- bin/fix` — formatter/linter suite (includes RuboCop, Sorbet,
+  ESLint, Prettier).
+- `mise exec -- bin/test` — primary test runner (runs Rails test commands).
+- `npm ci` + `mise install` — align Node tooling when working on frontend
+  dependencies.
 - After changing models or scopes under `app/models`, run\
   `mise exec -- bin/tapioca dsl` to refresh Sorbet RBI files. Rerun outside the
   sandbox if it fails due to missing DB access.

@@ -7,14 +7,14 @@ import { type Activity, type UserWorldInvitation } from "~/types";
 
 import EditInvitationDrawer from "./EditInvitationDrawer";
 
-import classes from "./WorldInvitationCard.module.css";
+import classes from "./UserWorldInvitationCard.module.css";
 
-export interface WorldInvitationCardProps {
+export interface UserWorldInvitationCardProps {
   activitiesById: Record<string, Activity>;
   invitation: UserWorldInvitation;
 }
 
-const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
+const UserWorldInvitationCard: FC<UserWorldInvitationCardProps> = ({
   activitiesById,
   invitation,
 }) => {
@@ -48,7 +48,7 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
 
   return (
     <>
-      <Card className={cn("WorldInvitationCard", classes.card)} withBorder>
+      <Card className={cn("UserWorldInvitationCard", classes.card)} withBorder>
         <Stack gap={4}>
           <Group
             gap={6}
@@ -155,4 +155,4 @@ const WorldInvitationCard: FC<WorldInvitationCardProps> = ({
   );
 };
 
-export default WorldInvitationCard;
+export default UserWorldInvitationCard;

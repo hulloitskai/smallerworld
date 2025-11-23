@@ -1,4 +1,4 @@
-import { Loader, MenuItem, Overlay, Text } from "@mantine/core";
+import { CopyButton, Loader, MenuItem, Overlay, Text } from "@mantine/core";
 import { openConfirmModal } from "@mantine/modals";
 
 import SMSIcon from "~icons/heroicons/chat-bubble-left-ellipsis-20-solid";
@@ -15,14 +15,14 @@ import ActivityCouponDrawer from "./ActivityCouponDrawer";
 import EditFriendForm from "./EditFriendForm";
 import WorldFriendInviteDrawer from "./WorldFriendInviteDrawer";
 
-import classes from "./WorldFriendCard.module.css";
+import classes from "./UserWorldFriendCard.module.css";
 
-export interface WorldFriendCardProps {
+export interface UserWorldFriendCardProps {
   activitiesById: Record<string, Activity>;
   friend: UserWorldFriendProfile;
 }
 
-const WorldFriendCard: FC<WorldFriendCardProps> = ({
+const UserWorldFriendCard: FC<UserWorldFriendCardProps> = ({
   activitiesById,
   friend,
 }) => {
@@ -59,7 +59,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
 
   return (
     <>
-      <Card className={cn("WorldFriendCard", classes.card)} withBorder>
+      <Card className={cn("UserWorldFriendCard", classes.card)} withBorder>
         <Group gap={6} justify="space-between" className={classes.group}>
           <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
             {!!friend.emoji && (
@@ -113,7 +113,7 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
               </Badge>
             )}
             <Menu
-              width={180}
+              width={220}
               position="bottom-end"
               arrowOffset={20}
               trigger="click-hover"
@@ -171,14 +171,14 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                   remove friend
                 </Menu.Item>
                 {friend.paused_since ? (
-                  <UnpauseFriendItem
+                  <UnpauseFriendMenuItem
                     friend={friend}
                     onFriendUnpaused={() => {
                       setMenuOpened(false);
                     }}
                   />
                 ) : (
-                  <PauseFriendItem
+                  <PauseFriendMenuItem
                     friend={friend}
                     onFriendPaused={() => {
                       setMenuOpened(false);
@@ -193,6 +193,14 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
                 >
                   re-invite friend
                 </Menu.Item>
+                {!!friend.phone_number && (
+                  <>
+                    <Menu.Divider />
+                    <CopyPhoneNumberMenuItem
+                      phoneNumber={friend.phone_number}
+                    />
+                  </>
+                )}
               </Menu.Dropdown>
             </Menu>
           </Group>
@@ -273,14 +281,14 @@ const WorldFriendCard: FC<WorldFriendCardProps> = ({
   );
 };
 
-export default WorldFriendCard;
+export default UserWorldFriendCard;
 
-interface PauseFriendItemProps {
+interface PauseFriendMenuItemProps {
   friend: UserWorldFriendProfile;
   onFriendPaused: () => void;
 }
 
-const PauseFriendItem: FC<PauseFriendItemProps> = ({
+const PauseFriendMenuItem: FC<PauseFriendMenuItemProps> = ({
   friend,
   onFriendPaused,
 }) => {
@@ -314,12 +322,12 @@ const PauseFriendItem: FC<PauseFriendItemProps> = ({
   );
 };
 
-interface UnpauseFriendItemProps {
+interface UnpauseFriendMenuItemProps {
   friend: UserWorldFriendProfile;
   onFriendUnpaused: () => void;
 }
 
-const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
+const UnpauseFriendMenuItem: FC<UnpauseFriendMenuItemProps> = ({
   friend,
   onFriendUnpaused,
 }) => {
@@ -350,3 +358,23 @@ const UnpauseFriendItem: FC<UnpauseFriendItemProps> = ({
     </MenuItem>
   );
 };
+
+interface CopyPhoneNumberMenuItemProps {
+  phoneNumber: string;
+}
+
+const CopyPhoneNumberMenuItem: FC<CopyPhoneNumberMenuItemProps> = ({
+  phoneNumber,
+}) => (
+  <CopyButton value={phoneNumber}>
+    {({ copied, copy }) => (
+      <MenuItem
+        leftSection={<PhoneIcon />}
+        closeMenuOnClick={false}
+        onClick={copy}
+      >
+        {copied ? "phone number copied!" : "copy phone number"}
+      </MenuItem>
+    )}
+  </CopyButton>
+);

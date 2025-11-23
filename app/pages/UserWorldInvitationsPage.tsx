@@ -1,6 +1,6 @@
 import AppLayout from "~/components/AppLayout";
 import CreateInvitationButton from "~/components/CreateInvitationButton";
-import WorldInvitationCard from "~/components/WorldInvitationCard";
+import UserWorldInvitationCard from "~/components/UserWorldInvitationCard";
 import {
   useUserWorldActivities,
   worldManifestUrlForUser,
@@ -64,7 +64,7 @@ const UserWorldInvitationsPage: PageComponent<
             <EmptyCard itemLabel="join requests" />
           ) : (
             pendingInvitations.map(invitation => (
-              <WorldInvitationCard
+              <UserWorldInvitationCard
                 key={invitation.id}
                 {...{ activitiesById, invitation }}
               />

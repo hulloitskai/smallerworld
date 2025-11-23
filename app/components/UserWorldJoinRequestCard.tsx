@@ -6,14 +6,14 @@ import { type JoinRequest } from "~/types";
 
 import DeleteConfirmation from "./DeleteConfirmation";
 
-import classes from "./WorldJoinRequestCard.module.css";
+import classes from "./UserWorldJoinRequestCard.module.css";
 
-interface WorldJoinRequestCardProps extends CardProps {
+interface UserWorldJoinRequestCardProps extends CardProps {
   joinRequest: JoinRequest;
   onSelectForInvitation: () => void;
 }
 
-const WorldJoinRequestCard: FC<WorldJoinRequestCardProps> = ({
+const UserWorldJoinRequestCard: FC<UserWorldJoinRequestCardProps> = ({
   joinRequest,
   onSelectForInvitation,
   className,
@@ -38,7 +38,7 @@ const WorldJoinRequestCard: FC<WorldJoinRequestCardProps> = ({
 
   return (
     <Card
-      className={cn("JoinRequestCard", className, classes.card)}
+      className={cn("UserWorldJoinRequestCard", className, classes.card)}
       withBorder
       {...otherProps}
     >
@@ -92,4 +92,4 @@ const WorldJoinRequestCard: FC<WorldJoinRequestCardProps> = ({
   );
 };
 
-export default WorldJoinRequestCard;
+export default UserWorldJoinRequestCard;
