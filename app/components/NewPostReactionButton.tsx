@@ -1,6 +1,4 @@
-import { confetti } from "@tsparticles/confetti";
-
-import { particlePositionFor } from "~/helpers/particles";
+import { confetti, particlePositionFor } from "~/helpers/particles";
 import { type AssociatedFriend, type Post, type PostReaction } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";

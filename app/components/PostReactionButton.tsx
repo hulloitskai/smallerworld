@@ -1,6 +1,8 @@
-import { confetti } from "@tsparticles/confetti";
-
-import { particlePositionFor, puffOfSmoke } from "~/helpers/particles";
+import {
+  confetti,
+  particlePositionFor,
+  puffOfSmoke,
+} from "~/helpers/particles";
 import { type AssociatedFriend, type Post, type PostReaction } from "~/types";
 
 import classes from "./PostReactionButton.module.css";
