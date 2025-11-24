@@ -2,7 +2,6 @@ import { Text } from "@mantine/core";
 
 import AppLayout from "~/components/AppLayout";
 import { useContact } from "~/helpers/contact";
-import { queryParamsFromPath } from "~/helpers/inertia/routing";
 
 import classes from "./PoliciesPage.module.css";
 

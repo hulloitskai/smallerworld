@@ -8,7 +8,7 @@ import WorldThemeRadioGroup from "~/components/WorldThemeRadioGroup";
 import { imageUpload } from "~/helpers/uploads";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
-import { isWorldTheme, useWorldTheme } from "~/helpers/worldThemes";
+import { isWorldTheme } from "~/helpers/worldThemes";
 import { type Image, type User, type World } from "~/types";
 
 import classes from "./UserEditWorldPage.module.css";

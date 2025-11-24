@@ -63,3 +63,9 @@ export const withTrailingSlash = (href: string): string => {
   }
   return base + "/";
 };
+
+export const queryParamsFromPath = (path: string) => {
+  const [, search] = path.split("?");
+  const params = new URLSearchParams(search);
+  return Object.fromEntries(params.entries());
+};

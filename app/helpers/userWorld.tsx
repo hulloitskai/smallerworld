@@ -11,7 +11,6 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
-import PostForm from "~/components/PostForm";
 import {
   type Activity,
   type ActivityTemplate,
@@ -22,7 +21,6 @@ import {
   type UserWorldPost,
 } from "~/types";
 
-import { POST_TYPE_TO_LABEL } from "./posts";
 import routes from "./routes";
 import { fetchRoute } from "./routes/fetch";
 import { useRouteSWR } from "./routes/swr";
@@ -166,32 +164,11 @@ export const mutateUserWorldPosts = async (): Promise<void> => {
   await Promise.all(mutations);
 };
 
-export interface NewPostModalOptions {
+export interface NewUserWorldPostModalOptions {
   postType: PostType;
   encouragement?: Encouragement;
   onPostCreated?: (post: UserWorldPost) => void;
 }
-
-export const openNewUserWorldPostModal = ({
-  postType,
-  encouragement,
-  onPostCreated,
-}: NewPostModalOptions): void => {
-  openModal({
-    title: `new ${POST_TYPE_TO_LABEL[postType]}`,
-    size: "var(--container-size-xs)",
-    children: (
-      <PostForm
-        newPostType={postType}
-        {...{ encouragement }}
-        onPostCreated={post => {
-          closeAllModals();
-          onPostCreated?.(post);
-        }}
-      />
-    ),
-  });
-};
 
 export const worldManifestUrlForUser = (user: User): string =>
   user.supported_features.includes("new_pwa")

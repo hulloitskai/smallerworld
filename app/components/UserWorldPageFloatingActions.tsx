@@ -6,6 +6,7 @@ import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-soli
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
+import { openNewUserWorldPostModal } from "~/components/NewUserWorldPostModal";
 import { prettyFriendName } from "~/helpers/friends";
 import { NEKO_SIZE } from "~/helpers/neko";
 import {
@@ -14,7 +15,6 @@ import {
   POST_TYPES,
 } from "~/helpers/posts";
 import { useSavedDraftType } from "~/helpers/posts/form";
-import { openNewUserWorldPostModal } from "~/helpers/userWorld";
 import { useWebPush } from "~/helpers/webPush";
 import { type UserWorldPageProps } from "~/pages/UserWorldPage";
 import { type Encouragement, type UserWorldPost } from "~/types";

@@ -6,14 +6,14 @@ import { renderToString } from "react-dom/server";
 
 import AppWrapper from "~/components/AppWrapper";
 import EmailWrapper from "~/components/EmailWrapper";
+import { preparePage } from "~/components/inertia/server";
 import { setupDayjs } from "~/helpers/dayjs";
 import {
   type PageComponent,
   PageType,
   parsePageImports,
   resolvePageType,
-} from "~/helpers/inertia";
-import { preparePage } from "~/helpers/inertia/page/server";
+} from "~/helpers/inertia/page";
 import { setupLuxon } from "~/helpers/luxon";
 
 // == Setup

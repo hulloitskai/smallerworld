@@ -5,7 +5,6 @@ import {
   useUserWorldActivities,
   worldManifestUrlForUser,
 } from "~/helpers/userWorld";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import { type User, type UserWorldInvitation, type World } from "~/types";
 
 export interface UserWorldInvitationsPageProps extends SharedPageProps {

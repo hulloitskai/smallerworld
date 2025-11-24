@@ -6,18 +6,15 @@ import { reactErrorHandler } from "@sentry/react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 
 import AppWrapper from "~/components/AppWrapper";
+import { preparePage } from "~/components/inertia/client";
 import { setupActiveStorage } from "~/helpers/activestorage";
 import { setupAmplitude } from "~/helpers/amplitude";
 import { setupClarity } from "~/helpers/clarity";
 import { setupDayjs } from "~/helpers/dayjs";
 import { setupDevtools } from "~/helpers/devtools";
 import { setupFullStory } from "~/helpers/fullstory";
-import {
-  type PageComponent,
-  parsePageImports,
-  setupInertia,
-} from "~/helpers/inertia";
-import { preparePage } from "~/helpers/inertia/page/client";
+import { setupInertia } from "~/helpers/inertia";
+import { parsePageImports } from "~/helpers/inertia";
 import { setupLuxon } from "~/helpers/luxon";
 import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";

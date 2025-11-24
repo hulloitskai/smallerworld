@@ -5,7 +5,6 @@ import UserFooter from "~/components/UserFooter";
 import UserUniversePageFeed from "~/components/UserUniversePageFeed";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import { type UniverseWorldProfile, type User, type World } from "~/types";
 
 import classes from "./UserUniversePage.module.css";

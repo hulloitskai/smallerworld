@@ -1,6 +1,9 @@
 import { type Page } from "@inertiajs/core";
 import { usePage as _usePage } from "@inertiajs/react";
-import { type ComponentType } from "react";
+import { mapKeys } from "lodash-es";
+import { type ComponentType, type ReactNode } from "react";
+
+import { type SharedPageProps } from "~/types";
 
 export type PageComponent<Props extends SharedPageProps = SharedPageProps> =
   ComponentType<Props> & {

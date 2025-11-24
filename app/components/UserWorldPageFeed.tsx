@@ -5,11 +5,9 @@ import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 import CloseIcon from "~icons/heroicons/x-mark";
 import CloseOutlineIcon from "~icons/heroicons/x-mark-20-solid";
 
+import { openNewUserWorldPostModal } from "~/components/NewUserWorldPostModal";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import {
-  openNewUserWorldPostModal,
-  useUserWorldPosts,
-} from "~/helpers/userWorld";
+import { useUserWorldPosts } from "~/helpers/userWorld";
 import { type UserWorldPageProps } from "~/pages/UserWorldPage";
 import { type PostType } from "~/types";
 

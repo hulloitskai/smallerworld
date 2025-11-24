@@ -9,7 +9,6 @@ import WorldHomescreenPreview from "~/components/WorldHomescreenPreview";
 import { prettyFriendName } from "~/helpers/friends";
 import { prettyInviteeName } from "~/helpers/invitations";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import {
   type FriendProfile,
   type Invitation,

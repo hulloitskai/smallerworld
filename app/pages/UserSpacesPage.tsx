@@ -3,7 +3,6 @@ import { Text } from "@mantine/core";
 import AppLayout from "~/components/AppLayout";
 import UserFooter from "~/components/UserFooter";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import { type Space, type User, type World } from "~/types";
 
 import classes from "./UserSpacesPage.module.css";

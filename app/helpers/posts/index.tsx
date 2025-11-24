@@ -14,7 +14,7 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
 import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
-import { ChosenFamilyIcon, FriendsIcon, PublicIcon } from "~/components/icons";
+import { ChosenFamilyIcon, FriendsIcon, PublicIcon } from "~/helpers/icons";
 import {
   type AssociatedFriend,
   type Post,

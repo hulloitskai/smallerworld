@@ -18,6 +18,11 @@
   the invariant.
 - Check the auto-import definitions in `typings/generated/auto-imports.d.ts`
   before adding manual imports.
+  - Prefer absolute aliases (e.g., `~/helpers/...`) over ancestor relative
+    imports; only allow relative imports for direct siblings.
+  - If you change `config/auto-import.ts`, regenerate typings via\
+    `mise exec -- bin/vite build` to refresh
+    `typings/generated/auto-import.d.ts`.
 - Build pages with `PageComponent<Props>` and extend `SharedPageProps` when
   relevant.
 - Lean on existing helpers for routing, data fetching, PWA scope, and real-time

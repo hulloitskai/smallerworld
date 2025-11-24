@@ -10,7 +10,6 @@ import PostCard from "~/components/PostCard";
 import PostSharePageRequestInvitationAlert from "~/components/PostSharePageRequestInvitationAlert";
 import PublicPostCardActions from "~/components/PublicPostCardActions";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import {
   type FriendProfile,
   type WorldProfile,

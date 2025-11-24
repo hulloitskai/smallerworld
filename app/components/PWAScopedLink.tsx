@@ -1,6 +1,5 @@
 import { type InertiaLinkProps } from "@inertiajs/react";
 
-import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { getPWAScope } from "~/helpers/pwa";
 
 export interface PWAScopedLinkProps extends Omit<InertiaLinkProps, "href"> {

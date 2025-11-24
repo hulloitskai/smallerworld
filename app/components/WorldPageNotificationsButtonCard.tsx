@@ -6,7 +6,6 @@ import {
 } from "~/helpers/friends";
 import { POST_TYPES } from "~/helpers/posts";
 import { useSendTestNotification, useWebPush } from "~/helpers/webPush";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import { type Friend, type FriendNotificationSettings } from "~/types";
 
 import FriendNotificationSettingsForm, {

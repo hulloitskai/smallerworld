@@ -3,7 +3,6 @@ import { useModals } from "@mantine/modals";
 
 import RequestInvitationIcon from "~icons/heroicons/hand-raised-20-solid";
 
-import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import {
   useWorldPageDialogOpened,
   type WorldPageProps,

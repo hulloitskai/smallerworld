@@ -7,7 +7,6 @@ import { type PageCSRF } from "~/types";
 
 import { reloadCSRF } from "./csrf";
 import { usePage, usePageProps } from "./inertia/page";
-import { queryParamsFromPath } from "./inertia/routing";
 import { getMeta } from "./meta";
 import { resetSWRCache } from "./routes/swr";
 

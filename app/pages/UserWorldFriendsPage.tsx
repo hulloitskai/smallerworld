@@ -15,7 +15,6 @@ import {
   useUserWorldFriends,
   worldManifestUrlForUser,
 } from "~/helpers/userWorld";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import { type User, type UserWorldFriendProfile, type World } from "~/types";
 
 import classes from "./UserWorldFriendsPage.module.css";

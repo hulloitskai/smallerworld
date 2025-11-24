@@ -15,11 +15,9 @@ import WorldPageInvitationsButton from "~/components/WorldPageInvitationsButton"
 import WorldPageJoinRequestAlert from "~/components/WorldPageJoinRequestAlert";
 import WorldPageNotificationsButtonCard from "~/components/WorldPageNotificationsButtonCard";
 import WorldPageRefreshButton from "~/components/WorldPageRefreshButton";
-import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { openWorldPageInstallModal } from "~/helpers/install";
 import { useWebPush } from "~/helpers/webPush";
 import { WORLD_ICON_RADIUS_RATIO, type WorldPageProps } from "~/helpers/worlds";
-import { useWorldTheme } from "~/helpers/worldThemes";
 
 import classes from "./WorldPage.module.css";
 

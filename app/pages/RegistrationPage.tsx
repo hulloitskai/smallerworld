@@ -9,10 +9,9 @@ import ImageInput from "~/components/ImageInput";
 import WorldHomescreenPreview from "~/components/WorldHomescreenPreview";
 import WorldThemeRadioGroup from "~/components/WorldThemeRadioGroup";
 import { CANONICAL_DOMAIN } from "~/helpers/app";
-import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { currentTimeZone } from "~/helpers/time";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
-import { isWorldTheme, useWorldTheme } from "~/helpers/worldThemes";
+import { isWorldTheme } from "~/helpers/worldThemes";
 import { type Image, type Upload } from "~/types";
 
 import classes from "./RegistrationPage.module.css";

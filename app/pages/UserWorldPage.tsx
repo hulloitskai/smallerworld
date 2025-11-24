@@ -28,7 +28,6 @@ import UserWorldPageFeed from "~/components/UserWorldPageFeed";
 import UserWorldPageFloatingActions from "~/components/UserWorldPageFloatingActions";
 import UserWorldPageNotificationsButton from "~/components/UserWorldPageNotificationsButton";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
-import { queryParamsFromPath } from "~/helpers/inertia/routing";
 import { openUserWorldPageInstallModal } from "~/helpers/install";
 import {
   useUserWorldPosts,
@@ -36,7 +35,6 @@ import {
 } from "~/helpers/userWorld";
 import { useWebPush } from "~/helpers/webPush";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
-import { useWorldTheme } from "~/helpers/worldThemes";
 import { type User, type World } from "~/types";
 
 import classes from "./UserWorldPage.module.css";
