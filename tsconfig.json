@@ -39,7 +39,7 @@
     "app/**/*.module.css",
     "typings/**/*.d.ts"
   ],
-  "exclude": ["app/workers/**/*.ts", "typings/service-worker.d.ts"],
+  "exclude": ["app/entrypoints/sw.ts", "typings/service-worker.d.ts"],
   "references": [
     { "path": "./tsconfig.node.json" },
     { "path": "./tsconfig.service-worker.json" }
