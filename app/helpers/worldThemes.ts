@@ -1,8 +1,10 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 
 import bakudekuSrc from "~/assets/images/bakudeku.jpg";
 
 import { type User, type WorldTheme } from "~/types";
+
+import { useCurrentUser } from "./authentication";
 
 const WORLD_THEMES: WorldTheme[] = [
   "cloudflow",

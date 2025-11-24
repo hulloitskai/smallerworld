@@ -92,10 +92,10 @@ const { trigger } = useRouteMutation<ResponseType>(routes.endpoint.path(), {
 
 ## Navigation & PWA
 
-- Use `const { url: pageUrl } = usePage();` inside pages; helpers can reference
+- Use `const { url: pagePath } = usePage();` inside pages; helpers can reference
   `url` when the context is singular.
 - Preserve `pwa_scope` and related params on redirects
-  (`queryParamsFromPath(pageUrl)` helps when passing `{ query }`).
+  (`queryParamsFromPath(pagePath)` helps when passing `{ query }`).
 - Prefer `PWAScopedLink` for internal navigation so users stay inside the
   correct scope.
 - Treat `result.browser.is("Chrome") || result.os.is("Android")` as PWA-install

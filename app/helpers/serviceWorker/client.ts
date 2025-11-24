@@ -1,6 +1,10 @@
+import { router } from "@inertiajs/react";
 import { type BrowserOptions } from "@sentry/browser";
+import { pick } from "lodash-es";
+import { startTransition, useEffect, useState } from "react";
+import invariant from "tiny-invariant";
 
-import { urlsAreSamePage } from "~/helpers/utils";
+import { normalizeUrl, urlsAreSamePage } from "~/helpers/utils";
 
 import {
   SERVICE_WORKER_UPDATE_INTERVAL,

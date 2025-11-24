@@ -1,5 +1,6 @@
+import { hrefToUrl } from "@inertiajs/core";
 import { count } from "@wordpress/wordcount";
-import { type DependencyList } from "react";
+import { type DependencyList, useEffect, useState } from "react";
 
 const TRUTHY_VALUES = ["1", "true", "t"];
 
@@ -21,7 +22,7 @@ export const resolve = <T>(f: () => T): T => f();
 export const normalizeUrl = (href: string): string =>
   hrefToUrl(href).toString();
 
-export const useNormalizeUrl = (
+export const useNormalizedUrl = (
   resolveUrlOrPath: () => string,
   deps: DependencyList,
 ): string | undefined => {

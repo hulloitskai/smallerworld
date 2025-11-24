@@ -1,4 +1,6 @@
-import { useViewportSize } from "@mantine/hooks";
+import { useMediaQuery, useViewportSize } from "@mantine/hooks";
+import { mapValues } from "lodash-es";
+import { useEffect, useState } from "react";
 
 export interface Rect {
   x: number;

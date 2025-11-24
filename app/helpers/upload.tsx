@@ -1,8 +1,10 @@
 import { type Blob } from "@rails/activestorage";
 import { DirectUpload } from "@rails/activestorage?client";
 import prettyBytes from "pretty-bytes";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
-import { requireMeta } from "./meta";
+import { getMeta, requireMeta } from "./meta";
 
 export interface UploadParams {
   onProgress?: (progress: number) => void;

@@ -1,4 +1,7 @@
+import { hrefToUrl } from "@inertiajs/core";
 import { useNetwork } from "@mantine/hooks";
+import { last } from "lodash-es";
+import { useMemo } from "react";
 import { mutate } from "swr";
 import { cache } from "swr/_internal";
 import useSWRInfinite, {
@@ -8,6 +11,9 @@ import useSWRInfinite, {
 } from "swr/infinite";
 
 import { type UserUniversePost } from "~/types";
+
+import routes from "./routes";
+import { fetchRoute } from "./routes/fetch";
 
 export interface UserUniversePostsData {
   posts: UserUniversePost[];

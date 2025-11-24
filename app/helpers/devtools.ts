@@ -1,3 +1,9 @@
+import { hrefToUrl } from "@inertiajs/core";
+import { pick } from "lodash-es";
+
+import routes from "./routes";
+import { fetchRoute } from "./routes/fetch";
+
 declare global {
   interface Window {
     resetWebPush: () => Promise<void>;

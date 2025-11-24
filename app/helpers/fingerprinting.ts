@@ -3,6 +3,7 @@ import {
   type GetResult,
   load as loadFingerprintJs,
 } from "@fingerprintjs/fingerprintjs";
+import { useEffect, useState } from "react";
 
 export interface FingerprintingResult {
   fingerprint: string;

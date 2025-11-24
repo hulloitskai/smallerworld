@@ -418,7 +418,7 @@ const SendInviteLinkViaJoinRequestButton: FC<
   SendInviteLinkViaJoinRequestButtonProps
 > = ({ invitation, joinRequest }) => {
   const vaulPortalTarget = useVaulPortalTarget();
-  const invitationUrl = useNormalizeUrl(
+  const invitationUrl = useNormalizedUrl(
     () => routes.invitations.show.path({ id: invitation.id }),
     [invitation.id],
   );

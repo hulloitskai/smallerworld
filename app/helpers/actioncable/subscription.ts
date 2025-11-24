@@ -1,9 +1,17 @@
-import { useIsFirstRender, useNetwork, useShallowEffect } from "@mantine/hooks";
+import {
+  useDidUpdate,
+  useIsFirstRender,
+  useNetwork,
+  useShallowEffect,
+} from "@mantine/hooks";
 import { type Subscription } from "@rails/actioncable";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { type SWRConfiguration } from "swr";
 import useSWRSubscription, {
   type SWRSubscriptionResponse,
 } from "swr/subscription";
+import invariant from "tiny-invariant";
 
 import { useCable } from ".";
 

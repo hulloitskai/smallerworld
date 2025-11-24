@@ -1,8 +1,18 @@
-import { createContext, useCallback, useContext } from "react";
+import { pick } from "lodash-es";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
 
 import { type PushRegistration } from "~/types";
 
+import { useCurrentFriend } from "./authentication";
 import { useDeviceFingerprint } from "./fingerprinting";
+import routes from "./routes";
+import { useRouteMutation } from "./routes/swr";
 import { useServiceWorkerMetadata } from "./serviceWorker/client";
 
 export const PUSH_PERMISSION_NOT_GRANTED = new Error(

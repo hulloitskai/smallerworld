@@ -1,5 +1,11 @@
 import { useInViewport } from "@mantine/hooks";
-import { type RefCallback, type SVGProps, useRef } from "react";
+import {
+  type FC,
+  type RefCallback,
+  type SVGProps,
+  useEffect,
+  useRef,
+} from "react";
 
 import JournalEntryIcon from "~icons/basil/book-solid";
 import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
@@ -8,12 +14,17 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import PoemIcon from "~icons/heroicons/pencil-20-solid";
 import QuestionIcon from "~icons/heroicons/question-mark-circle-20-solid";
 
+import { ChosenFamilyIcon, FriendsIcon, PublicIcon } from "~/components/icons";
 import {
   type AssociatedFriend,
   type Post,
   type PostType,
   type PostVisibility,
 } from "~/types";
+
+import { useCurrentFriend } from "../authentication";
+import routes from "../routes";
+import { fetchRoute } from "../routes/fetch";
 
 export { POST_TYPE_TO_LABEL, POST_VISIBILITY_TO_LABEL } from "./formatting";
 

@@ -31,10 +31,13 @@ import {
   TextInput,
   ThemeIcon,
   Typography,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { RichTextEditor } from "@mantine/tiptap";
+import cn from "clsx";
 import { type PopoverMiddlewares } from "node_modules/@mantine/core/lib/components/Popover/Popover.types";
+import { useEffect, useMemo } from "react";
 
 import { type Rect, useSafeViewportRect } from "./safeArea";
 
