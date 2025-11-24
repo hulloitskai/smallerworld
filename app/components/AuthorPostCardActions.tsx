@@ -4,8 +4,6 @@ import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
 
 import FollowUpIcon from "~icons/heroicons/arrow-path-rounded-square-20-solid";
-import CopyIcon from "~icons/heroicons/clipboard-document-20-solid";
-import CopiedIcon from "~icons/heroicons/clipboard-document-check-20-solid";
 import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";

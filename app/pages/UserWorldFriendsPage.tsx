@@ -5,7 +5,6 @@ import MiniSearch from "minisearch";
 import HideIcon from "~icons/heroicons/chevron-up-20-solid";
 import EnvelopeIcon from "~icons/heroicons/envelope-20-solid";
 import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
-import FriendsIcon from "~icons/heroicons/users-20-solid";
 import CloseIcon from "~icons/heroicons/x-mark";
 
 import AppLayout from "~/components/AppLayout";

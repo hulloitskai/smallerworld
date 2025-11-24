@@ -1,5 +1,3 @@
-import { FullStory } from "@fullstory/browser";
-
 import { prettyFriendName } from "~/helpers/friends";
 
 const FullStoryTracking: FC = () => {

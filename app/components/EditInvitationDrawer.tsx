@@ -1,7 +1,6 @@
 import { Text } from "@mantine/core";
 import { map } from "lodash-es";
 
-import EmojiIcon from "~icons/heroicons/face-smile";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 
 import { type Activity, type Invitation } from "~/types";

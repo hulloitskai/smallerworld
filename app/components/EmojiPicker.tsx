@@ -1,4 +1,3 @@
-import { useMantineColorScheme } from "@mantine/core";
 import _EmojiPicker, {
   EmojiStyle,
   type PickerProps,

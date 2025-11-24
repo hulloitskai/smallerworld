@@ -1,5 +1,3 @@
-import { Head } from "@inertiajs/react";
-import { useMantineColorScheme } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { lazy, Suspense } from "react";
 

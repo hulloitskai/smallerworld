@@ -10,17 +10,7 @@ import { DateInput } from "@mantine/dates";
 import { type Reset } from "@mantine/form";
 import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
-import {
-  difference,
-  invertBy,
-  isEmpty,
-  isEqual,
-  keyBy,
-  map,
-  mapValues,
-  sortBy,
-  uniq,
-} from "lodash-es";
+import { difference, invertBy, map, sortBy, uniq } from "lodash-es";
 import { type DraggableProps, motion, Reorder } from "motion/react";
 import { type PropsWithChildren } from "react";
 

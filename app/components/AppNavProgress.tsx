@@ -1,4 +1,3 @@
-import { router } from "@inertiajs/react";
 import {
   completeNavigationProgress,
   NavigationProgress,
