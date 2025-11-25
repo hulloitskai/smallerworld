@@ -7,7 +7,7 @@ import {
   Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { type Reset } from "@mantine/form";
+import { type Initialize } from "@mantine/form";
 import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { difference, invertBy, map, sortBy, uniq } from "lodash-es";
@@ -122,10 +122,15 @@ const PostForm: FC<PostFormProps> = props => {
     [friends, postType],
   );
 
-  // == Post editor
+  // == Editor
   const editorRef = useRef<Editor | null>();
   const [editorMounted, setEditorMounted] = useState(false);
-  const [editorKey, setEditorKey] = useState(0);
+  const updateEditor = useCallback((content: string): void => {
+    const editor = editorRef.current;
+    if (editor) {
+      editor.commands.setContent(content);
+    }
+  }, []);
 
   // == Viewport height
   const { height: viewportHeight } = useViewportSize();
@@ -134,7 +139,6 @@ const PostForm: FC<PostFormProps> = props => {
   // == Draft values
   const [draftValues, saveDraftValues, clearDraft] =
     usePostDraftValues(newPostType);
-  const draftLoadedRef = useRef(false);
 
   // == Post audience
   const { data: audienceData } = useRouteSWR<{
@@ -169,16 +173,14 @@ const PostForm: FC<PostFormProps> = props => {
         : "",
     };
   }, [post, encouragement, subscribedFriends, audienceData]);
-  const resetEditor = () => {
-    setEditorMounted(false);
-    setEditorKey(prev => prev + 1);
-  };
-  const resetFormAndEditor = (reset: Reset) => {
-    draftLoadedRef.current = false;
-    reset();
-    loadDraftOnce();
-    resetEditor();
-  };
+  const reinitializeFormAndEditor = useCallback(
+    (initialize: Initialize<PostFormValues>, initialValues: PostFormValues) => {
+      shouldRestoreDraftRef.current = false;
+      initialize(initialValues);
+      updateEditor(initialValues.body_html);
+    },
+    [updateEditor],
+  );
   const {
     setFieldValue,
     insertListItem,
@@ -187,11 +189,10 @@ const PostForm: FC<PostFormProps> = props => {
     submit,
     values,
     submitting,
-    reset,
     setValues,
-    setInitialValues,
     setTouched,
     isDirty,
+    initialize,
     isTouched,
     errors,
     getInitialValues,
@@ -325,12 +326,13 @@ const PostForm: FC<PostFormProps> = props => {
         return;
       }
       if (isTouched()) {
+        shouldRestoreDraftRef.current = false;
         saveDraftValues(values);
       }
     },
-    onSuccess: ({ post }, { reset }) => {
+    onSuccess: ({ post }, { initialize, getInitialValues }) => {
       if (!("post" in props)) {
-        resetFormAndEditor(reset);
+        reinitializeFormAndEditor(initialize, getInitialValues());
         clearDraft();
         void mutateRoute(routes.userWorldEncouragements.index);
       }
@@ -356,26 +358,29 @@ const PostForm: FC<PostFormProps> = props => {
   watch("spotify_track_url", ({ value }) => {
     setShowSpotifyInput(!!value);
   });
-  const loadDraftOnce = (): boolean => {
-    if (!post && draftValues && !draftLoadedRef.current) {
-      setValues(draftValues);
-      draftLoadedRef.current = true;
-      return true;
-    }
-    return false;
-  };
-  useDidUpdate(() => {
-    if (loadDraftOnce()) {
-      resetEditor();
-    }
-  }, [draftValues]); // eslint-disable-line react-hooks/exhaustive-deps
   useDidUpdate(() => {
     if (isEqual(initialValues, getInitialValues())) {
       return;
     }
-    setInitialValues(initialValues);
-    resetFormAndEditor(reset);
-  }, [initialValues]); // eslint-disable-line react-hooks/exhaustive-deps
+    reinitializeFormAndEditor(initialize, initialValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValues]);
+
+  // == Draft restoration
+  const shouldRestoreDraftRef = useRef(true);
+  const restoreDraftOnce = useCallback(() => {
+    if (!post && draftValues && shouldRestoreDraftRef.current) {
+      setValues(draftValues);
+      shouldRestoreDraftRef.current = false;
+      return draftValues;
+    }
+  }, [post, draftValues, setValues]);
+  useDidUpdate(() => {
+    const draftValues = restoreDraftOnce();
+    if (draftValues) {
+      updateEditor(draftValues.body_html);
+    }
+  }, [restoreDraftOnce, updateEditor]);
 
   // == Update friend notifiability when visibility changes
   watch("visibility", ({ value, previousValue }) => {
@@ -557,7 +562,6 @@ const PostForm: FC<PostFormProps> = props => {
             )}
             <Input.Wrapper error={errors.body_html}>
               <LazyPostEditor
-                key={editorKey}
                 initialValue={values.body_html}
                 placeholder={bodyPlaceholder}
                 contentProps={{
@@ -574,10 +578,15 @@ const PostForm: FC<PostFormProps> = props => {
                   setBodyTextEmpty(editor.getText().trim() === "");
                 }}
                 onChange={value => {
-                  setFieldValue("body_html", value);
+                  startTransition(() => {
+                    setFieldValue("body_html", value);
+                  });
                 }}
                 onUpdate={({ editor }) => {
-                  setBodyTextEmpty(editor.getText().trim() === "");
+                  startTransition(() => {
+                    const text = editor.getText().trim();
+                    setBodyTextEmpty(isEmpty(text));
+                  });
                 }}
               />
             </Input.Wrapper>
