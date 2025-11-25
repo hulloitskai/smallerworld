@@ -9,10 +9,18 @@ class MembershipsController < ApplicationController
     respond_to do |format|
       format.json do
         current_user = authenticate_user!
-        pending_guests = ZeffyService.list_pending_guests
+        begin
+          pending_guests = ZeffyService.list_pending_guests
+        rescue => error
+          raise "Zeffy error: #{error.message}"
+        end
         matching_guest = find_matching_guest(pending_guests)
         if matching_guest
-          ZeffyService.check_in_guest(matching_guest.fetch("id"))
+          begin
+            ZeffyService.check_in_guest(matching_guest.fetch("id"))
+          rescue => error
+            raise "Zeffy error: #{error.message}"
+          end
           membership_tier = membership_tier_from_guest_rate(matching_guest)
           current_user.update!(membership_tier:)
         end
