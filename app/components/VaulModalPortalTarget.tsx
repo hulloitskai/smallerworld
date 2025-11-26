@@ -1,5 +1,3 @@
-import { randomId } from "@mantine/hooks";
-
 import classes from "./VaulModalPortalTarget.module.css";
 
 // In order to render portals inside Vaul, we have to get a little creative.

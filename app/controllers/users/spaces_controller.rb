@@ -15,10 +15,34 @@ module Users
         end
         format.json do
           current_user = authenticate_user!
-          spaces = authorized_scope(current_user.spaces)
+          spaces = authorized_scope(current_user.owned_spaces)
+            .with_attached_icon
           render(json: {
             spaces: SpaceSerializer.many(spaces),
           })
+        end
+      end
+    end
+
+    # POST /world/spaces
+    def create
+      respond_to do |format|
+        format.json do
+          current_user = authenticate_user!
+          space_params = params.expect(space: %i[name description icon])
+          space = current_user.owned_spaces.build(**space_params)
+          if space.save
+            render(json: {
+              space: SpaceSerializer.one(space),
+            })
+          else
+            render(
+              json: {
+                errors: space.form_errors,
+              },
+              status: :unprocessable_content,
+            )
+          end
         end
       end
     end

@@ -247,6 +247,9 @@ module GeneratedUrlHelpersModule
   def shortlinks_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def space_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def src_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

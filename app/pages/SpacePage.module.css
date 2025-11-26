@@ -1,0 +1,6 @@
+.spaceIcon {
+  align-self: center;
+  object-fit: cover;
+  flex: unset;
+  box-shadow: var(--mantine-shadow-lg);
+}

@@ -136,6 +136,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # == Spaces ==
+  resources :spaces, only: %i[show], export: true
+
   scope module: :users, as: "user" do
     # == User World
     resource(
@@ -198,10 +201,12 @@ Rails.application.routes.draw do
         export: { namespace: "userUniverse" }
 
     # == User Spaces ==
-    get "/world/spaces",
-        to: "spaces#index",
-        as: :spaces,
-        export: { namespace: "userSpaces" }
+    resources(
+      :spaces,
+      path: "/world/spaces",
+      only: %i[index create],
+      export: { namespace: "userSpaces" },
+    )
   end
 
   # == Friend ==

@@ -129,13 +129,15 @@ const UserWorldFriendCard: FC<UserWorldFriendCardProps> = ({
                 <Menu.Item
                   leftSection={<EditIcon />}
                   onClick={() => {
+                    const modalId = randomId();
                     openModal({
+                      modalId,
                       title: "change friend name",
                       children: (
                         <EditFriendForm
                           {...{ friend }}
                           onFriendUpdated={() => {
-                            closeAllModals();
+                            closeModal(modalId);
                           }}
                         />
                       ),

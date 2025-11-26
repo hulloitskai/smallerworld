@@ -133,6 +133,7 @@ const ImageInput: FC<ImageInputProps> = ({
             if (file) {
               void maybeCropImage(file, cropToAspect).then(
                 async file => {
+                  console.debug("Uploading image", file);
                   setUploading(true);
                   try {
                     const blob = await upload(file);
@@ -151,6 +152,7 @@ const ImageInput: FC<ImageInputProps> = ({
                 },
                 reason => {
                   if (reason === IMAGE_CROP_CANCELLED_ERROR) {
+                    console.info("Crop cancelled");
                     return;
                   }
                   console.error("Failed to crop image", reason);

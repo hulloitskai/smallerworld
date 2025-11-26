@@ -168,6 +168,8 @@ const UserEditWorldPage: PageComponent<UserEditWorldPageProps> = ({
               </Stack>
               <Button
                 type="submit"
+                size="md"
+                variant="filled"
                 leftSection={<SaveIcon />}
                 loading={submitting}
                 disabled={!isDirty() || !values.name || !values.icon_upload}

@@ -22,7 +22,7 @@ import logoSrc from "~/assets/images/logo.png";
 import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
-import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
+import NewInvitationDrawerModal from "~/components/NewInvitationDrawerModal";
 import UserFooter from "~/components/UserFooter";
 import UserWorldPageFeed from "~/components/UserWorldPageFeed";
 import UserWorldPageFloatingActions from "~/components/UserWorldPageFloatingActions";
@@ -67,18 +67,9 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
 
   // == Reload page props on window focus
   useWindowEvent("focus", () => {
-    if (!isStandalone || outOfPWAScope) {
-      return;
+    if (isStandalone && !outOfPWAScope) {
+      router.reload({ async: true });
     }
-    router.reload({
-      only: [
-        "currentUser",
-        "world",
-        "pendingJoinRequests",
-        "latestFriendEmojis",
-      ],
-      async: true,
-    });
   });
 
   // == Auto-open install modal
@@ -455,7 +446,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
       {isStandalone && !outOfPWAScope && pushRegistration && (
         <WelcomeBackToast subject={currentUser} />
       )}
-      <CreateInvitationDrawer
+      <NewInvitationDrawerModal
         opened={addFriendModalOpened}
         onClose={() => {
           setAddFriendModalOpened(false);

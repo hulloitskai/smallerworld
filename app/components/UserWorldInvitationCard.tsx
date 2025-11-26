@@ -3,25 +3,26 @@ import { openConfirmModal } from "@mantine/modals";
 
 import MenuIcon from "~icons/heroicons/ellipsis-vertical-20-solid";
 
+import { useUserWorldActivities } from "~/helpers/userWorld";
 import { type Activity, type UserWorldInvitation } from "~/types";
 
-import EditInvitationDrawer from "./EditInvitationDrawer";
+import EditInvitationDrawerModal from "./EditInvitationDrawerModal";
 
 import classes from "./UserWorldInvitationCard.module.css";
 
 export interface UserWorldInvitationCardProps {
-  activitiesById: Record<string, Activity>;
   invitation: UserWorldInvitation;
 }
 
 const UserWorldInvitationCard: FC<UserWorldInvitationCardProps> = ({
-  activitiesById,
   invitation,
 }) => {
   const [drawerOpened, setDrawerOpened] = useState(false);
   const [menuOpened, setMenuOpened] = useState(false);
 
   // == Activities drawer
+  const { activities } = useUserWorldActivities({ keepPreviousData: true });
+  const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
   const offeredActivities = useMemo(() => {
     const activities: Activity[] = [];
     invitation.offered_activity_ids.forEach(activityId => {
@@ -144,8 +145,8 @@ const UserWorldInvitationCard: FC<UserWorldInvitationCardProps> = ({
           overlayProps={{ radius: "default" }}
         />
       </Card>
-      <EditInvitationDrawer
-        {...{ activitiesById, invitation }}
+      <EditInvitationDrawerModal
+        {...{ invitation }}
         opened={drawerOpened}
         onClose={() => {
           setDrawerOpened(false);

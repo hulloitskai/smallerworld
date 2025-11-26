@@ -1,3 +1,5 @@
+import { type ButtonProps } from "@mantine/core";
+
 import { confetti, particlePositionFor } from "~/helpers/particles";
 import { type AssociatedFriend, type Post, type PostReaction } from "~/types";
 
@@ -5,7 +7,8 @@ import EmojiPopover from "./EmojiPopover";
 
 import classes from "./NewPostReactionButton.module.css";
 
-export interface NewPostReactionButtonProps {
+export interface NewPostReactionButtonProps
+  extends Omit<ButtonProps, "children"> {
   post: Post;
   hasExistingReactions: boolean;
   asFriend?: AssociatedFriend;
@@ -15,6 +18,8 @@ const NewPostReactionButton: FC<NewPostReactionButtonProps> = ({
   post,
   hasExistingReactions,
   asFriend,
+  className,
+  ...otherProps
 }) => {
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
@@ -96,13 +101,14 @@ const NewPostReactionButton: FC<NewPostReactionButtonProps> = ({
       {({ open, opened }) => (
         <Button
           ref={buttonRef}
-          className={classes.button}
+          className={cn("NewPostReactionButton", classes.button, className)}
           variant="subtle"
           size="compact-xs"
           leftSection={<EmojiIcon />}
           loading={mutating}
           onClick={open}
           mod={{ opened }}
+          {...otherProps}
         >
           react
         </Button>

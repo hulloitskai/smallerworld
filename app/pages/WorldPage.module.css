@@ -5,11 +5,6 @@
   box-shadow: var(--mantine-shadow-lg);
 }
 
-.worldName {
-  text-align: center;
-  line-height: var(--mantine-line-height-xs);
-}
-
 .publicProfileAlert {
   margin-bottom: var(--mantine-spacing-xl);
   align-self: stretch;

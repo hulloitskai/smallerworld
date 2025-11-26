@@ -1,5 +1,5 @@
 import AppLayout from "~/components/AppLayout";
-import CreateInvitationDrawer from "~/components/CreateInvitationDrawer";
+import NewInvitationDrawerModal from "~/components/NewInvitationDrawerModal";
 import UserWorldJoinRequestCard from "~/components/UserWorldJoinRequestCard";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
 import { type JoinRequest, type User, type World } from "~/types";
@@ -72,7 +72,7 @@ const UserWorldJoinRequestsPage: PageComponent<
         </Stack>
       </Stack>
       {toInviteFromJoinRequest && (
-        <CreateInvitationDrawer
+        <NewInvitationDrawerModal
           fromJoinRequest={toInviteFromJoinRequest}
           opened={drawerOpened}
           onClose={() => {

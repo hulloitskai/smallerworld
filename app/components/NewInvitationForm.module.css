@@ -1,8 +1,3 @@
-.stack {
-  min-height: calc(rem(414px) + var(--safe-area-inset-bottom, 0px));
-  padding-bottom: var(--mantine-spacing-md);
-}
-
 .addButton {
   align-self: center;
 
@@ -78,15 +73,5 @@
 
   &[data-with-right-section] {
     padding-right: 1px;
-  }
-}
-
-.fromJoinRequestArrow {
-  width: 60px;
-  margin-left: -20px;
-  transform: rotate(-90deg);
-
-  @mixin dark {
-    filter: invert(1);
   }
 }

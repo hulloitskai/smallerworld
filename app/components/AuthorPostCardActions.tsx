@@ -205,14 +205,16 @@ const AuthorPostCardActions: FC<AuthorPostCardActionsProps> = ({
             <Menu.Item
               leftSection={<EditIcon />}
               onClick={() => {
+                const modalId = randomId();
                 openModal({
+                  modalId,
                   title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
                   size: "var(--containjer-size-xs)",
                   children: (
                     <PostForm
                       {...{ post }}
                       onPostUpdated={() => {
-                        closeAllModals();
+                        closeModal(modalId);
                       }}
                     />
                   ),

@@ -1,10 +1,7 @@
 import AppLayout from "~/components/AppLayout";
-import CreateInvitationButton from "~/components/CreateInvitationButton";
+import NewInvitationButton from "~/components/NewInvitationButton";
 import UserWorldInvitationCard from "~/components/UserWorldInvitationCard";
-import {
-  useUserWorldActivities,
-  worldManifestUrlForUser,
-} from "~/helpers/userWorld";
+import { worldManifestUrlForUser } from "~/helpers/userWorld";
 import { type User, type UserWorldInvitation, type World } from "~/types";
 
 export interface UserWorldInvitationsPageProps extends SharedPageProps {
@@ -27,10 +24,6 @@ const UserWorldInvitationsPage: PageComponent<
     },
   );
   const { pendingInvitations } = data ?? {};
-
-  // == Load activities
-  const { activities } = useUserWorldActivities({ keepPreviousData: true });
-  const activitiesById = useMemo(() => keyBy(activities, "id"), [activities]);
 
   return (
     <Stack gap="lg">
@@ -57,7 +50,7 @@ const UserWorldInvitationsPage: PageComponent<
         </Button>
       </Stack>
       <Stack gap="xs">
-        <CreateInvitationButton variant="default" size="md" h="unset" py="md" />
+        <NewInvitationButton variant="default" size="md" h="unset" py="md" />
         {pendingInvitations ? (
           isEmpty(pendingInvitations) ? (
             <EmptyCard itemLabel="join requests" />
@@ -65,7 +58,7 @@ const UserWorldInvitationsPage: PageComponent<
             pendingInvitations.map(invitation => (
               <UserWorldInvitationCard
                 key={invitation.id}
-                {...{ activitiesById, invitation }}
+                {...{ invitation }}
               />
             ))
           )

@@ -107,6 +107,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "Transition",
     ],
     "@mantine/hooks": [
+      "randomId",
       "useDebouncedValue",
       "useDebouncedCallback",
       "useDidUpdate",

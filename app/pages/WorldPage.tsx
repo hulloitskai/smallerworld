@@ -37,20 +37,9 @@ const WorldPage: PageComponent<WorldPageProps> = ({ world }) => {
 
   // == Reload page props on window focus
   useWindowEvent("focus", () => {
-    if (!isStandalone || outOfPWAScope) {
-      return;
+    if (isStandalone && !outOfPWAScope) {
+      router.reload({ async: true });
     }
-    router.reload({
-      only: [
-        "currentUser",
-        "currentFriend",
-        "faviconLinks",
-        "user",
-        "world",
-        "lastSentEncouragement",
-      ],
-      async: true,
-    });
   });
 
   // == Auto-open install modal
@@ -117,7 +106,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({ world }) => {
             })}
           />
           <Stack gap={4}>
-            <Title size="h2" className={classes.worldName}>
+            <Title size="h2" ta="center" lh="xs">
               {world.name}
             </Title>
             {!currentFriend ? null : isStandalone === undefined ? (

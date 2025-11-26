@@ -25,6 +25,7 @@
 # rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
 class Space < ApplicationRecord
   extend FriendlyId
+  include ImageHelpers
 
   # == FriendlyId ==
 
@@ -45,14 +46,37 @@ class Space < ApplicationRecord
 
   def friendly_id
     if (name = self[:name]) && (id = self[:id])
-      "#{name.parameterize}-#{id.delete("-")}"
+      "#{name[..32].strip.parameterize}-#{id.delete("-")}"
     end
   end
 
   # == Associations ==
 
-  belongs_to :owner, class_name: "User"
+  belongs_to :owner, class_name: "User", inverse_of: :owned_spaces
+
+  # == Attachments ==
+
   has_one_attached :icon
+
+  sig { returns(T::Boolean) }
+  def icon? = icon.attached?
+
+  sig { returns(T::Boolean) }
+  def icon_changed?
+    attachment_changes.include?("icon")
+  end
+
+  sig { returns(T.nilable(ActiveStorage::Blob)) }
+  def icon_blob
+    icon_attachment&.blob
+  end
+
+  sig { returns(T.nilable(Image)) }
+  def icon_image
+    if (blob = icon_blob)
+      blob.becomes(Image)
+    end
+  end
 
   # == Validations ==
   validates :name, presence: true, uniqueness: { scope: :owner }

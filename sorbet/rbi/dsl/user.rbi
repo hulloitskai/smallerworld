@@ -351,6 +351,20 @@ class User
     def create_world!(*args, &blk); end
 
     sig { returns(T::Array[T.untyped]) }
+    def owned_space_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def owned_space_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :owned_spaces`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::Space::PrivateCollectionProxy) }
+    def owned_spaces; end
+
+    sig { params(value: T::Enumerable[::Space]).void }
+    def owned_spaces=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def post_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -453,20 +467,6 @@ class User
 
     sig { params(value: T::Enumerable[::Session]).void }
     def sessions=(value); end
-
-    sig { returns(T::Array[T.untyped]) }
-    def space_ids; end
-
-    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
-    def space_ids=(ids); end
-
-    # This method is created by ActiveRecord on the `User` class because it declared `has_many :spaces`.
-    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
-    sig { returns(::Space::PrivateCollectionProxy) }
-    def spaces; end
-
-    sig { params(value: T::Enumerable[::Space]).void }
-    def spaces=(value); end
 
     sig { returns(T.nilable(::World)) }
     def world; end

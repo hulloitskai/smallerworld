@@ -66,7 +66,10 @@ const UserFooter = forwardRef<HTMLDivElement, UserFooterProps>(
           ),
         },
       ];
-      if (currentUser.supported_features.includes("spaces")) {
+      if (
+        value === "spaces" ||
+        currentUser.supported_features.includes("spaces")
+      ) {
         controls.push({
           value: "spaces",
           label: (
@@ -78,7 +81,7 @@ const UserFooter = forwardRef<HTMLDivElement, UserFooterProps>(
         });
       }
       return controls;
-    }, [currentUser, world]);
+    }, [currentUser, world, value]);
     return (
       <AppShell.Footer
         {...{ ref }}

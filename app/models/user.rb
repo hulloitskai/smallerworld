@@ -62,7 +62,8 @@ class User < ApplicationRecord
           dependent: :nullify
   accepts_nested_attributes_for :world, update_only: true
 
-  has_many :spaces,
+  has_many :owned_spaces,
+           class_name: "Space",
            inverse_of: :owner,
            foreign_key: :owner_id,
            dependent: :destroy

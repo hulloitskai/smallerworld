@@ -20,8 +20,6 @@ const AnchorContainer = createPolymorphicComponent<"a", AnchorContainerProps>(
         style={[
           style,
           theme => ({
-            "--ac-inactive-border-color-light": "var(--mantine-color-gray-3)",
-            "--ac-inactive-border-color-dark": "var(--mantine-color-dark-4)",
             "--ac-active-border-color": getThemeColor(
               borderColor ?? theme.primaryColor,
               theme,

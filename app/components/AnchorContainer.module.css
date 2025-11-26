@@ -4,10 +4,13 @@
 
   > * {
     border: rem(1px) solid
-      light-dark(
-        var(--ac-inactive-border-color-light),
-        var(--ac-inactive-border-color-dark)
-      );
+      light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+
+    &:not(:hover) {
+      @mixin dark-world-theme {
+        border-color: alpha(var(--mantine-color-white), 0.2);
+      }
+    }
 
     @mixin hover {
       border-color: var(--ac-active-border-color);

@@ -1,0 +1,4 @@
+.stack {
+  /* min-height: calc(rem(414px) + var(--safe-area-inset-bottom, 0px)); */
+  padding-bottom: var(--mantine-spacing-md);
+}

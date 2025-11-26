@@ -11,14 +11,16 @@
 .dropzone {
   @mixin dark-world-theme {
     border-color: alpha(var(--mantine-color-white), 0.2);
+  }
 
-    &:not([data-with-src]) {
-      background-color: alpha(var(--mantine-color-black), 0.2);
+  &:not([data-with-src]) {
+    @mixin dark-world-theme {
+      background-color: darken(var(--mantine-color-body), 0.2);
     }
 
-    &:not([data-loading]) {
-      @mixin hover {
-        background-color: alpha(var(--mantine-color-dark-5), 0.5);
+    @mixin hover {
+      @mixin dark-world-theme {
+        background-color: darken(var(--mantine-color-body), 0.35);
       }
     }
   }
@@ -33,9 +35,14 @@
     &:not([data-loading]) {
       @mixin hover {
         background-color: alpha(
-          light-dark(var(--mantine-color-black), var(--mantine-color-dark-5)),
+          light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-4)),
           0.5
         );
+
+        @mixin dark-world-theme {
+          background-color: alpha(var(--mantine-color-body), 0.5);
+        }
+
         > :global(.mantine-Dropzone-inner) {
           opacity: 1;
         }
@@ -72,6 +79,12 @@
 
   > :global(.mantine-LoadingOverlay-root) {
     border-radius: var(--dropzone-radius);
+
+    :global(.mantine-LoadingOverlay-overlay) {
+      @mixin dark-world-theme {
+        background-color: alpha(var(--mantine-color-black), 0.4);
+      }
+    }
   }
 }
 

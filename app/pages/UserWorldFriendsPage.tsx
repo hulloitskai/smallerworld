@@ -8,7 +8,7 @@ import FrownyFaceIcon from "~icons/heroicons/face-frown-20-solid";
 import CloseIcon from "~icons/heroicons/x-mark";
 
 import AppLayout from "~/components/AppLayout";
-import CreateInvitationButton from "~/components/CreateInvitationButton";
+import NewInvitationButton from "~/components/NewInvitationButton";
 import UserWorldFriendCard from "~/components/UserWorldFriendCard";
 import {
   useUserWorldActivities,
@@ -122,7 +122,7 @@ const UserWorldFriendsPage: PageComponent<WorldFriendsPageProps> = ({
       </Stack>
       <Stack gap="xs">
         <Stack gap={8}>
-          <CreateInvitationButton
+          <NewInvitationButton
             variant="default"
             size="md"
             h="unset"

@@ -247,6 +247,9 @@ module GeneratedPathHelpersModule
   def shortlinks_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def space_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -1,5 +1,3 @@
-import { closeAllModals, openModal } from "@mantine/modals";
-
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type Encouragement, type PostType, type UserWorldPost } from "~/types";
 
@@ -15,8 +13,10 @@ export const openNewUserWorldPostModal = ({
   postType,
   encouragement,
   onPostCreated,
-}: NewUserWorldPostModalOptions): string =>
+}: NewUserWorldPostModalOptions): void => {
+  const modalId = randomId();
   openModal({
+    modalId,
     title: `new ${POST_TYPE_TO_LABEL[postType]}`,
     size: "var(--container-size-xs)",
     children: (
@@ -24,9 +24,10 @@ export const openNewUserWorldPostModal = ({
         newPostType={postType}
         {...{ encouragement }}
         onPostCreated={post => {
-          closeAllModals();
+          closeModal(modalId);
           onPostCreated?.(post);
         }}
       />
     ),
   });
+};

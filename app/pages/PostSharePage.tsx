@@ -67,7 +67,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
               },
             })}
           />
-          <Title className={worldPageClasses.worldName} size="h2">
+          <Title size="h2" ta="center" lh="xs">
             {world.name}
           </Title>
         </Stack>

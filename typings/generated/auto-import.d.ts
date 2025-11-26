@@ -111,6 +111,7 @@ declare global {
   const parseThemeColor: typeof import('@mantine/core')['parseThemeColor']
   const pick: typeof import('lodash-es')['pick']
   const queryParamsFromPath: typeof import('~/helpers/utils')['queryParamsFromPath']
+  const randomId: typeof import('@mantine/hooks')['randomId']
   const rem: typeof import('@mantine/core')['rem']
   const requireMeta: typeof import('~/helpers/meta')['requireMeta']
   const resolve: typeof import('~/helpers/utils')['resolve']
