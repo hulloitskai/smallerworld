@@ -31,7 +31,10 @@ module Users
             inertia: "UserWorldPage",
             world_theme: world.theme,
             props: {
-              "faviconLinks" => world_favicon_links(world),
+              "faviconLinks" => world_favicon_links(
+                world,
+                except_apple_touch_icon: true,
+              ),
               world: WorldSerializer.one(world),
               "latestFriendEmojis" => latest_friends.map(&:emoji),
               "pendingJoinRequests" => world.join_requests.pending.count,
