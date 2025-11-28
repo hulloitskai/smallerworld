@@ -24,7 +24,12 @@ class PostSharesController < ApplicationController
         else
           false
         end
-        public_post = WorldPublicPost.new(post:, repliers:, seen:)
+        replied = if (friend = current_friend)
+          post.reply_receipts.exists?(friend:)
+        else
+          false
+        end
+        post = WorldPost.new(post:, repliers:, seen:, replied:)
         sharer = share.sharer!
         if (user = current_user)
           invitation_requested = world
@@ -33,7 +38,7 @@ class PostSharesController < ApplicationController
         end
         render(inertia: "PostSharePage", props: {
           world: WorldSerializer.one(world),
-          post: WorldPublicPostSerializer.one(public_post),
+          post: WorldPostSerializer.one(post),
           sharer: (FriendProfileSerializer.one(sharer) if sharer.is_a?(Friend)),
           "invitationRequested" => invitation_requested || false,
         })

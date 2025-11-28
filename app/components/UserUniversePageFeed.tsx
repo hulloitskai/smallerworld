@@ -4,11 +4,11 @@ import { useUserUniversePosts } from "~/helpers/userUniverse";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
 import { type World } from "~/types";
 
-import AuthorPostCardActions from "./AuthorPostCardActions";
-import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 import PublicPostCardActions from "./PublicPostCardActions";
+import WorldPostCardAuthorActions from "./WorldPostCardAuthorActions";
+import WorldPostCardFriendActions from "./WorldPostCardFriendActions";
 
 import classes from "./UserUniversePageFeed.module.css";
 
@@ -32,13 +32,7 @@ const UserUniversePageFeed: FC<UserUniversePageFeedProps> = ({
     <Stack className={cn("UniversePageFeed", className)} {...otherProps}>
       {posts ? (
         isEmpty(posts) ? (
-          <Card withBorder>
-            <Stack justify="center" gap={2} ta="center" mih={60}>
-              <Title order={4} lh="xs">
-                no posts yet!
-              </Title>
-            </Stack>
-          </Card>
+          <EmptyCard itemLabel="posts" />
         ) : (
           <>
             {posts.map(post => (
@@ -54,8 +48,7 @@ const UserUniversePageFeed: FC<UserUniversePageFeedProps> = ({
                             routes.worlds.show.path({
                               id: post.world_id,
                               query: {
-                                ...(post.user_universe_post_type ===
-                                  "friend" && {
+                                ...(post.associated_friend && {
                                   friend_token:
                                     post.associated_friend.access_token,
                                 }),
@@ -85,20 +78,22 @@ const UserUniversePageFeed: FC<UserUniversePageFeedProps> = ({
                   {...{ post }}
                   focus={queryParams.post_id === post.id}
                   actions={
-                    userWorld && post.user_universe_post_type === "author" ? (
-                      <AuthorPostCardActions world={userWorld} {...{ post }} />
-                    ) : post.world &&
-                      post.user_universe_post_type === "friend" ? (
-                      <FriendPostCardActions
+                    userWorld && post.world_id === userWorld.id ? (
+                      <WorldPostCardAuthorActions
+                        world={userWorld}
+                        {...{ post }}
+                      />
+                    ) : post.associated_friend ? (
+                      <WorldPostCardFriendActions
                         {...{ post }}
                         world={post.world}
-                        replyToNumber={post.reply_to_number}
+                        replyToNumber={
+                          post.associated_friend.world_reply_to_number
+                        }
                         asFriend={post.associated_friend}
                       />
                     ) : (
-                      post.user_universe_post_type === "public" && (
-                        <PublicPostCardActions {...{ post }} />
-                      )
+                      <PublicPostCardActions {...{ post }} />
                     )
                   }
                 />

@@ -29,10 +29,7 @@ import UserWorldPageFloatingActions from "~/components/UserWorldPageFloatingActi
 import UserWorldPageNotificationsButton from "~/components/UserWorldPageNotificationsButton";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { openUserWorldPageInstallModal } from "~/helpers/install";
-import {
-  useUserWorldPosts,
-  worldManifestUrlForUser,
-} from "~/helpers/userWorld";
+import { worldManifestUrlForUser } from "~/helpers/userWorld";
 import { useWebPush } from "~/helpers/webPush";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
 import { type User, type World } from "~/types";
@@ -45,6 +42,7 @@ export interface UserWorldPageProps extends SharedPageProps {
   latestFriendEmojis: (string | null)[];
   pendingJoinRequests: number;
   pendingInvitations: number;
+  hasAtLeastOneUserCreatedPost: boolean;
 }
 
 const ICON_SIZE = 96;
@@ -55,6 +53,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
   latestFriendEmojis,
   pendingJoinRequests,
   pendingInvitations,
+  hasAtLeastOneUserCreatedPost,
 }) => {
   const worldTheme = useWorldTheme(world.theme);
 
@@ -84,19 +83,6 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
       openUserWorldPageInstallModal(world);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // == Posts
-  const { posts } = useUserWorldPosts();
-  const hasOneUserCreatedPost = useMemo<boolean | undefined>(() => {
-    if (posts) {
-      const accountCreatedAt = DateTime.fromISO(currentUser.created_at);
-      const cutoff = accountCreatedAt.plus({ seconds: 1 });
-      return posts.some(post => {
-        const updatedAt = DateTime.fromISO(post.updated_at);
-        return updatedAt > cutoff;
-      });
-    }
-  }, [posts]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Search
   const [searchActive, setSearchActive] = useState(false);
@@ -133,7 +119,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
               );
               const worldUrl = normalizeUrl(worldPath);
               void navigator.clipboard.writeText(worldUrl).then(() => {
-                toast.success("page url copied");
+                toast.success("world url copied");
               });
             }}
           />
@@ -268,7 +254,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
                 leftSection={<EditIcon />}
                 href={routes.userWorld.edit.path()}
               >
-                customize your page
+                customize your world
               </LinkItem>
               <LinkItem
                 leftSection={<OpenExternalIcon />}
@@ -343,7 +329,8 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
         outOfPWAScope ||
         pushRegistration !== null ||
         webPushPermission === "denied") &&
-        (hasOneUserCreatedPost === false || latestFriendEmojis.length < 3) && (
+        (hasAtLeastOneUserCreatedPost === false ||
+          latestFriendEmojis.length < 3) && (
           <Alert
             className={classes.onboardingAlert}
             variant="outline"
@@ -392,7 +379,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
                 </span>
                 to join your world 👯
               </CheckableListItem>
-              <CheckableListItem checked={!!hasOneUserCreatedPost}>
+              <CheckableListItem checked={!!hasAtLeastOneUserCreatedPost}>
                 write your first post! ✍️
               </CheckableListItem>
             </List>
@@ -438,11 +425,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
       >
         {body}
       </RemoveScroll>
-      <UserWorldPageFloatingActions
-        onPostCreated={() => {
-          scrollTo({ top: 0, behavior: "smooth" });
-        }}
-      />
+      <UserWorldPageFloatingActions />
       {isStandalone && !outOfPWAScope && pushRegistration && (
         <WelcomeBackToast subject={currentUser} />
       )}

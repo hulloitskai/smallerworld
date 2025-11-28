@@ -8,19 +8,19 @@ import {
 } from "~/helpers/messaging";
 import { mutateWorldPosts } from "~/helpers/worlds";
 import {
-  type AssociatedFriend,
-  type UserUniverseFriendPost,
-  type WorldFriendPost,
+  type UniversePost,
+  type UniversePostAssociatedFriend,
+  type WorldPost,
   type WorldProfile,
 } from "~/types";
 
 import classes from "./PostCardReplyButton.module.css";
 
 export interface PostCardReplyButtonProps extends ButtonProps {
-  post: WorldFriendPost | UserUniverseFriendPost;
+  post: WorldPost | UniversePost;
   world: WorldProfile;
   replyToNumber: string;
-  asFriend?: AssociatedFriend;
+  asFriend?: UniversePostAssociatedFriend;
 }
 
 const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({

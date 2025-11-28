@@ -46,13 +46,13 @@ module GeneratedUrlHelpersModule
   def edit_user_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def encouragements_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def feedback_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def file_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def friend_encouragements_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def friend_url(*args); end
@@ -113,6 +113,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def pause_user_world_friend_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def pinned_space_posts_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pinned_user_world_posts_url(*args); end
@@ -247,7 +250,13 @@ module GeneratedUrlHelpersModule
   def shortlinks_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def space_posts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def space_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def spaces_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def src_url(*args); end
@@ -292,6 +301,9 @@ module GeneratedUrlHelpersModule
   def user_manifest_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def user_space_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def user_spaces_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -299,6 +311,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_world_activities_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def user_world_encouragement_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def user_world_encouragements_url(*args); end

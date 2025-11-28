@@ -15,10 +15,10 @@ import {
   type Activity,
   type ActivityTemplate,
   type Encouragement,
+  type Post,
   type PostType,
   type User,
   type UserWorldFriendProfile,
-  type UserWorldPost,
 } from "~/types";
 
 import routes from "./routes";
@@ -70,7 +70,7 @@ export const useUserWorldFriends = (
 };
 
 export interface UserWorldPostsData {
-  posts: UserWorldPost[];
+  posts: Post[];
   pagination: { next: string | number | null };
 }
 
@@ -167,7 +167,7 @@ export const mutateUserWorldPosts = async (): Promise<void> => {
 export interface NewUserWorldPostModalOptions {
   postType: PostType;
   encouragement?: Encouragement;
-  onPostCreated?: (post: UserWorldPost) => void;
+  onPostCreated?: (post: Post) => void;
 }
 
 export const worldManifestUrlForUser = (user: User): string =>

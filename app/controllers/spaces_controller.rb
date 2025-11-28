@@ -9,6 +9,10 @@ class SpacesController < ApplicationController
     respond_to do |format|
       format.html do
         space = find_space!
+        if space.friendly_id != space_id!
+          return redirect_to(space_path(space), status: :found)
+        end
+
         render(inertia: "SpacePage", props: {
           space: SpaceSerializer.one(space),
         })
@@ -20,8 +24,13 @@ class SpacesController < ApplicationController
 
   # == Helpers ==
 
+  sig { returns(String) }
+  def space_id!
+    params.fetch(:id)
+  end
+
   sig { params(scope: Space::PrivateRelation).returns(Space) }
   def find_space!(scope: Space.all)
-    scope.friendly.find(params.fetch(:id))
+    scope.friendly.find(space_id!)
   end
 end

@@ -2,14 +2,18 @@ import { useInViewport, useMergedRef } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 
 import { useTrackPostSeen } from "~/helpers/posts";
-import { type PostReaction, type UserUniversePublicPost } from "~/types";
-import type WorldPost from "~/types/WorldPost";
+import {
+  type PostReaction,
+  type SpacePost,
+  type UniversePost,
+  type WorldPost,
+} from "~/types";
 
 import NewPostReactionButton from "./NewPostReactionButton";
 import PostReactionButton from "./PostReactionButton";
 
 export interface PublicPostCardActionsProps extends Omit<BoxProps, "children"> {
-  post: WorldPost | UserUniversePublicPost;
+  post: WorldPost | UniversePost | SpacePost;
 }
 
 const PublicPostCardActions: FC<PublicPostCardActionsProps> = ({

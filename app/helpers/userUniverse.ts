@@ -10,13 +10,13 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
-import { type UserUniversePost } from "~/types";
+import { type UniversePost } from "~/types";
 
 import routes from "./routes";
 import { fetchRoute } from "./routes/fetch";
 
 export interface UserUniversePostsData {
-  posts: UserUniversePost[];
+  posts: UniversePost[];
   pagination: { next: string | null };
 }
 

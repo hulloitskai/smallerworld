@@ -4,34 +4,38 @@ import ShareIcon from "~icons/heroicons/arrow-up-on-square-20-solid";
 
 import {
   type PostShare,
-  type UserUniverseFriendPost,
+  type UniversePost,
+  type UniversePostAssociatedFriend,
+  type WorldPost,
   type WorldProfile,
 } from "~/types";
-import type WorldPost from "~/types/WorldPost";
 
 import classes from "./PostCardShareButton.module.css";
 
 export interface PostCardShareButtonProps extends ActionIconProps {
   world: WorldProfile;
-  post: WorldPost | UserUniverseFriendPost;
+  post: WorldPost | UniversePost;
+  asFriend?: UniversePostAssociatedFriend;
 }
 
 const PostCardShareButton: FC<PostCardShareButtonProps> = ({
   world,
   post,
+  asFriend,
   ...otherProps
 }) => {
   const currentFriend = useCurrentFriend();
+  const friend = asFriend ?? currentFriend;
 
   // == Share post
   const { trigger, mutating } = useRouteMutation<{
     share: PostShare;
   }>(routes.posts.share, {
-    params: currentFriend
+    params: friend
       ? {
           id: post.id,
           query: {
-            friend_token: currentFriend.access_token,
+            friend_token: friend.access_token,
           },
         }
       : null,

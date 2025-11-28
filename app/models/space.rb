@@ -53,6 +53,12 @@ class Space < ApplicationRecord
   # == Associations ==
 
   belongs_to :owner, class_name: "User", inverse_of: :owned_spaces
+  has_many :posts, dependent: :destroy
+
+  sig { returns(User) }
+  def owner!
+    owner or raise ActiveRecord::RecordNotFound, "Missing owner"
+  end
 
   # == Attachments ==
 
@@ -76,6 +82,13 @@ class Space < ApplicationRecord
     if (blob = icon_blob)
       blob.becomes(Image)
     end
+  end
+
+  sig { returns(User::PrivateRelation) }
+  def members
+    User
+      .where(id: owner_id)
+      .or(User.where(id: posts.distinct.select(:author_id)))
   end
 
   # == Validations ==

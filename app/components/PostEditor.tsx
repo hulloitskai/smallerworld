@@ -14,7 +14,7 @@ import "@mantine/tiptap/styles.layer.css";
 
 export interface PostEditorProps
   extends Omit<RichTextEditorProps, "onChange" | "editor" | "children">,
-    Pick<EditorOptions, "onUpdate"> {
+    Partial<Pick<EditorOptions, "onUpdate">> {
   initialValue?: string;
   placeholder?: string;
   onChange?: (value: string) => void;

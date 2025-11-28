@@ -1,0 +1,70 @@
+.emojiButton {
+  border-color: light-dark(
+    var(--mantine-color-gray-4),
+    var(--mantine-color-dark-4)
+  );
+
+  @mixin dark {
+    background-color: transparent;
+  }
+
+  @mixin dark-world-theme {
+    border-color: alpha(var(--mantine-color-white), 0.2);
+  }
+
+  &[data-opened] {
+    background-color: var(--mantine-color-default-hover);
+  }
+}
+
+.emoji {
+  @mixin emoji;
+  font-size: calc(var(--mantine-font-size-xl) * 1.2);
+}
+
+.dateInput {
+  :global(.mantine-DateInput-input) {
+    text-transform: lowercase;
+  }
+}
+
+.dateInputDay {
+  &[data-weekend] {
+    color: var(--mantine-color-text);
+  }
+}
+
+.imagesScrollArea {
+  margin-top: -8px;
+
+  :global(.mantine-ScrollArea-content) {
+    padding-top: 8px;
+    padding-bottom: var(--mantine-spacing-xs);
+  }
+
+  ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+  }
+}
+
+.spotifyTrackInputContainer {
+  :global(.mantine-Input-wrapper) {
+    flex-grow: 1;
+  }
+}
+
+.removeSpotifyTrackButton {
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: calc(var(--mantine-spacing-xs) / 2);
+  }
+}
+
+.postEditorContent {
+  [contenteditable="true"] {
+    min-height: 144px;
+  }
+}

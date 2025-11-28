@@ -74,6 +74,16 @@ class Post < ApplicationRecord
   attr_accessor :friend_ids_to_notify
 
   sig { returns(String) }
+  def world_id!
+    world_id or raise "Missing world ID"
+  end
+
+  sig { returns(String) }
+  def space_id!
+    space_id or raise "Missing space ID"
+  end
+
+  sig { returns(String) }
   def body_text
     fragment = Nokogiri::HTML5.fragment(body_html)
     reshape_body_fragment_for_text_rendering!(fragment)
@@ -432,6 +442,11 @@ class Post < ApplicationRecord
         .find_each do |user|
           notifications.create!(recipient: user, push_delay: delay)
         end
+      if (space = self.space)
+        space.members.where.not(id: author_id).find_each do |user|
+          notifications.create!(recipient: user, push_delay: delay)
+        end
+      end
     end
   end
 

@@ -8,14 +8,13 @@ import {
   useWorldPageDialogOpened,
   type WorldPageProps,
 } from "~/helpers/worlds";
-import { type ActivityCoupon } from "~/types";
-import type WorldPost from "~/types/WorldPost";
+import { type ActivityCoupon, type WorldPost } from "~/types";
 
 import ActivityCouponsCarousel from "./ActivityCouponsCarousel";
 import DrawerModal from "./DrawerModal";
-import FriendPostCardActions from "./FriendPostCardActions";
 import PostCard from "./PostCard";
 import PublicPostCardActions from "./PublicPostCardActions";
+import WorldPostCardFriendActions from "./WorldPostCardFriendActions";
 
 import classes from "./WorldPageInvitationsButton.module.css";
 
@@ -185,8 +184,8 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
                   {...{ post }}
                   blurContent={!currentFriend && post.visibility !== "public"}
                   actions={
-                    post.world_post_type === "friend" && replyToNumber ? (
-                      <FriendPostCardActions
+                    replyToNumber ? (
+                      <WorldPostCardFriendActions
                         {...{ world, post, replyToNumber }}
                       />
                     ) : (

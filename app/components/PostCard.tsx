@@ -90,7 +90,9 @@ const PostCard: FC<PostCardProps> = ({
         className={classes.card}
         mod={{
           focus,
-          "post-visibility": post.visibility,
+          ...(post.world_id && {
+            "world-visibility": post.visibility,
+          }),
         }}
       >
         <Card.Section inheritPadding pt="xs" pb={10}>
@@ -139,7 +141,7 @@ const PostCard: FC<PostCardProps> = ({
                   {post.created_at}
                 </Time>
               )}
-              {post.visibility === "public" && (
+              {!!post.world_id && post.visibility === "public" && (
                 <Tooltip
                   label="visible to everyone"
                   events={{ hover: true, focus: true, touch: true }}

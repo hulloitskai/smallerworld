@@ -38,7 +38,7 @@ module Users::Worlds
     def destroy
       respond_to do |format|
         format.json do
-          join_request = load_join_request!
+          join_request = find_join_request!
           authorize!(join_request)
           join_request.destroy!
           render(json: {})
@@ -51,7 +51,7 @@ module Users::Worlds
     # == Helpers ==
 
     sig { params(scope: JoinRequest::PrivateRelation).returns(JoinRequest) }
-    def load_join_request!(scope: JoinRequest.all)
+    def find_join_request!(scope: JoinRequest.all)
       scope.find(params.fetch(:id))
     end
   end

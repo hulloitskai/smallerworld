@@ -9,7 +9,7 @@ module Users::Worlds
 
     # == Actions ==
 
-    # GET /world/posts?date=...&type=...&q=...
+    # GET /world/posts[?date=...][&type=...][&q=...]
     def index
       respond_to do |format|
         format.json do
@@ -43,7 +43,7 @@ module Users::Worlds
             pagy_keyset(scope, limit: POSTS_PER_PAGE)
           end
           render(json: {
-            posts: UserWorldPostSerializer.many(posts),
+            posts: PostSerializer.many(posts),
             pagination: {
               next: pagy.next,
             },
@@ -63,7 +63,7 @@ module Users::Worlds
             .with_encouragement
             .order(pinned_until: :asc, created_at: :asc)
           render(json: {
-            posts: UserWorldPostSerializer.many(posts),
+            posts: PostSerializer.many(posts),
           })
         end
       end
@@ -73,7 +73,7 @@ module Users::Worlds
     def stats
       respond_to do |format|
         format.json do
-          post = find_post
+          post = find_post!
           authorize!(post, to: :manage?)
           render(json: {
             "notifiedFriends" => post.notified_friends.count,
@@ -88,7 +88,7 @@ module Users::Worlds
     def viewers
       respond_to do |format|
         format.json do
-          post = find_post
+          post = find_post!
           authorize!(post)
           views = PostView
             .where(
@@ -134,7 +134,7 @@ module Users::Worlds
     def audience
       respond_to do |format|
         format.json do
-          post = find_post
+          post = find_post!
           authorize!(post)
           notified_ids = post.notifications.to_friends.pluck(:recipient_id) +
             post.text_blasts.pluck(:friend_id)
@@ -172,7 +172,7 @@ module Users::Worlds
           if post.save
             render(
               json: {
-                post: UserWorldPostSerializer.one(post),
+                post: PostSerializer.one(post),
               },
               status: :created,
             )
@@ -192,8 +192,9 @@ module Users::Worlds
     def update
       respond_to do |format|
         format.json do
-          post = find_post(
+          post = find_post!(
             scope: Post
+              .where.associated(:world)
               .with_attached_images
               .with_quoted_post_and_attached_images,
           )
@@ -213,7 +214,7 @@ module Users::Worlds
           ])
           if post.update(post_params)
             render(json: {
-              post: UserWorldPostSerializer.one(post),
+              post: PostSerializer.one(post),
             })
           else
             render(
@@ -229,16 +230,11 @@ module Users::Worlds
     def destroy
       respond_to do |format|
         format.json do
-          post = find_post(
-            scope: Post
-              .with_attached_images
-              .with_quoted_post_and_attached_images,
-          )
+          post = find_post!
           authorize!(post)
+          world_id = post.world_id!
           if post.destroy
-            render(json: {
-              "worldId" => post.world_id,
-            })
+            render(json: { "worldId" => world_id })
           else
             render(
               json: {
@@ -256,7 +252,7 @@ module Users::Worlds
       respond_to do |format|
         format.json do
           current_user = authenticate_user!
-          post = find_post
+          post = find_post!
           authorize!(post)
           share = post.shares.find_or_create_by!(sharer: current_user)
           render(json: {
@@ -268,8 +264,10 @@ module Users::Worlds
 
     private
 
+    # == Helpers ==
+
     sig { params(scope: Post::PrivateRelation).returns(Post) }
-    def find_post(scope: Post.all)
+    def find_post!(scope: Post.where.associated(:world))
       scope.find(params.fetch(:id))
     end
   end

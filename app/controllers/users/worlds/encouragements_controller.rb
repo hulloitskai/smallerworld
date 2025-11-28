@@ -17,5 +17,29 @@ module Users::Worlds
         end
       end
     end
+
+    # GET /encouragements/:id
+    def show
+      respond_to do |format|
+        format.json do
+          encouragement = find_encouragement!
+          authorize!(encouragement)
+          render(json: {
+            encouragement: EncouragementSerializer.one(encouragement),
+          })
+        end
+      end
+    end
+
+    private
+
+    # == Helpers ==
+
+    sig do
+      params(scope: Encouragement::PrivateRelation).returns(Encouragement)
+    end
+    def find_encouragement!(scope: Encouragement.all)
+      scope.find(params.fetch(:id))
+    end
   end
 end

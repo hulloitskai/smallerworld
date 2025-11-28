@@ -10,19 +10,14 @@ import PostCard from "~/components/PostCard";
 import PostSharePageRequestInvitationAlert from "~/components/PostSharePageRequestInvitationAlert";
 import PublicPostCardActions from "~/components/PublicPostCardActions";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
-import {
-  type FriendProfile,
-  type WorldProfile,
-  type WorldPublicPost,
-} from "~/types";
-import type WorldPost from "~/types/WorldPost";
+import { type FriendProfile, type WorldPost, type WorldProfile } from "~/types";
 
 import classes from "./PostSharePage.module.css";
 import worldPageClasses from "./WorldPage.module.css";
 
 export interface PostSharePageProps extends SharedPageProps {
   world: WorldProfile;
-  post: WorldPublicPost;
+  post: WorldPost;
   sharer: FriendProfile | null;
   invitationRequested: boolean;
 }
@@ -62,7 +57,7 @@ const PostSharePage: PageComponent<PostSharePageProps> = ({
                 );
                 const pageUrl = normalizeUrl(worldPath);
                 void navigator.clipboard.writeText(pageUrl).then(() => {
-                  toast.success("page url copied");
+                  toast.success("world url copied");
                 });
               },
             })}

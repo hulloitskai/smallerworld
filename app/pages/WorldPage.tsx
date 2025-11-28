@@ -100,7 +100,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({ world }) => {
                   }),
                 );
                 void navigator.clipboard.writeText(pageUrl).then(() => {
-                  toast.success("page url copied");
+                  toast.success("world url copied");
                 });
               },
             })}

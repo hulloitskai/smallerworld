@@ -155,7 +155,7 @@ class ApplicationController < ActionController::Base
   sig { params(error: ActionPolicy::Unauthorized).void }
   def handle_unauthorized(error)
     if request.format.json?
-      report_and_render_json_exception(error)
+      report_and_render_json_exception(Exception.new("action not authorized"))
     else
       raise
     end
@@ -176,7 +176,7 @@ class ApplicationController < ActionController::Base
   sig { params(exception: ActionController::InvalidAuthenticityToken).void }
   def handle_invalid_authenticity_token(exception)
     if request.inertia?
-      flash.alert = "The page expired, please try again."
+      flash.alert = "the page expired, please try again."
       inertia_location(start_path)
     elsif request.format.json?
       report_and_render_json_exception(exception)

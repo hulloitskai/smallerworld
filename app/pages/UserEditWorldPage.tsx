@@ -105,7 +105,7 @@ const UserEditWorldPage: PageComponent<UserEditWorldPageProps> = ({
         <Card.Section inheritPadding withBorder py="md">
           <Stack align="center" gap={8}>
             <Title size="h4" lh="xs" ta="center">
-              edit your world
+              customize your world
             </Title>
             <Stack gap={4} align="center">
               <WorldHomescreenPreview

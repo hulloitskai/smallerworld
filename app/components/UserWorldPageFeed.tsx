@@ -5,15 +5,15 @@ import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 import CloseIcon from "~icons/heroicons/x-mark";
 import CloseOutlineIcon from "~icons/heroicons/x-mark-20-solid";
 
-import { openNewUserWorldPostModal } from "~/components/NewUserWorldPostModal";
+import { openNewWorldPostModal } from "~/components/NewWorldPostModal";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { useUserWorldPosts } from "~/helpers/userWorld";
 import { type UserWorldPageProps } from "~/pages/UserWorldPage";
 import { type PostType } from "~/types";
 
-import AuthorPostCardActions from "./AuthorPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
+import WorldPostCardAuthorActions from "./WorldPostCardAuthorActions";
 import WorldTimelineCard from "./WorldTimelineCard";
 
 import classes from "./UserWorldPageFeed.module.css";
@@ -98,7 +98,10 @@ const UserWorldPageFeed: FC<UserWorldPageFeedProps> = ({
         {...{ date }}
         onDateChange={setDate}
         onContinueStreak={() => {
-          openNewUserWorldPostModal({ postType: "journal_entry" });
+          openNewWorldPostModal({
+            worldId: world.id,
+            postType: "journal_entry",
+          });
         }}
       />
       {postType && (
@@ -129,10 +132,10 @@ const UserWorldPageFeed: FC<UserWorldPageFeedProps> = ({
           ) : (
             <Card withBorder>
               <Stack justify="center" gap={2} ta="center" mih={60}>
-                <Title order={4} lh="xs">
+                <Text ff="heading" fw={700}>
                   no posts yet!
-                </Title>
-                <Text size="sm">
+                </Text>
+                <Text size="sm" c="dimmed">
                   create a new post with the{" "}
                   <Badge
                     variant="filled"
@@ -159,7 +162,7 @@ const UserWorldPageFeed: FC<UserWorldPageFeedProps> = ({
                 key={post.id}
                 {...{ post }}
                 focus={queryParams.post_id === post.id}
-                actions={<AuthorPostCardActions {...{ post, world }} />}
+                actions={<WorldPostCardAuthorActions {...{ post, world }} />}
                 highlightType={post.type === postType}
                 onTypeClick={() => {
                   setPostType(post.type === postType ? null : post.type);

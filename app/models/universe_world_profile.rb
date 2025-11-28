@@ -2,10 +2,6 @@
 # frozen_string_literal: true
 
 class UniverseWorldProfile < T::Struct
-  extend T::Sig
-
-  # == Properties ==
-
   const :world, World
   const :uncleared_notification_count, Integer
   const :last_post_created_at, T.nilable(Time)

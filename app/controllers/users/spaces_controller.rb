@@ -46,5 +46,30 @@ module Users
         end
       end
     end
+
+    # PUT /world/spaces/:id
+    def update
+      respond_to do |format|
+        format.json do
+          space = find_space!
+          authorize!(space)
+          space_params = params.expect(space: %i[name description icon])
+          if space.update(space_params)
+            render(json: {
+              space: SpaceSerializer.one(space),
+            })
+          end
+        end
+      end
+    end
+
+    private
+
+    # == Helpers ==
+
+    sig { returns(Space) }
+    def find_space!
+      Space.find(params.fetch(:id))
+    end
   end
 end

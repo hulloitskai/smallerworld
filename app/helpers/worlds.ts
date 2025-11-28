@@ -11,8 +11,7 @@ import useSWRInfinite, {
   unstable_serialize,
 } from "swr/infinite";
 
-import { type Encouragement, type WorldProfile } from "~/types";
-import type WorldPost from "~/types/WorldPost";
+import { type Encouragement, type WorldPost, type WorldProfile } from "~/types";
 
 import { useCurrentFriend } from "./authentication";
 import routes from "./routes";

@@ -1,7 +1,7 @@
 import { Code, Text } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 
-import "@mantine/dates/styles.css";
+import "@mantine/dates/styles.layer.css";
 
 const TestForm: FC = () => {
   // == Form

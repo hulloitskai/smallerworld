@@ -2,12 +2,12 @@ import { NEKO_SIZE } from "~/helpers/neko";
 import { useWebPush } from "~/helpers/webPush";
 import { useWorldPosts, type WorldPageProps } from "~/helpers/worlds";
 
-import EncouragementCard from "./EncouragementCard";
 import FeedbackNeko from "./FeedbackNeko";
-import FriendPostCardActions from "./FriendPostCardActions";
 import LoadMoreButton from "./LoadMoreButton";
 import PostCard from "./PostCard";
 import PublicPostCardActions from "./PublicPostCardActions";
+import WorldFriendEncouragementCard from "./WorldFriendEncouragementCard";
+import WorldPostCardFriendActions from "./WorldPostCardFriendActions";
 import WorldTimelineCard from "./WorldTimelineCard";
 
 export interface WorldPageFeedProps extends BoxProps {}
@@ -45,7 +45,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
   return (
     <Stack {...props}>
       {showEncouragementCard && (
-        <EncouragementCard
+        <WorldFriendEncouragementCard
           {...{
             world,
             currentFriend,
@@ -68,13 +68,7 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
       />
       {posts ? (
         isEmpty(posts) ? (
-          <Card withBorder>
-            <Stack justify="center" gap={2} ta="center" mih={60}>
-              <Title order={4} lh="xs">
-                no posts yet!
-              </Title>
-            </Stack>
-          </Card>
+          <EmptyCard itemLabel="posts" />
         ) : (
           <>
             {posts.map((post, index) => {
@@ -85,8 +79,8 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
                     blurContent={!currentFriend && post.visibility !== "public"}
                     focus={queryParams.post_id === post.id}
                     actions={
-                      post.world_post_type === "friend" && replyToNumber ? (
-                        <FriendPostCardActions
+                      replyToNumber ? (
+                        <WorldPostCardFriendActions
                           {...{ world, post, replyToNumber }}
                         />
                       ) : (

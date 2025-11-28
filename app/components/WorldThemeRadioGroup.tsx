@@ -24,7 +24,11 @@ const WorldThemeRadioGroup: FC<WorldThemeRadioGroupProps> = ({
 }) => {
   const availableThemes = useAvailableWorldThemes();
   return (
-    <Radio.Group label="your page theme" labelProps={{ mb: 8 }} {...otherProps}>
+    <Radio.Group
+      label="your world theme"
+      labelProps={{ mb: 8 }}
+      {...otherProps}
+    >
       <Group justify="center" gap={6} wrap="wrap">
         <RadioCard worldTheme={null} />
         {availableThemes.map(worldTheme => (

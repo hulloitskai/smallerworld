@@ -137,7 +137,25 @@ Rails.application.routes.draw do
   end
 
   # == Spaces ==
-  resources :spaces, only: %i[show], export: true
+  resources :spaces, only: %i[show], export: true do
+    scope module: :spaces do
+      # == Space Posts ==
+      resources(
+        :posts,
+        only: %i[index create],
+        export: { namespace: "spacePosts" },
+      ) do
+        collection do
+          get :pinned
+        end
+      end
+    end
+  end
+  namespace :spaces do
+    resources :posts,
+              only: %i[update destroy],
+              export: { namespace: "spacePosts" }
+  end
 
   scope module: :users, as: "user" do
     # == User World
@@ -151,7 +169,7 @@ Rails.application.routes.draw do
                   only: %i[index create],
                   export: { namespace: "userWorldActivities" }
         resources :encouragements,
-                  only: :index,
+                  only: %i[index show],
                   export: { namespace: "userWorldEncouragements" }
         resources(
           :friends,
@@ -188,7 +206,7 @@ Rails.application.routes.draw do
       end
     end
 
-    # == User Universe ==
+    # == User Universe
     resource :universe, only: [], export: false do
       scope export: { namespace: "userUniverse" } do
         get :worlds
@@ -200,11 +218,11 @@ Rails.application.routes.draw do
         as: :universe,
         export: { namespace: "userUniverse" }
 
-    # == User Spaces ==
+    # == User Spaces
     resources(
       :spaces,
       path: "/world/spaces",
-      only: %i[index create],
+      only: %i[index create update],
       export: { namespace: "userSpaces" },
     )
   end
@@ -213,6 +231,13 @@ Rails.application.routes.draw do
 
   resource :friend, only: :update, export: { namespace: "friend" } do
     get :notification_settings
+
+    # == Friend Encouragements
+    scope module: :friends do
+      resources :encouragements,
+                only: :create,
+                export: { namespace: "friendEncouragements" }
+    end
   end
 
   # == Invitations ==
@@ -256,10 +281,6 @@ Rails.application.routes.draw do
   # == Post Shares ==
 
   resources :post_shares, only: :show, export: true
-
-  # == Encouragements ==
-
-  resources :encouragements, only: :create, export: true
 
   # == Activities Coupons ==
 

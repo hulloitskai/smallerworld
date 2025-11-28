@@ -10,7 +10,7 @@ import {
 import { type PostStreak } from "~/types";
 
 import classes from "./WorldTimelineCard.module.css";
-import "@mantine/dates/styles.css";
+import "@mantine/dates/styles.layer.css";
 
 export interface WorldTimelineCardProps extends BoxProps {
   date: string | null;

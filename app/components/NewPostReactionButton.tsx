@@ -1,7 +1,7 @@
 import { type ButtonProps } from "@mantine/core";
 
 import { confetti, particlePositionFor } from "~/helpers/particles";
-import { type AssociatedFriend, type Post, type PostReaction } from "~/types";
+import { type Post, type PostReaction } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 
@@ -11,19 +11,19 @@ export interface NewPostReactionButtonProps
   extends Omit<ButtonProps, "children"> {
   post: Post;
   hasExistingReactions: boolean;
-  asFriend?: AssociatedFriend;
+  friendTokenOverride?: string;
 }
 
 const NewPostReactionButton: FC<NewPostReactionButtonProps> = ({
   post,
   hasExistingReactions,
-  asFriend,
+  friendTokenOverride,
   className,
   ...otherProps
 }) => {
   const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
-  const friend = asFriend ?? currentFriend;
+  const friendToken = friendTokenOverride ?? currentFriend?.access_token;
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // == Add reaction
@@ -34,13 +34,12 @@ const NewPostReactionButton: FC<NewPostReactionButtonProps> = ({
     params: {
       post_id: post.id,
       query: {
-        ...(friend && {
-          friend_token: friend.access_token,
+        ...(friendToken && {
+          friend_token: friendToken,
         }),
       },
     },
     onSuccess: ({ reaction }) => {
-      invariant(friend, "Missing friend");
       void mutateRoute<{ reactions: PostReaction[] }>(
         routes.postReactions.index,
         { post_id: post.id },
@@ -69,7 +68,7 @@ const NewPostReactionButton: FC<NewPostReactionButtonProps> = ({
         ],
       }}
       onEmojiClick={({ emoji }) => {
-        if (!friend && !(currentUser && post.visibility === "public")) {
+        if (!friendToken && !(currentUser && post.visibility === "public")) {
           toast.warning(
             "you must be invited to this page to react to this post",
           );

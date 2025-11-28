@@ -1,0 +1,205 @@
+.emojiButton {
+  border-color: light-dark(
+    var(--mantine-color-gray-4),
+    var(--mantine-color-dark-4)
+  );
+
+  @mixin dark {
+    background-color: transparent;
+  }
+
+  @mixin dark-world-theme {
+    border-color: alpha(var(--mantine-color-white), 0.2);
+  }
+
+  &[data-opened] {
+    background-color: var(--mantine-color-default-hover);
+  }
+}
+
+.emoji {
+  @mixin emoji;
+  font-size: calc(var(--mantine-font-size-xl) * 1.2);
+}
+
+.segmentedControl {
+  display: flex;
+  border: rem(1px) solid
+    light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-4));
+
+  @mixin dark-world-theme {
+    background-color: transparent;
+    border: rem(1px) solid alpha(var(--mantine-color-white), 0.2);
+
+    --sc-color: var(--mantine-color-white);
+    --sc-label-color: var(--mantine-color-body);
+  }
+}
+
+.dateInput {
+  :global(.mantine-DateInput-input) {
+    text-transform: lowercase;
+  }
+}
+
+.dateInputDay {
+  &[data-weekend] {
+    color: var(--mantine-color-text);
+  }
+}
+
+.imagesScrollArea {
+  margin-top: -8px;
+
+  :global(.mantine-ScrollArea-content) {
+    padding-top: 8px;
+    padding-bottom: var(--mantine-spacing-xs);
+  }
+
+  ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    gap: var(--mantine-spacing-xs);
+  }
+}
+
+.encouragementCard {
+  padding: calc(var(--mantine-spacing-xs) / 2) var(--mantine-spacing-xs);
+  border-style: dashed;
+
+  @mixin light-world-theme {
+    background-color: alpha(var(--mantine-color-white), 0.7);
+  }
+}
+
+.encouragementEmoji {
+  @mixin emoji;
+
+  margin-right: 3px;
+}
+
+.friendNotifiabilityAccordion {
+  :global(.mantine-Accordion-item) {
+    &[data-active] {
+      --accordion-bg: light-dark(
+        var(--mantine-color-gray-1),
+        var(--mantine-color-dark-9)
+      );
+
+      @mixin dark-world-theme {
+        --accordion-bg: darken(var(--mantine-color-body), 0.3);
+      }
+
+      background-color: var(--accordion-bg);
+
+      .friendNotifiabilityTable {
+        :global(.mantine-Table-th) {
+          background-color: var(--accordion-bg);
+        }
+      }
+    }
+  }
+
+  :global(.mantine-Accordion-control) {
+    justify-content: center;
+    column-gap: var(--mantine-spacing-xs);
+    border-radius: var(--mantine-radius-default);
+
+    &:not([data-active]) {
+      @mixin hover {
+        background-color: var(--mantine-color-default-hover);
+      }
+    }
+
+    /* &[data-active] {
+      :global(.mantine-Accordion-label) {
+        transition: padding-block 0.2s ease-in-out;
+        padding-block: var(--mantine-spacing-sm);
+      }
+    } */
+  }
+
+  :global(.mantine-Accordion-icon) {
+    font-size: var(--mantine-font-size-xs);
+    margin-right: 0;
+  }
+
+  :global(.mantine-Accordion-label) {
+    flex-grow: 0;
+    flex-basis: auto;
+    font-family: var(--mantine-font-family-headings);
+    font-size: var(--mantine-font-size-sm);
+    padding-block: var(--mantine-spacing-xs);
+  }
+
+  :global(.mantine-Accordion-content) {
+    padding-top: 0;
+    padding-bottom: var(--mantine-spacing-xs);
+  }
+}
+
+.friendNotifiabilityTable {
+  :global(.mantine-Table-th) {
+    font-size: var(--mantine-font-size-xs);
+    padding-block: 8px;
+  }
+}
+
+.friendNotifiabilityTableNameCell {
+  &:not([data-notifiability="notify"]) {
+    color: var(--mantine-color-dimmed);
+  }
+  &[data-notifiability="hidden"] {
+    text-decoration: line-through;
+  }
+}
+
+.friendNotifiabilitySegmentedControl {
+  :global(.mantine-SegmentedControl-innerLabel) {
+    display: block;
+    line-height: 1;
+    font-size: var(--mantine-font-size-xs);
+  }
+}
+
+.visibilityCard {
+  margin-top: var(--mantine-spacing-xs);
+  padding-top: var(--mantine-spacing-lg);
+  overflow: visible;
+
+  @mixin dark-world-theme {
+    background-color: var(--mantine-color-body);
+  }
+}
+
+.visibilityBadge {
+  :global(.mantine-Badge-label) {
+    font-weight: 500;
+  }
+}
+
+.friendNotifiabilityPresetButton {
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: calc(var(--mantine-spacing-xs) / 2);
+  }
+}
+
+.spotifyTrackInputContainer {
+  :global(.mantine-Input-wrapper) {
+    flex-grow: 1;
+  }
+}
+
+.removeSpotifyTrackButton {
+  :global(.mantine-Button-section)[data-position="left"] {
+    margin-right: calc(var(--mantine-spacing-xs) / 2);
+  }
+}
+
+.postEditorContent {
+  [contenteditable="true"] {
+    min-height: 144px;
+  }
+}

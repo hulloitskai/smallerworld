@@ -1,9 +1,10 @@
-import { Avatar, Text } from "@mantine/core";
+import { Image, Text } from "@mantine/core";
 
 import AppLayout from "~/components/AppLayout";
 import NewSpaceButton from "~/components/NewSpaceButton";
 import UserFooter from "~/components/UserFooter";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
+import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
 import { type Space, type User, type World } from "~/types";
 
 import classes from "./UserSpacesPage.module.css";
@@ -12,6 +13,8 @@ export interface UserSpacesPageProps extends SharedPageProps {
   currentUser: User;
   userWorld: World | null;
 }
+
+const SPACE_ICON_SIZE = 70;
 
 const UserSpacesPage: PageComponent<UserSpacesPageProps> = ({ userWorld }) => {
   useWorldTheme(userWorld?.theme);
@@ -50,20 +53,25 @@ const UserSpacesPage: PageComponent<UserSpacesPageProps> = ({ userWorld }) => {
                 >
                   <Card withBorder>
                     <Group align="flex-start" gap="md">
-                      <Avatar
-                        radius="xl"
-                        size="lg"
-                        {...(!!space.icon && { src: space.icon.src })}
-                        alt={space.name}
-                      />
-                      <Stack gap={4} flex={1}>
+                      {space.icon && (
+                        <Image
+                          src={space.icon.src}
+                          {...(!!space.icon.srcset && {
+                            srcSet: space.icon.srcset,
+                          })}
+                          w={SPACE_ICON_SIZE}
+                          h={SPACE_ICON_SIZE}
+                          radius={SPACE_ICON_SIZE / WORLD_ICON_RADIUS_RATIO}
+                        />
+                      )}
+                      <Box>
                         <Text ff="heading" fw={600}>
                           {space.name}
                         </Text>
                         <Text size="xs" c="dimmed">
                           {space.description}
                         </Text>
-                      </Stack>
+                      </Box>
                     </Group>
                   </Card>
                 </AnchorContainer>

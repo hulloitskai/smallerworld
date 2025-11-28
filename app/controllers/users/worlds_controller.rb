@@ -36,6 +36,8 @@ module Users
               "latestFriendEmojis" => latest_friends.map(&:emoji),
               "pendingJoinRequests" => world.join_requests.pending.count,
               "pendingInvitations" => world.invitations.pending.count,
+              "hasAtLeastOneUserCreatedPost" =>
+                world.posts.user_created.exists?,
             },
           )
         end

@@ -6,33 +6,32 @@ import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-soli
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
-import { openNewUserWorldPostModal } from "~/components/NewUserWorldPostModal";
+import { openNewWorldPostModal } from "~/components/NewWorldPostModal";
 import { prettyFriendName } from "~/helpers/friends";
 import { NEKO_SIZE } from "~/helpers/neko";
 import {
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
   POST_TYPES,
+  worldPostDraftKey,
 } from "~/helpers/posts";
-import { useSavedDraftType } from "~/helpers/posts/form";
+import { useSavedDraftType } from "~/helpers/posts/drafts";
 import { useWebPush } from "~/helpers/webPush";
 import { type UserWorldPageProps } from "~/pages/UserWorldPage";
-import { type Encouragement, type UserWorldPost } from "~/types";
+import { type Encouragement, type Post } from "~/types";
 
-import AuthorPostCardActions from "./AuthorPostCardActions";
 import DrawerModal from "./DrawerModal";
 import FeedbackNeko from "./FeedbackNeko";
 import PostCard from "./PostCard";
+import WorldPostCardAuthorActions from "./WorldPostCardAuthorActions";
 
 import classes from "./UserWorldPageFloatingActions.module.css";
 
-export interface UserWorldPageFloatingActionsProps {
-  onPostCreated?: (post: UserWorldPost) => void;
-}
+export interface UserWorldPageFloatingActionsProps {}
 
-const UserWorldPageFloatingActions: FC<UserWorldPageFloatingActionsProps> = ({
-  onPostCreated,
-}) => {
+const UserWorldPageFloatingActions: FC<
+  UserWorldPageFloatingActionsProps
+> = () => {
   const { world } = usePageProps<UserWorldPageProps>();
   const { isStandalone, outOfPWAScope } = usePWA();
   const { pushRegistration, permission: webPushPermission } = useWebPush();
@@ -49,7 +48,7 @@ const UserWorldPageFloatingActions: FC<UserWorldPageFloatingActionsProps> = ({
   const latestEncouragement = last(encouragements);
 
   // == Load pinned posts
-  const { data: pinnedPostsData } = useRouteSWR<{ posts: UserWorldPost[] }>(
+  const { data: pinnedPostsData } = useRouteSWR<{ posts: Post[] }>(
     routes.userWorldPosts.pinned,
     {
       descriptor: "load pinned posts",
@@ -63,7 +62,9 @@ const UserWorldPageFloatingActions: FC<UserWorldPageFloatingActionsProps> = ({
     useState(false);
 
   // == New post draft
-  const newPostDraftType = useSavedDraftType();
+  const newPostDraftType = useSavedDraftType({
+    localStorageKey: worldPostDraftKey(world.id),
+  });
 
   const actionsVisible =
     (isStandalone === false ||
@@ -171,10 +172,15 @@ const UserWorldPageFloatingActions: FC<UserWorldPageFloatingActionsProps> = ({
                           ),
                         })}
                         onClick={() => {
-                          openNewUserWorldPostModal({
+                          openNewWorldPostModal({
+                            worldId: world.id,
                             postType,
-                            encouragement: latestEncouragement,
-                            onPostCreated,
+                            encouragementId: latestEncouragement?.id,
+                            onPostCreated: () => {
+                              router.reload({
+                                only: ["hasAtLeastOneUserCreatedPost"],
+                              });
+                            },
                           });
                         }}
                       >
@@ -235,7 +241,7 @@ const UserWorldPageFloatingActions: FC<UserWorldPageFloatingActionsProps> = ({
               key={post.id}
               {...{ post }}
               actions={
-                <AuthorPostCardActions
+                <WorldPostCardAuthorActions
                   {...{ post, world }}
                   onFollowUpDrawerModalOpened={() => {
                     setPinnedPostsDrawerModalOpened(false);

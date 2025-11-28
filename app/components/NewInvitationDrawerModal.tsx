@@ -66,7 +66,7 @@ const NewInvitationDrawerModal: FC<NewInvitationDrawerModalProps> = ({
               <Stack gap={4} maw={320} mx="auto" style={{ textWrap: "pretty" }}>
                 <Text size="xs" c="dimmed">
                   a unique invite link will be created for your friend. when
-                  they open it, they&apos;ll be prompted to add your page to
+                  they open it, they&apos;ll be prompted to add your world to
                   their home screen! (no account required)
                 </Text>
                 <Text size="xs" c="dimmed">

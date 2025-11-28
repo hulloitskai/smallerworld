@@ -13,6 +13,10 @@
     border-color: alpha(var(--mantine-color-white), 0.2);
   }
 
+  @mixin light-world-theme {
+    border-color: darken(var(--mantine-color-body), 0.2);
+  }
+
   &:not([data-with-src]) {
     @mixin dark-world-theme {
       background-color: darken(var(--mantine-color-body), 0.2);

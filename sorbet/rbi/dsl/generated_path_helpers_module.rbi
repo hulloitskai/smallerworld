@@ -46,13 +46,13 @@ module GeneratedPathHelpersModule
   def edit_user_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def encouragements_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def feedback_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def file_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def friend_encouragements_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def friend_path(*args); end
@@ -113,6 +113,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def pause_user_world_friend_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def pinned_space_posts_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def pinned_user_world_posts_path(*args); end
@@ -250,6 +253,12 @@ module GeneratedPathHelpersModule
   def space_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def space_posts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def spaces_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def src_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -292,6 +301,9 @@ module GeneratedPathHelpersModule
   def user_manifest_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def user_space_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def user_spaces_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -299,6 +311,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def user_world_activities_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def user_world_encouragement_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def user_world_encouragements_path(*args); end
