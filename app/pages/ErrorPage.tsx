@@ -43,7 +43,7 @@ const ErrorPage: PageComponent<ErrorPageProps> = ({
               if (hasPreviousPage) {
                 history.back();
               } else {
-                router.visit(routes.start.redirect.path());
+                router.visit(routes.start.web.path());
               }
             }}
             style={transitionStyle}

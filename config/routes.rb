@@ -109,7 +109,8 @@ Rails.application.routes.draw do
 
   # == Start ==
 
-  get "/start" => "start#redirect", export: true
+  get "/start" => "start#web", export: true
+  get "/start/pwa" => "start#pwa", export: true
 
   # == Worlds ==
 

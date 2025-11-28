@@ -15,10 +15,9 @@ module Spaces
         format.json do
           space = find_space!
           scope = authorized_scope(space.posts)
+            .with_author_world
             .with_attached_images
             .with_quoted_post_and_attached_images
-            .with_encouragement
-            .with_author
           if (type = params[:type])
             if type.is_a?(String)
               scope = scope.where(type:)
@@ -34,8 +33,9 @@ module Spaces
             scope = scope.order(**ordering)
             pagy_keyset(scope, limit: POSTS_PER_PAGE)
           end
+          space_posts = load_space_posts(posts)
           render(json: {
-            posts: PostSerializer.many(posts),
+            posts: SpacePostSerializer.many(space_posts),
             pagination: {
               next: pagy.next,
             },
@@ -49,13 +49,15 @@ module Spaces
       respond_to do |format|
         format.json do
           space = find_space!
-          posts = authorized_scope(space.posts.currently_pinned)
+          posts = authorized_scope(space.posts)
+            .currently_pinned
+            .with_author_world
             .with_attached_images
             .with_quoted_post_and_attached_images
-            .with_encouragement
             .order(pinned_until: :asc, created_at: :asc)
+          space_posts = load_space_posts(posts)
           render(json: {
-            posts: PostSerializer.many(posts),
+            posts: SpacePostSerializer.many(space_posts),
           })
         end
       end
@@ -106,8 +108,9 @@ module Spaces
       respond_to do |format|
         format.json do
           post = find_post!(
-            scope: Post.where.associated(:space).with_attached_images
-            .with_quoted_post_and_attached_images,
+            scope: Post.where.associated(:space)
+              .with_attached_images
+              .with_quoted_post_and_attached_images,
           )
           authorize!(post)
           post_params = params.expect(post: [
@@ -160,6 +163,59 @@ module Spaces
     sig { params(scope: Post::PrivateRelation).returns(Post) }
     def find_post!(scope: Post.where.associated(:space))
       scope.find(params.fetch(:id))
+    end
+
+    sig { params(posts: T::Enumerable[Post]).returns(T::Array[SpacePost]) }
+    def load_space_posts(posts)
+      post_ids = posts.map(&:id)
+      repliers_by_post_id = PostReplyReceipt
+        .where(post_id: post_ids)
+        .group(:post_id)
+        .select(:post_id, "COUNT(DISTINCT friend_id) AS repliers")
+        .map do |reply_receipt|
+          repliers = T.let(reply_receipt[:repliers], Integer)
+          [reply_receipt.post_id, repliers]
+        end
+        .to_h
+      viewed_post_ids = select_viewed_post_ids(post_ids)
+      replied_post_ids = if (replier = current_friend)
+        select_replied_post_ids(post_ids, replier:)
+      end
+      posts.map do |post|
+        replied = if replied_post_ids
+          replied_post_ids.include?(post.id)
+        else
+          false
+        end
+        SpacePost.new(
+          post:,
+          repliers: repliers_by_post_id.fetch(post.id, 0),
+          seen: viewed_post_ids.include?(post.id),
+          replied:,
+        )
+      end
+    end
+
+    sig { params(post_ids: T::Array[String]).returns(T::Set[String]) }
+    def select_viewed_post_ids(post_ids)
+      PostView
+        .where(post_id: post_ids, viewer: current_friend || current_user)
+        .distinct
+        .pluck(:post_id)
+        .to_set
+    end
+
+    sig do
+      params(
+        post_ids: T::Array[String],
+        replier: Friend,
+      ).returns(T::Set[String])
+    end
+    def select_replied_post_ids(post_ids, replier:)
+      PostReplyReceipt
+        .where(post_id: post_ids, friend: replier)
+        .pluck(:post_id)
+        .to_set
     end
   end
 end

@@ -3,6 +3,9 @@
 
 class SpacePost < T::Struct
   const :post, T.any(Post, MaskedPost)
+  delegate :author, to: :post
+  delegate :name, :world, to: :author, prefix: true
+
   const :repliers, Integer
   const :replied, T::Boolean
   const :seen, T::Boolean

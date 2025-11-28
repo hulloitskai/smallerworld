@@ -44,7 +44,6 @@ class ActivityCoupon < ApplicationRecord
   has_many :friend_activity_coupons, through: :friend, source: :activity_coupons
 
   belongs_to :activity
-  has_one :world, through: :activity
 
   sig { returns(Friend) }
   def friend!
@@ -86,12 +85,13 @@ class ActivityCoupon < ApplicationRecord
     case recipient
     when Friend
       activity = activity!
+      world = activity.world!
       NotificationMessage.new(
         title: "You've got a coupon for: #{activity.name}",
         body: "This coupon expires in " \
           "#{ExpiryFormatter.relative_to_now(expires_at)}, redeem it soon!",
         target_url: Rails.application.routes.url_helpers.world_path(
-          activity.world!,
+          world,
           friend_token: recipient.access_token,
           anchor: "#invitations",
           trailing_slash: true,

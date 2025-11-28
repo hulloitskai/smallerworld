@@ -1,13 +1,13 @@
 # typed: true
 # frozen_string_literal: true
 
-class AuthorSerializer < ApplicationSerializer
+class AuthorWorldProfileSerializer < ApplicationSerializer
   # == Configuration ==
 
-  object_as :user
+  object_as :world
 
   # == Attributes ==
 
   identifier
-  attributes :name, :handle
+  attributes :handle
 end

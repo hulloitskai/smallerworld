@@ -262,6 +262,9 @@ module GeneratedUrlHelpersModule
   def src_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def start_pwa_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def start_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

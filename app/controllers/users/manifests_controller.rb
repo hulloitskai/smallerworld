@@ -22,7 +22,7 @@ module Users
         description: "a smaller world for you and your friends :)",
         icons: application_manifest_icons,
         display: "standalone",
-        start_url: start_path,
+        start_url: start_pwa_path,
         scope:,
       })
     end

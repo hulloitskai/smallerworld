@@ -1,14 +1,16 @@
-import { Input, ScrollArea } from "@mantine/core";
+import { Input, Popover, ScrollArea } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { type Initialize } from "@mantine/form";
-import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
+import { useLongPress, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { map } from "lodash-es";
 import { type DraggableProps, motion, Reorder } from "motion/react";
+import { type RefObject } from "react";
 
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 import LinkIcon from "~icons/heroicons/link-20-solid";
 import ImageIcon from "~icons/heroicons/photo-20-solid";
+import ProfileIcon from "~icons/heroicons/user-circle-20-solid";
 import SpotifyIcon from "~icons/ri/spotify-fill";
 
 import { isAndroid, isIos, useBrowserDetection } from "~/helpers/browsers";
@@ -25,11 +27,13 @@ import {
   parseSpotifyTrackId,
   validateSpotifyTrackUrl,
 } from "~/helpers/spotify";
+import { currentTimeZone } from "~/helpers/time";
 import { type Post, type PostType, type Upload } from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 import ImageInput, { type ImageInputProps } from "./ImageInput";
 import LazyPostEditor from "./LazyPostEditor";
+import LoginForm from "./LoginForm";
 
 import classes from "./SpacePostForm.module.css";
 import "@mantine/dates/styles.layer.css";
@@ -73,6 +77,8 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
   const newPostType = "newPostType" in props ? props.newPostType : undefined;
   const postType = "newPostType" in props ? props.newPostType : props.post.type;
   const post = "post" in props ? props.post : null;
+
+  const currentUser = useCurrentUser();
 
   const showTitleInput = useMemo(
     () => !!postType && postTypeHasTitle(postType),
@@ -290,9 +296,14 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
   const [newImageInputKey, setNewImageInputKey] = useState(0);
   const allAttachmentsShown = showSpotifyInput && showImageInput;
 
-  const { ref: formStackSizingRef, width: formStackWidth } =
+  // == Form stack
+  const { ref: formStackRef, width: formStackWidth } =
     useElementSize<HTMLDivElement>();
-  const formStackRef = useMergedRef(formStackSizingRef);
+
+  // == Login popover
+  // const [loginPopoverOpened, setLoginPopoverOpened] = useState(false);
+
+  // == Emoji input
   const emojiInput = (
     <EmojiPopover
       position="right"
@@ -323,12 +334,17 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
       )}
     </EmojiPopover>
   );
+
   return (
     <form onSubmit={submit}>
       <Stack>
         <Group gap={6} align="start" justify="center">
           {!showTitleInput && emojiInput}
-          <Stack ref={formStackRef} gap="xs" style={{ flexGrow: 1 }}>
+          <Stack
+            ref={formStackRef as RefObject<HTMLDivElement>}
+            gap="xs"
+            style={{ flexGrow: 1 }}
+          >
             {showTitleInput && (
               <Group gap={6}>
                 {emojiInput}
@@ -515,16 +531,34 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
             )}
           </Stack>
         </Group>
-        <Button
-          type="submit"
-          variant="filled"
-          size="lg"
-          leftSection={post ? <SaveIcon /> : <SendIcon />}
-          disabled={!isDirty() || !isValid() || !htmlHasText(values.body_html)}
-          loading={submitting}
+        <Popover
+          width={375}
+          disabled={!!currentUser}
+          closeOnClickOutside={false}
+          trapFocus
         >
-          {post ? "save" : "post"}
-        </Button>
+          <Popover.Target>
+            <Button
+              type={currentUser ? "submit" : "button"}
+              variant="filled"
+              size="lg"
+              leftSection={post ? <SaveIcon /> : <SendIcon />}
+              disabled={
+                !isDirty() || !isValid() || !htmlHasText(values.body_html)
+              }
+              loading={submitting}
+            >
+              {post ? "save" : "post"}
+            </Button>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <LoginOrRegisterForm
+              onRegisteredAndSignedIn={() => {
+                submit();
+              }}
+            />
+          </Popover.Dropdown>
+        </Popover>
       </Stack>
     </form>
   );
@@ -570,5 +604,77 @@ const ReorderableImageInput: FC<ReorderableImageInputProps> = ({
         {...otherProps}
       />
     </Reorder.Item>
+  );
+};
+
+interface LoginOrRegisterFormProps {
+  onRegisteredAndSignedIn: () => void;
+}
+
+const LoginOrRegisterForm: FC<LoginOrRegisterFormProps> = ({
+  onRegisteredAndSignedIn,
+}) => {
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const reloadCurrentUserAndContinue = () => {
+    router.reload({
+      only: ["currentUser"],
+      onSuccess: () => {
+        onRegisteredAndSignedIn();
+      },
+    });
+  };
+  return (
+    <>
+      {showRegistrationForm ? (
+        <RegistrationForm
+          onRegistrationCreated={reloadCurrentUserAndContinue}
+        />
+      ) : (
+        <LoginForm
+          onSessionCreated={registered => {
+            if (!registered) {
+              setShowRegistrationForm(true);
+            } else {
+              reloadCurrentUserAndContinue();
+            }
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+interface RegistrationFormProps {
+  onRegistrationCreated: () => void;
+}
+
+const RegistrationForm: FC<RegistrationFormProps> = ({
+  onRegistrationCreated,
+}) => {
+  const { getInputProps, submit } = useForm({
+    action: routes.registrations.create,
+    descriptor: "complete signup",
+    initialValues: {
+      name: "",
+    },
+    transformValues: ({ name }) => ({
+      user: {
+        name,
+        time_zone: currentTimeZone(),
+      },
+    }),
+    onSuccess: () => {
+      onRegistrationCreated();
+    },
+  });
+  return (
+    <form onSubmit={submit}>
+      <Stack gap="xs">
+        <TextInput {...getInputProps("name")} label="your name" required />
+        <Button type="submit" variant="filled" leftSection={<ProfileIcon />}>
+          complete signup and post
+        </Button>
+      </Stack>
+    </form>
   );
 };

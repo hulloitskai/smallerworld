@@ -408,9 +408,6 @@ class ActivityCoupon
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def build_friend(*args, &blk); end
 
-    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
-    def build_world(*args, &blk); end
-
     sig { params(args: T.untyped, blk: T.untyped).returns(::Activity) }
     def create_activity(*args, &blk); end
 
@@ -422,12 +419,6 @@ class ActivityCoupon
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
     def create_friend!(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
-    def create_world(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::World) }
-    def create_world!(*args, &blk); end
 
     sig { returns(T.nilable(::Friend)) }
     def friend; end
@@ -475,23 +466,11 @@ class ActivityCoupon
     sig { returns(T.nilable(::Friend)) }
     def reload_friend; end
 
-    sig { returns(T.nilable(::World)) }
-    def reload_world; end
-
     sig { void }
     def reset_activity; end
 
     sig { void }
     def reset_friend; end
-
-    sig { void }
-    def reset_world; end
-
-    sig { returns(T.nilable(::World)) }
-    def world; end
-
-    sig { params(value: T.nilable(::World)).void }
-    def world=(value); end
   end
 
   module GeneratedAssociationRelationMethods

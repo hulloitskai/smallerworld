@@ -18,14 +18,13 @@ const WorldPageFeed: FC<WorldPageFeedProps> = props => {
   const queryParams = useQueryParams();
   const { pushRegistration } = useWebPush();
 
+  // == Date
   const [date, setDate] = useState<string | null>(null);
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useWorldPosts(
     world.id,
-    {
-      date,
-    },
+    { date },
   );
   const longerThan24HoursSinceLastPost = useMemo(() => {
     if (!posts || date) {

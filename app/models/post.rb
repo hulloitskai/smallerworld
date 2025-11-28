@@ -249,6 +249,7 @@ class Post < ApplicationRecord
     includes(quoted_post: [images_attachments: :blob])
   }
   scope :with_author, -> { includes(:author) }
+  scope :with_author_world, -> { includes(author: :world) }
 
   # == Noticeable ==
 

@@ -265,6 +265,9 @@ module GeneratedPathHelpersModule
   def start_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def start_pwa_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def stats_user_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

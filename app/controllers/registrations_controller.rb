@@ -8,12 +8,12 @@ class RegistrationsController < ApplicationController
   def new
     respond_to do |format|
       format.html do
-        if signed_in?
+        if (user = current_user) && user.world.present?
           redirect_to(
             after_authentication_url,
             notice: "you already have an account!",
           )
-        elsif valid_registration_token?
+        elsif current_user || valid_registration_token?
           render(inertia: "RegistrationPage")
         else
           redirect_to(

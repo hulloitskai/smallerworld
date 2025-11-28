@@ -8,7 +8,11 @@ import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 import { clampedImageDimensions } from "~/helpers/images";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { useWebPush } from "~/helpers/webPush";
-import { type Image as ImageType, type Post } from "~/types";
+import {
+  type AuthorWorldProfile,
+  type Image as ImageType,
+  type Post,
+} from "~/types";
 
 import AppLightbox from "./AppLightbox";
 import ImageStack from "./ImageStack";
@@ -20,6 +24,10 @@ import "yet-another-react-lightbox/styles.css";
 export interface PostCardProps extends BoxProps {
   post: Post;
   actions: ReactNode;
+  author?: {
+    name: string;
+    world: AuthorWorldProfile | null;
+  };
   blurContent?: boolean;
   hideEncouragement?: boolean;
   focus?: boolean;
@@ -34,6 +42,7 @@ const IMAGE_FLIP_BOUNDARY = 125;
 
 const PostCard: FC<PostCardProps> = ({
   post,
+  author,
   actions,
   blurContent,
   hideEncouragement,
@@ -101,21 +110,46 @@ const PostCard: FC<PostCardProps> = ({
               {!!post.emoji && (
                 <Box className={classes.emoji}>{post.emoji}</Box>
               )}
-              <Group
-                className={classes.typeGroup}
-                gap={6}
-                mod={{ highlight: highlightType, interactive: !!onTypeClick }}
-                onClick={onTypeClick}
-              >
-                {!post.emoji && (
-                  <Box
-                    className={classes.typeIcon}
-                    component={POST_TYPE_TO_ICON[post.type]}
-                  />
+              <Group gap={3}>
+                <Group
+                  className={classes.typeGroup}
+                  align="end"
+                  gap={6}
+                  mod={{ highlight: highlightType, interactive: !!onTypeClick }}
+                  onClick={onTypeClick}
+                >
+                  {!post.emoji && (
+                    <Box
+                      className={classes.typeIcon}
+                      component={POST_TYPE_TO_ICON[post.type]}
+                    />
+                  )}
+                  <Text size="xs" className={classes.typeLabel}>
+                    {POST_TYPE_TO_LABEL[post.type]}
+                  </Text>
+                </Group>
+                {!!author && (
+                  <Text size="xs" c="dimmed" mb={2}>
+                    from{" "}
+                    {author?.world ? (
+                      <Anchor
+                        component={Link}
+                        href={withTrailingSlash(
+                          routes.worlds.show.path({
+                            id: author.world.handle,
+                          }),
+                        )}
+                        fw={700}
+                      >
+                        {author.name}
+                      </Anchor>
+                    ) : (
+                      <Text span fw={700}>
+                        {author.name}
+                      </Text>
+                    )}
+                  </Text>
                 )}
-                <Text className={classes.typeLabel} size="xs">
-                  {POST_TYPE_TO_LABEL[post.type]}
-                </Text>
               </Group>
             </Group>
             <Group gap={8} align="center">

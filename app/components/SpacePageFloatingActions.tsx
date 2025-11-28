@@ -141,11 +141,13 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                     ))}
                   </Menu.Dropdown>
                 </Menu>
-                <FeedbackNeko
-                  pos="absolute"
-                  top={3 - NEKO_SIZE}
-                  right="var(--mantine-spacing-lg)"
-                />
+                {currentUser && (
+                  <FeedbackNeko
+                    pos="absolute"
+                    top={3 - NEKO_SIZE}
+                    right="var(--mantine-spacing-lg)"
+                  />
+                )}
               </Box>
               <Transition
                 transition="pop"
@@ -190,6 +192,10 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
             <PostCard
               key={post.id}
               {...{ post }}
+              author={{
+                name: post.author_name,
+                world: post.author_world,
+              }}
               actions={
                 isOwner ? (
                   <SpacePostCardAuthorActions

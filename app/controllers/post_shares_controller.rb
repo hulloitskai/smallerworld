@@ -10,7 +10,6 @@ class PostSharesController < ApplicationController
       format.html do
         share = find_share!(scope: PostShare.includes(
           :post,
-          :post_author,
           :sharer,
         ))
         post = share.post!

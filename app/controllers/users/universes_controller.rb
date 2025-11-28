@@ -84,7 +84,7 @@ module Users
           end
           chosen_family_friends = associated_friends.chosen_family
           general_friends = associated_friends.where.not(chosen_family: true)
-          scope = Post.where.not(world_id: nil).and(
+          scope = authorized_scope(Post.where.not(world_id: nil)).and(
             Post
               .publicly_visible
               .where(id: Post.user_created.select(:id))

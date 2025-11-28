@@ -10,10 +10,10 @@ module Worlds
       respond_to do |format|
         format.json do
           world = find_world!
-          scope = world.posts
+          scope = authorized_scope(world.posts)
+            .with_encouragement
             .with_attached_images
             .with_quoted_post_and_attached_images
-            .with_encouragement
           if (date_param = params[:date])
             if date_param.is_a?(String)
               time = date_param.to_time or raise "Invalid date: #{date_param}"
@@ -47,7 +47,7 @@ module Worlds
       respond_to do |format|
         format.json do
           world = find_world!
-          scope = world.posts
+          scope = authorized_scope(world.posts)
             .currently_pinned
             .with_attached_images
             .with_quoted_post_and_attached_images

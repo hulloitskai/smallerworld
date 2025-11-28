@@ -21,9 +21,10 @@ const SPACE_ICON_SIZE = 96;
 
 const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
   useWorldTheme("cloudflow");
+
   const currentUser = useCurrentUser();
-  const isOwner = currentUser?.id === space.owner_id;
   const queryParams = useQueryParams();
+  const isOwner = currentUser?.id === space.owner_id;
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useSpacePosts(
@@ -46,7 +47,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
         )}
         <Box pos="relative">
           <Stack gap="xs" align="center">
-            {space.icon && (
+            {space.icon ? (
               <Image
                 className={classes.spaceIcon}
                 src={space.icon.src}
@@ -65,6 +66,8 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
                   });
                 }}
               />
+            ) : (
+              <>{isOwner && <Space h="sm" />}</>
             )}
             <Box ta="center">
               <Title size="h2" lh="xs">
@@ -104,6 +107,10 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
                 <PostCard
                   key={post.id}
                   {...{ post }}
+                  author={{
+                    name: post.author_name,
+                    world: post.author_world,
+                  }}
                   focus={queryParams.post_id === post.id}
                   actions={
                     post.author_id === currentUser?.id ? (

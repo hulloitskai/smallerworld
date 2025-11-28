@@ -178,7 +178,8 @@ export const useForm = <
   const [data, setData] = useState<Data | undefined>();
   const [error, setError] = useState<Error | undefined>();
   const submit = form.onSubmit(
-    transformedValues => {
+    (transformedValues, event) => {
+      event?.stopPropagation();
       form.setSubmitting(true);
       onSubmit?.(transformedValues, form);
       action<Data & { error?: string; errors?: Record<string, string> }>({

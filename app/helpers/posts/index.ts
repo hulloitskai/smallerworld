@@ -114,12 +114,16 @@ export const useTrackPostSeen = <T extends HTMLElement>(
   options?: TrackPostSeenOptions,
 ): RefCallback<T | null> => {
   const { skip, asFriend } = options ?? {};
+  const currentUser = useCurrentUser();
   const currentFriend = useCurrentFriend();
   const friend = asFriend ?? currentFriend;
   const { ref, inViewport } = useInViewport<T>();
   const markedSeenRef = useRef(false);
   useEffect(() => {
     if (!inViewport || skip || markedSeenRef.current) {
+      return;
+    }
+    if (!currentUser && !friend) {
       return;
     }
     const timeout = setTimeout(() => {
