@@ -72,6 +72,7 @@ class User < ApplicationRecord
            dependent: :destroy,
            inverse_of: :author,
            foreign_key: :author_id
+  has_many :post_spaces, through: :posts, source: :space
 
   # == Normalizations ==
 
@@ -104,6 +105,11 @@ class User < ApplicationRecord
   }
 
   # == Methods ==
+
+  sig { returns(Space::PrivateAssociationRelation) }
+  def spaces
+    post_spaces.distinct
+  end
 
   sig { returns(T::Boolean) }
   def admin?

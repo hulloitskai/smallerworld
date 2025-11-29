@@ -26,11 +26,8 @@ class StartController < ApplicationController
       format.html do
         next_path = if (user = current_user) && user.world.present?
           user_world_path(trailing_slash: true)
-        elsif current_user || valid_registration_token?
-          new_registration_path
         else
-          # TODO: Redirect to spaces
-          user_world_path(trailing_slash: true)
+          user_spaces_path
         end
         redirect_to(next_path)
       end

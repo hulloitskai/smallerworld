@@ -144,6 +144,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
 SpacePage.layout = page => (
   <AppLayout<SpacePageProps>
     title={({ space }) => space.name}
+    manifestUrl={routes.userManifest.show.path()}
     withContainer
     containerSize="xs"
     withGutter
