@@ -48,7 +48,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
   return (
     <>
       <Stack>
-        {isOwner && (
+        {currentUser && (
           <Button
             component={Link}
             href={routes.userSpaces.index.path()}
@@ -81,7 +81,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
                 }}
               />
             ) : (
-              <>{isOwner && <Space h="sm" />}</>
+              <>{currentUser && <Space h="sm" />}</>
             )}
             <Box ta="center">
               <Title size="h2" lh="xs">
