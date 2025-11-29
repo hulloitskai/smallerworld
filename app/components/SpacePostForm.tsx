@@ -532,6 +532,7 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
           </Stack>
         </Group>
         <Popover
+          position="top"
           width={375}
           disabled={!!currentUser}
           closeOnClickOutside={false}
