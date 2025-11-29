@@ -108,7 +108,7 @@ class User < ApplicationRecord
 
   sig { returns(Space::PrivateRelation) }
   def spaces
-    Space.where(id: owned_spaces.select(:id))
+    Space.where(owner_id: id)
       .or(Space.where(id: post_spaces.select(:id)))
       .distinct
   end
