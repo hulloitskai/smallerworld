@@ -1,5 +1,7 @@
 import { type ButtonProps } from "@mantine/core";
 
+import { usePageDialogOpened } from "~/helpers/pageDialog";
+
 import DrawerModal from "./DrawerModal";
 import EditSpaceForm, { type EditSpaceFormProps } from "./EditSpaceForm";
 
@@ -14,6 +16,7 @@ const EditSpaceButton: FC<EditSpaceButtonProps> = ({
   ...otherProps
 }) => {
   const [drawerModalOpened, setDrawerModalOpened] = useState(false);
+  usePageDialogOpened(drawerModalOpened);
   return (
     <>
       <Button

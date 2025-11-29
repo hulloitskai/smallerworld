@@ -5,7 +5,7 @@ import {
   InstallModalBody,
   type InstallModalBodyProps,
 } from "~/components/InstallModal";
-import { isOutOfPWAScope, isStandalone } from "~/helpers/pwa";
+import { isOutOfPWAScope, isStandaloneDisplayMode } from "~/helpers/pwa";
 import { type WorldProfile } from "~/types";
 
 import classes from "~/components/InstallModal.module.css";
@@ -24,7 +24,7 @@ const openInstallModal = ({
     title,
     className: classes.modal,
     children: <InstallModalBody {...{ modalId }} {...otherProps} />,
-    withCloseButton: !(isStandalone() && isOutOfPWAScope()),
+    withCloseButton: !(isStandaloneDisplayMode() && isOutOfPWAScope()),
   });
 };
 
@@ -40,4 +40,10 @@ export const openWorldPageInstallModal = (world: WorldProfile): void =>
     title: <>install {world.name} 📲</>,
     arrowLabel: <>it&apos;s me!</>,
     world,
+  });
+
+export const openAppInstallModal = (): void =>
+  openInstallModal({
+    title: <>install smaller world 📲</>,
+    arrowLabel: <>smaller world</>,
   });

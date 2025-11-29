@@ -29,6 +29,7 @@ import UserWorldPageFloatingActions from "~/components/UserWorldPageFloatingActi
 import UserWorldPageNotificationsButton from "~/components/UserWorldPageNotificationsButton";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
 import { openUserWorldPageInstallModal } from "~/helpers/install";
+import { isStandaloneDisplayMode } from "~/helpers/pwa";
 import { worldManifestUrlForUser } from "~/helpers/userWorld";
 import { useWebPush } from "~/helpers/webPush";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
@@ -75,11 +76,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
   const { modals } = useModals();
   useEffect(() => {
     const { intent } = queryParamsFromPath(location.href);
-    if (
-      intent === "install" &&
-      isEmpty(modals) &&
-      !matchMedia("(display-mode: standalone)").matches
-    ) {
+    if (intent === "install" && isEmpty(modals) && !isStandaloneDisplayMode()) {
       openUserWorldPageInstallModal(world);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

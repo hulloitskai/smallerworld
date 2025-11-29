@@ -8,8 +8,12 @@ class StartController < ApplicationController
   def web
     respond_to do |format|
       format.html do
-        next_path = if (user = current_user) && user.world.present?
-          user_world_path(trailing_slash: true)
+        next_path = if (user = current_user)
+          if user.world.present? || user.spaces.none?
+            user_world_path(trailing_slash: true)
+          else
+            user_spaces_path
+          end
         elsif current_user || valid_registration_token?
           new_registration_path
         else

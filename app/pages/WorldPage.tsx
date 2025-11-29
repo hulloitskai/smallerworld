@@ -7,7 +7,6 @@ import swirlyUpArrowSrc from "~/assets/images/swirly-up-arrow.png";
 
 import AppLayout from "~/components/AppLayout";
 import WelcomeBackToast from "~/components/WelcomeBackToast";
-import WorldPageDialogStateProvider from "~/components/WorldPageDialogStateProvider";
 import WorldPageFeed from "~/components/WorldPageFeed";
 import WorldPageFloatingActions from "~/components/WorldPageFloatingActions";
 import WorldPageInstallAlert from "~/components/WorldPageInstallAlert";
@@ -16,6 +15,7 @@ import WorldPageJoinRequestAlert from "~/components/WorldPageJoinRequestAlert";
 import WorldPageNotificationsButtonCard from "~/components/WorldPageNotificationsButtonCard";
 import WorldPageRefreshButton from "~/components/WorldPageRefreshButton";
 import { openWorldPageInstallModal } from "~/helpers/install";
+import { isStandaloneDisplayMode } from "~/helpers/pwa";
 import { useWebPush } from "~/helpers/webPush";
 import { WORLD_ICON_RADIUS_RATIO, type WorldPageProps } from "~/helpers/worlds";
 
@@ -49,7 +49,7 @@ const WorldPage: PageComponent<WorldPageProps> = ({ world }) => {
     if (
       intent === "install" &&
       isEmpty(modals) &&
-      !matchMedia("(display-mode: standalone)").matches &&
+      !isStandaloneDisplayMode() &&
       currentFriend
     ) {
       openWorldPageInstallModal(world);
@@ -294,7 +294,7 @@ WorldPage.layout = page => (
     containerSize="xs"
     withGutter
   >
-    <WorldPageDialogStateProvider>{page}</WorldPageDialogStateProvider>
+    {page}
   </AppLayout>
 );
 

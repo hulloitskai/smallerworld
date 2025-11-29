@@ -3,10 +3,8 @@ import { useModals } from "@mantine/modals";
 
 import RequestInvitationIcon from "~icons/heroicons/hand-raised-20-solid";
 
-import {
-  useWorldPageDialogOpened,
-  type WorldPageProps,
-} from "~/helpers/worlds";
+import { usePageDialogOpened } from "~/helpers/pageDialog";
+import { type WorldPageProps } from "~/helpers/worlds";
 
 import JoinRequestDrawerModal from "./JoinRequestDrawerModal";
 
@@ -33,7 +31,7 @@ const WorldPageJoinRequestAlert: FC<WorldPageJoinRequestAlertProps> = ({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Page dialog
-  const pageDialogOpened = useWorldPageDialogOpened(drawerModalOpened);
+  const pageDialogOpened = usePageDialogOpened(drawerModalOpened);
 
   return (
     <>

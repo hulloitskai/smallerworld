@@ -106,9 +106,11 @@ class User < ApplicationRecord
 
   # == Methods ==
 
-  sig { returns(Space::PrivateAssociationRelation) }
+  sig { returns(Space::PrivateRelation) }
   def spaces
-    post_spaces.distinct
+    Space.where(id: owned_spaces.select(:id))
+      .or(Space.where(id: post_spaces.select(:id)))
+      .distinct
   end
 
   sig { returns(T::Boolean) }
@@ -136,6 +138,7 @@ class User < ApplicationRecord
   def supported_features
     features = feature_flags
     features << :debug if admin?
+    features << :spaces if spaces.any?
     features
   end
 

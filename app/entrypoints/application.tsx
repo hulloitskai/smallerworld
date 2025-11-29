@@ -16,6 +16,7 @@ import { setupFullStory } from "~/helpers/fullstory";
 import { setupInertia } from "~/helpers/inertia";
 import { parsePageImports } from "~/helpers/inertia";
 import { setupLuxon } from "~/helpers/luxon";
+import { isStandaloneDisplayMode } from "~/helpers/pwa";
 import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";
 import {
@@ -44,7 +45,7 @@ requestIdleCallback(() => {
 });
 
 // == Service worker
-if ("serviceWorker" in navigator && matchMedia("(display-mode: standalone)")) {
+if ("serviceWorker" in navigator && isStandaloneDisplayMode()) {
   handleServiceWorkerMessages();
   handlePrecaching();
   void unregisterOutdatedServiceWorkers();

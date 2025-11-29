@@ -221,8 +221,8 @@ const RegistrationPage: PageComponent<RegistrationPageProps> = () => {
             <Stack gap={6}>
               <Button
                 type="submit"
-                size="md"
                 variant="filled"
+                size="md"
                 leftSection={<ProfileIcon />}
                 loading={submitting}
                 disabled={submitDisabled}

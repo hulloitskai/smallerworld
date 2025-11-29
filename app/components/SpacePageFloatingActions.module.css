@@ -8,6 +8,13 @@
   --affix-right: var(--affix-inset);
 
   pointer-events: none;
+
+  &[data-raise-above-install-alert] {
+    --affix-bottom: calc(
+      var(--mantine-spacing-xs) + var(--app-shell-footer-height, 0px) +
+        var(--safe-area-inset-bottom, 0px) + rem(118px)
+    );
+  }
 }
 
 .space {

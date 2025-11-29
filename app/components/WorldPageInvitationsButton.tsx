@@ -3,11 +3,9 @@ import { useModals } from "@mantine/modals";
 
 import CalendarIcon from "~icons/heroicons/calendar-20-solid";
 
+import { usePageDialogOpened } from "~/helpers/pageDialog";
 import { useWebPush } from "~/helpers/webPush";
-import {
-  useWorldPageDialogOpened,
-  type WorldPageProps,
-} from "~/helpers/worlds";
+import { type WorldPageProps } from "~/helpers/worlds";
 import { type ActivityCoupon, type WorldPost } from "~/types";
 
 import ActivityCouponsCarousel from "./ActivityCouponsCarousel";
@@ -95,7 +93,7 @@ const WorldPageInvitationsButton: FC<WorldPageInvitationsButtonProps> = ({
   }, []);
 
   // == Page dialog
-  useWorldPageDialogOpened(drawerModalOpened);
+  usePageDialogOpened(drawerModalOpened);
 
   const invitationCount = pinnedPosts.length + activityCoupons.length;
   return (

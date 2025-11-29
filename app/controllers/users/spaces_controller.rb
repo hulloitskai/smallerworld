@@ -15,7 +15,7 @@ module Users
         end
         format.json do
           current_user = authenticate_user!
-          spaces = authorized_scope(current_user.owned_spaces)
+          spaces = authorized_scope(current_user.spaces)
             .with_attached_icon
           render(json: {
             spaces: SpaceSerializer.many(spaces),

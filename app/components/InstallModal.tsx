@@ -25,7 +25,7 @@ import classes from "./InstallModal.module.css";
 
 export interface InstallModalBodyProps
   extends Pick<WorldHomescreenPreviewProps, "arrowLabel"> {
-  world: WorldProfile;
+  world?: WorldProfile;
   modalId: string;
 }
 
@@ -90,11 +90,18 @@ export const InstallModalBody: FC<InstallModalBodyProps> = ({
               </StepWithImage>
               <Stack gap={8} align="center">
                 <StepBadge step={3}>open from home screen</StepBadge>
-                <WorldHomescreenPreviewWithAlternateIcon
-                  {...{ world }}
-                  arrowLabel="open me!"
-                  alternativeManifestIconPageUrlQuery={{ intent: "install" }}
-                />
+                {world ? (
+                  <WorldHomescreenPreviewWithAlternateIcon
+                    {...{ world }}
+                    arrowLabel="open me!"
+                    alternativeManifestIconPageUrlQuery={{ intent: "install" }}
+                  />
+                ) : (
+                  <WorldHomescreenPreview
+                    {...{ world }}
+                    arrowLabel="open me!"
+                  />
+                )}
               </Stack>
             </Stack>
           ) : installPWA !== null ? (
@@ -120,13 +127,21 @@ export const InstallModalBody: FC<InstallModalBodyProps> = ({
                 }}
               >
                 install{" "}
-                {world.owner_id === currentUser?.id ? "your world" : world.name}
+                {world
+                  ? world.owner_id === currentUser?.id
+                    ? "your world"
+                    : world.name
+                  : "smaller world"}
               </Button>
               <Text size="sm" ta="center" c="dimmed" maw={300}>
                 you&apos;re almost there!!!
                 <br />
                 click here to install{" "}
-                {world.owner_id === currentUser?.id ? "your world" : world.name}
+                {world
+                  ? world.owner_id === currentUser?.id
+                    ? "your world"
+                    : world.name
+                  : "smaller world"}
                 ...
               </Text>
             </Stack>

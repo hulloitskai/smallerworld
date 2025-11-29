@@ -23,6 +23,7 @@ import { useReregisterPushSubscriptionIfNeeded } from "~/helpers/webPush";
 import AppHeader, { type AppHeaderProps } from "./AppHeader";
 import AppMeta, { type AppMetaProps } from "./AppMeta";
 import PageContainer from "./PageContainer";
+import PageDialogStateProvider from "./PageDialogStateProvider";
 import PageLayout from "./PageLayout";
 import WorldThemeProvider from "./WorldThemeProvider";
 
@@ -93,15 +94,17 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
         {...{ title, description, imageUrl, noIndex, manifestUrl, pwaScope }}
       />
       <PageLayout>
-        <WorldThemeProvider>
-          <PWALoadingRemoveScroll>
-            <AppInner
-              {...{ breadcrumbs, logoHref, footer }}
-              {...appShellProps}
-            />
-            <PWALoadingOverlay />
-          </PWALoadingRemoveScroll>
-        </WorldThemeProvider>
+        <PageDialogStateProvider>
+          <WorldThemeProvider>
+            <PWALoadingRemoveScroll>
+              <AppInner
+                {...{ breadcrumbs, logoHref, footer }}
+                {...appShellProps}
+              />
+              <PWALoadingOverlay />
+            </PWALoadingRemoveScroll>
+          </WorldThemeProvider>
+        </PageDialogStateProvider>
       </PageLayout>
     </>
   );

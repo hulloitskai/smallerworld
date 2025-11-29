@@ -1,5 +1,7 @@
-import { Image, Text } from "@mantine/core";
+import { Button, Image, Text } from "@mantine/core";
+import { useModals } from "@mantine/modals";
 
+import AppInstallAlert from "~/components/AppInstallAlert";
 import AppLayout from "~/components/AppLayout";
 import EditSpaceButton from "~/components/EditSpaceButton";
 import LoadMoreButton from "~/components/LoadMoreButton";
@@ -7,6 +9,8 @@ import PostCard from "~/components/PostCard";
 import SpacePageFloatingActions from "~/components/SpacePageFloatingActions";
 import SpacePostCardAuthorActions from "~/components/SpacePostCardAuthorActions";
 import SpacePostCardFriendActions from "~/components/SpacePostCardFriendActions";
+import { openAppInstallModal } from "~/helpers/install";
+import { isStandaloneDisplayMode } from "~/helpers/pwa";
 import { useSpacePosts } from "~/helpers/spaces";
 import { WORLD_ICON_RADIUS_RATIO } from "~/helpers/worlds";
 import { type Space } from "~/types";
@@ -25,11 +29,21 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
   const currentUser = useCurrentUser();
   const queryParams = useQueryParams();
   const isOwner = currentUser?.id === space.owner_id;
+  const { isStandalone, outOfPWAScope } = usePWA();
+  const { modals } = useModals();
 
   // == Load posts
   const { posts, hasMorePosts, setSize, isValidating } = useSpacePosts(
     space.id,
   );
+
+  // == Auto-open install modal
+  useEffect(() => {
+    const { intent } = queryParamsFromPath(location.href);
+    if (intent === "install" && isEmpty(modals) && !isStandaloneDisplayMode()) {
+      openAppInstallModal();
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -136,6 +150,15 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
           [...new Array(3)].map((_, i) => <Skeleton key={i} h={120} />)
         )}
       </Stack>
+      {(isStandalone === false || outOfPWAScope) && !!currentUser && (
+        <AppInstallAlert>
+          get notified about new posts in{" "}
+          <Text span inherit fw={600}>
+            {space.name}
+          </Text>{" "}
+          :)
+        </AppInstallAlert>
+      )}
       <SpacePageFloatingActions />
     </>
   );

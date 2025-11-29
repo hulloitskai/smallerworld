@@ -2,7 +2,7 @@ import { hrefToUrl } from "@inertiajs/core";
 import { useNetwork } from "@mantine/hooks";
 import { last } from "lodash-es";
 import { DateTime } from "luxon";
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { mutate } from "swr";
 import { cache } from "swr/_internal";
 import useSWRInfinite, {
@@ -136,35 +136,6 @@ export const mutateWorldTimeline = async (worldId: string): Promise<void> => {
     undefined,
     { revalidate: true },
   );
-};
-
-export interface WorldPageDialogState {
-  opened: boolean;
-  setOpened: (opened: boolean) => void;
-}
-
-export const WorldPageDialogStateContext = createContext<
-  WorldPageDialogState | undefined
->(undefined);
-
-const useWorldPageDialogState = (): WorldPageDialogState => {
-  const state = useContext(WorldPageDialogStateContext);
-  if (!state) {
-    throw new Error(
-      "useWorldPageDialogState must be used within a WorldPageDialogStateProvider",
-    );
-  }
-  return state;
-};
-
-export const useWorldPageDialogOpened = (opened?: boolean): boolean => {
-  const state = useWorldPageDialogState();
-  useEffect(() => {
-    if (typeof opened === "boolean") {
-      state.setOpened(opened);
-    }
-  }, [opened]); // eslint-disable-line react-hooks/exhaustive-deps
-  return state.opened;
 };
 
 // interface WorldPageInstallationInstructionsInMobileSafariSettings {

@@ -187,6 +187,7 @@ const LoginForm: FC<LoginFormProps> = ({
         </Transition>
         <Stack gap={6}>
           <Button
+            variant="filled"
             type="submit"
             leftSection={loginCodeRequested ? <SignInIcon /> : <PhoneIcon />}
             disabled={!requiredFieldsFilled}

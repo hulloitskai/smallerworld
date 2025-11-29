@@ -51,7 +51,7 @@ export const useIsStandalone = (): boolean | undefined => {
   return isStandalone;
 };
 
-export const isStandalone = (): boolean => {
+export const isStandaloneDisplayMode = (): boolean => {
   const { matches } = matchMedia("(display-mode: standalone)");
   return matches;
 };

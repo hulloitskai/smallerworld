@@ -1,27 +1,24 @@
 import { Affix, type AlertProps, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
-import { openWorldPageInstallModal } from "~/helpers/install";
+import { openAppInstallModal } from "~/helpers/install";
 import { usePageDialogOpened } from "~/helpers/pageDialog";
-import { type WorldPageProps } from "~/helpers/worlds";
 
-import classes from "./WorldPageInstallAlert.module.css";
+import classes from "./AppInstallAlert.module.css";
 
-export interface WorldPageInstallAlertProps
-  extends Omit<AlertProps, "children"> {}
+export interface AppInstallAlertProps extends AlertProps {}
 
-const WorldPageInstallAlert: FC<WorldPageInstallAlertProps> = ({
+const AppInstallAlert: FC<AppInstallAlertProps> = ({
+  children,
   className,
   style,
   ...otherProps
 }) => {
-  const { world } = usePageProps<WorldPageProps>();
   const { modals } = useModals();
   const pageDialogOpened = usePageDialogOpened();
-
   return (
     <Affix
-      className={cn("WorldPageInstallAlert", classes.affix)}
+      className={cn("AppInstallAlert", classes.affix)}
       position={{}}
       zIndex={180}
     >
@@ -34,16 +31,13 @@ const WorldPageInstallAlert: FC<WorldPageInstallAlertProps> = ({
           <Alert
             variant="filled"
             icon={<NotificationIcon />}
-            title="install me on your phone!"
+            title="add smaller world to your phone"
             className={cn(classes.alert, className)}
             style={[style, transitionStyle]}
             {...otherProps}
           >
             <Stack gap={8} align="start">
-              <Text inherit>
-                get notified about my thoughts, ideas, and invitations to events
-                i&apos;m going to.
-              </Text>
+              <Text inherit>{children}</Text>
               <Group gap="xs">
                 <Button
                   className={classes.button}
@@ -51,10 +45,10 @@ const WorldPageInstallAlert: FC<WorldPageInstallAlertProps> = ({
                   size="compact-sm"
                   leftSection={<InstallIcon />}
                   onClick={() => {
-                    openWorldPageInstallModal(world);
+                    openAppInstallModal();
                   }}
                 >
-                  install {world.name}
+                  install smaller world
                 </Button>
               </Group>
             </Stack>
@@ -65,4 +59,4 @@ const WorldPageInstallAlert: FC<WorldPageInstallAlertProps> = ({
   );
 };
 
-export default WorldPageInstallAlert;
+export default AppInstallAlert;

@@ -9,7 +9,7 @@ import { type WorldProfile } from "~/types";
 import classes from "./WorldHomescreenPreview.module.css";
 
 export interface WorldHomescreenPreviewProps extends BoxProps {
-  world: Partial<Pick<WorldProfile, "icon" | "owner_name">> | null;
+  world?: Partial<Pick<WorldProfile, "icon" | "owner_name">> | null;
   arrowLabel: ReactNode;
   radius?: MantineRadius;
   loading?: boolean;
