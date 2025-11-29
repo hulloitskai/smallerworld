@@ -31,7 +31,6 @@ export interface SpacePageFloatingActionsProps {}
 const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
   const { space } = usePageProps<SpacePageProps>();
   const { modals } = useModals();
-  const { isStandalone, outOfPWAScope } = usePWA();
   const currentUser = useCurrentUser();
   const isOwner = currentUser?.id === space.owner_id;
 
@@ -57,20 +56,15 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
     localStorageKey: spacePostDraftKey(space.id),
   });
 
-  const actionsVisible = isEmpty(modals) && !pinnedPostsDrawerModalOpened;
   return (
     <>
       <Space className={classes.space} />
-      <Affix
-        position={{}}
-        zIndex={180}
-        className={classes.affix}
-        mod={{
-          "raise-above-install-alert":
-            (isStandalone === false || outOfPWAScope) && !!currentUser,
-        }}
-      >
-        <Transition transition="pop" mounted={actionsVisible} enterDelay={100}>
+      <Affix position={{}} zIndex={180} className={classes.affix}>
+        <Transition
+          transition="pop"
+          mounted={isEmpty(modals) && !pinnedPostsDrawerModalOpened}
+          enterDelay={100}
+        >
           {transitionStyle => (
             <Group
               align="end"

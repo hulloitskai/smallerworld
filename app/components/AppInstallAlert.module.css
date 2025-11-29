@@ -1,17 +1,5 @@
-.affix {
-  --affix-inset: var(--mantine-spacing-md);
-  --affix-left: var(--affix-inset);
-  --affix-right: var(--affix-inset);
-  --affix-bottom: calc(
-    var(--mantine-spacing-xs) + var(--app-shell-footer-height, 0px) +
-      var(--safe-area-inset-bottom, 0px)
-  );
-}
-
 .alert {
   box-shadow: var(--mantine-shadow-md);
-  max-width: var(--modal-size-md);
-  margin-inline: auto;
 
   :global(.mantine-Alert-icon) {
     margin-right: 8px;

@@ -112,6 +112,15 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
             />
           )}
         </Box>
+        {(isStandalone === false || outOfPWAScope) && !!currentUser && (
+          <AppInstallAlert>
+            get notified about new posts in{" "}
+            <Text span inherit fw={600}>
+              {space.name}
+            </Text>{" "}
+            :)
+          </AppInstallAlert>
+        )}
         {posts ? (
           isEmpty(posts) ? (
             <EmptyCard itemLabel="posts" />
@@ -150,15 +159,6 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
           [...new Array(3)].map((_, i) => <Skeleton key={i} h={120} />)
         )}
       </Stack>
-      {(isStandalone === false || outOfPWAScope) && !!currentUser && (
-        <AppInstallAlert>
-          get notified about new posts in{" "}
-          <Text span inherit fw={600}>
-            {space.name}
-          </Text>{" "}
-          :)
-        </AppInstallAlert>
-      )}
       <SpacePageFloatingActions />
     </>
   );
