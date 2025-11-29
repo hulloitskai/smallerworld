@@ -54,7 +54,7 @@ class PostPolicy < ApplicationPolicy
     if (friend = self.friend)
       relation.visible_to(friend)
     elsif (user = self.user)
-      relation.where(author: user)
+      relation.where(author: user).or(relation.publicly_visible)
     else
       relation.publicly_visible
     end
