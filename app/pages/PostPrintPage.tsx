@@ -1,7 +1,7 @@
 import PostCard from "~/components/PostCard";
 import { type AuthorWorldProfile, type Post } from "~/types";
 
-import classes from "./PostPrintPage.module.css";
+import "./PostPrintPage.css";
 
 export interface PostPrintPageProps extends SharedPageProps {
   post: Post;
@@ -20,7 +20,6 @@ const PostPrintPage: PageComponent<PostPrintPageProps> = ({
   }, [setColorScheme]);
   return (
     <PostCard
-      className={classes.card}
       {...{ post }}
       author={{ name: authorName, world: authorWorld }}
       expanded

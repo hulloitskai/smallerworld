@@ -91,7 +91,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
               }}
             />
           ) : (
-            <>{currentUser && <Space h="sm" />}</>
+            <>{currentUser && <Space h="lg" />}</>
           )}
           <Box ta="center">
             <Title size="h2" lh="xs">
