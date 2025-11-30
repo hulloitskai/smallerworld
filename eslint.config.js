@@ -7,13 +7,13 @@ import simpleImportSortPlugin from "eslint-plugin-simple-import-sort";
 import { readFileSync } from "fs";
 import ts from "typescript-eslint";
 
-const ignores = readFileSync(".prettierignore", "utf8")
+const prettierIgnores = readFileSync(".prettierignore", "utf8")
   .split("\n")
   .map(line => line.trim())
   .filter(line => !!line);
 
 export default ts.config(
-  { ignores },
+  { ignores: [...prettierIgnores, "printclient/**"] },
   js.configs.recommended,
   ...ts.configs.recommendedTypeChecked,
   ...ts.configs.stylisticTypeChecked,
@@ -26,13 +26,13 @@ export default ts.config(
     },
   },
   {
-    files: ["**/*.{ts,tsx,js,jsx}"],
+    files: ["app/**/*.{ts,tsx,js,jsx}", "vite.config.ts"],
     rules: {
       "no-console": ["warn", { allow: ["debug", "info", "warn", "error"] }],
     },
   },
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["app/**/*.{ts,tsx}", "vite.config.ts"],
     rules: {
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-explicit-any": "off",
@@ -68,7 +68,7 @@ export default ts.config(
     ...ts.configs.disableTypeChecked,
   },
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["app/**/*.{js,jsx,ts,tsx}", "vite.config.ts"],
     ...importPlugin.flatConfigs.recommended,
     ...importPlugin.flatConfigs.typescript,
     languageOptions: {
@@ -122,7 +122,7 @@ export default ts.config(
     },
   },
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["app/**/*.{js,jsx,ts,tsx}"],
     ...reactPlugin.configs.flat.recommended,
     settings: {
       react: {
@@ -140,7 +140,7 @@ export default ts.config(
     },
   },
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["app/**/*.{js,jsx,ts,tsx}"],
     plugins: {
       "react-hooks": reactHooksPlugin,
     },
