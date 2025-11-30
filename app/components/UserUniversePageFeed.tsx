@@ -46,7 +46,7 @@ const UserUniversePageFeed: FC<UserUniversePageFeedProps> = ({
                         ? withTrailingSlash(routes.userWorld.show.path())
                         : withTrailingSlash(
                             routes.worlds.show.path({
-                              id: post.world_id,
+                              id: post.world.handle,
                               query: {
                                 ...(post.associated_friend && {
                                   friend_token:

@@ -166,7 +166,7 @@ module Users
             .index_by(&:world_id)
           universe_posts = posts.map do |post|
             world = post.world!
-            associated_friend = if (friend = associated_friends_by_world_id[post.id]) # rubocop:disable Layout/LineLength
+            associated_friend = if (friend = associated_friends_by_world_id[world.id]) # rubocop:disable Layout/LineLength
               UniversePostAssociatedFriend.new(
                 id: friend.id,
                 access_token: friend.access_token,
