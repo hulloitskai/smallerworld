@@ -30,35 +30,34 @@ const UserEditWorldPage: PageComponent<UserEditWorldPageProps> = ({
       action: routes.userWorld.update,
       descriptor: "update page",
       initialValues: {
-        name: currentUser.name,
+        ...pick(currentUser, "name", "allow_space_replies"),
+        ...pick(world, "hide_stats", "hide_neko", "allow_friend_sharing"),
         icon_upload: world.icon ? imageUpload(world.icon) : null,
         theme: world.theme ?? "",
-        ...pick(world, "hide_stats", "hide_neko", "allow_friend_sharing"),
       },
       transformValues: ({
         icon_upload,
         theme,
         name,
-        hide_stats,
-        hide_neko,
-        allow_friend_sharing,
+        allow_space_replies,
+        ...otherValues
       }) => ({
         world: {
           icon: icon_upload?.signedId ?? "",
           theme: theme || null,
-          hide_stats,
-          hide_neko,
-          allow_friend_sharing,
-          owner_attributes: { name },
+          ...otherValues,
+          owner_attributes: { name, allow_space_replies },
         },
       }),
       transformErrors: ({
         icon: icon_upload,
         "owner.name": name,
+        "owner.allow_space_replies": allow_space_replies,
         ...errors
       }) => ({
         ...errors,
         name,
+        allow_space_replies,
         icon_upload,
       }),
       validate: {
@@ -162,6 +161,13 @@ const UserEditWorldPage: PageComponent<UserEditWorldPageProps> = ({
                   <Checkbox
                     {...getInputProps("hide_neko", { type: "checkbox" })}
                     label="no pets in my smaller world pls 🚫🐈"
+                    radius="md"
+                  />
+                  <Checkbox
+                    {...getInputProps("allow_space_replies", {
+                      type: "checkbox",
+                    })}
+                    label="allow space replies"
                     radius="md"
                   />
                 </InputWrapper>

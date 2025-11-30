@@ -2,24 +2,21 @@ import { type ButtonProps } from "@mantine/core";
 
 import { messageUri } from "~/helpers/messaging";
 import { mutateWorldPosts } from "~/helpers/worlds";
-import { type SpacePost, type UniversePostAssociatedFriend } from "~/types";
+import { type SpacePost } from "~/types";
 
 import classes from "./PostCardReplyButton.module.css";
 
 export interface SpacePostCardReplyButtonProps extends ButtonProps {
   post: SpacePost;
-  replyToNumber: string;
-  asFriend?: UniversePostAssociatedFriend;
+  replyToNumber: string | null;
 }
 
 const SpacePostCardReplyButton: FC<SpacePostCardReplyButtonProps> = ({
   post,
   replyToNumber,
-  asFriend,
   ...otherProps
 }) => {
-  const currentFriend = useCurrentFriend();
-  const friend = asFriend ?? currentFriend;
+  const currentUser = useCurrentUser();
 
   // == Mark as replied
   const { trigger: markReplied, mutating: markingReplied } = useRouteMutation<{
@@ -27,11 +24,6 @@ const SpacePostCardReplyButton: FC<SpacePostCardReplyButtonProps> = ({
   }>(routes.posts.markReplied, {
     params: {
       id: post.id,
-      query: {
-        ...(friend && {
-          friend_token: friend.access_token,
-        }),
-      },
     },
     descriptor: "mark post as replied",
     failSilently: true,
@@ -63,9 +55,17 @@ const SpacePostCardReplyButton: FC<SpacePostCardReplyButtonProps> = ({
         </Box>
       }
       mod={{ replied: post.replied }}
-      href={messageUri(replyToNumber, post.reply_snippet, "whatsapp")}
+      {...(replyToNumber && {
+        href: messageUri(replyToNumber, post.reply_snippet, "whatsapp"),
+      })}
       onClick={() => {
-        void markReplied();
+        if (replyToNumber) {
+          void markReplied();
+        } else if (!currentUser) {
+          toast.warning("you must be signed in to reply to this post");
+        } else {
+          toast.error("the author has disabled replies on this post");
+        }
       }}
       {...otherProps}
     >

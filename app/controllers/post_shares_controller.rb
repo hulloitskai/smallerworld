@@ -18,18 +18,20 @@ class PostSharesController < ApplicationController
           .where(post:)
           .distinct
           .count(:friend_id)
-        seen = if (friend = current_friend) || (user = current_user)
-          post.views.exists?(viewer: friend || user)
-        else
-          false
+        if (actor = current_friend || current_user)
+          seen = actor.post_views.exists?(post:)
+          replied = actor.post_reply_receipts.exists?(post:)
         end
-        replied = if (friend = current_friend)
-          post.reply_receipts.exists?(friend:)
-        else
-          false
+        post = WorldPost.new(
+          post:,
+          repliers:,
+          seen: seen || false,
+          replied: replied || false,
+        )
+        friend_sharer = scoped do
+          sharer = share.sharer!
+          sharer if sharer.is_a?(Friend)
         end
-        post = WorldPost.new(post:, repliers:, seen:, replied:)
-        sharer = share.sharer!
         if (user = current_user)
           invitation_requested = world
             .join_requests
@@ -38,7 +40,7 @@ class PostSharesController < ApplicationController
         render(inertia: "PostSharePage", props: {
           world: WorldSerializer.one(world),
           post: WorldPostSerializer.one(post),
-          sharer: (FriendProfileSerializer.one(sharer) if sharer.is_a?(Friend)),
+          sharer: FriendProfileSerializer.one_if(friend_sharer),
           "invitationRequested" => invitation_requested || false,
         })
       end

@@ -72,12 +72,6 @@ const NewPostReactionButton: FC<NewPostReactionButtonProps> = ({
         ],
       }}
       onEmojiClick={({ emoji }) => {
-        if (!friend && !(currentUser && post.visibility === "public")) {
-          toast.warning(
-            "you must be invited to this page to react to this post",
-          );
-          return;
-        }
         void triggerAdd({ reaction: { emoji } });
 
         const button = buttonRef.current;
@@ -109,7 +103,16 @@ const NewPostReactionButton: FC<NewPostReactionButtonProps> = ({
           size="compact-xs"
           leftSection={<EmojiIcon />}
           loading={mutating}
-          onClick={open}
+          onClick={() => {
+            if (!friend && !(currentUser && post.visibility === "public")) {
+              toast.warning(
+                "you must be invited to this page to react to this post",
+              );
+              return;
+            } else {
+              open();
+            }
+          }}
           mod={{ opened }}
           {...otherProps}
         >

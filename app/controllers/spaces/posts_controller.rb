@@ -193,11 +193,6 @@ module Spaces
         )
       end
       posts.map do |post|
-        replied = if replied_post_ids
-          replied_post_ids.include?(post.id)
-        else
-          false
-        end
         author = post.author!
         reply_to_number = if signed_in? && author.allow_space_replies?
           if (world = author.world)
@@ -210,7 +205,7 @@ module Spaces
           post:,
           repliers: repliers_by_post_id.fetch(post.id, 0),
           seen: viewed_post_ids&.include?(post.id) || false,
-          replied:,
+          replied: replied_post_ids&.include?(post.id) || false,
           reply_to_number:,
         )
       end

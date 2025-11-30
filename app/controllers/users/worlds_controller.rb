@@ -74,7 +74,7 @@ module Users
             :hide_stats,
             :hide_neko,
             :allow_friend_sharing,
-            owner_attributes: %i[name],
+            owner_attributes: %i[name allow_space_replies],
           ])
           if world.update(**world_params)
             owner = world.owner!

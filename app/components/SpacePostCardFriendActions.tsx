@@ -19,6 +19,7 @@ const SpacePostCardFriendActions: FC<SpacePostCardFriendActionsProps> = ({
   ...otherProps
 }) => {
   const { ref: viewportRef, inViewport } = useInViewport();
+  const currentUser = useCurrentUser();
 
   // == Track views
   const trackSeenRef = useTrackPostSeen(post, {
@@ -66,7 +67,7 @@ const SpacePostCardFriendActions: FC<SpacePostCardFriendActionsProps> = ({
           {...{ post }}
           hasExistingReactions={!isEmpty(reactions)}
         />
-        {!!post.reply_to_number && (
+        {(!currentUser || !!post.reply_to_number) && (
           <SpacePostCardReplyButton
             {...{ post }}
             replyToNumber={post.reply_to_number}
