@@ -243,6 +243,9 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
                   onConfirm: () => {
                     void deletePost();
                   },
+                  mod: {
+                    "disable-auto-fullscreen": true,
+                  },
                 });
               }}
             >

@@ -141,6 +141,9 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
                     paddingBottom: 0,
                   },
                 },
+                mod: {
+                  "disable-auto-fullscreen": true,
+                },
                 onConfirm: () => {
                   void deletePost();
                 },
