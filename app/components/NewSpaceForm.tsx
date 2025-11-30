@@ -76,7 +76,7 @@ const NewSpaceForm: FC<NewSpaceFormProps> = ({
           type="submit"
           size="md"
           variant="filled"
-          leftSection={<AddIcon />}
+          leftSection={<Box component={SpaceIcon} fz="sm" />}
           loading={submitting}
           disabled={!values.name || !values.description}
         >

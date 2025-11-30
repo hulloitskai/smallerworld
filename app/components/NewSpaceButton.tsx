@@ -16,7 +16,7 @@ const NewSpaceButton: FC<NewSpaceButtonProps> = ({
   return (
     <>
       <Button
-        leftSection={<AddIcon />}
+        leftSection={<Box component={SpaceIcon} fz="sm" />}
         className={cn("NewSpaceButton", className)}
         onClick={() => {
           setDrawerModalOpened(true);

@@ -264,10 +264,13 @@ class Post < ApplicationRecord
     if (emoji = self.emoji)
       body += "#{emoji} "
     end
-    body += if (post_title = self.title)
-      post_title.strip + "\n" + truncated_body_text
-    else
-      truncated_body_text
+    body += scoped do
+      body_text = if (post_title = self.title)
+        post_title.strip + "\n" + truncated_body_text
+      else
+        truncated_body_text
+      end
+      body_text.gsub("\n\n", "\n")
     end
     url_helpers = Rails.application.routes.url_helpers
     target_url = case recipient

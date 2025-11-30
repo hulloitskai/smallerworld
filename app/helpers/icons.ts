@@ -33,3 +33,4 @@ export { default as UserIcon } from "~icons/heroicons/user-20-solid";
 export { default as FriendsIcon } from "~icons/heroicons/users-20-solid";
 export { default as ChosenFamilyIcon } from "~icons/heroicons/users-20-solid";
 export { default as CancelIcon } from "~icons/heroicons/x-circle-20-solid";
+export { default as SpaceIcon } from "~icons/ri/sofa-fill";

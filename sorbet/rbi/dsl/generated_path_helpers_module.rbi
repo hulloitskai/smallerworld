@@ -145,6 +145,9 @@ module GeneratedPathHelpersModule
   def posts_user_universe_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def print_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

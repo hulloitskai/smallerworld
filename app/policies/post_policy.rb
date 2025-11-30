@@ -15,6 +15,8 @@ class PostPolicy < ApplicationPolicy
     end
   end
 
+  alias_rule :print?, to: :show?
+
   def share?
     post = T.cast(record, Post)
     if (friend = self.friend)

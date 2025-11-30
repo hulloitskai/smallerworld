@@ -66,6 +66,7 @@ declare global {
   const SignOutIcon: typeof import('~/helpers/icons')['SignOutIcon']
   const Skeleton: typeof import('@mantine/core')['Skeleton']
   const Space: typeof import('@mantine/core')['Space']
+  const SpaceIcon: typeof import('~/helpers/icons')['SpaceIcon']
   const Stack: typeof import('@mantine/core')['Stack']
   const SuccessIcon: typeof import('~/helpers/icons')['SuccessIcon']
   const TextInput: typeof import('@mantine/core')['TextInput']

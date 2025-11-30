@@ -1,4 +1,11 @@
-import { Image, Overlay, Spoiler, Text, Typography } from "@mantine/core";
+import {
+  type CardProps,
+  Image,
+  Overlay,
+  Spoiler,
+  Text,
+  Typography,
+} from "@mantine/core";
 import { Paper } from "@mantine/core";
 import { Spotify } from "react-spotify-embed";
 
@@ -21,7 +28,9 @@ import QuotedPostCard from "./QuotedPostCard";
 import classes from "./PostCard.module.css";
 import "yet-another-react-lightbox/styles.css";
 
-export interface PostCardProps extends BoxProps {
+export interface PostCardProps
+  extends BoxProps,
+    Pick<CardProps, "withBorder" | "shadow"> {
   post: Post;
   actions: ReactNode;
   author?: {
@@ -50,6 +59,8 @@ const PostCard: FC<PostCardProps> = ({
   expanded: forceExpanded = false,
   highlightType,
   onTypeClick,
+  withBorder,
+  shadow = "md",
   className,
   ...otherProps
 }) => {
@@ -94,8 +105,7 @@ const PostCard: FC<PostCardProps> = ({
       )}
       <Card
         ref={cardRef}
-        withBorder
-        shadow="sm"
+        {...{ withBorder, shadow }}
         className={classes.card}
         mod={{
           focus,
@@ -105,15 +115,14 @@ const PostCard: FC<PostCardProps> = ({
         }}
       >
         <Card.Section inheritPadding pt="xs" pb={10}>
-          <Group gap={8} align="center">
-            <Group gap={6} align="center" style={{ flexGrow: 1 }}>
+          <Group gap={8} align="start">
+            <Group gap={6} style={{ flexGrow: 1 }}>
               {!!post.emoji && (
                 <Box className={classes.emoji}>{post.emoji}</Box>
               )}
-              <Group gap={3}>
+              <Group gap={3} className={classes.headerGroup}>
                 <Group
                   className={classes.typeGroup}
-                  align="end"
                   gap={6}
                   mod={{ highlight: highlightType, interactive: !!onTypeClick }}
                   onClick={onTypeClick}
@@ -124,12 +133,12 @@ const PostCard: FC<PostCardProps> = ({
                       component={POST_TYPE_TO_ICON[post.type]}
                     />
                   )}
-                  <Text size="xs" className={classes.typeLabel}>
+                  <Text size="xs" className={classes.typeLabel} inline>
                     {POST_TYPE_TO_LABEL[post.type]}
                   </Text>
                 </Group>
                 {!!author && (
-                  <Text size="xs" c="dimmed" mb={2}>
+                  <Text size="xs" className={classes.authorLabel}>
                     from{" "}
                     {author?.world ? (
                       <Anchor
@@ -152,7 +161,7 @@ const PostCard: FC<PostCardProps> = ({
                 )}
               </Group>
             </Group>
-            <Group gap={8} align="center">
+            <Group gap={8} align="start" className={classes.headerGroup}>
               {pinnedUntil ? (
                 <Box className={classes.timestamp} mod={{ pinned: true }}>
                   {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}

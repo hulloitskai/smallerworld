@@ -49,6 +49,7 @@ export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
       "InstructionsIcon",
       "ReplyIcon",
       "InvitationIcon",
+      "SpaceIcon",
     ],
     "~/helpers/actioncable": ["useSubscription"],
     "~/helpers/authentication": ["useCurrentUser", "useCurrentFriend"],

@@ -72,6 +72,7 @@
 .timestamp {
   color: var(--mantine-color-dimmed);
   text-transform: lowercase;
+  text-align: right;
   font-size: var(--mantine-font-size-xs);
   font-weight: 500;
   font-family: var(--mantine-font-family-headings);
@@ -127,13 +128,14 @@
 }
 
 .typeGroup {
-  cursor: pointer;
   color: var(--mantine-color-dimmed);
   transition-property: color, opacity;
   transition-timing-function: ease;
   transition-duration: 150ms;
 
   &[data-interactive] {
+    cursor: pointer;
+
     @mixin hover {
       opacity: 0.8;
     }
@@ -152,6 +154,7 @@
 .typeLabel {
   font-family: var(--mantine-font-family-headings);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .encouragementBadge {
@@ -222,4 +225,15 @@
   :global(.mantine-Button-section)[data-position="left"] {
     margin-right: 4px;
   }
+}
+
+.authorLabel {
+  color: var(--mantine-color-dimmed);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.headerGroup {
+  flex-wrap: wrap;
+  row-gap: 0px;
 }

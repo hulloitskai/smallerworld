@@ -1,4 +1,4 @@
-import { Text } from "@mantine/core";
+import { CopyButton, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
@@ -29,6 +29,7 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
   className,
   ...otherProps
 }) => {
+  const currentUser = useCurrentUser();
   const { ref, inViewport } = useInViewport();
 
   // == Load reactions
@@ -86,7 +87,7 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
       {!isEmpty(reactions) && (
         <Text className={postCardClasses.actionSeparator}>/</Text>
       )}
-      <Menu width={150}>
+      <Menu width={165}>
         <Menu.Target>
           <Button
             variant="subtle"
@@ -148,6 +149,22 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
           >
             delete post
           </Menu.Item>
+          {currentUser?.supported_features.includes("debug") && (
+            <>
+              <Menu.Divider />
+              <CopyButton value={post.id}>
+                {({ copied, copy }) => (
+                  <Menu.Item
+                    leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
+                    closeMenuOnClick={false}
+                    onClick={copy}
+                  >
+                    {copied ? "post id copied!" : "copy post id"}
+                  </Menu.Item>
+                )}
+              </CopyButton>
+            </>
+          )}
         </Menu.Dropdown>
       </Menu>
     </Group>

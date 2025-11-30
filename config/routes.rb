@@ -253,6 +253,7 @@ Rails.application.routes.draw do
 
   resources :posts, only: [], export: true do
     member do
+      get :print
       post :share
       post :mark_seen
       post :mark_replied

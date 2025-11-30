@@ -13,6 +13,25 @@ class PostsController < ApplicationController
 
   # == Actions ==
 
+  # GET /posts/:id/print
+  def print
+    respond_to do |format|
+      format.html do
+        post = find_post!
+        unless post.visibility == :public
+          raise "Only public posts can be printed"
+        end
+
+        author = post.author!
+        render(inertia: "PostPrintPage", props: {
+          post: PostSerializer.one(post),
+          "authorName" => author.name,
+          "authorWorld" => AuthorWorldProfileSerializer.one_if(author.world),
+        })
+      end
+    end
+  end
+
   # POST /posts/:id/share?friend_token=...
   def share
     respond_to do |format|

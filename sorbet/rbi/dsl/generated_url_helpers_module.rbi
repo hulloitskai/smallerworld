@@ -145,6 +145,9 @@ module GeneratedUrlHelpersModule
   def posts_user_universe_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def print_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
