@@ -96,7 +96,10 @@ module Worlds
       repliers_by_post_id = PostReplyReceipt
         .where(post_id: post_ids)
         .group(:post_id)
-        .select(:post_id, "COUNT(DISTINCT friend_id) AS repliers")
+        .select(
+          :post_id,
+          "COUNT(DISTINCT (replier_id, replier_type)) AS repliers",
+        )
         .map do |reply_receipt|
           repliers = T.let(reply_receipt[:repliers], Integer)
           [reply_receipt.post_id, repliers]

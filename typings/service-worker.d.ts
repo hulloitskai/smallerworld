@@ -1,5 +1,5 @@
 interface ExtendableEvent {
-  waitUntil(promise: Promise<any>): void;
+  waitUntil(promise: Promise): void;
 }
 
 interface PushSubscriptionChangeEvent extends ExtendableEvent {

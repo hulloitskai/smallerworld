@@ -16,13 +16,7 @@ import {
   type _TransformValues,
   type FormErrors,
 } from "node_modules/@mantine/form/lib/types";
-import {
-  type FormEvent,
-  startTransition,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import { type FormEvent, useCallback, useRef, useState } from "react";
 import scrollIntoView from "scroll-into-view";
 import { toast } from "sonner";
 
@@ -151,7 +145,7 @@ const NO_BODY_METHODS: Method[] = [
 ];
 
 export const useForm = <
-  Data extends Record<string, any> & { error?: never; errors?: never } = {},
+  Data extends { error?: never; errors?: never; [key: string]: any } = {},
   Values extends Record<string, any> = {},
   TransformValues extends _TransformValues<Values> = (values: Values) => Values,
 >(
@@ -182,16 +176,14 @@ export const useForm = <
       event?.stopPropagation();
       form.setSubmitting(true);
       onSubmit?.(transformedValues, form);
-      action<Data & { error?: string; errors?: Record<string, string> }>({
+      action<Data>({
         params,
         method,
         data: NO_BODY_METHODS.includes(method) ? undefined : transformedValues,
       })
         .then(
           data => {
-            startTransition(() => {
-              setData(data);
-            });
+            setData(data);
             onSuccess?.(data, form);
             return data;
           },
@@ -203,9 +195,7 @@ export const useForm = <
               };
               if (typeof body.error === "string") {
                 const error = new Error(body.error);
-                startTransition(() => {
-                  setError(error);
-                });
+                setError(error);
                 console.error(`Failed to ${descriptor}`, error);
                 if (isCSRFVerificationError(error)) {
                   toastInvalidCSRFToken();

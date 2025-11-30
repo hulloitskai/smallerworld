@@ -30,7 +30,7 @@ export interface SubscriptionResponse<Data>
 }
 
 export const useSubscription = <
-  Data extends Record<string, any> & { error?: never },
+  Data extends { error?: never; [key: string]: any },
 >(
   channel: string,
   options?: UseSubscriptionOptions<Data>,
@@ -84,8 +84,8 @@ export const useSubscription = <
           console.error(error);
           next(error);
         },
-        received: (data: Data | { error?: string }) => {
-          if ("error" in data) {
+        received: (data: any) => {
+          if (isErrorData(data)) {
             const error = new Error(data.error);
             console.error(`Failed to ${descriptor}`, error);
             if (!failSilently) {
@@ -95,8 +95,7 @@ export const useSubscription = <
             }
             next(error, { subscription });
           } else {
-            const nonErrorData = data as Data;
-            next(undefined, { subscription, data: nonErrorData });
+            next(undefined, { subscription, data });
           }
         },
       });
@@ -127,4 +126,8 @@ export const useSubscription = <
     }
   }, [error]); // eslint-disable-line react-hooks/exhaustive-deps
   return { subscription, data, error };
+};
+
+const isErrorData = (data: any): data is { error: string } => {
+  return "error" in data && typeof get(data, "error") === "string";
 };
