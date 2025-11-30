@@ -434,22 +434,27 @@ class Post < ApplicationRecord
         notified_friend_ids << friend.id
       end
     if visibility == :public
-      User
-        .subscribed_to_public_posts
-        .joins(:world)
-        .where.not(world: {
-          id: Friend.where(id: notified_friend_ids).select("DISTINCT world_id"),
-        })
-        .where.not(
-          id: notifications.where(recipient_type: "User").select(:recipient_id),
-        )
-        .find_each do |user|
-          notifications.create!(recipient: user, push_delay: delay)
-        end
       if (space = self.space)
         space.members.where.not(id: author_id).find_each do |user|
           notifications.create!(recipient: user, push_delay: delay)
         end
+      else
+        User
+          .subscribed_to_public_posts
+          .joins(:world)
+          .where.not(world: {
+            id: Friend
+              .where(id: notified_friend_ids)
+              .select("DISTINCT world_id"),
+          })
+          .where.not(
+            id: notifications
+              .where(recipient_type: "User")
+              .select(:recipient_id),
+          )
+          .find_each do |user|
+            notifications.create!(recipient: user, push_delay: delay)
+          end
       end
     end
   end
