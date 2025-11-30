@@ -652,6 +652,7 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
     descriptor: "complete signup",
     initialValues: {
       name: "",
+      allow_space_replies: true,
     },
     transformValues: ({ name }) => ({
       user: {
@@ -665,8 +666,14 @@ const RegistrationForm: FC<RegistrationFormProps> = ({
   });
   return (
     <form onSubmit={submit}>
-      <Stack gap="xs">
-        <TextInput {...getInputProps("name")} label="your name" required />
+      <Stack gap="sm">
+        <Stack gap="xs">
+          <TextInput {...getInputProps("name")} label="your name" required />
+          <Checkbox
+            {...getInputProps("allow_space_replies", { type: "checkbox" })}
+            label="it's ok for folks here to dm me on whatsapp if they resonate with my posts"
+          />
+        </Stack>
         <Button type="submit" variant="filled" leftSection={<ProfileIcon />}>
           complete signup and post
         </Button>

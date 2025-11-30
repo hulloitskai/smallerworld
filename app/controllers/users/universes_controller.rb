@@ -140,15 +140,22 @@ module Users
           )
           replied_post_ids = T.let(
             PostReplyReceipt
-                        .where(post_id: post_ids, friend: associated_friends)
-                        .pluck(:post_id)
-                        .to_set,
+              .where(post_id: post_ids)
+              .and(
+                PostReplyReceipt.where(replier: associated_friends)
+                  .or(PostReplyReceipt.where(replier: current_user)),
+              )
+              .pluck(:post_id)
+              .to_set,
             T::Set[String],
           )
           repliers_by_post_id = PostReplyReceipt
             .where(post_id: post_ids)
             .group(:post_id)
-            .select(:post_id, "COUNT(DISTINCT friend_id) AS repliers")
+            .select(
+              :post_id,
+              "COUNT(DISTINCT (replier_id, replier_type)) AS repliers",
+            )
             .map do |reply_receipt|
               repliers = T.let(reply_receipt[:repliers], Integer)
               [reply_receipt.post_id, repliers]

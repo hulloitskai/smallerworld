@@ -38,6 +38,9 @@ export const messageUri = (
   body: string,
   platform: "sms" | "telegram" | "whatsapp",
 ): string => {
+  if (platform === "whatsapp") {
+    body = formatReplySnippetForWhatsApp(body);
+  }
   const encodedBody = encodeURIComponent(body);
   switch (platform) {
     case "sms":
@@ -48,3 +51,6 @@ export const messageUri = (
       return `https://wa.me/${phoneNumber}?text=${encodedBody}`;
   }
 };
+
+const formatReplySnippetForWhatsApp = (replySnippet: string): string =>
+  replySnippet.replace(/\n> \n/g, "\n") + "\u2800";

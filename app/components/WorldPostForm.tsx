@@ -459,7 +459,7 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
         notifyingNone = false;
       } else if (notifiability === "muted") {
         const friend = friendsById[friendId];
-        if (friend && friend.notifiable === "push") {
+        if (friend?.notifiable === "push") {
           mutingNone = false;
         }
       }

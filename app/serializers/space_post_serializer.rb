@@ -7,7 +7,8 @@ class SpacePostSerializer < ApplicationSerializer
   attributes repliers: { type: :number },
              seen: { type: :boolean },
              replied: { type: :boolean },
-             author_name: { type: :string }
+             author_name: { type: :string },
+             reply_to_number: { type: :string, nullable: true }
 
   # == Associations ==
   has_one :author_world,

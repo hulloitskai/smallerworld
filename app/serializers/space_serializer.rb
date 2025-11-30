@@ -5,7 +5,11 @@ class SpaceSerializer < ApplicationSerializer
   # == Attributes ==
 
   identifier
-  attributes :name, :description, :owner_id, friendly_id: { type: :string }
+  attributes :name,
+             :description,
+             :theme,
+             :owner_id,
+             friendly_id: { type: :string }
 
   # == Associations ==
 

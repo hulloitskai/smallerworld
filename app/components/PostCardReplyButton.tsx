@@ -11,20 +11,17 @@ import {
   type UniversePost,
   type UniversePostAssociatedFriend,
   type WorldPost,
-  type WorldProfile,
 } from "~/types";
 
 import classes from "./PostCardReplyButton.module.css";
 
 export interface PostCardReplyButtonProps extends ButtonProps {
   post: WorldPost | UniversePost;
-  world: WorldProfile;
   replyToNumber: string;
   asFriend?: UniversePostAssociatedFriend;
 }
 
 const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
-  world,
   post,
   replyToNumber,
   asFriend,
@@ -48,13 +45,11 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
     },
     descriptor: "mark post as replied",
     failSilently: true,
-    ...(friend && {
-      onSuccess: ({ worldId }) => {
-        if (worldId) {
-          void mutateWorldPosts(worldId);
-        }
-      },
-    }),
+    onSuccess: ({ worldId }) => {
+      if (worldId) {
+        void mutateWorldPosts(worldId);
+      }
+    },
   });
 
   return (
@@ -63,7 +58,6 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
       arrowOffset={20}
       shadow="sm"
       portalProps={{ target: vaulPortalTarget }}
-      disabled={!friend || !replyToNumber}
     >
       <Popover.Target>
         <Button
@@ -85,58 +79,40 @@ const PostCardReplyButton: FC<PostCardReplyButtonProps> = ({
             </Box>
           }
           mod={{ replied: post.replied }}
-          onClick={() => {
-            if (!friend || !replyToNumber) {
-              toast.warning(
-                `you must be invited to ${world.name} to reply via sms`,
-              );
-            }
-          }}
           {...otherProps}
         >
           reply by dm
         </Button>
       </Popover.Target>
-      {friend && !!replyToNumber && (
-        <Popover.Dropdown>
-          <Stack gap="xs">
-            <Text ta="center" ff="heading" fw={500} size="sm">
-              reply using:
-            </Text>
-            <Group justify="center" gap="sm">
-              {MESSAGING_PLATFORMS.map(platform => (
-                <Stack key={platform} gap={2} align="center" miw={60}>
-                  <ActionIcon
-                    component="a"
-                    variant="light"
-                    size="lg"
-                    href={messageUri(
-                      replyToNumber,
-                      platform === "whatsapp"
-                        ? formatReplySnippetForWhatsApp(post.reply_snippet)
-                        : post.reply_snippet,
-                      platform,
-                    )}
-                    onClick={() => {
-                      void markReplied();
-                    }}
-                  >
-                    <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
-                  </ActionIcon>
-                  <Text size="xs" fw={500} ff="heading" c="dimmed">
-                    {MESSAGING_PLATFORM_TO_LABEL[platform]}
-                  </Text>
-                </Stack>
-              ))}
-            </Group>
-          </Stack>
-        </Popover.Dropdown>
-      )}
+      <Popover.Dropdown>
+        <Stack gap="xs">
+          <Text ta="center" ff="heading" fw={500} size="sm">
+            reply using:
+          </Text>
+          <Group justify="center" gap="sm">
+            {MESSAGING_PLATFORMS.map(platform => (
+              <Stack key={platform} gap={2} align="center" miw={60}>
+                <ActionIcon
+                  component="a"
+                  variant="light"
+                  size="lg"
+                  href={messageUri(replyToNumber, post.reply_snippet, platform)}
+                  onClick={() => {
+                    void markReplied();
+                  }}
+                >
+                  <Box component={MESSAGING_PLATFORM_TO_ICON[platform]} />
+                </ActionIcon>
+                <Text size="xs" fw={500} ff="heading" c="dimmed">
+                  {MESSAGING_PLATFORM_TO_LABEL[platform]}
+                </Text>
+              </Stack>
+            ))}
+          </Group>
+        </Stack>
+      </Popover.Dropdown>
     </Popover>
   );
 };
-
-const formatReplySnippetForWhatsApp = (replySnippet: string) =>
-  replySnippet.replace(/\n> \n/g, "\n") + "\u2800";
 
 export default PostCardReplyButton;

@@ -385,6 +385,20 @@ class User
     def post_reactions=(value); end
 
     sig { returns(T::Array[T.untyped]) }
+    def post_reply_receipt_ids; end
+
+    sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
+    def post_reply_receipt_ids=(ids); end
+
+    # This method is created by ActiveRecord on the `User` class because it declared `has_many :post_reply_receipts`.
+    # 🔗 [Rails guide for `has_many` association](https://guides.rubyonrails.org/association_basics.html#the-has-many-association)
+    sig { returns(::PostReplyReceipt::PrivateCollectionProxy) }
+    def post_reply_receipts; end
+
+    sig { params(value: T::Enumerable[::PostReplyReceipt]).void }
+    def post_reply_receipts=(value); end
+
+    sig { returns(T::Array[T.untyped]) }
     def post_space_ids; end
 
     sig { params(ids: T::Array[T.untyped]).returns(T::Array[T.untyped]) }
@@ -659,6 +673,51 @@ class User
   end
 
   module GeneratedAttributeMethods
+    sig { returns(T::Boolean) }
+    def allow_space_replies; end
+
+    sig { params(value: T::Boolean).returns(T::Boolean) }
+    def allow_space_replies=(value); end
+
+    sig { returns(T::Boolean) }
+    def allow_space_replies?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def allow_space_replies_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def allow_space_replies_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def allow_space_replies_came_from_user?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def allow_space_replies_change; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def allow_space_replies_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def allow_space_replies_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def allow_space_replies_in_database; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def allow_space_replies_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def allow_space_replies_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def allow_space_replies_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def allow_space_replies_was; end
+
+    sig { void }
+    def allow_space_replies_will_change!; end
+
     sig { returns(::ActiveSupport::TimeWithZone) }
     def created_at; end
 
@@ -1290,6 +1349,9 @@ class User
     def reply_to_number_will_change!; end
 
     sig { void }
+    def restore_allow_space_replies!; end
+
+    sig { void }
     def restore_created_at!; end
 
     sig { void }
@@ -1336,6 +1398,12 @@ class User
 
     sig { void }
     def restore_updated_at!; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def saved_change_to_allow_space_replies; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_allow_space_replies?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
@@ -1522,6 +1590,9 @@ class User
 
     sig { void }
     def updated_at_will_change!; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_allow_space_replies?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end

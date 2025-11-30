@@ -9,17 +9,17 @@ import NewPostReactionButton from "./NewPostReactionButton";
 import PostCardReplyButton, {
   type PostCardReplyButtonProps,
 } from "./PostCardReplyButton";
-import PostCardShareButton from "./PostCardShareButton";
+import PostCardShareButton, {
+  type PostCardShareButtonProps,
+} from "./PostCardShareButton";
 import PostReactionButton from "./PostReactionButton";
 
 import postCardClasses from "./PostCard.module.css";
 
 export interface WorldPostCardFriendActionsProps
   extends Omit<BoxProps, "children">,
-    Pick<
-      PostCardReplyButtonProps,
-      "post" | "world" | "replyToNumber" | "asFriend"
-    > {}
+    Pick<PostCardReplyButtonProps, "post" | "replyToNumber" | "asFriend">,
+    Pick<PostCardShareButtonProps, "world"> {}
 
 const WorldPostCardFriendActions: FC<WorldPostCardFriendActionsProps> = ({
   post,
@@ -79,7 +79,7 @@ const WorldPostCardFriendActions: FC<WorldPostCardFriendActionsProps> = ({
           hasExistingReactions={!isEmpty(reactions)}
         />
         <Text className={postCardClasses.actionSeparator}>/</Text>
-        <PostCardReplyButton {...{ world, post, replyToNumber, asFriend }} />
+        <PostCardReplyButton {...{ post, replyToNumber, asFriend }} />
         {world.allow_friend_sharing && (
           <>
             <Text className={postCardClasses.actionSeparator}>/</Text>

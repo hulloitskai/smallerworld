@@ -9,4 +9,5 @@ class SpacePost < T::Struct
   const :repliers, Integer
   const :replied, T::Boolean
   const :seen, T::Boolean
+  const :reply_to_number, T.nilable(String)
 end

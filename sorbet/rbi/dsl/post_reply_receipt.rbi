@@ -390,35 +390,14 @@ class PostReplyReceipt
   end
 
   module GeneratedAssociationMethods
-    sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
-    def build_friend(*args, &blk); end
-
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def build_post(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
-    def create_friend(*args, &blk); end
-
-    sig { params(args: T.untyped, blk: T.untyped).returns(::Friend) }
-    def create_friend!(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_post(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(::Post) }
     def create_post!(*args, &blk); end
-
-    sig { returns(T.nilable(::Friend)) }
-    def friend; end
-
-    sig { params(value: T.nilable(::Friend)).void }
-    def friend=(value); end
-
-    sig { returns(T::Boolean) }
-    def friend_changed?; end
-
-    sig { returns(T::Boolean) }
-    def friend_previously_changed?; end
 
     sig { returns(T.nilable(::Post)) }
     def post; end
@@ -432,17 +411,29 @@ class PostReplyReceipt
     sig { returns(T::Boolean) }
     def post_previously_changed?; end
 
-    sig { returns(T.nilable(::Friend)) }
-    def reload_friend; end
-
     sig { returns(T.nilable(::Post)) }
     def reload_post; end
 
-    sig { void }
-    def reset_friend; end
+    sig { returns(T.untyped) }
+    def reload_replier; end
+
+    sig { returns(T.untyped) }
+    def replier; end
+
+    sig { params(value: T.untyped).void }
+    def replier=(value); end
+
+    sig { returns(T::Boolean) }
+    def replier_changed?; end
+
+    sig { returns(T::Boolean) }
+    def replier_previously_changed?; end
 
     sig { void }
     def reset_post; end
+
+    sig { void }
+    def reset_replier; end
   end
 
   module GeneratedAssociationRelationMethods
@@ -646,50 +637,50 @@ class PostReplyReceipt
     sig { void }
     def created_at_will_change!; end
 
-    sig { returns(::String) }
-    def friend_id; end
+    sig { returns(T.nilable(::String)) }
+    def deprecated_friend_id; end
 
-    sig { params(value: ::String).returns(::String) }
-    def friend_id=(value); end
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def deprecated_friend_id=(value); end
 
     sig { returns(T::Boolean) }
-    def friend_id?; end
+    def deprecated_friend_id?; end
 
     sig { returns(T.nilable(::String)) }
-    def friend_id_before_last_save; end
+    def deprecated_friend_id_before_last_save; end
 
     sig { returns(T.untyped) }
-    def friend_id_before_type_cast; end
+    def deprecated_friend_id_before_type_cast; end
 
     sig { returns(T::Boolean) }
-    def friend_id_came_from_user?; end
+    def deprecated_friend_id_came_from_user?; end
 
-    sig { returns(T.nilable([::String, ::String])) }
-    def friend_id_change; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_friend_id_change; end
 
-    sig { returns(T.nilable([::String, ::String])) }
-    def friend_id_change_to_be_saved; end
-
-    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def friend_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
-
-    sig { returns(T.nilable(::String)) }
-    def friend_id_in_database; end
-
-    sig { returns(T.nilable([::String, ::String])) }
-    def friend_id_previous_change; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_friend_id_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def friend_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def deprecated_friend_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
-    def friend_id_previously_was; end
+    def deprecated_friend_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def deprecated_friend_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def deprecated_friend_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable(::String)) }
-    def friend_id_was; end
+    def deprecated_friend_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def deprecated_friend_id_was; end
 
     sig { void }
-    def friend_id_will_change!; end
+    def deprecated_friend_id_will_change!; end
 
     sig { returns(::String) }
     def id; end
@@ -826,11 +817,101 @@ class PostReplyReceipt
     sig { void }
     def post_id_will_change!; end
 
+    sig { returns(::String) }
+    def replier_id; end
+
+    sig { params(value: ::String).returns(::String) }
+    def replier_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def replier_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def replier_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def replier_id_came_from_user?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def replier_id_change; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def replier_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def replier_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_id_in_database; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def replier_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def replier_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_id_was; end
+
+    sig { void }
+    def replier_id_will_change!; end
+
+    sig { returns(::String) }
+    def replier_type; end
+
+    sig { params(value: ::String).returns(::String) }
+    def replier_type=(value); end
+
+    sig { returns(T::Boolean) }
+    def replier_type?; end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_type_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def replier_type_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def replier_type_came_from_user?; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def replier_type_change; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def replier_type_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def replier_type_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_type_in_database; end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def replier_type_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def replier_type_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_type_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def replier_type_was; end
+
+    sig { void }
+    def replier_type_will_change!; end
+
     sig { void }
     def restore_created_at!; end
 
     sig { void }
-    def restore_friend_id!; end
+    def restore_deprecated_friend_id!; end
 
     sig { void }
     def restore_id!; end
@@ -841,17 +922,23 @@ class PostReplyReceipt
     sig { void }
     def restore_post_id!; end
 
+    sig { void }
+    def restore_replier_id!; end
+
+    sig { void }
+    def restore_replier_type!; end
+
     sig { returns(T.nilable([::ActiveSupport::TimeWithZone, ::ActiveSupport::TimeWithZone])) }
     def saved_change_to_created_at; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([::String, ::String])) }
-    def saved_change_to_friend_id; end
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_deprecated_friend_id; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def saved_change_to_friend_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def saved_change_to_deprecated_friend_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([::String, ::String])) }
     def saved_change_to_id; end
@@ -871,11 +958,23 @@ class PostReplyReceipt
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_post_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
+    sig { returns(T.nilable([::String, ::String])) }
+    def saved_change_to_replier_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_replier_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([::String, ::String])) }
+    def saved_change_to_replier_type; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_replier_type?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
-    def will_save_change_to_friend_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+    def will_save_change_to_deprecated_friend_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
@@ -885,6 +984,12 @@ class PostReplyReceipt
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_post_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_replier_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_replier_type?(from: T.unsafe(nil), to: T.unsafe(nil)); end
   end
 
   module GeneratedRelationMethods

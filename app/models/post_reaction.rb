@@ -18,7 +18,8 @@
 #
 #  index_post_reactions_on_deprecated_friend_id  (deprecated_friend_id)
 #  index_post_reactions_on_post_id               (post_id)
-#  index_post_reactions_uniquness                (reactor_type,reactor_id,post_id,emoji) UNIQUE
+#  index_post_reactions_on_reactor               (reactor_type,reactor_id)
+#  index_post_reactions_uniqueness               (reactor_type,reactor_id,post_id,emoji) UNIQUE
 #
 # Foreign Keys
 #

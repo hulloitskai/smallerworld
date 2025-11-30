@@ -75,10 +75,12 @@ module Users::Worlds
         format.json do
           post = find_post!
           authorize!(post, to: :manage?)
+          repliers = post.reply_receipts
+            .count("DISTINCT (replier_id, replier_type)")
           render(json: {
             "notifiedFriends" => post.notified_friends.count,
-            "viewers" => post.friend_viewers.count,
-            "repliers" => post.reply_receipts.distinct.count(:friend_id),
+            viewers: post.friend_viewers.count,
+            repliers:,
           })
         end
       end

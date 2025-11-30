@@ -2,24 +2,19 @@ import { useInViewport, useMergedRef } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 
 import { useTrackPostSeen } from "~/helpers/posts";
-import {
-  type PostReaction,
-  type SpacePost,
-  type UniversePostAssociatedFriend,
-} from "~/types";
+import { type PostReaction, type SpacePost } from "~/types";
 
 import NewPostReactionButton from "./NewPostReactionButton";
 import PostReactionButton from "./PostReactionButton";
+import SpacePostCardReplyButton from "./SpacePostCardReplyButton";
 
 export interface SpacePostCardFriendActionsProps
   extends Omit<BoxProps, "children"> {
   post: SpacePost;
-  asFriend?: UniversePostAssociatedFriend;
 }
 
 const SpacePostCardFriendActions: FC<SpacePostCardFriendActionsProps> = ({
   post,
-  asFriend,
   className,
   ...otherProps
 }) => {
@@ -28,7 +23,6 @@ const SpacePostCardFriendActions: FC<SpacePostCardFriendActionsProps> = ({
   // == Track views
   const trackSeenRef = useTrackPostSeen(post, {
     skip: "seen" in post ? post.seen : undefined,
-    asFriend,
   });
 
   // == Load reactions
@@ -64,16 +58,20 @@ const SpacePostCardFriendActions: FC<SpacePostCardFriendActionsProps> = ({
             key={emoji}
             {...{ post }}
             {...{ emoji, reactions }}
-            {...{ asFriend }}
           />
         ))}
       </Group>
       <Group justify="end" gap={2} style={{ flexGrow: 1 }}>
         <NewPostReactionButton
           {...{ post }}
-          friendTokenOverride={asFriend?.access_token}
           hasExistingReactions={!isEmpty(reactions)}
         />
+        {!!post.reply_to_number && (
+          <SpacePostCardReplyButton
+            {...{ post }}
+            replyToNumber={post.reply_to_number}
+          />
+        )}
       </Group>
     </Group>
   );

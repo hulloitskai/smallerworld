@@ -42,6 +42,7 @@ class RegistrationsController < ApplicationController
         user_params = params.expect(user: [
           :name,
           :time_zone,
+          :allow_space_replies,
           world_attributes: %i[
             handle
             icon

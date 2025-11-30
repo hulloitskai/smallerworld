@@ -171,15 +171,26 @@ module Spaces
       repliers_by_post_id = PostReplyReceipt
         .where(post_id: post_ids)
         .group(:post_id)
-        .select(:post_id, "COUNT(DISTINCT friend_id) AS repliers")
+        .select(
+          :post_id,
+          "COUNT(DISTINCT (replier_id, replier_type)) AS repliers",
+        )
         .map do |reply_receipt|
           repliers = T.let(reply_receipt[:repliers], Integer)
           [reply_receipt.post_id, repliers]
         end
         .to_h
-      viewed_post_ids = select_viewed_post_ids(post_ids)
-      replied_post_ids = if (replier = current_friend)
-        select_replied_post_ids(post_ids, replier:)
+      if (user = current_user)
+        viewed_post_ids = T.let(
+          user.post_views.where(post_id: post_ids)
+            .distinct.pluck(:post_id).to_set,
+          T::Set[String],
+        )
+        replied_post_ids = T.let(
+          user.post_reply_receipts.where(post_id: post_ids)
+            .distinct.pluck(:post_id).to_set,
+          T::Set[String],
+        )
       end
       posts.map do |post|
         replied = if replied_post_ids
@@ -187,35 +198,22 @@ module Spaces
         else
           false
         end
+        author = post.author!
+        reply_to_number = if signed_in? && author.allow_space_replies?
+          if (world = author.world)
+            world.reply_to_number
+          else
+            author.phone_number
+          end
+        end
         SpacePost.new(
           post:,
           repliers: repliers_by_post_id.fetch(post.id, 0),
-          seen: viewed_post_ids.include?(post.id),
+          seen: viewed_post_ids&.include?(post.id) || false,
           replied:,
+          reply_to_number:,
         )
       end
-    end
-
-    sig { params(post_ids: T::Array[String]).returns(T::Set[String]) }
-    def select_viewed_post_ids(post_ids)
-      PostView
-        .where(post_id: post_ids, viewer: current_friend || current_user)
-        .distinct
-        .pluck(:post_id)
-        .to_set
-    end
-
-    sig do
-      params(
-        post_ids: T::Array[String],
-        replier: Friend,
-      ).returns(T::Set[String])
-    end
-    def select_replied_post_ids(post_ids, replier:)
-      PostReplyReceipt
-        .where(post_id: post_ids, friend: replier)
-        .pluck(:post_id)
-        .to_set
     end
   end
 end

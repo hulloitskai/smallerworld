@@ -16,10 +16,15 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
           onSessionCreated={registered => {
             const query = queryParamsFromPath(location.href);
             if (registered) {
-              const worldPath = withTrailingSlash(
-                routes.userWorld.show.path({ query }),
-              );
-              location.href = worldPath;
+              const { redirect_to } = queryParamsFromPath(location.href);
+              if (redirect_to && destinationHasSameHost(redirect_to)) {
+                location.href = redirect_to;
+              } else {
+                const worldPath = withTrailingSlash(
+                  routes.userWorld.show.path({ query }),
+                );
+                location.href = worldPath;
+              }
             } else {
               const registrationPath = routes.registrations.new.path({ query });
               router.visit(registrationPath);
@@ -38,3 +43,8 @@ LoginPage.layout = page => (
 );
 
 export default LoginPage;
+
+const destinationHasSameHost = (destination: string) => {
+  const destinationUrl = hrefToUrl(destination);
+  return destinationUrl.host === location.host;
+};

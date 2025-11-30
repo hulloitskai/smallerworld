@@ -4,10 +4,10 @@
 # Table name: worlds
 #
 #  id                       :uuid             not null, primary key
-#  allow_friend_sharing     :boolean          not null
+#  allow_friend_sharing     :boolean          default(TRUE), not null
 #  handle                   :string           not null
-#  hide_neko                :boolean          not null
-#  hide_stats               :boolean          not null
+#  hide_neko                :boolean          default(FALSE), not null
+#  hide_stats               :boolean          default(FALSE), not null
 #  reply_to_number_override :string
 #  theme                    :string
 #  created_at               :datetime         not null

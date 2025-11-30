@@ -49,6 +49,7 @@ class Friend < ApplicationRecord
   include HasTimeZone
   include PostViewer
   include PostReactor
+  include PostReplier
   include PgSearch::Model
 
   # == FriendlyId ==
@@ -94,7 +95,6 @@ class Friend < ApplicationRecord
   belongs_to :invitation, optional: true
   has_one :join_request, through: :invitation
 
-  has_many :post_reply_receipts, dependent: :destroy
   has_many :encouragements, dependent: :destroy
   has_many :text_blasts, dependent: :destroy
 

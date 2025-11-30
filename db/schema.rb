@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_21_203623) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_30_172008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -260,15 +260,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_203623) do
     t.string "reactor_type", null: false
     t.index ["deprecated_friend_id"], name: "index_post_reactions_on_deprecated_friend_id"
     t.index ["post_id"], name: "index_post_reactions_on_post_id"
-    t.index ["reactor_type", "reactor_id", "post_id", "emoji"], name: "index_post_reactions_uniquness", unique: true
+    t.index ["reactor_type", "reactor_id", "post_id", "emoji"], name: "index_post_reactions_uniqueness", unique: true
+    t.index ["reactor_type", "reactor_id"], name: "index_post_reactions_on_reactor"
   end
 
   create_table "post_reply_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "post_id", null: false
-    t.uuid "friend_id", null: false
+    t.uuid "deprecated_friend_id"
     t.datetime "created_at", precision: nil, null: false
-    t.index ["friend_id"], name: "index_post_reply_receipts_on_friend_id"
+    t.uuid "replier_id", null: false
+    t.string "replier_type", null: false
+    t.index ["deprecated_friend_id"], name: "index_post_reply_receipts_on_deprecated_friend_id"
     t.index ["post_id"], name: "index_post_reply_receipts_on_post_id"
+    t.index ["replier_type", "replier_id"], name: "index_post_reply_receipts_on_replier"
   end
 
   create_table "post_shares", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -378,6 +382,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_203623) do
     t.text "description", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "theme"
     t.index ["owner_id", "name"], name: "index_spaces_owner_name_uniqueness", unique: true
     t.index ["owner_id"], name: "index_spaces_on_owner_id"
   end
@@ -410,6 +415,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_203623) do
     t.boolean "deprecated_hide_neko"
     t.boolean "deprecated_allow_friend_sharing"
     t.string "membership_tier"
+    t.boolean "allow_space_replies", default: true, null: false
     t.index ["deprecated_handle"], name: "index_users_on_deprecated_handle", unique: true
     t.index ["membership_tier"], name: "index_users_on_membership_tier"
     t.index ["notifications_last_cleared_at"], name: "index_users_on_notifications_last_cleared_at"
@@ -417,10 +423,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_203623) do
   end
 
   create_table "worlds", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.boolean "allow_friend_sharing", null: false
+    t.boolean "allow_friend_sharing", default: true, null: false
     t.string "handle", null: false
-    t.boolean "hide_neko", null: false
-    t.boolean "hide_stats", null: false
+    t.boolean "hide_neko", default: false, null: false
+    t.boolean "hide_stats", default: false, null: false
     t.string "reply_to_number_override"
     t.string "theme"
     t.uuid "owner_id", null: false
@@ -445,7 +451,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_21_203623) do
   add_foreign_key "join_requests", "users", column: "deprecated_user_id"
   add_foreign_key "join_requests", "worlds"
   add_foreign_key "post_reactions", "posts"
-  add_foreign_key "post_reply_receipts", "friends"
   add_foreign_key "post_reply_receipts", "posts"
   add_foreign_key "post_shares", "posts"
   add_foreign_key "post_stickers", "friends"

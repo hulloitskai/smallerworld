@@ -127,6 +127,7 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                             modalId,
                             title: `new ${POST_TYPE_TO_LABEL[postType]}`,
                             size: "var(--container-size-xs)",
+                            keepMounted: true,
                             children: (
                               <SpacePostForm
                                 spaceId={space.id}

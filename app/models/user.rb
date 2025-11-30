@@ -7,6 +7,7 @@
 # Table name: users
 #
 #  id                              :uuid             not null, primary key
+#  allow_space_replies             :boolean          default(TRUE), not null
 #  deprecated_allow_friend_sharing :boolean
 #  deprecated_handle               :string
 #  deprecated_hide_neko            :boolean
@@ -36,6 +37,7 @@ class User < ApplicationRecord
   include HasTimeZone
   include PostReactor
   include PostViewer
+  include PostReplier
   include PgSearch::Model
 
   # == Constants ==
