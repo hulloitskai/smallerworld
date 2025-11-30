@@ -9,11 +9,11 @@ import { useSendTestNotification, useWebPush } from "~/helpers/webPush";
 
 import { openNotificationsTroubleshootingModal } from "./NotificationsTroubleshootingModal";
 
-export interface UserWorldPageNotificationsButtonProps
+export interface SpacePageNotificationsButtonProps
   extends Omit<ButtonProps & ActionIconProps, "children"> {}
 
-const UserWorldPageNotificationsButton: FC<
-  UserWorldPageNotificationsButtonProps
+const SpacePageNotificationsButton: FC<
+  SpacePageNotificationsButtonProps
 > = props => {
   // == Menu
   const [menuOpened, setMenuOpened] = useState(false);
@@ -35,9 +35,9 @@ const UserWorldPageNotificationsButton: FC<
       {webPushSupported === false ||
       webPushPermission === "denied" ? null : pushSubscription === undefined ||
         pushRegistration === undefined ? (
-        <ActionIcon size="lg" variant="light" loading {...props}>
-          <NotificationIcon />
-        </ActionIcon>
+        <Button loading {...props}>
+          notification settings
+        </Button>
       ) : pushSubscription === null || pushRegistration === null ? (
         <Stack gap={4}>
           <Button
@@ -66,9 +66,9 @@ const UserWorldPageNotificationsButton: FC<
       ) : (
         <Menu opened={menuOpened} onChange={setMenuOpened}>
           <Menu.Target>
-            <ActionIcon size="lg" variant="light" {...props}>
-              <NotificationIcon />
-            </ActionIcon>
+            <Button leftSection={<NotificationIcon />}>
+              notification settings
+            </Button>
           </Menu.Target>
           <Menu.Dropdown>
             <SendTestNotificationMenuItem
@@ -84,7 +84,7 @@ const UserWorldPageNotificationsButton: FC<
   );
 };
 
-export default UserWorldPageNotificationsButton;
+export default SpacePageNotificationsButton;
 
 interface SendTestNotificationMenuItemProps {
   pushSubscription: PushSubscription;

@@ -13,8 +13,10 @@ class SpacesController < ApplicationController
           return redirect_to(space_path(space), status: :found)
         end
 
+        user_world = current_user&.world
         render(inertia: "SpacePage", props: {
           space: SpaceSerializer.one(space),
+          "userWorld" => WorldSerializer.one_if(user_world),
         })
       end
     end

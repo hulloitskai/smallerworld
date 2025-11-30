@@ -1,4 +1,4 @@
-import { Input, Popover, ScrollArea } from "@mantine/core";
+import { Input, ScrollArea } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { type Initialize } from "@mantine/form";
 import { useLongPress, useViewportSize } from "@mantine/hooks";
@@ -300,9 +300,6 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
   const { ref: formStackRef, width: formStackWidth } =
     useElementSize<HTMLDivElement>();
 
-  // == Login popover
-  // const [loginPopoverOpened, setLoginPopoverOpened] = useState(false);
-
   // == Emoji input
   const emojiInput = (
     <EmojiPopover
@@ -531,35 +528,33 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
             )}
           </Stack>
         </Group>
-        <Popover
-          position="top"
-          width={375}
-          disabled={!!currentUser}
-          closeOnClickOutside={false}
-          trapFocus
+        <Button
+          type={currentUser ? "submit" : "button"}
+          variant="filled"
+          size="lg"
+          leftSection={post ? <SaveIcon /> : <SendIcon />}
+          onClick={() => {
+            if (!currentUser) {
+              const modalId = randomId();
+              openModal({
+                modalId,
+                title: "sign in to continue",
+                children: (
+                  <LoginOrRegisterForm
+                    onRegisteredAndSignedIn={() => {
+                      closeModal(modalId);
+                      submit();
+                    }}
+                  />
+                ),
+              });
+            }
+          }}
+          disabled={!isDirty() || !isValid() || !htmlHasText(values.body_html)}
+          loading={submitting}
         >
-          <Popover.Target>
-            <Button
-              type={currentUser ? "submit" : "button"}
-              variant="filled"
-              size="lg"
-              leftSection={post ? <SaveIcon /> : <SendIcon />}
-              disabled={
-                !isDirty() || !isValid() || !htmlHasText(values.body_html)
-              }
-              loading={submitting}
-            >
-              {post ? "save" : "post"}
-            </Button>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <LoginOrRegisterForm
-              onRegisteredAndSignedIn={() => {
-                submit();
-              }}
-            />
-          </Popover.Dropdown>
-        </Popover>
+          {post ? "save" : "post"}
+        </Button>
       </Stack>
     </form>
   );

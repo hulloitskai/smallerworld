@@ -138,6 +138,7 @@ const NavItem: FC<NavItemLabel> = ({ text, icon }) => (
 const urlValue = (url: string): "world" | "universe" | "spaces" =>
   url.startsWith(routes.userUniverse.show.path())
     ? "universe"
-    : url.startsWith(routes.userSpaces.index.path())
+    : url.startsWith(routes.userSpaces.index.path()) ||
+        url.startsWith("/spaces/")
       ? "spaces"
       : "world";

@@ -1,9 +1,9 @@
-.pageTitle {
+.worldName {
   line-height: 1.2;
   text-align: center;
 }
 
-.pageIcon {
+.worldIcon {
   align-self: center;
   object-fit: cover;
   flex: unset;

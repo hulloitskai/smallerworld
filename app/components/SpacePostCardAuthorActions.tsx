@@ -7,6 +7,7 @@ import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { mutateRoute } from "~/helpers/routes/swr";
+import { mutateSpacePosts } from "~/helpers/spaces";
 import { type Post, type PostReaction, type Space } from "~/types";
 
 import SpacePostForm from "./SpacePostForm";
@@ -56,7 +57,7 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
     },
     descriptor: "delete post",
     onSuccess: () => {
-      void mutateRoute(routes.spacePosts.index, { space_id: space.id });
+      void mutateSpacePosts(space.id);
       void mutateRoute(routes.spacePosts.pinned, { space_id: space.id });
     },
   });

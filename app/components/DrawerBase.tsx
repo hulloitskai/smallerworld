@@ -38,8 +38,8 @@ const DrawerBase: FC<DrawerBaseProps> = ({
   ...otherProps
 }) => {
   // == Prevent closing drawer when modals are open
-  const { modals: openModals } = useModals();
-  const deferredOpenModals = useDeferredValue(openModals);
+  const { modals } = useModals();
+  const deferredModals = useDeferredValue(modals);
 
   return (
     <VaulDrawer.Root
@@ -63,7 +63,7 @@ const DrawerBase: FC<DrawerBaseProps> = ({
           className={cn(classes.content, classNames?.content)}
           onEscapeKeyDown={event => {
             if (
-              !isEmpty(deferredOpenModals) ||
+              !isEmpty(deferredModals) ||
               document.querySelector(".mantine-Menu-dropdown")
             ) {
               event.preventDefault();
@@ -85,7 +85,7 @@ const DrawerBase: FC<DrawerBaseProps> = ({
             }
           }}
           aria-describedby={undefined}
-          {...(!isEmpty(deferredOpenModals) && {
+          {...(!isEmpty(deferredModals) && {
             style: {
               pointerEvents: "none",
             },

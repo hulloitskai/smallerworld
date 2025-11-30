@@ -100,7 +100,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
       <Box pos="relative">
         <Stack gap="sm">
           <Image
-            className={classes.pageIcon}
+            className={classes.worldIcon}
             src={world.icon.src}
             {...(!!world.icon.srcset && {
               srcSet: world.icon.srcset,
@@ -121,7 +121,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
             }}
           />
           <Stack gap={4}>
-            <Title className={classes.pageTitle} size="h2">
+            <Title className={classes.worldName} size="h2">
               {world.name}
             </Title>
             <Group gap="xs" justify="center">
@@ -194,11 +194,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
                 </>
               )}
               {isStandalone && !outOfPWAScope && (
-                <UserWorldPageNotificationsButton
-                  {...(worldTheme === "bakudeku" && {
-                    variant: "filled",
-                  })}
-                />
+                <UserWorldPageNotificationsButton />
               )}
             </Group>
             <Transition

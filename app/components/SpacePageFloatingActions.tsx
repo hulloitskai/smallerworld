@@ -51,8 +51,8 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
   const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
     useState(false);
 
-  // == New post draft
-  const newPostDraftType = useSavedDraftType({
+  // == Draft type
+  const draftType = useSavedDraftType({
     localStorageKey: spacePostDraftKey(space.id),
   });
 
@@ -89,7 +89,7 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                       size={16}
                       offset={4}
                       color="white"
-                      disabled={!newPostDraftType}
+                      disabled={!draftType}
                     >
                       <Button
                         id="new-post"
@@ -113,7 +113,7 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                             fz="md"
                           />
                         }
-                        {...(postType === newPostDraftType && {
+                        {...(postType === draftType && {
                           rightSection: (
                             <Box
                               component={DraftCircleIcon}
