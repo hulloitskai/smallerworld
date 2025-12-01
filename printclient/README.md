@@ -12,14 +12,17 @@ prints new posts to stdout.
 ```bash
 cd printclient
 npm install
-npm start -- <space-id>
+npm start -- --space <space-id>
+# or print a single post
+npm start -- --post <post-id>
 ```
 
 ### Example
 
 ```bash
-npm start -- abc123
-npm start -- abc123 --debug
+npm start -- --space abc123
+npm start -- --space abc123 --debug
+npm start -- --post def456
 ```
 
 ## How It Works

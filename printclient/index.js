@@ -23,12 +23,12 @@ const POLL_INTERVAL_MS = 1000;
 
 const cli = meow(
   `Usage
-    $ bin/printclient <space-id>
-
-  Arguments
-    space-id    The ID of the space to monitor
+    $ bin/printclient --space <space-id>
+    $ bin/printclient --post <post-id>
 
   Options
+    --space, -s        Space ID to monitor for new posts
+    --post             Post ID to print once
     --interval, -i     Polling interval in milliseconds (default: 1000)
     --printer, -p      Printer name to send PDFs to (e.g., Printer_POS_80)
     --localhost, -l    Use localhost:3000 instead of smallerworld.club
@@ -36,15 +36,27 @@ const cli = meow(
     --debug, -d        Enable debug logging
 
   Examples
-    $ bin/printclient abc123
-    $ bin/printclient abc123 --printer Printer_POS_80
-    $ bin/printclient abc123 --include-latest --localhost --debug
-    $ bin/printclient abc123 --interval 2000`,
+    # Watch a space for new posts
+    $ bin/printclient --space abc123
+    $ bin/printclient --space abc123 --printer Printer_POS_80
+    $ bin/printclient --space abc123 --include-latest --localhost --debug
+    $ bin/printclient --space abc123 --interval 2000
+
+    # Print a single post
+    $ bin/printclient --post def456
+    $ bin/printclient --post def456 --printer Printer_POS_80`,
   {
     importMeta: import.meta,
     autoHelp: true,
     autoVersion: true,
     flags: {
+      space: {
+        type: "string",
+        shortFlag: "s",
+      },
+      post: {
+        type: "string",
+      },
       interval: {
         type: "number",
         shortFlag: "i",
@@ -225,130 +237,171 @@ const printToSystemPrinter = async (
  * Main function
  */
 const main = async () => {
-  const [spaceId] = cli.input;
-  const { interval, printer, includeLatest } = cli.flags;
+  const {
+    interval,
+    printer,
+    includeLatest,
+    space: spaceFlag,
+    post: postId,
+  } = cli.flags;
 
-  if (!spaceId) {
-    cli.showHelp(1);
-  }
+  // Preserve legacy positional argument for space ID, but prefer the flag.
+  const spaceId = spaceFlag || cli.input[0];
 
-  const pollInterval = interval;
-  console.log(`Starting PrintClient for space: ${spaceId}`);
-  console.log(
-    `Polling ${BASE_URL}/spaces/${spaceId}/posts every ${pollInterval}ms`,
-  );
-  if (printer) {
-    console.log(`Printing to: ${printer}`);
-  }
-  console.log("---");
-
-  const seenPostIds = new Set();
-  let latestPostDate = null;
-
-  // Initial fetch to establish baseline
-  try {
-    const posts = await fetchPosts(spaceId);
-
-    for (const post of posts) {
-      seenPostIds.add(post.id);
-    }
-
-    // Track the latest post date (first post is newest)
-    if (posts.length > 0) {
-      latestPostDate = new Date(posts[0].created_at);
-      debug(`Latest post date: ${latestPostDate.toISOString()}`);
-
-      // Optionally print the latest post
-      if (includeLatest) {
-        const latestPost = posts[0];
-        console.log(formatPost(latestPost));
-        const {
-          path: pdfPath,
-          width,
-          height,
-        } = await printPostToPdf(latestPost);
-        if (printer) {
-          await printToSystemPrinter(pdfPath, printer, width, height);
-        }
-      }
-    }
-
-    console.log(
-      `Initial sync complete. Tracking ${seenPostIds.size} existing posts.`,
-    );
-    console.log("Watching for new posts...");
-    console.log("---");
-  } catch (error) {
-    console.error(`Error during initial fetch: ${error.message}`);
+  if (spaceId && postId) {
+    console.error("Choose either --space or --post, not both.");
     process.exit(1);
   }
 
-  // Start polling
-  let pollCount = 0;
-  const poll = setInterval(async () => {
-    pollCount++;
-    debug(`Poll #${pollCount}, seen ${seenPostIds.size} posts`);
+  if (!spaceId && !postId) {
+    cli.showHelp(1);
+  }
+
+  if (postId && includeLatest) {
+    console.warn("--include-latest is ignored when using --post");
+  }
+
+  const pollInterval = interval;
+  if (postId) {
+    console.log(`Printing post: ${postId}`);
+    if (printer) {
+      console.log(`Printing to: ${printer}`);
+    }
+    try {
+      const {
+        path: pdfPath,
+        width,
+        height,
+      } = await printPostToPdf({ id: postId });
+      if (printer) {
+        await printToSystemPrinter(pdfPath, printer, width, height);
+      }
+      console.log("Done.");
+    } catch (error) {
+      console.error(`Error printing post: ${error.message}`);
+      process.exit(1);
+    }
+    return;
+  }
+
+  if (spaceId) {
+    console.log(`Starting PrintClient for space: ${spaceId}`);
+    console.log(
+      `Polling ${BASE_URL}/spaces/${spaceId}/posts every ${pollInterval}ms`,
+    );
+    if (printer) {
+      console.log(`Printing to: ${printer}`);
+    }
+    console.log("---");
+
+    const seenPostIds = new Set();
+    let latestPostDate = null;
+
+    // Initial fetch to establish baseline
     try {
       const posts = await fetchPosts(spaceId);
 
-      if (posts.length === 0) {
-        debug(`No posts returned`);
-        return;
-      }
-
-      // Find posts we haven't seen before AND are newer than latest seen date
-      const newPosts = posts.filter(post => {
-        if (seenPostIds.has(post.id)) {
-          return false;
-        }
-        // Only include posts newer than the latest post date we've seen
-        if (latestPostDate) {
-          const postDate = new Date(post.created_at);
-          return postDate > latestPostDate;
-        }
-        return true;
-      });
-
-      // Mark as seen IMMEDIATELY to prevent duplicates from overlapping polls
-      // (PDF generation is slow, polls happen every second)
-      for (const post of newPosts) {
+      for (const post of posts) {
         seenPostIds.add(post.id);
-        // Update latest post date if this is newer
-        const postDate = new Date(post.created_at);
-        if (!latestPostDate || postDate > latestPostDate) {
-          latestPostDate = postDate;
-          debug(`Updated latest post date: ${latestPostDate.toISOString()}`);
-        }
       }
 
-      debug(`Found ${newPosts.length} new posts`);
+      // Track the latest post date (first post is newest)
+      if (posts.length > 0) {
+        latestPostDate = new Date(posts[0].created_at);
+        debug(`Latest post date: ${latestPostDate.toISOString()}`);
 
-      // Print new posts in chronological order (oldest first)
-      if (newPosts.length > 0) {
-        newPosts.reverse();
-        for (const post of newPosts) {
-          console.log(formatPost(post));
-          const { path: pdfPath, width, height } = await printPostToPdf(post);
+        // Optionally print the latest post
+        if (includeLatest) {
+          const latestPost = posts[0];
+          console.log(formatPost(latestPost));
+          const {
+            path: pdfPath,
+            width,
+            height,
+          } = await printPostToPdf(latestPost);
           if (printer) {
             await printToSystemPrinter(pdfPath, printer, width, height);
           }
         }
       }
+
+      console.log(
+        `Initial sync complete. Tracking ${seenPostIds.size} existing posts.`,
+      );
+      console.log("Watching for new posts...");
+      console.log("---");
     } catch (error) {
-      console.error(`Error polling: ${error.message}`);
-      // Don't exit, keep trying
+      console.error(`Error during initial fetch: ${error.message}`);
+      process.exit(1);
     }
-  }, pollInterval);
 
-  // Handle graceful shutdown
-  const shutdown = () => {
-    console.log("\nShutting down...");
-    clearInterval(poll);
-    process.exit(0);
-  };
+    // Start polling
+    let pollCount = 0;
+    const poll = setInterval(async () => {
+      pollCount++;
+      debug(`Poll #${pollCount}, seen ${seenPostIds.size} posts`);
+      try {
+        const posts = await fetchPosts(spaceId);
 
-  process.on("SIGINT", shutdown);
-  process.on("SIGTERM", shutdown);
+        if (posts.length === 0) {
+          debug(`No posts returned`);
+          return;
+        }
+
+        // Find posts we haven't seen before AND are newer than latest seen date
+        const newPosts = posts.filter(post => {
+          if (seenPostIds.has(post.id)) {
+            return false;
+          }
+          // Only include posts newer than the latest post date we've seen
+          if (latestPostDate) {
+            const postDate = new Date(post.created_at);
+            return postDate > latestPostDate;
+          }
+          return true;
+        });
+
+        // Mark as seen IMMEDIATELY to prevent duplicates from overlapping polls
+        // (PDF generation is slow, polls happen every second)
+        for (const post of newPosts) {
+          seenPostIds.add(post.id);
+          // Update latest post date if this is newer
+          const postDate = new Date(post.created_at);
+          if (!latestPostDate || postDate > latestPostDate) {
+            latestPostDate = postDate;
+            debug(`Updated latest post date: ${latestPostDate.toISOString()}`);
+          }
+        }
+
+        debug(`Found ${newPosts.length} new posts`);
+
+        // Print new posts in chronological order (oldest first)
+        if (newPosts.length > 0) {
+          newPosts.reverse();
+          for (const post of newPosts) {
+            console.log(formatPost(post));
+            const { path: pdfPath, width, height } = await printPostToPdf(post);
+            if (printer) {
+              await printToSystemPrinter(pdfPath, printer, width, height);
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`Error polling: ${error.message}`);
+        // Don't exit, keep trying
+      }
+    }, pollInterval);
+
+    // Handle graceful shutdown
+    const shutdown = () => {
+      console.log("\nShutting down...");
+      clearInterval(poll);
+      process.exit(0);
+    };
+
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
+  }
 };
 
 main();
