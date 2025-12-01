@@ -207,7 +207,7 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
                 openModal({
                   modalId,
                   title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
-                  size: "var(--containjer-size-xs)",
+                  size: "var(--container-size-xs)",
                   children: (
                     <WorldPostForm
                       worldId={world.id}
