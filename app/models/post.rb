@@ -414,7 +414,6 @@ class Post < ApplicationRecord
 
     delay = NOTIFICATION_DELAY if previously_new_record?
     friends = friends_to_notify
-    notified_friend_ids = T.let([], T::Array[String])
     friends
       .notifiable
       .where.not(
@@ -422,36 +421,38 @@ class Post < ApplicationRecord
           .where(recipient_type: "Friend")
           .select(:recipient_id),
       )
-      .select(:id).find_each do |friend|
+      .select(:id)
+      .find_each do |friend|
         notifications.create!(recipient: friend, push_delay: delay)
-        notified_friend_ids << friend.id
       end
     friends
       .text_only
       .where.not(id: text_blasts.select(:friend_id))
+      .select(:id)
       .find_each do |friend|
         text_blasts.create!(friend:, send_delay: delay)
-        notified_friend_ids << friend.id
       end
     if visibility == :public
       if (space = self.space)
-        space.members.where.not(id: author_id).find_each do |user|
+        space.members.where.not(id: author_id).select(:id).find_each do |user|
           notifications.create!(recipient: user, push_delay: delay)
         end
       else
         User
           .subscribed_to_public_posts
-          .joins(:world)
-          .where.not(world: {
-            id: Friend
-              .where(id: notified_friend_ids)
-              .select("DISTINCT world_id"),
-          })
+          .where.not(id: author_id) # explicit safety check
           .where.not(
-            id: notifications
-              .where(recipient_type: "User")
-              .select(:recipient_id),
+            phone_number: Friend
+              .where(id: notifications.to_friends.select(:recipient_id))
+              .select(:phone_number),
           )
+          .where.not(
+            phone_number: Friend
+              .where(id: text_blasts.select(:friend_id))
+              .select(:phone_number),
+          )
+          .where.not(id: notifications.to_users.select(:recipient_id))
+          .select(:id)
           .find_each do |user|
             notifications.create!(recipient: user, push_delay: delay)
           end
