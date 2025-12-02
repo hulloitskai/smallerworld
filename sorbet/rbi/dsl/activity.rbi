@@ -595,10 +595,10 @@ class Activity
     sig { void }
     def created_at_will_change!; end
 
-    sig { returns(::String) }
+    sig { returns(T.nilable(::String)) }
     def deprecated_user_id; end
 
-    sig { params(value: ::String).returns(::String) }
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
     def deprecated_user_id=(value); end
 
     sig { returns(T::Boolean) }
@@ -613,10 +613,10 @@ class Activity
     sig { returns(T::Boolean) }
     def deprecated_user_id_came_from_user?; end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def deprecated_user_id_change; end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def deprecated_user_id_change_to_be_saved; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -625,7 +625,7 @@ class Activity
     sig { returns(T.nilable(::String)) }
     def deprecated_user_id_in_database; end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def deprecated_user_id_previous_change; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
@@ -949,7 +949,7 @@ class Activity
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_created_at?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
-    sig { returns(T.nilable([::String, ::String])) }
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_deprecated_user_id; end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }

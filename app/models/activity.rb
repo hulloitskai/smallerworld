@@ -13,7 +13,7 @@
 #  name               :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  deprecated_user_id :uuid             not null
+#  deprecated_user_id :uuid
 #  template_id        :string
 #  world_id           :uuid             not null
 #
