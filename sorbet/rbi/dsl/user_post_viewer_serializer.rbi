@@ -6,6 +6,6 @@
 
 
 class UserPostViewerSerializer
-  sig { returns(PostViewer) }
-  def post_viewer; end
+  sig { returns(UserPostViewer) }
+  def user_post_viewer; end
 end

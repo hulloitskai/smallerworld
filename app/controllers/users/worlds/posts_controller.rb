@@ -109,24 +109,22 @@ module Users::Worlds
               :reactor_id,
               Arel.sql("ARRAY_AGG(emoji ORDER BY created_at)"),
             )
-            .each_with_object({}) do |(reactor_type, reactor_id, emojis), memo|
-              memo[[reactor_type, reactor_id]] = emojis
+            .each_with_object({}) do |(reactor_type, reactor_id, emojis), hash|
+              hash[[reactor_type, reactor_id]] = emojis
             end
-          user_viewers = views.filter_map do |view|
-            next unless (viewer = view.viewer)
-
+          viewers = views.filter_map do |view|
             reaction_emojis = reactions_by_viewer.fetch(
               [view.viewer_type, view.viewer_id],
               [],
             )
             UserPostViewer.new(
-              viewer:,
+              viewer: view.viewer!,
               last_viewed_at: view.created_at,
               reaction_emojis:,
             )
           end
           render(json: {
-            viewers: UserPostViewerSerializer.many(user_viewers),
+            viewers: UserPostViewerSerializer.many(viewers),
           })
         end
       end
