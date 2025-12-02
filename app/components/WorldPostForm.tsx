@@ -60,7 +60,7 @@ import LazyPostEditor from "./LazyPostEditor";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./WorldPostForm.module.css";
-import "@mantine/dates/styles.layer.css";
+import "@mantine/dates/styles.css";
 
 export type WorldPostFormProps = { worldId: string } & (
   | {

@@ -36,7 +36,7 @@ import LazyPostEditor from "./LazyPostEditor";
 import LoginForm from "./LoginForm";
 
 import classes from "./SpacePostForm.module.css";
-import "@mantine/dates/styles.layer.css";
+import "@mantine/dates/styles.css";
 
 export type SpacePostFormProps = { spaceId: string } & (
   | {
