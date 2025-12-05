@@ -249,4 +249,10 @@
   top: var(--mantine-spacing-sm);
   z-index: 1;
   box-shadow: var(--mantine-shadow-lg);
+  transition: transform 100ms ease-in-out;
+  cursor: pointer;
+
+  @mixin hover {
+    transform: scale(1.02);
+  }
 }

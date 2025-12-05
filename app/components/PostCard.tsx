@@ -23,6 +23,8 @@ import {
 
 import AppLightbox from "./AppLightbox";
 import ImageStack from "./ImageStack";
+import { openNewSpacePostModal } from "./NewSpacePostModal";
+import { openNewWorldPostModal } from "./NewWorldPostModal";
 import QuotedPostCard from "./QuotedPostCard";
 
 import classes from "./PostCard.module.css";
@@ -94,6 +96,7 @@ const PostCard: FC<PostCardProps> = ({
   // == Spoiler
   const [expanded, setExpanded] = useState(forceExpanded);
 
+  const { prompt } = post;
   return (
     <Stack className={cn("PostCard", className)} gap={6} {...otherProps}>
       {post.encouragement && !hideEncouragement && (
@@ -105,13 +108,28 @@ const PostCard: FC<PostCardProps> = ({
           &ldquo;{post.encouragement.message}&rdquo;
         </Badge>
       )}
-      {post.prompt && (
+      {prompt && (
         <Card
           w={PROMPT_CARD_WIDTH}
           h={PROMPT_CARD_HEIGHT}
-          bg={post.prompt.deck.background_color}
-          c={post.prompt.deck.text_color}
+          bg={prompt.deck.background_color}
+          c={prompt.deck.text_color}
           className={classes.promptCard}
+          onClick={() => {
+            if (post.space_id) {
+              openNewSpacePostModal({
+                spaceId: post.space_id,
+                postType: "response",
+                prompt,
+              });
+            } else if (post.world_id) {
+              openNewWorldPostModal({
+                worldId: post.world_id,
+                postType: "response",
+                prompt,
+              });
+            }
+          }}
         >
           <Text
             size="xs"
@@ -121,10 +139,10 @@ const PostCard: FC<PostCardProps> = ({
             inline
             opacity={0.8}
           >
-            {post.prompt.deck.name}
+            {prompt.deck.name}
           </Text>
           <Text fw={600} ta="center" lh={1.2}>
-            {post.prompt.prompt}
+            {prompt.prompt}
           </Text>
           <Space h="xs" />
         </Card>

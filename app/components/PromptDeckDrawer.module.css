@@ -18,7 +18,7 @@
   gap: var(--mantine-spacing-xs);
   align-items: center;
   justify-content: center;
-  transition: opacity 100ms ease;
+  transition: opacity 100ms ease-in-out;
   text-align: center;
   box-shadow: var(--mantine-shadow-md);
   margin-bottom: var(--mantine-spacing-md);
