@@ -129,7 +129,6 @@ const NewWorldPostButton: FC<NewWorldPostButtonProps> = ({
       <PromptDeckDrawer
         opened={drawerOpened}
         onClose={() => {
-          alert("we just closed...");
           setDrawerOpened(false);
         }}
         onDeckSelect={deck => {
