@@ -1,0 +1,113 @@
+- id: f3a8b2c1-4d5e-6f7a-8b9c-0d1e2f3a4b5c
+  deck_id: invisible_strangers_curiosities
+  prompt: If your younger self saw you today, what would they think?
+- id: a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+  deck_id: invisible_strangers_curiosities
+  prompt: If you picked a different career what would it be?
+- id: 7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b
+  deck_id: invisible_strangers_curiosities
+  prompt:
+    If you could get a ticket to attend anything, what would you use it for?
+- id: 3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f
+  deck_id: invisible_strangers_curiosities
+  prompt: If you were a season which one would it be?
+- id: 9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d
+  deck_id: invisible_strangers_curiosities
+  prompt: What is one value that is important to you?
+- id: 5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b
+  deck_id: invisible_strangers_curiosities
+  prompt: If you had a theme song what would it be?
+- id: 1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f
+  deck_id: invisible_strangers_curiosities
+  prompt: What is a skill you have that surprises people?
+- id: 7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d
+  deck_id: invisible_strangers_curiosities
+  prompt: What fictional world would you want to live in?
+- id: 3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b
+  deck_id: invisible_strangers_curiosities
+  prompt: What character do you relate to?
+- id: 9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f
+  deck_id: invisible_strangers_stories
+  prompt:
+    When was a time in your life where you felt completely safe and cared for?
+- id: 5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d
+  deck_id: invisible_strangers_stories
+  prompt: What memory makes you laugh?
+- id: 1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b
+  deck_id: invisible_strangers_stories
+  prompt: What is a memorable interaction you have had with a stranger?
+- id: 7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f
+  deck_id: invisible_strangers_stories
+  prompt: What was your favourite project in school?
+- id: 3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d
+  deck_id: invisible_strangers_stories
+  prompt: What is something you learned recently that you find interesting?
+- id: 9e0f1a2b-3c4d-5e6f-7a8b-9c0d1e2f3a4b
+  deck_id: invisible_strangers_stories
+  prompt: What is an experience that altered your life?
+- id: 5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f
+  deck_id: invisible_strangers_stories
+  prompt: What has influenced your life?
+- id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+  deck_id: invisible_strangers_reflections
+  prompt: What is something you would change in your life?
+- id: 7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b
+  deck_id: invisible_strangers_reflections
+  prompt: What challenges do you think you will face next?
+- id: 3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f
+  deck_id: invisible_strangers_reflections
+  prompt: Why do you think it is hard to make friends?
+- id: 9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d
+  deck_id: invisible_strangers_reflections
+  prompt: What is a mistake you have made recently?
+- id: 5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b
+  deck_id: invisible_strangers_reflections
+  prompt: What is something you need more out of life?
+- id: 1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f
+  deck_id: invisible_strangers_reflections
+  prompt: What is a fear you have?
+- id: 7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d
+  deck_id: invisible_strangers_reflections
+  prompt: How has your life been different than what you imagined?
+- id: 3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b
+  deck_id: invisible_strangers_everyday_magic
+  prompt: How well do you know your neighbors?
+- id: 9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What makes you feel better?
+- id: 5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What time of day do you enjoy and why?
+- id: 1e2f3a4b-5c6d-7e8f-9a0b-1c2d3e4f5a6b
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What do you like to drink when you first wake up?
+- id: 7c8d9e0f-1a2b-3c4d-5e6f-7a8b9c0d1e2f
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What is your favourite flavour?
+- id: 3a4b5c6d-7e8f-9a0b-1c2d-3e4f5a6b7c8d
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What do you like to do on a rainy day?
+- id: 9e0f1a2b-3c4d-5e6f-7a8b-9c0d1e2f3a4b
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What do you enjoy about being out in the sun?
+- id: 5c6d7e8f-9a0b-1c2d-3e4f-5a6b7c8d9e0f
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What is your favourite day of the week and why?
+- id: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What is your comfort food of choice?
+- id: 7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What is a sound that you always liked and why?
+- id: 3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f
+  deck_id: invisible_strangers_everyday_magic
+  prompt: Where is a space you enjoy staying for a long time?
+- id: 9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What is your favourite phrase?
+- id: 5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What is a hobby you recently picked up?
+- id: 1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f
+  deck_id: invisible_strangers_everyday_magic
+  prompt: What is something you enjoy doing alone?

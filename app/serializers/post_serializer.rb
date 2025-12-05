@@ -26,4 +26,5 @@ class PostSerializer < ApplicationSerializer
   has_one :encouragement,
           serializer: PostEncouragementSerializer,
           nullable: true
+  has_one :prompt, serializer: PostPromptSerializer, nullable: true
 end

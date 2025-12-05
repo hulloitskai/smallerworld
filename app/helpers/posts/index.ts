@@ -37,7 +37,7 @@ export const worldPostDraftKey = (worldId: string) =>
 export const spacePostDraftKey = (spaceId: string) =>
   `${SPACE_POST_DRAFT_KEY_NAMESPACE}:${spaceId}`;
 
-export const POST_TYPES: PostType[] = [
+export const SELECTABLE_POST_TYPES: PostType[] = [
   "journal_entry",
   "poem",
   "invitation",
@@ -72,6 +72,7 @@ export const POST_TYPE_TO_ICON: Record<
   invitation: InvitationIcon,
   question: QuestionIcon,
   follow_up: FollowUpIcon,
+  response: ReplyIcon,
 };
 
 export const POST_VISIBILITY_TO_ICON: Record<
@@ -102,6 +103,7 @@ export const POST_BODY_PLACEHOLDERS: Record<PostType, string> = {
     "i'm going to https://lu.ma/2323 tonight! pls come out if you're free :)",
   question: "liberty village food recs??",
   follow_up: "um, actually...",
+  response: "",
 };
 
 export interface TrackPostSeenOptions {

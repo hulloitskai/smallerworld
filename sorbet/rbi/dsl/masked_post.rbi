@@ -1297,6 +1297,51 @@ class MaskedPost
     def pinned_until_will_change!; end
 
     sig { returns(T.nilable(::String)) }
+    def prompt_id; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def prompt_id=(value); end
+
+    sig { returns(T::Boolean) }
+    def prompt_id?; end
+
+    sig { returns(T.nilable(::String)) }
+    def prompt_id_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def prompt_id_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def prompt_id_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def prompt_id_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def prompt_id_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def prompt_id_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def prompt_id_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def prompt_id_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def prompt_id_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def prompt_id_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def prompt_id_was; end
+
+    sig { void }
+    def prompt_id_will_change!; end
+
+    sig { returns(T.nilable(::String)) }
     def quoted_post_id; end
 
     sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
@@ -1370,6 +1415,9 @@ class MaskedPost
 
     sig { void }
     def restore_pinned_until!; end
+
+    sig { void }
+    def restore_prompt_id!; end
 
     sig { void }
     def restore_quoted_post_id!; end
@@ -1457,6 +1505,12 @@ class MaskedPost
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_pinned_until?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_prompt_id; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_prompt_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_quoted_post_id; end
@@ -1856,6 +1910,9 @@ class MaskedPost
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_pinned_until?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_prompt_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_quoted_post_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end

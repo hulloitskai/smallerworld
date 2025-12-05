@@ -7,7 +7,6 @@ import {
   Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { type Initialize } from "@mantine/form";
 import { useLongPress, useMergedRef, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { difference, invertBy, map, sortBy, uniq } from "lodash-es";
@@ -47,6 +46,7 @@ import { mutateWorldTimeline } from "~/helpers/worlds";
 import {
   type Encouragement,
   type Post,
+  type PostPrompt,
   type PostType,
   type PostVisibility,
   type QuotedPost,
@@ -68,8 +68,8 @@ export type WorldPostFormProps = { worldId: string } & (
       onPostUpdated?: (post: Post) => void;
     }
   | {
-      worldId: string;
       newPostType: PostType;
+      prompt?: PostPrompt;
       encouragementId?: string;
       quotedPost?: Post;
       onPostCreated?: (post: Post) => void;
@@ -102,10 +102,13 @@ interface WorldPostFormSubmission {
     encouragement_id: string | null;
     spotify_track_id: string | null;
     quoted_post_id?: string | null;
+    prompt_id?: string | null;
   };
 }
 
 const IMAGE_INPUT_SIZE = 140;
+const PROMPT_CARD_WIDTH = 220;
+const PROMPT_CARD_HEIGHT = 140;
 
 const WorldPostForm: FC<WorldPostFormProps> = props => {
   const { worldId } = props;
@@ -113,15 +116,18 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
     postType: PostType,
     encouragementId: string | undefined,
     post: Post | null | undefined,
-    quotedPost: QuotedPost | null | undefined;
+    quotedPost: QuotedPost | null | undefined,
+    prompt: PostPrompt | null | undefined;
   if ("post" in props) {
     post = props.post;
     postType = post.type;
     encouragementId = post.encouragement?.id;
     quotedPost = post.quoted_post;
+    prompt = post.prompt;
   } else {
     newPostType = props.newPostType;
     postType = newPostType;
+    prompt = props.prompt;
   }
 
   const showTitleInput = useMemo(
@@ -158,12 +164,6 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
   // == Editor
   const editorRef = useRef<Editor | null>();
   const [editorMounted, setEditorMounted] = useState(false);
-  const updateEditor = useCallback((content: string): void => {
-    const editor = editorRef.current;
-    if (editor) {
-      editor.commands.setContent(content);
-    }
-  }, []);
 
   // == Viewport height
   const { height: viewportHeight } = useViewportSize();
@@ -209,17 +209,17 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
         : "",
     };
   }, [post, encouragement, subscribedFriends, audienceData]);
-  const reinitializeFormAndEditor = useCallback(
-    (
-      initialize: Initialize<WorldPostFormValues>,
-      initialValues: WorldPostFormValues,
-    ) => {
-      shouldRestoreDraftRef.current = false;
-      initialize(initialValues);
-      updateEditor(initialValues.body_html);
-    },
-    [updateEditor],
-  );
+  // const reinitializeFormAndEditor = useCallback(
+  //   (
+  //     initialize: Initialize<WorldPostFormValues>,
+  //     initialValues: WorldPostFormValues,
+  //   ) => {
+  //     shouldRestoreDraftRef.current = true;
+  //     initialize(initialValues);
+  //     updateEditor(initialValues.body_html);
+  //   },
+  //   [updateEditor],
+  // );
   const {
     setFieldValue,
     insertListItem,
@@ -232,10 +232,9 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
     setTouched,
     isDirty,
     isValid,
-    initialize,
+    getValues,
     isTouched,
     errors,
-    getInitialValues,
     watch,
   } = useForm<
     { post: Post },
@@ -333,6 +332,7 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
                   : null,
                 visibility,
                 encouragement_id,
+                prompt_id: prompt?.id ?? null,
                 friend_ids_to_notify: friendIdsToNotify,
                 ...(visibility === "secret"
                   ? {
@@ -365,11 +365,10 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
         saveDraftValues(values);
       }
     },
-    onSuccess: ({ post }, { initialize, getInitialValues }) => {
+    onSuccess: ({ post }) => {
       if ("post" in props) {
         void mutateRoute(routes.userWorldPosts.audience, { id: post.id });
       } else {
-        reinitializeFormAndEditor(initialize, getInitialValues());
         clearDraft();
         void mutateRoute(routes.userWorldEncouragements.index);
       }
@@ -392,29 +391,19 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
   watch("spotify_track_url", ({ value }) => {
     setShowSpotifyInput(!!value);
   });
-  useDidUpdate(() => {
-    if (isEqual(initialValues, getInitialValues())) {
-      return;
-    }
-    reinitializeFormAndEditor(initialize, initialValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues]);
 
   // == Draft restoration
   const shouldRestoreDraftRef = useRef(true);
-  const restoreDraftOnce = useCallback(() => {
-    if (!post && draftValues && shouldRestoreDraftRef.current) {
-      setValues(draftValues);
-      shouldRestoreDraftRef.current = false;
-      return draftValues;
-    }
-  }, [post, draftValues, setValues]);
   useDidUpdate(() => {
-    const draftValues = restoreDraftOnce();
-    if (draftValues) {
-      updateEditor(draftValues.body_html);
+    if (draftValues && shouldRestoreDraftRef.current) {
+      shouldRestoreDraftRef.current = false;
+      setValues(draftValues);
+      const editor = editorRef.current;
+      if (editor) {
+        editor.commands.setContent(draftValues.body_html);
+      }
     }
-  }, [restoreDraftOnce, updateEditor]);
+  }, [draftValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Update friend notifiability when visibility changes
   watch("visibility", ({ value, previousValue }) => {
@@ -542,6 +531,23 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
             )}
           </Transition>
         )}
+        {prompt && (
+          <Card
+            w={PROMPT_CARD_WIDTH}
+            h={PROMPT_CARD_HEIGHT}
+            bg={prompt.deck.background_color}
+            c={prompt.deck.text_color}
+            className={classes.promptCard}
+          >
+            <Text size="xs" ff="heading" ta="center" inline opacity={0.8}>
+              {prompt.deck.name}
+            </Text>
+            <Text fw="bold" ta="center" lh={1.2}>
+              {prompt.prompt}
+            </Text>
+            <Space h="xs" />
+          </Card>
+        )}
         <Group gap={6} align="start" justify="center">
           {!showTitleInput && emojiInput}
           <Stack ref={formStackRef} gap="xs" style={{ flexGrow: 1 }}>
@@ -578,12 +584,12 @@ const WorldPostForm: FC<WorldPostFormProps> = props => {
                 }}
                 onEditorCreated={editor => {
                   editorRef.current = editor;
+                  const values = getValues();
+                  editor.commands.setContent(values.body_html);
                   setEditorMounted(true);
                 }}
                 onChange={value => {
-                  startTransition(() => {
-                    setFieldValue("body_html", value);
-                  });
+                  setFieldValue("body_html", value);
                 }}
               />
             </Input.Wrapper>

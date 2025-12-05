@@ -1,0 +1,70 @@
+.menuDropdown {
+  pointer-events: auto;
+
+  @mixin dark-world-theme {
+    background-color: alpha(var(--mantine-color-black), 0.7);
+    backdrop-filter: blur(rem(4px));
+  }
+}
+
+.menuItemSection {
+  color: var(--mantine-color-primary-outline);
+}
+
+.menuItemLabel {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 500;
+}
+
+.menuItemDraftIcon {
+  font-size: var(--mantine-font-size-md);
+  color: light-dark(
+    var(--mantine-color-primary-filled),
+    var(--mantine-color-white)
+  );
+}
+
+.menuButton {
+  pointer-events: auto;
+  box-shadow: var(--mantine-shadow-lg);
+
+  &[data-expanded] {
+    background-color: var(--mantine-color-primary-filled-hover);
+  }
+}
+
+.newPostDraftIndicator {
+  :global(.mantine-Indicator-indicator) {
+    min-height: var(--indicator-size);
+    padding-inline: 0px;
+    font-size: 12px;
+    color: var(--mantine-color-primary-filled);
+    box-shadow: var(--mantine-shadow-sm);
+  }
+}
+
+.promptButtonContainer {
+  position: absolute;
+  top: -52px;
+  left: 0;
+  right: 0;
+}
+
+.promptButton {
+  margin-inline: auto;
+  border-radius: var(--mantine-radius-xl);
+
+  box-shadow: 0px 0px var(--mantine-spacing-md) 0px
+    alpha(var(--mantine-color-primary-filled), 0.4);
+
+  @mixin dark-world-theme {
+    box-shadow: 0px 0px var(--mantine-spacing-md) 0px
+      alpha(var(--mantine-color-primary-outline), 0.7);
+  }
+
+  :global(.mantine-Button-section)[data-position="left"] {
+    @mixin emoji;
+
+    font-size: var(--mantine-font-size-xl);
+  }
+}

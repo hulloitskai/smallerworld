@@ -148,6 +148,12 @@ module GeneratedUrlHelpersModule
   def print_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def prompt_deck_prompts_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def prompt_decks_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

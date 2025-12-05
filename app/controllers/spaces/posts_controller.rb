@@ -77,6 +77,7 @@ module Spaces
             :emoji,
             :pinned_until,
             :spotify_track_id,
+            :prompt_id,
             images: [],
           ])
           post = space.posts.build(

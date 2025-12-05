@@ -87,9 +87,7 @@ const ActivityCouponDrawer: FC<ActivityCouponDrawerProps> = ({
         slideSize={ACTIVITY_CARD_WIDTH}
         slideGap="md"
         plugins={[wheelGesturesPlugin]}
-        emblaOptions={{
-          align: "center",
-        }}
+        emblaOptions={{ align: "center" }}
       >
         {activitiesAndTemplates.map(activityOrTemplate => (
           <Carousel.Slide key={activityOrTemplate.id}>

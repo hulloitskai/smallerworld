@@ -68,3 +68,12 @@
     min-height: 144px;
   }
 }
+
+.promptCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-lg);
+  margin-inline: auto;
+}

@@ -73,7 +73,9 @@ const EditFriendForm: FC<EditFriendFormProps> = ({
                 }}
               >
                 {values.emoji ? (
-                  <Box className={classes.emoji}>{values.emoji}</Box>
+                  <Box className="emoji" fz="lg">
+                    {values.emoji}
+                  </Box>
                 ) : (
                   <Box component={EmojiIcon} c="dimmed" />
                 )}

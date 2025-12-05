@@ -37,6 +37,7 @@ class PostView < ApplicationRecord
 
   # == Validations ==
 
+  validates :viewer_type, inclusion: { in: %w[User Friend] }
   validates :post, uniqueness: { scope: :viewer }
 
   # == Scopes ==

@@ -54,7 +54,7 @@ export const InstallModalBody: FC<InstallModalBodyProps> = ({
         label={
           <>
             installation instructions{" "}
-            <span className={classes.emoji} style={{ marginLeft: rem(2) }}>
+            <span className="emoji" style={{ marginLeft: rem(2) }}>
               ⤵️
             </span>
           </>

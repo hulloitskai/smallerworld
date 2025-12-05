@@ -9,7 +9,7 @@ import ResumeIcon from "~icons/heroicons/play-20-solid";
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 
 import { prettyFriendName } from "~/helpers/friends";
-import { type Activity, type UserWorldFriendProfile } from "~/types";
+import { /* type Activity, */ type UserWorldFriendProfile } from "~/types";
 
 import ActivityCouponDrawer from "./ActivityCouponDrawer";
 import EditFriendForm from "./EditFriendForm";
@@ -18,29 +18,29 @@ import WorldFriendInviteDrawer from "./WorldFriendInviteDrawer";
 import classes from "./UserWorldFriendCard.module.css";
 
 export interface UserWorldFriendCardProps {
-  activitiesById: Record<string, Activity>;
+  // activitiesById: Record<string, Activity>;
   friend: UserWorldFriendProfile;
 }
 
 const UserWorldFriendCard: FC<UserWorldFriendCardProps> = ({
-  activitiesById,
+  // activitiesById,
   friend,
 }) => {
   const [menuOpened, setMenuOpened] = useState(false);
   const [activitiesDrawerOpened, setActivitiesDrawerOpened] = useState(false);
   const [inviteDrawerOpened, setInviteDrawerOpened] = useState(false);
 
-  // == Offered activities
-  const offeredActivities = useMemo(() => {
-    const activities: Activity[] = [];
-    friend.active_activity_coupons.forEach(coupon => {
-      const activity = activitiesById[coupon.activity_id];
-      if (activity) {
-        activities.push(activity);
-      }
-    });
-    return activities;
-  }, [activitiesById, friend.active_activity_coupons]);
+  // // == Offered activities
+  // const offeredActivities = useMemo(() => {
+  //   const activities: Activity[] = [];
+  //   friend.active_activity_coupons.forEach(coupon => {
+  //     const activity = activitiesById[coupon.activity_id];
+  //     if (activity) {
+  //       activities.push(activity);
+  //     }
+  //   });
+  //   return activities;
+  // }, [activitiesById, friend.active_activity_coupons]);
 
   // == Remove friend
   const { trigger: deleteFriend, mutating: deletingFriend } = useRouteMutation(
@@ -63,7 +63,9 @@ const UserWorldFriendCard: FC<UserWorldFriendCardProps> = ({
         <Group gap={6} justify="space-between" className={classes.group}>
           <Group gap={8} miw={0} style={{ flexGrow: 1 }}>
             {!!friend.emoji && (
-              <Box className={classes.emoji}>{friend.emoji}</Box>
+              <Box className="emoji" fz="md">
+                {friend.emoji}
+              </Box>
             )}
             <Text ff="heading" fw={600}>
               {friend.name}
@@ -207,7 +209,7 @@ const UserWorldFriendCard: FC<UserWorldFriendCardProps> = ({
             </Menu>
           </Group>
         </Group>
-        <Group gap={8} wrap="wrap">
+        {/* <Group gap={8} wrap="wrap">
           {offeredActivities.map(activity => (
             <Badge
               className={classes.activityBadge}
@@ -229,7 +231,7 @@ const UserWorldFriendCard: FC<UserWorldFriendCardProps> = ({
           >
             send a coupon
           </Button>
-        </Group>
+        </Group> */}
         <LoadingOverlay visible={deletingFriend} />
         {!friend.notifiable && (
           <Overlay

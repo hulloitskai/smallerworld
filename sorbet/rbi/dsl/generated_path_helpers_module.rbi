@@ -148,6 +148,12 @@ module GeneratedPathHelpersModule
   def print_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def prompt_deck_prompts_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def prompt_decks_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def public_key_push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

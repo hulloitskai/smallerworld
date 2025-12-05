@@ -36,7 +36,7 @@ const PostEditor: FC<PostEditorProps> = ({
   const vaulPortalTarget = useVaulPortalTarget();
 
   // == Editor
-  const htmlRef = useRef(initialValue);
+  // const htmlRef = useRef(initialValue);
   const [showUnlink, setShowUnlink] = useState(false);
   const editor = useEditor(
     {
@@ -55,16 +55,18 @@ const PostEditor: FC<PostEditorProps> = ({
       content: initialValue,
       autofocus: true,
       onCreate: ({ editor }) => {
+        console.info("Editor created");
         editor.commands.focus("end");
-        if (!!htmlRef.current && editor.getHTML() !== htmlRef.current) {
-          editor.commands.setContent(htmlRef.current);
-        }
+        // const html = htmlRef.current;
+        // if (!!html && editor.getHTML() !== html) {
+        //   editor.commands.setContent(html);
+        // }
         onEditorCreated?.(editor);
       },
       onUpdate: props => {
         const { editor } = props;
         const html = editor.getHTML();
-        htmlRef.current = html;
+        // htmlRef.current = html;
         onUpdate?.(props);
         onChange?.(html);
       },

@@ -48,6 +48,8 @@ export interface PostCardProps
 const IMAGE_MAX_WIDTH = 340;
 const IMAGE_MAX_HEIGHT = 280;
 const IMAGE_FLIP_BOUNDARY = 125;
+const PROMPT_CARD_WIDTH = 220;
+const PROMPT_CARD_HEIGHT = 140;
 
 const PostCard: FC<PostCardProps> = ({
   post,
@@ -102,6 +104,30 @@ const PostCard: FC<PostCardProps> = ({
         >
           &ldquo;{post.encouragement.message}&rdquo;
         </Badge>
+      )}
+      {post.prompt && (
+        <Card
+          w={PROMPT_CARD_WIDTH}
+          h={PROMPT_CARD_HEIGHT}
+          bg={post.prompt.deck.background_color}
+          c={post.prompt.deck.text_color}
+          className={classes.promptCard}
+        >
+          <Text
+            size="xs"
+            ff="heading"
+            ta="center"
+            fw={500}
+            inline
+            opacity={0.8}
+          >
+            {post.prompt.deck.name}
+          </Text>
+          <Text fw={600} ta="center" lh={1.2}>
+            {post.prompt.prompt}
+          </Text>
+          <Space h="xs" />
+        </Card>
       )}
       <Card
         ref={cardRef}

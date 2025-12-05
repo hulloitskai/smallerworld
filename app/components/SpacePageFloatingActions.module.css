@@ -88,3 +88,29 @@
     box-shadow: var(--mantine-shadow-sm);
   }
 }
+
+.promptButtonContainer {
+  position: absolute;
+  top: -52px;
+  left: 0;
+  right: 0;
+}
+
+.promptButton {
+  margin-inline: auto;
+  border-radius: var(--mantine-radius-xl);
+
+  box-shadow: 0px 0px var(--mantine-spacing-md) 0px
+    alpha(var(--mantine-color-primary-filled), 0.4);
+
+  @mixin dark-world-theme {
+    box-shadow: 0px 0px var(--mantine-spacing-md) 0px
+      alpha(var(--mantine-color-primary-outline), 0.7);
+  }
+
+  :global(.mantine-Button-section)[data-position="left"] {
+    @mixin emoji;
+
+    font-size: var(--mantine-font-size-xl);
+  }
+}

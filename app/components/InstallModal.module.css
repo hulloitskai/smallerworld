@@ -19,10 +19,6 @@
   max-width: 300px;
 }
 
-.emoji {
-  @mixin emoji;
-}
-
 .installButton {
   box-shadow: 0px 0px var(--mantine-spacing-sm) 0px
     alpha(var(--mantine-color-primary-filled), 0.4);

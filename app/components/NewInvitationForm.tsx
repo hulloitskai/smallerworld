@@ -1,20 +1,20 @@
-import { Carousel } from "@mantine/carousel";
-import { Text } from "@mantine/core";
-import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
+// import { Carousel } from "@mantine/carousel";
+// import { Text } from "@mantine/core";
+// import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { map } from "lodash-es";
 
 import QRCodeIcon from "~icons/heroicons/qr-code-20-solid";
 
-import { useUserWorldActivities } from "~/helpers/userWorld";
+// import { useUserWorldActivities } from "~/helpers/userWorld";
 import { type Activity, type Invitation, type JoinRequest } from "~/types";
 
-import ActivityCard from "./ActivityCard";
+// import ActivityCard from "./ActivityCard";
 import EmojiPopover from "./EmojiPopover";
 
 import classes from "./NewInvitationForm.module.css";
 import "@mantine/carousel/styles.layer.css";
 
-const ACTIVITY_CARD_WIDTH = 320;
+// const ACTIVITY_CARD_WIDTH = 320;
 
 export interface NewInvitationFormProps extends BoxProps {
   fromJoinRequest?: JoinRequest;
@@ -27,13 +27,13 @@ const NewInvitationForm: FC<NewInvitationFormProps> = ({
   className,
   ...otherProps
 }) => {
-  const [wheelGesturesPlugin] = useState(WheelGesturesPlugin);
+  // const [wheelGesturesPlugin] = useState(WheelGesturesPlugin);
 
-  // == Load activities
-  const [showActivities, setShowActivities] = useState(false);
-  const { activitiesAndTemplates } = useUserWorldActivities({
-    keepPreviousData: true,
-  });
+  // // == Load activities
+  // const [showActivities, setShowActivities] = useState(false);
+  // const { activitiesAndTemplates } = useUserWorldActivities({
+  //   keepPreviousData: true,
+  // });
 
   // == Form
   const initialValues = useMemo(
@@ -66,7 +66,7 @@ const NewInvitationForm: FC<NewInvitationFormProps> = ({
     }),
     onSuccess: ({ invitation }: { invitation: Invitation }, { resetDirty }) => {
       resetDirty();
-      setShowActivities(false);
+      // setShowActivities(false);
       void mutateRoute(routes.userWorldInvitations.index);
       void mutateRoute(routes.userWorldJoinRequests.index);
       onInvitationCreated?.(invitation);
@@ -105,7 +105,9 @@ const NewInvitationForm: FC<NewInvitationFormProps> = ({
                 mod={{ opened }}
               >
                 {values.invitee_emoji ? (
-                  <Box className={classes.emoji}>{values.invitee_emoji}</Box>
+                  <Box className="emoji" fz="lg">
+                    {values.invitee_emoji}
+                  </Box>
                 ) : (
                   <Box component={EmojiIcon} c="dimmed" />
                 )}
@@ -117,7 +119,7 @@ const NewInvitationForm: FC<NewInvitationFormProps> = ({
               {...getInputProps("invitee_name")}
               placeholder="friend's name"
             />
-            <Transition
+            {/* <Transition
               transition="pop"
               mounted={!isEmpty(values.offered_activities)}
             >
@@ -152,10 +154,10 @@ const NewInvitationForm: FC<NewInvitationFormProps> = ({
                   ))}
                 </Group>
               )}
-            </Transition>
+            </Transition> */}
           </Stack>
         </Group>
-        <Transition
+        {/* <Transition
           transition="pop"
           mounted={!isEmpty(activitiesAndTemplates) && !showActivities}
         >
@@ -239,7 +241,7 @@ const NewInvitationForm: FC<NewInvitationFormProps> = ({
               </Stack>
             )}
           </Transition>
-        )}
+        )} */}
         <Transition transition="pop" mounted={isDirty()}>
           {transitionStyle => (
             <Button

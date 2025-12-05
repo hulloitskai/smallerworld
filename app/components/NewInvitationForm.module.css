@@ -27,13 +27,7 @@
   }
 }
 
-.emoji {
-  @mixin emoji;
-
-  font-size: var(--mantine-font-size-xl);
-}
-
-.activitiesContainer {
+/* .activitiesContainer {
   margin-inline: calc(var(--mantine-spacing-md) * -1);
   background-color: light-dark(
     lighten(var(--mantine-color-body), 0.4),
@@ -74,4 +68,4 @@
   &[data-with-right-section] {
     padding-right: 1px;
   }
-}
+} */

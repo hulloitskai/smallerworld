@@ -16,9 +16,3 @@
     background-color: var(--mantine-color-default-hover);
   }
 }
-
-.emoji {
-  @mixin emoji;
-
-  font-size: var(--mantine-font-size-xl);
-}

@@ -59,9 +59,11 @@ const UserWorldInvitationCard: FC<UserWorldInvitationCardProps> = ({
           >
             <Group align="start" gap={8} style={{ flexGrow: 1 }}>
               {!!invitation.invitee_emoji && (
-                <Box className={classes.emoji}>{invitation.invitee_emoji}</Box>
+                <Box className="emoji" fz="md">
+                  {invitation.invitee_emoji}
+                </Box>
               )}
-              <Text ff="heading" fw={600} lh={1.2}>
+              <Text ff="heading" fw={600} inline>
                 {invitation.invitee_name}
               </Text>
             </Group>
