@@ -20,7 +20,8 @@ import {
 } from "~/types";
 
 import DrawerModal from "./DrawerModal";
-import WorldPostForm from "./WorldPostForm";
+import { openEditWorldPostModal } from "./EditWorldPostModal";
+import NewWorldPostForm from "./NewWorldPostForm";
 
 import postCardClasses from "./PostCard.module.css";
 import classes from "./WorldPostCardAuthorActions.module.css";
@@ -201,20 +202,9 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
             <Menu.Item
               leftSection={<EditIcon />}
               onClick={() => {
-                const modalId = randomId();
-                openModal({
-                  modalId,
-                  title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
-                  size: "var(--container-size-xs)",
-                  children: (
-                    <WorldPostForm
-                      worldId={world.id}
-                      {...{ post }}
-                      onPostUpdated={() => {
-                        closeModal(modalId);
-                      }}
-                    />
-                  ),
+                openEditWorldPostModal({
+                  worldId: world.id,
+                  post,
                 });
               }}
             >
@@ -287,9 +277,9 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
           setFollowUpModalDrawerOpened(false);
         }}
       >
-        <WorldPostForm
+        <NewWorldPostForm
           worldId={world.id}
-          newPostType="follow_up"
+          postType="follow_up"
           quotedPost={post}
           onPostCreated={() => {
             setFollowUpModalDrawerOpened(false);

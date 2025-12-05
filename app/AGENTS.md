@@ -17,7 +17,10 @@
 - Assert guaranteed array access with `arr[index]!` so TypeScript understands
   the invariant.
 - Check the auto-import definitions in `typings/generated/auto-imports.d.ts`
-  before adding manual imports.
+  before adding manual imports. Do NOT manually import symbols that are already
+  auto-imported (e.g., `useState`, `useMemo`, `useForm`, `isEmpty`, `keyBy`,
+  Mantine components like `Stack`, `Group`, `Button`, icons like `SaveIcon`,
+  `SendIcon`, etc.). These are globally available and do not need imports.
   - Prefer absolute aliases (e.g., `~/helpers/...`) over ancestor relative
     imports; only allow relative imports for direct siblings.
   - If you change `config/auto-import.ts`, regenerate typings via\

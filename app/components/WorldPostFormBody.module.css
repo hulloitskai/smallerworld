@@ -113,13 +113,6 @@
         background-color: var(--mantine-color-default-hover);
       }
     }
-
-    /* &[data-active] {
-      :global(.mantine-Accordion-label) {
-        transition: padding-block 0.2s ease-in-out;
-        padding-block: var(--mantine-spacing-sm);
-      }
-    } */
   }
 
   :global(.mantine-Accordion-icon) {

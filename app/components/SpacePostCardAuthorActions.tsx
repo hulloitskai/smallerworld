@@ -10,7 +10,7 @@ import { mutateRoute } from "~/helpers/routes/swr";
 import { mutateSpacePosts } from "~/helpers/spaces";
 import { type Post, type PostReaction, type Space } from "~/types";
 
-import SpacePostForm from "./SpacePostForm";
+import EditSpacePostForm from "./EditSpacePostForm";
 
 import postCardClasses from "./PostCard.module.css";
 import classes from "./WorldPostCardAuthorActions.module.css";
@@ -110,7 +110,7 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
                 title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
                 size: "var(--container-size-xs)",
                 children: (
-                  <SpacePostForm
+                  <EditSpacePostForm
                     spaceId={space.id}
                     {...{ post }}
                     onPostUpdated={() => {

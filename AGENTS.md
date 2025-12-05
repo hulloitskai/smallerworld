@@ -1,5 +1,3 @@
-# Cursor Rules
-
 ## Do
 
 - Use `mise exec -- …` for any Rails or Bundler command, and start scaffolding
@@ -42,8 +40,26 @@
 
 - Frontend, TypeScript, and Rails model conventions: `app/AGENTS.md`.
 - Supabase business-intelligence workflows: `docs/Business Intelligence.md`.
+- Core data model (User/Friend/World relationships):
+  `docs/Users vs Friends vs Worlds.md`.
 - Add nested `AGENTS.md` files in subdirectories that need overrides—the nearest
   file to the change takes precedence.
+
+## Documentation & Domain Knowledge
+
+When working on unfamiliar areas, **consult `docs/` before implementing**:
+
+- **Business intelligence / Supabase queries**: Read
+  `docs/Business Intelligence.md` for privacy guardrails, timezone handling,
+  query patterns, and exclusion rules.
+- **User relationships / notifications / permissions**: Read
+  `docs/Users vs Friends vs Worlds.md` to understand the federated World model
+  and avoid common pitfalls (e.g., linking Users ↔ Friends via `phone_number`,
+  not by comparing World ownership).
+- **Feature plans**: Check `docs/` for existing implementation plans that
+  capture requirements, architecture decisions, and lessons learned.
+
+If the docs contradict each other or seem stale, ask before proceeding.
 
 ## Generated Outputs
 

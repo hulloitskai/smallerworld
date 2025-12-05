@@ -3,10 +3,12 @@ import { type ModalSettings } from "node_modules/@mantine/modals/lib/context";
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { type Post, type PostPrompt, type PostType } from "~/types";
 
-import SpacePostForm, { type SpacePostFormProps } from "./SpacePostForm";
+import NewSpacePostForm, {
+  type NewSpacePostFormProps,
+} from "./NewSpacePostForm";
 
 export interface NewSpacePostModalProps
-  extends Pick<SpacePostFormProps, "spaceId">,
+  extends Pick<NewSpacePostFormProps, "spaceId">,
     Omit<ModalSettings, "children"> {
   postType: PostType;
   prompt?: PostPrompt;
@@ -27,9 +29,9 @@ export const openNewSpacePostModal = ({
     size: "var(--container-size-xs)",
     ...otherProps,
     children: (
-      <SpacePostForm
+      <NewSpacePostForm
         {...{ spaceId }}
-        newPostType={postType}
+        postType={postType}
         {...{ prompt }}
         onPostCreated={post => {
           closeModal(modalId);
