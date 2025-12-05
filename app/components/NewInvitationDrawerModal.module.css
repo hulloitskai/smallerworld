@@ -7,3 +7,12 @@
     filter: invert(1);
   }
 }
+
+.divider {
+  margin-top: 6px;
+  margin-inline: calc(var(--mantine-spacing-md) * -1);
+
+  @mixin light-world-theme {
+    border-color: alpha(var(--mantine-color-dimmed), 0.4);
+  }
+}

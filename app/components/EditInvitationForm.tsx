@@ -101,7 +101,9 @@ const EditInvitationForm: FC<EditInvitationFormProps> = ({
                 mod={{ opened }}
               >
                 {values.invitee_emoji ? (
-                  <Box className={classes.emoji}>{values.invitee_emoji}</Box>
+                  <Box className="emoji" fz="lg">
+                    {values.invitee_emoji}
+                  </Box>
                 ) : (
                   <Box component={EmojiIcon} c="dimmed" />
                 )}
@@ -113,7 +115,7 @@ const EditInvitationForm: FC<EditInvitationFormProps> = ({
               {...getInputProps("invitee_name")}
               placeholder="friend's name"
             />
-            <Transition
+            {/* <Transition
               transition="pop"
               mounted={!isEmpty(values.offered_activities)}
             >
@@ -148,7 +150,7 @@ const EditInvitationForm: FC<EditInvitationFormProps> = ({
                   ))}
                 </Group>
               )}
-            </Transition>
+            </Transition> */}
           </Stack>
         </Group>
         <Transition transition="pop" mounted={!invitation || isDirty()}>

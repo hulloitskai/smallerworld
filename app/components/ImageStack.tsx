@@ -1,4 +1,4 @@
-import { getRadius, type ImageProps } from "@mantine/core";
+import { getRadius, Image, type ImageProps } from "@mantine/core";
 import { motion, useMotionValue, useTransform } from "motion/react";
 import { type ComponentProps } from "react";
 
@@ -10,7 +10,7 @@ import AppLightbox from "./AppLightbox";
 import classes from "./ImageStack.module.css";
 
 export interface ImageStackProps
-  extends Omit<BoxProps, "h" | "w" | "mah" | "maw">,
+  extends Omit<BoxProps, "h" | "w" | "mah" | "maw" | "children">,
     Pick<
       StackImageProps,
       "maxHeight" | "maxWidth" | "flipBoundary" | "radius"
@@ -125,13 +125,15 @@ const StackImage: FC<StackImageProps> = ({
   const rotateY = useTransform(x, [-100, 100], [-60, 60]);
   const canDrag = totalImages > 1 && index === 0;
   const draggingRef = useRef(false);
+
   return (
-    <motion.img
+    <Image
+      component={motion.img}
       className={classes.image}
       src={image.src}
       {...(image.srcset && { srcSet: image.srcset })}
       {...clampedImageDimensions(image, maxWidth, maxHeight)}
-      {...(!canDrag && totalImages > 1 && { "data-blur": true })}
+      mod={{ blur: !canDrag && totalImages > 1 }}
       style={{
         borderRadius: radius ? getRadius(radius) : 0,
         x,

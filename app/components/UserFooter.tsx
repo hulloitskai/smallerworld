@@ -60,7 +60,7 @@ const UserFooter = forwardRef<HTMLDivElement, UserFooterProps>(
           value: "universe",
           label: (
             <NavItem
-              text="your universe"
+              text="universe"
               icon={<Image src={logoSrc} h={18} w="unset" />}
             />
           ),
@@ -74,7 +74,7 @@ const UserFooter = forwardRef<HTMLDivElement, UserFooterProps>(
           value: "spaces",
           label: (
             <NavItem
-              text="your spaces"
+              text="spaces"
               icon={<span className={classes.spaceEmoji}>🪐</span>}
             />
           ),

@@ -323,6 +323,12 @@ Rails.application.routes.draw do
     post :activate
   end
 
+  # == Prompt Decks ==
+
+  resources :prompt_decks, only: :index, export: true do
+    resources :prompts, only: :index
+  end
+
   # == Pages ==
 
   root "landing#show", export: true

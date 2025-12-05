@@ -10,19 +10,21 @@ import { NEKO_SIZE } from "~/helpers/neko";
 import {
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
-  POST_TYPES,
+  SELECTABLE_POST_TYPES,
   spacePostDraftKey,
 } from "~/helpers/posts";
 import { useSavedDraftType } from "~/helpers/posts/drafts";
 import { type SpacePageProps } from "~/pages/SpacePage";
-import { type SpacePost } from "~/types";
+import { type PromptDeck, type SpacePost } from "~/types";
 
 import DrawerModal from "./DrawerModal";
 import FeedbackNeko from "./FeedbackNeko";
+import { openNewSpacePostModal } from "./NewSpacePostModal";
 import PostCard from "./PostCard";
+import PromptDeckDrawer from "./PromptDeckDrawer";
+import PromptDeckModal from "./PromptDeckModal";
 import SpacePostCardAuthorActions from "./SpacePostCardAuthorActions";
 import SpacePostCardFriendActions from "./SpacePostCardFriendActions";
-import SpacePostForm from "./SpacePostForm";
 
 import classes from "./SpacePageFloatingActions.module.css";
 
@@ -51,6 +53,10 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
   const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
     useState(false);
 
+  const [menuOpened, setMenuOpened] = useState(false);
+  const [promptDeckDrawerOpened, setPromptDeckDrawerOpened] = useState(false);
+  const [selectedDeck, setSelectedDeck] = useState<PromptDeck | null>(null);
+
   // == Draft type
   const draftType = useSavedDraftType({
     localStorageKey: spacePostDraftKey(space.id),
@@ -76,6 +82,8 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                 <Menu
                   width={220}
                   shadow="sm"
+                  opened={menuOpened}
+                  onChange={setMenuOpened}
                   classNames={{
                     dropdown: classes.menuDropdown,
                     itemLabel: classes.menuItemLabel,
@@ -104,7 +112,7 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                     </Indicator>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {POST_TYPES.map(postType => (
+                    {SELECTABLE_POST_TYPES.map(postType => (
                       <Menu.Item
                         key={postType}
                         leftSection={
@@ -122,27 +130,30 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                           ),
                         })}
                         onClick={() => {
-                          const modalId = randomId();
-                          openModal({
-                            modalId,
-                            title: `new ${POST_TYPE_TO_LABEL[postType]}`,
-                            size: "var(--container-size-xs)",
-                            keepMounted: true,
-                            children: (
-                              <SpacePostForm
-                                spaceId={space.id}
-                                newPostType={postType}
-                                onPostCreated={() => {
-                                  closeModal(modalId);
-                                }}
-                              />
-                            ),
+                          openNewSpacePostModal({
+                            spaceId: space.id,
+                            postType,
                           });
                         }}
                       >
                         new {POST_TYPE_TO_LABEL[postType]}
                       </Menu.Item>
                     ))}
+                    <Center className={classes.promptButtonContainer}>
+                      <Button
+                        size="md"
+                        variant="gradient"
+                        gradient={{ from: "blue", to: "primary" }}
+                        leftSection="🃏"
+                        className={classes.promptButton}
+                        onClick={() => {
+                          setMenuOpened(false);
+                          setPromptDeckDrawerOpened(true);
+                        }}
+                      >
+                        answer a prompt
+                      </Button>
+                    </Center>
                   </Menu.Dropdown>
                 </Menu>
                 {currentUser && (
@@ -184,6 +195,36 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
           )}
         </Transition>
       </Affix>
+      <PromptDeckDrawer
+        opened={promptDeckDrawerOpened}
+        onClose={() => {
+          setPromptDeckDrawerOpened(false);
+        }}
+        onDeckSelect={deck => {
+          setPromptDeckDrawerOpened(false);
+          setTimeout(() => {
+            setSelectedDeck(deck);
+          }, 200);
+        }}
+      />
+      <PromptDeckModal
+        deck={selectedDeck}
+        onPromptSelected={prompt => {
+          const deck = selectedDeck;
+          setSelectedDeck(null);
+          if (deck) {
+            openNewSpacePostModal({
+              spaceId: space.id,
+              postType: "response",
+              prompt: { ...prompt, deck },
+              keepMounted: true,
+            });
+          }
+        }}
+        onClose={() => {
+          setSelectedDeck(null);
+        }}
+      />
       <DrawerModal
         title="pinned posts"
         opened={pinnedPostsDrawerModalOpened}

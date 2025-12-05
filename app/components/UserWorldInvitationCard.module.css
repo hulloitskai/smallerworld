@@ -4,11 +4,6 @@
   gap: 4px;
 }
 
-.emoji {
-  @mixin emoji;
-  font-size: var(--mantine-font-size-md);
-}
-
 .group {
   :global(.mantine-Button-section) {
     &[data-position="left"] {
@@ -24,12 +19,14 @@
 }
 
 .activityBadge {
+  --badge-radius: var(--mantine-radius-md);
+
   padding-inline: 4px;
   background-color: transparent;
-  --badge-radius: var(--mantine-radius-md);
 
   :global(.mantine-Badge-section)[data-position="left"] {
     @mixin emoji;
+
     font-size: var(--mantine-font-size-xs);
   }
 }

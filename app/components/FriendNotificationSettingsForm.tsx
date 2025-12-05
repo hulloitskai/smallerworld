@@ -10,7 +10,7 @@ import {
 import {
   POST_TYPE_TO_ICON,
   POST_TYPE_TO_LABEL,
-  POST_TYPES,
+  SELECTABLE_POST_TYPES,
 } from "~/helpers/posts";
 import { type Friend, type FriendNotificationSettings } from "~/types";
 
@@ -90,7 +90,7 @@ export const FriendNotificationSettingsFormInputs: FC<
     >
       <Chip.Group multiple {...getInputProps("subscribed_post_types")}>
         <Group justify="center" gap={6} wrap="wrap" maw={340} mx="auto">
-          {POST_TYPES.map(postType => (
+          {SELECTABLE_POST_TYPES.map(postType => (
             <Chip key={postType} value={postType} className={classes.chip}>
               <Box
                 component={POST_TYPE_TO_ICON[postType]}

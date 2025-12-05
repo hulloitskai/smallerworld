@@ -1,0 +1,41 @@
+.carousel {
+  margin-inline: calc(var(--mantine-spacing-md) * -1);
+
+  :global(.mantine-Carousel-viewport) {
+    padding-bottom: 4px;
+  }
+
+  :global(.mantine-Carousel-container) {
+    margin-inline: calc((100dvw - var(--carousel-slide-size)) / 2);
+  }
+}
+
+.card {
+  aspect-ratio: 2.5 / 3.5;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  align-items: center;
+  justify-content: center;
+  transition: opacity 100ms ease;
+  text-align: center;
+  box-shadow: var(--mantine-shadow-md);
+  margin-bottom: var(--mantine-spacing-md);
+
+  @mixin hover {
+    opacity: 0.8;
+  }
+}
+
+.deckName {
+  font-family: var(--mantine-font-family-headings);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.deckEdition {
+  font-weight: 500;
+  opacity: 0.8;
+  line-height: 1;
+}

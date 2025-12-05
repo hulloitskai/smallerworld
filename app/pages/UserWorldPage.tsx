@@ -163,7 +163,7 @@ const UserWorldPage: PageComponent<UserWorldPageProps> = ({
                           {latestFriendEmojis.map((emoji, index) => (
                             <Avatar key={index} size="sm">
                               {emoji ? (
-                                <Box className={classes.friendEmoji}>
+                                <Box className="emoji" fz="lg">
                                   {emoji}
                                 </Box>
                               ) : (

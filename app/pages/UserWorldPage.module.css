@@ -36,11 +36,6 @@
   );
 }
 
-.friendEmoji {
-  @mixin emoji;
-  font-size: var(--mantine-font-size-md);
-}
-
 .installInstructionsList {
   font-weight: 500;
   display: flex;

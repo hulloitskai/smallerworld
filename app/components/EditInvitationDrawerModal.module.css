@@ -1,4 +1,8 @@
-.stack {
-  /* min-height: calc(rem(414px) + var(--safe-area-inset-bottom, 0px)); */
-  padding-bottom: var(--mantine-spacing-md);
+.divider {
+  margin-top: 6px;
+  margin-inline: calc(var(--mantine-spacing-md) * -1);
+
+  @mixin light-world-theme {
+    border-color: alpha(var(--mantine-color-dimmed), 0.4);
+  }
 }

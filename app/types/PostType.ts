@@ -3,6 +3,7 @@ type PostType =
   | "poem"
   | "invitation"
   | "question"
-  | "follow_up";
+  | "follow_up"
+  | "response";
 
 export default PostType;

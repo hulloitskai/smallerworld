@@ -8,6 +8,8 @@ import EditInvitationForm from "./EditInvitationForm";
 import InvitationQRCode from "./InvitationQRCode";
 import SendInviteLinkButton from "./SendInviteLinkButton";
 
+import classes from "./EditInvitationDrawerModal.module.css";
+
 export interface EditInvitationDrawerModalProps
   extends Pick<DrawerModalProps, "opened" | "onClose"> {
   invitation: Invitation;
@@ -25,14 +27,14 @@ const EditInvitationDrawerModal: FC<EditInvitationDrawerModalProps> = ({
     {...{ opened }}
     {...otherProps}
   >
-    <Stack gap="lg">
+    <Stack>
       <EditInvitationForm {...{ invitation, opened, onInvitationUpdated }} />
-      <Divider variant="dashed" mx="calc(var(--mantine-spacing-md) * -1)" />
+      <Divider className={classes.divider} variant="dashed" />
       <Stack gap="lg" align="center">
         <Box ta="center">
-          <Title order={3} lh="xs">
+          <Text size="md" ff="heading">
             {invitation.invitee_name}&apos;s invite link
-          </Title>
+          </Text>
           <Text size="sm" c="dimmed" display="block">
             get your friend to scan this QR code,
             <br />

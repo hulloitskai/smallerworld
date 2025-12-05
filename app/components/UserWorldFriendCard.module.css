@@ -4,11 +4,6 @@
   gap: 4px;
 }
 
-.emoji {
-  @mixin emoji;
-  font-size: var(--mantine-font-size-md);
-}
-
 .group {
   :global(.mantine-Button-section) {
     &[data-position="left"] {
@@ -23,13 +18,14 @@
   }
 }
 
-.activityBadge {
+/* .activityBadge {
   padding-inline: 4px;
   background-color: transparent;
   --badge-radius: var(--mantine-radius-md);
 
   :global(.mantine-Badge-section)[data-position="left"] {
     @mixin emoji;
+
     font-size: var(--mantine-font-size-xs);
   }
 }
@@ -40,7 +36,7 @@
   :global(.mantine-Button-section)[data-position="left"] {
     margin-right: calc(var(--mantine-spacing-xs) / 2);
   }
-}
+} */
 
 .friendNotifiabilityEmoji {
   @mixin emoji;

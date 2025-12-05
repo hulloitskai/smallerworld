@@ -1,6 +1,5 @@
-import { Input, ScrollArea } from "@mantine/core";
+import { Input, ScrollArea, Space, Text } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { type Initialize } from "@mantine/form";
 import { useLongPress, useViewportSize } from "@mantine/hooks";
 import { type Editor } from "@tiptap/react";
 import { map } from "lodash-es";
@@ -28,7 +27,12 @@ import {
   validateSpotifyTrackUrl,
 } from "~/helpers/spotify";
 import { currentTimeZone } from "~/helpers/time";
-import { type Post, type PostType, type Upload } from "~/types";
+import {
+  type Post,
+  type PostPrompt,
+  type PostType,
+  type Upload,
+} from "~/types";
 
 import EmojiPopover from "./EmojiPopover";
 import ImageInput, { type ImageInputProps } from "./ImageInput";
@@ -45,6 +49,7 @@ export type SpacePostFormProps = { spaceId: string } & (
     }
   | {
       newPostType: PostType;
+      prompt?: PostPrompt;
       onPostCreated?: (post: Post) => void;
     }
 );
@@ -67,16 +72,29 @@ interface SpacePostFormSubmission {
     pinned_until: string | null;
     spotify_track_id: string | null;
     quoted_post_id?: string | null;
+    prompt_id?: string | null;
   };
 }
 
+const PROMPT_CARD_WIDTH = 220;
+const PROMPT_CARD_HEIGHT = 140;
 const IMAGE_INPUT_SIZE = 140;
 
 const SpacePostForm: FC<SpacePostFormProps> = props => {
   const { spaceId } = props;
-  const newPostType = "newPostType" in props ? props.newPostType : undefined;
-  const postType = "newPostType" in props ? props.newPostType : props.post.type;
-  const post = "post" in props ? props.post : null;
+  let newPostType: PostType | undefined,
+    postType: PostType,
+    post: Post | null | undefined,
+    prompt: PostPrompt | null | undefined;
+  if ("post" in props) {
+    post = props.post;
+    postType = post.type;
+    prompt = post.prompt;
+  } else {
+    newPostType = props.newPostType;
+    postType = newPostType;
+    prompt = props.prompt;
+  }
 
   const currentUser = useCurrentUser();
 
@@ -94,12 +112,6 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
   // == Editor
   const editorRef = useRef<Editor | null>();
   const [editorMounted, setEditorMounted] = useState(false);
-  const updateEditor = useCallback((content: string): void => {
-    const editor = editorRef.current;
-    if (editor) {
-      editor.commands.setContent(content);
-    }
-  }, []);
 
   // == Viewport height
   const { height: viewportHeight } = useViewportSize();
@@ -131,17 +143,6 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
         : "",
     };
   }, [post]);
-  const reinitializeFormAndEditor = useCallback(
-    (
-      initialize: Initialize<SpacePostFormValues>,
-      initialValues: SpacePostFormValues,
-    ) => {
-      shouldRestoreDraftRef.current = false;
-      initialize(initialValues);
-      updateEditor(initialValues.body_html);
-    },
-    [updateEditor],
-  );
   const {
     setFieldValue,
     insertListItem,
@@ -153,10 +154,9 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
     setValues,
     setTouched,
     isDirty,
-    initialize,
     isTouched,
     errors,
-    getInitialValues,
+    getValues,
     isValid,
     watch,
   } = useForm<
@@ -216,6 +216,7 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
               spotify_track_id: spotify_track_url
                 ? parseSpotifyTrackId(spotify_track_url)
                 : null,
+              prompt_id: prompt?.id ?? null,
             },
           }),
         }),
@@ -237,9 +238,8 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
         saveDraftValues(values);
       }
     },
-    onSuccess: ({ post }, { initialize, getInitialValues }) => {
+    onSuccess: ({ post }) => {
       if (!("post" in props)) {
-        reinitializeFormAndEditor(initialize, getInitialValues());
         clearDraft();
       }
       if ("onPostCreated" in props) {
@@ -258,29 +258,20 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
   watch("spotify_track_url", ({ value }) => {
     setShowSpotifyInput(!!value);
   });
-  useDidUpdate(() => {
-    if (isEqual(initialValues, getInitialValues())) {
-      return;
-    }
-    reinitializeFormAndEditor(initialize, initialValues);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues]);
 
   // == Draft restoration
   const shouldRestoreDraftRef = useRef(true);
-  const restoreDraftOnce = useCallback(() => {
-    if (!post && draftValues && shouldRestoreDraftRef.current) {
-      setValues(draftValues);
-      shouldRestoreDraftRef.current = false;
-      return draftValues;
-    }
-  }, [post, draftValues, setValues]);
   useDidUpdate(() => {
-    const draftValues = restoreDraftOnce();
-    if (draftValues) {
-      updateEditor(draftValues.body_html);
+    if (draftValues && shouldRestoreDraftRef.current) {
+      shouldRestoreDraftRef.current = false;
+      console.info("Restoring draft values", draftValues.body_html);
+      setValues(draftValues);
+      const editor = editorRef.current;
+      if (editor) {
+        editor.commands.setContent(draftValues.body_html);
+      }
     }
-  }, [restoreDraftOnce, updateEditor]);
+  }, [draftValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // == Pinned until
   const vaulPortalTarget = useVaulPortalTarget();
@@ -335,6 +326,23 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
   return (
     <form onSubmit={submit}>
       <Stack>
+        {prompt && (
+          <Card
+            w={PROMPT_CARD_WIDTH}
+            h={PROMPT_CARD_HEIGHT}
+            bg={prompt.deck.background_color}
+            c={prompt.deck.text_color}
+            className={classes.promptCard}
+          >
+            <Text size="xs" ff="heading" ta="center" inline opacity={0.8}>
+              {prompt.deck.name}
+            </Text>
+            <Text fw="bold" ta="center" lh={1.2}>
+              {prompt.prompt}
+            </Text>
+            <Space h="xs" />
+          </Card>
+        )}
         <Group gap={6} align="start" justify="center">
           {!showTitleInput && emojiInput}
           <Stack
@@ -375,6 +383,8 @@ const SpacePostForm: FC<SpacePostFormProps> = props => {
                 }}
                 onEditorCreated={editor => {
                   editorRef.current = editor;
+                  const values = getValues();
+                  editor.commands.setContent(values.body_html);
                   setEditorMounted(true);
                 }}
                 onChange={value => {

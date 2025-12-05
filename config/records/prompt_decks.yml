@@ -1,0 +1,20 @@
+- id: invisible_strangers_curiosities
+  name: Invisible Strangers
+  edition: Curiosities
+  text_color: "#FFFFFF"
+  background_color: "#0196B2"
+- id: invisible_strangers_stories
+  name: Invisible Strangers
+  edition: Stories
+  text_color: "#F7A21D"
+  background_color: "#373737"
+- id: invisible_strangers_reflections
+  name: Invisible Strangers
+  edition: Reflections
+  text_color: "#FFFFFF"
+  background_color: "#39A46E"
+- id: invisible_strangers_everyday_magic
+  name: Invisible Strangers
+  edition: Everyday Magic
+  text_color: "#FFFFFF"
+  background_color: "#E17D3F"

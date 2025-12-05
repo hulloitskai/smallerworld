@@ -1,27 +1,17 @@
 import { Affix, HoverCard, Indicator, Text } from "@mantine/core";
 import { useModals } from "@mantine/modals";
 
-import DraftIcon from "~icons/heroicons/ellipsis-horizontal-20-solid";
-import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-solid";
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
-import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
-import { openNewWorldPostModal } from "~/components/NewWorldPostModal";
 import { prettyFriendName } from "~/helpers/friends";
 import { NEKO_SIZE } from "~/helpers/neko";
-import {
-  POST_TYPE_TO_ICON,
-  POST_TYPE_TO_LABEL,
-  POST_TYPES,
-  worldPostDraftKey,
-} from "~/helpers/posts";
-import { useSavedDraftType } from "~/helpers/posts/drafts";
 import { useWebPush } from "~/helpers/webPush";
 import { type UserWorldPageProps } from "~/pages/UserWorldPage";
 import { type Encouragement, type Post } from "~/types";
 
 import DrawerModal from "./DrawerModal";
 import FeedbackNeko from "./FeedbackNeko";
+import NewWorldPostButton from "./NewWorldPostButton";
 import PostCard from "./PostCard";
 import WorldPostCardAuthorActions from "./WorldPostCardAuthorActions";
 
@@ -60,11 +50,6 @@ const UserWorldPageFloatingActions: FC<
   // == Pinned posts drawer modal
   const [pinnedPostsDrawerModalOpened, setPinnedPostsDrawerModalOpened] =
     useState(false);
-
-  // == New post draft
-  const newPostDraftType = useSavedDraftType({
-    localStorageKey: worldPostDraftKey(world.id),
-  });
 
   const actionsVisible =
     (isStandalone === false ||
@@ -123,72 +108,15 @@ const UserWorldPageFloatingActions: FC<
                 </Center>
               )}
               <Box pos="relative">
-                <Menu
-                  width={220}
-                  shadow="sm"
-                  classNames={{
-                    dropdown: classes.menuDropdown,
-                    itemLabel: classes.menuItemLabel,
-                    itemSection: classes.menuItemSection,
+                <NewWorldPostButton
+                  worldId={world.id}
+                  encouragementId={latestEncouragement?.id}
+                  onPostCreated={() => {
+                    router.reload({
+                      only: ["hasAtLeastOneUserCreatedPost"],
+                    });
                   }}
-                >
-                  <Menu.Target>
-                    <Indicator
-                      className={classes.newPostDraftIndicator}
-                      label={<DraftIcon />}
-                      size={16}
-                      offset={4}
-                      color="white"
-                      disabled={!newPostDraftType}
-                    >
-                      <Button
-                        id="new-post"
-                        size="md"
-                        variant="filled"
-                        radius="xl"
-                        className={classes.menuButton}
-                        leftSection={<Box component={NewIcon} fz="lg" />}
-                      >
-                        new post
-                      </Button>
-                    </Indicator>
-                  </Menu.Target>
-                  <Menu.Dropdown>
-                    {POST_TYPES.map(postType => (
-                      <Menu.Item
-                        key={postType}
-                        leftSection={
-                          <Box
-                            component={POST_TYPE_TO_ICON[postType]}
-                            fz="md"
-                          />
-                        }
-                        {...(postType === newPostDraftType && {
-                          rightSection: (
-                            <Box
-                              component={DraftCircleIcon}
-                              className={classes.menuItemDraftIcon}
-                            />
-                          ),
-                        })}
-                        onClick={() => {
-                          openNewWorldPostModal({
-                            worldId: world.id,
-                            postType,
-                            encouragementId: latestEncouragement?.id,
-                            onPostCreated: () => {
-                              router.reload({
-                                only: ["hasAtLeastOneUserCreatedPost"],
-                              });
-                            },
-                          });
-                        }}
-                      >
-                        new {POST_TYPE_TO_LABEL[postType]}
-                      </Menu.Item>
-                    ))}
-                  </Menu.Dropdown>
-                </Menu>
+                />
                 {!world.hide_neko && (
                   <FeedbackNeko
                     pos="absolute"

@@ -8,3 +8,7 @@
     Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif;
   --font-family-cute: Single Day, Manrope, cursive;
 }
+
+.emoji {
+  @mixin emoji;
+}

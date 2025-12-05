@@ -7,6 +7,7 @@ import HeartIcon from "~icons/heroicons/heart-20-solid";
 import FeedbackIcon from "~icons/heroicons/megaphone-20-solid";
 
 import { useContact } from "~/helpers/contact";
+import { usePageDialogOpened } from "~/helpers/pageDialog";
 import { readingTimeFor } from "~/helpers/utils";
 
 import SleepyNeko, { type SleepyNekoProps } from "./SleepyNeko";
@@ -22,6 +23,7 @@ const SUPPORTER_LINES = [
 ];
 
 const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
+  const pageDialogOpened = usePageDialogOpened();
   const { modals } = useModals();
   const [index, setIndex] = useState(-1);
   const currentUser = useCurrentUser();
@@ -50,7 +52,7 @@ const FeedbackNeko: FC<FeedbackNekoProps> = ({ style, ...otherProps }) => {
     <Tooltip
       label={line}
       opened={!!line}
-      disabled={!line || !isEmpty(modals)}
+      disabled={!line || !isEmpty(modals) || pageDialogOpened}
       className={classes.tooltip}
     >
       <SleepyNeko

@@ -4,7 +4,7 @@ import {
   useFriendNotificationSettings,
   useFriendNotificationSettingsForm,
 } from "~/helpers/friends";
-import { POST_TYPES } from "~/helpers/posts";
+import { SELECTABLE_POST_TYPES } from "~/helpers/posts";
 import { useSendTestNotification, useWebPush } from "~/helpers/webPush";
 import { type Friend, type FriendNotificationSettings } from "~/types";
 
@@ -43,7 +43,7 @@ const WorldPageNotificationsButtonCard: FC<
 
   // == Notification settings form
   const [defaultNotificationSettings] = useState<FriendNotificationSettings>(
-    () => ({ subscribed_post_types: POST_TYPES }),
+    () => ({ subscribed_post_types: SELECTABLE_POST_TYPES }),
   );
   const notificationSettingsForm = useFriendNotificationSettingsForm({
     currentFriend: currentFriend,

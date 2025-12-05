@@ -19,6 +19,7 @@
 
 .emoji {
   @mixin emoji;
+
   font-size: calc(var(--mantine-font-size-xl) * 1.2);
 }
 
@@ -202,4 +203,13 @@
   [contenteditable="true"] {
     min-height: 144px;
   }
+}
+
+.promptCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-lg);
+  margin-inline: auto;
 }

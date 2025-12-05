@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_30_172008) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_02_185532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -46,7 +46,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_30_172008) do
     t.string "name", null: false
     t.string "emoji"
     t.string "template_id"
-    t.uuid "deprecated_user_id", null: false
+    t.uuid "deprecated_user_id"
     t.text "description", null: false
     t.string "location_name", null: false
     t.datetime "created_at", null: false
@@ -326,12 +326,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_30_172008) do
     t.uuid "visible_to_ids", default: [], null: false, array: true
     t.uuid "world_id"
     t.uuid "space_id"
+    t.string "prompt_id"
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
     t.index ["author_id", "created_at"], name: "index_posts_on_author_id_and_created_at"
     t.index ["author_id"], name: "index_posts_on_author_id"
     t.index ["encouragement_id"], name: "index_posts_on_encouragement_id", unique: true
     t.index ["hidden_from_ids"], name: "index_posts_on_hidden_from_ids", using: :gin
     t.index ["pinned_until"], name: "index_posts_on_pinned_until"
+    t.index ["prompt_id"], name: "index_posts_on_prompt_id"
     t.index ["quoted_post_id"], name: "index_posts_on_quoted_post_id"
     t.index ["space_id"], name: "index_posts_on_space_id"
     t.index ["type"], name: "index_posts_on_type"

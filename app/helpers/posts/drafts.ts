@@ -3,6 +3,7 @@ import { useLocalStorage, useThrottledCallback } from "@mantine/hooks";
 import { type PostType, type Upload } from "~/types";
 
 import { htmlHasText } from "../richText";
+import { SELECTABLE_POST_TYPES } from ".";
 
 interface PostFormContentValues {
   body_html: string;
@@ -37,7 +38,7 @@ export const usePostDraftFormValues = <Values extends PostFormContentValues>({
     key: localStorageKey,
   });
   const saveValues = useThrottledCallback((values: Values) => {
-    if (!postType) {
+    if (!postType || !SELECTABLE_POST_TYPES.includes(postType)) {
       return;
     }
     if (draftHasContent(values)) {

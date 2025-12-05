@@ -20,6 +20,7 @@
 #  updated_at       :datetime         not null
 #  author_id        :uuid             not null
 #  encouragement_id :uuid
+#  prompt_id        :string
 #  quoted_post_id   :uuid
 #  space_id         :uuid
 #  spotify_track_id :string
@@ -33,6 +34,7 @@
 #  index_posts_on_encouragement_id          (encouragement_id) UNIQUE
 #  index_posts_on_hidden_from_ids           (hidden_from_ids) USING gin
 #  index_posts_on_pinned_until              (pinned_until)
+#  index_posts_on_prompt_id                 (prompt_id)
 #  index_posts_on_quoted_post_id            (quoted_post_id)
 #  index_posts_on_space_id                  (space_id)
 #  index_posts_on_type                      (type)
@@ -66,7 +68,7 @@ class Post < ApplicationRecord
   # == Attributes ==
 
   enumerize :type,
-            in: %i[journal_entry poem invitation question follow_up],
+            in: %i[journal_entry poem invitation question follow_up response],
             predicates: true
   enumerize :visibility, in: %i[public friends chosen_family secret]
 
@@ -142,6 +144,18 @@ class Post < ApplicationRecord
     snippet + "\n\n"
   end
 
+  sig { returns(T.nilable(Prompt)) }
+  def prompt
+    if (id = prompt_id)
+      Prompt.find(id)
+    end
+  end
+
+  sig { returns(T::Boolean) }
+  def prompt?
+    prompt.present?
+  end
+
   # == Search ==
 
   pg_search_scope :search,
@@ -180,6 +194,12 @@ class Post < ApplicationRecord
   end
 
   sig { returns(T::Boolean) }
+  def in_space? = space_id?
+
+  sig { returns(T::Boolean) }
+  def in_world? = world_id?
+
+  sig { returns(T::Boolean) }
   def quoted_post? = quoted_post_id?
 
   # == Attachments ==
@@ -196,10 +216,12 @@ class Post < ApplicationRecord
   validates :emoji, emoji: true, allow_nil: true
   validates :type, :body_html, presence: true
   validates :title, absence: true, unless: :title_visible?
-  validates :quoted_post, presence: true, if: :follow_up?
-  validates :quoted_post, absence: true, unless: :follow_up?
   validates :spotify_track_id, presence: true, allow_nil: true
   validates :images_ids, length: { maximum: 4 }, absence: { if: :follow_up? }
+  validates :prompt, presence: true, if: :response?
+  validates :space_id, presence: true, unless: :in_world?
+  validates :world_id, presence: true, unless: :in_space?
+  validate :validate_quoted_post
   validate :validate_hidden_from_ids
   validate :validate_visible_to_ids
   validate :validate_no_nested_quoting, if: :quoted_post?
@@ -265,7 +287,7 @@ class Post < ApplicationRecord
       body += "#{emoji} "
     end
     body += scoped do
-      body_text = if (post_title = self.title)
+      body_text = if (post_title = title_or_prompt)
         post_title.strip + "\n" + truncated_body_text
       else
         truncated_body_text
@@ -312,11 +334,15 @@ class Post < ApplicationRecord
     [title, body, cta].compact.join("\n\n")
   end
 
-  # == Methods ==
+  # == Images ==
 
-  sig { returns(T::Boolean) }
-  def user_created?
-    updated_at > (author!.created_at + 1.second)
+  sig { returns(T.nilable(String)) }
+  def title_or_prompt
+    if (title = self.title)
+      title
+    elsif (prompt = self.prompt)
+      prompt.prompt
+    end
   end
 
   sig { returns(T.nilable(Image)) }
@@ -345,9 +371,11 @@ class Post < ApplicationRecord
     ordered_image_blobs.map { |blob| blob.becomes(Image) }
   end
 
+  # == Methods ==
+
   sig { returns(T::Boolean) }
-  def images_changed?
-    attachment_changes.include?("images")
+  def user_created?
+    updated_at > (author!.created_at + 1.second)
   end
 
   sig { void }
@@ -489,6 +517,11 @@ class Post < ApplicationRecord
 
   # == Helpers ==
 
+  sig { returns(T::Boolean) }
+  def images_changed?
+    attachment_changes.include?("images")
+  end
+
   sig { params(friend_ids: T::Array[String]).returns(T::Array[String]) }
   def select_world_friend_ids(friend_ids)
     world_friends.where(id: friend_ids).pluck(:id)
@@ -539,22 +572,55 @@ class Post < ApplicationRecord
 
   sig { void }
   def validate_hidden_from_ids
-    if visibility == :secret && hidden_from_ids.present?
-      errors.add(
-        :hidden_from_ids,
-        :invalid,
-        message: "cannot be set for secret posts",
-      )
+    if hidden_from_ids.present?
+      if in_space?
+        errors.add(
+          :hidden_from_ids,
+          :invalid,
+          message: "cannot be set for posts in a space",
+        )
+      elsif visibility == :secret
+        errors.add(
+          :hidden_from_ids,
+          :invalid,
+          message: "cannot be set for secret posts",
+        )
+      end
     end
   end
 
   sig { void }
   def validate_visible_to_ids
-    if visibility != :secret && visible_to_ids.present?
+    if visible_to_ids.present?
+      if in_space?
+        errors.add(
+          :visible_to_ids,
+          :invalid,
+          message: "cannot be set for posts in a space",
+        )
+      elsif visibility != :secret
+        errors.add(
+          :visible_to_ids,
+          :invalid,
+          message: "can only be set for secret posts",
+        )
+      end
+    end
+  end
+
+  sig { void }
+  def validate_quoted_post
+    if follow_up? && quoted_post.blank?
       errors.add(
-        :visible_to_ids,
+        :quoted_post,
+        :blank,
+        message: "is required for follow-up posts",
+      )
+    elsif !follow_up? && quoted_post.present?
+      errors.add(
+        :quoted_post,
         :invalid,
-        message: "can only be set for secret posts",
+        message: "can only be set for follow-up posts",
       )
     end
   end

@@ -104,8 +104,6 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
 
   const [followUpDrawerModalOpened, setFollowUpModalDrawerOpened] =
     useState(false);
-  const [followUpDrawerModalExiting, setFollowUpModalDrawerExiting] =
-    useState(false);
   return (
     <>
       <Group
@@ -287,22 +285,16 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
         opened={followUpDrawerModalOpened}
         onClose={() => {
           setFollowUpModalDrawerOpened(false);
-          setFollowUpModalDrawerExiting(true);
-        }}
-        onExitTransitionEnd={() => {
-          setFollowUpModalDrawerExiting(false);
         }}
       >
-        {(followUpDrawerModalOpened || followUpDrawerModalExiting) && (
-          <WorldPostForm
-            worldId={world.id}
-            newPostType="follow_up"
-            quotedPost={post}
-            onPostCreated={() => {
-              setFollowUpModalDrawerOpened(false);
-            }}
-          />
-        )}
+        <WorldPostForm
+          worldId={world.id}
+          newPostType="follow_up"
+          quotedPost={post}
+          onPostCreated={() => {
+            setFollowUpModalDrawerOpened(false);
+          }}
+        />
       </DrawerModal>
     </>
   );
@@ -393,12 +385,7 @@ const PostViewersModalBody: FC<PostViewersModalBodyProps> = ({ postId }) => {
               {viewers.map(viewer => (
                 <Table.Tr key={viewer.id}>
                   <Table.Td>
-                    <Group gap={4}>
-                      <span className={classes.postViewersTableEmoji}>
-                        {viewer.emoji}
-                      </span>
-                      <span>{viewer.name}</span>
-                    </Group>
+                    <Group gap={4}>{viewer.name}</Group>
                   </Table.Td>
                   <Table.Td>
                     <Time format={DateTime.DATETIME_MED} inherit tt="lowercase">

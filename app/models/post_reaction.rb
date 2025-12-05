@@ -52,6 +52,7 @@ class PostReaction < ApplicationRecord
 
   # == Validations ==
 
+  validates :reactor_type, inclusion: { in: %w[User Friend] }
   validates :emoji,
             presence: true,
             uniqueness: { scope: %i[post reactor], message: "already added" }

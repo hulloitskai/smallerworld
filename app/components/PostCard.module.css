@@ -237,3 +237,16 @@
   flex-wrap: wrap;
   row-gap: 0px;
 }
+
+.promptCard {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-lg);
+  position: relative;
+  top: var(--mantine-spacing-sm);
+  z-index: 1;
+  box-shadow: var(--mantine-shadow-lg);
+}

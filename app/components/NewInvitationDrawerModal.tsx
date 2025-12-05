@@ -37,7 +37,7 @@ const NewInvitationDrawerModal: FC<NewInvitationDrawerModalProps> = ({
 
   return (
     <DrawerModal title="invite a friend to your world" {...otherProps}>
-      <Stack gap="lg">
+      <Stack>
         {createdInvitation ? (
           <EditInvitationForm invitation={createdInvitation} />
         ) : (
@@ -52,90 +52,77 @@ const NewInvitationDrawerModal: FC<NewInvitationDrawerModalProps> = ({
             }}
           />
         )}
-        {!createdInvitation && (
-          <>
-            <Divider
-              variant="dashed"
-              mt={6}
-              mx="calc(var(--mantine-spacing-md) * -1)"
-            />
-            <Box ta="center" mb="xs">
-              <Title order={3} size="h6">
-                how does this work?
-              </Title>
-              <Stack gap={4} maw={320} mx="auto" style={{ textWrap: "pretty" }}>
-                <Text size="xs" c="dimmed">
-                  a unique invite link will be created for your friend. when
-                  they open it, they&apos;ll be prompted to add your world to
-                  their home screen! (no account required)
-                </Text>
-                <Text size="xs" c="dimmed">
-                  the name and emoji you set will be used to identify your
-                  friend when they react to your posts :)
-                </Text>
-              </Stack>
-            </Box>
-          </>
-        )}
-        {createdInvitation && (
-          <>
-            <Divider
-              variant="dashed"
-              mx="calc(var(--mantine-spacing-md) * -1)"
-            />
-            <Stack gap="lg" align="center">
-              <Box ta="center">
-                <Title order={3} lh="xs">
-                  {createdInvitation.invitee_name}&apos;s invite link
-                </Title>
-                <Text size="sm" c="dimmed" display="block">
-                  {fromJoinRequest ? (
-                    <>send your friend the invite link!</>
-                  ) : (
-                    <>
-                      get your friend to scan this QR code,
-                      <br />
-                      or send them the link using the button below
-                    </>
-                  )}
-                </Text>
-              </Box>
-              <Stack gap="xs" align="center">
+        <Divider className={classes.divider} variant="dashed" />
+        {createdInvitation ? (
+          <Stack gap="lg" align="center">
+            <Box ta="center">
+              <Text size="md" ff="heading">
+                {createdInvitation.invitee_name}&apos;s invite link
+              </Text>
+              <Text size="sm" c="dimmed" display="block">
                 {fromJoinRequest ? (
-                  <Stack gap={8} align="center">
-                    <Image
-                      src={bottomLeftArrowSrc}
-                      className={classes.fromJoinRequestArrow}
-                    />
-                    <SendInviteLinkViaJoinRequestButton
-                      invitation={createdInvitation}
-                      joinRequest={fromJoinRequest}
-                    />
-                  </Stack>
+                  <>send your friend the invite link!</>
                 ) : (
                   <>
-                    <InvitationQRCode invitation={createdInvitation} />
-                    <Divider label="or" w="100%" maw={120} mx="auto" />
-                    <Center>
-                      <SendInviteLinkButton invitation={createdInvitation} />
-                    </Center>
+                    get your friend to scan this QR code,
+                    <br />
+                    or send them the link using the button below
                   </>
                 )}
-              </Stack>
-              <Transition transition="fade-up" mounted={revealBackToHomeButton}>
-                {transitionStyle => (
-                  <Button
-                    component={Link}
-                    href={withTrailingSlash(routes.userWorld.show.path())}
-                    leftSection={<BackIcon />}
-                    style={transitionStyle}
-                  >
-                    back to your world
-                  </Button>
-                )}
-              </Transition>
+              </Text>
+            </Box>
+            <Stack gap="xs" align="center">
+              {fromJoinRequest ? (
+                <Stack gap={8} align="center">
+                  <Image
+                    src={bottomLeftArrowSrc}
+                    className={classes.fromJoinRequestArrow}
+                  />
+                  <SendInviteLinkViaJoinRequestButton
+                    invitation={createdInvitation}
+                    joinRequest={fromJoinRequest}
+                  />
+                </Stack>
+              ) : (
+                <>
+                  <InvitationQRCode invitation={createdInvitation} />
+                  <Divider label="or" w="100%" maw={120} mx="auto" />
+                  <Center>
+                    <SendInviteLinkButton invitation={createdInvitation} />
+                  </Center>
+                </>
+              )}
             </Stack>
-          </>
+            <Transition transition="fade-up" mounted={revealBackToHomeButton}>
+              {transitionStyle => (
+                <Button
+                  component={Link}
+                  href={withTrailingSlash(routes.userWorld.show.path())}
+                  leftSection={<BackIcon />}
+                  style={transitionStyle}
+                >
+                  back to your world
+                </Button>
+              )}
+            </Transition>
+          </Stack>
+        ) : (
+          <Box ta="center" mb="xs">
+            <Title order={3} size="h6">
+              how does this work?
+            </Title>
+            <Stack gap={4} maw={320} mx="auto" style={{ textWrap: "pretty" }}>
+              <Text size="xs" c="dimmed">
+                a unique invite link will be created for your friend. when they
+                open it, they&apos;ll be prompted to add your world to their
+                home screen! (no account required)
+              </Text>
+              <Text size="xs" c="dimmed">
+                the name and emoji you set will be used to identify your friend
+                when they react to your posts :)
+              </Text>
+            </Stack>
+          </Box>
         )}
       </Stack>
     </DrawerModal>

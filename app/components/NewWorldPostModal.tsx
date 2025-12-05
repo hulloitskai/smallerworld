@@ -1,15 +1,16 @@
 import { type ModalSettings } from "node_modules/@mantine/modals/lib/context";
 
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type Post, type PostType } from "~/types";
+import { type Post, type PostPrompt, type PostType } from "~/types";
 
 import WorldPostForm, { type WorldPostFormProps } from "./WorldPostForm";
 
-export interface NewWorldPostModalOptions
+export interface NewWorldPostModalProps
   extends Pick<WorldPostFormProps, "worldId">,
     Omit<ModalSettings, "children"> {
   postType: PostType;
   encouragementId?: string;
+  prompt?: PostPrompt;
   onPostCreated?: (post: Post) => void;
 }
 
@@ -17,9 +18,10 @@ export const openNewWorldPostModal = ({
   worldId,
   postType,
   encouragementId,
+  prompt,
   onPostCreated,
   ...otherProps
-}: NewWorldPostModalOptions): void => {
+}: NewWorldPostModalProps): void => {
   const modalId = randomId();
   openModal({
     modalId,
@@ -30,7 +32,7 @@ export const openNewWorldPostModal = ({
       <WorldPostForm
         {...{ worldId }}
         newPostType={postType}
-        {...{ encouragementId }}
+        {...{ encouragementId, prompt }}
         onPostCreated={post => {
           closeModal(modalId);
           onPostCreated?.(post);

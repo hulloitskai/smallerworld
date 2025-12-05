@@ -163,6 +163,7 @@ module Users::Worlds
             :encouragement_id,
             :quoted_post_id,
             :spotify_track_id,
+            :prompt_id,
             images: [],
             friend_ids_to_notify: [],
             hidden_from_ids: [],
