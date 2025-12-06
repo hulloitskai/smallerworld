@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_02_185532) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_06_161511) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -327,6 +327,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_02_185532) do
     t.uuid "world_id"
     t.uuid "space_id"
     t.string "prompt_id"
+    t.string "pen_name"
     t.index "(((to_tsvector('simple'::regconfig, COALESCE((emoji)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE((title)::text, ''::text))) || to_tsvector('simple'::regconfig, COALESCE(body_html, ''::text))))", name: "index_posts_for_search", using: :gin
     t.index ["author_id", "created_at"], name: "index_posts_on_author_id_and_created_at"
     t.index ["author_id"], name: "index_posts_on_author_id"

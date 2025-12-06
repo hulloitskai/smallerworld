@@ -7,7 +7,7 @@ import {
   parseSpotifyTrackId,
   validateSpotifyTrackUrl,
 } from "~/helpers/spotify";
-import { type Post, type Upload } from "~/types";
+import { type Post, type SpacePost, type Upload } from "~/types";
 
 import SpacePostFormBody, {
   type SpacePostFormValues,
@@ -15,7 +15,7 @@ import SpacePostFormBody, {
 
 export interface EditSpacePostFormProps extends Omit<BoxProps, "children"> {
   spaceId: string;
-  post: Post;
+  post: SpacePost;
   onPostUpdated?: (post: Post) => void;
 }
 
@@ -41,8 +41,15 @@ const EditSpacePostForm: FC<EditSpacePostFormProps> = ({
   const postType = post.type;
 
   const initialValues = useMemo<EditSpacePostFormValues>(() => {
-    const { title, body_html, emoji, images, pinned_until, spotify_track_id } =
-      post;
+    const {
+      title,
+      body_html,
+      emoji,
+      images,
+      pinned_until,
+      spotify_track_id,
+      pen_name,
+    } = post;
     return {
       title: title ?? "",
       body_html: body_html ?? "",
@@ -54,6 +61,7 @@ const EditSpacePostForm: FC<EditSpacePostFormProps> = ({
       spotify_track_url: spotify_track_id
         ? `https://open.spotify.com/track/${spotify_track_id}`
         : "",
+      pen_name: pen_name ?? "",
     };
   }, [post]);
 
@@ -75,6 +83,7 @@ const EditSpacePostForm: FC<EditSpacePostFormProps> = ({
       images_uploads,
       pinned_until,
       spotify_track_url,
+      pen_name,
       ...values
     }) => ({
       post: {
@@ -86,6 +95,7 @@ const EditSpacePostForm: FC<EditSpacePostFormProps> = ({
         spotify_track_id: spotify_track_url
           ? parseSpotifyTrackId(spotify_track_url)
           : null,
+        pen_name: pen_name || null,
       },
     }),
     transformErrors: ({ image, spotify_track_id, ...errors }) => ({

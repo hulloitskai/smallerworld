@@ -38,6 +38,7 @@ export interface SpacePostFormValues {
   images_uploads: Upload[];
   pinned_until: string | null;
   spotify_track_url: string;
+  pen_name: string;
 }
 
 export interface SpacePostFormBodyProps extends Omit<BoxProps, "children"> {
@@ -109,6 +110,9 @@ const SpacePostFormBody: FC<SpacePostFormBodyProps> = ({
   );
   const [newImageInputKey, setNewImageInputKey] = useState(0);
   const allAttachmentsShown = showSpotifyInput && showImageInput;
+
+  // == Pen name
+  const [showPenNameInput, setShowPenNameInput] = useState(false);
 
   // == Watch for image/spotify changes
   watch("images_uploads", ({ value }) => {
@@ -357,16 +361,37 @@ const SpacePostFormBody: FC<SpacePostFormBodyProps> = ({
           )}
         </Stack>
       </Group>
-      <Button
-        type="submit"
-        variant="filled"
-        size="lg"
-        leftSection={submitLabel === "save" ? <SaveIcon /> : <SendIcon />}
-        disabled={submitDisabled}
-        loading={form.submitting}
-      >
-        {submitLabel}
-      </Button>
+      <Stack gap={6}>
+        {showPenNameInput ? (
+          <TextInput
+            {...getInputProps("pen_name")}
+            label="pen name"
+            size="sm"
+            placeholder="the mysterious john darby"
+          />
+        ) : (
+          <Anchor
+            component="button"
+            size="xs"
+            c="dimmed"
+            onClick={() => {
+              setShowPenNameInput(true);
+            }}
+          >
+            post under an anonymous pen name
+          </Anchor>
+        )}
+        <Button
+          type="submit"
+          variant="filled"
+          size="lg"
+          leftSection={submitLabel === "save" ? <SaveIcon /> : <SendIcon />}
+          disabled={submitDisabled}
+          loading={form.submitting}
+        >
+          {submitLabel}
+        </Button>
+      </Stack>
     </Stack>
   );
 };

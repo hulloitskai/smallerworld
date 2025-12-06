@@ -11,6 +11,7 @@
 #  emoji            :string
 #  hidden_from_ids  :uuid             default([]), not null, is an Array
 #  images_ids       :uuid             default([]), not null, is an Array
+#  pen_name         :string
 #  pinned_until     :datetime
 #  title            :string
 #  type             :string           not null
@@ -221,6 +222,7 @@ class Post < ApplicationRecord
   validates :prompt, presence: true, if: :response?
   validates :space_id, presence: true, unless: :in_world?
   validates :world_id, presence: true, unless: :in_space?
+  validates :pen_name, absence: true, unless: :in_space?
   validate :validate_quoted_post
   validate :validate_hidden_from_ids
   validate :validate_visible_to_ids

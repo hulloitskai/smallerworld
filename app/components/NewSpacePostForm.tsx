@@ -71,6 +71,7 @@ const NewSpacePostForm: FC<NewSpacePostFormProps> = ({
       images_uploads: [],
       pinned_until: null,
       spotify_track_url: "",
+      pen_name: "",
     }),
     [],
   );
@@ -93,6 +94,7 @@ const NewSpacePostForm: FC<NewSpacePostFormProps> = ({
       images_uploads,
       pinned_until,
       spotify_track_url,
+      pen_name,
       ...values
     }) => ({
       post: {
@@ -108,6 +110,7 @@ const NewSpacePostForm: FC<NewSpacePostFormProps> = ({
           : null,
         prompt_id: prompt?.id ?? null,
         quoted_post_id: null,
+        pen_name: pen_name || null,
       },
     }),
     transformErrors: ({ image, spotify_track_id, ...errors }) => ({

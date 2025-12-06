@@ -1240,6 +1240,51 @@ class Post
     sig { void }
     def images_ids_will_change!; end
 
+    sig { returns(T.nilable(::String)) }
+    def pen_name; end
+
+    sig { params(value: T.nilable(::String)).returns(T.nilable(::String)) }
+    def pen_name=(value); end
+
+    sig { returns(T::Boolean) }
+    def pen_name?; end
+
+    sig { returns(T.nilable(::String)) }
+    def pen_name_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def pen_name_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def pen_name_came_from_user?; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def pen_name_change; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def pen_name_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def pen_name_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def pen_name_in_database; end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def pen_name_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def pen_name_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(::String)) }
+    def pen_name_previously_was; end
+
+    sig { returns(T.nilable(::String)) }
+    def pen_name_was; end
+
+    sig { void }
+    def pen_name_will_change!; end
+
     sig { returns(T.nilable(::ActiveSupport::TimeWithZone)) }
     def pinned_until; end
 
@@ -1403,6 +1448,9 @@ class Post
     def restore_images_ids!; end
 
     sig { void }
+    def restore_pen_name!; end
+
+    sig { void }
     def restore_pinned_until!; end
 
     sig { void }
@@ -1488,6 +1536,12 @@ class Post
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_images_ids?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
+    def saved_change_to_pen_name; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_pen_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::ActiveSupport::TimeWithZone), T.nilable(::ActiveSupport::TimeWithZone)])) }
     def saved_change_to_pinned_until; end
@@ -1896,6 +1950,9 @@ class Post
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_images_ids?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_pen_name?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_pinned_until?(from: T.unsafe(nil), to: T.unsafe(nil)); end

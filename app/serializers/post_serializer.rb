@@ -13,11 +13,14 @@ class PostSerializer < ApplicationSerializer
              :spotify_track_id,
              :world_id,
              :space_id,
-             :author_id,
              type: { type: "PostType" },
              visibility: { type: "PostVisibility" },
              snippet: { type: :string },
              reply_snippet: { type: :string }
+
+  attribute :author_id, type: :string, nullable: true do
+    post.author_id unless post.pen_name?
+  end
 
   # == Associations ==
 

@@ -11,6 +11,7 @@
 #  emoji            :string
 #  hidden_from_ids  :uuid             default([]), not null, is an Array
 #  images_ids       :uuid             default([]), not null, is an Array
+#  pen_name         :string
 #  pinned_until     :datetime
 #  title            :string
 #  type             :string           not null

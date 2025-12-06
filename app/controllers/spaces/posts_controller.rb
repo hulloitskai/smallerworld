@@ -78,6 +78,7 @@ module Spaces
             :pinned_until,
             :spotify_track_id,
             :prompt_id,
+            :pen_name,
             images: [],
           ])
           post = space.posts.build(
@@ -120,6 +121,7 @@ module Spaces
             :emoji,
             :pinned_until,
             :spotify_track_id,
+            :pen_name,
             images: [],
           ])
           if post.update(post_params)
@@ -195,7 +197,8 @@ module Spaces
       end
       posts.map do |post|
         author = post.author!
-        reply_to_number = if signed_in? && author.allow_space_replies?
+        reply_to_number = if signed_in? && author.allow_space_replies? &&
+            !post.pen_name?
           if (world = author.world)
             world.reply_to_number
           else

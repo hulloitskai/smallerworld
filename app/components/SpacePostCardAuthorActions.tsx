@@ -7,7 +7,7 @@ import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { mutateRoute } from "~/helpers/routes/swr";
 import { mutateSpacePosts } from "~/helpers/spaces";
-import { type Post, type PostReaction, type Space } from "~/types";
+import { type PostReaction, type Space, type SpacePost } from "~/types";
 
 import EditSpacePostForm from "./EditSpacePostForm";
 
@@ -16,7 +16,7 @@ import classes from "./WorldPostCardAuthorActions.module.css";
 export interface SpacePostCardAuthorActionsProps
   extends Omit<BoxProps, "children"> {
   space: Space;
-  post: Post;
+  post: SpacePost;
   onEditModalOpened?: () => void;
 }
 
