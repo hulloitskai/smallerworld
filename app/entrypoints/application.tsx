@@ -17,6 +17,7 @@ import { setupInertia } from "~/helpers/inertia";
 import { parsePageImports } from "~/helpers/inertia";
 import { setupLuxon } from "~/helpers/luxon";
 import { isStandaloneDisplayMode } from "~/helpers/pwa";
+import { setupReactGrab } from "~/helpers/react-grab";
 import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";
 import {
@@ -42,6 +43,7 @@ requestIdleCallback(() => {
   setupFullStory();
   setupAmplitude();
   setupClarity();
+  setupReactGrab();
 });
 
 // == Service worker
