@@ -3,6 +3,7 @@
   object-fit: cover;
   flex: unset;
   box-shadow: var(--mantine-shadow-lg);
+  cursor: copy;
 }
 
 .notificationsRequiredIndicatorArrow {

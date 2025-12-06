@@ -26,6 +26,7 @@ const PostPrintPage: PageComponent<PostPrintPageProps> = ({
       actions={<Space h="xs" />}
       withBorder={false}
       shadow=""
+      hideImages
     />
   );
 };

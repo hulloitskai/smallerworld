@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Operate from postprint directory
+cd "${BASH_SOURCE%/*}/../postprint"
+
+go run . "$@"

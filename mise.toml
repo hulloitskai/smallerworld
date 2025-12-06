@@ -1,7 +1,9 @@
 [tools]
+  go = "1.25.5"
   node = "22.13.1"
   ruby = "3.4.1"
   overmind = "2.5.1"
+  tmux = "3.5a"
 
 [env]
   RUBY_CONFIGURE_OPTS = "--with-jemalloc"

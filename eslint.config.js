@@ -13,7 +13,7 @@ const prettierIgnores = readFileSync(".prettierignore", "utf8")
   .filter(line => !!line);
 
 export default ts.config(
-  { ignores: [...prettierIgnores, "printclient/**"] },
+  { ignores: prettierIgnores },
   js.configs.recommended,
   ...ts.configs.recommendedTypeChecked,
   ...ts.configs.stylisticTypeChecked,

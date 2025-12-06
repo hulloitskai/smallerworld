@@ -30,6 +30,7 @@ const PromptDeckModal: FC<PromptDeckModalProps> = ({
   useDidUpdate(() => {
     if (deck) {
       setOptimisticDeck(deck);
+      setActiveIndex(0);
     }
   }, [deck]);
   const { data } = useRouteSWR<{ prompts: Prompt[] }>(routes.prompts.index, {

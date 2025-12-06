@@ -41,6 +41,7 @@ export interface PostCardProps
   };
   blurContent?: boolean;
   hideEncouragement?: boolean;
+  hideImages?: boolean;
   focus?: boolean;
   expanded?: boolean;
   highlightType?: boolean;
@@ -59,6 +60,7 @@ const PostCard: FC<PostCardProps> = ({
   actions,
   blurContent,
   hideEncouragement,
+  hideImages,
   focus,
   expanded: forceExpanded = false,
   highlightType,
@@ -206,28 +208,37 @@ const PostCard: FC<PostCardProps> = ({
               </Group>
             </Group>
             <Group gap={8} align="start" className={classes.headerGroup}>
-              {pinnedUntil ? (
-                <Box className={classes.timestamp} mod={{ pinned: true }}>
-                  {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
-                  <Time format={DateTime.DATE_MED} inline inherit>
-                    {pinnedUntil}
+              <Box
+                style={{ cursor: "copy" }}
+                onClick={() => {
+                  void navigator.clipboard.writeText(post.id).then(() => {
+                    toast.success("post id copied");
+                  });
+                }}
+              >
+                {pinnedUntil ? (
+                  <Box className={classes.timestamp} mod={{ pinned: true }}>
+                    {pinnedUntil < DateTime.now() ? "expired" : "expires"}{" "}
+                    <Time format={DateTime.DATE_MED} inline inherit>
+                      {pinnedUntil}
+                    </Time>
+                  </Box>
+                ) : (
+                  <Time
+                    className={classes.timestamp}
+                    format={dateTime => {
+                      if (dateTime.hasSame(DateTime.now(), "day")) {
+                        return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
+                      }
+                      return dateTime.toLocaleString(DateTime.DATETIME_MED);
+                    }}
+                    inline
+                    block
+                  >
+                    {post.created_at}
                   </Time>
-                </Box>
-              ) : (
-                <Time
-                  className={classes.timestamp}
-                  format={dateTime => {
-                    if (dateTime.hasSame(DateTime.now(), "day")) {
-                      return dateTime.toLocaleString(DateTime.TIME_SIMPLE);
-                    }
-                    return dateTime.toLocaleString(DateTime.DATETIME_MED);
-                  }}
-                  inline
-                  block
-                >
-                  {post.created_at}
-                </Time>
-              )}
+                )}
+              </Box>
               {!!post.world_id && post.visibility === "public" && (
                 <Tooltip
                   label="visible to everyone"
@@ -316,7 +327,7 @@ const PostCard: FC<PostCardProps> = ({
                 />
               </Spoiler>
             </Stack>
-            {!!firstImage && (
+            {!!firstImage && !hideImages && (
               <>
                 {blurContent || post.images.length === 1 ? (
                   <ImageWithLightbox image={firstImage} {...{ blurContent }} />

@@ -83,6 +83,7 @@ module Users
             end
           end
           scope = authorized_scope(Post.in_world)
+            .user_created
             .with_world
             .with_attached_images
             .with_quoted_post_and_attached_images

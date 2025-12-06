@@ -1,3 +1,4 @@
+import { Text } from "@mantine/core";
 import { useInViewport, useMergedRef } from "@mantine/hooks";
 import { groupBy } from "lodash-es";
 
@@ -7,6 +8,8 @@ import { type PostReaction, type SpacePost } from "~/types";
 import NewPostReactionButton from "./NewPostReactionButton";
 import PostReactionButton from "./PostReactionButton";
 import SpacePostCardReplyButton from "./SpacePostCardReplyButton";
+
+import postCardClasses from "./PostCard.module.css";
 
 export interface SpacePostCardFriendActionsProps
   extends Omit<BoxProps, "children"> {
@@ -68,10 +71,13 @@ const SpacePostCardFriendActions: FC<SpacePostCardFriendActionsProps> = ({
           hasExistingReactions={!isEmpty(reactions)}
         />
         {(!currentUser || !!post.reply_to_number) && (
-          <SpacePostCardReplyButton
-            {...{ post }}
-            replyToNumber={post.reply_to_number}
-          />
+          <>
+            <Text className={postCardClasses.actionSeparator}>/</Text>
+            <SpacePostCardReplyButton
+              {...{ post }}
+              replyToNumber={post.reply_to_number}
+            />
+          </>
         )}
       </Group>
     </Group>

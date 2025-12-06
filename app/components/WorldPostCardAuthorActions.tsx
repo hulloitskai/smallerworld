@@ -1,4 +1,4 @@
-import { CopyButton, HoverCard, Loader, Table, Text } from "@mantine/core";
+import { HoverCard, Loader, Table, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
 import { openConfirmModal } from "@mantine/modals";
 import { groupBy } from "lodash-es";
@@ -8,7 +8,6 @@ import OpenedIcon from "~icons/heroicons/envelope-open-20-solid";
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 import ShareIcon from "~icons/heroicons/share-20-solid";
 
-import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { mutateUserWorldPosts } from "~/helpers/userWorld";
 import { mutateWorldTimeline } from "~/helpers/worlds";
 import {
@@ -41,7 +40,6 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
   ...otherProps
 }) => {
   const { ref, inViewport } = useInViewport();
-  const currentUser = useCurrentUser();
 
   // == Stats clicked count
   const [statsClickedCount, setStatsClickedCount] = useState(0);
@@ -251,22 +249,6 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
             >
               follow-up
             </Menu.Item>
-            {currentUser?.supported_features.includes("debug") && (
-              <>
-                <Menu.Divider />
-                <CopyButton value={post.id}>
-                  {({ copied, copy }) => (
-                    <Menu.Item
-                      leftSection={copied ? <CopiedIcon /> : <CopyIcon />}
-                      closeMenuOnClick={false}
-                      onClick={copy}
-                    >
-                      {copied ? "post id copied!" : "copy post id"}
-                    </Menu.Item>
-                  )}
-                </CopyButton>
-              </>
-            )}
           </Menu.Dropdown>
         </Menu>
       </Group>

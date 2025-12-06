@@ -35,8 +35,6 @@ export interface NewWorldPostFormProps extends Omit<BoxProps, "children"> {
   onPostCreated?: (post: Post) => void;
 }
 
-const DEFAULT_VISIBILITY: PostVisibility = "friends";
-
 interface NewWorldPostFormValues extends WorldPostFormValues {}
 
 interface NewWorldPostSubmission {
@@ -89,22 +87,22 @@ const NewWorldPostForm: FC<NewWorldPostFormProps> = ({
       localStorageKey: worldPostDraftKey(worldId),
     });
 
-  const initialValues = useMemo<NewWorldPostFormValues>(
-    () => ({
+  const initialValues = useMemo<NewWorldPostFormValues>(() => {
+    const visibility: PostVisibility = prompt ? "public" : "friends";
+    return {
       title: "",
       body_html: "",
       emoji: "",
       images_uploads: [],
-      visibility: DEFAULT_VISIBILITY,
+      visibility,
       pinned_until: null,
       friend_notifiability: subscribedFriends
-        ? buildFriendNotifiability(subscribedFriends, DEFAULT_VISIBILITY)
+        ? buildFriendNotifiability(subscribedFriends, visibility)
         : {},
       encouragement_id: encouragementId ?? null,
       spotify_track_url: "",
-    }),
-    [encouragementId, subscribedFriends],
-  );
+    };
+  }, [encouragementId, prompt, subscribedFriends]);
   const form = useForm<
     { post: Post },
     NewWorldPostFormValues,

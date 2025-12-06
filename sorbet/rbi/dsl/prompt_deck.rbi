@@ -16,6 +16,12 @@ class PromptDeck
     def background_color?; end
 
     sig { returns(T.untyped) }
+    def deleted; end
+
+    sig { returns(T::Boolean) }
+    def deleted?; end
+
+    sig { returns(T.untyped) }
     def edition; end
 
     sig { returns(T::Boolean) }

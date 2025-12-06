@@ -6,7 +6,7 @@ class PromptDecksController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        decks = PromptDeck.all
+        decks = PromptDeck.kept
         render(json: {
           decks: PromptDeckSerializer.many(decks),
         })
