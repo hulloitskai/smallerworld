@@ -5,4 +5,4 @@ set -e
 # Operate from postprint directory
 cd "${BASH_SOURCE%/*}/../postprint"
 
-go run . "$@"
+mise x -- go run . "$@"
