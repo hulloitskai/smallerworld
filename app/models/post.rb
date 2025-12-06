@@ -272,6 +272,8 @@ class Post < ApplicationRecord
   }
   scope :with_author, -> { includes(:author) }
   scope :with_author_world, -> { includes(author: :world) }
+  scope :with_world, -> { includes(:world) }
+  scope :in_world, -> { where.not(world_id: nil) }
 
   # == Noticeable ==
 

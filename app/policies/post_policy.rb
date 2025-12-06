@@ -56,7 +56,26 @@ class PostPolicy < ApplicationPolicy
     if (friend = self.friend)
       relation.visible_to(friend)
     elsif (user = self.user)
-      relation.where(author: user).or(relation.publicly_visible)
+      associated_friends = user.associated_friends
+      relation.where(author: user)
+        .or(relation.publicly_visible)
+        .or(
+          relation
+            .visible_to_friends
+            .where(world_id: associated_friends.select(:world_id))
+            .where(
+              "NOT hidden_from_ids && ARRAY(?)",
+              associated_friends.select(:id),
+            ),
+        )
+        .or(
+          relation.secretly_visible
+          .where(world_id: associated_friends.select(:world_id))
+          .where(
+            "visible_to_ids && ARRAY(?)",
+            associated_friends.select(:id),
+          ),
+        )
     else
       relation.publicly_visible
     end

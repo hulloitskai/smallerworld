@@ -82,45 +82,8 @@ module Users
               friends
             end
           end
-          chosen_family_friends = associated_friends.chosen_family
-          general_friends = associated_friends.where.not(chosen_family: true)
-          scope = authorized_scope(Post.where.not(world_id: nil)).and(
-            Post
-              .publicly_visible
-              .where(id: Post.user_created.select(:id))
-              .or(
-                Post
-                  .where(author_id: current_user.id)
-                  .where.not(visibility: :secret),
-              )
-              .or(
-                Post
-                  .visible_to_friends
-                  .where(world_id: general_friends.select(:world_id))
-                  .where(
-                    "NOT hidden_from_ids && ARRAY(?)",
-                    general_friends.select(:id),
-                  ),
-              )
-              .or(
-                Post
-                  .visible_to_chosen_family
-                  .where(world_id: chosen_family_friends.select(:world_id))
-                  .where(
-                    "NOT hidden_from_ids && ARRAY(?)",
-                    chosen_family_friends.select(:id),
-                  ),
-              ).or(
-                Post
-                  .secretly_visible
-                  .where(world_id: associated_friends.select(:world_id))
-                  .where(
-                    "visible_to_ids && ARRAY(?)",
-                    associated_friends.select(:id),
-                  ),
-              ),
-          )
-            .includes(:world)
+          scope = authorized_scope(Post.in_world)
+            .with_world
             .with_attached_images
             .with_quoted_post_and_attached_images
             .with_encouragement
