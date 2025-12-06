@@ -306,7 +306,11 @@ class Post < ApplicationRecord
         trailing_slash: true,
       )
     when User
-      url_helpers.user_universe_url(post_id: id)
+      if (space = self.space)
+        url_helpers.space_url(space, post_id: id)
+      else
+        url_helpers.user_universe_url(post_id: id)
+      end
     else
       raise "Invalid notification recipient: #{recipient.inspect}"
     end

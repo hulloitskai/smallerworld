@@ -15,7 +15,7 @@ URLs and will tail new posts for a space.
 
 ```bash
 cd postprint
-mise exec go@1.25.5 -- go build -o postprint
+mise exec -- go build -o postprint
 ```
 
 ## Usage (interactive)
