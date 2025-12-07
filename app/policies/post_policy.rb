@@ -64,7 +64,7 @@ class PostPolicy < ApplicationPolicy
             .visible_to_friends
             .where(world_id: associated_friends.select(:world_id))
             .where(
-              "NOT hidden_from_ids && ARRAY(?)",
+              "NOT posts.hidden_from_ids && ARRAY(?)",
               associated_friends.select(:id),
             ),
         )
@@ -72,7 +72,7 @@ class PostPolicy < ApplicationPolicy
           relation.secretly_visible
           .where(world_id: associated_friends.select(:world_id))
           .where(
-            "visible_to_ids && ARRAY(?)",
+            "posts.visible_to_ids && ARRAY(?)",
             associated_friends.select(:id),
           ),
         )
