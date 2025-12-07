@@ -172,7 +172,7 @@ module Users
     end
     def paginate_posts(scope)
       pagy_keyset(
-        scope.order(created_at: :desc, id: :asc),
+        scope.order("posts.created_at" => :desc, "posts.id" => :asc),
         limit: 5,
       )
     end
