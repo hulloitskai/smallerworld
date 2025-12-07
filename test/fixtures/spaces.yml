@@ -1,0 +1,29 @@
+# rubocop:disable Layout/LineLength, Lint/RedundantCopDisableDirective
+# == Schema Information
+#
+# Table name: spaces
+#
+#  id          :uuid             not null, primary key
+#  description :text             not null
+#  name        :string           not null
+#  theme       :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  owner_id    :uuid             not null
+#
+# Indexes
+#
+#  index_spaces_on_owner_id            (owner_id)
+#  index_spaces_owner_name_uniqueness  (owner_id,name) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (owner_id => users.id)
+#
+# rubocop:enable Layout/LineLength, Lint/RedundantCopDisableDirective
+testy_space:
+  owner: testy
+  name: "Test Space"
+  description: "A space for testing"
+  created_at: "<%= 1.day.ago %>"
+  updated_at: "<%= 1.day.ago %>"
