@@ -2,3 +2,8 @@ testy_world_icon:
   name: icon
   record: testy_world (World)
   blob: cat_blob
+
+noposts_world_icon:
+  name: icon
+  record: noposts_world (World)
+  blob: cat_blob

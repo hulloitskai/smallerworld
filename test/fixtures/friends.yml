@@ -80,3 +80,18 @@ global_friend:
   time_zone_name: "Europe/London"
   created_at: "<%= 6.days.ago %>"
   updated_at: "<%= 6.days.ago %>"
+
+# noposts user is a friend in testy's world (for universe tests)
+noposts_in_testy_world:
+  world: testy_world
+  name: "Mr No Posts"
+  emoji: "🤫"
+  phone_number: "+14168554753"
+  access_token: "nopoststoken"
+  chosen_family: false
+  subscribed_post_types:
+    - journal_entry
+    - poem
+  time_zone_name: "America/Toronto"
+  created_at: "<%= 3.days.ago %>"
+  updated_at: "<%= 3.days.ago %>"
