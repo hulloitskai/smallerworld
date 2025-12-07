@@ -265,8 +265,8 @@ class Post < ApplicationRecord
   }
   scope :user_created, -> {
     where(
-      User.where("users.id = posts.author_id")
-          .where("posts.updated_at > users.created_at + INTERVAL '1 second'")
+      World.where("worlds.id = posts.world_id")
+          .where("posts.updated_at > worlds.created_at + INTERVAL '1 second'")
           .arel.exists,
     )
   }
@@ -386,7 +386,8 @@ class Post < ApplicationRecord
 
   sig { returns(T::Boolean) }
   def user_created?
-    updated_at > (author!.created_at + 1.second)
+    world = world!
+    updated_at > (world.created_at + 1.second)
   end
 
   sig { void }
