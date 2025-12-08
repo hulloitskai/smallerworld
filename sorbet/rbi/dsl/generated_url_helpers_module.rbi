@@ -28,6 +28,9 @@ module GeneratedUrlHelpersModule
   def announcements_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def app_start_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def audience_user_world_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -160,6 +163,9 @@ module GeneratedUrlHelpersModule
   def push_subscriptions_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def pwa_start_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def rails_blob_representation_proxy_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -271,9 +277,6 @@ module GeneratedUrlHelpersModule
   def src_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def start_pwa_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def start_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -293,6 +296,15 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def test_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def turbo_recede_historical_location_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def turbo_refresh_historical_location_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def turbo_resume_historical_location_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unpause_user_world_friend_url(*args); end

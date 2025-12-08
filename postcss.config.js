@@ -33,6 +33,11 @@ export default {
             "@mixin-content": {},
           },
         },
+        "hotwire-native": {
+          "[data-hotwire-native] &": {
+            "@mixin-content": {},
+          },
+        },
         // "safari-only": {
         //   "_::-webkit-full-page-media, _:future, :root &": {
         //     "@mixin-content": {},

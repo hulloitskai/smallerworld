@@ -15,6 +15,7 @@ import {
   resolveDynamicProp,
   useResolveDynamicProp,
 } from "~/helpers/appLayout";
+import { useIsHotwireNative } from "~/helpers/hotwire";
 import { useAutoClearColorScheme } from "~/helpers/mantine";
 import { CONFETTI_CANVAS_ID, SMOKE_CANVAS_ID } from "~/helpers/particles";
 import { useTrackVisit } from "~/helpers/visits";
@@ -145,6 +146,7 @@ const AppInner: FC<AppInnerProps> = ({
   ...otherProps
 }) => {
   const { isStandalone, outOfPWAScope } = usePWA();
+  const isNative = useIsHotwireNative();
 
   // == Track visit and reregister push subscriptions
   useTrackVisit();
@@ -174,16 +176,17 @@ const AppInner: FC<AppInnerProps> = ({
     <>
       <AppShell
         withBorder={LAYOUT_WITH_BORDER}
-        {...((isStandalone === false || outOfPWAScope) && {
-          header: { height: 46 },
-        })}
+        {...(isNative === false &&
+          (isStandalone === false || outOfPWAScope) && {
+            header: { height: 46 },
+          })}
         {...(footer && { footer: { height: 40 } })}
         padding={padding ?? (withContainer ? undefined : "md")}
         classNames={{ root: classes.shell, header: classes.header }}
         data-vaul-drawer-wrapper
         {...otherProps}
       >
-        {(isStandalone === false || outOfPWAScope) && (
+        {isNative === false && (isStandalone === false || outOfPWAScope) && (
           <AppHeader {...{ logoHref }} />
         )}
         <AppShell.Main

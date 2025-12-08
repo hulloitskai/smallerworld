@@ -10,6 +10,14 @@ class ActualDbSchema::MigrationsController
   def helpers; end
 
   module HelperMethods
+    include ::Turbo::DriveHelper
+    include ::Turbo::FramesHelper
+    include ::Turbo::IncludesHelper
+    include ::Turbo::StreamsHelper
+    include ::ActionView::Helpers::CaptureHelper
+    include ::ActionView::Helpers::OutputSafetyHelper
+    include ::ActionView::Helpers::TagHelper
+    include ::Turbo::Streams::ActionHelper
     include ::ActionText::ContentHelper
     include ::ActionText::TagHelper
     include ::InertiaRails::Helper

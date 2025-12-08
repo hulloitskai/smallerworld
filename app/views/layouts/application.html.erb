@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" <%= tag.attributes(@root_attributes) if defined?(@root_attributes) %>>
+<html
+  lang="en"
+  <%= "data-hotwire-native" if hotwire_native_app? %>
+  <%= tag.attributes(@root_attributes) if defined?(@root_attributes) %>
+>
   <head>
     <%# == Inertia page-specific head %>
     <%== inertia_ssr_head %>

@@ -12,6 +12,7 @@ import { setupClarity } from "~/helpers/clarity";
 import { setupDayjs } from "~/helpers/dayjs";
 import { setupDevtools } from "~/helpers/devtools";
 import { setupFullStory } from "~/helpers/fullstory";
+import { setupTurbo } from "~/helpers/hotwire";
 import { setupInertia } from "~/helpers/inertia";
 import { parsePageImports } from "~/helpers/inertia";
 import { setupLuxon } from "~/helpers/luxon";
@@ -25,7 +26,6 @@ import {
   registerServiceWorker,
   unregisterOutdatedServiceWorkers,
 } from "~/helpers/serviceWorker/client";
-import { setupTurbo } from "~/helpers/turbo";
 
 import "./application.css";
 

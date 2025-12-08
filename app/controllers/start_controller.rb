@@ -37,4 +37,13 @@ class StartController < ApplicationController
       end
     end
   end
+
+  # GET /start/app
+  def app
+    respond_to do |format|
+      format.html do
+        redirect_to(user_spaces_path)
+      end
+    end
+  end
 end

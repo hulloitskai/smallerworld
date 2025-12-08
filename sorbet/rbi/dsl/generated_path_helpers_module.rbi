@@ -28,6 +28,9 @@ module GeneratedPathHelpersModule
   def announcements_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def app_start_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def audience_user_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -160,6 +163,9 @@ module GeneratedPathHelpersModule
   def push_subscriptions_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def pwa_start_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def rails_blob_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -274,9 +280,6 @@ module GeneratedPathHelpersModule
   def start_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def start_pwa_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def stats_user_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -293,6 +296,15 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def test_submit_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def turbo_recede_historical_location_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def turbo_refresh_historical_location_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def turbo_resume_historical_location_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def unpause_user_world_friend_path(*args); end

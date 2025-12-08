@@ -176,6 +176,9 @@ gem "money-rails", "~> 1.15"
 # Fetch Spotify metadata
 gem "rspotify", "~> 2.12"
 
+# Integrate with Hotwire Native
+gem "turbo-rails", "~> 2.0"
+
 group :development, :test do
   # Debug code with debug
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
