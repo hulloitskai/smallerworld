@@ -1,4 +1,3 @@
-// == Polyfills
 import "requestidlecallback-polyfill";
 
 import { createInertiaApp } from "@inertiajs/react";
@@ -26,12 +25,14 @@ import {
   registerServiceWorker,
   unregisterOutdatedServiceWorkers,
 } from "~/helpers/serviceWorker/client";
+import { setupTurbo } from "~/helpers/turbo";
 
 import "./application.css";
 
 // == Setup
 window.BOOTED_AT = new Date();
 
+setupTurbo();
 setupInertia();
 setupRoutes();
 setupLuxon();

@@ -43,6 +43,7 @@
     "@tiptap/starter-kit": "^3.0.7",
     "@tsparticles/confetti": "^3.8.1",
     "@tsparticles/engine": "^3.8.1",
+    "@types/hotwired__turbo": "^8.0.4",
     "@wordpress/wordcount": "^4.34.0",
     "axios": "^1.7.9",
     "clsx": "^2.0.0",

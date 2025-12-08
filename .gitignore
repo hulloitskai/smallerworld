@@ -110,5 +110,3 @@ vite.config.ts.timestamp-*.mjs
 
 # Windows:
 **/Thumbs.db
-
-/config/credentials/development.key
