@@ -2,6 +2,8 @@ import bricolageGrotesqueSrc from "@fontsource-variable/bricolage-grotesque/file
 import manropeWoff2Src from "@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url";
 import { dirname } from "@sentry/core";
 
+import { useIsHotwireNative } from "~/helpers/hotwire";
+
 const APP_META_SITE_NAME = "smaller world";
 const APP_META_SITE_DESCRIPTION = "a smaller world for you and your friends :)";
 const APP_META_SITE_IMAGE = "/banner.png";
@@ -26,6 +28,8 @@ const AppMeta: FC<AppMetaProps> = ({
   manifestUrl,
   pwaScope = manifestUrl ? dirname(manifestUrl) : undefined,
 }) => {
+  const isNative = useIsHotwireNative();
+
   const pageTitle = useMemo<string>(() => {
     const components = Array.isArray(titleProp) ? titleProp : [titleProp];
     return components
@@ -41,10 +45,14 @@ const AppMeta: FC<AppMetaProps> = ({
     [pageTitle, siteName],
   );
   const tabTitle = useMemo<string>(() => {
-    return [pageTitle, siteName]
+    const components = [pageTitle];
+    if (!isNative) {
+      components.push(siteName);
+    }
+    return components
       .filter(component => !!component)
       .join(` ${APP_META_TITLE_SEPARATOR} `);
-  }, [pageTitle, siteName]);
+  }, [pageTitle, siteName, isNative]);
 
   return (
     <Head>
