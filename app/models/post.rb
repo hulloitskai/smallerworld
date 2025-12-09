@@ -308,7 +308,6 @@ class Post < ApplicationRecord
         world!,
         friend_token: recipient.access_token,
         post_id: id,
-        trailing_slash: true,
       )
     when User
       if (space = self.space)
@@ -339,7 +338,6 @@ class Post < ApplicationRecord
       world,
       post_id: id,
       friend_token: recipient.access_token,
-      trailing_slash: true,
     )
     cta = "see full post: #{post_shortlink}"
     [title, body, cta].compact.join("\n\n")

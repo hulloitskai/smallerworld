@@ -23,7 +23,11 @@ module Worlds
       owner = world.owner!
       render(
         json: {
-          id: world_path(world, friend_token: current_friend.access_token),
+          id: world_path(
+            world,
+            friend_token: current_friend.access_token,
+            trailing_slash: false,
+          ),
           name: world.name,
           short_name: owner.name,
           description: "life updates, personal invitations, poems, and more!",
@@ -32,9 +36,8 @@ module Worlds
           start_url: world_path(
             world,
             friend_token: current_friend.access_token,
-            trailing_slash: true,
           ),
-          scope: world_path(world, trailing_slash: true),
+          scope: world_path(world),
         },
       )
     end

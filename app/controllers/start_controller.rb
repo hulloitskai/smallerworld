@@ -10,7 +10,7 @@ class StartController < ApplicationController
       format.html do
         start_path = if (user = current_user)
           if user.world.present? || user.spaces.none?
-            user_world_path(trailing_slash: true)
+            user_world_path
           else
             user_spaces_path
           end
@@ -29,7 +29,7 @@ class StartController < ApplicationController
     respond_to do |format|
       format.html do
         next_path = if (user = current_user) && user.world.present?
-          user_world_path(trailing_slash: true)
+          user_world_path
         else
           user_spaces_path
         end

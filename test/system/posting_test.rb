@@ -18,7 +18,7 @@ class PostingTest < ApplicationSystemTestCase
     click_link_or_button "sign in", wait: 4.seconds
 
     # Assert on world page
-    assert_current_path user_world_path(trailing_slash: true)
+    assert_current_path user_world_path
 
     # Click 'new post' button
     click_link_or_button "new post"

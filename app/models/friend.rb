@@ -194,11 +194,7 @@ class Friend < ApplicationRecord
   sig { returns(String) }
   def installation_message
     world = world!
-    # NOTE: trailing_slash: true only needed for /worlds/ and /@handle/ routes
-    installation_url = world.shortlink_url(
-      friend_token: access_token,
-      trailing_slash: true,
-    )
+    installation_url = world.shortlink_url(friend_token: access_token)
     "hi, #{fun_name}! here's your secret link to #{world.name}: " \
       "#{installation_url}"
   end

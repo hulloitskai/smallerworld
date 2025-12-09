@@ -71,10 +71,8 @@ class PostReaction < ApplicationRecord
       NotificationMessage.new(
         title: "#{emoji} from #{reactor.name}",
         body: post!.compact_snippet,
-        target_url: Rails.application.routes.url_helpers.user_world_path(
-          post_id:,
-          trailing_slash: true,
-        ),
+        target_url: Rails.application.routes.url_helpers
+        .user_world_path(post_id:),
       )
     else
       raise "Invalid notification recipient: #{recipient.inspect}"

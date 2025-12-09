@@ -18,7 +18,7 @@ class SpacesTest < ApplicationSystemTestCase
     click_link_or_button "sign in", wait: 4.seconds
 
     # Assert on world page (sign-in complete)
-    assert_current_path user_world_path(trailing_slash: true)
+    assert_current_path user_world_path
 
     # Navigate to spaces index
     visit user_spaces_path

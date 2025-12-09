@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
         pwa_scope = params[:pwa_scope]
         if signed_in?
           redirect_to(
-            user_world_path(pwa_scope:, trailing_slash: true),
+            user_world_path(pwa_scope:),
             notice: "You are already signed in :)",
           )
         else

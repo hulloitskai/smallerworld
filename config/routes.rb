@@ -117,7 +117,7 @@ Rails.application.routes.draw do
 
   # == Worlds ==
 
-  get "/@:id", to: "worlds#show", as: :world, export: true
+  get "/@:id", to: "worlds#show", as: :world, trailing_slash: true, export: true
   get "/@:id/join", to: "worlds#join"
   resources :worlds, only: [], export: true do
     scope module: :worlds  do
@@ -165,9 +165,13 @@ Rails.application.routes.draw do
     # == User World
     resource(
       :world,
-      only: %i[show edit update],
+      only: %i[edit update],
       export: { namespace: "userWorld" },
     ) do
+      member do
+        get :show, trailing_slash: true
+      end
+
       scope module: :worlds do
         resources :activities,
                   only: %i[index create],

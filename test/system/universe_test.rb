@@ -18,7 +18,7 @@ class UniverseTest < ApplicationSystemTestCase
     click_link_or_button "sign in", wait: 4.seconds
 
     # Assert on world page (sign-in complete)
-    assert_current_path user_world_path(trailing_slash: true)
+    assert_current_path user_world_path
 
     # Navigate to universe page
     visit user_universe_path

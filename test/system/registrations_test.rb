@@ -30,10 +30,7 @@ class RegistrationsTest < ApplicationSystemTestCase
     click_link_or_button "complete signup"
 
     # Wait for redirection to world_path
-    post_registration_path = user_world_path(
-      intent: "install",
-      trailing_slash: true,
-    )
+    post_registration_path = user_world_path(intent: "install")
     assert_current_path post_registration_path, wait: 15.seconds
 
     # Assert welcome post visible

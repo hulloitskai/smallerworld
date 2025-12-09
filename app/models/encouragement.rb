@@ -60,8 +60,7 @@ class Encouragement < ApplicationRecord
       NotificationMessage.new(
         title: "#{friend.name} wants to hear from u!",
         body: [emoji, message].join(" "),
-        target_url: Rails.application.routes.url_helpers
-          .user_world_path(trailing_slash: true),
+        target_url: Rails.application.routes.url_helpers.user_world_path,
       )
     else
       raise "Invalid notification recipient: #{recipient.inspect}"
