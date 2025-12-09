@@ -1,3 +1,4 @@
+import { visit as turboVisit } from "@hotwired/turbo";
 import { hrefToUrl, router } from "@inertiajs/core";
 import { closeAllModals } from "@mantine/modals";
 import { AxiosHeaders } from "axios";
@@ -9,6 +10,9 @@ import { isHotwireNative } from "../hotwire";
 export const setupInertia = (): void => {
   router.on("before", ({ detail: { visit } }) => {
     if (isHotwireNative()) {
+      turboVisit(visit.url.toString(), {
+        action: visit.replace ? "replace" : "advance",
+      });
       return false;
     }
     if (!visit.preserveState) {
