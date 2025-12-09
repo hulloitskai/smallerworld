@@ -13,6 +13,7 @@ import SpacePageNotificationsButton from "~/components/SpacePageNotificationsBut
 import SpacePostCardAuthorActions from "~/components/SpacePostCardAuthorActions";
 import SpacePostCardFriendActions from "~/components/SpacePostCardFriendActions";
 import UserFooter from "~/components/UserFooter";
+import { useIsHotwireNative } from "~/helpers/hotwire";
 import { openAppInstallModal } from "~/helpers/install";
 import { isStandaloneDisplayMode } from "~/helpers/pwa";
 import { useSpacePosts } from "~/helpers/spaces";
@@ -34,6 +35,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
 
   const currentUser = useCurrentUser();
   const queryParams = useQueryParams();
+  const isNative = useIsHotwireNative();
   const isOwner = currentUser?.id === space.owner_id;
   const { isStandalone, outOfPWAScope } = usePWA();
   const {
@@ -90,7 +92,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
               }}
             />
           ) : (
-            <>{currentUser && <Space h="lg" />}</>
+            <>{currentUser && isNative === false && <Space h="lg" />}</>
           )}
           <Box ta="center">
             <Title size="h2" className={classes.spaceName}>
