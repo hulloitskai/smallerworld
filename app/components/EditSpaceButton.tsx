@@ -1,5 +1,6 @@
 import { type ButtonProps } from "@mantine/core";
 
+import { useIsHotwireNative } from "~/helpers/hotwire";
 import { usePageDialogOpened } from "~/helpers/pageDialog";
 
 import DrawerModal from "./DrawerModal";
@@ -15,6 +16,7 @@ const EditSpaceButton: FC<EditSpaceButtonProps> = ({
   className,
   ...otherProps
 }) => {
+  const isNative = useIsHotwireNative();
   const [drawerModalOpened, setDrawerModalOpened] = useState(false);
   usePageDialogOpened(drawerModalOpened);
   return (
@@ -25,9 +27,10 @@ const EditSpaceButton: FC<EditSpaceButtonProps> = ({
         onClick={() => {
           setDrawerModalOpened(true);
         }}
+        mod={{ controller: "bridge--button" }}
         {...otherProps}
       >
-        edit space
+        {isNative ? "edit" : "edit space"}
       </Button>
       <DrawerModal
         title="edit space"

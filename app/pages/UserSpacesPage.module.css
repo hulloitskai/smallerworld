@@ -4,4 +4,8 @@
   @mixin dark {
     color: var(--mantine-color-white);
   }
+
+  @mixin hotwire-native {
+    display: none;
+  }
 }

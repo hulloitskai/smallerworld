@@ -12,7 +12,7 @@ import { setupClarity } from "~/helpers/clarity";
 import { setupDayjs } from "~/helpers/dayjs";
 import { setupDevtools } from "~/helpers/devtools";
 import { setupFullStory } from "~/helpers/fullstory";
-import { setupTurbo } from "~/helpers/hotwire";
+import { setupHotwire } from "~/helpers/hotwire/setup";
 import { parsePageImports } from "~/helpers/inertia";
 import { setupInertia } from "~/helpers/inertia/setup";
 import { setupLuxon } from "~/helpers/luxon";
@@ -32,7 +32,7 @@ import "./application.css";
 // == Setup
 window.BOOTED_AT = new Date();
 
-setupTurbo();
+setupHotwire();
 setupInertia();
 setupRoutes();
 setupLuxon();

@@ -12,3 +12,9 @@
 .emoji {
   @mixin emoji;
 }
+
+/* == Bridge components == */
+
+[data-bridge-components~="button"] [data-controller~="bridge--button"] {
+  display: none;
+}

@@ -63,8 +63,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
           component={Link}
           href={routes.userSpaces.index.path()}
           leftSection={<BackIcon />}
-          mb="xs"
-          style={{ alignSelf: "center" }}
+          className={classes.backButton}
         >
           your spaces
         </Button>
@@ -94,7 +93,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
             <>{currentUser && <Space h="lg" />}</>
           )}
           <Box ta="center">
-            <Title size="h2" lh="xs">
+            <Title size="h2" className={classes.spaceName}>
               {space.name}
             </Title>
             <Text size="xs" c="dimmed">

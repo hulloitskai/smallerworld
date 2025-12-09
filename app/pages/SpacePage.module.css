@@ -1,9 +1,26 @@
+.backButton {
+  align-self: center;
+  margin-bottom: var(--mantine-spacing-xs);
+
+  @mixin hotwire-native {
+    display: none;
+  }
+}
+
 .spaceIcon {
   align-self: center;
   object-fit: cover;
   flex: unset;
   box-shadow: var(--mantine-shadow-lg);
   cursor: copy;
+}
+
+.spaceName {
+  line-height: var(--mantine-line-height-xs);
+
+  @mixin hotwire-native {
+    display: none;
+  }
 }
 
 .notificationsRequiredIndicatorArrow {

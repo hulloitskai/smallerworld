@@ -1,10 +1,3 @@
-export const setupTurbo = (): void => {
-  void import("@hotwired/turbo").then(() => {
-    // @ts-expect-error - Bad TS types
-    Turbo.session.drive = false;
-  });
-};
-
 export const isHotwireNative = (): boolean => {
   return navigator.userAgent.includes("Hotwire Native");
 };
