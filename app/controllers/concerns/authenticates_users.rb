@@ -60,12 +60,6 @@ module AuthenticatesUsers
     end
   end
 
-  sig { returns(String) }
-  def after_authentication_url
-    session.delete(:return_to_after_authenticating) ||
-      user_world_path(trailing_slash: true)
-  end
-
   sig { params(user: User).returns(Session) }
   def start_new_session_for!(user)
     user.sessions.create!(
@@ -124,10 +118,9 @@ module AuthenticatesUsers
   def handle_not_authenticated(error)
     respond_to do |format|
       format.html do
-        session[:return_to_after_authenticating] = request.url
         redirect_to(
-          new_session_path,
-          alert: "please sign in to continue.",
+          new_session_path(redirect_to: request.fullpath),
+          alert: "please sign in to continue",
         )
       end
       format.json do

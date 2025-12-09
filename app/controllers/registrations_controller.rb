@@ -9,8 +9,13 @@ class RegistrationsController < ApplicationController
     respond_to do |format|
       format.html do
         if (user = current_user) && user.world.present?
+          start_path = if hotwire_native_app?
+            app_start_path
+          else
+            web_start_path
+          end
           redirect_to(
-            after_authentication_url,
+            start_path,
             notice: "you already have an account!",
           )
         elsif current_user || valid_registration_token?

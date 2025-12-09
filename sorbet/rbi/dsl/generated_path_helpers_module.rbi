@@ -277,9 +277,6 @@ module GeneratedPathHelpersModule
   def src_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def start_path(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def stats_user_world_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -377,6 +374,9 @@ module GeneratedPathHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def visits_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def web_start_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_activity_coupons_path(*args); end

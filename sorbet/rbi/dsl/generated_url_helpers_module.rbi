@@ -277,9 +277,6 @@ module GeneratedUrlHelpersModule
   def src_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def start_url(*args); end
-
-  sig { params(args: T.untyped).returns(String) }
   def stats_user_world_post_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
@@ -377,6 +374,9 @@ module GeneratedUrlHelpersModule
 
   sig { params(args: T.untyped).returns(String) }
   def visits_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
+  def web_start_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def world_activity_coupons_url(*args); end

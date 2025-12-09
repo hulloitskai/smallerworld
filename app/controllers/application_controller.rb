@@ -177,6 +177,11 @@ class ApplicationController < ActionController::Base
   def handle_invalid_authenticity_token(exception)
     if request.inertia?
       flash.alert = "the page expired, please try again."
+      start_path = if hotwire_native_app?
+        app_start_path
+      else
+        web_start_path
+      end
       inertia_location(start_path)
     elsif request.format.json?
       report_and_render_json_exception(exception)
@@ -189,6 +194,11 @@ class ApplicationController < ActionController::Base
   def handle_authentication_required(error)
     respond_to do |format|
       format.html do
+        start_path = if hotwire_native_app?
+          app_start_path
+        else
+          web_start_path
+        end
         redirect_to(start_path, alert: "Please sign in to continue.")
       end
       format.any do

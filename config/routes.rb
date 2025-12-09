@@ -110,7 +110,7 @@ Rails.application.routes.draw do
   # == Start ==
 
   resource :start, controller: "start", only: [], export: true do
-    get "/", action: :web
+    get "/", action: :web, as: :web
     get :pwa
     get :app
   end
