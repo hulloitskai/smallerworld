@@ -211,7 +211,7 @@ const AppInner: FC<AppInnerProps> = ({
           )}
           {main}
         </AppShell.Main>
-        {footer}
+        {isNative === false && footer}
       </AppShell>
       <canvas id={SMOKE_CANVAS_ID} className={classes.particleCanvas} />
       <canvas id={CONFETTI_CANVAS_ID} className={classes.particleCanvas} />
