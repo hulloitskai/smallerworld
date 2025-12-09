@@ -1,3 +1,5 @@
+import { visit } from "@hotwired/turbo?client";
+
 import AppLayout from "~/components/AppLayout";
 import LoginForm from "~/components/LoginForm";
 
@@ -18,12 +20,12 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
             if (registered) {
               const { redirect_to } = queryParamsFromPath(location.href);
               if (redirect_to && destinationHasSameHost(redirect_to)) {
-                location.href = redirect_to;
+                visit(redirect_to, { action: "replace" });
               } else {
                 const worldPath = withTrailingSlash(
                   routes.userWorld.show.path({ query }),
                 );
-                location.href = worldPath;
+                visit(worldPath, { action: "replace" });
               }
             } else {
               const registrationPath = routes.registrations.new.path({ query });
@@ -37,7 +39,7 @@ const LoginPage: PageComponent<LoginPageProps> = () => {
 };
 
 LoginPage.layout = page => (
-  <AppLayout title="sign in">
+  <AppLayout title="sign in" hideTitleOnNative>
     <Center style={{ flexGrow: 1 }}>{page}</Center>
   </AppLayout>
 );

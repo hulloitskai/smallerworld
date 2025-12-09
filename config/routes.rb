@@ -146,7 +146,7 @@ Rails.application.routes.draw do
       # == Space Posts ==
       resources(
         :posts,
-        only: %i[index create],
+        only: %i[new index create],
         export: { namespace: "spacePosts" },
       ) do
         collection do

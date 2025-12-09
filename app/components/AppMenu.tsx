@@ -1,3 +1,4 @@
+import { visit } from "@hotwired/turbo?client";
 import { type InertiaLinkProps } from "@inertiajs/react";
 import { Image, Loader, type MenuItemProps, Text } from "@mantine/core";
 
@@ -114,7 +115,7 @@ const LogoutItem: FC<LogoutItemProps> = ({ onClose, ...otherProps }) => {
   const { trigger, mutating } = useRouteMutation(routes.sessions.destroy, {
     descriptor: "sign out",
     onSuccess: () => {
-      location.href = routes.landing.show.path();
+      visit(routes.landing.show.path());
       onClose();
     },
   });

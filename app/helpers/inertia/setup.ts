@@ -1,4 +1,4 @@
-import { visit as turboVisit } from "@hotwired/turbo";
+import { visit as turboVisit } from "@hotwired/turbo?client";
 import { hrefToUrl, router } from "@inertiajs/core";
 import { closeAllModals } from "@mantine/modals";
 import { AxiosHeaders } from "axios";

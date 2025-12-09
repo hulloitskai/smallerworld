@@ -17,6 +17,7 @@ export interface AppMetaProps {
   noIndex?: boolean;
   manifestUrl?: string | null;
   pwaScope?: string | null;
+  hideTitleOnNative?: boolean;
 }
 
 const AppMeta: FC<AppMetaProps> = ({
@@ -27,6 +28,7 @@ const AppMeta: FC<AppMetaProps> = ({
   title: titleProp,
   manifestUrl,
   pwaScope = manifestUrl ? dirname(manifestUrl) : undefined,
+  hideTitleOnNative,
 }) => {
   const isNative = useIsHotwireNative();
 
@@ -56,7 +58,9 @@ const AppMeta: FC<AppMetaProps> = ({
 
   return (
     <Head>
-      <title head-key="title">{tabTitle}</title>
+      {hideTitleOnNative && isNative ? null : (
+        <title head-key="title">{tabTitle}</title>
+      )}
       {!!description && (
         <meta head-key="description" name="description" content={description} />
       )}

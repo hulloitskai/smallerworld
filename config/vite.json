@@ -14,7 +14,7 @@
     "publicOutputDir": "dist-dev",
     "port": 3036,
     "autoBuild": true,
-    "skipProxy": true
+    "skipProxy": false
   },
   "test": {
     "publicOutputDir": "dist-test",

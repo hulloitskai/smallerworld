@@ -112,6 +112,9 @@ module GeneratedPathHelpersModule
   def new_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_space_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def notification_settings_friend_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

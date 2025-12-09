@@ -112,6 +112,9 @@ module GeneratedUrlHelpersModule
   def new_session_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_space_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def notification_settings_friend_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

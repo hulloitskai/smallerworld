@@ -34,7 +34,7 @@ export default {
           },
         },
         "hotwire-native": {
-          "[data-hotwire-native] &": {
+          "[data-bridge-components] &": {
             "@mixin-content": {},
           },
         },

@@ -9,7 +9,7 @@ module Spaces
 
     # == Actions ==
 
-    # GET /spaces/:id/posts[?type=...][&q=...]
+    # GET /spaces/:space_id/posts[?type=...][&q=...]
     def index
       respond_to do |format|
         format.json do
@@ -44,7 +44,22 @@ module Spaces
       end
     end
 
-    # GET /spaces/:id/posts/pinned
+    # GET /spaces/:space_id/posts/new?type=...
+    def new
+      respond_to do |format|
+        format.html do
+          type = T.let(params.fetch(:type), String)
+          space = find_space!
+          render(inertia: "NewSpacePostPage", props: {
+            space: SpaceSerializer.one(space),
+            type:,
+            "userWorld" => WorldSerializer.one_if(current_user&.world),
+          })
+        end
+      end
+    end
+
+    # GET /spaces/:space_id/posts/pinned
     def pinned
       respond_to do |format|
         format.json do

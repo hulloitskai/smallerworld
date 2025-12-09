@@ -68,6 +68,7 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   logoHref: logoHrefProp,
   manifestUrl: manifestUrlProp,
   pwaScope: pwaScopeProp,
+  hideTitleOnNative,
   ...appShellProps
 }: AppLayoutProps<PageProps>) => {
   // == Meta
@@ -92,7 +93,15 @@ const AppLayout = <PageProps extends SharedPageProps = SharedPageProps>({
   return (
     <>
       <AppMeta
-        {...{ title, description, imageUrl, noIndex, manifestUrl, pwaScope }}
+        {...{
+          title,
+          description,
+          imageUrl,
+          noIndex,
+          manifestUrl,
+          pwaScope,
+          hideTitleOnNative,
+        }}
       />
       <PageLayout>
         <PageDialogStateProvider>

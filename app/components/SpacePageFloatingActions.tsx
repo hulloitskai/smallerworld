@@ -6,6 +6,7 @@ import DraftCircleIcon from "~icons/heroicons/ellipsis-horizontal-circle-20-soli
 import MegaphoneIcon from "~icons/heroicons/megaphone-20-solid";
 import NewIcon from "~icons/heroicons/pencil-square-20-solid";
 
+import { isHotwireNative } from "~/helpers/hotwire";
 import { NEKO_SIZE } from "~/helpers/neko";
 import {
   POST_TYPE_TO_ICON,
@@ -130,10 +131,21 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
                           ),
                         })}
                         onClick={() => {
-                          openNewSpacePostModal({
-                            spaceId: space.id,
-                            postType,
-                          });
+                          if (isHotwireNative()) {
+                            router.visit(
+                              routes.spacePosts.new.path({
+                                space_id: space.id,
+                                query: {
+                                  type: postType,
+                                },
+                              }),
+                            );
+                          } else {
+                            openNewSpacePostModal({
+                              spaceId: space.id,
+                              postType,
+                            });
+                          }
                         }}
                       >
                         new {POST_TYPE_TO_LABEL[postType]}

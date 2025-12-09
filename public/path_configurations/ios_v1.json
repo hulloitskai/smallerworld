@@ -9,7 +9,14 @@
       }
     },
     {
-      "patterns": ["/login$"],
+      "patterns": ["^/login$"],
+      "properties": {
+        "context": "modal",
+        "pull_to_refresh_enabled": false
+      }
+    },
+    {
+      "patterns": ["/new$"],
       "properties": {
         "context": "modal",
         "pull_to_refresh_enabled": false
