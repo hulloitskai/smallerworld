@@ -15,9 +15,9 @@ class PostSharesController < ApplicationController
         post = share.post!
         world = post.world!
         repliers = PostReplyReceipt
-          .where(post:)
+          .where(post:, replier_type: "Friend")
           .distinct
-          .count(:friend_id)
+          .count(:replier_id)
         if (actor = current_friend || current_user)
           seen = actor.post_views.exists?(post:)
           replied = actor.post_reply_receipts.exists?(post:)
