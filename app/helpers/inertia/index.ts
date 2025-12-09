@@ -8,4 +8,3 @@ export {
   usePageProps,
 } from "./page";
 export { useQueryParams } from "./routing";
-export { setupInertia } from "./setup";

@@ -10,6 +10,9 @@ export const setupInertia = (): void => {
     if (csrfToken) {
       visit.headers["X-CSRF-Token"] = csrfToken;
     }
+    if (!visit.preserveState) {
+      closeAllModals();
+    }
   });
   router.on("success", ({ detail: { page } }) => {
     const props = page.props as unknown as Partial<SharedPageProps>;
@@ -73,10 +76,5 @@ export const setupInertia = (): void => {
       "An unexpected error occurred during an Inertia visit",
       event.detail.exception,
     );
-  });
-  router.on("before", ({ detail: { visit } }) => {
-    if (!visit.preserveState) {
-      closeAllModals();
-    }
   });
 };

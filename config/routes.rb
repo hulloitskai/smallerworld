@@ -358,6 +358,7 @@ Rails.application.routes.draw do
     "https://app.dub.co/smallerworld/links",
     status: 302,
   )
+  inertia "/splash" => "SplashPage"
   inertia "/update1" => "Update1Page"
 
   # == Devtools ==
