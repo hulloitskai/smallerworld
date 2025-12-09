@@ -61,7 +61,7 @@ const pageImports = import.meta.glob("~/pages/*.tsx", {
 }) as Record<string, () => Promise<PageComponent>>;
 const pages = parsePageImports(pageImports);
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("turbo:load", () => {
   void createInertiaApp({
     progress: false,
     resolve: async name => {

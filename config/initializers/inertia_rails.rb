@@ -7,7 +7,9 @@ InertiaRails.configure do |config|
     port = ENV.fetch("INERTIA_PORT", 13714).to_i
     "http://localhost:#{port}"
   end
-  unless Rails.env.development?
+  if Rails.env.development?
+    config.ssr_enabled = ENV["INERTIA_SSR"].truthy?
+  else
     config.ssr_enabled = ViteRuby.config.ssr_build_enabled
     config.version = ViteRuby.digest
   end
