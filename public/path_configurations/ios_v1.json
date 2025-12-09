@@ -7,13 +7,6 @@
         "context": "default",
         "pull_to_refresh_enabled": true
       }
-    },
-    {
-      "patterns": ["/login$"],
-      "properties": {
-        "context": "modal",
-        "pull_to_refresh_enabled": false
-      }
     }
   ]
 }
