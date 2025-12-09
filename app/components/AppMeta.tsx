@@ -46,7 +46,7 @@ const AppMeta: FC<AppMetaProps> = ({
   );
   const tabTitle = useMemo<string>(() => {
     const components = [pageTitle];
-    if (!isNative) {
+    if (isNative === false) {
       components.push(siteName);
     }
     return components
