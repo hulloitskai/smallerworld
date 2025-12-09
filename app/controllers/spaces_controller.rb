@@ -14,7 +14,7 @@ class SpacesController < ApplicationController
         end
 
         user_world = current_user&.world
-        render(inertia: "SpacePage", props: {
+        render(inertia: "SpacePage", world_theme: "cloudflow", props: {
           space: SpaceSerializer.one(space),
           "userWorld" => WorldSerializer.one_if(user_world),
         })
