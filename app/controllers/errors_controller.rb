@@ -14,6 +14,9 @@ class ErrorsController < ApplicationController
           description: "the page you were looking for doesn't exist!",
         )
       end
+      format.json do
+        render_json_error(status: :not_found, message: "page not found")
+      end
     end
   end
 
@@ -28,6 +31,12 @@ class ErrorsController < ApplicationController
             "sorry about this, but something went wrong while processing " \
             "your request! our team has been notified.",
           error: exception,
+        )
+      end
+      format.json do
+        render_json_error(
+          status: :internal_server_error,
+          message: "internal error",
         )
       end
     end
@@ -46,6 +55,12 @@ class ErrorsController < ApplicationController
           error: exception,
         )
       end
+      format.json do
+        render_json_error(
+          status: :unprocessable_content,
+          message: "change rejected",
+        )
+      end
     end
   end
 
@@ -60,6 +75,9 @@ class ErrorsController < ApplicationController
             "you're not allowed to access this resource or perform this " \
             "action.",
         )
+      end
+      format.json do
+        render_json_error(status: :unauthorized, message: "unauthorized")
       end
     end
   end
@@ -104,6 +122,11 @@ class ErrorsController < ApplicationController
         render(plain: message, status:)
       end
     end
+  end
+
+  sig { params(status: Symbol, message: String).void }
+  def render_json_error(status:, message:)
+    render(json: { error: message }, status:)
   end
 
   sig { returns(T.nilable(Exception)) }
