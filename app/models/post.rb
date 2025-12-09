@@ -263,10 +263,10 @@ class Post < ApplicationRecord
     friend = T.cast(friend, Friend)
     not_hidden_from(friend).or(secretly_visible_to(friend))
   }
-  scope :user_created, -> {
+  scope :auto_generated, -> {
     where(
       World.where("worlds.id = posts.world_id")
-          .where("posts.updated_at > worlds.created_at + INTERVAL '1 second'")
+          .where("posts.updated_at <= worlds.created_at + INTERVAL '1 second'")
           .arel.exists,
     )
   }
@@ -385,9 +385,12 @@ class Post < ApplicationRecord
   # == Methods ==
 
   sig { returns(T::Boolean) }
-  def user_created?
-    world = world!
-    updated_at > (world.created_at + 1.second)
+  def auto_generated?
+    if (world = self.world)
+      updated_at <= (world.created_at + 1.second)
+    else
+      false
+    end
   end
 
   sig { void }
@@ -431,7 +434,7 @@ class Post < ApplicationRecord
 
   sig { returns(T::Boolean) }
   def send_notifications?
-    user_created? && (friend_ids_to_notify.present? || visibility == :public)
+    auto_generated? && (friend_ids_to_notify.present? || visibility == :public)
   end
 
   sig { returns(Friend::PrivateAssociationRelation) }

@@ -83,7 +83,7 @@ module Users
             end
           end
           scope = authorized_scope(Post.in_world)
-            .user_created
+            .where.not(id: Post.auto_generated.select(:id))
             .with_world
             .with_attached_images
             .with_quoted_post_and_attached_images

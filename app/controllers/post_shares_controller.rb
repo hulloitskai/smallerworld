@@ -8,10 +8,7 @@ class PostSharesController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        share = find_share!(scope: PostShare.includes(
-          :post,
-          :sharer,
-        ))
+        share = find_share!(scope: PostShare.includes(:post, :sharer))
         post = share.post!
         world = post.world!
         repliers = PostReplyReceipt

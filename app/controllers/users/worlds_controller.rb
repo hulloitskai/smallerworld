@@ -27,6 +27,8 @@ module Users
               .select(:id, :created_at, :emoji)
               .first(3 - latest_friends.size)
           end
+          user_created_posts = world.posts
+            .where.not(id: world.posts.auto_generated.select(:id))
           render(
             inertia: "UserWorldPage",
             world_theme: world.theme,
@@ -40,7 +42,7 @@ module Users
               "pendingJoinRequests" => world.join_requests.pending.count,
               "pendingInvitations" => world.invitations.pending.count,
               "hasAtLeastOneUserCreatedPost" =>
-                world.posts.user_created.exists?,
+                user_created_posts.exists?,
             },
           )
         end
