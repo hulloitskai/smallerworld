@@ -196,6 +196,7 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
     <>
       <RemoveScroll
         enabled={
+          isNative === false &&
           isStandalone &&
           !outOfPWAScope &&
           !pushRegistration &&
