@@ -11,7 +11,7 @@ const SplashPage: PageComponent<SplashPageProps> = () => {
   useEffect(() => {
     setColorScheme("light");
     setTimeout(() => {
-      router.visit(routes.start.app.path());
+      router.visit(routes.userSpaces.index.path());
     }, 200);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
@@ -20,7 +20,7 @@ const SplashPage: PageComponent<SplashPageProps> = () => {
         welcome to
       </Title>
       <Image src={logoSrc} h="unset" w={44} />
-      <Box ta="center">
+      <Box ta="center" mb="sm">
         <Title size="h2">smaller world</Title>
         <Text ff="heading" fw={600} c="dimmed">
           please come stay a while :)

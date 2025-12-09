@@ -2,7 +2,7 @@ import "requestidlecallback-polyfill";
 
 import { createInertiaApp } from "@inertiajs/react";
 import { reactErrorHandler } from "@sentry/react";
-import { createRoot, hydrateRoot } from "react-dom/client";
+import { createRoot, hydrateRoot, type Root } from "react-dom/client";
 
 import AppWrapper from "~/components/AppWrapper";
 import { preparePage } from "~/components/inertia/client";
@@ -61,6 +61,7 @@ const pageImports = import.meta.glob("~/pages/*.tsx", {
 }) as Record<string, () => Promise<PageComponent>>;
 const pages = parsePageImports(pageImports);
 
+// == Render
 document.addEventListener("turbo:load", () => {
   void createInertiaApp({
     progress: false,
@@ -88,9 +89,10 @@ document.addEventListener("turbo:load", () => {
           onRecoverableError: reactErrorHandler(),
         });
       } else {
-        createRoot(el, {
+        const root = createRoot(el, {
           onRecoverableError: reactErrorHandler(),
-        }).render(app);
+        });
+        root.render(app);
       }
     },
     defaults: {

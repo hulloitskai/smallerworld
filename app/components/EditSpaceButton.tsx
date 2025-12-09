@@ -27,10 +27,13 @@ const EditSpaceButton: FC<EditSpaceButtonProps> = ({
         onClick={() => {
           setDrawerModalOpened(true);
         }}
-        mod={{ controller: "bridge--button" }}
+        {...(isNative && {
+          "data-controller": "bridge--button",
+          title: "edit",
+        })}
         {...otherProps}
       >
-        {isNative ? "edit" : "edit space"}
+        edit space
       </Button>
       <DrawerModal
         title="edit space"

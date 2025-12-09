@@ -123,15 +123,17 @@ const SpacePage: PageComponent<SpacePageProps> = ({ space }) => {
       </Box>
       <Box pos="relative">
         <Stack>
-          {(isStandalone === false || outOfPWAScope) && !!currentUser && (
-            <AppInstallAlert>
-              get notified about new posts in{" "}
-              <Text span inherit fw={600}>
-                {space.name}
-              </Text>{" "}
-              :)
-            </AppInstallAlert>
-          )}
+          {isNative === false &&
+            (isStandalone === false || outOfPWAScope) &&
+            !!currentUser && (
+              <AppInstallAlert>
+                get notified about new posts in{" "}
+                <Text span inherit fw={600}>
+                  {space.name}
+                </Text>{" "}
+                :)
+              </AppInstallAlert>
+            )}
           {posts ? (
             isEmpty(posts) ? (
               <EmptyCard itemLabel="posts" />

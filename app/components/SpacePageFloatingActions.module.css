@@ -8,6 +8,12 @@
   --affix-right: var(--affix-inset);
 
   pointer-events: none;
+
+  @mixin hotwire-native {
+    --affix-bottom: calc(
+      var(--app-shell-footer-height, 0px) + var(--safe-area-inset-bottom, 0px)
+    );
+  }
 }
 
 .space {

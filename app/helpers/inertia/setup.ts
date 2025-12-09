@@ -9,11 +9,6 @@ import { isHotwireNative } from "../hotwire";
 
 export const setupInertia = (): void => {
   router.on("before", ({ detail: { visit } }) => {
-    turboVisit(visit.url.toString(), {
-      action: visit.replace ? "replace" : "advance",
-    });
-    return false;
-
     if (isHotwireNative()) {
       turboVisit(visit.url.toString(), {
         action: visit.replace ? "replace" : "advance",
