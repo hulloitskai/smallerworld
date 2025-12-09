@@ -93,5 +93,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }).render(app);
       }
     },
+    defaults: {
+      visitOptions: (href, { headers }) => {
+        const csrfToken = getMeta("csrf-token");
+        return {
+          viewTransition: true,
+          headers: {
+            ...headers,
+            ...(csrfToken && {
+              "X-CSRF-Token": csrfToken,
+            }),
+          },
+        };
+      },
+    },
   });
 });
