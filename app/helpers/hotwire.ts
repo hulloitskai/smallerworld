@@ -1,5 +1,10 @@
 export const setupTurbo = (): void => {
-  void import("@hotwired/turbo");
+  void import("@hotwired/turbo").then(() => {
+    if (!isHotwireNative()) {
+      // @ts-expect-error - Bad TS types
+      Turbo.session.drive = false;
+    }
+  });
 };
 
 export const isHotwireNative = (): boolean => {
