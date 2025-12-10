@@ -67,6 +67,7 @@ document.addEventListener("turbo:load", () => {
     // Skip rendering during preview; wait for full page load.
     return;
   }
+  console.info("Rendering Inertia app with ReactDOM");
   void createInertiaApp({
     progress: false,
     resolve: async name => {

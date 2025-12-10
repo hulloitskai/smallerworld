@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "P5V867R477.club.smallerworld.ios"
+        ],
+        "components": [
+          {
+            "/": "/spaces/*",
+            "comment": "Open space pages in the app"
+          }
+        ]
+      }
+    ]
+  }
+}
