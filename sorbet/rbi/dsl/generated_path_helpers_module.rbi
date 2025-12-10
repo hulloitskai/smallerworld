@@ -118,6 +118,9 @@ module GeneratedPathHelpersModule
   def new_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def new_space_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def new_space_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

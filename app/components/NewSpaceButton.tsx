@@ -1,5 +1,7 @@
 import { type ButtonProps } from "@mantine/core";
 
+import { isHotwireNative } from "~/helpers/hotwire";
+
 import DrawerModal from "./DrawerModal";
 import NewSpaceForm, { type NewSpaceFormProps } from "./NewSpaceForm";
 
@@ -19,7 +21,11 @@ const NewSpaceButton: FC<NewSpaceButtonProps> = ({
         leftSection={<Box component={SpaceIcon} fz="sm" />}
         className={cn("NewSpaceButton", className)}
         onClick={() => {
-          setDrawerModalOpened(true);
+          if (isHotwireNative()) {
+            router.visit(routes.spaces.new.path());
+          } else {
+            setDrawerModalOpened(true);
+          }
         }}
         {...otherProps}
       >

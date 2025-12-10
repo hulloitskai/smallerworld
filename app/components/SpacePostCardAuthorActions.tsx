@@ -131,7 +131,9 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
             data-bridge-description="you can't undo this action"
             data-bridge-destructive="true"
             onClick={() => {
-              if (!isHotwireNative()) {
+              if (isHotwireNative()) {
+                void deletePost();
+              } else {
                 openConfirmModal({
                   title: "really delete post?",
                   centered: true,
@@ -155,8 +157,6 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
                     void deletePost();
                   },
                 });
-              } else {
-                void deletePost();
               }
             }}
           >
