@@ -8,6 +8,7 @@ class SpaceSerializer < ApplicationSerializer
   attributes :name,
              :description,
              :theme,
+             :public,
              :owner_id,
              friendly_id: { type: :string }
 

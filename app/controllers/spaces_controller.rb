@@ -22,27 +22,6 @@ class SpacesController < ApplicationController
     end
   end
 
-  # GET /spaces/new
-  def new
-    respond_to do |format|
-      format.html do
-        render(inertia: "NewSpacePage", world_theme: "cloudflow")
-      end
-    end
-  end
-
-  # GET /spaces/:id/edit
-  def edit
-    respond_to do |format|
-      format.html do
-        space = find_space!
-        render(inertia: "EditSpacePage", world_theme: "cloudflow", props: {
-          space: SpaceSerializer.one(space),
-        })
-      end
-    end
-  end
-
   private
 
   # == Helpers ==

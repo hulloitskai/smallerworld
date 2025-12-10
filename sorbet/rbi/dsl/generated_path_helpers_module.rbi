@@ -46,10 +46,10 @@ module GeneratedPathHelpersModule
   def download_image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def edit_space_path(*args); end
+  def edit_spaces_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def edit_spaces_post_path(*args); end
+  def edit_user_space_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def edit_user_world_path(*args); end
@@ -118,10 +118,10 @@ module GeneratedPathHelpersModule
   def new_session_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_space_path(*args); end
+  def new_space_post_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
-  def new_space_post_path(*args); end
+  def new_user_space_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
   def notification_settings_friend_path(*args); end

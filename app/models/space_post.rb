@@ -5,7 +5,7 @@ class SpacePost < T::Struct
   extend T::Sig
 
   const :post, T.any(Post, MaskedPost)
-  delegate :author, to: :post
+  delegate :author, :pen_name, to: :post
 
   const :repliers, Integer
   const :replied, T::Boolean

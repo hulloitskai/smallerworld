@@ -853,6 +853,51 @@ class Space
     sig { void }
     def owner_id_will_change!; end
 
+    sig { returns(T::Boolean) }
+    def public; end
+
+    sig { params(value: T::Boolean).returns(T::Boolean) }
+    def public=(value); end
+
+    sig { returns(T::Boolean) }
+    def public?; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def public_before_last_save; end
+
+    sig { returns(T.untyped) }
+    def public_before_type_cast; end
+
+    sig { returns(T::Boolean) }
+    def public_came_from_user?; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def public_change; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def public_change_to_be_saved; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def public_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def public_in_database; end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def public_previous_change; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def public_previously_changed?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def public_previously_was; end
+
+    sig { returns(T.nilable(T::Boolean)) }
+    def public_was; end
+
+    sig { void }
+    def public_will_change!; end
+
     sig { void }
     def restore_created_at!; end
 
@@ -870,6 +915,9 @@ class Space
 
     sig { void }
     def restore_owner_id!; end
+
+    sig { void }
+    def restore_public!; end
 
     sig { void }
     def restore_theme!; end
@@ -912,6 +960,12 @@ class Space
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def saved_change_to_owner_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { returns(T.nilable([T::Boolean, T::Boolean])) }
+    def saved_change_to_public; end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def saved_change_to_public?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { returns(T.nilable([T.nilable(::String), T.nilable(::String)])) }
     def saved_change_to_theme; end
@@ -1032,6 +1086,9 @@ class Space
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_owner_id?(from: T.unsafe(nil), to: T.unsafe(nil)); end
+
+    sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
+    def will_save_change_to_public?(from: T.unsafe(nil), to: T.unsafe(nil)); end
 
     sig { params(from: T.untyped, to: T.untyped).returns(T::Boolean) }
     def will_save_change_to_theme?(from: T.unsafe(nil), to: T.unsafe(nil)); end

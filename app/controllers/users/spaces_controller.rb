@@ -24,12 +24,37 @@ module Users
       end
     end
 
+    # GET /world/spaces/new
+    def new
+      respond_to do |format|
+        format.html do
+          render(inertia: "NewUserSpacePage", world_theme: "cloudflow")
+        end
+      end
+    end
+
+    # GET /world/spaces/:id/edit
+    def edit
+      respond_to do |format|
+        format.html do
+          space = find_space!
+          render(
+            inertia: "EditUserSpacePage",
+            world_theme: "cloudflow",
+            props: {
+              space: SpaceSerializer.one(space),
+            },
+          )
+        end
+      end
+    end
+
     # POST /world/spaces
     def create
       respond_to do |format|
         format.json do
           current_user = authenticate_user!
-          space_params = params.expect(space: %i[name description icon])
+          space_params = params.expect(space: %i[name description icon public])
           space = current_user.owned_spaces.build(**space_params)
           if space.save
             render(json: {
@@ -53,7 +78,7 @@ module Users
         format.json do
           space = find_space!
           authorize!(space)
-          space_params = params.expect(space: %i[name description icon])
+          space_params = params.expect(space: %i[name description icon public])
           if space.update(space_params)
             render(json: {
               space: SpaceSerializer.one(space),

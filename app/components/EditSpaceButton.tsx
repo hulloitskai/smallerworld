@@ -25,7 +25,9 @@ const EditSpaceButton: FC<EditSpaceButtonProps> = ({
         className={cn("EditSpaceButton", className)}
         onClick={() => {
           if (isHotwireNative()) {
-            router.visit(routes.spaces.edit.path({ id: space.friendly_id }));
+            router.visit(
+              routes.userSpaces.edit.path({ id: space.friendly_id }),
+            );
           } else {
             setDrawerModalOpened(true);
           }

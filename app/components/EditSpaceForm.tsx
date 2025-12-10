@@ -16,7 +16,7 @@ const EditSpaceForm: FC<EditSpaceFormProps> = ({
   onSpaceUpdated,
   ...otherProps
 }) => {
-  const { values, getInputProps, submitting, submit } = useForm({
+  const { values, getInputProps, submitting, submit, isDirty } = useForm({
     action: routes.userSpaces.update,
     params: { id: space.id },
     descriptor: "update space",
@@ -24,6 +24,7 @@ const EditSpaceForm: FC<EditSpaceFormProps> = ({
       name: space.name,
       description: space.description,
       icon_upload: space.icon ? imageUpload(space.icon) : null,
+      public: space.public,
     },
     transformValues: ({ name, description, icon_upload }) => ({
       space: {
@@ -75,6 +76,10 @@ const EditSpaceForm: FC<EditSpaceFormProps> = ({
             w={ICON_IMAGE_INPUT_SIZE}
             radius={ICON_IMAGE_INPUT_SIZE / WORLD_ICON_RADIUS_RATIO}
           />
+          <Checkbox
+            {...getInputProps("public", { type: "checkbox" })}
+            label="show on spaces tab for all users"
+          />
         </Stack>
         <Button
           type="submit"
@@ -82,7 +87,7 @@ const EditSpaceForm: FC<EditSpaceFormProps> = ({
           variant="filled"
           leftSection={<SaveIcon />}
           loading={submitting}
-          disabled={!values.name || !values.description}
+          disabled={!isDirty() || !values.name || !values.description}
         >
           save changes
         </Button>

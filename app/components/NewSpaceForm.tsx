@@ -20,6 +20,7 @@ const NewSpaceForm: FC<NewSpaceFormProps> = ({
       name: "",
       description: "",
       icon_upload: null as Upload | null,
+      public: false,
     },
     transformValues: ({ name, description, icon_upload }) => ({
       space: {
@@ -70,6 +71,10 @@ const NewSpaceForm: FC<NewSpaceFormProps> = ({
             h={ICON_IMAGE_INPUT_SIZE}
             w={ICON_IMAGE_INPUT_SIZE}
             radius={ICON_IMAGE_INPUT_SIZE / WORLD_ICON_RADIUS_RATIO}
+          />
+          <Checkbox
+            {...getInputProps("public", { type: "checkbox" })}
+            label="show on spaces tab for all users"
           />
         </Stack>
         <Button

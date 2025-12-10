@@ -22,7 +22,7 @@ const NewSpaceButton: FC<NewSpaceButtonProps> = ({
         className={cn("NewSpaceButton", className)}
         onClick={() => {
           if (isHotwireNative()) {
-            router.visit(routes.spaces.new.path());
+            router.visit(routes.userSpaces.new.path());
           } else {
             setDrawerModalOpened(true);
           }

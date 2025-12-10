@@ -8,6 +8,7 @@ class SpacePostSerializer < ApplicationSerializer
              seen: { type: :boolean },
              replied: { type: :boolean },
              author_name: { type: :string },
+             pen_name: { type: :string, nullable: true },
              reply_to_number: { type: :string, nullable: true }
 
   # == Associations ==
