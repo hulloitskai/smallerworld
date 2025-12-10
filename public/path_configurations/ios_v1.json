@@ -19,6 +19,7 @@
       "patterns": ["/new$"],
       "properties": {
         "context": "modal",
+        "modal_style": "medium",
         "pull_to_refresh_enabled": false
       }
     }

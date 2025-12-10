@@ -15,7 +15,15 @@ const NewSpacePostPage: PageComponent<NewSpacePostPageProps> = ({
 }) => {
   useWorldTheme("cloudflow");
 
-  return <NewSpacePostForm spaceId={space.id} {...{ postType }} />;
+  return (
+    <NewSpacePostForm
+      spaceId={space.id}
+      {...{ postType }}
+      onPostCreated={() => {
+        router.visit(routes.spaces.show.path({ id: space.friendly_id }));
+      }}
+    />
+  );
 };
 
 NewSpacePostPage.layout = page => (
