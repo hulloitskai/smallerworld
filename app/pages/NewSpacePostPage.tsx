@@ -17,9 +17,7 @@ const NewSpacePostPage: PageComponent<NewSpacePostPageProps> = ({
       spaceId={space.id}
       {...{ postType }}
       onPostCreated={() => {
-        router.visit(routes.spaces.show.path({ id: space.friendly_id }), {
-          replace: true,
-        });
+        router.visit(routes.spaces.show.path({ id: space.friendly_id }));
       }}
     />
   );

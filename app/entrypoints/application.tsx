@@ -2,7 +2,7 @@ import "requestidlecallback-polyfill";
 
 import { createInertiaApp } from "@inertiajs/react";
 import { reactErrorHandler } from "@sentry/react";
-import { createRoot, hydrateRoot, type Root } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 
 import AppWrapper from "~/components/AppWrapper";
 import { preparePage } from "~/components/inertia/client";

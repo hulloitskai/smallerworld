@@ -12,9 +12,7 @@ const EditSpacePage: PageComponent<EditSpacePageProps> = ({ space }) => {
     <EditSpaceForm
       {...{ space }}
       onSpaceUpdated={space => {
-        router.visit(routes.spaces.show.path({ id: space.friendly_id }), {
-          replace: true,
-        });
+        router.visit(routes.spaces.show.path({ id: space.friendly_id }));
       }}
     />
   );
