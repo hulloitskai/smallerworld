@@ -48,12 +48,12 @@ module Spaces
     def new
       respond_to do |format|
         format.html do
-          type = T.let(params.fetch(:type), String)
+          post_type = T.let(params.fetch(:type), String)
           space = find_space!
           render(inertia: "NewSpacePostPage", props: {
             space: SpaceSerializer.one(space),
-            type:,
             "userWorld" => WorldSerializer.one_if(current_user&.world),
+            "postType" => post_type,
           })
         end
       end
