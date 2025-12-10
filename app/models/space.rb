@@ -94,8 +94,13 @@ class Space < ApplicationRecord
   end
 
   # == Validations ==
+
   validates :name, presence: true, uniqueness: { scope: :owner }
   validates :description, presence: true
+
+  # == Scopes ==
+
+  scope :publicly_visible, -> { where(public: true) }
 
   # sig { params(id: String).returns(Space) }
   # def self.friendly_find(id)
