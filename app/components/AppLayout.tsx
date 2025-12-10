@@ -185,8 +185,6 @@ const AppInner: FC<AppInnerProps> = ({
     <>
       <AppShell
         withBorder={LAYOUT_WITH_BORDER}
-        component="turbo-frame"
-        id="layout"
         {...(isNative === false &&
           (isStandalone === false || outOfPWAScope) && {
             header: { height: 46 },

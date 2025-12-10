@@ -45,6 +45,8 @@ const WorldThemeProvider: FC<WorldThemeProviderProps> = ({ children }) => {
         <Box
           className={classes.backdrop}
           role="backdrop"
+          data-turbo-permanent
+          id="backdrop"
           style={{
             backgroundColor: WORLD_THEME_BACKGROUND_COLORS[worldTheme],
             ...(!plainBackground && {
