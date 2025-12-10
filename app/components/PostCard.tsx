@@ -12,6 +12,7 @@ import { Spotify } from "react-spotify-embed";
 import ExpandIcon from "~icons/heroicons/chevron-down-20-solid";
 import LockIcon from "~icons/heroicons/lock-closed-20-solid";
 
+import { isHotwireNative } from "~/helpers/hotwire";
 import { clampedImageDimensions } from "~/helpers/images";
 import { POST_TYPE_TO_ICON, POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { useWebPush } from "~/helpers/webPush";
@@ -119,11 +120,23 @@ const PostCard: FC<PostCardProps> = ({
           className={classes.promptCard}
           onClick={() => {
             if (post.space_id) {
-              openNewSpacePostModal({
-                spaceId: post.space_id,
-                postType: "response",
-                prompt,
-              });
+              if (isHotwireNative()) {
+                router.visit(
+                  routes.spacePosts.new.path({
+                    space_id: post.space_id,
+                    query: {
+                      type: "response",
+                      prompt_id: prompt.id,
+                    },
+                  }),
+                );
+              } else {
+                openNewSpacePostModal({
+                  spaceId: post.space_id,
+                  postType: "response",
+                  prompt,
+                });
+              }
             } else if (post.world_id) {
               openNewWorldPostModal({
                 worldId: post.world_id,
