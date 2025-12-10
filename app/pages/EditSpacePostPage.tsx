@@ -19,7 +19,9 @@ const EditSpacePostPage: PageComponent<EditSpacePostPageProps> = ({
       spaceId={space.id}
       {...{ post }}
       onPostUpdated={() => {
-        router.visit(routes.spaces.show.path({ id: space.friendly_id }));
+        router.visit(routes.spaces.show.path({ id: space.friendly_id }), {
+          replace: true,
+        });
       }}
     />
   );
