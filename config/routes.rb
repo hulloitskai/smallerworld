@@ -157,7 +157,7 @@ Rails.application.routes.draw do
   end
   namespace :spaces do
     resources :posts,
-              only: %i[update destroy],
+              only: %i[edit update destroy],
               export: { namespace: "spacePosts" }
   end
 

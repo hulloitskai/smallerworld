@@ -49,6 +49,9 @@ module GeneratedUrlHelpersModule
   def edit_space_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_spaces_post_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_user_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

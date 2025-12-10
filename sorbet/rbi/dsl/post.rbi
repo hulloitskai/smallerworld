@@ -685,6 +685,9 @@ class Post
     def in_order_of(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
+    def in_space(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
     def in_world(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateAssociationRelation) }
@@ -2087,6 +2090,9 @@ class Post
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def in_order_of(*args, &blk); end
+
+    sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
+    def in_space(*args, &blk); end
 
     sig { params(args: T.untyped, blk: T.untyped).returns(PrivateRelation) }
     def in_world(*args, &blk); end

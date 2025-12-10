@@ -194,6 +194,11 @@ class Post < ApplicationRecord
     world or raise ActiveRecord::RecordNotFound, "Missing world"
   end
 
+  sig { returns(Space) }
+  def space!
+    space or raise ActiveRecord::RecordNotFound, "Missing space"
+  end
+
   sig { returns(T::Boolean) }
   def in_space? = space_id?
 
@@ -279,6 +284,7 @@ class Post < ApplicationRecord
   scope :with_author_world, -> { includes(author: :world) }
   scope :with_world, -> { includes(:world) }
   scope :in_world, -> { where.not(world_id: nil) }
+  scope :in_space, -> { where.not(space_id: nil) }
 
   # == Noticeable ==
 

@@ -58,6 +58,19 @@ module Spaces
       end
     end
 
+    # GET /spaces/posts/:id/edit
+    def edit
+      respond_to do |format|
+        format.html do
+          post = find_post!(scope: Post.in_space)
+          render(inertia: "EditSpacePostPage", props: {
+            space: SpaceSerializer.one(post.space!),
+            post: SpacePostSerializer.one(post),
+          })
+        end
+      end
+    end
+
     # GET /spaces/:space_id/posts/pinned
     def pinned
       respond_to do |format|

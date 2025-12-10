@@ -49,6 +49,9 @@ module GeneratedPathHelpersModule
   def edit_space_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_spaces_post_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_user_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

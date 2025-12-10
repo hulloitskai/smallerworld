@@ -98,22 +98,26 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
           <Menu.Item
             leftSection={<EditIcon />}
             onClick={() => {
-              onEditModalOpened?.();
-              const modalId = randomId();
-              openModal({
-                modalId,
-                title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
-                size: "var(--container-size-xs)",
-                children: (
-                  <EditSpacePostForm
-                    spaceId={space.id}
-                    {...{ post }}
-                    onPostUpdated={() => {
-                      closeModal(modalId);
-                    }}
-                  />
-                ),
-              });
+              if (isHotwireNative()) {
+                router.visit(routes.spacePosts.edit.path({ id: post.id }));
+              } else {
+                onEditModalOpened?.();
+                const modalId = randomId();
+                openModal({
+                  modalId,
+                  title: <>edit {POST_TYPE_TO_LABEL[post.type]}</>,
+                  size: "var(--container-size-xs)",
+                  children: (
+                    <EditSpacePostForm
+                      spaceId={space.id}
+                      {...{ post }}
+                      onPostUpdated={() => {
+                        closeModal(modalId);
+                      }}
+                    />
+                  ),
+                });
+              }
             }}
           >
             edit post
