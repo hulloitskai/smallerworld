@@ -53,7 +53,7 @@ module Spaces
           prompt = if (id = params[:prompt_id])
             Prompt.find(id)
           end
-          render(inertia: "NewSpacePostPage", props: {
+          render(inertia: "NewSpacePostPage", world_theme: "cloudflow", props: {
             space: SpaceSerializer.one(space),
             "postType" => post_type,
             prompt: PostPromptSerializer.one_if(prompt),
@@ -83,10 +83,14 @@ module Spaces
             replied:,
             seen:,
           )
-          render(inertia: "EditSpacePostPage", props: {
-            space: SpaceSerializer.one(post.space!),
-            post: SpacePostSerializer.one(space_post),
-          })
+          render(
+            inertia: "EditSpacePostPage",
+            world_theme: "cloudflow",
+            props: {
+              space: SpaceSerializer.one(post.space!),
+              post: SpacePostSerializer.one(space_post),
+            },
+          )
         end
       end
     end

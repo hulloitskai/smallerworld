@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 class PromptsController < ApplicationController
-  # "GET /prompt_decks/:prompt_deck_id/prompts"
+  # GET /prompt_decks/:prompt_deck_id/prompts
   def index
     respond_to do |format|
       format.json do

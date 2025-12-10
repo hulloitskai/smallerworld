@@ -26,7 +26,7 @@ class SpacesController < ApplicationController
   def new
     respond_to do |format|
       format.html do
-        render(inertia: "NewSpacePage")
+        render(inertia: "NewSpacePage", world_theme: "cloudflow")
       end
     end
   end
@@ -36,7 +36,7 @@ class SpacesController < ApplicationController
     respond_to do |format|
       format.html do
         space = find_space!
-        render(inertia: "EditSpacePage", props: {
+        render(inertia: "EditSpacePage", world_theme: "cloudflow", props: {
           space: SpaceSerializer.one(space),
         })
       end
