@@ -1,0 +1,48 @@
+.reactionBadge {
+  flex-shrink: 0;
+  padding-inline: 3px;
+
+  :global(.mantine-Badge-section)[data-position="left"] {
+    @mixin emoji;
+
+    font-size: var(--mantine-font-size-lg);
+  }
+}
+
+.statsIcon {
+  color: var(--mantine-color-dimmed);
+  margin-right: 3px;
+  font-size: var(--mantine-font-size-xs);
+}
+
+.statsList {
+  --list-lh: 1;
+  --list-spacing: 4px;
+  --list-marker-gap: 0px;
+
+  :global(.mantine-List-item) {
+    --li-align: top;
+    font-size: var(--mantine-font-size-xs);
+  }
+
+  :global(.mantine-List-itemIcon) {
+    font-size: 11px;
+    margin-inline-end: 8px;
+    color: light-dark(
+      var(--mantine-color-primary-filled),
+      var(--mantine-color-white)
+    );
+  }
+}
+
+.postViewersTableEmoji {
+  @mixin emoji;
+
+  font-size: var(--mantine-font-size-lg);
+}
+
+.postViewersTableReactionGroup {
+  column-gap: 6px;
+  row-gap: 2px;
+  max-width: 100px;
+}

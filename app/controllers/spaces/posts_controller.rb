@@ -63,9 +63,25 @@ module Spaces
       respond_to do |format|
         format.html do
           post = find_post!(scope: Post.in_space)
+          replied = if (user = current_user)
+            user.post_reply_receipts.exists?(post:)
+          else
+            false
+          end
+          seen = if (user = current_user)
+            user.post_views.exists?(post:)
+          else
+            false
+          end
+          space_post = SpacePost.new(
+            post:,
+            repliers: post.repliers.count,
+            replied:,
+            seen:,
+          )
           render(inertia: "EditSpacePostPage", props: {
             space: SpaceSerializer.one(post.space!),
-            post: SpacePostSerializer.one(post),
+            post: SpacePostSerializer.one(space_post),
           })
         end
       end

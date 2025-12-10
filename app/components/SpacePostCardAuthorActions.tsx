@@ -12,7 +12,7 @@ import { type PostReaction, type Space, type SpacePost } from "~/types";
 
 import EditSpacePostForm from "./EditSpacePostForm";
 
-import classes from "./WorldPostCardAuthorActions.module.css";
+import classes from "./SpacePostCardAuthorActions.module.css";
 
 export interface SpacePostCardAuthorActionsProps
   extends Omit<BoxProps, "children"> {
@@ -124,6 +124,7 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
           </Menu.Item>
           <Menu.Item
             leftSection={<DeleteIcon />}
+            closeMenuOnClick
             data-controller="alert-bridge"
             data-action="alert-bridge#show"
             data-bridge-title="really delete post?"
