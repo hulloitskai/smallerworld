@@ -4,6 +4,7 @@ import { groupBy } from "lodash-es";
 
 import ActionsIcon from "~icons/heroicons/pencil-square-20-solid";
 
+import { isHotwireNative } from "~/helpers/hotwire";
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
 import { mutateRoute } from "~/helpers/routes/swr";
 import { mutateSpacePosts } from "~/helpers/spaces";
@@ -119,29 +120,37 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
           </Menu.Item>
           <Menu.Item
             leftSection={<DeleteIcon />}
+            data-controller="alert-bridge"
+            data-action="alert-bridge#show"
+            data-bridge-title="really delete post?"
+            data-bridge-description="you can't undo this action"
+            data-bridge-destructive="true"
             onClick={() => {
-              openConfirmModal({
-                title: "really delete post?",
-                children: <>you can't undo this action</>,
-                cancelProps: { variant: "light", color: "gray" },
-                groupProps: { gap: "xs" },
-                labels: {
-                  confirm: "do it",
-                  cancel: "wait nvm",
-                },
-                styles: {
-                  header: {
-                    minHeight: 0,
-                    paddingBottom: 0,
+              if (!isHotwireNative()) {
+                openConfirmModal({
+                  title: "really delete post?",
+                  centered: true,
+                  children: <>you can't undo this action</>,
+                  cancelProps: { variant: "light", color: "gray" },
+                  groupProps: { gap: "xs" },
+                  labels: {
+                    confirm: "do it",
+                    cancel: "wait nvm",
                   },
-                },
-                mod: {
-                  "disable-auto-fullscreen": true,
-                },
-                onConfirm: () => {
-                  void deletePost();
-                },
-              });
+                  styles: {
+                    header: {
+                      minHeight: 0,
+                      paddingBottom: 0,
+                    },
+                  },
+                  mod: {
+                    "disable-auto-fullscreen": true,
+                  },
+                  onConfirm: () => {
+                    void deletePost();
+                  },
+                });
+              }
             }}
           >
             delete post

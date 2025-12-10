@@ -30,7 +30,7 @@ const EditSpaceButton: FC<EditSpaceButtonProps> = ({
             setDrawerModalOpened(true);
           }
         }}
-        data-controller="bridge--button"
+        data-controller="button-bridge"
         data-bridge-title="edit"
         {...otherProps}
       >

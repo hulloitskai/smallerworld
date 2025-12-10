@@ -15,6 +15,6 @@
 
 /* == Bridge components == */
 
-[data-bridge-components~="button"] [data-controller~="bridge--button"] {
+[data-bridge-components~="button"] [data-controller~="button-bridge"] {
   display: none;
 }

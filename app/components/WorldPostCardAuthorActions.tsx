@@ -213,6 +213,7 @@ const WorldPostCardAuthorActions: FC<WorldPostCardAuthorActionsProps> = ({
               onClick={() => {
                 openConfirmModal({
                   title: "really delete post?",
+                  centered: true,
                   children: <>you can't undo this action</>,
                   cancelProps: { variant: "light", color: "gray" },
                   groupProps: { gap: "xs" },
