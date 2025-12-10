@@ -63,6 +63,10 @@ const pages = parsePageImports(pageImports);
 
 // == Render
 document.addEventListener("turbo:load", () => {
+  if (document.documentElement.hasAttribute("data-turbo-preview")) {
+    // Skip rendering during preview; wait for full page load.
+    return;
+  }
   void createInertiaApp({
     progress: false,
     resolve: async name => {
