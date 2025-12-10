@@ -225,12 +225,23 @@ const SpacePageFloatingActions: FC<SpacePageFloatingActionsProps> = () => {
           const deck = selectedDeck;
           setSelectedDeck(null);
           if (deck) {
-            openNewSpacePostModal({
-              spaceId: space.id,
-              postType: "response",
-              prompt: { ...prompt, deck },
-              keepMounted: true,
-            });
+            if (isHotwireNative()) {
+              router.visit(
+                routes.spacePosts.new.path({
+                  space_id: space.id,
+                  query: {
+                    type: "response",
+                    prompt_id: prompt.id,
+                  },
+                }),
+              );
+            } else {
+              openNewSpacePostModal({
+                spaceId: space.id,
+                postType: "response",
+                prompt: { ...prompt, deck },
+              });
+            }
           }
         }}
         onClose={() => {

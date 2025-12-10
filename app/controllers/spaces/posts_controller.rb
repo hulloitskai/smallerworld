@@ -44,15 +44,19 @@ module Spaces
       end
     end
 
-    # GET /spaces/:space_id/posts/new?type=...
+    # GET /spaces/:space_id/posts/new?type=...[&prompt_id=...]
     def new
       respond_to do |format|
         format.html do
           post_type = T.let(params.fetch(:type), String)
           space = find_space!
+          prompt = if (id = params[:prompt_id])
+            Prompt.find(id)
+          end
           render(inertia: "NewSpacePostPage", props: {
             space: SpaceSerializer.one(space),
             "postType" => post_type,
+            prompt: PostPromptSerializer.one_if(prompt),
           })
         end
       end

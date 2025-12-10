@@ -1,23 +1,25 @@
 import AppLayout from "~/components/AppLayout";
 import NewSpacePostForm from "~/components/NewSpacePostForm";
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type PostType, type Space } from "~/types";
+import { type PostPrompt, type PostType, type Space } from "~/types";
 
 export interface NewSpacePostPageProps extends SharedPageProps {
   space: Space;
   postType: PostType;
+  prompt: PostPrompt | null;
 }
 
 const NewSpacePostPage: PageComponent<NewSpacePostPageProps> = ({
   space,
   postType,
+  prompt,
 }) => {
   useWorldTheme("cloudflow", true);
 
   return (
     <NewSpacePostForm
       spaceId={space.id}
-      {...{ postType }}
+      {...{ postType, prompt }}
       onPostCreated={() => {
         router.visit(routes.spaces.show.path({ id: space.friendly_id }), {
           replace: true,

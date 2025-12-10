@@ -24,7 +24,7 @@ import SpacePostFormBody, {
 export interface NewSpacePostFormProps extends Omit<BoxProps, "children"> {
   spaceId: string;
   postType: PostType;
-  prompt?: PostPrompt;
+  prompt?: PostPrompt | null;
   onPostCreated?: (post: Post) => void;
 }
 
