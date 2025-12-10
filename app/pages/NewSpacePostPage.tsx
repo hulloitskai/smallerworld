@@ -12,6 +12,8 @@ const NewSpacePostPage: PageComponent<NewSpacePostPageProps> = ({
   space,
   postType,
 }) => {
+  useWorldTheme("cloudflow", true);
+
   return (
     <NewSpacePostForm
       spaceId={space.id}

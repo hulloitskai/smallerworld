@@ -131,7 +131,10 @@ export const WORLD_THEME_BACKGROUND_GRADIENTS: Record<WorldTheme, string> = {
 
 export interface WorldThemeContext {
   worldTheme: WorldTheme | null;
-  setWorldTheme: (worldTheme: WorldTheme | null) => void;
+  setWorldTheme: (
+    worldTheme: WorldTheme | null,
+    plainBackground?: boolean,
+  ) => void;
 }
 
 export const WorldThemeContext = createContext<WorldThemeContext | undefined>(
@@ -140,6 +143,7 @@ export const WorldThemeContext = createContext<WorldThemeContext | undefined>(
 
 export const useWorldTheme = (
   worldTheme?: WorldTheme | null,
+  plainBackground?: boolean,
 ): WorldTheme | null => {
   const context = useContext(WorldThemeContext);
   if (!context) {
@@ -148,7 +152,7 @@ export const useWorldTheme = (
   const { worldTheme: currentWorldTheme, setWorldTheme } = context;
   useEffect(() => {
     if (worldTheme !== undefined) {
-      setWorldTheme(worldTheme);
+      setWorldTheme(worldTheme, plainBackground);
     }
   }, [worldTheme]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {

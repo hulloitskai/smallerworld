@@ -14,6 +14,7 @@ export interface WorldThemeProviderProps extends PropsWithChildren {}
 
 const WorldThemeProvider: FC<WorldThemeProviderProps> = ({ children }) => {
   const [worldTheme, setWorldTheme] = useState<WorldTheme | null>(null);
+  const [plainBackground, setPlainBackground] = useState(false);
   const [videoSuspended, setVideoSuspended] = useState(false);
 
   // == Apply theme on document body
@@ -31,17 +32,27 @@ const WorldThemeProvider: FC<WorldThemeProviderProps> = ({ children }) => {
   }, [worldTheme]);
 
   return (
-    <WorldThemeContext.Provider value={{ worldTheme, setWorldTheme }}>
+    <WorldThemeContext.Provider
+      value={{
+        worldTheme,
+        setWorldTheme: (worldTheme, plainBackground) => {
+          setWorldTheme(worldTheme);
+          setPlainBackground(plainBackground ?? false);
+        },
+      }}
+    >
       {!!worldTheme && (
         <Box
           className={classes.backdrop}
           role="backdrop"
           style={{
-            backgroundImage: worldThemeBackgroundMediaSrc(worldTheme),
             backgroundColor: WORLD_THEME_BACKGROUND_COLORS[worldTheme],
+            ...(!plainBackground && {
+              backgroundImage: worldThemeBackgroundMediaSrc(worldTheme),
+            }),
           }}
         >
-          {IMAGE_WORLD_THEMES.includes(worldTheme) ? (
+          {plainBackground ? null : IMAGE_WORLD_THEMES.includes(worldTheme) ? (
             <div className={classes.imageContainer}>
               <img
                 className={classes.image}

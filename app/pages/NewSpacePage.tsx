@@ -4,6 +4,8 @@ import NewSpaceForm from "~/components/NewSpaceForm";
 export interface NewSpacePageProps extends SharedPageProps {}
 
 const NewSpacePage: PageComponent<NewSpacePageProps> = () => {
+  useWorldTheme("cloudflow", true);
+
   return (
     <NewSpaceForm
       onSpaceCreated={space => {

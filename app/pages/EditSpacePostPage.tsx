@@ -12,6 +12,8 @@ const EditSpacePostPage: PageComponent<EditSpacePostPageProps> = ({
   space,
   post,
 }) => {
+  useWorldTheme("cloudflow", true);
+
   return (
     <EditSpacePostForm
       spaceId={space.id}

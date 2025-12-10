@@ -8,6 +8,8 @@ export interface EditSpacePageProps extends SharedPageProps {
 }
 
 const EditSpacePage: PageComponent<EditSpacePageProps> = ({ space }) => {
+  useWorldTheme("cloudflow", true);
+
   return (
     <EditSpaceForm
       {...{ space }}

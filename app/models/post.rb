@@ -417,7 +417,7 @@ class Post < ApplicationRecord
 
   sig { returns(PostReplyReceipt::PrivateAssociationRelation) }
   def repliers
-    reply_receipts.select(:friend_id).distinct
+    reply_receipts.select(:replier_id).distinct
   end
 
   sig do
