@@ -52,7 +52,6 @@ module Spaces
           space = find_space!
           render(inertia: "NewSpacePostPage", props: {
             space: SpaceSerializer.one(space),
-            "userWorld" => WorldSerializer.one_if(current_user&.world),
             "postType" => post_type,
           })
         end

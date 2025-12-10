@@ -46,6 +46,9 @@ module GeneratedUrlHelpersModule
   def download_image_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_space_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_user_world_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

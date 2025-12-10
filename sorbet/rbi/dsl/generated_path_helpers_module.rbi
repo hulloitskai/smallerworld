@@ -46,6 +46,9 @@ module GeneratedPathHelpersModule
   def download_image_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def edit_space_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def edit_user_world_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

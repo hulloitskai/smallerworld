@@ -1,12 +1,11 @@
 import AppLayout from "~/components/AppLayout";
 import NewSpacePostForm from "~/components/NewSpacePostForm";
 import { POST_TYPE_TO_LABEL } from "~/helpers/posts";
-import { type PostType, type Space, type World } from "~/types";
+import { type PostType, type Space } from "~/types";
 
 export interface NewSpacePostPageProps extends SharedPageProps {
   space: Space;
   postType: PostType;
-  userWorld: World | null;
 }
 
 const NewSpacePostPage: PageComponent<NewSpacePostPageProps> = ({

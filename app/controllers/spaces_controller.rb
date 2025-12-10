@@ -22,6 +22,18 @@ class SpacesController < ApplicationController
     end
   end
 
+  # GET /spaces/:id/edit
+  def edit
+    respond_to do |format|
+      format.html do
+        space = find_space!
+        render(inertia: "EditSpacePage", props: {
+          space: SpaceSerializer.one(space),
+        })
+      end
+    end
+  end
+
   private
 
   # == Helpers ==

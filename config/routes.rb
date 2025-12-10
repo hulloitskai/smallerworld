@@ -141,7 +141,7 @@ Rails.application.routes.draw do
   end
 
   # == Spaces ==
-  resources :spaces, only: %i[show], export: true do
+  resources :spaces, only: %i[show edit], export: true do
     scope module: :spaces do
       # == Space Posts ==
       resources(

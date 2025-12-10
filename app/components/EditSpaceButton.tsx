@@ -1,5 +1,6 @@
 import { type ButtonProps } from "@mantine/core";
 
+import { isHotwireNative } from "~/helpers/hotwire";
 import { usePageDialogOpened } from "~/helpers/pageDialog";
 
 import DrawerModal from "./DrawerModal";
@@ -23,7 +24,11 @@ const EditSpaceButton: FC<EditSpaceButtonProps> = ({
         leftSection={<EditIcon />}
         className={cn("EditSpaceButton", className)}
         onClick={() => {
-          setDrawerModalOpened(true);
+          if (isHotwireNative()) {
+            router.visit(routes.spaces.edit.path({ id: space.friendly_id }));
+          } else {
+            setDrawerModalOpened(true);
+          }
         }}
         data-controller="bridge--button"
         data-bridge-title="edit"

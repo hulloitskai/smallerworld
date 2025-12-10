@@ -16,7 +16,7 @@
       }
     },
     {
-      "patterns": ["/new$"],
+      "patterns": ["/new$", "/edit$"],
       "properties": {
         "context": "modal",
         "modal_style": "medium",
