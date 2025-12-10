@@ -8,13 +8,13 @@ export interface EditSpacePageProps extends SharedPageProps {
 }
 
 const EditSpacePage: PageComponent<EditSpacePageProps> = ({ space }) => {
-  useWorldTheme("cloudflow");
-
   return (
     <EditSpaceForm
       {...{ space }}
       onSpaceUpdated={space => {
-        router.visit(routes.spaces.show.path({ id: space.friendly_id }));
+        router.visit(routes.spaces.show.path({ id: space.friendly_id }), {
+          replace: true,
+        });
       }}
     />
   );

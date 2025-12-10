@@ -22,6 +22,15 @@ class SpacesController < ApplicationController
     end
   end
 
+  # GET /spaces/new
+  def new
+    respond_to do |format|
+      format.html do
+        render(inertia: "NewSpacePage")
+      end
+    end
+  end
+
   # GET /spaces/:id/edit
   def edit
     respond_to do |format|

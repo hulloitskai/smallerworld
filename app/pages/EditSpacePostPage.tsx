@@ -12,14 +12,14 @@ const EditSpacePostPage: PageComponent<EditSpacePostPageProps> = ({
   space,
   post,
 }) => {
-  useWorldTheme("cloudflow");
-
   return (
     <EditSpacePostForm
       spaceId={space.id}
       {...{ post }}
       onPostUpdated={() => {
-        router.visit(routes.spaces.show.path({ id: space.friendly_id }));
+        router.visit(routes.spaces.show.path({ id: space.friendly_id }), {
+          replace: true,
+        });
       }}
     />
   );

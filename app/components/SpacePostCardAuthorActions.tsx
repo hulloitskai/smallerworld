@@ -155,6 +155,8 @@ const SpacePostCardAuthorActions: FC<SpacePostCardAuthorActionsProps> = ({
                     void deletePost();
                   },
                 });
+              } else {
+                void deletePost();
               }
             }}
           >
