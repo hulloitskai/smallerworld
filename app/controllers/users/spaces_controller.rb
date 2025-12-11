@@ -35,7 +35,7 @@ module Users
     def edit
       respond_to do |format|
         format.html do
-          space = find_space!
+          space = find_space!(scope: Space.with_attached_icon)
           render(
             inertia: "EditUserSpacePage",
             world_theme: "cloudflow",
@@ -90,9 +90,9 @@ module Users
 
     # == Helpers ==
 
-    sig { returns(Space) }
-    def find_space!
-      Space.find(params.fetch(:id))
+    sig { params(scope: Space::PrivateRelation).returns(Space) }
+    def find_space!(scope: Space.all)
+      scope.friendly.find(params.fetch(:id))
     end
   end
 end
