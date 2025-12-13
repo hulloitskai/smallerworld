@@ -45,17 +45,17 @@ class RegistrationsController < ApplicationController
             hide_stats
             hide_neko
             allow_friend_sharing
-          ],
+          ]
         ])
         if (user = current_user)
           if user.update(user_params)
             render(json: {
-              user: UserSerializer.one(user),
+              user: UserSerializer.one(user)
             })
           else
             render(
               json: {
-                errors: user.form_errors,
+                errors: user.form_errors
               },
               status: :unprocessable_content,
             )
@@ -76,12 +76,12 @@ class RegistrationsController < ApplicationController
             session.delete(:registration_token)
             start_new_session_for!(user)
             render(json: {
-              user: UserSerializer.one(user),
+              user: UserSerializer.one(user)
             })
           else
             render(
               json: {
-                errors: user.form_errors,
+                errors: user.form_errors
               },
               status: :unprocessable_content,
             )

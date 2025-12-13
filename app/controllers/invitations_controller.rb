@@ -25,7 +25,7 @@ class InvitationsController < ApplicationController
             friend: FriendProfileSerializer.one_if(friend),
             "featuredPost" => PostSerializer.one_if(featured_post),
             "existingFriend" => FriendProfileSerializer.one_if(friend),
-            "autofillPhoneNumber" => autofill_phone_number,
+            "autofillPhoneNumber" => autofill_phone_number
           })
         else
           render(inertia: "InvalidInvitationPage")
@@ -51,7 +51,7 @@ class InvitationsController < ApplicationController
         if friend.save
           # friend.send_installation_message!
           render(json: {
-            "friendAccessToken" => friend.access_token,
+            "friendAccessToken" => friend.access_token
           })
         else
           render(

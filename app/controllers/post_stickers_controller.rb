@@ -15,7 +15,7 @@ class PostStickersController < ApplicationController
         post = find_post!
         stickers = authorized_scope(post.stickers).chronological
         render(json: {
-          stickers: PostStickerSerializer.many(stickers),
+          stickers: PostStickerSerializer.many(stickers)
         })
       end
     end
@@ -30,7 +30,7 @@ class PostStickersController < ApplicationController
         sticker_params = params.expect(sticker: [
           :id,
           :emoji,
-          relative_position: %i[x y],
+          relative_position: %i[x y]
         ])
         sticker = post.stickers.create!(
           friend: current_friend,
@@ -50,7 +50,7 @@ class PostStickersController < ApplicationController
       format.json do
         sticker = find_sticker!
         authorize!(sticker)
-        sticker.update!(params.expect(sticker: [relative_position: %i[x y]]))
+        sticker.update!(params.expect(sticker: [ relative_position: %i[x y] ]))
         render(json: { sticker: PostStickerSerializer.one(sticker) })
       end
     end

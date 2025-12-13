@@ -61,6 +61,9 @@ module GeneratedUrlHelpersModule
   def file_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def filepond_files_url(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def friend_encouragements_url(*args); end
 
   sig { params(args: T.untyped).returns(String) }

@@ -1,0 +1,58 @@
+@layer utilities {
+  @keyframes submitting {
+    0% {
+      -webkit-mask-position:
+        0% 0%,
+        50% 0%,
+        100% 0%;
+    }
+    12.5% {
+      -webkit-mask-position:
+        0% 50%,
+        50% 0%,
+        100% 0%;
+    }
+    25% {
+      -webkit-mask-position:
+        0% 100%,
+        50% 50%,
+        100% 0%;
+    }
+    37.5% {
+      -webkit-mask-position:
+        0% 100%,
+        50% 100%,
+        100% 50%;
+    }
+    50% {
+      -webkit-mask-position:
+        0% 100%,
+        50% 100%,
+        100% 100%;
+    }
+    62.5% {
+      -webkit-mask-position:
+        0% 50%,
+        50% 100%,
+        100% 100%;
+    }
+    75% {
+      -webkit-mask-position:
+        0% 0%,
+        50% 50%,
+        100% 100%;
+    }
+    87.5% {
+      -webkit-mask-position:
+        0% 0%,
+        50% 0%,
+        100% 50%;
+    }
+    100% {
+      -webkit-mask-position:
+        0% 0%,
+        50% 0%,
+        100% 0%;
+    }
+  }
+}

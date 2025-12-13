@@ -1,12 +1,4 @@
-# App Directory Guidance
-
-## Scope
-
-- Applies to work inside `app/components`, `app/pages`, `app/helpers`,
-  `app/entrypoints`, `app/types`, `app/models`, and other shared frontend/Rails
-  directories under `app/`.
-- Add more granular `AGENTS.md` files inside subfolders when a sub-area needs
-  overrides.
+# Javascript Directory Guidance
 
 ## Do
 

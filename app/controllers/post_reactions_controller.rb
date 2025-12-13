@@ -15,7 +15,7 @@ class PostReactionsController < ApplicationController
         post = find_post!(scope: Post.with_reactions)
         reactions = authorized_scope(post.reactions)
         render(json: {
-          reactions: PostReactionSerializer.many(reactions),
+          reactions: PostReactionSerializer.many(reactions)
         })
       end
     end
@@ -27,14 +27,14 @@ class PostReactionsController < ApplicationController
       format.json do
         reactor = require_authentication!
         post = find_post!
-        reaction_params = params.expect(reaction: [:emoji])
+        reaction_params = params.expect(reaction: [ :emoji ])
         reaction = post.reactions.find_or_create_by!(
           reactor:,
           **reaction_params,
         )
         render(
           json: {
-            reaction: PostReactionSerializer.one(reaction),
+            reaction: PostReactionSerializer.one(reaction)
           },
           status: :created,
         )

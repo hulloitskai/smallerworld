@@ -37,8 +37,8 @@ module Spaces
           render(json: {
             posts: SpacePostSerializer.many(space_posts),
             pagination: {
-              next: pagy.next,
-            },
+              next: pagy.next
+            }
           })
         end
       end
@@ -56,7 +56,7 @@ module Spaces
           render(inertia: "NewSpacePostPage", world_theme: "cloudflow", props: {
             space: SpaceSerializer.one(space),
             "postType" => post_type,
-            prompt: PostPromptSerializer.one_if(prompt),
+            prompt: PostPromptSerializer.one_if(prompt)
           })
         end
       end
@@ -88,7 +88,7 @@ module Spaces
             world_theme: "cloudflow",
             props: {
               space: SpaceSerializer.one(post.space!),
-              post: SpacePostSerializer.one(space_post),
+              post: SpacePostSerializer.one(space_post)
             },
           )
         end
@@ -108,7 +108,7 @@ module Spaces
             .order(pinned_until: :asc, created_at: :asc)
           space_posts = load_space_posts(posts)
           render(json: {
-            posts: SpacePostSerializer.many(space_posts),
+            posts: SpacePostSerializer.many(space_posts)
           })
         end
       end
@@ -130,7 +130,7 @@ module Spaces
             :spotify_track_id,
             :prompt_id,
             :pen_name,
-            images: [],
+            images: []
           ])
           post = space.posts.build(
             author: current_user,
@@ -140,14 +140,14 @@ module Spaces
           if post.save
             render(
               json: {
-                post: PostSerializer.one(post),
+                post: PostSerializer.one(post)
               },
               status: :created,
             )
           else
             render(
               json: {
-                errors: post.form_errors,
+                errors: post.form_errors
               },
               status: :unprocessable_content,
             )
@@ -173,11 +173,11 @@ module Spaces
             :pinned_until,
             :spotify_track_id,
             :pen_name,
-            images: [],
+            images: []
           ])
           if post.update(post_params)
             render(json: {
-              post: PostSerializer.one(post),
+              post: PostSerializer.one(post)
             })
           else
             render(
@@ -201,7 +201,7 @@ module Spaces
           else
             render(
               json: {
-                errors: post.errors.full_messages,
+                errors: post.errors.full_messages
               },
               status: :unprocessable_content,
             )
@@ -231,7 +231,7 @@ module Spaces
         )
         .map do |reply_receipt|
           repliers = T.let(reply_receipt[:repliers], Integer)
-          [reply_receipt.post_id, repliers]
+          [ reply_receipt.post_id, repliers ]
         end
         .to_h
       if (user = current_user)

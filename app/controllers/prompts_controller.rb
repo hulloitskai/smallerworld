@@ -9,7 +9,7 @@ class PromptsController < ApplicationController
         deck = find_deck!
         prompts = Prompt.where(deck_id: deck.id)
         render(json: {
-          prompts: PromptSerializer.many(prompts),
+          prompts: PromptSerializer.many(prompts)
         })
       end
     end

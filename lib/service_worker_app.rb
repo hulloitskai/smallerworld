@@ -38,7 +38,7 @@ class ServiceWorkerApp
       else
         files = Rack::Files.new(Rails.public_path.to_s, {
           "cache-control" => "no-store must-revalidate",
-          "max-age" => "0",
+          "max-age" => "0"
         })
         path = sw_path(query_values.fetch("worker", "sw.js"))
         target_env = rewrite_env(env, path:)
@@ -72,7 +72,7 @@ class ServiceWorkerApp
     env.merge(
       "PATH_INFO" => path,
       "REQUEST_PATH" => path,
-      "REQUEST_URI" => [path, query_string].compact.join("?"),
+      "REQUEST_URI" => [ path, query_string ].compact.join("?"),
       "QUERY_STRING" => query_string || "",
     )
   end

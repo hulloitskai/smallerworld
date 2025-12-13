@@ -23,7 +23,7 @@ module Users
         icons: application_manifest_icons,
         display: "standalone",
         start_url: pwa_start_path,
-        scope:,
+        scope:
       })
     end
   end

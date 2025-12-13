@@ -17,7 +17,7 @@ module Users::Worlds
             inertia: "UserWorldJoinRequestsPage",
             world_theme: world.theme,
             props: {
-              world: WorldSerializer.one(world),
+              world: WorldSerializer.one(world)
             },
           )
         end
@@ -28,7 +28,7 @@ module Users::Worlds
             .reverse_chronological
           render(json: {
             world: WorldSerializer.one(world),
-            "pendingJoinRequests" => JoinRequestSerializer.many(join_requests),
+            "pendingJoinRequests" => JoinRequestSerializer.many(join_requests)
           })
         end
       end

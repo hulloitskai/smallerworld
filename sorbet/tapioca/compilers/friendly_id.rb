@@ -19,7 +19,7 @@ module Tapioca
             fixed: T.all(
               T.class_of(::ActiveRecord::Base),
               ::FriendlyId::Base,
-            ),
+            )
           }
         end
 

@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   include SharesApplicationProps
   include SimulatesExpiredPage unless Rails.env.production?
   include NPlusOneDetection
-  include RendersWorldThemes
+  prepend RendersWorldThemes
 
   # == Errors ==
 
@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
             title: "an unexpected error occurred",
             description: error.message,
             code: status,
-            error: nil,
+            error: nil
           },
           status:,
         )

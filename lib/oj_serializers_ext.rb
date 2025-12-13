@@ -14,7 +14,7 @@ class OjSerializers::Serializer
       remove_const(:KNOWN_ATTRIBUTE_OPTIONS)
       const_set(
         :KNOWN_ATTRIBUTE_OPTIONS,
-        [*known_attribute_options, :nullable].to_set,
+        [ *known_attribute_options, :nullable ].to_set,
       )
     end
   end

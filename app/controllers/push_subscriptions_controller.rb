@@ -16,7 +16,7 @@ class PushSubscriptionsController < ApplicationController
           .where(push_subscriptions: { endpoint: })
           .find_by(owner:)
         render(json: {
-          "pushRegistration" => PushRegistrationSerializer.one_if(registration),
+          "pushRegistration" => PushRegistrationSerializer.one_if(registration)
         })
       end
     end
@@ -50,7 +50,7 @@ class PushSubscriptionsController < ApplicationController
         end
         render(
           json: {
-            "pushRegistration" => PushRegistrationSerializer.one(registration),
+            "pushRegistration" => PushRegistrationSerializer.one(registration)
           },
           status: :created,
         )
@@ -74,7 +74,7 @@ class PushSubscriptionsController < ApplicationController
           end
         end
         render(json: {
-          "shouldRemoveSubscription" => should_remove_subscription,
+          "shouldRemoveSubscription" => should_remove_subscription
         })
       end
     end
@@ -118,7 +118,7 @@ class PushSubscriptionsController < ApplicationController
       format.json do
         public_key = web_push_credentials!.public_key!
         render(json: {
-          "publicKey" => encode_public_key(public_key),
+          "publicKey" => encode_public_key(public_key)
         })
       end
     end

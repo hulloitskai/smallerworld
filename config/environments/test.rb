@@ -10,7 +10,7 @@
 Rails.application.default_url_options = {
   protocol: "http",
   host: "localhost",
-  port: ENV.fetch("RAILS_PORT") { 3001 }.to_i,
+  port: ENV.fetch("RAILS_PORT") { 3001 }.to_i
 }
 
 # == Configuration
@@ -29,7 +29,7 @@ Rails.application.configure do
 
   # Configure public file server for tests with cache-control for performance.
   config.public_file_server.headers = {
-    "cache-control" => "public, max-age=3600",
+    "cache-control" => "public, max-age=3600"
   }
 
   # Show full error reports.

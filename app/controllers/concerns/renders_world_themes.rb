@@ -19,7 +19,7 @@ module RendersWorldThemes
       color_scheme = World::DARK_THEMES.include?(theme) ? "dark" : "light"
       @root_attributes = {
         "data-mantine-color-scheme" => color_scheme,
-        "data-world-theme" => theme,
+        "data-world-theme" => theme
       }
     end
     super

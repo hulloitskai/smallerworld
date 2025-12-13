@@ -176,8 +176,14 @@ gem "money-rails", "~> 1.15"
 # Fetch Spotify metadata
 gem "rspotify", "~> 2.12"
 
-# Integrate with Hotwire Native
+# Use Turbo drive and Hotwire
 gem "turbo-rails", "~> 2.0"
+
+# Use lexxy to edit rich text
+gem "lexxy", "~> 0.1.23.beta"
+
+# Use Heroicon icons
+gem "heroicons", "~> 2.2"
 
 group :development, :test do
   # Debug code with debug
@@ -199,11 +205,11 @@ group :development, :test do
   gem "rexml", ">= 3.3.6", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
-  gem "rubocop-shopify", require: false
   gem "rubocop-sorbet", require: false
+  gem "rubocop-rails-omakase", require: false
   gem "rubocop-capybara", require: false
   gem "ruby-lsp", require: false
-  gem "rbs", require: false
+  # gem "rbs", require: false
 end
 
 group :development do

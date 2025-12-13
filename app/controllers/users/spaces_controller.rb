@@ -10,13 +10,13 @@ module Users
       respond_to do |format|
         format.html do
           render(inertia: "UserSpacesPage", props: {
-            "userWorld" => WorldSerializer.one_if(current_world),
+            "userWorld" => WorldSerializer.one_if(current_world)
           })
         end
         format.json do
           spaces = authorized_scope(Space.all).with_attached_icon
           render(json: {
-            spaces: SpaceSerializer.many(spaces),
+            spaces: SpaceSerializer.many(spaces)
           })
         end
       end
@@ -26,7 +26,8 @@ module Users
     def new
       respond_to do |format|
         format.html do
-          render(inertia: "NewUserSpacePage", world_theme: "cloudflow")
+          @page_title = "new space"
+          @space = Space.new
         end
       end
     end
@@ -40,7 +41,7 @@ module Users
             inertia: "EditUserSpacePage",
             world_theme: "cloudflow",
             props: {
-              space: SpaceSerializer.one(space),
+              space: SpaceSerializer.one(space)
             },
           )
         end
@@ -56,15 +57,25 @@ module Users
           space = current_user.owned_spaces.build(**space_params)
           if space.save
             render(json: {
-              space: SpaceSerializer.one(space),
+              space: SpaceSerializer.one(space)
             })
           else
             render(
               json: {
-                errors: space.form_errors,
+                errors: space.form_errors
               },
               status: :unprocessable_content,
             )
+          end
+        end
+        format.html do
+          current_user = authenticate_user!
+          space_params = params.expect(space: %i[name description icon public])
+          @space = current_user.owned_spaces.build(**space_params)
+          if @space.save
+            redirect_to(space_path(@space), status: :see_other)
+          else
+            render :new, status: :unprocessable_content
           end
         end
       end
@@ -79,7 +90,7 @@ module Users
           space_params = params.expect(space: %i[name description icon public])
           if space.update(space_params)
             render(json: {
-              space: SpaceSerializer.one(space),
+              space: SpaceSerializer.one(space)
             })
           end
         end

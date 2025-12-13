@@ -43,7 +43,7 @@ class SessionsController < ApplicationController
         else
           render(
             json: {
-              errors: { login_code: "invalid login code" },
+              errors: { login_code: "invalid login code" }
             },
             status: :unprocessable_content,
           )

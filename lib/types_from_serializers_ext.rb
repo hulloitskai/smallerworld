@@ -1,4 +1,5 @@
 # rubocop:disable Layout/LineLength
+# typed: false
 # frozen_string_literal: true
 
 return unless Rails.env.development?
@@ -22,7 +23,7 @@ module TypesFromSerializers
   # NOTE: Add :nullable option to property type inference.
   module SerializerRefinements
     refine Class do # rubocop:disable Sorbet/Refinement
-      def ts_properties
+      define_method(:ts_properties) do
         @ts_properties ||= begin
           model_class = _serializer_model_name&.to_model
           model_columns = model_class.try(:columns_hash) || {}

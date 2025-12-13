@@ -23,7 +23,7 @@ class MarshaPuzzlesController < ApplicationController
         initializers = JSON.parse(initializers_raw)
         render(inertia: "MarshaPuzzlePage", props: {
           "puzzleSvg" => svg,
-          "pathInitializers" => initializers,
+          "pathInitializers" => initializers
         })
       end
     end

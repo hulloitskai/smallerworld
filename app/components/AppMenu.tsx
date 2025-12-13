@@ -1,4 +1,4 @@
-import { visit } from "@hotwired/turbo?client";
+import { visit } from "@hotwired/turbo";
 import { type InertiaLinkProps } from "@inertiajs/react";
 import { Image, Loader, type MenuItemProps, Text } from "@mantine/core";
 

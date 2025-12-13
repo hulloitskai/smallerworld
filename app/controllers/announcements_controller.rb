@@ -16,7 +16,7 @@ class AnnouncementsController < ApplicationController
         recent_announcements = Announcement.reverse_chronological.limit(10)
         render(json: {
           "recentAnnouncements" =>
-            AnnouncementSerializer.many(recent_announcements),
+            AnnouncementSerializer.many(recent_announcements)
         })
       end
     end
@@ -32,7 +32,7 @@ class AnnouncementsController < ApplicationController
         ])
         announcement = Announcement.create!(announcement_params)
         render(json: {
-          announcement: AnnouncementSerializer.one(announcement),
+          announcement: AnnouncementSerializer.one(announcement)
         })
       end
     end

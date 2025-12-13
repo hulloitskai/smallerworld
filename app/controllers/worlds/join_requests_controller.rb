@@ -23,7 +23,7 @@ module Worlds
 
           if join_request.update(join_request_params)
             render(json: {
-              "joinRequest" => JoinRequestSerializer.one(join_request),
+              "joinRequest" => JoinRequestSerializer.one(join_request)
             })
           else
             render(

@@ -19,7 +19,7 @@ module Users::Worlds
           icons: world_manifest_icons(world),
           display: "standalone",
           start_url: user_world_path,
-          scope: user_world_path,
+          scope: user_world_path
         },
       )
     end

@@ -38,7 +38,7 @@ class PostSharesController < ApplicationController
           world: WorldSerializer.one(world),
           post: WorldPostSerializer.one(post),
           sharer: FriendProfileSerializer.one_if(friend_sharer),
-          "invitationRequested" => invitation_requested || false,
+          "invitationRequested" => invitation_requested || false
         })
       end
     end

@@ -9,7 +9,7 @@ class TestMailer < ApplicationMailer
       subject: "this is a test email",
       inertia: "TestEmail",
       props: {
-        model: model.to_h,
+        model: model.to_h
       },
     )
   end

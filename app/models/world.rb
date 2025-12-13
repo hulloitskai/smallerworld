@@ -202,7 +202,7 @@ class World < ApplicationRecord
     SQL
     interpolated_sql = Post.sanitize_sql_array([
       sql,
-      { world_id: id, tz: time_zone.name },
+      { world_id: id, tz: time_zone.name }
     ])
 
     result = Post.connection.exec_query(interpolated_sql)

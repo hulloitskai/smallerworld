@@ -1,4 +1,0 @@
-inherit_from: ../../.rubocop.yml
-
-Naming/PredicateName:
-  Enabled: false

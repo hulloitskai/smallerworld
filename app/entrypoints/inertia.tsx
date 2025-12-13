@@ -17,7 +17,6 @@ import { parsePageImports } from "~/helpers/inertia";
 import { setupInertia } from "~/helpers/inertia/setup";
 import { setupLuxon } from "~/helpers/luxon";
 import { isStandaloneDisplayMode } from "~/helpers/pwa";
-import { setupReactGrab } from "~/helpers/react-grab";
 import { setupRoutes } from "~/helpers/routes";
 import { setupSentry } from "~/helpers/sentry";
 import {
@@ -27,7 +26,7 @@ import {
   unregisterOutdatedServiceWorkers,
 } from "~/helpers/serviceWorker/client";
 
-import "./application.css";
+import "./inertia.css";
 
 // == Setup
 window.BOOTED_AT = new Date();
@@ -44,7 +43,6 @@ requestIdleCallback(() => {
   setupFullStory();
   setupAmplitude();
   setupClarity();
-  setupReactGrab();
 });
 
 // == Service worker
@@ -56,7 +54,7 @@ if ("serviceWorker" in navigator && isStandaloneDisplayMode()) {
 }
 
 // == Pages
-const pageImports = import.meta.glob("~/pages/*.tsx", {
+const pageImports = import.meta.glob("../pages/*.tsx", {
   import: "default",
 }) as Record<string, () => Promise<PageComponent>>;
 const pages = parsePageImports(pageImports);

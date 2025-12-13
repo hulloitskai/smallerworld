@@ -30,7 +30,7 @@ Healthcheck.configure do |config|
   config.custom = ->(controller, checker) {
     controller.render(json: {
       health: HealthcheckSerializer.render(checker),
-      "bootedAt" => Rails.application.booted_at,
+      "bootedAt" => Rails.application.booted_at
     })
   }
 end

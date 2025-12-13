@@ -39,7 +39,7 @@ module PgSearch
             term_sql = Arel.sql(normalize(connection.quote(query)))
             Arel::Nodes::NamedFunction.new(
               "websearch_to_tsquery",
-              [dictionary, term_sql],
+              [ dictionary, term_sql ],
             ).to_sql
           else
             super

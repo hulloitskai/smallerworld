@@ -105,7 +105,7 @@ class Post < ApplicationRecord
 
   sig { returns(T.nilable(String)) }
   def fun_title
-    [emoji, title].compact.join(" ").presence
+    [ emoji, title ].compact.join(" ").presence
   end
 
   sig { returns(T.nilable(String)) }
@@ -132,12 +132,12 @@ class Post < ApplicationRecord
 
   sig { returns(String) }
   def snippet
-    [title_snippet, body_snippet].compact.join("\n")
+    [ title_snippet, body_snippet ].compact.join("\n")
   end
 
   sig { returns(String) }
   def compact_snippet
-    [title_snippet, compact_body_snippet].compact.join("\n")
+    [ title_snippet, compact_body_snippet ].compact.join("\n")
   end
 
   sig { returns(String) }
@@ -163,8 +163,8 @@ class Post < ApplicationRecord
                   against: %i[emoji title body_html],
                   using: {
                     tsearch: {
-                      websearch: true,
-                    },
+                      websearch: true
+                    }
                   }
 
   # == Associations ==
@@ -278,7 +278,7 @@ class Post < ApplicationRecord
   scope :with_reactions, -> { includes(:reactions) }
   scope :with_encouragement, -> { includes(:encouragement) }
   scope :with_quoted_post_and_attached_images, -> {
-    includes(quoted_post: [images_attachments: :blob])
+    includes(quoted_post: [ images_attachments: :blob ])
   }
   scope :with_author, -> { includes(:author) }
   scope :with_author_world, -> { includes(author: :world) }
@@ -346,7 +346,7 @@ class Post < ApplicationRecord
       friend_token: recipient.access_token,
     )
     cta = "see full post: #{post_shortlink}"
-    [title, body, cta].compact.join("\n\n")
+    [ title, body, cta ].compact.join("\n\n")
   end
 
   # == Images ==
@@ -400,7 +400,7 @@ class Post < ApplicationRecord
   sig { void }
   def save_images_ids!
     images_ids = images.blobs.pluck(:id)
-    update_column("images_ids", images_ids) # rubocop:disable Rails/SkipsModelValidations
+    update_column("images_ids", images_ids)
   end
 
   sig { returns(Friend::PrivateRelation) }

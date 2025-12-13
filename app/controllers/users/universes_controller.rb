@@ -10,7 +10,7 @@ module Users
       respond_to do |format|
         format.html do
           render(inertia: "UserUniversePage", props: {
-            "userWorld" => WorldSerializer.one_if(current_world),
+            "userWorld" => WorldSerializer.one_if(current_world)
           })
         end
       end
@@ -63,7 +63,7 @@ module Users
             )
           end
           render(json: {
-            worlds: UniverseWorldProfileSerializer.many(profiles),
+            worlds: UniverseWorldProfileSerializer.many(profiles)
           })
         end
       end
@@ -122,7 +122,7 @@ module Users
             )
             .map do |reply_receipt|
               repliers = T.let(reply_receipt[:repliers], Integer)
-              [reply_receipt.post_id, repliers]
+              [ reply_receipt.post_id, repliers ]
             end
             .to_h
           associated_friends_by_world_id = associated_friends
@@ -149,8 +149,8 @@ module Users
           render(json: {
             posts: UniversePostSerializer.many(universe_posts),
             pagination: {
-              next: pagy.next,
-            },
+              next: pagy.next
+            }
           })
         end
       end
@@ -167,7 +167,7 @@ module Users
         Post::PrivateAssociationRelation,
       )).returns([
         Pagy::Keyset,
-        T::Array[Post],
+        T::Array[Post]
       ])
     end
     def paginate_posts(scope)

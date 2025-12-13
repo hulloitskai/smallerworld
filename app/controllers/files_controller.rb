@@ -10,7 +10,7 @@ class FilesController < ApplicationController
       format.json do
         blob = find_blob!
         render(json: {
-          file: FileSerializer.one(blob),
+          file: FileSerializer.one(blob)
         })
       end
     end

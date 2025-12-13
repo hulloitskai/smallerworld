@@ -8,7 +8,7 @@ class PromptDecksController < ApplicationController
       format.json do
         decks = PromptDeck.kept
         render(json: {
-          decks: PromptDeckSerializer.many(decks),
+          decks: PromptDeckSerializer.many(decks)
         })
       end
     end

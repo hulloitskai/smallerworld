@@ -40,7 +40,7 @@ class PushSubscription < ApplicationRecord
       auth: auth_key,
       vapid: {
         **vapid_credentials,
-        subject: Contact.plain_mailto_uri.to_s,
+        subject: Contact.plain_mailto_uri.to_s
       },
       message:,
       **options,
@@ -53,7 +53,7 @@ class PushSubscription < ApplicationRecord
     tag_logger do
       logger.warn("Bad subscription: #{message}")
     end
-    destroy or tag_logger do |; message| # rubocop:disable Layout/SpaceAroundBlockParameters
+    destroy or tag_logger do |; message|
       message = "Failed to destroy expired or invalid push subscription"
       logger.error(message)
       Sentry.capture_message(message)

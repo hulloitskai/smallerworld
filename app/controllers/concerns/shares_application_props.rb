@@ -12,20 +12,20 @@ module SharesApplicationProps
     {
       "head-key" => "favicon",
       "rel" => "shortcut icon",
-      "href" => "/favicon.ico",
+      "href" => "/favicon.ico"
     },
     {
       "head-key" => "favicon-image",
       "rel" => "icon",
       "type" => "image/png",
       "href" => "/favicon-96x96.png",
-      "sizes" => "96x96",
+      "sizes" => "96x96"
     },
     {
       "head-key" => "apple-touch-icon",
       "rel" => "apple-touch-icon",
-      "href" => "/apple-touch-icon.png",
-    },
+      "href" => "/apple-touch-icon.png"
+    }
   ]
 
   # == Annotations ==
@@ -39,13 +39,13 @@ module SharesApplicationProps
       {
         csrf: {
           param: request_forgery_protection_token,
-          token: form_authenticity_token,
+          token: form_authenticity_token
         },
         flash: flash.to_h,
         "currentUser" => UserSerializer.one_if(current_user),
         "currentFriend" => FriendSerializer.one_if(current_friend),
         "faviconLinks" => SHARED_FAVICON_LINKS,
-        "isAdmin" => current_user&.admin?,
+        "isAdmin" => current_user&.admin?
       }
     end
   end

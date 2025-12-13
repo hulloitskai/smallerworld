@@ -20,11 +20,11 @@ module Worlds
               select_sql = Post.sanitize_sql_array([
                 "DISTINCT ON (DATE(created_at AT TIME ZONE :tz)) " \
                   "DATE(created_at AT TIME ZONE :tz) AS date, emoji",
-                tz:,
+                tz:
               ])
               order_sql = Post.sanitize_sql_array([
                 "DATE(created_at AT TIME ZONE :tz), created_at DESC",
-                tz:,
+                tz:
               ])
               scope
                 .select(select_sql)
@@ -34,14 +34,14 @@ module Worlds
           end
           timeline = timeline_posts.map do |post|
             date = T.cast(post["date"], Date)
-            [date.to_s, { emoji: post["emoji"] }]
+            [ date.to_s, { emoji: post["emoji"] } ]
           end.to_h
           post_streak = if allowed_to?(:manage?, world)
             world.post_streak(time_zone:)
           end
           render(json: {
             timeline:,
-            "postStreak" => PostStreakSerializer.one_if(post_streak),
+            "postStreak" => PostStreakSerializer.one_if(post_streak)
           })
         end
       end

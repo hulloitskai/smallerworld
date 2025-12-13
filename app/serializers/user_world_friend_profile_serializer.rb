@@ -11,7 +11,7 @@ class UserWorldFriendProfileSerializer < FriendProfileSerializer
   attributes :paused_since,
              :phone_number,
              subscribed_post_types: {
-               type: '"journal_entry" | "poem" | "invitation" | "question"',
+               type: '"journal_entry" | "poem" | "invitation" | "question"'
              }
   attribute :notifiable, type: '"sms" | "push" | false' do
     if friend.push_registrations.any?

@@ -27,7 +27,7 @@ class WorldsController < ApplicationController
           "replyToNumber" => reply_to_number,
           "lastSentEncouragement" => EncouragementSerializer
             .one_if(last_sent_encouragement),
-          "invitationRequested" => invitation_requested || false,
+          "invitationRequested" => invitation_requested || false
         }
         unless params[:manifest_icon_type] == "generic"
           props["faviconLinks"] = world_favicon_links(world)

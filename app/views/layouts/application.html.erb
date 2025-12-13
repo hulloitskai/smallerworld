@@ -1,135 +1,56 @@
 <!DOCTYPE html>
-<html
-  lang="en"
-  <%= tag.attributes(@root_attributes) if defined?(@root_attributes) %>
->
+<html>
   <head>
-    <%# == Inertia page-specific head %>
-    <%== inertia_ssr_head %>
+    <%= page_title_tag %>
 
-    <%# == Application head %>
-    <meta name="apple-mobile-web-app-title" content="smaller world" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link inertia="favicon" rel="shortcut icon" href="/favicon.ico">
-    <link inertia="favicon-image" rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
-    <link inertia="apple-touch-icon" rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-    <%# == Viewport %>
+    <%# == Meta tags %>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
-    <%# == Content Security Policy %>
+    <meta name="view-transition" content="same-origin">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="env" content="<%= Rails.env %>">
+    <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%# == CSRF %>
-    <meta inertia="csrf-param" name="csrf-param" content="<%= request_forgery_protection_token %>">
-    <meta inertia="csrf-token" name="csrf-token" content="<%= form_authenticity_token %>">
+    <% turbo_refreshes_with method: :morph, scroll: :preserve %>
+    <%= yield :head %>
 
-    <%# == Environment %>
-    <meta name="env" content="<%= Rails.env %>">
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <%# == Action Cable %>
-    <%= action_cable_meta_tag %>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# == Active Storage %>
-    <meta name="active-storage-direct-uploads-url" content="<%= rails_direct_uploads_path %>">
-    <% if (direct_uploads_size_limit = Rails.configuration.active_storage.direct_uploads_size_limit) %>
-      <meta name="active-storage-direct-uploads-size-limit" content="<%= direct_uploads_size_limit %>">
-    <% end %>
+    <%# == Application assets %>
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= vite_javascript_tag "application", "data-turbo-track": "reload" %>
+    <%= vite_stylesheet_tag "application", "data-turbo-track": "reload" %>
 
-    <%# == Sentry %>
-    <% if Sentry.initialized? %>
-      <% config = Sentry.configuration %>
-      <meta name="sentry-dsn" content="<%= config.dsn %>">
-      <meta name="sentry-traces-sample-rate" content="<%= config.traces_sample_rate %>">
-      <meta name="sentry-profiles-sample-rate" content="<%= config.profiles_sample_rate %>">
-    <% end %>
-
-    <%# == Fullstory %>
-    <% if (settings = Fullstory.settings) %>
-      <meta name="fullstory-org-id" content="<%= settings.org_id %>">
-    <% end %>
-
-    <%# == Amplitude %>
-    <% if (settings = Amplitude.settings) %>
-      <meta name="amplitude-api-key" content="<%= settings.api_key %>">
-    <% end %>
-
-    <%# == Clarity %>
-    <% if (settings = Clarity.settings) %>
-      <meta name="clarity-project-id" content="<%= settings.project_id %>">
-    <% end %>
-
-    <%# == Vite %>
-    <%= vite_client_tag %>
-    <% if local_assigns.include?(:page) %>
-      <%= vite_react_refresh_tag %>
-      <%= vite_javascript_tag "application.tsx" %>
-    <% end %>
-
-    <%# == Inertia %>
-    <%== inertia_assets local_assigns.fetch(:page), type: :page, media: nil %>
-
-    <%# == Mantine %>
-    <script data-mantine-script>
-      try {
-        if (!document.documentElement.getAttribute("data-mantine-color-scheme")) {
-          var computedColorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-          document.documentElement.setAttribute("data-mantine-color-scheme", computedColorScheme);
-        }
-      } catch (e) {}
-    </script>
-
-    <%# == Overpowered %>
-    <% if false %>
-      <meta name="overpowered-api-key" content="<%= Overpowered.settings.api_key %>">
-      <meta name="overpowered-endpoint" content="<%= Overpowered.settings.fingerprint_url %>">
-      <script src="<%= Overpowered.settings.script_url %>"></script>
-    <% end %>
-
-    <%# == Canny %>
-    <% if (settings = Canny.settings) %>
-      <meta name="canny-app-id" content="<%= settings.app_id %>">
-      <meta name="canny-feature-requests-board-token" content="<%= settings.feature_requests_board_token %>">
-      <meta name="canny-bugs-board-token" content="<%= settings.bugs_board_token %>">
-    <% end %>
-    <script>!function(w,d,i,s){function l(){if(!d.getElementById(i)){var f=d.getElementsByTagName(s)[0],e=d.createElement(s);e.type="text/javascript",e.async=!0,e.src="https://canny.io/sdk.js",f.parentNode.insertBefore(e,f)}}if("function"!=typeof w.Canny){var c=function(){c.q.push(arguments)};c.q=[],w.Canny=c,"complete"===d.readyState?l():w.attachEvent?w.attachEvent("onload",l):w.addEventListener("load",l,!1)}}(window,document,"canny-jssdk","script");</script>
+    <%# == Fonts %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
   </head>
 
-  <body>
-    <%# == PWA %>
-    <script>
-      // Capture beforeinstallprompt event
-      window.addEventListener("beforeinstallprompt", (event) => {
-        console.info("Captured beforeinstallprompt event", event);
-        event.preventDefault();
-        window.installPromptEvent = event;
-      });
-
-      // Offer to unregister service worker if application fails to boot
-      // if ("serviceWorker" in navigator) {
-      //   setTimeout(() => {
-      //     if (window.BOOTED_AT) {
-      //       return;
-      //     }
-      //     var forceReload = confirm("Page failed to load. Force-reload application?");
-      //     if (!forceReload) {
-      //       return;
-      //     }
-      //     navigator.serviceWorker
-      //       .getRegistrations()
-      //       .then((registrations) =>
-      //         Promise.all(registrations.map(registration => registration.unregister())),
-      //       )
-      //       .then(() => {
-      //         location.reload();
-      //       });
-      //   }, 6000);
-      // }
-    </script>
-
-    <%# == Content %>
-    <%= yield %>
+  <body class="flex flex-col min-h-dvh">
+    <header class="header">
+      <%= link_to web_start_path, class: "flex items-center gap-1 hover:bg-primary-100 p-1 pr-2" do %>
+        <%= vite_image_tag "assets/images/logo.png", class: "size-6" %>
+        <span class="font-headings font-extrabold">smaller world</span>
+      <% end %>
+    </header>
+    <%= turbo_frame_tag :flash do %>
+    <% if notice = flash[:notice] || flash[:alert] %>
+        <div class="flash" data-controller="element-removal" data-action="animationend->element-removal#remove">
+          <div class="flash__inner shadow">
+            <%= notice %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+    <main class="flex-1">
+      <%= yield %>
+    </main>
   </body>
 </html>

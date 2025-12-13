@@ -1,7 +1,8 @@
 export default {
   plugins: {
+    "@tailwindcss/postcss": {},
     "postcss-preset-mantine": {
-      autoRem: true,
+      autoRem: false,
       mixins: {
         "world-theme": {
           "[data-world-theme] &": {

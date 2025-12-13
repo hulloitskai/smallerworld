@@ -10,104 +10,21 @@
 # See https://docs.rubocop.org/rubocop/configuration
 
 require:
+  - rubocop-capybara
+
+plugins:
   - rubocop-performance
   - rubocop-rails
   - rubocop-sorbet
-  - rubocop-capybara
 
 inherit_gem:
-  rubocop-shopify: rubocop.yml
+  rubocop-rails-omakase: rubocop.yml
 
 AllCops:
   NewCops: enable
   Exclude:
     - .github/**/*
     - .vscode/**/*
-    - db/schema.rb
-    - bin/**/*
-    - log/**/*
-    - node_modules/**/*
-    - public/**/*
-    - tmp/**/*
-    - sorbet/rbi/annotations/**/*
-    - sorbet/rbi/dsl/**/*
-    - sorbet/rbi/gems/**/*
-    - sorbet/rbi/sorbet-typed/**/*
-    - storage/**/*
-    - vendor/**/*
-    - config.ru
-    - Gemfile
-    - Rakefile
-  Include:
-    - "**/*.rb"
-    - "**/*.rbi"
-    - "**/*.gemfile"
-    - "**/*.gemspec"
-    - "**/*.rake"
-    - "**/*.ru"
-    - "**/Gemfile"
-    - "**/Rakefile"
+    - db/schema*.rb
+    - db/migrate/**/*
   CacheRootDirectory: "tmp/cache/rubocop"
-
-Lint/MissingCopEnableDirective:
-  Enabled: false
-Lint/Void:
-  Enabled: false
-
-Layout/ArgumentAlignment:
-  EnforcedStyle: with_first_argument
-Layout/BlockAlignment:
-  EnforcedStyleAlignWith: start_of_block
-Layout/FirstArgumentIndentation:
-  Enabled: true
-# Layout/SpaceAroundBlockParameters:
-#   Enabled: false
-Layout/LineLength:
-  Max: 80
-
-Naming/InclusiveLanguage:
-  Enabled: false
-
-Style/AndOr:
-  EnforcedStyle: conditionals
-Style/ClassAndModuleChildren:
-  Enabled: false
-Style/ClassMethodsDefinitions:
-  Enabled: false
-Style/CommandLiteral:
-  EnforcedStyle: backticks
-Style/Documentation:
-  Enabled: false
-Style/ParallelAssignment:
-  Enabled: false
-Style/RescueModifier:
-  Enabled: false
-Style/SymbolArray:
-  EnforcedStyle: percent
-Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: comma
-Style/WordArray:
-  EnforcedStyle: percent
-Style/SendWithLiteralMethodName:
-  Enabled: false
-
-Sorbet/FalseSigil:
-  Enabled: false
-Sorbet/ValidSigil:
-  MinimumStrictness: "ignore"
-
-Rails/Delegate:
-  Enabled: false
-Rails/LexicallyScopedActionFilter:
-  Enabled: false
-Rails/HasAndBelongsToMany:
-  Enabled: false
-Rails/I18nLocaleTexts:
-  Enabled: false
-Rails/RenderInline:
-  Enabled: false
-Rails/DynamicFindBy:
-  Enabled: false
-
-Sorbet/AllowIncompatibleOverride:
-  Enabled: false

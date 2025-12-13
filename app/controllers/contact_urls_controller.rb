@@ -16,7 +16,7 @@ class ContactUrlsController < ApplicationController
         sms_uri.query_values = contact_url_params.sms_params
         render(json: {
           mailto: mailto_uri.to_s,
-          sms: sms_uri.to_s,
+          sms: sms_uri.to_s
         })
       end
     end

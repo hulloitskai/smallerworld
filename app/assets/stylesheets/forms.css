@@ -1,0 +1,38 @@
+@layer utilities {
+  .form-input,
+  .form-textarea,
+  .form-select,
+  .form-multiselect {
+    @apply border border-neutral-300 focus:border-focus-ring focus:ring-focus-ring;
+
+    &[data-error] {
+      @apply border-red-500 focus:border-red-500;
+    }
+  }
+
+  .form-checkbox,
+  .form-radio {
+    @apply text-primary-600 focus:ring-focus-ring;
+  }
+}
+
+@layer components {
+  .field_with_errors {
+    display: contents;
+  }
+
+  .icon-field {
+    .filepond--root[data-style-panel-layout~="circle"] {
+      border-radius: var(--app-icon-radius) !important;
+
+      .filepond--file-poster-wrapper {
+        border-radius: var(--app-icon-radius) !important;
+      }
+    }
+
+    .form-input {
+      @apply bg-neutral-50;
+      border-radius: var(--app-icon-radius);
+    }
+  }
+}

@@ -28,7 +28,7 @@ class Image < ActiveStorage::Blob
 
   NOTIFICATION_SIZE = 720
   MAX_SIZE = 2400
-  SIZES = [320, NOTIFICATION_SIZE, 1400, MAX_SIZE]
+  SIZES = [ 320, NOTIFICATION_SIZE, 1400, MAX_SIZE ]
   VARIANT_PARAMS = {
     saver: {
       strip: true,
@@ -36,9 +36,9 @@ class Image < ActiveStorage::Blob
       lossless: false,
       alpha_q: 85,
       reduction_effort: 6,
-      smart_subsample: true,
+      smart_subsample: true
     },
-    format: "webp",
+    format: "webp"
   }
 
   # == Methods ==
@@ -49,7 +49,7 @@ class Image < ActiveStorage::Blob
       representation_path(self)
     else
       processed = variant(
-        resize_to_limit: [MAX_SIZE, MAX_SIZE],
+        resize_to_limit: [ MAX_SIZE, MAX_SIZE ],
         **VARIANT_PARAMS,
       )
       representation_path(processed)
@@ -61,7 +61,7 @@ class Image < ActiveStorage::Blob
     return if gif?
 
     sources = SIZES.map do |size|
-      processed = variant(resize_to_limit: [size, size], **VARIANT_PARAMS)
+      processed = variant(resize_to_limit: [ size, size ], **VARIANT_PARAMS)
       "#{representation_path(processed)} #{size}w"
     end
     sources.join(", ")

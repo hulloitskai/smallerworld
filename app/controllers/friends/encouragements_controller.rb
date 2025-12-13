@@ -17,7 +17,7 @@ module Friends
           if encouragement.save
             render(
               json: {
-                encouragement: EncouragementSerializer.one(encouragement),
+                encouragement: EncouragementSerializer.one(encouragement)
               },
               status: :created,
             )

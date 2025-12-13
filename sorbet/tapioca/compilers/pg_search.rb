@@ -19,7 +19,7 @@ module Tapioca
             fixed: T.all(
               T.class_of(::ActiveRecord::Base),
               ::PgSearch::Model::ClassMethods::TrackScopeNames,
-            ),
+            )
           }
         end
 
@@ -68,7 +68,7 @@ module Tapioca
             method,
             parameters: [
               create_rest_param("args", type: "T.untyped"),
-              create_kw_rest_param("kwargs", type: "T.untyped"),
+              create_kw_rest_param("kwargs", type: "T.untyped")
             ],
             return_type:,
           )

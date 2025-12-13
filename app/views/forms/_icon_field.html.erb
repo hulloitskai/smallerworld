@@ -1,0 +1,33 @@
+<%= render "forms/field_wrapper", class: "icon-field", **local_assigns do %>
+  <% error = form.object.errors.full_messages_for(name).first %>
+  <div
+    class="flex flex-col items-stretch"
+    data-controller="filepond"
+    data-filepond-filetype-label-value="icon"
+    data-filepond-direct-upload-url-value="<%= rails_direct_uploads_path %>"
+    data-prevent-submit-while-busy-target="busyable"
+  >
+    <%= form.file_field(
+      name,
+      class: class_names(
+        "form-input size-36 mt-1",
+        local_assigns[:class],
+        "mx-auto": local_assigns[:center],
+      ),
+      data: {
+        filepond_target: "input",
+        error: error.present? ,
+      }.compact_blank,
+      aria: {
+        describedby: (form.field_id(name, "error") if error.present?),
+      },
+      **local_assigns.slice(:required, :accept),
+    ) %>
+    <template data-filepond-target="idleLabelTemplate">
+      <div class="flex flex-col items-center gap-1.5">
+        <%= heroicon "arrow-up-tray", variant: :micro, options: { class: "size-5 text-neutral-600" } %>
+        drag & drop your image here
+      </div>
+    </template>
+  </div>
+<% end %>

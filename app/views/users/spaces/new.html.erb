@@ -1,0 +1,42 @@
+<%= turbo_frame_tag dom_id(@space, :new), class: "block max-w-xl mx-auto p-4" do %>
+  <%= form_with(
+    model: @space,
+    url: user_spaces_path,
+    class: "flex flex-col gap-4",
+    data: {
+      turbo_frame: "_top",
+      controller: "prevent-submit-while-busy",
+    }
+  ) do |f| %>
+    <%= render(
+      "forms/text_field",
+      form: f,
+      name: :name,
+      label: "your space's name",
+      placeholder: "new stadium",
+      required: true,
+    ) %>
+    <%= render(
+      "forms/text_area",
+      form: f,
+      name: :description,
+      label: "purpose",
+      placeholder: "a space to share project progress updates",
+      required: true,
+      class: "min-h-24",
+    ) %>
+    <%= render(
+      "forms/icon_field",
+      form: f,
+      name: :icon,
+      label: "icon (optional)",
+      accept: "image/*",
+      center: true,
+    ) %>
+    <div class="flex gap-1.5 items-center">
+      <%= f.check_box :public, class: "form-checkbox" %>
+      <%= f.label :public, "show on spaces tab for all users", class: "text-sm" %>
+    </div>
+    <%= f.submit "create space", class: "btn" %>
+  <% end %>
+<% end %>

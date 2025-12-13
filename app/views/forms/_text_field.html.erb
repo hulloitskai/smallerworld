@@ -1,0 +1,12 @@
+<%= render "forms/field_wrapper", **local_assigns do %>
+  <% error = form.object.errors.full_messages_for(name).first %>
+  <%= form.text_field(
+    name,
+    class: class_names("form-input p-2", local_assigns[:class]),
+    data: { error: error.present? }.compact_blank,
+    aria: {
+      describedby: (form.field_id(name, "error") if error.present?),
+    },
+    **local_assigns.slice(:required),
+  ) %>
+<% end %>

@@ -10,7 +10,7 @@ class ImagesController < ApplicationController
       format.json do
         image = find_image
         render(json: {
-          image: ImageSerializer.one_if(image),
+          image: ImageSerializer.one_if(image)
         })
       end
     end

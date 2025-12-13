@@ -1,7 +1,5 @@
-import { type InlinePreset } from "unimport";
-import { type ImportsMap, type PresetName } from "unplugin-auto-import/types";
-
-export const imports: (ImportsMap | PresetName | InlinePreset)[] = [
+/** @type {import("unplugin-auto-import/types").ImportsMap[]} */
+export const imports = [
   // == Exports
   {
     "~/components": [

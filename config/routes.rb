@@ -24,6 +24,11 @@ Rails.application.routes.draw do
     Healthcheck.routes(self)
   end
 
+  # == Well-known ==
+
+  get "/.well-known/apple-app-site-association",
+      to: "well_known#apple_app_site_association"
+
   # == Good Job ==
 
   mount GoodJob::Engine => "/good_job"
@@ -334,6 +339,11 @@ Rails.application.routes.draw do
 
   resources :prompt_decks, only: :index, export: true do
     resources :prompts, only: :index
+  end
+
+  # == Filepond ==
+  namespace :filepond do
+    resource :files, param: :signed_id, only: :destroy
   end
 
   # == Pages ==

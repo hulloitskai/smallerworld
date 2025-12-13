@@ -16,7 +16,7 @@ class ActivityCouponsController < ApplicationController
         current_friend = authenticate_friend!
         coupons = current_friend.activity_coupons.active
         render(json: {
-          "activityCoupons" => ActivityCouponSerializer.many(coupons),
+          "activityCoupons" => ActivityCouponSerializer.many(coupons)
         })
       end
     end
@@ -35,7 +35,7 @@ class ActivityCouponsController < ApplicationController
         activity_coupon = friend.activity_coupons.create!(activity:)
         render(
           json: {
-            "activityCoupon" => ActivityCouponSerializer.one(activity_coupon),
+            "activityCoupon" => ActivityCouponSerializer.one(activity_coupon)
           },
           status: :created,
         )

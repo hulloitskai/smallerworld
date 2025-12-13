@@ -19,7 +19,7 @@ module Users::Worlds
             world_theme: world.theme,
             props: {
               world: WorldSerializer.one(world),
-              "pendingInvitationsCount" => pending_invitations,
+              "pendingInvitationsCount" => pending_invitations
             },
           )
         end
@@ -30,7 +30,7 @@ module Users::Worlds
             .with_push_registrations
             .reverse_chronological
           render(json: {
-            friends: UserWorldFriendProfileSerializer.many(friends),
+            friends: UserWorldFriendProfileSerializer.many(friends)
           })
         end
       end
@@ -45,12 +45,12 @@ module Users::Worlds
           friend_params = params.expect(friend: %i[emoji name])
           if friend.update(friend_params)
             render(json: {
-              friend: FriendSerializer.one(friend),
+              friend: FriendSerializer.one(friend)
             })
           else
             render(
               json: {
-                errors: friend.form_errors,
+                errors: friend.form_errors
               },
               status: :unprocessable_content,
             )
@@ -67,7 +67,7 @@ module Users::Worlds
           authorize!(friend)
           if friend.update(paused_since: Time.current)
             render(json: {
-              friend: FriendSerializer.one(friend),
+              friend: FriendSerializer.one(friend)
             })
           else
             render(
@@ -87,12 +87,12 @@ module Users::Worlds
           authorize!(friend)
           if friend.update(paused_since: nil)
             render(json: {
-              friend: FriendSerializer.one(friend),
+              friend: FriendSerializer.one(friend)
             })
           else
             render(
               json: {
-                errors: friend.form_errors,
+                errors: friend.form_errors
               },
               status: :unprocessable_content,
             )
@@ -135,7 +135,7 @@ module Users::Worlds
             end
           end
           render(json: {
-            invitation: UserWorldInvitationSerializer.one(invitation),
+            invitation: UserWorldInvitationSerializer.one(invitation)
           })
         end
       end

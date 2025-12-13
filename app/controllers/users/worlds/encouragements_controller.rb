@@ -12,7 +12,7 @@ module Users::Worlds
           world = current_world!
           encouragements = world.encouragements_since_last_poem_or_journal_entry
           render(json: {
-            encouragements: EncouragementSerializer.many(encouragements),
+            encouragements: EncouragementSerializer.many(encouragements)
           })
         end
       end
@@ -25,7 +25,7 @@ module Users::Worlds
           encouragement = find_encouragement!
           authorize!(encouragement)
           render(json: {
-            encouragement: EncouragementSerializer.one(encouragement),
+            encouragement: EncouragementSerializer.one(encouragement)
           })
         end
       end

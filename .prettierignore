@@ -1,6 +1,5 @@
 .ruby-lsp/
 .venv/
-app/assets/
 bin/
 dist/
 db/schema.rb

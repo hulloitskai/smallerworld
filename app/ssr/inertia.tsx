@@ -22,14 +22,14 @@ setupDayjs();
 
 // == Pages
 const pageImports: Record<string, PageComponent> = import.meta.glob(
-  "~/pages/**/*.tsx",
+  "../pages/**/*.tsx",
   { import: "default", eager: true },
 );
 const pages = parsePageImports(pageImports);
 
 // == Emails
 const emailImports: Record<string, PageComponent> = import.meta.glob(
-  "~/emails/**/*.tsx",
+  "../emails/**/*.tsx",
   { import: "default", eager: true },
 );
 const emails = parsePageImports(emailImports);

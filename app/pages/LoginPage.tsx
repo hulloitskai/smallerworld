@@ -1,4 +1,4 @@
-import { visit } from "@hotwired/turbo?client";
+import { visit } from "@hotwired/turbo";
 
 import AppLayout from "~/components/AppLayout";
 import LoginForm from "~/components/LoginForm";

@@ -16,7 +16,7 @@ module Worlds
           world = find_world!
           coupons = authorized_scope(world.activity_coupons).active
           render(json: {
-            "activityCoupons" => ActivityCouponSerializer.many(coupons),
+            "activityCoupons" => ActivityCouponSerializer.many(coupons)
           })
         end
       end

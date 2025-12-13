@@ -42,7 +42,7 @@ module Users
               "pendingJoinRequests" => world.join_requests.pending.count,
               "pendingInvitations" => world.invitations.pending.count,
               "hasAtLeastOneUserCreatedPost" =>
-                user_created_posts.exists?,
+                user_created_posts.exists?
             },
           )
         end
@@ -58,7 +58,7 @@ module Users
             inertia: "UserEditWorldPage",
             world_theme: world.theme,
             props: {
-              world: WorldSerializer.one(world),
+              world: WorldSerializer.one(world)
             },
           )
         end
@@ -76,13 +76,13 @@ module Users
             :hide_stats,
             :hide_neko,
             :allow_friend_sharing,
-            owner_attributes: %i[name allow_space_replies],
+            owner_attributes: %i[name allow_space_replies]
           ])
           if world.update(**world_params)
             owner = world.owner!
             render(json: {
               world: WorldSerializer.one(world),
-              owner: UserSerializer.one(owner),
+              owner: UserSerializer.one(owner)
             })
           else
             render(

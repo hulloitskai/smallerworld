@@ -30,7 +30,7 @@ class MaskedImage < Image
 
   sig { override.returns(String) }
   def src
-    variant = self.variant(resize_to_limit: [MASKED_SIZE, MASKED_SIZE])
+    variant = self.variant(resize_to_limit: [ MASKED_SIZE, MASKED_SIZE ])
     representation_path(variant)
   end
 

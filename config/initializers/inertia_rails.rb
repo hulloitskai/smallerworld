@@ -3,6 +3,7 @@
 
 InertiaRails.configure do |config|
   config.encrypt_history = Rails.env.production?
+  config.layout = "inertia"
   config.ssr_url = scoped do
     port = ENV.fetch("INERTIA_PORT", 13714).to_i
     "http://localhost:#{port}"

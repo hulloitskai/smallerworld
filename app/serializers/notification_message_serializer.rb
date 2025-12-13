@@ -16,7 +16,7 @@ class NotificationMessageSerializer < ApplicationSerializer
     if (image = message.image)
       rails_representation_url(image, resize_to_limit: [
         Image::NOTIFICATION_SIZE,
-        Image::NOTIFICATION_SIZE,
+        Image::NOTIFICATION_SIZE
       ])
     end
   end

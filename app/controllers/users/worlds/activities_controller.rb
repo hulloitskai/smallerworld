@@ -17,7 +17,7 @@ module Users::Worlds
           render(json: {
             activities: ActivitySerializer.many(activities),
             "activityTemplates" =>
-              ActivityTemplateSerializer.many(available_templates),
+              ActivityTemplateSerializer.many(available_templates)
           })
         end
       end
@@ -39,12 +39,12 @@ module Users::Worlds
           activity = world.activities.build(**activity_params)
           if activity.save
             render(json: {
-              activity: ActivitySerializer.one(activity),
+              activity: ActivitySerializer.one(activity)
             })
           else
             render(
               json: {
-                errors: activity.form_errors,
+                errors: activity.form_errors
               },
               status: :unprocessable_content,
             )

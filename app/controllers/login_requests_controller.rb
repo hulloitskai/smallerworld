@@ -16,7 +16,7 @@ class LoginRequestsController < ApplicationController
     respond_to do |format|
       format.json do
         login_request_params = params.expect(
-          login_request: [:phone_number],
+          login_request: [ :phone_number ],
         )
         login_request = LoginRequest.new(login_request_params)
         tag_logger do
@@ -35,7 +35,7 @@ class LoginRequestsController < ApplicationController
         else
           render(
             json: {
-              errors: login_request.form_errors,
+              errors: login_request.form_errors
             },
             status: :unprocessable_content,
           )

@@ -55,7 +55,7 @@ class PostSticker < ApplicationRecord
       self.relative_position_x = position.x
       self.relative_position_y = position.y
     else
-      position.with_indifferent_access => {x:, y:}
+      position.with_indifferent_access => { x:, y: }
       self.relative_position_x = x
       self.relative_position_y = y
     end
@@ -67,6 +67,6 @@ class PostSticker < ApplicationRecord
             :relative_position_y,
             numericality: {
               greater_than_or_equal_to: 0,
-              less_than_or_equal_to: 1,
+              less_than_or_equal_to: 1
             }
 end

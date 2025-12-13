@@ -95,8 +95,8 @@ class User < ApplicationRecord
                   against: %i[name],
                   using: {
                     tsearch: {
-                      websearch: true,
-                    },
+                      websearch: true
+                    }
                   }
 
   # == Scopes ==

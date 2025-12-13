@@ -1,20 +1,17 @@
-:root {
-  --safe-area-inset-top: env(safe-area-inset-top, 0px);
-  --safe-area-inset-right: env(safe-area-inset-right, 0px);
-  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+@import "tailwindcss";
 
-  --font-family-emoji:
-    Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif;
-  --font-family-cute: Single Day, Manrope, cursive;
-}
+/* Application */
+@import "~/assets/stylesheets/theme.css";
+@import "~/assets/stylesheets/animation.css";
+@import "~/assets/stylesheets/spinners.css";
+@import "~/assets/stylesheets/layout.css";
+@import "~/assets/stylesheets/buttons.css";
+@import "~/assets/stylesheets/forms.css";
+@import "~/assets/stylesheets/flash.css";
+@import "~/assets/stylesheets/filepond.css";
 
-.emoji {
-  @mixin emoji;
-}
-
-/* == Bridge components == */
-
-[data-bridge-components~="button"] [data-controller~="button-bridge"] {
-  display: none;
-}
+/* Tailwind CSS plugins */
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/aspect-ratio";
+@plugin "@tailwindcss/container-queries";

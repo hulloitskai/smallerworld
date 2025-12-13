@@ -70,7 +70,7 @@ class Friend < ApplicationRecord
 
   sig { returns(String) }
   def fun_name
-    [emoji, name].compact.join(" ")
+    [ emoji, name ].compact.join(" ")
   end
 
   # == Associations ==
@@ -154,8 +154,8 @@ class Friend < ApplicationRecord
                   against: %i[emoji name],
                   using: {
                     tsearch: {
-                      websearch: true,
-                    },
+                      websearch: true
+                    }
                   }
 
   # == Callbacks ==

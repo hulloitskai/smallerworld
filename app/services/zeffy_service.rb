@@ -38,12 +38,12 @@ class ZeffyService < ApplicationService
       "occurrenceIds" => [],
       "filters" => {
         "searchFilter" => "",
-        "statusFilter" => ["notCheckedIn"],
+        "statusFilter" => [ "notCheckedIn" ],
         "rateFilter" => [],
-        "answerFilter" => [],
+        "answerFilter" => []
       },
       "locale" => "EN",
-      "cursor" => 0,
+      "cursor" => 0
     }
     response = instance.conn.get(
       "/_new/trpc/getCampaignGuestListPagedTableData",
@@ -64,7 +64,7 @@ class ZeffyService < ApplicationService
       "/_new/trpc/markGuestAsCheckedIn",
       {
         "ticketingId" => credentials.ticketing_id!,
-        "productTicketId" => guest_id,
+        "productTicketId" => guest_id
       },
       { "Cookie" => cookie_header! },
     )

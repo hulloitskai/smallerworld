@@ -1,0 +1,32 @@
+@import "filepond/dist/filepond.min.css" layer(components);
+@import "filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css"
+  layer(components);
+@import "@pqina/pintura/pintura.css" layer(components);
+
+@layer components {
+  .filepond--root {
+    margin-bottom: 0px !important;
+
+    &:hover {
+      .filepond--panel-root {
+        @apply bg-neutral-100;
+      }
+    }
+
+    .filepond--panel-root {
+      @apply bg-neutral-50;
+    }
+
+    .filepond--drop-label {
+      @apply cursor-pointer;
+
+      label {
+        @apply cursor-pointer text-sm text-neutral-500 leading-tight;
+      }
+    }
+
+    .filepond--credits {
+      @apply hidden;
+    }
+  }
+}

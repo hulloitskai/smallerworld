@@ -2,12 +2,13 @@
   "all": {
     "sourceCodeDir": "app",
     "additionalEntrypoints": [
-      "~/assets/**/*",
       "~/pages/*.tsx",
-      "~/emails/*.tsx"
+      "~/emails/*.tsx",
+      "~modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2",
+      "~modules/@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2"
     ],
     "ssrBuildEnabled": true,
-    "ssrEntrypoint": "~/ssr/application.{js,jsx,ts,tsx}",
+    "ssrEntrypoint": "~/ssr/inertia.tsx",
     "ssrOutputDir": "dist/ssr"
   },
   "development": {

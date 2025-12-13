@@ -45,8 +45,8 @@ module Users::Worlds
           render(json: {
             posts: PostSerializer.many(posts),
             pagination: {
-              next: pagy.next,
-            },
+              next: pagy.next
+            }
           })
         end
       end
@@ -63,7 +63,7 @@ module Users::Worlds
             .with_encouragement
             .order(pinned_until: :asc, created_at: :asc)
           render(json: {
-            posts: PostSerializer.many(posts),
+            posts: PostSerializer.many(posts)
           })
         end
       end
@@ -80,7 +80,7 @@ module Users::Worlds
           render(json: {
             "notifiedFriends" => post.notified_friends.count,
             viewers: post.friend_viewers.count,
-            repliers:,
+            repliers:
           })
         end
       end
@@ -110,11 +110,11 @@ module Users::Worlds
               Arel.sql("ARRAY_AGG(emoji ORDER BY created_at)"),
             )
             .each_with_object({}) do |(reactor_type, reactor_id, emojis), hash|
-              hash[[reactor_type, reactor_id]] = emojis
+              hash[[ reactor_type, reactor_id ]] = emojis
             end
           viewers = views.filter_map do |view|
             reaction_emojis = reactions_by_viewer.fetch(
-              [view.viewer_type, view.viewer_id],
+              [ view.viewer_type, view.viewer_id ],
               [],
             )
             UserPostViewer.new(
@@ -124,7 +124,7 @@ module Users::Worlds
             )
           end
           render(json: {
-            viewers: UserPostViewerSerializer.many(viewers),
+            viewers: UserPostViewerSerializer.many(viewers)
           })
         end
       end
@@ -141,7 +141,7 @@ module Users::Worlds
           render(json: {
             "hiddenFromIds" => post.hidden_from_ids,
             "notifiedIds" => notified_ids,
-            "visibleToIds" => post.visible_to_ids,
+            "visibleToIds" => post.visible_to_ids
           })
         end
       end
@@ -167,20 +167,20 @@ module Users::Worlds
             images: [],
             friend_ids_to_notify: [],
             hidden_from_ids: [],
-            visible_to_ids: [],
+            visible_to_ids: []
           ])
           post = world.posts.build(author: current_user, **post_params)
           if post.save
             render(
               json: {
-                post: PostSerializer.one(post),
+                post: PostSerializer.one(post)
               },
               status: :created,
             )
           else
             render(
               json: {
-                errors: post.form_errors,
+                errors: post.form_errors
               },
               status: :unprocessable_content,
             )
@@ -211,11 +211,11 @@ module Users::Worlds
             images: [],
             friend_ids_to_notify: [],
             hidden_from_ids: [],
-            visible_to_ids: [],
+            visible_to_ids: []
           ])
           if post.update(post_params)
             render(json: {
-              post: PostSerializer.one(post),
+              post: PostSerializer.one(post)
             })
           else
             render(
@@ -239,7 +239,7 @@ module Users::Worlds
           else
             render(
               json: {
-                errors: post.errors.full_messages,
+                errors: post.errors.full_messages
               },
               status: :unprocessable_content,
             )
@@ -257,7 +257,7 @@ module Users::Worlds
           authorize!(post)
           share = post.shares.find_or_create_by!(sharer: current_user)
           render(json: {
-            share: PostShareSerializer.one(share),
+            share: PostShareSerializer.one(share)
           })
         end
       end

@@ -37,7 +37,7 @@ module Worlds
             world,
             friend_token: current_friend.access_token,
           ),
-          scope: world_path(world),
+          scope: world_path(world)
         },
       )
     end

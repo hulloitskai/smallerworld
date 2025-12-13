@@ -104,7 +104,7 @@ class ErrorsController < ApplicationController
             title:,
             description:,
             code:,
-            error: error&.message,
+            error: error&.message
           },
           status:,
         )
@@ -112,7 +112,7 @@ class ErrorsController < ApplicationController
       format.json do
         render(
           json: {
-            error: error&.message || title,
+            error: error&.message || title
           },
           status:,
         )

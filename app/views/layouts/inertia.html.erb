@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  <%= tag.attributes(@root_attributes) if defined?(@root_attributes) %>
+>
+  <head>
+    <%# == Inertia page-specific head %>
+    <%== inertia_ssr_head %>
+
+    <%# == Application head %>
+    <meta name="apple-mobile-web-app-title" content="smaller world" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link inertia="favicon" rel="shortcut icon" href="/favicon.ico">
+    <link inertia="favicon-image" rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link inertia="apple-touch-icon" rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <%# == Viewport %>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+    <%# == Content Security Policy %>
+    <%= csp_meta_tag %>
+
+    <%# == CSRF %>
+    <meta inertia="csrf-param" name="csrf-param" content="<%= request_forgery_protection_token %>">
+    <meta inertia="csrf-token" name="csrf-token" content="<%= form_authenticity_token %>">
+
+    <%# == Environment %>
+    <meta name="env" content="<%= Rails.env %>">
+
+    <%# == Action Cable %>
+    <%= action_cable_meta_tag %>
+
+    <%# == Active Storage %>
+    <meta name="active-storage-direct-uploads-url" content="<%= rails_direct_uploads_path %>">
+    <% if (direct_uploads_size_limit = Rails.configuration.active_storage.direct_uploads_size_limit) %>
+      <meta name="active-storage-direct-uploads-size-limit" content="<%= direct_uploads_size_limit %>">
+    <% end %>
+
+    <%# == Sentry %>
+    <% if Sentry.initialized? %>
+      <% config = Sentry.configuration %>
+      <meta name="sentry-dsn" content="<%= config.dsn %>">
+      <meta name="sentry-traces-sample-rate" content="<%= config.traces_sample_rate %>">
+      <meta name="sentry-profiles-sample-rate" content="<%= config.profiles_sample_rate %>">
+    <% end %>
+
+    <%# == Fullstory %>
+    <% if (settings = Fullstory.settings) %>
+      <meta name="fullstory-org-id" content="<%= settings.org_id %>">
+    <% end %>
+
+    <%# == Amplitude %>
+    <% if (settings = Amplitude.settings) %>
+      <meta name="amplitude-api-key" content="<%= settings.api_key %>">
+    <% end %>
+
+    <%# == Clarity %>
+    <% if (settings = Clarity.settings) %>
+      <meta name="clarity-project-id" content="<%= settings.project_id %>">
+    <% end %>
+
+    <%# == Vite %>
+    <%= vite_client_tag %>
+    <% if local_assigns.include?(:page) %>
+      <%= vite_react_refresh_tag %>
+      <%= vite_javascript_tag "inertia.tsx" %>
+      <%= vite_stylesheet_tag "inertia" %>
+    <% end %>
+
+    <%# == Inertia %>
+    <%== inertia_assets local_assigns.fetch(:page), type: :page, media: nil %>
+
+    <%# == Mantine %>
+    <script data-mantine-script>
+      try {
+        if (!document.documentElement.getAttribute("data-mantine-color-scheme")) {
+          var computedColorScheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.setAttribute("data-mantine-color-scheme", computedColorScheme);
+        }
+      } catch (e) {}
+    </script>
+
+    <%# == Overpowered %>
+    <% if false %>
+      <meta name="overpowered-api-key" content="<%= Overpowered.settings.api_key %>">
+      <meta name="overpowered-endpoint" content="<%= Overpowered.settings.fingerprint_url %>">
+      <script src="<%= Overpowered.settings.script_url %>"></script>
+    <% end %>
+
+    <%# == Canny %>
+    <% if (settings = Canny.settings) %>
+      <meta name="canny-app-id" content="<%= settings.app_id %>">
+      <meta name="canny-feature-requests-board-token" content="<%= settings.feature_requests_board_token %>">
+      <meta name="canny-bugs-board-token" content="<%= settings.bugs_board_token %>">
+    <% end %>
+    <script>!function(w,d,i,s){function l(){if(!d.getElementById(i)){var f=d.getElementsByTagName(s)[0],e=d.createElement(s);e.type="text/javascript",e.async=!0,e.src="https://canny.io/sdk.js",f.parentNode.insertBefore(e,f)}}if("function"!=typeof w.Canny){var c=function(){c.q.push(arguments)};c.q=[],w.Canny=c,"complete"===d.readyState?l():w.attachEvent?w.attachEvent("onload",l):w.addEventListener("load",l,!1)}}(window,document,"canny-jssdk","script");</script>
+  </head>
+
+  <body>
+    <%# == PWA %>
+    <script>
+      // Capture beforeinstallprompt event
+      window.addEventListener("beforeinstallprompt", (event) => {
+        console.info("Captured beforeinstallprompt event", event);
+        event.preventDefault();
+        window.installPromptEvent = event;
+      });
+
+      // Offer to unregister service worker if application fails to boot
+      // if ("serviceWorker" in navigator) {
+      //   setTimeout(() => {
+      //     if (window.BOOTED_AT) {
+      //       return;
+      //     }
+      //     var forceReload = confirm("Page failed to load. Force-reload application?");
+      //     if (!forceReload) {
+      //       return;
+      //     }
+      //     navigator.serviceWorker
+      //       .getRegistrations()
+      //       .then((registrations) =>
+      //         Promise.all(registrations.map(registration => registration.unregister())),
+      //       )
+      //       .then(() => {
+      //         location.reload();
+      //       });
+      //   }, 6000);
+      // }
+    </script>
+
+    <%# == Content %>
+    <%= yield %>
+  </body>
+</html>

@@ -61,6 +61,9 @@ module GeneratedPathHelpersModule
   def file_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }
+  def filepond_files_path(*args); end
+
+  sig { params(args: T.untyped).returns(String) }
   def friend_encouragements_path(*args); end
 
   sig { params(args: T.untyped).returns(String) }

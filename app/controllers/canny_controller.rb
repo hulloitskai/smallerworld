@@ -11,13 +11,13 @@ class CannyController < ApplicationController
           {
             "id" => friend.id,
             "email" => canny_email(friend),
-            "name" => friend.fun_name,
+            "name" => friend.fun_name
           }
         elsif (user = current_user)
           {
             "id" => user.id,
             "email" => canny_email(user),
-            "name" => user.name,
+            "name" => user.name
           }
         else
           raise "Missing friend or user"

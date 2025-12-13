@@ -26,7 +26,7 @@ class PostsController < ApplicationController
         render(inertia: "PostPrintPage", props: {
           post: PostSerializer.one(post),
           "authorName" => author.name,
-          "authorWorld" => AuthorWorldProfileSerializer.one_if(author.world),
+          "authorWorld" => AuthorWorldProfileSerializer.one_if(author.world)
         })
       end
     end
@@ -41,7 +41,7 @@ class PostsController < ApplicationController
         authorize!(post)
         share = post.shares.find_or_create_by!(sharer: current_friend)
         render(json: {
-          share: PostShareSerializer.one(share),
+          share: PostShareSerializer.one(share)
         })
       end
     end
@@ -56,7 +56,7 @@ class PostsController < ApplicationController
         authorize!(post)
         viewer.post_views.find_or_create_by!(post:)
         render(json: {
-          "worldId" => post.world_id,
+          "worldId" => post.world_id
         })
       end
     end
@@ -71,7 +71,7 @@ class PostsController < ApplicationController
         authorize!(post)
         replier.post_reply_receipts.find_or_create_by!(post:)
         render(json: {
-          "worldId" => post.world_id,
+          "worldId" => post.world_id
         })
       end
     end

@@ -5,6 +5,7 @@ import reactHooksPlugin from "eslint-plugin-react-hooks";
 import reactRefreshPlugin from "eslint-plugin-react-refresh";
 import simpleImportSortPlugin from "eslint-plugin-simple-import-sort";
 import { readFileSync } from "fs";
+import globals from "globals";
 import ts from "typescript-eslint";
 
 const prettierIgnores = readFileSync(".prettierignore", "utf8")
@@ -26,13 +27,13 @@ export default ts.config(
     },
   },
   {
-    files: ["app/**/*.{ts,tsx,js,jsx}", "vite.config.ts"],
+    files: ["app/**/*.{ts,tsx,js,jsx}", "vite.config.mjs"],
     rules: {
       "no-console": ["warn", { allow: ["debug", "info", "warn", "error"] }],
     },
   },
   {
-    files: ["app/**/*.{ts,tsx}", "vite.config.ts"],
+    files: ["app/**/*.{ts,tsx}"],
     rules: {
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-explicit-any": "off",
@@ -64,16 +65,27 @@ export default ts.config(
     },
   },
   {
-    files: ["**/*.{js,jsx}"],
+    files: ["**/*.{js,jsx,mjs}"],
     ...ts.configs.disableTypeChecked,
   },
   {
-    files: ["app/**/*.{js,jsx,ts,tsx}", "vite.config.ts"],
+    files: ["*.config.{mjs,js}"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+  {
+    files: ["app/**/*.{js,jsx,ts,tsx}", "vite.config.mjs"],
     ...importPlugin.flatConfigs.recommended,
     ...importPlugin.flatConfigs.typescript,
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
+      globals: {
+        ...globals.browser,
+      },
     },
     plugins: {
       "simple-import-sort": simpleImportSortPlugin,

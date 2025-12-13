@@ -72,7 +72,7 @@ module AuthenticatesUsers
           value: session.id,
           httponly: true,
           same_site: nil,
-          secure: Rails.env.production?,
+          secure: Rails.env.production?
         }
     end
   end
@@ -126,7 +126,7 @@ module AuthenticatesUsers
       format.json do
         render(
           json: {
-            error: error.message,
+            error: error.message
           },
           status: :unauthorized,
         )

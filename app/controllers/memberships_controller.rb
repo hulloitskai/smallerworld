@@ -25,7 +25,7 @@ class MembershipsController < ApplicationController
           current_user.update!(membership_tier:)
         end
         render(json: {
-          "membershipTier" => current_user.membership_tier,
+          "membershipTier" => current_user.membership_tier
         })
       end
     end

@@ -18,7 +18,7 @@ module Users::Worlds
             world_theme: world.theme,
             props: {
               world: WorldSerializer.one(world),
-              "hasFriends" => world.friends.exists?,
+              "hasFriends" => world.friends.exists?
             },
           )
         end
@@ -30,7 +30,7 @@ module Users::Worlds
           render(json: {
             world: WorldSerializer.one(world),
             "pendingInvitations" =>
-              UserWorldInvitationSerializer.many(pending_invitations),
+              UserWorldInvitationSerializer.many(pending_invitations)
           })
         end
       end
@@ -45,20 +45,20 @@ module Users::Worlds
             :join_request_id,
             :invitee_name,
             :invitee_emoji,
-            offered_activity_ids: [],
+            offered_activity_ids: []
           ])
           invitation = world.invitations.build(**invitation_params)
           if invitation.save
             render(
               json: {
-                invitation: UserWorldInvitationSerializer.one(invitation),
+                invitation: UserWorldInvitationSerializer.one(invitation)
               },
               status: :created,
             )
           else
             render(
               json: {
-                errors: invitation.form_errors,
+                errors: invitation.form_errors
               },
               status: :unprocessable_content,
             )
@@ -76,18 +76,18 @@ module Users::Worlds
           invitation_params = params.expect(invitation: [
             :invitee_name,
             :invitee_emoji,
-            offered_activity_ids: [],
+            offered_activity_ids: []
           ])
           if invitation.update(**invitation_params)
             render(
               json: {
-                invitation: UserWorldInvitationSerializer.one(invitation),
+                invitation: UserWorldInvitationSerializer.one(invitation)
               },
             )
           else
             render(
               json: {
-                errors: invitation.form_errors,
+                errors: invitation.form_errors
               },
               status: :unprocessable_content,
             )

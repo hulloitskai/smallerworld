@@ -59,7 +59,7 @@ class Encouragement < ApplicationRecord
       friend = friend!
       NotificationMessage.new(
         title: "#{friend.name} wants to hear from u!",
-        body: [emoji, message].join(" "),
+        body: [ emoji, message ].join(" "),
         target_url: Rails.application.routes.url_helpers.user_world_path,
       )
     else

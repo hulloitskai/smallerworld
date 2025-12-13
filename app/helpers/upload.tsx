@@ -1,5 +1,5 @@
 import { type Blob } from "@rails/activestorage";
-import { DirectUpload } from "@rails/activestorage?client";
+import { DirectUpload } from "@rails/activestorage";
 import prettyBytes from "pretty-bytes";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
